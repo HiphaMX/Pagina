@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiphaMX | Tu Departamento de Marketing Externo</title>
+    <meta name="description" content="Agencia de marketing digital enfocada en resultados. Brindamos servicios como tu departamento de marketing externo: Diseño Gráfico, Publicidad, Social Media y Desarrollo Web.">
+    <meta name="keywords" content="Agencia de Marketing, Marketing Digital, Diseño Gráfico, Desarrollo Web, Social Media, Publicidad, Branding, Fotografía Comercial">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://hiphamx.com/">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="HiphaMX | Tu Departamento de Marketing Externo">
+    <meta property="og:description" content="Impulsamos marcas increíbles prestando nuestro equipo como tu departamento de marketing.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hiphamx.com/">
+    <meta property="og:image" content="https://hiphamx.com/HiphaIdentidad/Logotipo/HiphaWhite.svg">
+    <meta property="og:locale" content="es_MX">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HiphaMX | Tu Departamento de Marketing Externo">
+    <meta name="twitter:description" content="Agencia de marketing que funciona como tu brazo armado para alcanzar los objetivos de tu marca.">
+    
+    <!-- Structured Data (JSON-LD) para comprensión de Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "HiphaMX",
+      "url": "https://hiphamx.com",
+      "logo": "https://hiphamx.com/HiphaIdentidad/Logotipo/HiphaWhite.svg",
+      "description": "Agencia de marketing digital que trabaja como el departamento de marketing externo de sus clientes."
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for elegant thin icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="relative min-h-screen overflow-x-hidden antialiased selection:bg-fuchsia-500 selection:text-white">
+
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Preloader — Mycelium Canvas -->
+    <div id="mycelium-preloader" class="fixed inset-0 z-[100] bg-[#050810] flex items-center justify-center overflow-hidden">
+        <canvas id="mycelium-canvas" class="absolute inset-0 w-full h-full"></canvas>
+        <img src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX Logo" id="preloader-logo"
+             class="relative z-10" style="height:130px; opacity:0; transform:scale(0.85);">
+        <p id="preloader-tagline" style="position:absolute;bottom:36px;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.9s ease 1.8s;color:rgba(6,182,212,0.65);font-size:0.65rem;letter-spacing:0.25em;font-family:monospace;white-space:nowrap;">MYCELIUM &nbsp;·&nbsp; MARKETING &nbsp;·&nbsp; DIGITAL</p>
+    </div>
+
+    <!-- Background Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Navigation -->
+    <nav class="relative z-40 glass-panel sticky top-0 w-full border-b border-white/10 px-6 py-4 transition-all" id="navbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo adaptativo dark/light -->
+            <a href="#" class="flex items-center group">
+                <img id="nav-logo" src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX Logo" class="h-16 md:h-20 transition-transform group-hover:scale-105">
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#soluciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Ecosistema de Soluciones</a>
+                <a href="#about" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Nuestra Raíz</a>
+                <a href="importancia-del-branding.html" class="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">Blog</a>
+                <button onclick="toggleModal('contact-modal')" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
+                    Conecta con Nosotros
+                </button>
+            </div>
+
+            <!-- Controles derecha: theme toggle (siempre) + hamburger (mobile) -->
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema"
+                    class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-white transition-all border border-white/10 hover:border-primary-500/50 hover:shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+                    <i id="theme-icon" class="ph ph-sun text-base"></i>
+                </button>
+                <button id="ham-btn" onclick="toggleMobileMenu()" class="md:hidden text-white p-2 transition-colors hover:text-primary-400" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
+                    <i class="ph ph-list text-2xl" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="mobile-nav" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+        <div class="mobile-nav-inner">
+            <div class="flex justify-between items-center mb-10">
+                <img src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX" class="h-12">
+                <button onclick="closeMobileMenu()" class="text-slate-400 hover:text-white p-2" aria-label="Cerrar menú">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <a href="#soluciones" class="mobile-nav-link" onclick="closeMobileMenu()">Ecosistema de Soluciones</a>
+            <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Nuestra Raíz</a>
+            <a href="#valores" class="mobile-nav-link" onclick="closeMobileMenu()">Filosofía</a>
+            <a href="importancia-del-branding.html" class="mobile-nav-link">Blog</a>
+            <button onclick="toggleModal('contact-modal'); closeMobileMenu();" class="mobile-nav-cta">
+                Conecta con Nosotros
+                <i class="ph-bold ph-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" aria-labelledby="hero-heading" class="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-20 pb-16 md:pt-24 md:pb-32 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+        <div id="hero-left" class="flex-1 space-y-6 md:space-y-8 text-center md:text-left animate-fade-in-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel border border-primary-500/50 text-xs text-primary-400 font-medium tracking-wide shadow-[0_0_15px_rgba(20,184,166,0.2)]">
+                <i class="ph-fill ph-git-merge text-primary-500 animate-pulse text-sm" aria-hidden="true"></i>
+                Raíz Digital. El micelio que todo conecta.
+            </div>
+            <h1 id="hero-heading" class="text-4xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.15] md:leading-[1.1]">
+                Tu <span id="hero-word-cycle">marca</span> vale más de lo que <br />el mundo percibe.
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-fuchsia-500 to-purple-500">
+                    Hagamos que lo vean.
+                </span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 max-w-lg leading-relaxed">
+                Somos la red de talentos de marketing que trabaja como <strong class="text-white">tu equipo propio</strong> — sin que tengas que contratar uno. Nutrimos el crecimiento de tu marca desde adentro, como lo hace el micelio en la naturaleza.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-3 md:gap-4 pt-2">
+                <button id="hero-cta-primary" onclick="toggleModal('contact-modal')" aria-label="Quiero que me conozcan" class="bg-white text-slate-900 font-semibold px-8 py-4 rounded-full hover:bg-slate-100 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center justify-center gap-2 group focus:ring-4 focus:ring-primary-500/50">
+                    Quiero que me conozcan
+                    <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
+                </button>
+                <a href="#soluciones" aria-label="Descubre cómo trabajamos" class="glass-panel text-white font-medium px-8 py-4 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-2 focus:ring-4 focus:ring-white/30">
+                    Descubre cómo trabajamos
+                </a>
+            </div>
+        </div>
+        
+        <div class="flex-1 relative w-full max-w-md mx-auto perspective-[1000px]">
+            <!-- Responsive Marketing Card Graphic -->
+            <div id="hero-card" class="glass-panel rounded-3xl p-6 shadow-2xl relative z-10 border border-white/10" style="transform-style:preserve-3d; will-change:transform; cursor:default; transition:transform 0.15s ease;">
+                <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    <div class="flex-1"></div>
+                    <div class="text-xs text-slate-400 font-medium">Resultados de Campaña</div>
+                </div>
+                <!-- Marketing Simulation Segment -->
+                <div class="space-y-4">
+                    <div class="flex flex-col gap-1">
+                        <div class="text-xs text-slate-400 uppercase tracking-wider">Crecimiento de Audiencia</div>
+                        <div class="text-3xl font-bold text-white flex items-center gap-2">
+                            +420% <i class="ph-fill ph-trend-up text-green-400 text-2xl"></i>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2">
+                            <div class="bg-gradient-to-r from-primary-500 to-blue-500 h-1.5 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-3">
+                        <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                            <i class="ph-fill ph-heart text-pink-400"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                            <i class="ph-fill ph-chat-circle text-blue-400"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <i class="ph-fill ph-share-network text-purple-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-white/5 flex justify-between items-end">
+                        <div>
+                            <div class="text-xs text-slate-400">Leads Generados</div>
+                            <div class="text-xl font-bold text-white">1,540</div>
+                        </div>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-medium rounded">Activo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="soluciones" aria-labelledby="soluciones-heading" class="relative z-10 py-24 bg-slate-900/50 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="block text-primary-500 font-semibold tracking-wide uppercase text-sm mb-2">Nuestros Servicios</span>
+                <h2 id="soluciones-heading" class="text-3xl md:text-5xl font-bold text-white">Soluciones Creativas Integrales</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Service: Diseño gráfico -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-primary-500/20 text-primary-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-bezier-curve text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Diseño Gráfico</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Diseño que detiene el scroll y hace que recuerden tu marca antes de que tu competencia lo haga.</p>
+                </article>
+
+                <!-- Service: Diseño comercial -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-storefront text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Diseño Comercial</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Si tu punto de venta no enamora, la venta no ocurre. Diseñamos espacios que convierten visitantes en compradores.</p>
+                </article>
+
+                <!-- Service: Merchandising -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-tag text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Merchandising</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Señalética, anuncios y materiales físicos que hacen que recuerden tu marca mucho después de la primera visita.</p>
+                </article>
+                
+                <!-- Service: Desarrollo de marcas -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-brain text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Desarrollo de Marcas</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Construimos la identidad que te hace ser la primera opción en la mente de tu cliente — no solo otra opción más.</p>
+                </article>
+
+                <!-- Service: Social Media -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-instagram-logo text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Social Media</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Comunidad real, no solo seguidores. Estrategia editorial que convierte tu presencia digital en un canal de ventas.</p>
+                </article>
+
+                <!-- Service: Diseño Web -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-browsers text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Diseño Web</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Tu sitio más rápido, más atractivo y diseñado para convertir visitas en clientes — no solo en admiradores.</p>
+                </article>
+
+                <!-- Service: Fotografía comercial -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-camera text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Fotografía Comercial</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">La primera imagen que tu cliente ve decide si confía en tu marca. Hacemos que confíe desde el primer vistazo.</p>
+                </article>
+
+                <!-- Service: Marketing Estratégico -->
+                <article class="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-target text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Marketing Estratégico</h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">Un plan de marketing con dirección clara, métricas reales y un equipo que ejecuta — sin excusas, sin improvisar.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inbound Marketing Timeline Section -->
+    <section id="inbound-timeline" aria-labelledby="inbound-heading" class="relative z-10 py-24 border-t border-white/5">
+        <div class="max-w-6xl mx-auto px-6">
+            
+            <!-- Header -->
+            <header class="mb-20 text-center md:text-left">
+                <span class="block text-primary-400 font-semibold tracking-wide uppercase text-sm mb-3">Tu Sistema de Adquisición</span>
+                <h2 id="inbound-heading" class="text-3xl md:text-5xl font-bold text-white mb-4">
+                    Timeline de Implementación <br class="hidden md:block">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-fuchsia-500">Inbound</span>
+                </h2>
+                <p class="text-slate-400 text-lg">No instales herramientas al azar. Construye un ecosistema digital conectado.</p>
+            </header>
+
+            <!-- Timeline Navigation -->
+            <div class="relative mb-16">
+                <!-- Línea conectora base -->
+                <div class="absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2 hidden md:block"></div>
+                
+                <div class="flex flex-col md:flex-row justify-between relative z-10 gap-6 md:gap-4" id="timeline-nav">
+                    <!-- Los botones se generarán por JS -->
+                </div>
+            </div>
+
+            <!-- Active Content Area -->
+            <div class="grid md:grid-cols-12 gap-10 items-start">
+                
+                <!-- Detalles de la Fase -->
+                <div class="md:col-span-7" id="timeline-content">
+                    <!-- Título y estrategia se inyectan por JS -->
+                </div>
+
+                <!-- Dashboard lateral del Mentor -->
+                <div class="md:col-span-5 relative">
+                    <!-- Blob decorativo de fondo -->
+                    <div class="absolute -top-10 -right-10 w-48 h-48 bg-primary-500/20 rounded-full blur-[80px] z-0 pointer-events-none"></div>
+                    
+                    <div class="glass-panel p-8 rounded-3xl relative z-10 border border-primary-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
+                        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                            <i class="ph-fill ph-chart-polar text-fuchsia-400 text-2xl"></i> Nota HiphaMX
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <!-- Quote -->
+                            <div class="border-l-2 border-primary-500 pl-5">
+                                <p class="text-slate-400 text-sm leading-relaxed italic">
+                                    "Muchos cometen el error de comprar software caro antes de tener estrategia. Si no tienes tráfico o claridad, el mejor CRM del mundo solo servirá para ver una base de datos vacía. Sigue el orden natural del micelio."
+                                </p>
+                            </div>
+                            
+                            <!-- Próximo Paso -->
+                            <div class="bg-white/5 p-5 rounded-2xl border border-white/10 group hover:border-primary-500/30 transition-colors">
+                                <h4 class="text-xs font-black uppercase tracking-wider text-primary-400 mb-2">Paso Crítico:</h4>
+                                <p class="text-sm text-slate-300 font-medium" id="next-step-text">
+                                    Preparar la transición a la Fase 1.
+                                </p>
+                            </div>
+                            
+                            <!-- CTA Next -->
+                            <button onclick="nextPhase()" class="w-full mt-4 bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white font-semibold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(192,38,211,0.3)] hover:shadow-[0_0_30px_rgba(192,38,211,0.5)] flex items-center justify-center gap-2">
+                                Avanzar Siguiente Fase <i class="ph-bold ph-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section id="prueba-social" aria-labelledby="prueba-social-heading" class="relative z-10 py-24 bg-slate-900/30 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="block text-fuchsia-400 font-semibold tracking-wide uppercase text-sm mb-2">Resultados Reales</span>
+                <h2 id="prueba-social-heading" class="text-3xl md:text-5xl font-bold text-white">Lo que dicen quienes<br class="hidden md:block"> ya crecen con HiphaMX</h2>
+            </div>
+            <div class="flex justify-center mb-10">
+                <span class="badge-experience">
+                    <i class="ph-fill ph-medal" aria-hidden="true"></i>
+                    +20 años de experiencia combinada impulsando marcas
+                </span>
+            </div>
+
+            <!-- Infinite Marquee — Row 1 (→) -->
+            <div class="marquee-outer mb-5">
+                <div class="marquee-track left">
+                    <!-- Set 1 -->
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Antes de HiphaMX nadie sabía que existíamos. En tres meses teníamos clientes nuevos llegando solos. Si tu producto es bueno y nadie lo ve, los necesitas."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-fuchsia-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">MR</div><div><p class="text-white font-semibold text-sm">María R.</p><p class="text-slate-500 text-xs">Fundadora · Boutique de moda</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Mi perfil de LinkedIn pasó de 200 a 4,000 seguidores en dos meses. Ahora los clientes me buscan a mí, no al revés."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">CM</div><div><p class="text-white font-semibold text-sm">Carlos M.</p><p class="text-slate-500 text-xs">Fundador · Despacho contable</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Mis ventas online se triplicaron después del rediseño de mi tienda. El equipo entendió mi marca mejor que yo misma."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">SA</div><div><p class="text-white font-semibold text-sm">Sofía A.</p><p class="text-slate-500 text-xs">Dueña · E-commerce de artesanías</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Ahora los pacientes llegan diciendo que nos ven 'muy profesionales'. No cambió nuestro trabajo — cambió cómo lo perciben."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">RV</div><div><p class="text-white font-semibold text-sm">Roberto V.</p><p class="text-slate-500 text-xs">Director · Clínica dental</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Lo que más agradezco es que se metieron a entender mi negocio. Mi marca ahora se ve tan sólida como los grandes jugadores."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">JL</div><div><p class="text-white font-semibold text-sm">Jorge L.</p><p class="text-slate-500 text-xs">Director · Restaurante &amp; bar</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Llenamos el cupo del siguiente semestre antes de cerrar el actual. La campaña de redes fue un cambio total para nuestra escuela."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">DT</div><div><p class="text-white font-semibold text-sm">Daniela T.</p><p class="text-slate-500 text-xs">Directora · Escuela de idiomas</p></div></div>
+                    </article>
+                    <!-- Set 2 — duplicado para loop infinito -->
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Antes de HiphaMX nadie sabía que existíamos. En tres meses teníamos clientes nuevos llegando solos. Si tu producto es bueno y nadie lo ve, los necesitas."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-fuchsia-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">MR</div><div><p class="text-white font-semibold text-sm">María R.</p><p class="text-slate-500 text-xs">Fundadora · Boutique de moda</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Mi perfil de LinkedIn pasó de 200 a 4,000 seguidores en dos meses. Ahora los clientes me buscan a mí, no al revés."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">CM</div><div><p class="text-white font-semibold text-sm">Carlos M.</p><p class="text-slate-500 text-xs">Fundador · Despacho contable</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Mis ventas online se triplicaron después del rediseño de mi tienda. El equipo entendió mi marca mejor que yo misma."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-fuchsia-500 to-pink-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">SA</div><div><p class="text-white font-semibold text-sm">Sofía A.</p><p class="text-slate-500 text-xs">Dueña · E-commerce de artesanías</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Ahora los pacientes llegan diciendo que nos ven 'muy profesionales'. No cambió nuestro trabajo — cambió cómo lo perciben."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">RV</div><div><p class="text-white font-semibold text-sm">Roberto V.</p><p class="text-slate-500 text-xs">Director · Clínica dental</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Lo que más agradezco es que se metieron a entender mi negocio. Mi marca ahora se ve tan sólida como los grandes jugadores."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">JL</div><div><p class="text-white font-semibold text-sm">Jorge L.</p><p class="text-slate-500 text-xs">Director · Restaurante &amp; bar</p></div></div>
+                    </article>
+                    <article class="tcard glass-panel">
+                        <div class="flex gap-0.5 text-yellow-400 text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic flex-1">"Llenamos el cupo del siguiente semestre antes de cerrar el actual. La campaña de redes fue un cambio total para nuestra escuela."</p>
+                        <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">DT</div><div><p class="text-white font-semibold text-sm">Daniela T.</p><p class="text-slate-500 text-xs">Directora · Escuela de idiomas</p></div></div>
+                    </article>
+                </div>
+            </div>
+
+
+            <!-- Metrics Band — 5 stats -->
+            <div class="glass-panel rounded-2xl p-8 grid grid-cols-2 md:grid-cols-5 gap-6 text-center border border-white/5">
+                <div class="col-span-2 md:col-span-1 flex flex-col items-center justify-center">
+                    <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-fuchsia-500 mb-1">+20</div>
+                    <p class="text-slate-400 text-sm">Años de experiencia<br>combinada</p>
+                </div>
+                <div><div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-purple-500 mb-1">+100</div><p class="text-slate-400 text-sm">Marcas transformadas</p></div>
+                <div><div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-primary-500 mb-1">+420%</div><p class="text-slate-400 text-sm">Crecimiento de audiencia</p></div>
+                <div><div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 mb-1">12M</div><p class="text-slate-400 text-sm">Impactos visuales</p></div>
+                <div><div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-500 mb-1">99%</div><p class="text-slate-400 text-sm">Clientes que renuevan</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portafolio de Marcas -->
+    <section id="marcas" aria-labelledby="marcas-heading" class="relative z-10 py-20 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 mb-12 text-center">
+            <span class="block text-primary-400 font-semibold tracking-wide uppercase text-sm mb-3">Portafolio</span>
+            <h2 id="marcas-heading" class="text-3xl md:text-5xl font-bold text-white mb-4">
+                Marcas que hemos construido<br class="hidden md:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-fuchsia-500">y potenciado</span>
+            </h2>
+            <p class="text-slate-400 max-w-xl mx-auto text-base">Desde identidades creadas desde cero hasta marcas que necesitaban un nuevo impulso. Cada una, una historia de crecimiento.</p>
+        </div>
+
+        <!-- Marquee de logos — 20 logos reales -->
+        <div class="marquee-outer">
+            <div class="marquee-track left" style="animation-duration: 60s;">
+                <!-- Set 1 -->
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes1.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes5.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes6.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes2.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes4.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes7.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes8.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes9.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes10.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes11.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes11.1.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes12.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes13.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes14.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes15.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes16.svg" alt="Cliente" loading="lazy" style="max-height:46px;"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes17.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes18.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes19.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes20.svg" alt="Cliente" loading="lazy"></div>
+                <!-- Set 2 — duplicado para loop infinito -->
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes1.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes5.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes6.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes2.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes4.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes7.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes8.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes9.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes10.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes11.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes11.1.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes12.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes13.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes14.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes15.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes16.svg" alt="Cliente" loading="lazy" style="max-height:46px;"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes17.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes18.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes19.svg" alt="Cliente" loading="lazy"></div>
+                <div class="brand-logo"><img src="projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/Clientes20.svg" alt="Cliente" loading="lazy"></div>
+            </div>
+        </div>
+
+
+        <div class="flex justify-center mt-10">
+            <button onclick="toggleModal('contact-modal')"
+                class="glass-panel text-white font-medium px-8 py-4 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-2 focus:ring-4 focus:ring-white/30">
+                ¿Tu marca aún no está aquí? &nbsp;<span class="font-bold">Hablemos →</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" aria-labelledby="about-heading" class="relative z-10 py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="glass-panel p-10 md:p-16 rounded-3xl relative overflow-hidden">
+                <!-- Decorative element -->
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="block text-primary-500 font-semibold tracking-wide uppercase text-sm mb-2">Sobre Nosotros</span>
+                    <h2 id="about-heading" class="text-3xl md:text-4xl font-bold text-white mb-6">Nuestra Misión: Potenciar el Valor Real de tu Marca</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-8">
+                        Nacimos de emprendedores, para emprendedores. Sabemos exactamente dónde duele no ser visto — y cómo cambiarlo. En <strong class="text-white">HiphaMX</strong>, somos creativos, analistas y estrategas que se convierten en tu departamento de marketing para que tú puedas liderar el crecimiento de tu negocio con quienes de verdad entienden tu reto.
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-2">+100<span class="text-primary-500"></span></div>
+                            <p class="text-slate-500 text-sm font-medium">Marcas Impulsadas</p>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-2">99<span class="text-blue-500">%</span></div>
+                            <p class="text-slate-500 text-sm font-medium">Clientes Felices</p>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-2">12<span class="text-purple-500">M</span></div>
+                            <p class="text-slate-500 text-sm font-medium">Impactos Visuales</p>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-2">8<span class="text-green-500">x</span></div>
+                            <p class="text-slate-500 text-sm font-medium">Soluciones Creativas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valores Section -->
+    <section id="valores" aria-labelledby="valores-heading" class="relative z-10 py-20 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-14">
+                <span class="block text-fuchsia-400 font-semibold tracking-widest uppercase text-xs mb-3">El ADN de HiphaMX</span>
+                <h2 id="valores-heading" class="text-3xl md:text-4xl font-bold text-white">Nuestra filosofía de valor</h2>
+            </div>
+            <div class="flex flex-wrap justify-center gap-5 md:gap-6">
+                <div class="valor-tag" style="--tag-color:#22d3ee;--tag-glow:rgba(34,211,238,0.22)">
+                    <div class="valor-icon"><i class="ph-fill ph-users-three"></i></div>
+                    <span>Colaboración</span>
+                </div>
+                <div class="valor-tag" style="--tag-color:#60a5fa;--tag-glow:rgba(96,165,250,0.22)">
+                    <div class="valor-icon"><i class="ph-fill ph-trend-up"></i></div>
+                    <span>Desarrollo</span>
+                </div>
+                <div class="valor-tag" style="--tag-color:#e879f9;--tag-glow:rgba(232,121,249,0.22)">
+                    <div class="valor-icon"><i class="ph-fill ph-plant"></i></div>
+                    <span>Crecimiento</span>
+                </div>
+                <div class="valor-tag" style="--tag-color:#c084fc;--tag-glow:rgba(192,132,252,0.22)">
+                    <div class="valor-icon"><i class="ph-fill ph-lightbulb"></i></div>
+                    <span>Innovación</span>
+                </div>
+                <div class="valor-tag" style="--tag-color:#fb7185;--tag-glow:rgba(251,113,133,0.22)">
+                    <div class="valor-icon"><i class="ph-fill ph-globe-hemisphere-west"></i></div>
+                    <span>Impacto Social</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="site-footer" class="relative z-10">
+        <!-- Gradient separator -->
+        <div class="h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
+        <div class="bg-[#050810]/95 backdrop-blur-xl pt-16 pb-10">
+
+        <!-- Ambient glow -->
+        <div class="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary-900/10 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+
+                <!-- Branding & Info -->
+                <div class="space-y-5">
+                    <a href="#" class="inline-block group">
+                        <img id="footer-logo" src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX Logo" class="h-12 transition-transform group-hover:scale-105">
+                    </a>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Tu departamento de marketing externo. Impulsamos marcas increíbles con estrategias digitales creativas, diseño y desarrollo web de vanguardia.
+                    </p>
+                    <p class="text-xs text-slate-600 italic border-l-2 border-primary-500/40 pl-3 leading-relaxed">
+                        &ldquo;El micelio que todo conecta.&rdquo;
+                    </p>
+                    <div class="flex items-center gap-3 pt-1">
+                        <a href="#" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-primary-400 hover:border-primary-500/50 transition-all hover:-translate-y-1 group shadow-[0_0_15px_rgba(20,184,166,0)] hover:shadow-[0_0_15px_rgba(20,184,166,0.3)]" aria-label="Instagram">
+                            <i class="ph ph-instagram-logo text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-blue-400 hover:border-blue-500/50 transition-all hover:-translate-y-1 group shadow-[0_0_15px_rgba(59,130,246,0)] hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]" aria-label="LinkedIn">
+                            <i class="ph ph-linkedin-logo text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-fuchsia-400 hover:border-fuchsia-500/50 transition-all hover:-translate-y-1 group shadow-[0_0_15px_rgba(217,70,239,0)] hover:shadow-[0_0_15px_rgba(217,70,239,0.3)]" aria-label="TikTok">
+                            <i class="ph ph-tiktok-logo text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-green-400 hover:border-green-500/50 transition-all hover:-translate-y-1 group shadow-[0_0_15px_rgba(34,197,94,0)] hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]" aria-label="WhatsApp">
+                            <i class="ph ph-whatsapp-logo text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Enlaces Rápidos -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
+                        <i class="ph-fill ph-link text-primary-500"></i> Enlaces Rápidos
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Ecosistema de Soluciones</a></li>
+                        <li><a href="#about" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Nuestra Raíz</a></li>
+                        <li><a href="#valores" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Valores y Filosofía</a></li>
+                        <li><a href="importancia-del-branding.html" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Nuestro Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Servicios -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
+                        <i class="ph-fill ph-sparkle text-fuchsia-500"></i> Servicios Principales
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Diseño y Desarrollo Web</a></li>
+                        <li><a href="#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Branding e Identidad</a></li>
+                        <li><a href="#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Social Media Marketing</a></li>
+                        <li><a href="#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Fotografía Comercial</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contacto & Newsletter -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
+                        <i class="ph-fill ph-envelope-simple-open text-blue-500"></i> Manténte Conectado
+                    </h4>
+                    <p class="text-slate-400 text-sm mb-4">Suscríbete a nuestra red para recibir insights de marketing.</p>
+                    <form class="relative mb-6" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Tu correo electrónico" required
+                            class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-4 pr-14 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500 hover:border-white/20">
+                        <button type="submit"
+                            class="absolute right-1 top-1 bottom-1 w-10 bg-gradient-to-br from-primary-600 to-primary-500 hover:from-primary-500 hover:to-cyan-400 flex items-center justify-center rounded-full text-white transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_22px_rgba(20,184,166,0.6)]">
+                            <i class="ph-bold ph-paper-plane-right"></i>
+                        </button>
+                    </form>
+                    <div class="space-y-3">
+                        <a href="mailto:hola@hiphamx.com" class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors text-sm group">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary-500/20 group-hover:text-primary-400 transition-colors">
+                                <i class="ph ph-envelope text-base"></i>
+                            </div>
+                            hola@hiphamx.com
+                        </a>
+                        <div class="flex items-center gap-3 text-slate-400 text-sm">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                <i class="ph ph-map-pin text-base"></i>
+                            </div>
+                            México
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 mt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-sm text-center md:text-left">
+                    &copy; 2026
+                    <span class="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-fuchsia-400">HiphaMX</span>.
+                    Todos los derechos reservados.
+                </p>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-slate-500 hover:text-slate-300 transition-colors text-sm">Aviso de Privacidad</a>
+                    <a href="#" class="text-slate-500 hover:text-slate-300 transition-colors text-sm">Términos y Condiciones</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </footer>
+
+
+    <!-- MODALS OVERLAY -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center px-4">
+        
+        <!-- Contact Modal -->
+        <div id="contact-modal" class="glass-panel w-full max-w-md rounded-2xl p-8 relative hidden transform scale-95 transition-transform duration-300">
+            <button onclick="toggleModal('contact-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-white mb-2">Hablemos de tu Proyecto</h2>
+            <p class="text-slate-400 text-sm mb-8">Déjanos tus datos y nos pondremos en contacto.</p>
+            
+            <form id="contact-form" class="space-y-4" onsubmit="event.preventDefault(); document.getElementById('contact-success').classList.remove('hidden'); this.reset();">
+                <!-- Nombre -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Nombre Completo <span class="text-primary-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph ph-user text-slate-400"></i>
+                        </div>
+                        <input type="text" name="nombre" required autocomplete="name"
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500"
+                            placeholder="Ej. Juan Pérez">
+                    </div>
+                </div>
+                <!-- Correo -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Correo Electrónico <span class="text-primary-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph ph-envelope-simple text-slate-400"></i>
+                        </div>
+                        <input type="email" name="email" required autocomplete="email"
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500"
+                            placeholder="ejemplo@correo.com">
+                    </div>
+                </div>
+                <!-- Teléfono -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Teléfono <span class="text-primary-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph ph-phone text-slate-400"></i>
+                        </div>
+                        <input type="tel" name="telefono" required autocomplete="tel"
+                            pattern="[\+]?[0-9\s\-\(\)]{8,20}"
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500"
+                            placeholder="Ej. +52 55 1234 5678">
+                    </div>
+                </div>
+                <!-- Mensaje -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Mensaje <span class="text-slate-600 text-xs font-normal">(opcional)</span>
+                    </label>
+                    <textarea name="mensaje" rows="3"
+                        class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500 resize-none"
+                        placeholder="Cuéntanos brevemente qué necesitas..."></textarea>
+                </div>
+
+                <p class="text-slate-600 text-xs">Los campos marcados con <span class="text-primary-400">*</span> son obligatorios.</p>
+
+                <div id="contact-success" class="text-green-400 text-sm hidden font-medium text-center p-3 glass-panel rounded-lg flex items-center justify-center gap-2">
+                    <i class="ph-fill ph-check-circle text-lg"></i> ¡Gracias! Pronto nos pondremos en contacto contigo.
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(192,38,211,0.3)] hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
+                    <i class="ph ph-paper-plane-right"></i>
+                    <span>Enviar Mensaje</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script src="js/app.js"></script>
+    <script>
+// ═══ HiphaMX — Core Logic ════════════════════════════════════════════════
+
+// ─── 1. PRELOADER: Mycelium Canvas ───────────────────────────────────────
+(function () {
+    const canvas = document.getElementById('mycelium-canvas');
+    const preloader = document.getElementById('mycelium-preloader');
+    const logo = document.getElementById('preloader-logo');
+    const tagline = document.getElementById('preloader-tagline');
+    if (!canvas || !preloader) return;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const W = canvas.width, H = canvas.height;
+    const CX = W / 2, CY = H / 2;
+    const start = Date.now();
+    let logoShown = false;
+
+    // 80 particles born at center, drift outward
+    const particles = Array.from({ length: 80 }, (_, i) => {
+        const a = (i / 80) * Math.PI * 2 + Math.random() * 0.5;
+        const spd = 0.3 + Math.random() * 0.55;
+        return {
+            x: CX, y: CY,
+            vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+            alpha: 0, size: 1 + Math.random() * 2.2,
+            delay: Math.random() * 850,
+            hue: Math.random() > 0.5 ? '6,182,212' : '192,38,211'
+        };
+    });
+
+    document.body.style.overflow = 'hidden';
+
+    function draw() {
+        const now = Date.now(), elapsed = now - start;
+        ctx.clearRect(0, 0, W, H);
+
+        // Move particles
+        particles.forEach(p => {
+            if (elapsed < p.delay) return;
+            p.alpha = Math.min(0.9, (elapsed - p.delay) / 650);
+            p.x += p.vx; p.y += p.vy;
+            p.vx *= 0.993; p.vy *= 0.993;
+        });
+
+        // Draw connections
+        for (let i = 0; i < 80; i++) {
+            if (elapsed < particles[i].delay) continue;
+            for (let j = i + 1; j < 80; j++) {
+                if (elapsed < particles[j].delay) continue;
+                const a = particles[i], b = particles[j];
+                const dx = a.x - b.x, dy = a.y - b.y;
+                const d = Math.sqrt(dx*dx + dy*dy);
+                if (d < 115) {
+                    const la = Math.min(a.alpha, b.alpha) * (1 - d/115) * 0.4;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+                    ctx.strokeStyle = `rgba(6,182,212,${la})`;
+                    ctx.lineWidth = 0.7;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Draw dots
+        particles.forEach(p => {
+            if (elapsed < p.delay) return;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.hue},${p.alpha * 0.85})`;
+            ctx.fill();
+        });
+
+        // Central glow pulse
+        const gr = ctx.createRadialGradient(CX, CY, 0, CX, CY, Math.min(70, elapsed/18));
+        gr.addColorStop(0, `rgba(6,182,212,${Math.min(0.12, elapsed/9000)})`);
+        gr.addColorStop(1, 'transparent');
+        ctx.fillStyle = gr;
+        ctx.fillRect(0, 0, W, H);
+
+        // Logo in at 1.3s
+        if (elapsed > 1300 && !logoShown && logo) {
+            logoShown = true;
+            logo.style.transition = 'opacity 0.9s ease, transform 0.9s cubic-bezier(0.34,1.56,0.64,1)';
+            logo.style.opacity = '1';
+            logo.style.transform = 'scale(1)';
+            if (tagline) tagline.style.opacity = '1';
+        }
+
+        if (elapsed < 3400) {
+            requestAnimationFrame(draw);
+        } else {
+            preloader.style.transition = 'opacity 0.75s ease';
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.remove();
+                document.body.style.overflow = '';
+            }, 750);
+        }
+    }
+    requestAnimationFrame(draw);
+})();
+
+// ─── 4. HERO INTERACTIVE ─────────────────────────────────────────────────
+(function () {
+    const hero = document.getElementById('hero');
+    if (!hero || !window.matchMedia('(pointer: fine)').matches) return;
+
+    // 4a. Kinetic Word Cycle ───────────────────────────────────────────────
+    const words = ['marca', 'idea', 'negocio', 'proyecto', 'startup'];
+    const cycleEl = document.getElementById('hero-word-cycle');
+    if (cycleEl) {
+        let i = 0;
+        setInterval(() => {
+            i = (i + 1) % words.length;
+            cycleEl.classList.add('wc-exit');
+            setTimeout(() => {
+                cycleEl.textContent = words[i];
+                cycleEl.classList.remove('wc-exit');
+                cycleEl.classList.add('wc-enter');
+                setTimeout(() => cycleEl.classList.remove('wc-enter'), 350);
+            }, 200);
+        }, 2400);
+    }
+
+    // 4b. 3D Card Tilt ────────────────────────────────────────────────────
+    const card = document.getElementById('hero-card');
+    if (card) {
+        const cardWrap = card.parentElement;
+        cardWrap.addEventListener('mousemove', e => {
+            const r = card.getBoundingClientRect();
+            const rx = ((e.clientY - r.top - r.height / 2) / r.height) * 20;
+            const ry = -((e.clientX - r.left - r.width / 2) / r.width) * 20;
+            card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
+            card.style.transition = 'transform 0.12s ease';
+        });
+        cardWrap.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(900px) rotateX(4deg) rotateY(-8deg)';
+            card.style.transition = 'transform 0.6s cubic-bezier(0.23,1,0.32,1)';
+        });
+        // Initial gentle tilt
+        card.style.transform = 'perspective(900px) rotateX(4deg) rotateY(-8deg)';
+    }
+
+    // 4c. Parallax Text Layers ────────────────────────────────────────────
+    const leftCol = document.getElementById('hero-left');
+    let mx = 0, my = 0, lx = 0, ly = 0;
+
+    hero.addEventListener('mousemove', e => {
+        const r = hero.getBoundingClientRect();
+        mx = (e.clientX - r.left - r.width / 2) / r.width;
+        my = (e.clientY - r.top - r.height / 2) / r.height;
+    });
+    hero.addEventListener('mouseleave', () => { mx = 0; my = 0; });
+
+    (function parallaxLoop() {
+        lx += (mx - lx) * 0.055;
+        ly += (my - ly) * 0.055;
+        if (leftCol) {
+            leftCol.style.transform = `translate(${lx * -18}px, ${ly * -10}px)`;
+        }
+        requestAnimationFrame(parallaxLoop);
+    })();
+
+    // 4d. Magnetic CTA ────────────────────────────────────────────────────
+    const cta = document.getElementById('hero-cta-primary');
+    if (cta) {
+        let ctaActive = false;
+        document.addEventListener('mousemove', e => {
+            const r = cta.getBoundingClientRect();
+            const cx = r.left + r.width / 2;
+            const cy = r.top + r.height / 2;
+            const dx = e.clientX - cx;
+            const dy = e.clientY - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 110) {
+                const pull = (110 - dist) / 110;
+                cta.style.transform = `translate(${dx * pull * 0.32}px, ${dy * pull * 0.32}px)`;
+                cta.style.transition = 'transform 0.15s ease';
+                ctaActive = true;
+            } else if (ctaActive) {
+                cta.style.transform = '';
+                cta.style.transition = 'transform 0.5s cubic-bezier(0.23,1,0.32,1)';
+                ctaActive = false;
+            }
+        });
+    }
+})();
+
+// ─── 2. CUSTOM CURSOR ────────────────────────────────────────────────────
+(function () {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    if (!dot || !ring) return;
+
+    let cx = -200, cy = -200, rx = -200, ry = -200;
+
+    document.addEventListener('mousemove', e => {
+        cx = e.clientX; cy = e.clientY;
+        dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
+    });
+
+    (function lerp() {
+        rx += (cx - rx) * 0.12; ry += (cy - ry) * 0.12;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(lerp);
+    })();
+
+    document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+    document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+    document.querySelectorAll('a, button, [onclick], input, textarea, select').forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+    });
+})();
+
+// ─── 3. THEME TOGGLE ─────────────────────────────────────────────────────
+const LOGO_DARK = 'projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg';
+const LOGO_LIGHT = 'projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaBlue.svg';
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    const icon = document.getElementById('theme-icon');
+    const navLogo = document.getElementById('nav-logo');
+
+    if (isDark) {
+        // Switch TO light
+        html.classList.remove('dark');
+        if (icon) icon.className = 'ph ph-moon text-base';
+        if (navLogo) navLogo.src = LOGO_LIGHT;
+        swapBrandLogos('light');
+        localStorage.setItem('hiphamx-theme', 'light');
+        localStorage.setItem('hiphamx-theme-day', new Date().toDateString());
+    } else {
+        // Switch TO dark
+        html.classList.add('dark');
+        if (icon) icon.className = 'ph ph-sun text-base';
+        if (navLogo) { navLogo.src = LOGO_DARK; navLogo.style.filter = 'drop-shadow(0 0 8px rgba(255,255,255,0.3))'; }
+        swapBrandLogos('dark');
+        localStorage.setItem('hiphamx-theme', 'dark');
+        localStorage.setItem('hiphamx-theme-day', new Date().toDateString());
+    }
+}
+
+function swapBrandLogos(mode) {
+    // Swap footer logo too
+    const footerLogo = document.getElementById('footer-logo');
+    if (footerLogo) {
+        footerLogo.src = mode === 'light' ? LOGO_LIGHT : LOGO_DARK;
+        footerLogo.style.filter = mode === 'dark' ? 'drop-shadow(0 0 6px rgba(255,255,255,0.2))' : '';
+    }
+    // Dark logos (marquee order) → Light logos (positional mapping)
+    const D = 'projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/';
+    const L = 'projects/HiphaMX/HiphaIdentidad/Clientes%20Ligth/';
+    const dark  = ['Clientes1.svg','Clientes5.svg','Clientes6.svg','Clientes2.svg','Clientes4.svg',
+                   'Clientes7.svg','Clientes8.svg','Clientes9.svg','Clientes10.svg','Clientes11.svg',
+                   'Clientes11.1.svg','Clientes12.svg','Clientes13.svg','Clientes14.svg','Clientes15.svg',
+                   'Clientes16.svg','Clientes17.svg','Clientes18.svg','Clientes19.svg','Clientes20.svg'];
+    const light = ['Clientes%20Light1.svg','Clientes%20Light2.svg','Clientes%20Light3.svg',
+                   'Clientes%20Light4.svg','Clientes%20Light5.svg','Clientes%20Light6.svg',
+                   'Clientes%20Light7.svg','Clientes%20Light8.svg','Clientes%20Light9.svg',
+                   'Clientes%20Light10.svg','Clientes%20Light11.svg','Clientes%20Light12.svg',
+                   'Clientes%20Light13.svg','Clientes%20Light14.svg','Clientes%20Light15.svg',
+                   'Clientes%20Light16.svg','Clientes%20Light17.svg','Clientes%20Light18.svg',
+                   'Clientes%20Light19.svg','Clientes%20Light20.svg'];
+    document.querySelectorAll('.brand-logo img').forEach((img, idx) => {
+        const i = idx % 20;
+        img.src = mode === 'light' ? L + light[i] : D + dark[i];
+    });
+}
+
+// Apply theme: time-of-day auto-detect → manual override stored per day
+(function () {
+    const icon     = document.getElementById('theme-icon');
+    const navLogo  = document.getElementById('nav-logo');
+    const today    = new Date().toDateString();
+    const savedDay = localStorage.getItem('hiphamx-theme-day');
+    const saved    = localStorage.getItem('hiphamx-theme');
+
+    let theme;
+    if (saved && savedDay === today) {
+        // Respect manual toggle made today
+        theme = saved;
+    } else {
+        // Auto-detect: sunrise ~6:00 → sunset ~19:00 (Mexico City avg)
+        const h = new Date().getHours();
+        theme = (h >= 6 && h < 19) ? 'light' : 'dark';
+        localStorage.removeItem('hiphamx-theme');
+        localStorage.removeItem('hiphamx-theme-day');
+    }
+
+    const isLight = (theme === 'light');
+    if (isLight) {
+        document.documentElement.classList.remove('dark');
+        if (icon) icon.className = 'ph ph-moon text-base';
+        if (navLogo) navLogo.src = LOGO_LIGHT;
+        swapBrandLogos('light');
+    } else {
+        document.documentElement.classList.add('dark');
+        if (icon) icon.className = 'ph ph-sun text-base';
+        if (navLogo) { navLogo.src = LOGO_DARK; navLogo.style.filter = 'drop-shadow(0 0 8px rgba(255,255,255,0.3))'; }
+        swapBrandLogos('dark');
+    }
+})();
+
+// ─── 5. MOBILE MENU ──────────────────────────────────────────────────────
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('ham-btn');
+    const icon = btn.querySelector('i');
+    const open = menu.classList.contains('open');
+    menu.classList.toggle('open', !open);
+    menu.setAttribute('aria-hidden', String(open));
+    btn.setAttribute('aria-expanded', String(!open));
+    icon.className = open ? 'ph ph-list text-2xl' : 'ph ph-x text-2xl';
+    document.body.style.overflow = open ? '' : 'hidden';
+}
+function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('ham-btn');
+    if (!menu) return;
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden', 'true');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); const i = btn.querySelector('i'); if(i) i.className = 'ph ph-list text-2xl'; }
+    document.body.style.overflow = '';
+}
+// Close menu on Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
+
+    </script>
+
+    <!-- Floating Mobile CTA -->
+    <div class="mobile-float-cta md:hidden" role="complementary" aria-label="Llamada a la acción">
+        <button onclick="toggleModal('contact-modal')" class="mobile-float-btn">
+            Quiero que me conozcan
+            <i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
+        </button>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Base de datos
+*.db
+*.sqlite3
+
+# Variables de entorno
+.env
+
+# MacOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# Nodo
+node_modules/
+
+# Archivos grandes que exceden el límite de GitHub
+projects/DAM/assets/Identidad/Manual de exhibición.pdf

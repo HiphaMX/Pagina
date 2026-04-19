@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CuradorDAM | AI Interior Design Curator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <span class="logo-accent">DAM</span>
+                <h1>Curador AI</h1>
+            </div>
+            <p class="subtitle">Análisis arquitectónico y curaduría de materiales sin alucinación.</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Left Column: Upload -->
+            <section class="upload-section glass-panel">
+                <h2>1. Inspiración</h2>
+                <p>Sube el reto a replicar. El agente detectará la vibra y los materiales ideales.</p>
+                
+                <div class="upload-grid">
+                    <!-- Slot 1: Inspiración principal -->
+                    <div class="drop-zone large-slot" id="drop-zone-insp">
+                        <div class="drop-content" id="drop-content-insp">
+                            <span class="drop-icon">📸</span>
+                            <span class="drop-title">Inspiración Base</span>
+                        </div>
+                        <input type="file" id="file-insp" accept="image/*" hidden>
+                        <img id="preview-insp" alt="Preview Insp" class="hidden">
+                    </div>
+
+                    <!-- Slot 2: Piso Daltile -->
+                    <div class="drop-zone small-slot" id="drop-zone-piso">
+                        <div class="drop-content" id="drop-content-piso">
+                            <span class="drop-icon">🟫</span>
+                            <span class="drop-title">Textura Piso / Recubrimiento</span>
+                        </div>
+                        <input type="file" id="file-piso" accept="image/*" hidden>
+                        <img id="preview-piso" alt="Preview Piso" class="hidden">
+                    </div>
+
+                    <!-- Slot 3: Complemento -->
+                    <div class="drop-zone small-slot" id="drop-zone-comp">
+                        <div class="drop-content" id="drop-content-comp">
+                            <span class="drop-icon">🚰</span>
+                            <span class="drop-title">Complemento (Ej. Llave)</span>
+                        </div>
+                        <input type="file" id="file-comp" accept="image/*" hidden>
+                        <img id="preview-comp" alt="Preview Comp" class="hidden">
+                    </div>
+                </div>
+
+                <div class="context-input-group">
+                    <label for="context-input" class="context-label">Instrucciones extra (Opcional):</label>
+                    <textarea id="context-input" class="context-textarea" placeholder="Ej. Haz que la iluminación sea más dramática..." rows="2"></textarea>
+                </div>
+
+                <button id="analyze-btn" class="primary-btn pulse-anim" disabled>
+                    Generar Súper-Prompt para Gemini <span class="arrow">→</span>
+                </button>
+            </section>
+
+            <!-- Right Column: Results -->
+            <section class="results-section glass-panel">
+                <div id="loader" class="hidden">
+                    <div class="spinner"></div>
+                    <p class="loading-text">CuradorDAM está analizando los catálogos...</p>
+                </div>
+                
+                <div id="results" class="hidden">
+                    <div class="result-header">
+                        <h2>Análisis Completado</h2>
+                        <span class="badge" id="style-badge">Estilo</span>
+                    </div>
+
+                    <div class="vibe-container">
+                        <h3>🌿 Vibra del Espacio</h3>
+                        <p id="vibe-text"></p>
+                    </div>
+
+                    <div class="catalog-container">
+                        <h3>📦 Elementos de Catálogo DAM (No Alucinados)</h3>
+                        <ul id="catalog-list" class="catalog-list">
+                            <!-- Items will be injected here -->
+                        </ul>
+                    </div>
+
+                    <div class="imagenologo-container fade-in">
+                        <h3>🤖 Hand-off: IMAGENOLOGO (Nano Banana)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Copia este texto y pégalo en Gemini.google.com junto con tus tres imágenes (Inspiración, Piso y Complemento).</p>
+                        <div class="prompt-box">
+                            <p id="final-prompt"></p>
+                            <button id="copy-btn" class="icon-btn" title="Copiar Prompt">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="final-render-container slide-up hidden">
+                        <!-- Oculto para la Opción A -->
+                        <h3>🖼️ Render Re-Imaginado (Nano Banana)</h3>
+                        <div class="image-wrapper">
+                            <img id="final-image" src="" alt="Render Generado">
+                            <div class="glass-overlay">Concepto KAM</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="empty-state" class="empty-state">
+                    <div class="icon-circle">✨</div>
+                    <p>Sube una imagen para iniciar la magia del CuradorDAM.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js?v=4"></script>
+</body>
+</html>
