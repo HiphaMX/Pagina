@@ -355,3 +355,58 @@ function renderPhase(index) {
 function nextPhase() {
     renderPhase((currentPhaseIndex + 1) % timelineData.length);
 }
+
+// ─── CUSTOM CURSOR ────────────────────────────────────────────────────
+(function () {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    if (!dot || !ring) return;
+
+    let cx = -200, cy = -200, rx = -200, ry = -200;
+
+    document.addEventListener('mousemove', e => {
+        cx = e.clientX; cy = e.clientY;
+        dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
+    });
+
+    (function lerp() {
+        rx += (cx - rx) * 0.12; ry += (cy - ry) * 0.12;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(lerp);
+    })();
+
+    document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+    document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+    document.querySelectorAll('a, button, [onclick], input, textarea, select').forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+    });
+})();
+
+// ─── MOBILE MENU ──────────────────────────────────────────────────────
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('ham-btn');
+    const icon = btn.querySelector('i');
+    if (!menu || !btn) return;
+    
+    const open = menu.classList.contains('open');
+    menu.classList.toggle('open', !open);
+    menu.setAttribute('aria-hidden', String(open));
+    btn.setAttribute('aria-expanded', String(!open));
+    if(icon) icon.className = open ? 'ph ph-list text-2xl' : 'ph ph-x text-2xl';
+    document.body.style.overflow = open ? '' : 'hidden';
+}
+function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('ham-btn');
+    if (!menu) return;
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden', 'true');
+    if (btn) { btn.setAttribute('aria-expanded', 'false'); const i = btn.querySelector('i'); if(i) i.className = 'ph ph-list text-2xl'; }
+    document.body.style.overflow = '';
+}
+// Close menu on Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
