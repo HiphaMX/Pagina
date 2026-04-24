@@ -29,3 +29,5 @@ node_modules/
 
 # Archivos grandes que exceden el límite de GitHub
 projects/DAM/assets/Identidad/Manual de exhibición.pdf
+.vercel
+.env*.local

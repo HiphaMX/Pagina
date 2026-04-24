@@ -80,10 +80,7 @@
 
             <!-- Controles derecha: theme toggle (siempre) + hamburger (mobile) -->
             <div class="flex items-center gap-2">
-                <button id="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema"
-                    class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-white transition-all border border-white/10 hover:border-primary-500/50 hover:shadow-[0_0_12px_rgba(6,182,212,0.4)]">
-                    <i id="theme-icon" class="ph ph-sun text-base"></i>
-                </button>
+
                 <button id="ham-btn" onclick="toggleMobileMenu()" class="md:hidden text-white p-2 transition-colors hover:text-primary-400" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
                     <i class="ph ph-list text-2xl" aria-hidden="true"></i>
                 </button>
@@ -985,95 +982,7 @@
     });
 })();
 
-// ─── 3. THEME TOGGLE ─────────────────────────────────────────────────────
-const LOGO_DARK = 'projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg';
-const LOGO_LIGHT = 'projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaBlue.svg';
 
-function toggleTheme() {
-    const html = document.documentElement;
-    const isDark = html.classList.contains('dark');
-    const icon = document.getElementById('theme-icon');
-    const navLogo = document.getElementById('nav-logo');
-
-    if (isDark) {
-        // Switch TO light
-        html.classList.remove('dark');
-        if (icon) icon.className = 'ph ph-moon text-base';
-        if (navLogo) navLogo.src = LOGO_LIGHT;
-        swapBrandLogos('light');
-        localStorage.setItem('hiphamx-theme', 'light');
-        localStorage.setItem('hiphamx-theme-day', new Date().toDateString());
-    } else {
-        // Switch TO dark
-        html.classList.add('dark');
-        if (icon) icon.className = 'ph ph-sun text-base';
-        if (navLogo) { navLogo.src = LOGO_DARK; navLogo.style.filter = 'drop-shadow(0 0 8px rgba(255,255,255,0.3))'; }
-        swapBrandLogos('dark');
-        localStorage.setItem('hiphamx-theme', 'dark');
-        localStorage.setItem('hiphamx-theme-day', new Date().toDateString());
-    }
-}
-
-function swapBrandLogos(mode) {
-    // Swap footer logo too
-    const footerLogo = document.getElementById('footer-logo');
-    if (footerLogo) {
-        footerLogo.src = mode === 'light' ? LOGO_LIGHT : LOGO_DARK;
-        footerLogo.style.filter = mode === 'dark' ? 'drop-shadow(0 0 6px rgba(255,255,255,0.2))' : '';
-    }
-    // Dark logos (marquee order) → Light logos (positional mapping)
-    const D = 'projects/HiphaMX/HiphaIdentidad/Clientes%20Dark/';
-    const L = 'projects/HiphaMX/HiphaIdentidad/Clientes%20Ligth/';
-    const dark  = ['Clientes1.svg','Clientes5.svg','Clientes6.svg','Clientes2.svg','Clientes4.svg',
-                   'Clientes7.svg','Clientes8.svg','Clientes9.svg','Clientes10.svg','Clientes11.svg',
-                   'Clientes11.1.svg','Clientes12.svg','Clientes13.svg','Clientes14.svg','Clientes15.svg',
-                   'Clientes16.svg','Clientes17.svg','Clientes18.svg','Clientes19.svg','Clientes20.svg'];
-    const light = ['Clientes%20Light1.svg','Clientes%20Light2.svg','Clientes%20Light3.svg',
-                   'Clientes%20Light4.svg','Clientes%20Light5.svg','Clientes%20Light6.svg',
-                   'Clientes%20Light7.svg','Clientes%20Light8.svg','Clientes%20Light9.svg',
-                   'Clientes%20Light10.svg','Clientes%20Light11.svg','Clientes%20Light12.svg',
-                   'Clientes%20Light13.svg','Clientes%20Light14.svg','Clientes%20Light15.svg',
-                   'Clientes%20Light16.svg','Clientes%20Light17.svg','Clientes%20Light18.svg',
-                   'Clientes%20Light19.svg','Clientes%20Light20.svg'];
-    document.querySelectorAll('.brand-logo img').forEach((img, idx) => {
-        const i = idx % 20;
-        img.src = mode === 'light' ? L + light[i] : D + dark[i];
-    });
-}
-
-// Apply theme: time-of-day auto-detect → manual override stored per day
-(function () {
-    const icon     = document.getElementById('theme-icon');
-    const navLogo  = document.getElementById('nav-logo');
-    const today    = new Date().toDateString();
-    const savedDay = localStorage.getItem('hiphamx-theme-day');
-    const saved    = localStorage.getItem('hiphamx-theme');
-
-    let theme;
-    if (saved && savedDay === today) {
-        // Respect manual toggle made today
-        theme = saved;
-    } else {
-        // Auto-detect: sunrise ~6:00 → sunset ~19:00 (Mexico City avg)
-        const h = new Date().getHours();
-        theme = (h >= 6 && h < 19) ? 'light' : 'dark';
-        localStorage.removeItem('hiphamx-theme');
-        localStorage.removeItem('hiphamx-theme-day');
-    }
-
-    const isLight = (theme === 'light');
-    if (isLight) {
-        document.documentElement.classList.remove('dark');
-        if (icon) icon.className = 'ph ph-moon text-base';
-        if (navLogo) navLogo.src = LOGO_LIGHT;
-        swapBrandLogos('light');
-    } else {
-        document.documentElement.classList.add('dark');
-        if (icon) icon.className = 'ph ph-sun text-base';
-        if (navLogo) { navLogo.src = LOGO_DARK; navLogo.style.filter = 'drop-shadow(0 0 8px rgba(255,255,255,0.3))'; }
-        swapBrandLogos('dark');
-    }
-})();
 
 // ─── 5. MOBILE MENU ──────────────────────────────────────────────────────
 function toggleMobileMenu() {
