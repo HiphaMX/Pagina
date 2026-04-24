@@ -357,7 +357,7 @@ function nextPhase() {
 }
 
 // ─── CUSTOM CURSOR ────────────────────────────────────────────────────
-(function () {
+function initCursor() {
     if (!window.matchMedia('(pointer: fine)').matches) return;
     const dot = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
@@ -383,7 +383,13 @@ function nextPhase() {
         el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
         el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
     });
-})();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCursor);
+} else {
+    initCursor();
+}
 
 // ─── MOBILE MENU ──────────────────────────────────────────────────────
 function toggleMobileMenu() {
