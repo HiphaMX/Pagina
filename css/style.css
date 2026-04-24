@@ -406,6 +406,11 @@ html:not(.dark) .tcard {
 }
 html:not(.dark) .tcard .text-slate-300 { color: #475569 !important; }
 html:not(.dark) .tcard .text-slate-500 { color: #94a3b8 !important; }
+/* Badge experience color in light mode */
+html:not(.dark) .badge-experience { color: #0f172a !important; background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(192,38,211,0.15)) !important; border-color: rgba(6,182,212,0.5) !important; font-weight: 700; }
+
+/* Metrics text in light mode */
+html:not(.dark) .text-transparent.bg-clip-text { color: #0f172a !important; -webkit-text-fill-color: #0f172a !important; background-image: none !important; }
 
 /* Hero word cycle stays cyan (visible on both modes) */
 html:not(.dark) #hero-word-cycle { color: #0891b2; }

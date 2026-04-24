@@ -36,9 +36,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="js/tailwind-config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Phosphor Icons for elegant thin icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body class="relative min-h-screen overflow-x-hidden antialiased selection:bg-fuchsia-500 selection:text-white">
 
@@ -71,7 +73,6 @@
             <div class="hidden md:flex items-center gap-8">
                 <a href="#soluciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Ecosistema de Soluciones</a>
                 <a href="#about" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Nuestra Raíz</a>
-                <a href="importancia-del-branding.html" class="text-sm font-medium text-primary-400 hover:text-primary-300 transition-colors">Blog</a>
                 <button onclick="toggleModal('contact-modal')" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
                     Conecta con Nosotros
                 </button>
@@ -102,7 +103,6 @@
             <a href="#soluciones" class="mobile-nav-link" onclick="closeMobileMenu()">Ecosistema de Soluciones</a>
             <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Nuestra Raíz</a>
             <a href="#valores" class="mobile-nav-link" onclick="closeMobileMenu()">Filosofía</a>
-            <a href="importancia-del-branding.html" class="mobile-nav-link">Blog</a>
             <button onclick="toggleModal('contact-modal'); closeMobileMenu();" class="mobile-nav-cta">
                 Conecta con Nosotros
                 <i class="ph-bold ph-arrow-right"></i>
@@ -349,7 +349,7 @@
             <div class="flex justify-center mb-10">
                 <span class="badge-experience">
                     <i class="ph-fill ph-medal" aria-hidden="true"></i>
-                    +20 años de experiencia combinada impulsando marcas
+                    Más de 20 años de experiencia combinada impulsando marcas
                 </span>
             </div>
 
@@ -620,7 +620,6 @@
                         <li><a href="#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Ecosistema de Soluciones</a></li>
                         <li><a href="#about" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Nuestra Raíz</a></li>
                         <li><a href="#valores" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Valores y Filosofía</a></li>
-                        <li><a href="importancia-del-branding.html" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Nuestro Blog</a></li>
                     </ul>
                 </div>
 
