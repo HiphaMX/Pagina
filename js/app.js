@@ -358,33 +358,65 @@ function nextPhase() {
 
 // ─── CUSTOM CURSOR ────────────────────────────────────────────────────
 function initCursor() {
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    const dot = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    if (!dot || !ring) return;
+    let dot = document.getElementById('cursor-dot');
+    let ring = document.getElementById('cursor-ring');
+    
+    // Ensure elements exist
+    if (!dot) {
+        dot = document.createElement('div');
+        dot.id = 'cursor-dot';
+        document.body.appendChild(dot);
+    }
+    if (!ring) {
+        ring = document.createElement('div');
+        ring.id = 'cursor-ring';
+        document.body.appendChild(ring);
+    }
 
-    let cx = -200, cy = -200, rx = -200, ry = -200;
+    // Force styles in case CSS is missing or conflicting
+    dot.style.position = 'fixed';
+    dot.style.pointerEvents = 'none';
+    dot.style.zIndex = '99999';
+    ring.style.position = 'fixed';
+    ring.style.pointerEvents = 'none';
+    ring.style.zIndex = '99998';
+
+    let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    let rx = cx, ry = cy;
 
     document.addEventListener('mousemove', e => {
         cx = e.clientX; cy = e.clientY;
         dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
     });
 
-    (function lerp() {
+    function lerp() {
         rx += (cx - rx) * 0.12; ry += (cy - ry) * 0.12;
         ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
         requestAnimationFrame(lerp);
-    })();
+    }
+    requestAnimationFrame(lerp);
 
     document.addEventListener('mousedown', () => ring.classList.add('clicking'));
     document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
 
-    document.querySelectorAll('a, button, [onclick], input, textarea, select').forEach(el => {
-        el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
-        el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
-    });
+    const attachHoverEvents = () => {
+        document.querySelectorAll('a, button, [onclick], input, textarea, select').forEach(el => {
+            if(!el.dataset.cursorBound) {
+                el.dataset.cursorBound = 'true';
+                el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+            }
+        });
+    };
+    
+    attachHoverEvents();
+    
+    // Observe DOM changes to attach hover to dynamic elements
+    const observer = new MutationObserver(attachHoverEvents);
+    observer.observe(document.body, { childList: true, subtree: true });
 }
 
+// Ejecutar lo antes posible
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initCursor);
 } else {
