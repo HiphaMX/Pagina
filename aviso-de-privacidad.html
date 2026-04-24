@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviso de Privacidad | HiphaMX</title>
+    <meta name="description" content="Aviso de Privacidad de HiphaMX. Conoce cómo protegemos y manejamos tus datos personales al utilizar nuestros servicios de marketing externo.">
+    <meta name="keywords" content="Aviso de Privacidad, Privacidad, Datos Personales, HiphaMX">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://hiphamx.com/aviso-de-privacidad.html">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Aviso de Privacidad | HiphaMX">
+    <meta property="og:description" content="Conoce cómo protegemos y manejamos tus datos personales.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hiphamx.com/aviso-de-privacidad.html">
+    <meta property="og:image" content="https://hiphamx.com/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg">
+    <meta property="og:locale" content="es_MX">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aviso de Privacidad | HiphaMX">
+    <meta name="twitter:description" content="Conoce cómo protegemos y manejamos tus datos personales.">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Aviso de Privacidad - HiphaMX",
+      "url": "https://hiphamx.com/aviso-de-privacidad.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "HiphaMX",
+        "logo": "https://hiphamx.com/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg"
+      }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body class="relative min-h-screen overflow-x-hidden antialiased selection:bg-fuchsia-500 selection:text-white">
+
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Background Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Navigation -->
+    <nav class="relative z-40 glass-panel sticky top-0 w-full border-b border-white/10 px-6 py-4 transition-all" id="navbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo adaptativo dark/light -->
+            <a href="index.html" class="flex items-center group">
+                <img id="nav-logo" src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX Logo" class="h-16 md:h-20 transition-transform group-hover:scale-105">
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html#soluciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Ecosistema de Soluciones</a>
+                <a href="index.html#about" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Nuestra Raíz</a>
+                <a href="index.html" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
+                    Volver al Inicio
+                </a>
+            </div>
+
+            <!-- Controles derecha: theme toggle (siempre) + hamburger (mobile) -->
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema"
+                    class="w-9 h-9 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-white transition-all border border-white/10 hover:border-primary-500/50 hover:shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+                    <i id="theme-icon" class="ph ph-sun text-base"></i>
+                </button>
+                <button id="ham-btn" onclick="toggleMobileMenu()" class="md:hidden text-white p-2 transition-colors hover:text-primary-400" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
+                    <i class="ph ph-list text-2xl" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="mobile-nav" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+        <div class="mobile-nav-inner">
+            <div class="flex justify-between items-center mb-10">
+                <img src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX" class="h-12">
+                <button onclick="closeMobileMenu()" class="text-slate-400 hover:text-white p-2" aria-label="Cerrar menú">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <a href="index.html#soluciones" class="mobile-nav-link" onclick="closeMobileMenu()">Ecosistema de Soluciones</a>
+            <a href="index.html#about" class="mobile-nav-link" onclick="closeMobileMenu()">Nuestra Raíz</a>
+            <a href="index.html" class="mobile-nav-cta">
+                Volver al Inicio
+                <i class="ph-bold ph-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 pt-24 pb-32">
+        <div class="glass-panel rounded-3xl p-8 md:p-12 shadow-2xl border border-white/10 relative overflow-hidden">
+            <!-- Decorative accent -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 via-fuchsia-500 to-purple-500"></div>
+            
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Aviso de Privacidad</h1>
+            <p class="text-slate-400 mb-10 text-sm">Última actualización: Abril de 2026</p>
+
+            <div class="prose prose-invert prose-slate max-w-none prose-headings:text-white prose-a:text-primary-400 hover:prose-a:text-primary-300">
+                <h2>1. Identidad y domicilio del responsable</h2>
+                <p>En HiphaMX (en adelante "nosotros" o "la Agencia"), somos responsables del uso y protección de sus datos personales. Respetamos su privacidad y estamos comprometidos a protegerla de acuerdo con las leyes aplicables en materia de protección de datos personales.</p>
+
+                <h2>2. Datos personales que recopilamos</h2>
+                <p>Para llevar a cabo las finalidades descritas en el presente aviso de privacidad, utilizaremos los siguientes datos personales:</p>
+                <ul>
+                    <li>Nombre completo</li>
+                    <li>Correo electrónico</li>
+                    <li>Teléfono de contacto</li>
+                    <li>Datos de facturación (en su caso)</li>
+                    <li>Información sobre su empresa o proyecto</li>
+                </ul>
+
+                <h2>3. Finalidades del tratamiento de datos</h2>
+                <p>Los datos personales que recopilamos de usted los utilizaremos para las siguientes finalidades primarias, las cuales son necesarias para el servicio que solicita:</p>
+                <ul>
+                    <li>Proveer los servicios de marketing digital, diseño y desarrollo web solicitados.</li>
+                    <li>Creación y administración de su perfil de cliente.</li>
+                    <li>Facturación y cobranza.</li>
+                    <li>Atención a dudas, quejas y sugerencias.</li>
+                </ul>
+
+                <h2>4. Opciones y medios para limitar el uso o divulgación de sus datos</h2>
+                <p>Usted puede dejar de recibir mensajes promocionales por correo electrónico enviando una solicitud a nuestro contacto principal.</p>
+
+                <h2>5. Cambios al aviso de privacidad</h2>
+                <p>El presente aviso de privacidad puede sufrir modificaciones, cambios o actualizaciones derivadas de nuevos requerimientos legales; de nuestras propias necesidades por los productos o servicios que ofrecemos; de nuestras prácticas de privacidad; de cambios en nuestro modelo de negocio, o por otras causas. Nos comprometemos a mantenerlo informado sobre los cambios que pueda sufrir el presente aviso de privacidad, a través de nuestra página web.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-white/5 bg-[#03050a] pt-20 pb-10 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-fuchsia-900/20 rounded-full blur-[100px]"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-primary-900/20 rounded-full blur-[100px]"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+
+                <!-- Branding & Info -->
+                <div class="space-y-5">
+                    <a href="index.html" class="inline-block group">
+                        <img id="footer-logo" src="projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX Logo" class="h-12 transition-transform group-hover:scale-105">
+                    </a>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Tu departamento de marketing externo. Impulsamos marcas increíbles con estrategias digitales creativas, diseño y desarrollo web de vanguardia.
+                    </p>
+                    <p class="text-xs text-slate-600 italic border-l-2 border-primary-500/40 pl-3 leading-relaxed">
+                        &ldquo;El micelio que todo conecta.&rdquo;
+                    </p>
+                    <div class="flex items-center gap-3 pt-1">
+                        <a href="https://www.instagram.com/hipha.mx/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-primary-400 hover:border-primary-500/50 transition-all hover:-translate-y-1 group shadow-[0_0_15px_rgba(20,184,166,0)] hover:shadow-[0_0_15px_rgba(20,184,166,0.3)]" aria-label="Instagram">
+                            <i class="ph ph-instagram-logo text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?phone=523336762545" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-slate-300 hover:text-green-400 hover:border-green-500/50 transition-all hover:-translate-y-1 group shadow-[0_0_15px_rgba(34,197,94,0)] hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]" aria-label="WhatsApp">
+                            <i class="ph ph-whatsapp-logo text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Enlaces Rápidos -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
+                        <i class="ph-fill ph-link text-primary-500"></i> Enlaces Rápidos
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="index.html#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Ecosistema de Soluciones</a></li>
+                        <li><a href="index.html#about" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Nuestra Raíz</a></li>
+                        <li><a href="index.html#valores" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-primary-500/0 group-hover:text-primary-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Valores y Filosofía</a></li>
+                    </ul>
+                </div>
+
+                <!-- Servicios -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
+                        <i class="ph-fill ph-sparkle text-fuchsia-500"></i> Servicios Principales
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="index.html#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Diseño y Desarrollo Web</a></li>
+                        <li><a href="index.html#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Branding e Identidad</a></li>
+                        <li><a href="index.html#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Social Media Marketing</a></li>
+                        <li><a href="index.html#soluciones" class="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-2 group"><i class="ph-bold ph-caret-right text-fuchsia-500/0 group-hover:text-fuchsia-500 transition-all -translate-x-2 group-hover:translate-x-0"></i> Fotografía Comercial</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contacto & Newsletter -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
+                        <i class="ph-fill ph-envelope-simple-open text-blue-500"></i> Manténte Conectado
+                    </h4>
+                    <p class="text-slate-400 text-sm mb-4">Suscríbete a nuestra red para recibir insights de marketing.</p>
+                    <form class="relative mb-6" onsubmit="event.preventDefault();">
+                        <input type="email" placeholder="Tu correo electrónico" required
+                            class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-4 pr-14 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500 hover:border-white/20">
+                        <button type="submit"
+                            class="absolute right-1 top-1 bottom-1 w-10 bg-gradient-to-br from-primary-600 to-primary-500 hover:from-primary-500 hover:to-cyan-400 flex items-center justify-center rounded-full text-white transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_22px_rgba(20,184,166,0.6)]">
+                            <i class="ph-bold ph-paper-plane-right"></i>
+                        </button>
+                    </form>
+                    <div class="space-y-3">
+                        <a href="mailto:hola@hiphamx.com" class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors text-sm group">
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary-500/20 group-hover:text-primary-400 transition-colors">
+                                <i class="ph ph-envelope text-base"></i>
+                            </div>
+                            hola@hiphamx.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 mt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-sm text-center md:text-left">
+                    &copy; 2026
+                    <span class="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-fuchsia-400">HiphaMX</span>.
+                    Todos los derechos reservados.
+                </p>
+                <div class="flex items-center gap-6">
+                    <a href="aviso-de-privacidad.html" class="text-slate-500 hover:text-slate-300 transition-colors text-sm">Aviso de Privacidad</a>
+                    <a href="terminos-y-condiciones.html" class="text-slate-500 hover:text-slate-300 transition-colors text-sm">Términos y Condiciones</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
