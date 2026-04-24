@@ -1,0 +1,11 @@
+venv/
+projects/
+__pycache__/
+*.pyc
+tests/
+database.db
+test.db
+deploy.log
+.pytest_cache/
+.flake8
+*.sh
