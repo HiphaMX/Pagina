@@ -373,18 +373,32 @@ function initCursor() {
         document.body.appendChild(ring);
     }
 
-    // Force styles in case CSS is missing or conflicting
+    // Force styles to override any aggressive CSS media queries
     dot.style.position = 'fixed';
     dot.style.pointerEvents = 'none';
     dot.style.zIndex = '99999';
+    dot.style.display = 'block';
+    
     ring.style.position = 'fixed';
     ring.style.pointerEvents = 'none';
     ring.style.zIndex = '99998';
+    ring.style.display = 'block';
 
     let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
     let rx = cx, ry = cy;
 
+    // Detect touch vs mouse for hybrid devices (touchscreen laptops)
+    window.addEventListener('touchstart', () => {
+        dot.style.display = 'none';
+        ring.style.display = 'none';
+    }, { passive: true });
+
     document.addEventListener('mousemove', e => {
+        // Only re-enable if it was hidden by touch
+        if (dot.style.display === 'none') {
+            dot.style.display = 'block';
+            ring.style.display = 'block';
+        }
         cx = e.clientX; cy = e.clientY;
         dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
     });
