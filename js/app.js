@@ -46,11 +46,14 @@ function switchModal(closeId, openId) {
 }
 
 // Close on overlay click
-document.getElementById('modal-overlay').addEventListener('click', (e) => {
-    if(e.target.id === 'modal-overlay' && currentModal) {
-        toggleModal(currentModal);
-    }
-});
+const overlay = document.getElementById('modal-overlay');
+if (overlay) {
+    overlay.addEventListener('click', (e) => {
+        if(e.target.id === 'modal-overlay' && currentModal) {
+            toggleModal(currentModal);
+        }
+    });
+}
 
 let lastScrollTop = 0;
 
