@@ -1,0 +1,558 @@
+/* =========================================
+   Soul Shine - Design System & Styles
+   ========================================= */
+
+@font-face {
+    font-family: 'Vetimus';
+    src: url('../assets/fonts/Vetimus.woff2') format('woff2'),
+         url('../assets/fonts/Vetimus.woff') format('woff'),
+         url('../assets/fonts/Vetimus.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    /* Colors */
+    --color-bg: #FCFDFD;
+    --color-bg-alt: #F3F5F7;
+    --color-text-main: #2C3539;
+    --color-text-muted: #6B7280;
+    
+    --color-primary: #3B5B5A; /* Deep Sage / Calm Green */
+    --color-primary-hover: #2D4645;
+    
+    --color-accent-blue: #E0EBF5; /* Ethereal Blue */
+    --color-accent-blue-text: #4A7A9A;
+    --color-accent-green: #E8F0EA; /* Soft Sage */
+    --color-accent-green-text: #4C7255;
+    --color-accent-silver: #F0F2F4;
+    --color-accent-silver-text: #606870;
+
+    --color-white: #FFFFFF;
+    --color-glass: rgba(255, 255, 255, 0.7);
+    --color-glass-border: rgba(255, 255, 255, 0.4);
+
+    /* Typography */
+    --font-primary: 'Rubik', sans-serif;
+    --font-heading: 'Vetimus', sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 6rem;
+    
+    /* Shadows */
+    --shadow-soft: 0 10px 40px -10px rgba(44, 53, 57, 0.08);
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    
+    /* Transitions */
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================
+   Reset & Base
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 600;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-smooth);
+}
+
+/* =========================================
+   Typography
+   ========================================= */
+h1, h2, h3, h4 {
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+h1 { font-family: var(--font-heading); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: normal; }
+h2 { font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 600; }
+h3 { font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem; }
+
+p {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    font-weight: 300;
+}
+
+/* =========================================
+   Layout & Utilities
+   ========================================= */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.section {
+    padding: var(--spacing-xl) 0;
+}
+
+.section-title {
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-lg);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    align-items: center;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+.bg-light {
+    background-color: var(--color-bg-alt);
+}
+
+/* =========================================
+   Buttons & Badges
+   ========================================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 400;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition-smooth);
+    letter-spacing: 0.01em;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #28A0B0 0%, #A0C943 100%);
+    color: var(--color-white);
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #228b99 0%, #8db537 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 160, 176, 0.3);
+}
+
+.btn-large {
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: var(--color-accent-silver);
+    color: var(--color-accent-silver-text);
+    margin-bottom: 1rem;
+}
+
+.badge-accent {
+    background-color: var(--color-accent-blue);
+    color: var(--color-accent-blue-text);
+}
+
+/* =========================================
+   Navbar
+   ========================================= */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 1.25rem 0;
+    transition: var(--transition-smooth);
+    background: transparent;
+}
+
+.navbar.scrolled {
+    background: rgba(252, 253, 253, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-glass-border);
+    padding: 1rem 0;
+}
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+}
+
+.logo-img {
+    height: 40px; /* Ajusta este valor según sea necesario */
+    width: auto;
+}
+
+.nav-links {
+    display: none;
+    align-items: center;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .nav-links { display: flex; }
+}
+
+.nav-links a:not(.btn) {
+    font-weight: 400;
+    color: var(--color-text-main);
+}
+
+.nav-links a:not(.btn):hover {
+    color: var(--color-primary);
+}
+
+/* =========================================
+   Hero Section
+   ========================================= */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 5rem; /* space for navbar */
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, #E8F0EA 0%, transparent 60%),
+                radial-gradient(circle at 80% 50%, #E0EBF5 0%, transparent 50%);
+    opacity: 0.6;
+    z-index: -1;
+    animation: breathing 15s ease-in-out infinite alternate;
+}
+
+.hero-content {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-title {
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    margin-bottom: 1.5rem;
+    color: var(--color-text-main);
+}
+
+.hero-subtitle {
+    margin-bottom: 2.5rem;
+    font-size: 1.25rem;
+    max-width: 600px;
+}
+
+/* =========================================
+   Philosophy Section
+   ========================================= */
+.philosophy-text p {
+    margin-bottom: 1.5rem;
+}
+
+.glass-card {
+    background: var(--color-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: 24px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: var(--shadow-glass);
+}
+
+.large-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+}
+
+/* =========================================
+   Benefits Section
+   ========================================= */
+.benefit-card {
+    background: var(--color-white);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-smooth);
+    border: 1px solid transparent;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-glass-border);
+    box-shadow: 0 15px 50px -10px rgba(44, 53, 57, 0.1);
+}
+
+.icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.bg-blue { background: var(--color-accent-blue); color: var(--color-accent-blue-text); }
+.bg-green { background: var(--color-accent-green); color: var(--color-accent-green-text); }
+.bg-silver { background: var(--color-accent-silver); color: var(--color-accent-silver-text); }
+
+/* =========================================
+   Test Section
+   ========================================= */
+.test-section {
+    padding: var(--spacing-xl) 0;
+}
+
+.glass-panel {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: 30px;
+    padding: 4rem 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-glass);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(224,235,245,0.4) 0%, transparent 60%);
+    z-index: -1;
+    animation: breathing 20s infinite alternate;
+}
+
+.test-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.test-content p {
+    margin-bottom: 2.5rem;
+}
+
+.test-placeholder {
+    background: var(--color-white);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.test-icon {
+    width: 50px;
+    height: 50px;
+    color: var(--color-primary);
+}
+
+.test-note {
+    font-size: 0.875rem !important;
+    margin-bottom: 0 !important;
+}
+
+/* =========================================
+   Footer
+   ========================================= */
+.products {
+    background-color: var(--color-bg);
+}
+
+.products-grid {
+    margin-top: 3rem;
+}
+
+.product-image-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8f9fa;
+    aspect-ratio: 1/1;
+}
+
+.product-image-wrapper .img-default {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.product-image-wrapper .img-hover {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.product-image-wrapper:hover .img-default {
+    opacity: 0;
+}
+
+.product-image-wrapper:hover .img-hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.footer {
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-accent-silver);
+    padding: 4rem 0 2rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+}
+
+.footer-brand p {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    max-width: 250px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .footer-links {
+        flex-direction: row;
+        gap: 2rem;
+    }
+}
+
+.footer-links a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--color-primary);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-accent-silver);
+}
+
+.footer-bottom p {
+    font-size: 0.875rem;
+}
+
+/* =========================================
+   Animations
+   ========================================= */
+@keyframes breathing {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 0.5; }
+}
+
+.pulse {
+    animation: pulse 3s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Fade up on scroll */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Gari | Experiencia que te Acompaña</title>
+    <meta name="description" content="Seguridad Industrial con valor, solidez y experiencia.">
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+</head>
+<body class="bg-base-bg text-base-text selection:bg-primary-500 selection:text-white">
+
+    <!-- Navbar Minimalista -->
+    <nav class="fixed w-full z-50 bg-base-bg/80 backdrop-blur-xl border-b border-white/20 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 py-6 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3">
+                <img src="Logo.svg" alt="Grupo Gari" class="h-10 grayscale contrast-200 opacity-90">
+                <div class="h-4 w-px bg-base-muted/30 hidden md:block"></div>
+                <span class="font-semibold text-xs tracking-[0.2em] uppercase text-base-muted hidden md:block">Ingeniería & Seguridad</span>
+            </a>
+            <div class="hidden md:flex gap-12 items-center">
+                <a href="#experiencia" class="text-sm font-medium text-base-muted hover:text-base-text transition-colors">Experiencia</a>
+                <a href="#servicios" class="text-sm font-medium text-base-muted hover:text-base-text transition-colors">Servicios</a>
+                <a href="#adn" class="text-sm font-medium text-base-muted hover:text-base-text transition-colors">ADN Corporativo</a>
+                <a href="#contacto" class="btn-pill bg-base-text text-white px-8 py-3.5 rounded-full text-sm font-medium flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-primary-500"></span> Iniciar Proyecto
+                </a>
+            </div>
+            <!-- Mobile Menu -->
+            <button class="md:hidden text-base-text p-2">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="overflow-hidden">
+        <!-- Hero Section (Massive Typography & White Space) -->
+        <section class="min-h-screen flex flex-col justify-center pt-32 pb-24 px-6 lg:px-12 max-w-screen-2xl mx-auto relative">
+            <div class="absolute right-0 top-1/4 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+            
+            <div class="animate-fade-up">
+                <p class="text-primary-500 font-semibold tracking-widest uppercase text-sm mb-8 flex items-center gap-4">
+                    <span class="w-12 h-px bg-primary-500"></span> Promesa de Marca
+                </p>
+                <h1 class="text-6xl sm:text-7xl md:text-9xl font-black text-base-text tracking-tighter leading-[0.85] mb-12">
+                    SOLIDEZ QUE <br> TE RESPALDA.
+                </h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-end">
+                    <div class="md:col-span-5">
+                        <p class="text-xl md:text-2xl text-base-muted font-light leading-relaxed">
+                            Más de 10 años brindando fluidez, análisis y consultoría especializada. Porque tu tranquilidad operativa no es negociable.
+                        </p>
+                    </div>
+                    <div class="md:col-span-7 flex flex-col sm:flex-row gap-6 md:justify-end">
+                        <a href="#servicios" class="btn-pill bg-base-text text-white px-10 py-5 rounded-full text-lg font-medium text-center">
+                            Conocer Servicios
+                        </a>
+                        <a href="#contacto" class="btn-pill bg-white text-base-text border border-base-border px-10 py-5 rounded-full text-lg font-medium text-center hover:bg-base-bg">
+                            Agendar Auditoría
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Image Break / Solidez Visual -->
+        <section class="px-6 lg:px-12 max-w-screen-2xl mx-auto mb-32">
+            <div class="w-full h-[60vh] bg-base-border rounded-[2.5rem] overflow-hidden relative shadow-soft group">
+                <!-- Fallback abstract industrial shape in CSS -->
+                <div class="absolute inset-0 bg-base-text flex flex-col items-center justify-center img-luxury">
+                    <i class="ph-fill ph-factory text-[12rem] text-white/5 mb-4"></i>
+                    <h2 class="text-4xl md:text-6xl font-black text-white/10 tracking-tighter">INFRAESTRUCTURA</h2>
+                </div>
+                <div class="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md p-6 rounded-3xl max-w-sm">
+                    <p class="text-sm font-semibold tracking-widest text-base-muted uppercase mb-2">01 — Expertise</p>
+                    <p class="text-base-text font-medium leading-relaxed">
+                        Nuestra reputación en el medio respalda nuestra experiencia y conocimientos en materia de seguridad industrial.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oferta de Valor (Soft Cards) -->
+        <section id="servicios" class="py-32 bg-white rounded-t-[4rem] md:rounded-t-[6rem] shadow-float relative z-10">
+            <div class="max-w-screen-2xl mx-auto px-6 lg:px-12">
+                <div class="mb-24 md:w-2/3">
+                    <h2 class="text-5xl md:text-7xl font-black text-base-text tracking-tighter leading-[0.9] mb-8">
+                        BENEFICIOS <br> FUNCIONALES.
+                    </h2>
+                    <p class="text-xl text-base-muted font-light leading-relaxed max-w-xl">
+                        Aseguramos que tu operación nunca se detenga. Cubrimos todas las aristas del cumplimiento normativo y la protección de tu capital humano.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Service 1 -->
+                    <div class="bg-base-bg rounded-[2.5rem] p-10 lg:p-14 transition-all duration-500 hover:shadow-soft hover:-translate-y-2 group">
+                        <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-8 text-base-text group-hover:text-primary-500 transition-colors">
+                            <i class="ph ph-chalkboard-teacher text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-base-text mb-4">Capacitación y Consultoría</h3>
+                        <p class="text-base-muted leading-relaxed font-light mb-8">
+                            Asesoría experta en el área de seguridad industrial de acuerdo a la NOM. Garantizamos que tu personal esté preparado y certificado.
+                        </p>
+                        <div class="w-10 h-10 rounded-full border border-base-border flex items-center justify-center text-base-text group-hover:bg-primary-500 group-hover:border-primary-500 group-hover:text-white transition-all">
+                            <i class="ph ph-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="bg-base-bg rounded-[2.5rem] p-10 lg:p-14 transition-all duration-500 hover:shadow-soft hover:-translate-y-2 group">
+                        <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-8 text-base-text group-hover:text-primary-500 transition-colors">
+                            <i class="ph ph-hard-hat text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-base-text mb-4">Suministro de EPP</h3>
+                        <p class="text-base-muted leading-relaxed font-light mb-8">
+                            Venta de productos de alta resistencia: equipos de protección personal, calzado industrial y gráficos de señalización bajo normativa.
+                        </p>
+                        <div class="w-10 h-10 rounded-full border border-base-border flex items-center justify-center text-base-text group-hover:bg-primary-500 group-hover:border-primary-500 group-hover:text-white transition-all">
+                            <i class="ph ph-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="bg-base-bg rounded-[2.5rem] p-10 lg:p-14 transition-all duration-500 hover:shadow-soft hover:-translate-y-2 group md:col-span-2 lg:col-span-1">
+                        <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-8 text-base-text group-hover:text-primary-500 transition-colors">
+                            <i class="ph ph-clipboard-text text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-base-text mb-4">Estudios de Ambiente</h3>
+                        <p class="text-base-muted leading-relaxed font-light mb-8">
+                            Análisis minuciosos del entorno laboral y formación de supervisores de seguridad para prevenir riesgos y optimizar procesos.
+                        </p>
+                        <div class="w-10 h-10 rounded-full border border-base-border flex items-center justify-center text-base-text group-hover:bg-primary-500 group-hover:border-primary-500 group-hover:text-white transition-all">
+                            <i class="ph ph-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADN Corporativo / Reasons to Believe -->
+        <section id="adn" class="py-32 bg-base-bg">
+            <div class="max-w-screen-2xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+                
+                <div>
+                    <h2 class="text-5xl md:text-7xl font-black text-base-text tracking-tighter leading-[0.9] mb-12">
+                        EL VALOR <br> DE ESTAR <br> A SALVO.
+                    </h2>
+                    
+                    <div class="space-y-8">
+                        <div class="flex items-start gap-6 pb-8 border-b border-base-border">
+                            <div class="w-12 h-12 rounded-full bg-primary-500/10 flex items-center justify-center flex-shrink-0">
+                                <i class="ph-fill ph-check-circle text-primary-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-base-text mb-2">Acompañados</h4>
+                                <p class="text-base-muted font-light leading-relaxed">No solo auditamos; caminamos contigo en la implementación de cada normativa.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-6 pb-8 border-b border-base-border">
+                            <div class="w-12 h-12 rounded-full bg-primary-500/10 flex items-center justify-center flex-shrink-0">
+                                <i class="ph-fill ph-check-circle text-primary-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-base-text mb-2">Confiados</h4>
+                                <p class="text-base-muted font-light leading-relaxed">Delegas la seguridad en expertos que protegen tanto tu infraestructura como tu inversión.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-6">
+                            <div class="w-12 h-12 rounded-full bg-primary-500/10 flex items-center justify-center flex-shrink-0">
+                                <i class="ph-fill ph-check-circle text-primary-500 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-base-text mb-2">Satisfechos</h4>
+                                <p class="text-base-muted font-light leading-relaxed">Nuestra reputación se cimienta en resultados exactos y empresas libres de clausuras.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalidad de Marca Tags -->
+                <div class="bg-white rounded-[3rem] p-12 shadow-soft">
+                    <p class="text-sm font-semibold tracking-widest text-base-muted uppercase mb-8">Personalidad de Marca</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Honesta</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Experta</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Minuciosa</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Segura</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Profesional</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Exacta</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Atenta</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Responsable</span>
+                        <span class="px-6 py-3 rounded-full border border-base-border text-base-text font-medium hover:border-primary-500 transition-colors">Empática</span>
+                        <span class="px-6 py-3 rounded-full bg-base-text text-white font-medium">Confiable</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CTA Final masivo -->
+        <section id="contacto" class="py-32 px-6 lg:px-12 max-w-screen-2xl mx-auto">
+            <div class="bg-base-text rounded-[4rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl">
+                <!-- Sutil destello amarillo de fondo -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                    <div class="w-[800px] h-[800px] bg-primary-500 rounded-full blur-[150px]"></div>
+                </div>
+                
+                <div class="relative z-10 max-w-3xl mx-auto">
+                    <h2 class="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[0.9] mb-8">
+                        DISEÑADO PARA QUIENES DIRIGEN.
+                    </h2>
+                    <p class="text-xl text-white/70 font-light mb-12">
+                        Soluciones estructurales para dueños de empresas, gerentes, jefes y supervisores de naves industriales.
+                    </p>
+                    <button class="btn-pill bg-primary-500 text-base-text px-12 py-6 rounded-full text-xl font-bold shadow-[0_0_40px_rgba(247,168,8,0.3)] hover:shadow-[0_0_60px_rgba(247,168,8,0.5)] transition-all">
+                        Agendar Reunión Ejecutiva
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 px-6 lg:px-12 border-t border-base-border bg-white text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-6">
+        <img src="Logo.svg" alt="Grupo Gari Logo" class="h-8 grayscale opacity-40 hover:opacity-100 transition-opacity">
+        <p class="text-sm text-base-muted font-medium tracking-wide">
+            © 2026 Grupo Gari. Todos los derechos reservados.
+        </p>
+    </footer>
+
+</body>
+</html>

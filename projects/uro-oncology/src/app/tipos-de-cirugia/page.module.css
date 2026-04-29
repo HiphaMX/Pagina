@@ -1,0 +1,99 @@
+.page {
+  padding-top: 80px;
+}
+
+.header {
+  background-color: var(--primary);
+  color: white;
+  padding: 6rem 0;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.content {
+  padding: 5rem 0;
+  background-color: var(--secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.card {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.card p {
+  color: var(--foreground);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.card ul {
+  padding-left: 1.5rem;
+}
+
+.card li {
+  color: var(--foreground);
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  position: relative;
+  list-style-type: disc;
+}
+
+.card li::marker {
+  color: var(--accent);
+}
+
+.cta {
+  padding: 5rem 0;
+  background-color: var(--primary);
+  color: white;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.cta p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}

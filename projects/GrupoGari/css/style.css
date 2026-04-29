@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --color-primary: #f7a808;
+  --color-bg: #F8F9FA;
+  --color-text: #1A1A1A;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Soft Fade In Animation */
+@keyframes softFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: softFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Pill Button Hover Effect */
+.btn-pill {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(26, 26, 26, 0.15);
+}
+
+/* Image Grayscale to Color Transition */
+.img-luxury {
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: grayscale(100%) contrast(1.1);
+}
+.img-luxury:hover {
+  filter: grayscale(0%) contrast(1);
+}

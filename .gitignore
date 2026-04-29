@@ -31,3 +31,4 @@ node_modules/
 projects/DAM/assets/Identidad/Manual de exhibición.pdf
 .vercel
 .env*.local
+*.psd
