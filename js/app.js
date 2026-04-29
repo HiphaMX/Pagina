@@ -265,6 +265,7 @@ const timelineData = [
 ];
 
 let currentPhaseIndex = 0;
+let timelineTimeout = null;
 
 function renderTimelineNav() {
     const navContainer = document.getElementById('timeline-nav');
@@ -352,6 +353,10 @@ function renderPhase(index) {
         contentContainer.style.opacity = 1;
         contentContainer.style.transform = 'translateY(0)';
         contentContainer.style.filter = 'blur(0px)';
+        
+        // Auto-advance after 5 seconds
+        if (timelineTimeout) clearTimeout(timelineTimeout);
+        timelineTimeout = setTimeout(nextPhase, 5000);
     }, 300);
 }
 
