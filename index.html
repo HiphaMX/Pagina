@@ -1008,6 +1008,16 @@ async function submitContactForm(event) {
         if (response.ok) {
             successMsg.classList.remove('hidden');
             form.reset();
+            setTimeout(() => {
+                // If it is still open, close it
+                if (typeof currentModal !== 'undefined' && currentModal === 'contact-modal') {
+                    toggleModal('contact-modal');
+                } else {
+                    // Fallback in case currentModal is not tracked properly
+                    document.getElementById('modal-overlay').classList.add('hidden');
+                    document.getElementById('contact-modal').classList.add('hidden');
+                }
+            }, 5000);
         } else {
             errorMsg.classList.remove('hidden');
         }
