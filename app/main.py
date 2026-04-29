@@ -5,8 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import auth, webflow, dam_curador, contact
 from app.core.database import Base, engine
 
+import logging
+
 # Create tables if not using Alembic migrations
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    logging.warning(f"Could not create database tables: {e}")
 
 app = FastAPI(title="HiphaMX API")
 
