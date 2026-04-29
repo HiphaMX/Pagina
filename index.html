@@ -639,14 +639,15 @@
                         <i class="ph-fill ph-envelope-simple-open text-blue-500"></i> Manténte Conectado
                     </h4>
                     <p class="text-slate-400 text-sm mb-4">Suscríbete a nuestra red para recibir insights de marketing.</p>
-                    <form class="relative mb-6" onsubmit="event.preventDefault();">
-                        <input type="email" placeholder="Tu correo electrónico" required
+                    <form id="newsletter-form" class="relative mb-6" onsubmit="submitNewsletterForm(event)">
+                        <input type="email" name="email" placeholder="Tu correo electrónico" required
                             class="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-4 pr-14 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500 hover:border-white/20">
-                        <button type="submit"
+                        <button type="submit" id="newsletter-submit-btn"
                             class="absolute right-1 top-1 bottom-1 w-10 bg-gradient-to-br from-primary-600 to-primary-500 hover:from-primary-500 hover:to-cyan-400 flex items-center justify-center rounded-full text-white transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_22px_rgba(20,184,166,0.6)]">
-                            <i class="ph-bold ph-paper-plane-right"></i>
+                            <i class="ph-bold ph-paper-plane-right" id="newsletter-btn-icon"></i>
                         </button>
                     </form>
+                    <div id="newsletter-message" class="text-xs font-medium mb-4 hidden px-2 py-1 rounded"></div>
                     <div class="space-y-3">
                         <a href="mailto:hola@hipha.mx" class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors text-sm group">
                             <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary-500/20 group-hover:text-primary-400 transition-colors">
@@ -692,7 +693,7 @@
             <h2 class="text-2xl font-bold text-white mb-2">Hablemos de tu Proyecto</h2>
             <p class="text-slate-400 text-sm mb-8">Déjanos tus datos y nos pondremos en contacto.</p>
             
-            <form id="contact-form" class="space-y-4" onsubmit="event.preventDefault(); document.getElementById('contact-success').classList.remove('hidden'); this.reset();">
+            <form id="contact-form" class="space-y-4" onsubmit="submitContactForm(event)">
                 <!-- Nombre -->
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">
@@ -751,10 +752,14 @@
                 <div id="contact-success" class="text-green-400 text-sm hidden font-medium text-center p-3 glass-panel rounded-lg flex items-center justify-center gap-2">
                     <i class="ph-fill ph-check-circle text-lg"></i> ¡Gracias! Pronto nos pondremos en contacto contigo.
                 </div>
+                
+                <div id="contact-error" class="text-red-400 text-sm hidden font-medium text-center p-3 glass-panel rounded-lg flex items-center justify-center gap-2">
+                    <i class="ph-fill ph-x-circle text-lg"></i> Hubo un error al enviar tu mensaje. Intenta nuevamente.
+                </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(192,38,211,0.3)] hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
-                    <i class="ph ph-paper-plane-right"></i>
-                    <span>Enviar Mensaje</span>
+                <button type="submit" id="contact-submit-btn" class="w-full bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(192,38,211,0.3)] hover:shadow-[0_0_30px_rgba(192,38,211,0.5)]">
+                    <i class="ph ph-paper-plane-right" id="contact-btn-icon"></i>
+                    <span id="contact-btn-text">Enviar Mensaje</span>
                 </button>
             </form>
         </div>
@@ -963,7 +968,112 @@
     }
 })();
 
+// ─── 5. CONTACT FORM SUBMIT ──────────────────────────────────────────────
+async function submitContactForm(event) {
+    event.preventDefault();
+    const form = event.target;
+    const btnText = document.getElementById('contact-btn-text');
+    const btnIcon = document.getElementById('contact-btn-icon');
+    const btn = document.getElementById('contact-submit-btn');
+    const successMsg = document.getElementById('contact-success');
+    const errorMsg = document.getElementById('contact-error');
 
+    // Reset messages
+    successMsg.classList.add('hidden');
+    errorMsg.classList.add('hidden');
+
+    // Loading state
+    btn.disabled = true;
+    btnText.textContent = 'Enviando...';
+    btnIcon.classList.replace('ph-paper-plane-right', 'ph-spinner');
+    btnIcon.classList.add('animate-spin');
+
+    const formData = new FormData(form);
+    const data = {
+        nombre: formData.get('nombre'),
+        email: formData.get('email'),
+        telefono: formData.get('telefono'),
+        mensaje: formData.get('mensaje') || ''
+    };
+
+    try {
+        const response = await fetch('/api/contact/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            successMsg.classList.remove('hidden');
+            form.reset();
+        } else {
+            errorMsg.classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        errorMsg.classList.remove('hidden');
+    } finally {
+        // Restore button state
+        btn.disabled = false;
+        btnText.textContent = 'Enviar Mensaje';
+        btnIcon.classList.remove('animate-spin');
+        btnIcon.classList.replace('ph-spinner', 'ph-paper-plane-right');
+    }
+}
+
+}
+
+// ─── 6. NEWSLETTER FORM SUBMIT ───────────────────────────────────────────
+async function submitNewsletterForm(event) {
+    event.preventDefault();
+    const form = event.target;
+    const btn = document.getElementById('newsletter-submit-btn');
+    const btnIcon = document.getElementById('newsletter-btn-icon');
+    const msgDiv = document.getElementById('newsletter-message');
+
+    // Reset UI
+    msgDiv.classList.add('hidden');
+    msgDiv.className = 'text-xs font-medium mb-4 hidden px-2 py-1 rounded';
+    
+    // Loading state
+    btn.disabled = true;
+    btnIcon.classList.replace('ph-paper-plane-right', 'ph-spinner');
+    btnIcon.classList.add('animate-spin');
+
+    const formData = new FormData(form);
+    const data = { email: formData.get('email') };
+
+    try {
+        const response = await fetch('/api/contact/newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            msgDiv.textContent = '¡Gracias por suscribirte!';
+            msgDiv.classList.add('bg-green-500/20', 'text-green-400');
+            msgDiv.classList.remove('hidden');
+            form.reset();
+        } else {
+            msgDiv.textContent = 'Error al suscribirse. Intenta de nuevo.';
+            msgDiv.classList.add('bg-red-500/20', 'text-red-400');
+            msgDiv.classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Error submitting newsletter:', error);
+        msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        msgDiv.classList.add('bg-red-500/20', 'text-red-400');
+        msgDiv.classList.remove('hidden');
+    } finally {
+        // Restore button state
+        btn.disabled = false;
+        btnIcon.classList.remove('animate-spin');
+        btnIcon.classList.replace('ph-spinner', 'ph-paper-plane-right');
+    }
+}
 
     </script>
 
