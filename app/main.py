@@ -32,4 +32,10 @@ app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 def read_root():
     return {"message": "Welcome to HiphaMX API"}
     
-app.mount("/curador", StaticFiles(directory="projects/DAM/app_curador", html=True), name="curador")
+import os
+
+curador_dir = "projects/DAM/app_curador"
+if os.path.exists(curador_dir):
+    app.mount("/curador", StaticFiles(directory=curador_dir, html=True), name="curador")
+else:
+    logging.warning(f"Static directory not found: {curador_dir}")
