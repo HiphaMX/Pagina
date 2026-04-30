@@ -3,13 +3,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import ContactPopup from './ContactPopup';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const pathname = usePathname();
 
   let stripeText = "El pulso humano de la cirugía robótica contra el cáncer";
@@ -52,16 +50,15 @@ export default function Navbar() {
             <Link href="/" onClick={() => setMenuOpen(false)}>INICIO</Link>
             <Link href="/diagnostico" onClick={() => setMenuOpen(false)}>DIAGNÓSTICO</Link>
             <Link href="/tipos-de-cirugia" onClick={() => setMenuOpen(false)}>CIRUGÍAS</Link>
-            <button 
+            <a 
+              href="https://api.whatsapp.com/send?phone=523316013840"
               className={styles.contactNavLink} 
-              onClick={(e) => {
-                e.preventDefault();
-                setMenuOpen(false);
-                setIsPopupOpen(true);
-              }}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMenuOpen(false)}
             >
               CONTACTO
-            </button>
+            </a>
           </div>
 
           <button 
@@ -78,7 +75,6 @@ export default function Navbar() {
       <div className={styles.blueStripe}>
         <h1>{stripeText}</h1>
       </div>
-      <ContactPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </header>
   );
 }
