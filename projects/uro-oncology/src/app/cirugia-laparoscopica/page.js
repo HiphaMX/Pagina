@@ -18,7 +18,7 @@ export default function CirugiaLaparoscopicaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/laparoscopica/5ed3e81697a20af8108e895f_Laparoscópico01.jpg" 
+                src="/assets/tipos-de-cirugia/laparoscopica/5ed3e81697a20af8108e895f_laparoscopico01.jpg" 
                 alt="Cirujano observando monitor durante cirugía laparoscópica" 
                 width={850} 
                 height={450} 
@@ -36,7 +36,7 @@ export default function CirugiaLaparoscopicaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/laparoscopica/5ed3e836a553da8535e690a2_laparoscópico02.jpg" 
+                src="/assets/tipos-de-cirugia/laparoscopica/5ed3e836a553da8535e690a2_laparoscopico02.jpg" 
                 alt="Instrumental laparoscópico moderno en quirófano" 
                 width={850} 
                 height={450} 
@@ -62,7 +62,7 @@ export default function CirugiaLaparoscopicaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/laparoscopica/5ed3ea0d97a20a14b98e9597_laparoscópico03.jpg" 
+                src="/assets/tipos-de-cirugia/laparoscopica/5ed3ea0d97a20a14b98e9597_laparoscopico03.jpg" 
                 alt="Recuperación rápida post cirugía laparoscópica" 
                 width={850} 
                 height={450} 

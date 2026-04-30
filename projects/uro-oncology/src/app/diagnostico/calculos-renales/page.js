@@ -19,7 +19,7 @@ export default function CalculosRenalesPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/calculos-renales/Cálculosrenales01.jpg" 
+                src="/assets/diagnostico/calculos-renales/calculosrenales01.jpg" 
                 alt="Alivio del dolor causado por cálculos renales en adultos" 
                 width={850} 
                 height={450} 
@@ -41,7 +41,7 @@ export default function CalculosRenalesPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/calculos-renales/cálculosrenales03.jpg" 
+                src="/assets/diagnostico/calculos-renales/calculosrenales03.jpg" 
                 alt="Diagnóstico de litiasis y cálculos en el sistema urinario" 
                 width={850} 
                 height={450} 
@@ -68,7 +68,7 @@ export default function CalculosRenalesPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/calculos-renales/cálculosrenales4.jpg" 
+                src="/assets/diagnostico/calculos-renales/calculosrenales4.jpg" 
                 alt="Prevención y chequeo médico para cálculos renales" 
                 width={850} 
                 height={450} 
@@ -100,7 +100,7 @@ export default function CalculosRenalesPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/calculos-renales/cálculosrenales05.jpg" 
+                src="/assets/diagnostico/calculos-renales/calculosrenales05.jpg" 
                 alt="Hidratación y estilo de vida saludable para el riñón" 
                 width={850} 
                 height={450} 

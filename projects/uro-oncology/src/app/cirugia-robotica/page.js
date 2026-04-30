@@ -93,7 +93,7 @@ export default function CirugiaRoboticaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/robotica/5ed338f64b317bcf9078bc41_pronta recuperación.jpg" 
+                src="/assets/tipos-de-cirugia/robotica/5ed338f64b317bcf9078bc41_pronta-recuperacion.jpg" 
                 alt="Paciente de urología sonriendo tras pronta recuperación" 
                 width={850} 
                 height={450} 

@@ -33,7 +33,7 @@ export default function CirugiaEndourologicaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/endourologica/5ed407f4a90a9c09c2204e2e_Endourológica02.jpg" 
+                src="/assets/tipos-de-cirugia/endourologica/5ed407f4a90a9c09c2204e2e_endourologica02.jpg" 
                 alt="Instrumental de alta tecnología en endourología" 
                 width={850} 
                 height={450} 
@@ -57,7 +57,7 @@ export default function CirugiaEndourologicaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/endourologica/5ed40983a0977fb3f34b56ff_Endourológica04.jpg" 
+                src="/assets/tipos-de-cirugia/endourologica/5ed40983a0977fb3f34b56ff_endourologica04.jpg" 
                 alt="Recuperación rápida y sin estrés" 
                 width={850} 
                 height={450} 

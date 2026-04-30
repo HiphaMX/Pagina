@@ -19,7 +19,7 @@ export default function CancerDeRinonPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-rinon/Cáncer de riñon1.jpg" 
+                src="/assets/diagnostico/cancer-de-rinon/cancer-de-rinon1.jpg" 
                 alt="Paciente adulto mayor sonriendo tras chequeo preventivo renal" 
                 width={850} 
                 height={450} 
@@ -50,7 +50,7 @@ export default function CancerDeRinonPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-rinon/Cáncer de riñon2.jpg" 
+                src="/assets/diagnostico/cancer-de-rinon/cancer-de-rinon2.jpg" 
                 alt="Análisis preventivos y exámenes de orina rutinarios para la salud" 
                 width={850} 
                 height={450} 
@@ -73,7 +73,7 @@ export default function CancerDeRinonPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-rinon/Cáncer de riñon3.jpg" 
+                src="/assets/diagnostico/cancer-de-rinon/cancer-de-rinon3.jpg" 
                 alt="Prevención del cáncer minimizando factores de riesgo" 
                 width={850} 
                 height={450} 
@@ -108,7 +108,7 @@ export default function CancerDeRinonPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-rinon/Cáncer de riñon4.jpg" 
+                src="/assets/diagnostico/cancer-de-rinon/cancer-de-rinon4.jpg" 
                 alt="Hombre activo rompiendo un cigarro, dejar de fumar" 
                 width={850} 
                 height={450} 
@@ -132,7 +132,7 @@ export default function CancerDeRinonPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-rinon/Cáncer de riñon5.jpg" 
+                src="/assets/diagnostico/cancer-de-rinon/cancer-de-rinon5.jpg" 
                 alt="Dolor en la zona lumbar como posible síntoma de afección renal" 
                 width={850} 
                 height={450} 
