@@ -55,7 +55,7 @@ export default function Footer() {
               </a>
               {/* Location (Ubicación) */}
               <a href="https://goo.gl/maps/jpEH1og1R52CnmXm7" target="_blank" rel="noopener noreferrer" aria-label="Ubicación">
-                <Image src="/assets/iconos/Ubicación.svg" alt="Ubicación" width={30} height={30} />
+                <Image src="/assets/iconos/ubicacion.svg" alt="Ubicación" width={30} height={30} />
               </a>
             </div>
             <p className={styles.copyright}>Todos los derechos reservados para Uro-Oncology 2026</p>
