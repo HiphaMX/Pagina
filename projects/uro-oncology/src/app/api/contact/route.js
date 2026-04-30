@@ -8,12 +8,15 @@ export async function POST(req) {
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com', // Replace with proper host if not Gmail
-      port: process.env.SMTP_PORT || 465,
-      secure: true,
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      tls: {
+        rejectUnauthorized: false,
+      }
     });
 
     // 1. Email to Doctor
