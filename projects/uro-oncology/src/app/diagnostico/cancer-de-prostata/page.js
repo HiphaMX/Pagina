@@ -19,7 +19,7 @@ export default function CancerDeProstataPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-prostata/Cancer de prostata1.jpg" 
+                src="/assets/diagnostico/cancer-de-prostata/cancer-de-prostata1.jpg" 
                 alt="Prevención del cáncer de próstata en hombres" 
                 width={850} 
                 height={450} 
@@ -56,7 +56,7 @@ export default function CancerDeProstataPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-prostata/Cancer de prostata2.jpg" 
+                src="/assets/diagnostico/cancer-de-prostata/cancer-de-prostata2.jpg" 
                 alt="Detección oportuna del cáncer de próstata" 
                 width={850} 
                 height={450} 
@@ -96,7 +96,7 @@ export default function CancerDeProstataPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-prostata/Cancer de prostata3.jpg" 
+                src="/assets/diagnostico/cancer-de-prostata/cancer-de-prostata3.jpg" 
                 alt="Estilo de vida saludable y factores de riesgo en urología" 
                 width={850} 
                 height={450} 

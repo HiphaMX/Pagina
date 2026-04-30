@@ -28,7 +28,7 @@ export default function CancerDeTesticuloPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-testiculo/Cancer de testiculo1.jpg" 
+                src="/assets/diagnostico/cancer-de-testiculo/cancer-de-testiculo1.jpg" 
                 alt="Prevención del cáncer de testículo y salud reproductiva" 
                 width={850} 
                 height={450} 
@@ -54,7 +54,7 @@ export default function CancerDeTesticuloPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-testiculo/Cancer de testiculo2.jpg" 
+                src="/assets/diagnostico/cancer-de-testiculo/cancer-de-testiculo2.jpg" 
                 alt="Detección temprana del cáncer de testículo en adultos jóvenes" 
                 width={850} 
                 height={450} 
@@ -86,7 +86,7 @@ export default function CancerDeTesticuloPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-testiculo/Cancer de testiculo3.jpg" 
+                src="/assets/diagnostico/cancer-de-testiculo/cancer-de-testiculo3.jpg" 
                 alt="Técnica de autoexploración testicular preventiva" 
                 width={850} 
                 height={450} 
@@ -107,7 +107,7 @@ export default function CancerDeTesticuloPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-testiculo/Cancer de testiculo4.jpg" 
+                src="/assets/diagnostico/cancer-de-testiculo/cancer-de-testiculo4.jpg" 
                 alt="Síntomas iniciales del cáncer testicular en jóvenes" 
                 width={850} 
                 height={450} 
@@ -147,7 +147,7 @@ export default function CancerDeTesticuloPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-testiculo/Cancer de testiculo5.jpg" 
+                src="/assets/diagnostico/cancer-de-testiculo/cancer-de-testiculo5.jpg" 
                 alt="Atención médica oncológica ante factores de riesgo hereditarios" 
                 width={850} 
                 height={450} 

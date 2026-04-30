@@ -10,7 +10,7 @@ const slides = [
     title: 'Cáncer de próstata',
     description: 'Alrededor de 6 de 10 casos se diagnostican en hombres de 65 años o más. La detección oportuna salva vidas.',
     link: '/diagnostico/cancer-de-prostata',
-    desktopImg: '/assets/slider/Sliderescritorio01.jpg',
+    desktopImg: '/assets/slider/sliderescritorio01.jpg',
     mobileImg: '/assets/slider/slidermovil1.jpg'
   },
   {
@@ -18,7 +18,7 @@ const slides = [
     title: 'Cirugía de mínima invasión',
     description: 'Hoy en día, se pueden realizar muchos procedimientos urológicos con incisiones mínimas, reduciendo el dolor y el tiempo de recuperación.',
     link: '/tipos-de-cirugia',
-    desktopImg: '/assets/slider/Sliderescritorio2.jpg',
+    desktopImg: '/assets/slider/sliderescritorio2.jpg',
     mobileImg: '/assets/slider/slidermovil2.jpg'
   },
   {
@@ -26,7 +26,7 @@ const slides = [
     title: 'Cirugía Robótica',
     description: 'El sistema quirúrgico da Vinci le brinda a su cirujano una vista 3D de alta definición ampliada para mayor precisión y control.',
     link: '/cirugia-robotica',
-    desktopImg: '/assets/slider/Sliderescritorio3.jpg',
+    desktopImg: '/assets/slider/sliderescritorio3.jpg',
     mobileImg: '/assets/slider/slidermovil3.jpg'
   },
   {
@@ -34,7 +34,7 @@ const slides = [
     title: 'Cuidamos tu salud',
     description: 'En Uro Oncology cuidamos la salud de tus vías urinarias con el pulso humano y profesional que necesitas.',
     link: '/diagnostico',
-    desktopImg: '/assets/slider/Sliderescritorio4.jpg',
+    desktopImg: '/assets/slider/sliderescritorio4.jpg',
     mobileImg: '/assets/slider/slidermovil4.jpg'
   },
   {
@@ -42,7 +42,7 @@ const slides = [
     title: 'Cuidamos tu salud urológica',
     description: 'Descubre los diferentes padecimientos en los que nos especializamos con la más avanzada tecnología y calidez.',
     link: '/equipo-medico',
-    desktopImg: '/assets/slider/Sliderescritorio5.jpg',
+    desktopImg: '/assets/slider/sliderescritorio5.jpg',
     mobileImg: '/assets/slider/slidermovil5.jpg'
   }
 ];

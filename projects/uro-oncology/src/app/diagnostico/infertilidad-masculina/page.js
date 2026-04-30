@@ -18,7 +18,7 @@ export default function InfertilidadMasculinaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/infertilidad-masculina/Infertilidad masculina00.jpg" 
+                src="/assets/diagnostico/infertilidad-masculina/infertilidad-masculina00.jpg" 
                 alt="Pareja conversando sobre fertilidad" 
                 width={850} 
                 height={450} 

@@ -18,7 +18,7 @@ export default function CheckUpMasculinoPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/chekup-masculino/Checkup masculino1.jpg" 
+                src="/assets/diagnostico/chekup-masculino/checkup-masculino1.jpg" 
                 alt="Consulta preventiva y chequeo de salud para hombres" 
                 width={850} 
                 height={450} 
@@ -37,7 +37,7 @@ export default function CheckUpMasculinoPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/chekup-masculino/Checkup masculino2.jpg" 
+                src="/assets/diagnostico/chekup-masculino/checkup-masculino2.jpg" 
                 alt="Hombre mayor sonriendo y disfrutando de un estado de salud óptimo" 
                 width={850} 
                 height={450} 
@@ -61,7 +61,7 @@ export default function CheckUpMasculinoPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/chekup-masculino/Checkup masculino3.jpg" 
+                src="/assets/diagnostico/chekup-masculino/checkup-masculino3.jpg" 
                 alt="Paciente hablando abiertamente de sus síntomas con el médico" 
                 width={850} 
                 height={450} 

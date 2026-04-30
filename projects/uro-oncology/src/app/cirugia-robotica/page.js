@@ -18,7 +18,7 @@ export default function CirugiaRoboticaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/robotica/5ed32e61412d2b613ab027c9_Da vincy componentes.jpg" 
+                src="/assets/tipos-de-cirugia/robotica/5ed32e61412d2b613ab027c9_da-vincy-componentes.jpg" 
                 alt="Componentes del sistema quirúrgico da Vinci" 
                 width={850} 
                 height={450} 
@@ -41,7 +41,7 @@ export default function CirugiaRoboticaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/robotica/5ed330443b7997fcfc5581c6_DavincySurgical.jpg" 
+                src="/assets/tipos-de-cirugia/robotica/5ed330443b7997fcfc5581c6_davincysurgical.jpg" 
                 alt="Cirujano operando en consola da Vinci" 
                 width={850} 
                 height={450} 

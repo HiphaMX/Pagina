@@ -19,7 +19,7 @@ export default function DiagnosticoPage() {
               
               <Link href="/diagnostico/cancer-de-prostata" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/diagnostico/cáncerdepróstata.jpg" 
+                  src="/assets/diagnostico/cancerdeprostata.jpg" 
                   alt="Cáncer de Próstata" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -33,7 +33,7 @@ export default function DiagnosticoPage() {
 
               <Link href="/diagnostico/cancer-de-rinon" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/diagnostico/Cancerderinon.jpg" 
+                  src="/assets/diagnostico/cancerderinon.jpg" 
                   alt="Cáncer de Riñón" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -47,7 +47,7 @@ export default function DiagnosticoPage() {
 
               <Link href="/diagnostico/cancer-de-testiculo" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/diagnostico/cáncerdetesticulo.jpg" 
+                  src="/assets/diagnostico/cancerdetesticulo.jpg" 
                   alt="Cáncer de Testículo" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -61,7 +61,7 @@ export default function DiagnosticoPage() {
 
               <Link href="/diagnostico/cancer-de-vejiga" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/diagnostico/Cáncerdevejiga.jpg" 
+                  src="/assets/diagnostico/cancerdevejiga.jpg" 
                   alt="Cáncer de Vejiga" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -75,7 +75,7 @@ export default function DiagnosticoPage() {
 
               <Link href="/diagnostico/calculos-renales" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/diagnostico/cálculosrenaless.jpg" 
+                  src="/assets/diagnostico/calculosrenaless.jpg" 
                   alt="Cálculos Renales" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -131,7 +131,7 @@ export default function DiagnosticoPage() {
 
               <Link href="/diagnostico/vasectomia" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/diagnostico/vasectomía.jpg" 
+                  src="/assets/diagnostico/vasectomia.jpg" 
                   alt="Vasectomía" 
                   fill
                   className={styles.surgeryCardImage} 

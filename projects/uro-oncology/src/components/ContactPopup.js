@@ -69,7 +69,7 @@ export default function ContactPopup({ isOpen, onClose }) {
 
         <div className={styles.popupHeader}>
           <Image 
-            src="/assets/logotipo/Logo light.svg" 
+            src="/assets/logotipo/logo-light.svg" 
             alt="Uro-oncology Logo" 
             width={200} 
             height={64} 

@@ -24,7 +24,7 @@ export default function CirugiasPage() {
               
               <Link href="/cirugia-robotica" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/tipos-de-cirugia/robótica.jpg" 
+                  src="/assets/tipos-de-cirugia/robotica.jpg" 
                   alt="Cirugía Robótica" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -38,7 +38,7 @@ export default function CirugiasPage() {
 
               <Link href="/cirugia-laparoscopica" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/tipos-de-cirugia/laparoscópico00.jpg" 
+                  src="/assets/tipos-de-cirugia/laparoscopico00.jpg" 
                   alt="Cirugía Laparoscópica" 
                   fill
                   className={styles.surgeryCardImage} 
@@ -52,7 +52,7 @@ export default function CirugiasPage() {
 
               <Link href="/cirugia-endourologica" className={styles.surgeryCard}>
                 <Image 
-                  src="/assets/tipos-de-cirugia/Endourologia.jpg" 
+                  src="/assets/tipos-de-cirugia/endourologia.jpg" 
                   alt="Cirugía Endourológica" 
                   fill
                   className={styles.surgeryCardImage} 

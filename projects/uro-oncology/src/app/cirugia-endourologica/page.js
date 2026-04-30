@@ -18,7 +18,7 @@ export default function CirugiaEndourologicaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/tipos-de-cirugia/endourologica/5ed40777ec5df2ec35fb4d68_Endourologica 00.jpg" 
+                src="/assets/tipos-de-cirugia/endourologica/5ed40777ec5df2ec35fb4d68_endourologica-00.jpg" 
                 alt="Cirugía endourológica de mínima invasión" 
                 width={850} 
                 height={450} 

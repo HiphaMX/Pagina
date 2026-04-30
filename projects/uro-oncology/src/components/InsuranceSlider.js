@@ -4,9 +4,9 @@ import Image from 'next/image';
 import styles from './InsuranceSlider.module.css';
 
 const images = [
-  '/assets/seguros/Slider seguros 1.png',
-  '/assets/seguros/Slider seguros 2.png',
-  '/assets/seguros/Slider seguros 3.png'
+  '/assets/seguros/slider-seguros-1.png',
+  '/assets/seguros/slider-seguros-2.png',
+  '/assets/seguros/slider-seguros-3.png'
 ];
 
 export default function InsuranceSlider() {

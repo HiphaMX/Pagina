@@ -19,7 +19,7 @@ export default function CancerDeVejigaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-vejiga/Cancer de vejiga1.jpg" 
+                src="/assets/diagnostico/cancer-de-vejiga/cancer-de-vejiga1.jpg" 
                 alt="Paciente adulto mayor consultando con un especialista" 
                 width={850} 
                 height={450} 
@@ -38,7 +38,7 @@ export default function CancerDeVejigaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-vejiga/Cancer de vejiga2.jpg" 
+                src="/assets/diagnostico/cancer-de-vejiga/cancer-de-vejiga2.jpg" 
                 alt="Salud urológica para hombres mayores" 
                 width={850} 
                 height={450} 
@@ -80,7 +80,7 @@ export default function CancerDeVejigaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-vejiga/Cancer de vejiga3.jpg" 
+                src="/assets/diagnostico/cancer-de-vejiga/cancer-de-vejiga3.jpg" 
                 alt="Nutrición y dieta saludable para prevenir el cáncer" 
                 width={850} 
                 height={450} 
@@ -112,7 +112,7 @@ export default function CancerDeVejigaPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/cancer-de-vejiga/Cancer de vejiga4.jpg" 
+                src="/assets/diagnostico/cancer-de-vejiga/cancer-de-vejiga4.jpg" 
                 alt="Estilo de vida activo y saludable después de los 55 años" 
                 width={850} 
                 height={450} 

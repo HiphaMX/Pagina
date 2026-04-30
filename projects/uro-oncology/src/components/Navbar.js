@@ -45,7 +45,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.navContainer}>
           <Link href="/" className={styles.logo}>
-            <Image src="/assets/logotipo/Logo light.svg" alt="Uro-oncology Logo" width={440} height={140} priority />
+            <Image src="/assets/logotipo/logo-light.svg" alt="Uro-oncology Logo" width={440} height={140} priority />
           </Link>
 
           <div className={`${styles.navLinks} ${menuOpen ? styles.open : ''}`}>

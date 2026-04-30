@@ -11,7 +11,7 @@ export default function PreFooter() {
         <div className="container">
           <div className={styles.aboutDoctorGrid}>
             <div className={styles.doctorImageWrapper}>
-              <Image src="/assets/home/Foto Adal.jpeg" alt="Dr. Adalberto Castro Alfaro" width={300} height={300} className={styles.doctorImage} />
+              <Image src="/assets/home/foto-adal.jpeg" alt="Dr. Adalberto Castro Alfaro" width={300} height={300} className={styles.doctorImage} />
             </div>
             <div className={styles.doctorInfo}>
               <h3>DR. ADALBERTO CASTRO ALFARO | URÓLOGO</h3>

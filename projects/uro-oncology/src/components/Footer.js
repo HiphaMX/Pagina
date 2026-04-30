@@ -42,16 +42,16 @@ export default function Footer() {
         <div className={styles.container}>
           <div className={styles.logoSection}>
             <div className={styles.logo}>
-              <Image src="/assets/logotipo/Logo dark.svg" alt="Uro-oncology" width={290} height={78} />
+              <Image src="/assets/logotipo/logo-dark.svg" alt="Uro-oncology" width={290} height={78} />
             </div>
             <div className={styles.socials}>
               {/* Instagram */}
               <a href="https://www.instagram.com/uro_oncology/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <Image src="/assets/iconos/Instagram.svg" alt="Instagram" width={30} height={30} />
+                <Image src="/assets/iconos/instagram.svg" alt="Instagram" width={30} height={30} />
               </a>
               {/* WhatsApp */}
               <a href="https://api.whatsapp.com/send?phone=523316013840" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-                <Image src="/assets/iconos/Whatsapp.svg" alt="WhatsApp" width={30} height={30} />
+                <Image src="/assets/iconos/whatsapp.svg" alt="WhatsApp" width={30} height={30} />
               </a>
               {/* Location (Ubicación) */}
               <a href="https://goo.gl/maps/jpEH1og1R52CnmXm7" target="_blank" rel="noopener noreferrer" aria-label="Ubicación">

@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
           rel="noopener noreferrer"
           aria-label="Contactar por WhatsApp"
         >
-          <img src="/assets/iconos/Whatsapp.png" alt="WhatsApp" width="30" height="30" />
+          <img src="/assets/iconos/whatsapp.png" alt="WhatsApp" width="30" height="30" />
         </a>
       </body>
     </html>

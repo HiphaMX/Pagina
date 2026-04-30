@@ -18,7 +18,7 @@ export default function CrecimientoDeProstataPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/crecimiento-de-prostata/Crecimiento de prostata1.jpg" 
+                src="/assets/diagnostico/crecimiento-de-prostata/crecimiento-de-prostata1.jpg" 
                 alt="Hombre experimentando síntomas de crecimiento prostático" 
                 width={850} 
                 height={450} 
@@ -46,7 +46,7 @@ export default function CrecimientoDeProstataPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/crecimiento-de-prostata/Crecimiento de prostata2.jpg" 
+                src="/assets/diagnostico/crecimiento-de-prostata/crecimiento-de-prostata2.jpg" 
                 alt="Adulto mayor saludable en un entorno de paz" 
                 width={850} 
                 height={450} 
@@ -84,7 +84,7 @@ export default function CrecimientoDeProstataPage() {
 
             <figure className={styles.imageFigure}>
               <Image 
-                src="/assets/diagnostico/crecimiento-de-prostata/Crecimiento de prostata3.jpg" 
+                src="/assets/diagnostico/crecimiento-de-prostata/crecimiento-de-prostata3.jpg" 
                 alt="Prevención y estilo de vida activo para la salud de la próstata" 
                 width={850} 
                 height={450} 

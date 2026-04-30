@@ -64,7 +64,7 @@ export default function Home() {
             <p>Sabemos que tus amigos y familiares pueden crear muchas más dudas de las que ya tenemos, si tienes alguna sospecha sobre algún síntoma que te inquieta, elige la mejor alternativa.</p>
           </div>
           <div className={styles.diagnosticImageContainer}>
-            <Image src="/assets/home/Recurso 13.svg" alt="Preguntas y diagnóstico" width={800} height={400} className={styles.diagnosticImage} />
+            <Image src="/assets/home/recurso-13.svg" alt="Preguntas y diagnóstico" width={800} height={400} className={styles.diagnosticImage} />
           </div>
         </div>
       </section>
@@ -94,7 +94,7 @@ export default function Home() {
           <div className={styles.surgeryCtaGrid}>
             <div className={styles.surgeryCtaCard}>
               <div className={styles.surgeryLabel}>Cirugía robótica</div>
-              <Image src="/assets/home/Cirugía robótica.jpg" alt="Cirugía Robótica" width={350} height={350} className={styles.surgeryImg} />
+              <Image src="/assets/home/cirugia-robotica.jpg" alt="Cirugía Robótica" width={350} height={350} className={styles.surgeryImg} />
               <div className={styles.surgeryCtaContent}>
                 <Link href="/cirugia-robotica" className={`${styles.surgeryBtn}`}>
                   Ver más
@@ -103,7 +103,7 @@ export default function Home() {
             </div>
             <div className={styles.surgeryCtaCard}>
               <div className={styles.surgeryLabel}>Cirugía laparoscópica</div>
-              <Image src="/assets/home/Cirugía Laparoscópica.jpg" alt="Cirugía Laparoscópica" width={350} height={350} className={styles.surgeryImg} />
+              <Image src="/assets/home/cirugia-laparoscopica.jpg" alt="Cirugía Laparoscópica" width={350} height={350} className={styles.surgeryImg} />
               <div className={styles.surgeryCtaContent}>
                 <Link href="/cirugia-laparoscopica" className={`${styles.surgeryBtn}`}>
                   Ver más
@@ -112,7 +112,7 @@ export default function Home() {
             </div>
             <div className={styles.surgeryCtaCard}>
               <div className={styles.surgeryLabel}>Cirugía endourológica</div>
-              <Image src="/assets/home/Cirugía Endourológica.jpg" alt="Cirugía Endourológica" width={350} height={350} className={styles.surgeryImg} />
+              <Image src="/assets/home/cirugia-endourologica.jpg" alt="Cirugía Endourológica" width={350} height={350} className={styles.surgeryImg} />
               <div className={styles.surgeryCtaContent}>
                 <Link href="/cirugia-endourologica" className={`${styles.surgeryBtn}`}>
                   Ver más
