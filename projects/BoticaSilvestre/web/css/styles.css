@@ -310,7 +310,7 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../assets/images/ethereal_botanical_hero.png');
+    background-image: url('../assets/images/ethereal_botanical_hero.webp');
     background-size: cover;
     background-position: center;
     z-index: -2;
@@ -556,7 +556,7 @@ p {
 .footer {
     position: relative;
     background-color: #0A1919;
-    background-image: linear-gradient(to bottom, rgba(26, 54, 54, 0.8), rgba(10, 25, 25, 0.95)), url('../assets/images/moss-footer-bg.png');
+    background-image: linear-gradient(to bottom, rgba(26, 54, 54, 0.8), rgba(10, 25, 25, 0.95)), url('../assets/images/moss-footer-bg.webp');
     background-size: cover;
     background-position: center;
     background-blend-mode: multiply;
@@ -658,7 +658,7 @@ p {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('../assets/images/moss-quiz-bg.png');
+    background-image: url('../assets/images/moss-quiz-bg.webp');
     background-size: cover;
     background-position: center;
     background-color: rgba(26, 54, 54, 0.85); /* Match quiz background blend */
@@ -1047,7 +1047,7 @@ span.format-tag {
     content: '';
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('../assets/images/moss-benefits-bg.png');
+    background-image: url('../assets/images/moss-benefits-bg.webp');
     background-size: cover;
     background-position: center;
     z-index: -2;

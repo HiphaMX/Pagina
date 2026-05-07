@@ -1,12 +1,12 @@
 const PRODUCTS_DB = {
   step1: [
-    { id: 'focus', label: 'Focus', product: 'Focus (Microdosis de Melena de León)', desc: 'Claridad mental y neuroplasticidad.', price: 490, image: 'assets/images/Product Shots/Focus 01.jpg' },
-    { id: 'balance', label: 'Balance', product: 'Balance (Microdosis de Reishi)', desc: 'Homeostasis y regulación del cortisol.', price: 490, image: 'assets/images/Product Shots/Balance 01.jpg' },
-    { id: 'energy', label: 'Energy+', product: 'Energy+ (Microdosis de Cordyceps)', desc: 'Oxigenación celular y vigor.', price: 490, image: 'assets/images/Product Shots/Energy 01.jpg' },
-    { id: 'emuna', label: 'Emuná', product: 'Emuná (Microdosis de Cola de Pavo)', desc: 'Inteligencia inmunológica.', price: 490, image: 'assets/images/Product Shots/Emuna 01.jpg' },
-    { id: 'mindii', label: 'Mindii', product: 'Mindii (Microdosis de Melena + Mucuna + AMLA)', desc: 'Sinergia dopaminérgica y cognitiva.', price: 490, image: 'assets/images/Product Shots/Mindii 01.jpg' },
-    { id: 'smile', label: 'Smile', product: 'Smile (Microdosis de Psilocibina)', desc: 'Bienestar emocional y apertura.', price: 690, image: 'assets/images/Product Shots/Smile 01.jpg' },
-    { id: 'mystic', label: 'Mystic', product: 'Mystic (Dosis concentrada de Psilocibina)', desc: 'Exploración profunda del ser.', price: 990, image: 'assets/images/Product Shots/Mystic 01.jpg' },
+    { id: 'focus', label: 'Focus', product: 'Focus (Microdosis de Melena de León)', desc: 'Claridad mental y neuroplasticidad.', price: 490, image: 'assets/images/Product Shots/Focus 01.webp' },
+    { id: 'balance', label: 'Balance', product: 'Balance (Microdosis de Reishi)', desc: 'Homeostasis y regulación del cortisol.', price: 490, image: 'assets/images/Product Shots/Balance 01.webp' },
+    { id: 'energy', label: 'Energy+', product: 'Energy+ (Microdosis de Cordyceps)', desc: 'Oxigenación celular y vigor.', price: 490, image: 'assets/images/Product Shots/Energy 01.webp' },
+    { id: 'emuna', label: 'Emuná', product: 'Emuná (Microdosis de Cola de Pavo)', desc: 'Inteligencia inmunológica.', price: 490, image: 'assets/images/Product Shots/Emuna 01.webp' },
+    { id: 'mindii', label: 'Mindii', product: 'Mindii (Microdosis de Melena + Mucuna + AMLA)', desc: 'Sinergia dopaminérgica y cognitiva.', price: 490, image: 'assets/images/Product Shots/Mindii 01.webp' },
+    { id: 'smile', label: 'Smile', product: 'Smile (Microdosis de Psilocibina)', desc: 'Bienestar emocional y apertura.', price: 690, image: 'assets/images/Product Shots/Smile 01.webp' },
+    { id: 'mystic', label: 'Mystic', product: 'Mystic (Dosis concentrada de Psilocibina)', desc: 'Exploración profunda del ser.', price: 990, image: 'assets/images/Product Shots/Mystic 01.webp' },
   ],
   step2: [
     { id: 'rana', product: 'Colita de Rana', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'activity', desc: 'Dolor muscular después de ir al gym', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
@@ -16,7 +16,7 @@ const PRODUCTS_DB = {
     { id: 'alivia', product: 'Alivia', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'zap', desc: 'Dolor en las articulaciones', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
   ],
   step3: [
-    { id: 'yes', product: 'Armonizador', subtitle: 'Spray Energético', icon: 'sparkles', desc: 'Spray aerobeo ambiental con salvia, ruda y pirul para disipar energías hostiles.', price: 59, image: 'assets/images/Product Shots/Armonizador1.jpg' },
+    { id: 'yes', product: 'Armonizador', subtitle: 'Spray Energético', icon: 'sparkles', desc: 'Spray aerobeo ambiental con salvia, ruda y pirul para disipar energías hostiles.', price: 59, image: 'assets/images/Product Shots/Armonizador1.webp' },
     { id: 'no', product: 'Omitir armonización', subtitle: 'Continuar sin sellar', icon: 'x', desc: 'Prefiero no añadir esta frecuencia por ahora.' }
   ]
 };
