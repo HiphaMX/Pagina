@@ -55,7 +55,7 @@ async def create_preference(cart: CartRequest, request: Request):
         "items": mp_items,
         "shipments": {
             "cost": shipping_cost,
-            "mode": "not_specified"
+            "mode": "custom"
         },
         "back_urls": {
             "success": f"{site_domain}/index.html",
