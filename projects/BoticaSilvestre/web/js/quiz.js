@@ -2,8 +2,8 @@ const PRODUCTS_DB = {
   step1: [
     { id: 'focus', label: 'Focus', product: 'Focus (Microdosis de Melena de León)', desc: 'Claridad mental y neuroplasticidad.', price: 490, image: 'assets/images/Product Shots/Focus 01.jpg' },
     { id: 'balance', label: 'Balance', product: 'Balance (Microdosis de Reishi)', desc: 'Homeostasis y regulación del cortisol.', price: 490, image: 'assets/images/Product Shots/Balance 01.jpg' },
-    { id: 'energy', label: 'Energy+', product: 'Energy+ (Microdosis de Cordyceps)', desc: 'Oxigenación celular y vigor.', price: 490, image: 'assets/images/Product Shots/Energy+ 01.jpg' },
-    { id: 'emuna', label: 'Emuná', product: 'Emuná (Microdosis de Cola de Pavo)', desc: 'Inteligencia inmunológica.', price: 490, image: 'assets/images/Product Shots/Emuná 01.jpg' },
+    { id: 'energy', label: 'Energy+', product: 'Energy+ (Microdosis de Cordyceps)', desc: 'Oxigenación celular y vigor.', price: 490, image: 'assets/images/Product Shots/Energy 01.jpg' },
+    { id: 'emuna', label: 'Emuná', product: 'Emuná (Microdosis de Cola de Pavo)', desc: 'Inteligencia inmunológica.', price: 490, image: 'assets/images/Product Shots/Emuna 01.jpg' },
     { id: 'mindii', label: 'Mindii', product: 'Mindii (Microdosis de Melena + Mucuna + AMLA)', desc: 'Sinergia dopaminérgica y cognitiva.', price: 490, image: 'assets/images/Product Shots/Mindii 01.jpg' },
     { id: 'smile', label: 'Smile', product: 'Smile (Microdosis de Psilocibina)', desc: 'Bienestar emocional y apertura.', price: 690, image: 'assets/images/Product Shots/Smile 01.jpg' },
     { id: 'mystic', label: 'Mystic', product: 'Mystic (Dosis concentrada de Psilocibina)', desc: 'Exploración profunda del ser.', price: 990, image: 'assets/images/Product Shots/Mystic 01.jpg' },
