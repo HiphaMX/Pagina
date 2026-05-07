@@ -1150,4 +1150,43 @@ span.format-tag {
     .grid-3 {
         gap: 1.5rem;
     }
+
+    /* General Centering for Mobile */
+    .section-header, 
+    .product-info, 
+    .benefit-card,
+    .glass-panel {
+        text-align: center;
+    }
+    
+    .benefit-card .icon-wrapper {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .product-format-tags {
+        justify-content: center;
+    }
+
+    /* Footer Mobile Centering */
+    .footer-content {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .footer-brand p {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    
+    .footer-links {
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* Fix footer bottom spacing on mobile Safari */
+.footer-bottom {
+    padding-bottom: 2rem;
 }
