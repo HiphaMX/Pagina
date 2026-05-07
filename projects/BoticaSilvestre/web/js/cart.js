@@ -189,15 +189,50 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Tus Datos</p>
         <input type="text" id="checkout-name" placeholder="Nombre completo *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="tel" id="checkout-phone" placeholder="Teléfono / WhatsApp *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
-        <input type="email" id="checkout-email" placeholder="Email (Opcional)" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <input type="email" id="checkout-email" placeholder="Email *" required style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         
         <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Dirección de Envío</p>
         <input type="text" id="checkout-street" placeholder="Calle y Número *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="text" id="checkout-neighborhood" placeholder="Colonia *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-            <input type="text" id="checkout-city" placeholder="Ciudad y Estado *" required style="flex: 2; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
-            <input type="text" id="checkout-zip" placeholder="C.P. *" required style="flex: 1; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+            <input type="text" id="checkout-city" placeholder="Ciudad *" required style="flex: 1; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+            <select id="checkout-state" required style="flex: 1; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem; background: #fff; color: var(--color-text-main);">
+                <option value="" disabled selected>Estado *</option>
+                <option value="Aguascalientes">Aguascalientes</option>
+                <option value="Baja California">Baja California</option>
+                <option value="Baja California Sur">Baja California Sur</option>
+                <option value="Campeche">Campeche</option>
+                <option value="Chiapas">Chiapas</option>
+                <option value="Chihuahua">Chihuahua</option>
+                <option value="Ciudad de México">Ciudad de México</option>
+                <option value="Coahuila">Coahuila</option>
+                <option value="Colima">Colima</option>
+                <option value="Durango">Durango</option>
+                <option value="Estado de México">Estado de México</option>
+                <option value="Guanajuato">Guanajuato</option>
+                <option value="Guerrero">Guerrero</option>
+                <option value="Hidalgo">Hidalgo</option>
+                <option value="Jalisco">Jalisco</option>
+                <option value="Michoacán">Michoacán</option>
+                <option value="Morelos">Morelos</option>
+                <option value="Nayarit">Nayarit</option>
+                <option value="Nuevo León">Nuevo León</option>
+                <option value="Oaxaca">Oaxaca</option>
+                <option value="Puebla">Puebla</option>
+                <option value="Querétaro">Querétaro</option>
+                <option value="Quintana Roo">Quintana Roo</option>
+                <option value="San Luis Potosí">San Luis Potosí</option>
+                <option value="Sinaloa">Sinaloa</option>
+                <option value="Sonora">Sonora</option>
+                <option value="Tabasco">Tabasco</option>
+                <option value="Tamaulipas">Tamaulipas</option>
+                <option value="Tlaxcala">Tlaxcala</option>
+                <option value="Veracruz">Veracruz</option>
+                <option value="Yucatán">Yucatán</option>
+                <option value="Zacatecas">Zacatecas</option>
+            </select>
         </div>
+        <input type="text" id="checkout-zip" placeholder="C.P. *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
 
         <p id="checkout-error" style="color: #d32f2f; font-size: 0.8rem; display: none; margin-bottom: 0.5rem;">Por favor llena todos los campos obligatorios (*).</p>
     `;
@@ -218,11 +253,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const streetInput = document.getElementById('checkout-street');
             const neighborhoodInput = document.getElementById('checkout-neighborhood');
             const cityInput = document.getElementById('checkout-city');
+            const stateInput = document.getElementById('checkout-state');
             const zipInput = document.getElementById('checkout-zip');
             
             const errorText = document.getElementById('checkout-error');
 
-            if (!nameInput.value.trim() || !phoneInput.value.trim() || !streetInput.value.trim() || !neighborhoodInput.value.trim() || !cityInput.value.trim() || !zipInput.value.trim()) {
+            if (!nameInput.value.trim() || !phoneInput.value.trim() || !emailInput.value.trim() || !streetInput.value.trim() || !neighborhoodInput.value.trim() || !cityInput.value.trim() || !stateInput.value || !zipInput.value.trim()) {
                 errorText.style.display = 'block';
                 return;
             }
@@ -243,9 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const payerInfo = {
                     name: nameInput.value.trim(),
                     phone: phoneInput.value.trim(),
-                    email: emailInput.value.trim() || null,
+                    email: emailInput.value.trim(),
                     address: {
-                        street_name: streetInput.value.trim() + ', Col. ' + neighborhoodInput.value.trim() + ', ' + cityInput.value.trim(),
+                        street_name: streetInput.value.trim() + ', Col. ' + neighborhoodInput.value.trim() + ', ' + cityInput.value.trim() + ', ' + stateInput.value,
                         zip_code: zipInput.value.trim()
                     }
                 };
