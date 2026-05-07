@@ -1,0 +1,555 @@
+/* =========================================
+   Alquimia Consciente - System
+   ========================================= */
+
+/* Background Mask Effect */
+.test-section {
+    position: relative;
+    padding: var(--spacing-xl) 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.test-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('../assets/images/moss-quiz-bg.png');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.test-section::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(26, 54, 54, 0.85);
+    mix-blend-mode: multiply;
+    z-index: -1;
+}
+
+.test-section > .container {
+    position: relative;
+    z-index: 1;
+}
+
+.ritual-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Base utility for views */
+.view-intro, .view-quiz, .view-step2, .view-step3, .view-result {
+    display: none;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.view-active {
+    display: block;
+}
+
+/* Typography Helpers - UPDATED TO RUBIK MEDIUM AND OUTFIT */
+.font-serif { font-family: 'Rubik', sans-serif; font-weight: 500; }
+.font-sans { font-family: 'Outfit', sans-serif; font-weight: 300; }
+
+.tracking-widest { letter-spacing: 0.1em; }
+.tracking-tight { letter-spacing: -0.02em; }
+
+/* Intro View */
+.intro-divider {
+    width: 1px;
+    height: 6rem;
+    background-color: var(--color-primary);
+    margin: 0 auto 2rem;
+    opacity: 0.2;
+}
+
+.intro-title, .test-section .hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--color-white);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+.intro-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.125rem;
+    font-style: italic;
+    margin-bottom: 3rem;
+}
+
+/* Quiz View */
+.quiz-step-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+    font-family: 'Outfit', sans-serif;
+}
+
+.quiz-question-text {
+    font-size: clamp(1.875rem, 3.5vw, 2.5rem);
+    color: var(--color-white);
+    line-height: 1.3;
+    padding: 0 1rem;
+    margin-bottom: 4rem;
+}
+
+.scale-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 3rem 0;
+    flex-wrap: wrap;
+}
+
+.scale-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--color-white);
+    font-size: 1.25rem;
+    font-weight: 500;
+    font-family: 'Rubik', sans-serif;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.scale-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.scale-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    border-color: var(--color-white);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    animation: magicalPulse 0.6s ease-out forwards;
+}
+
+.scale-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scale-btn.active::before {
+    animation: magicalRipple 0.8s ease-out forwards;
+}
+
+@keyframes magicalPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+    50% { transform: scale(1.15); box-shadow: 0 0 30px rgba(255, 255, 255, 0.6); }
+    100% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); }
+}
+
+@keyframes magicalRipple {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Step 2 & 3 View */
+.grid-cards {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+    .grid-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+.grid-cards-2 {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (min-width: 768px) {
+    .grid-cards-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.card-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1.5rem;
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-white);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.card-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    margin-bottom: 1rem;
+    transition: transform 0.5s ease;
+}
+
+.card-btn:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+}
+
+.card-title {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: var(--color-white);
+    margin-bottom: 0.25rem;
+}
+
+.card-subtitle {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.card-desc {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+    line-height: 1.6;
+    font-family: 'Outfit', sans-serif;
+    margin-top: 0.5rem;
+}
+
+.step3-title {
+    font-family: 'Rubik', sans-serif;
+    font-size: clamp(2rem, 3.5vw, 2.5rem);
+    color: var(--color-white);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+/* Results View */
+.result-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 2.5rem;
+    padding: 4rem;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+}
+
+.result-card-top-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent-green));
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.result-title {
+    font-family: 'Rubik', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+}
+
+.result-subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    font-family: 'Outfit', sans-serif;
+}
+
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+}
+
+.result-item {
+    position: relative;
+}
+
+.result-item-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    display: block;
+    margin-bottom: 1rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+.result-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.result-item-content:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.result-item-title {
+    font-size: 1.5rem;
+    font-family: 'Rubik', sans-serif;
+    color: var(--color-white);
+}
+
+.result-item-desc {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+    max-width: 90%;
+    font-family: 'Outfit', sans-serif;
+}
+
+.result-check-icon {
+    color: var(--color-accent-green);
+    margin-top: 0.5rem;
+}
+
+.result-footer {
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.result-divider {
+    width: 4rem;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 2rem 0;
+}
+
+.result-footer-quote {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Standard Buttons */
+.alquimia-controls {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glassmorphic Form Inputs */
+.quiz-input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-family: 'Outfit', sans-serif;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.quiz-input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-white);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.quiz-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.quiz-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Option Buttons */
+.option-btn {
+    text-align: left;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: var(--color-white);
+}
+
+.option-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.option-btn h4 {
+    font-size: 1.2rem;
+    color: var(--color-white);
+    margin-bottom: 0.5rem;
+    font-family: 'Rubik', sans-serif;
+}
+
+.option-btn p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Result Message */
+.result-message {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.result-message p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+}
+
+/* Result Item Subtitle */
+.result-item-subtitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Quiz Navigation Buttons */
+.btn-quiz-outline {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.05);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.btn-quiz-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-quiz-primary {
+    border: 1px solid var(--color-white);
+    color: var(--color-primary);
+    background: var(--color-white);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-quiz-primary:hover {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botica Silvestre | Reprogramación Cuántica & Adaptógenos</title>
+    <meta name="description" content="Encuentra tu protocolo ideal de microdosificación con adaptógenos y súper adaptógenos. Descubre una clínica de epigenética para reprogramar tu estilo de vida.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="#" class="brand-logo" style="text-decoration: none;">
+                <span class="logo-text" style="font-family: 'Outfit', sans-serif; font-weight: 300; letter-spacing: 0.25em; font-size: 1.25rem; color: var(--color-primary); text-transform: uppercase;">Botica Silvestre</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="btn btn-primary">Diseñar mi ritual de conexión</a>
+                <button id="cart-icon-btn" class="cart-icon-btn">
+                    <i data-lucide="shopping-bag"></i>
+                    <span id="cart-count" class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg-image"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content fade-up">
+            <span class="badge badge-hero" style="letter-spacing: 0.3em; font-weight: 400;">TU EQUILIBRIO ES NATURAL</span>
+            <h1 class="hero-title" style="font-weight: 300; font-size: 4.5rem; letter-spacing: -0.02em;">Regresa a tu esencia</h1>
+            <p class="hero-subtitle" style="font-weight: 300; font-size: 1.1rem; max-width: 700px; margin: 0 auto 2.5rem; line-height: 1.8;">Un refugio para tu alma creado en pequeños lotes de forma artesanal y natural. Cada gota atrapa la energía transformadora de la naturaleza para pausar, encontrarte y recuperar tu equilibrio físico, mental y espiritual.</p>
+            <div class="hero-actions">
+                <a href="#productos" class="btn btn-large btn-primary" style="font-weight: 400; letter-spacing: 0.1em;">Soul Shine</a>
+                <a href="#sabina" class="btn btn-large btn-outline-light" style="font-weight: 400; letter-spacing: 0.1em;">Sabina</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Philosophy Section -->
+    <section id="filosofia" class="section philosophy">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <div class="philosophy-text fade-up">
+                    <h2 class="section-title">El poder sagrado de la naturaleza</h2>
+                    <p>En Botica Silvestre encontrarás herramientas para llegar a la raíz, no solo para trabajar en los síntomas. Todos los productos están formulados con la intención de promover cambios profundos y sostenibles en la manera que pasas tu día a día.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="beneficios" class="section benefits">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2 class="section-title">Pausa, respira y conecta</h2>
+                <p>Salir del modo supervivencia es solo el inicio, al pausar y respirar entramos en un estado de calma que nos conecta con nuestra esencia original.</p>
+            </div>
+            <div class="grid-3">
+                <div class="benefit-card fade-up">
+                    <div class="icon-wrapper bg-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px;">
+                            <!-- Outer circle -->
+                            <circle cx="12" cy="12" r="7" />
+                            <!-- Outer Petals -->
+                            <path d="M12 5 L10 1 L14 1 Z" />
+                            <path d="M12 19 L10 23 L14 23 Z" />
+                            <path d="M5 12 L1 10 L1 14 Z" />
+                            <path d="M19 12 L23 10 L23 14 Z" />
+                            <path d="M7 7 L3 4 L6 2 Z" />
+                            <path d="M17 7 L21 4 L18 2 Z" />
+                            <path d="M7 17 L3 20 L6 22 Z" />
+                            <path d="M17 17 L21 20 L18 22 Z" />
+                            <!-- Eye Arc -->
+                            <path d="M6.5 11 Q 12 5 17.5 11" />
+                            <!-- Pupil -->
+                            <circle cx="12" cy="11" r="2" />
+                            <!-- Vertical Lashes / Rays in the bottom half -->
+                            <path d="M6.5 11 L 8 18" />
+                            <path d="M9 13.5 L 10 18.5" />
+                            <path d="M12 14.5 L 12 19" />
+                            <path d="M15 13.5 L 14 18.5" />
+                            <path d="M17.5 11 L 16 18" />
+                            <path d="M6.5 11 Q 12 18 17.5 11" />
+                        </svg>
+                    </div>
+                    <h3>Calma Absoluta</h3>
+                    <p>Regula tu sistema nervioso, reduce la ansiedad y el estrés crónico, permitiéndote operar desde un estado de serenidad y enfoque.</p>
+                </div>
+                <div class="benefit-card fade-up" style="transition-delay: 100ms;">
+                    <div class="icon-wrapper bg-green">
+                        <i data-lucide="leaf"></i>
+                    </div>
+                    <h3>Pureza Orgánica</h3>
+                    <p>Elaboramos nuestros extractos de manera artesanal, utilizando ingredientes 100% naturales que honran la sabiduría milenaria de las plantas.</p>
+                </div>
+                <div class="benefit-card fade-up" style="transition-delay: 200ms;">
+                    <div class="icon-wrapper bg-silver">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px;">
+                            <!-- Dropper Top (Bulb) -->
+                            <path d="M12 2 C 14.5 2 15 4 15 5.5 V 7 H 9 V 5.5 C 9 4 9.5 2 12 2 Z" />
+                            <!-- Tube -->
+                            <path d="M10 7 V 16 C 10 17 10.5 18 12 19 C 13.5 18 14 17 14 16 V 7" />
+                            <!-- Scale lines -->
+                            <line x1="10" y1="10" x2="12" y2="10" />
+                            <line x1="10" y1="13" x2="12" y2="13" />
+                            <!-- Drop -->
+                            <path d="M12 21 C 11.2 21.5 11 22.2 11 23 C 11 23.8 11.5 24 12 24 C 12.5 24 13 23.8 13 23 C 13 22.2 12.8 21.5 12 21 Z" />
+                        </svg>
+                    </div>
+                    <h3>Dosificación personal</h3>
+                    <p>El poder de ajustar tu dosis gota a gota de acuerdo a tu nivel de sensibilidad y el progreso en tus objetivos configuran una poderosa herramienta.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="productos" class="section products bg-white">
+        <div class="container">
+            <div class="section-header text-center fade-up">
+                <div style="margin-bottom: 2rem;">
+                    <span class="badge">Tinturas y Oleatos Soul Shine</span>
+                    <img src="assets/images/Logotipo/SoulShine.svg" alt="Soul Shine Logo" style="height: 60px; opacity: 0.7; display: block; margin: 1.5rem auto 0;">
+                </div>
+                <h2 class="section-title">El poder de la naturaleza en cada gota</h2>
+                <p class="section-subtitle" style="margin-bottom: 3rem;">Conoce nuestra selección de adaptógenos y súper adaptógenos diseñados para mejorar tu día a día.</p>
+            </div>
+            
+            <div class="products-grid fade-up">
+                <div class="grid-3" style="margin-bottom: 4rem;">
+                    
+                    <!-- Focus -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Focus 01.jpg" alt="Focus" class="img-default">
+                            <img src="assets/images/Product Shots/Focus 02.jpg" alt="Focus" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Focus</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Melena de león</span>
+                        <div class="product-format-tags"><button type="button" class="format-tag active" onclick="selectFormat(this)">Tintura</button><button type="button" class="format-tag" onclick="selectFormat(this)">Oleato</button></div>
+                        <p style="font-size: 0.95rem;">Optimiza tu concentración, memoria y promueve la neurogénesis para mayor claridad.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$490 MXN</span>
+                            <button class="btn-add-cart" data-name="Focus" data-price="490" data-image="assets/images/Product Shots/Focus 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Balance -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Balance 01.jpg" alt="Balance" class="img-default">
+                            <img src="assets/images/Product Shots/Balance 02.jpg" alt="Balance" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Balance</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Reishi</span>
+                        <div class="product-format-tags"><button type="button" class="format-tag active" onclick="selectFormat(this)">Tintura</button><button type="button" class="format-tag" onclick="selectFormat(this)">Oleato</button></div>
+                        <p style="font-size: 0.95rem;">Regula el estrés crónico, mejora el descanso profundo y equilibra tu sistema nervioso.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$490 MXN</span>
+                            <button class="btn-add-cart" data-name="Balance" data-price="490" data-image="assets/images/Product Shots/Balance 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Energy+ -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Energy+ 01.jpg" alt="Energy+" class="img-default">
+                            <img src="assets/images/Product Shots/Energy+ 02.jpg" alt="Energy+" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Energy+</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Cordyceps</span>
+                        <div class="product-format-tags"><button type="button" class="format-tag active" onclick="selectFormat(this)">Tintura</button><button type="button" class="format-tag" onclick="selectFormat(this)">Oleato</button></div>
+                        <p style="font-size: 0.95rem;">Aumenta la producción de ATP, resistencia física y mejora la oxigenación celular.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$490 MXN</span>
+                            <button class="btn-add-cart" data-name="Energy+" data-price="490" data-image="assets/images/Product Shots/Energy+ 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Emuná -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Emuná 01.jpg" alt="Emuná" class="img-default">
+                            <img src="assets/images/Product Shots/Emuná 02.jpg" alt="Emuná" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Emuná</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Cola de pavo</span>
+                        <div class="product-format-tags"><button type="button" class="format-tag active" onclick="selectFormat(this)">Tintura</button><button type="button" class="format-tag" onclick="selectFormat(this)">Oleato</button></div>
+                        <p style="font-size: 0.95rem;">Fortalece profundamente tu sistema inmunológico y apoya tu salud intestinal.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$490 MXN</span>
+                            <button class="btn-add-cart" data-name="Emuná" data-price="490" data-image="assets/images/Product Shots/Emuná 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mindii -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Mindii 01.jpg" alt="Mindii" class="img-default">
+                            <img src="assets/images/Product Shots/Mindii 02.jpg" alt="Mindii" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Mindii</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Mucuna pruriens</span>
+                        <div class="product-format-tags"><span class="format-tag active">Tintura</span></div>
+                        <p style="font-size: 0.95rem;">Impulsa tu dopamina natural, recupera la motivación y tu bienestar emocional.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$490 MXN</span>
+                            <button class="btn-add-cart" data-name="Mindii" data-price="490" data-image="assets/images/Product Shots/Mindii 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Smile (Súper Adaptógeno) -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Súper Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Smile 01.jpg" alt="Smile" class="img-default">
+                            <img src="assets/images/Product Shots/Smile 02.jpg" alt="Smile" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Smile</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Hongo Psilocybe</span>
+                        <div class="product-format-tags"><button type="button" class="format-tag active" onclick="selectFormat(this)">Tintura</button><button type="button" class="format-tag" onclick="selectFormat(this)">Oleato</button></div>
+                        <p style="font-size: 0.95rem;">Promueve la creatividad, claridad mental, reduce la ansiedad y estrés.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$690 MXN</span>
+                            <button class="btn-add-cart" data-name="Smile" data-price="690" data-image="assets/images/Product Shots/Smile 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mystic (Súper Adaptógeno) -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Súper Adaptógeno</div>
+                            <img src="assets/images/Product Shots/Mystic 01.jpg" alt="Mystic" class="img-default">
+                            <img src="assets/images/Product Shots/Mystic 02.jpg" alt="Mystic" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Mystic</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Hongo Psilocybe</span>
+                        <div class="product-format-tags"><button type="button" class="format-tag active" onclick="selectFormat(this)">Tintura</button><button type="button" class="format-tag" onclick="selectFormat(this)">Oleato</button></div>
+                        <p style="font-size: 0.95rem;">Para los buscadores que están trabajando activamente en la evolución de su consciencia.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$990 MXN</span>
+                            <button class="btn-add-cart" data-name="Mystic" data-price="990" data-image="assets/images/Product Shots/Mystic 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Armonizador -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Armonizador Energético</div>
+                            <img src="assets/images/Product Shots/Armonizador1.jpg" alt="Armonizador" class="img-default">
+                            <img src="assets/images/Product Shots/Armonizador1.jpg" alt="Armonizador" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Armonizador</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Salvia, ruda y pirul</span>
+                        <div class="product-format-tags"><span class="format-tag active">Spray</span></div>
+                        <p style="font-size: 0.95rem;">Spray aerobeo ambiental, adicionado con tinturas de protección energética: salvia, ruda y pirul, para disipar energías hostiles.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$59 MXN</span>
+                            <button class="btn-add-cart" data-name="Armonizador" data-price="59" data-image="assets/images/Product Shots/Armonizador1.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sabina Products Section -->
+    <section id="sabina" class="section products bg-light">
+        <div class="container">
+            <div class="section-header text-center fade-up">
+                <div style="margin-bottom: 2rem;">
+                    <span class="badge">Tinturas y Pomadas Sabina</span>
+                    <img src="assets/images/Logotipo/Sabina.svg" alt="Sabina Logo" style="height: 60px; opacity: 0.7; display: block; margin: 1.5rem auto 0;">
+                </div>
+                <h2 class="section-title">El amor de la gran abuela hecho alquimia.</h2>
+                <p class="section-subtitle" style="margin-bottom: 3rem;">Conoce nuestra colección de herbolaria funcional diseñada para recuperar tu bienestar y equilibrio.</p>
+            </div>
+            
+            <div class="products-grid fade-up">
+                <div class="grid-3" style="margin-bottom: 4rem;">
+                    
+                    <!-- Calma -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="assets/images/Product Shots/sabina/Calma 01.jpg" alt="Calma" class="img-default">
+                            <img src="assets/images/Product Shots/sabina/Calma 02.jpg" alt="Calma" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Calma</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Tila, caléndula, lavanda, manzanilla</span>
+                        <div class="product-format-tags"><span class="format-tag active">Tintura</span></div>
+                        <p style="font-size: 0.95rem;">Promueve la relajación y alivia el estrés acumulado. Ideal para relajar mente y cuerpo antes de dormir.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$390 MXN</span>
+                            <button class="btn-add-cart" data-name="Calma" data-price="390" data-image="assets/images/Product Shots/sabina/Calma 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Descansa -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="assets/images/Product Shots/sabina/Descansa 01.jpg" alt="Descansa" class="img-default">
+                            <img src="assets/images/Product Shots/sabina/Descansa 02.jpg" alt="Descansa" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Descansa</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Valeriana, orégano</span>
+                        <div class="product-format-tags"><span class="format-tag active">Tintura</span></div>
+                        <p style="font-size: 0.95rem;">Ayuda a conciliar el sueño y combatir el insomnio. Acción calmante que facilita un descanso profundo.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$390 MXN</span>
+                            <button class="btn-add-cart" data-name="Descansa" data-price="390" data-image="assets/images/Product Shots/sabina/Descansa 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Equilibra -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="assets/images/Product Shots/sabina/Equilibra 01.jpg" alt="Equilibra" class="img-default">
+                            <img src="assets/images/Product Shots/sabina/Equilibra 02.jpg" alt="Equilibra" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Equilibra</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Diente de león, moringa, zapote blanco</span>
+                        <div class="product-format-tags"><span class="format-tag active">Tintura</span></div>
+                        <p style="font-size: 0.95rem;">Tonifica y limpia el hígado, favoreciendo la eliminación de toxinas. Regula colesterol y azúcar.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$390 MXN</span>
+                            <button class="btn-add-cart" data-name="Equilibra" data-price="390" data-image="assets/images/Product Shots/sabina/Equilibra 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Luna -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="assets/images/Product Shots/sabina/Luna 01.jpg" alt="Luna" class="img-default">
+                            <img src="assets/images/Product Shots/sabina/Luna 02.jpg" alt="Luna" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Luna</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Hoja de frambuesa, romero, uña de gato</span>
+                        <div class="product-format-tags"><span class="format-tag active">Tintura</span></div>
+                        <p style="font-size: 0.95rem;">Tonifica el aparato reproductor y alivia malestares menstruales como calambres e inflamación.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$390 MXN</span>
+                            <button class="btn-add-cart" data-name="Luna" data-price="390" data-image="assets/images/Product Shots/sabina/Luna 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sueña -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="assets/images/Product Shots/sabina/Sueña 01.jpg" alt="Sueña" class="img-default">
+                            <img src="assets/images/Product Shots/sabina/Sueña 02.jpg" alt="Sueña" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Sueña</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Hierba de san juan, toronjil, tila</span>
+                        <div class="product-format-tags"><span class="format-tag active">Tintura</span></div>
+                        <p style="font-size: 0.95rem;">Promueve el descanso profundo y la relajación con propiedades antidepresivas y reconfortantes.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$390 MXN</span>
+                            <button class="btn-add-cart" data-name="Sueña" data-price="390" data-image="assets/images/Product Shots/sabina/Sueña 01.jpg">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Colita de Rana -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Colita de Rana" class="img-default">
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Colita de Rana" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Colita de Rana</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Aceite de coco + Cera de abeja + Herbolaria</span>
+                        <div class="product-format-tags"><span class="format-tag active">Pomada</span></div>
+                        <p style="font-size: 0.95rem;">Mezcla herbolaria seleccionada por sus propiedades regenerativas y antiinflamatorias.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$190 MXN</span>
+                            <button class="btn-add-cart" data-name="Colita de Rana" data-price="190" data-image="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Abacho -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Abacho" class="img-default">
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Abacho" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Abacho</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Aceite de coco + Cera de abeja + Herbolaria</span>
+                        <div class="product-format-tags"><span class="format-tag active">Pomada</span></div>
+                        <p style="font-size: 0.95rem;">Su textura suave y aroma relajante te envuelven como un cálido abrazo que calma cuerpo y espíritu.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$190 MXN</span>
+                            <button class="btn-add-cart" data-name="Abacho" data-price="190" data-image="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Descansa (Pomada) -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Descansa Pomada" class="img-default">
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Descansa Pomada" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Descansa</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Aceite de coco + Cera de abeja + Herbolaria</span>
+                        <div class="product-format-tags"><span class="format-tag active">Pomada</span></div>
+                        <p style="font-size: 0.95rem;">Inspirada en el apapacho de mamá, brinda alivio, descanso y ligereza al cuerpo después de un día intenso.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$190 MXN</span>
+                            <button class="btn-add-cart" data-name="Descansa (Pomada)" data-price="190" data-image="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Piel Silvestre (Pomada) -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Piel Silvestre" class="img-default">
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Piel Silvestre" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Piel Silvestre</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Aceite de coco + Cera de abeja + Herbolaria</span>
+                        <div class="product-format-tags"><span class="format-tag active">Pomada</span></div>
+                        <p style="font-size: 0.95rem;">Pomada diseñada para cuidar y proteger la piel sensible de una forma completamente natural.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$250 MXN</span>
+                            <button class="btn-add-cart" data-name="Piel Silvestre" data-price="250" data-image="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Alivia (Pomada) -->
+                    <div class="product-card benefit-card" style="box-shadow: var(--shadow-soft); padding: 2rem 1.5rem; overflow: hidden; position: relative; text-align: left;">
+                        <div class="product-image-wrapper">
+                            <div style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--color-primary); z-index: 10; border: 1px solid rgba(64, 83, 76, 0.1);">Herbolaria</div>
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Alivia" class="img-default">
+                            <img src="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente" alt="Alivia" class="img-hover">
+                        </div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">Alivia</h4>
+                        <span class="product-ingredient" style="color: var(--color-text-muted); font-size: 0.875rem; display: block; margin-bottom: 0.5rem; font-weight: 500;">Aceite de coco + Cera de abeja + Herbolaria</span>
+                        <div class="product-format-tags"><span class="format-tag active">Pomada</span></div>
+                        <p style="font-size: 0.95rem;">Brinda un descanso y bienestar profundo al cuerpo, ayudando a calmar molestias musculares y articulares.</p>
+                        <div class="product-footer">
+                            <span class="product-price">$190 MXN</span>
+                            <button class="btn-add-cart" data-name="Alivia" data-price="190" data-image="https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente">
+                                <i data-lucide="shopping-cart"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button id="close-cart" class="close-cart-btn"><i data-lucide="x"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Items will be injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">zsh.00 MXN</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="checkout-btn">Finalizar Compra</button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <a href="#" class="brand-logo" style="text-decoration: none;">
+                    <span class="logo-text" style="font-family: 'Outfit', sans-serif; font-weight: 300; letter-spacing: 0.25em; font-size: 1.25rem; color: var(--color-white); text-transform: uppercase;">Botica Silvestre</span>
+                </a>
+            </div>
+            <div class="footer-links">
+                <a href="#">Términos y Condiciones</a>
+                <a href="#">Aviso de Privacidad</a>
+
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Botica Silvestre. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/523314199842" target="_blank" class="whatsapp-float" aria-label="Contacto por WhatsApp">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+        </svg>
+    </a>
+</body>
+</html>

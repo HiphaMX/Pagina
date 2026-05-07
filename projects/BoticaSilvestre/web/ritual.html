@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botica Silvestre | Reprogramación Cuántica & Adaptógenos</title>
+    <meta name="description" content="Encuentra tu protocolo ideal de microdosificación con adaptógenos y súper adaptógenos. Descubre una clínica de epigenética para reprogramar tu estilo de vida.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+    <!-- Ritual Section -->
+    <section id="test" class="section test-section" style="min-height: 100vh; padding-top: 4rem; padding-bottom: 6rem; display: flex; align-items: center;">
+        <div class="container" style="max-width: 700px; width: 100%;">
+            <!-- Aquí se integra la lógica interactiva del Ritual de Alquimia -->
+            <div id="soulshine-test-wrapper" class="test-wrapper">
+            </div>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Tu Carrito</h3>
+            <button id="close-cart" class="close-cart-btn"><i data-lucide="x"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Items will be injected here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">$0.00 MXN</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="checkout-btn">Finalizar Compra</button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/cart.js"></script>
+</body>
+</html>
