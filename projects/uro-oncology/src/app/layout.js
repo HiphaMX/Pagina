@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import PreFooter from '@/components/PreFooter';
 import Footer from '@/components/Footer';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
         >
           <img src="/assets/iconos/whatsapp.png" alt="WhatsApp" width="30" height="30" />
         </a>
+        <GoogleAnalytics gaId="G-5E1RH7HVGD" />
       </body>
     </html>
   );
