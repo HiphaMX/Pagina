@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartFooter = document.querySelector('.cart-footer');
     const customerInfoDiv = document.createElement('div');
     customerInfoDiv.className = 'cart-customer-info';
-    customerInfoDiv.style.marginBottom = '1.5rem';
+    customerInfoDiv.style.marginBottom = '0';
     customerInfoDiv.style.display = 'none'; // Will be shown by renderCart if cart not empty
     customerInfoDiv.innerHTML = `
         <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Tus Datos</p>
@@ -252,8 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <p id="checkout-error" style="color: #d32f2f; font-size: 0.8rem; display: none; margin-bottom: 0.5rem;">Por favor llena todos los campos obligatorios (*).</p>
     `;
     
-    if (cartFooter && checkoutBtn) {
-        cartFooter.insertBefore(customerInfoDiv, checkoutBtn);
+    const cartSidebarContent = document.getElementById('cart-sidebar');
+    if (cartSidebarContent && cartFooter) {
+        customerInfoDiv.style.flex = '1';
+        customerInfoDiv.style.overflowY = 'auto';
+        customerInfoDiv.style.padding = '1.5rem';
+        cartSidebarContent.insertBefore(customerInfoDiv, cartFooter);
         
         // Add back button
         const backBtn = document.createElement('button');
