@@ -413,17 +413,19 @@ function render() {
                 <span class="quiz-step-label">Sintonización ${state.quizIdx + 1}/10</span>
                 <h2 class="quiz-question-text font-serif">${q.text}</h2>
 
-                <div class="scale-buttons-container">
-                    <button class="scale-btn" onclick="window.alquimia.selectValue(1)">1</button>
-                    <button class="scale-btn" onclick="window.alquimia.selectValue(2)">2</button>
-                    <button class="scale-btn" onclick="window.alquimia.selectValue(3)">3</button>
-                    <button class="scale-btn" onclick="window.alquimia.selectValue(4)">4</button>
-                    <button class="scale-btn" onclick="window.alquimia.selectValue(5)">5</button>
-                </div>
-                
-                <div class="scale-labels">
-                    <span>${q.labelMin || 'Menos'}</span>
-                    <span>${q.labelMax || 'Más'}</span>
+                <div class="scale-wrapper" style="max-width: 380px; margin: 0 auto; width: 100%;">
+                    <div class="scale-buttons-container">
+                        <button class="scale-btn" onclick="window.alquimia.selectValue(1)">1</button>
+                        <button class="scale-btn" onclick="window.alquimia.selectValue(2)">2</button>
+                        <button class="scale-btn" onclick="window.alquimia.selectValue(3)">3</button>
+                        <button class="scale-btn" onclick="window.alquimia.selectValue(4)">4</button>
+                        <button class="scale-btn" onclick="window.alquimia.selectValue(5)">5</button>
+                    </div>
+                    
+                    <div class="scale-labels">
+                        <span>${q.labelMin || 'Menos'}</span>
+                        <span>${q.labelMax || 'Más'}</span>
+                    </div>
                 </div>
 
                 <div class="alquimia-controls">
@@ -605,15 +607,15 @@ function render() {
 
                         <div class="result-footer">
                             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; flex-direction: column; align-items: center;">
-                                <button onclick="window.alquimia.addRitualToCart()" class="btn btn-quiz-primary btn-large" style="width: 100%; max-width: 350px; justify-content: center;">
+                                <button onclick="window.alquimia.addRitualToCart()" class="btn btn-quiz-primary" style="width: 100%; max-width: 350px; justify-content: center;">
                                     <i data-lucide="shopping-cart" style="width:18px;height:18px;"></i>
                                     <span>Añadir mi ritual al carrito</span>
                                 </button>
-                                <a href="botica.html" class="btn btn-quiz-outline btn-large" style="width: 100%; max-width: 350px; justify-content: center;">
+                                <a href="botica.html" class="btn btn-quiz-outline" style="width: 100%; max-width: 350px; justify-content: center;">
                                     <i data-lucide="compass" style="width:18px;height:18px;"></i>
                                     <span>Descubrir la botica</span>
                                 </a>
-                                <a href="${getWhatsAppUrl()}" target="_blank" class="btn btn-quiz-outline btn-large" style="width: 100%; max-width: 350px; justify-content: center; color: #25D366; border-color: rgba(37, 211, 102, 0.5);">
+                                <a href="${getWhatsAppUrl()}" target="_blank" class="btn btn-quiz-outline" style="width: 100%; max-width: 350px; justify-content: center; color: #25D366; border-color: rgba(37, 211, 102, 0.5);">
                                     <i data-lucide="message-circle" style="width:18px;height:18px;"></i>
                                     <span>Consulta por WhatsApp</span>
                                 </a>

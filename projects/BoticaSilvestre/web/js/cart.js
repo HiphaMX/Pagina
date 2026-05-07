@@ -17,9 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutBtn = document.getElementById('checkout-btn');
 
     let cart = JSON.parse(localStorage.getItem('soulshine_cart')) || [];
+    let isCheckoutStep = false;
 
     // Toggle Cart
     const openCart = () => {
+        isCheckoutStep = false;
         cartSidebar.classList.add('active');
         cartOverlay.classList.add('active');
         renderCart();
@@ -120,16 +122,31 @@ document.addEventListener('DOMContentLoaded', () => {
         let total = 0;
         
         const customerInfoDiv = document.querySelector('.cart-customer-info');
+        const backBtn = document.getElementById('cart-back-btn');
 
         if (cart.length === 0) {
+            isCheckoutStep = false;
+            cartItemsContainer.style.display = 'block';
             cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío.</p>';
             if(cartTotalPriceEl) cartTotalPriceEl.textContent = '$0.00 MXN';
             updateCartCount();
             if (customerInfoDiv) customerInfoDiv.style.display = 'none';
+            if (backBtn) backBtn.style.display = 'none';
+            if (checkoutBtn) checkoutBtn.innerHTML = 'Finalizar compra';
             return;
         }
 
-        if (customerInfoDiv) customerInfoDiv.style.display = 'block';
+        if (isCheckoutStep) {
+            cartItemsContainer.style.display = 'none';
+            if (customerInfoDiv) customerInfoDiv.style.display = 'block';
+            if (backBtn) backBtn.style.display = 'flex';
+            if (checkoutBtn) checkoutBtn.innerHTML = 'Proceder al Pago';
+        } else {
+            cartItemsContainer.style.display = 'block';
+            if (customerInfoDiv) customerInfoDiv.style.display = 'none';
+            if (backBtn) backBtn.style.display = 'none';
+            if (checkoutBtn) checkoutBtn.innerHTML = 'Finalizar compra';
+        }
 
         cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
@@ -194,10 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Dirección de Envío</p>
         <input type="text" id="checkout-street" placeholder="Calle y Número *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="text" id="checkout-neighborhood" placeholder="Colonia *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
-        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-            <input type="text" id="checkout-city" placeholder="Ciudad *" required style="flex: 1; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
-            <select id="checkout-state" required style="flex: 1; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem; background: #fff; color: var(--color-text-main);">
-                <option value="" disabled selected>Estado *</option>
+        <input type="text" id="checkout-city" placeholder="Ciudad *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <select id="checkout-state" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem; background: #fff; color: var(--color-text-main);">
+            <option value="" disabled selected>Estado *</option>
                 <option value="Aguascalientes">Aguascalientes</option>
                 <option value="Baja California">Baja California</option>
                 <option value="Baja California Sur">Baja California Sur</option>
@@ -230,8 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <option value="Veracruz">Veracruz</option>
                 <option value="Yucatán">Yucatán</option>
                 <option value="Zacatecas">Zacatecas</option>
-            </select>
-        </div>
+        </select>
         <input type="text" id="checkout-zip" placeholder="C.P. *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
 
         <p id="checkout-error" style="color: #d32f2f; font-size: 0.8rem; display: none; margin-bottom: 0.5rem;">Por favor llena todos los campos obligatorios (*).</p>
@@ -239,12 +254,42 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (cartFooter && checkoutBtn) {
         cartFooter.insertBefore(customerInfoDiv, checkoutBtn);
+        
+        // Add back button
+        const backBtn = document.createElement('button');
+        backBtn.id = 'cart-back-btn';
+        backBtn.style.width = '100%';
+        backBtn.style.marginTop = '0.5rem';
+        backBtn.style.display = 'none';
+        backBtn.style.justifyContent = 'center';
+        backBtn.style.alignItems = 'center';
+        backBtn.style.padding = '0.75rem';
+        backBtn.style.border = '1px solid rgba(64, 83, 76, 0.5)';
+        backBtn.style.background = 'transparent';
+        backBtn.style.color = 'var(--color-primary)';
+        backBtn.style.borderRadius = '50px';
+        backBtn.style.cursor = 'pointer';
+        backBtn.style.fontWeight = '500';
+        backBtn.style.fontFamily = 'inherit';
+        backBtn.style.fontSize = '1rem';
+        backBtn.innerHTML = 'Volver al carrito';
+        backBtn.addEventListener('click', () => {
+            isCheckoutStep = false;
+            renderCart();
+        });
+        cartFooter.appendChild(backBtn);
     }
 
     // Checkout Logic (Mercado Pago Integration)
     if(checkoutBtn) {
         checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) return;
+            
+            if (!isCheckoutStep) {
+                isCheckoutStep = true;
+                renderCart();
+                return;
+            }
             
             const nameInput = document.getElementById('checkout-name');
             const phoneInput = document.getElementById('checkout-phone');
