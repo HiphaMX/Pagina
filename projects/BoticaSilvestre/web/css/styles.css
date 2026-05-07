@@ -248,6 +248,10 @@ p {
     gap: 1rem;
 }
 
+.mobile-only {
+    display: none !important;
+}
+
 @media (max-width: 767px) {
     .nav-content {
         flex-direction: row;
@@ -268,10 +272,6 @@ p {
     .mobile-only {
         display: inline-flex !important;
     }
-}
-
-.mobile-only {
-    display: none !important;
 }
 
 @media (min-width: 768px) {

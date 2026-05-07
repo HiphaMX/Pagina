@@ -310,6 +310,30 @@ ENTREGA ESPERADA:
 - Selección de productos reales
 - Instrucciones para IMAGENOLOGO para generar el render.""",
     },
+    {
+        "id": 10,
+        "key": "datos",
+        "name": "DATOS",
+        "icon": "📊",
+        "color": C.fg(59, 130, 246),      # Blue
+        "role": "Científico de Datos e Investigador de Tendencias Senior",
+        "file": "AGENT_DATOS.md",
+        "badge": "Nuevo",
+        "tags": ["datos", "analítica", "tendencias", "competencia", "mercado", "insights", "reporte"],
+        "when_to_use": [
+            "Extraer insights de bases de datos o archivos (CSV, Excel)",
+            "Investigar tendencias de mercado y proyecciones",
+            "Auditar la estrategia y posicionamiento de competidores",
+            "Justificar con datos las decisiones de BrandMind o DesignFlow",
+        ],
+        "activation": """Actúa como DATOS, el Científico de Datos e Investigador de Tendencias Senior de HiphaMX.
+
+Tarea: [Análisis de CSV / Auditoría de Competencia / Investigación de Tendencias]
+Contexto/Industria: [Ej. SaaS B2B, Ecommerce Retail, Fintech]
+Objetivo: [Qué decisiones queremos tomar con esta información]
+
+[Adjuntar datos, enlaces o instrucciones específicas aquí]""",
+    },
 ]
 
 # ─── Helper functions ────────────────────────────────────────────────────────
