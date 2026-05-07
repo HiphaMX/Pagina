@@ -300,6 +300,7 @@ p {
     justify-content: center;
     text-align: center;
     padding-top: 5rem; /* space for navbar */
+    padding-bottom: 5rem; /* balance vertical centering */
     overflow: hidden;
 }
 
