@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Here we point to your FastAPI backend URL. 
                 // Currently set to relative /api assuming same domain, but you will likely need the absolute URL of your FastAPI server
                 // e.g. const API_URL = 'https://tu-fastapi-servidor.vercel.app/api/mercadopago/create_preference';
-                const API_URL = 'https://hiphamx-fastapi.vercel.app/api/mercadopago/create_preference';
+                const API_URL = 'https://hipha-mx-fastapi.vercel.app/api/mercadopago/create_preference';
                 
                 const response = await fetch(API_URL, {
                     method: 'POST',
