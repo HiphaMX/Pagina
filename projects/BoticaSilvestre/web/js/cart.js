@@ -147,8 +147,30 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             cartItemsContainer.appendChild(itemEl);
         });
+        const shippingCost = total > 590 ? 0 : (total > 0 ? 180 : 0);
+        const grandTotal = total + shippingCost;
+        const shippingText = total === 0 ? '$0.00 MXN' : (total > 590 ? '<span style="color:var(--color-primary-light);">¡Gratis!</span>' : '$180.00 MXN');
 
-        if(cartTotalPriceEl) cartTotalPriceEl.textContent = `$${total.toFixed(2)} MXN`;
+        const cartFooterTotal = cartSidebar.querySelector('.cart-total');
+        if (cartFooterTotal) {
+            cartFooterTotal.innerHTML = `
+                <div style="display:flex; justify-content:space-between; width:100%; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-text-muted);">
+                    <span>Subtotal:</span>
+                    <span>$${total.toFixed(2)} MXN</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; width:100%; font-size: 0.9rem; margin-bottom: 1rem; color: var(--color-text-muted);">
+                    <span>Envío a todo México:</span>
+                    <span>${shippingText}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; width:100%; border-top: 1px solid var(--color-bg-alt); padding-top: 0.5rem;">
+                    <span>Total:</span>
+                    <span id="cart-total-price">$${grandTotal.toFixed(2)} MXN</span>
+                </div>
+            `;
+        } else if (cartTotalPriceEl) {
+            cartTotalPriceEl.textContent = `$${grandTotal.toFixed(2)} MXN`;
+        }
+        
         updateCartCount();
     };
 

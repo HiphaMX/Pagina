@@ -42,8 +42,15 @@ async def create_preference(cart: CartRequest, request: Request):
     # This can be configured in env vars or hardcoded to botica-silvestre.com
     site_domain = os.getenv("FRONTEND_URL", "https://www.botica-silvestre.com")
 
+    total_price = sum(item.price * item.quantity for item in cart.items)
+    shipping_cost = 0.0 if total_price > 590 else 180.0
+
     preference_data = {
         "items": mp_items,
+        "shipments": {
+            "cost": shipping_cost,
+            "mode": "not_specified"
+        },
         "back_urls": {
             "success": f"{site_domain}/index.html",
             "failure": f"{site_domain}/botica.html",
