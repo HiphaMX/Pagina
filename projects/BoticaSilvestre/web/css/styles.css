@@ -250,24 +250,28 @@ p {
 
 @media (max-width: 767px) {
     .nav-content {
-        flex-direction: column;
-        justify-content: center;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         gap: 1rem;
     }
     .brand-logo {
-        justify-content: center;
-        width: 100%;
+        width: auto;
     }
     .nav-links {
-        width: 100%;
-        justify-content: center;
-        gap: 1rem;
-        flex-wrap: wrap;
+        width: auto;
+        gap: 0.5rem;
     }
     .nav-links .btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
+        display: none;
     }
+    .mobile-only {
+        display: inline-flex !important;
+    }
+}
+
+.mobile-only {
+    display: none !important;
 }
 
 @media (min-width: 768px) {
