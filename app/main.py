@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import contact
+from app.api import contact, mercadopago
 
 app = FastAPI(title="HiphaMX API")
 
@@ -13,6 +13,7 @@ app.add_middleware(
 )
 
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
+app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 
 @app.get("/")
 def read_root():

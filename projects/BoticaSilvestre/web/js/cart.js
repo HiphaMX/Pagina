@@ -152,13 +152,50 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartCount();
     };
 
-    // Checkout Logic (Placeholder for MP integration)
+    // Checkout Logic (Mercado Pago Integration)
     if(checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
+        checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) return;
             
-            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-            alert('¡Listo para la Fase 2!\\n\\nAquí enviaremos los datos de tu carrito (' + cart.length + ' artículos) por un total de $' + total + ' MXN a tu servidor FastAPI para generar el link de pago de Mercado Pago.');
+            // Show loading state
+            const originalText = checkoutBtn.innerHTML;
+            checkoutBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Procesando...';
+            checkoutBtn.disabled = true;
+            if (window.lucide) window.lucide.createIcons();
+
+            try {
+                // Here we point to your FastAPI backend URL. 
+                // Currently set to relative /api assuming same domain, but you will likely need the absolute URL of your FastAPI server
+                // e.g. const API_URL = 'https://tu-fastapi-servidor.vercel.app/api/mercadopago/create_preference';
+                const API_URL = 'https://hiphamx-fastapi.vercel.app/api/mercadopago/create_preference';
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ items: cart })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al conectar con la pasarela de pago');
+                }
+
+                const data = await response.json();
+                
+                if (data.init_point) {
+                    // Redirect to Mercado Pago checkout
+                    window.location.href = data.init_point;
+                } else {
+                    throw new Error('Respuesta inválida del servidor');
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Hubo un problema al iniciar el pago. Asegúrate de que el servidor FastAPI esté conectado correctamente.');
+                checkoutBtn.innerHTML = originalText;
+                checkoutBtn.disabled = false;
+                if (window.lucide) window.lucide.createIcons();
+            }
         });
     }
 
