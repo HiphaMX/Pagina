@@ -66,4 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Fix Safari/Chrome back button freeze (BFCache restores page with overlay still active)
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            overlay.classList.remove('active');
+        }
+    });
 });
