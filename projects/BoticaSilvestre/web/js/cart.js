@@ -118,13 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!cartItemsContainer) return;
         cartItemsContainer.innerHTML = '';
         let total = 0;
+        
+        const customerInfoDiv = document.querySelector('.cart-customer-info');
 
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = '<p class="empty-cart-msg">Tu carrito está vacío.</p>';
             if(cartTotalPriceEl) cartTotalPriceEl.textContent = '$0.00 MXN';
             updateCartCount();
+            if (customerInfoDiv) customerInfoDiv.style.display = 'none';
             return;
         }
+
+        if (customerInfoDiv) customerInfoDiv.style.display = 'block';
 
         cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
@@ -174,11 +179,40 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartCount();
     };
 
+    // Inject Customer Info Form
+    const cartFooter = document.querySelector('.cart-footer');
+    const customerInfoDiv = document.createElement('div');
+    customerInfoDiv.className = 'cart-customer-info';
+    customerInfoDiv.style.marginBottom = '1.5rem';
+    customerInfoDiv.style.display = 'none'; // Will be shown by renderCart if cart not empty
+    customerInfoDiv.innerHTML = `
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Datos de Envío</p>
+        <input type="text" id="checkout-name" placeholder="Nombre completo *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <input type="tel" id="checkout-phone" placeholder="Teléfono / WhatsApp *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <input type="email" id="checkout-email" placeholder="Email (Opcional)" style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <p id="checkout-error" style="color: #d32f2f; font-size: 0.8rem; display: none; margin-bottom: 0.5rem;">Por favor llena los campos obligatorios (*).</p>
+    `;
+    
+    if (cartFooter && checkoutBtn) {
+        cartFooter.insertBefore(customerInfoDiv, checkoutBtn);
+    }
+
     // Checkout Logic (Mercado Pago Integration)
     if(checkoutBtn) {
         checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) return;
             
+            const nameInput = document.getElementById('checkout-name');
+            const phoneInput = document.getElementById('checkout-phone');
+            const emailInput = document.getElementById('checkout-email');
+            const errorText = document.getElementById('checkout-error');
+
+            if (!nameInput.value.trim() || !phoneInput.value.trim()) {
+                errorText.style.display = 'block';
+                return;
+            }
+            errorText.style.display = 'none';
+
             // Show loading state
             const originalText = checkoutBtn.innerHTML;
             checkoutBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Procesando...';
@@ -191,12 +225,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 // e.g. const API_URL = 'https://tu-fastapi-servidor.vercel.app/api/mercadopago/create_preference';
                 const API_URL = 'https://hipha-mx-fastapi.vercel.app/api/mercadopago/create_preference';
                 
+                const payerInfo = {
+                    name: nameInput.value.trim(),
+                    phone: phoneInput.value.trim(),
+                    email: emailInput.value.trim() || null
+                };
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ items: cart })
+                    body: JSON.stringify({ items: cart, payer: payerInfo })
                 });
 
                 if (!response.ok) {

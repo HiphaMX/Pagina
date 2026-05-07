@@ -16,8 +16,14 @@ class CartItem(BaseModel):
     quantity: int
     image: Optional[str] = None
 
+class PayerInfo(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+
 class CartRequest(BaseModel):
     items: List[CartItem]
+    payer: Optional[PayerInfo] = None
 
 @router.post("/create_preference")
 async def create_preference(cart: CartRequest, request: Request):
@@ -59,6 +65,18 @@ async def create_preference(cart: CartRequest, request: Request):
         "auto_return": "approved",
         "statement_descriptor": "BOTICA SILVESTRE"
     }
+
+    if cart.payer:
+        preference_data["payer"] = {}
+        if cart.payer.name:
+            parts = cart.payer.name.split(" ", 1)
+            preference_data["payer"]["name"] = parts[0]
+            if len(parts) > 1:
+                preference_data["payer"]["surname"] = parts[1]
+        if cart.payer.email:
+            preference_data["payer"]["email"] = cart.payer.email
+        if cart.payer.phone:
+            preference_data["payer"]["phone"] = {"area_code": "", "number": cart.payer.phone}
 
     try:
         preference_response = sdk.preference().create(preference_data)
