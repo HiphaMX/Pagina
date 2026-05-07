@@ -16,10 +16,15 @@ class CartItem(BaseModel):
     quantity: int
     image: Optional[str] = None
 
+class AddressInfo(BaseModel):
+    street_name: Optional[str] = None
+    zip_code: Optional[str] = None
+
 class PayerInfo(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
     email: Optional[str] = None
+    address: Optional[AddressInfo] = None
 
 class CartRequest(BaseModel):
     items: List[CartItem]
@@ -77,6 +82,12 @@ async def create_preference(cart: CartRequest, request: Request):
             preference_data["payer"]["email"] = cart.payer.email
         if cart.payer.phone:
             preference_data["payer"]["phone"] = {"area_code": "", "number": cart.payer.phone}
+        if cart.payer.address:
+            preference_data["payer"]["address"] = {}
+            if cart.payer.address.street_name:
+                preference_data["payer"]["address"]["street_name"] = cart.payer.address.street_name
+            if cart.payer.address.zip_code:
+                preference_data["payer"]["address"]["zip_code"] = cart.payer.address.zip_code
 
     try:
         preference_response = sdk.preference().create(preference_data)

@@ -186,11 +186,20 @@ document.addEventListener('DOMContentLoaded', () => {
     customerInfoDiv.style.marginBottom = '1.5rem';
     customerInfoDiv.style.display = 'none'; // Will be shown by renderCart if cart not empty
     customerInfoDiv.innerHTML = `
-        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Datos de Envío</p>
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Tus Datos</p>
         <input type="text" id="checkout-name" placeholder="Nombre completo *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="tel" id="checkout-phone" placeholder="Teléfono / WhatsApp *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
-        <input type="email" id="checkout-email" placeholder="Email (Opcional)" style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
-        <p id="checkout-error" style="color: #d32f2f; font-size: 0.8rem; display: none; margin-bottom: 0.5rem;">Por favor llena los campos obligatorios (*).</p>
+        <input type="email" id="checkout-email" placeholder="Email (Opcional)" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Dirección de Envío</p>
+        <input type="text" id="checkout-street" placeholder="Calle y Número *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <input type="text" id="checkout-neighborhood" placeholder="Colonia *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <input type="text" id="checkout-city" placeholder="Ciudad y Estado *" required style="flex: 2; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+            <input type="text" id="checkout-zip" placeholder="C.P. *" required style="flex: 1; padding: 0.75rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
+        </div>
+
+        <p id="checkout-error" style="color: #d32f2f; font-size: 0.8rem; display: none; margin-bottom: 0.5rem;">Por favor llena todos los campos obligatorios (*).</p>
     `;
     
     if (cartFooter && checkoutBtn) {
@@ -205,9 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameInput = document.getElementById('checkout-name');
             const phoneInput = document.getElementById('checkout-phone');
             const emailInput = document.getElementById('checkout-email');
+            
+            const streetInput = document.getElementById('checkout-street');
+            const neighborhoodInput = document.getElementById('checkout-neighborhood');
+            const cityInput = document.getElementById('checkout-city');
+            const zipInput = document.getElementById('checkout-zip');
+            
             const errorText = document.getElementById('checkout-error');
 
-            if (!nameInput.value.trim() || !phoneInput.value.trim()) {
+            if (!nameInput.value.trim() || !phoneInput.value.trim() || !streetInput.value.trim() || !neighborhoodInput.value.trim() || !cityInput.value.trim() || !zipInput.value.trim()) {
                 errorText.style.display = 'block';
                 return;
             }
@@ -228,7 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const payerInfo = {
                     name: nameInput.value.trim(),
                     phone: phoneInput.value.trim(),
-                    email: emailInput.value.trim() || null
+                    email: emailInput.value.trim() || null,
+                    address: {
+                        street_name: streetInput.value.trim() + ', Col. ' + neighborhoodInput.value.trim() + ', ' + cityInput.value.trim(),
+                        zip_code: zipInput.value.trim()
+                    }
                 };
 
                 const response = await fetch(API_URL, {
