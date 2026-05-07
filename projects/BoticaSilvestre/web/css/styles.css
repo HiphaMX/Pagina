@@ -1174,6 +1174,14 @@ span.format-tag {
         text-align: center;
     }
     
+    .footer-brand {
+        text-align: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
     .footer-brand p {
         margin-left: auto;
         margin-right: auto;
@@ -1186,7 +1194,7 @@ span.format-tag {
     }
 }
 
-/* Fix footer bottom spacing on mobile Safari */
+/* Fix footer bottom spacing on mobile Safari and iOS Safe Area */
 .footer-bottom {
-    padding-bottom: 2rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
