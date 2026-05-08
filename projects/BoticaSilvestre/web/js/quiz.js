@@ -9,10 +9,10 @@ const PRODUCTS_DB = {
     { id: 'mystic', label: 'Mystic', product: 'Mystic (Dosis concentrada de Psilocibina)', desc: 'Exploración profunda del ser.', price: 990, image: 'assets/images/Product Shots/Mystic 01.webp' },
   ],
   step2: [
-    { id: 'rana', product: 'Colita de Rana', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'activity', desc: 'Dolor muscular después de ir al gym', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
-    { id: 'descansa', product: 'Descansa', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'wind', desc: 'Piernas cansadas por el trabajo diario', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
-    { id: 'abacho', product: 'Abacho', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'heart', desc: 'Reconexión con mi verdadera esencia', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
-    { id: 'piel', product: 'Piel Silvestre', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'sun', desc: 'Mi piel es delicada y necesita una caricia', price: 250, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
+    { id: 'rana', product: 'Colita de Rana', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'activity', desc: 'Dolor muscular con la actividad física', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
+    { id: 'descansa', product: 'Descansa', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'wind', desc: 'Mis piernas terminan cansadas después de un día activo', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
+    { id: 'abacho', product: 'Abacho', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'heart', desc: 'Necesidad de acariciarme y aceptarme más', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
+    { id: 'piel', product: 'Piel Silvestre', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'sun', desc: 'Piel delicada que se pone sensible con la exposición al sol', price: 250, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
     { id: 'alivia', product: 'Alivia', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'zap', desc: 'Dolor en las articulaciones', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
   ],
   step3: [
@@ -627,7 +627,7 @@ function render() {
                         <div class="result-card-top-line"></div>
                         
                         <header class="result-header">
-                            <h1 class="result-title font-serif">Tu Ritual de Reconexión</h1>
+                            <h1 class="result-title font-serif">Tu Ritual de Conexión</h1>
                             <p class="result-subtitle">Botica Silvestre</p>
                         </header>
 
