@@ -38,7 +38,6 @@ async def create_preference(cart: CartRequest, request: Request):
     if not cart.items:
         raise HTTPException(status_code=400, detail="Cart is empty")
 
-    # Define the items for Mercado Pago
     mp_items = []
     for item in cart.items:
         mp_items.append({
@@ -49,9 +48,8 @@ async def create_preference(cart: CartRequest, request: Request):
             "picture_url": item.image if item.image and item.image.startswith("http") else None
         })
 
-    # The success redirect URL is the Vercel site
-    # This can be configured in env vars or hardcoded to botica-silvestre.com
     site_domain = os.getenv("FRONTEND_URL", "https://www.botica-silvestre.com")
+    backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
 
     total_price = sum(item.price * item.quantity for item in cart.items)
     shipping_cost = 0.0 if total_price > 590 else 180.0
@@ -68,7 +66,8 @@ async def create_preference(cart: CartRequest, request: Request):
             "pending": f"{site_domain}/botica.html"
         },
         "auto_return": "approved",
-        "statement_descriptor": "BOTICA SILVESTRE"
+        "statement_descriptor": "BOTICA SILVESTRE",
+        "notification_url": f"{backend_url}/api/mercadopago/webhook"
     }
 
     if cart.payer:
@@ -89,37 +88,75 @@ async def create_preference(cart: CartRequest, request: Request):
             if cart.payer.address.zip_code:
                 preference_data["payer"]["address"]["zip_code"] = cart.payer.address.zip_code
 
+    # We add metadata here for the webhook to use later
+    if cart.payer and cart.payer.email:
+        total_with_shipping = total_price + shipping_cost
+        order_details_html = "<ul>"
+        for item in cart.items:
+            order_details_html += f"<li>{item.quantity}x {item.name} - ${item.price}</li>"
+        order_details_html += "</ul>"
+        if shipping_cost > 0:
+            order_details_html += f"<p>Envío: ${shipping_cost}</p>"
+            
+        payer_name = cart.payer.name or "Cliente"
+        payer_email = cart.payer.email
+        payer_phone = cart.payer.phone or "No provisto"
+        address_str = ""
+        if cart.payer.address:
+            address_str = f"{cart.payer.address.street_name or ''}, CP {cart.payer.address.zip_code or ''}"
+
+        preference_data["metadata"] = {
+            "cart_html": order_details_html,
+            "payer_name": payer_name,
+            "payer_email": payer_email,
+            "payer_phone": payer_phone,
+            "address": address_str,
+            "total": str(total_with_shipping)
+        }
+
     try:
         preference_response = sdk.preference().create(preference_data)
         preference = preference_response.get("response", {})
         
-        # Mercado Pago returns 'init_point' for the checkout page
         if "init_point" not in preference:
             raise Exception("No init_point in response")
             
-        # Format order details and send emails asynchronously
-        if cart.payer and cart.payer.email:
-            import asyncio
-            from app.core.mailer import send_botica_order_customer, send_botica_order_team
-            
-            total_with_shipping = total_price + shipping_cost
-            order_details_html = "<ul>"
-            for item in cart.items:
-                order_details_html += f"<li>{item.quantity}x {item.name} - ${item.price}</li>"
-            order_details_html += "</ul>"
-            if shipping_cost > 0:
-                order_details_html += f"<p>Envío: ${shipping_cost}</p>"
-                
-            payer_name = cart.payer.name or "Cliente"
-            payer_email = cart.payer.email
-            payer_phone = cart.payer.phone or "No provisto"
-            address_str = ""
-            if cart.payer.address:
-                address_str = f"{cart.payer.address.street_name or ''}, CP {cart.payer.address.zip_code or ''}"
-            
-            asyncio.create_task(send_botica_order_customer(payer_name, payer_email, order_details_html, total_with_shipping))
-            asyncio.create_task(send_botica_order_team(payer_name, payer_email, payer_phone, address_str, order_details_html, total_with_shipping))
-
         return {"init_point": preference["init_point"], "id": preference.get("id")}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/webhook")
+async def mercadopago_webhook(request: Request):
+    payload = await request.json()
+    action = payload.get("action") or payload.get("type") or payload.get("topic")
+    
+    if action in ["payment.created", "payment.updated", "payment"]:
+        payment_id = payload.get("data", {}).get("id")
+        if payment_id:
+            try:
+                payment_info = sdk.payment().get(payment_id)
+                payment = payment_info.get("response", {})
+                status = payment.get("status")
+                
+                if status == "approved":
+                    metadata = payment.get("metadata", {})
+                    # Mercado Pago might return empty metadata or we might not have email.
+                    payer_email = metadata.get("payer_email")
+                    if payer_email:
+                        from app.core.mailer import send_botica_order_customer, send_botica_order_team
+                        import asyncio
+                        
+                        payer_name = metadata.get("payer_name", "Cliente")
+                        payer_phone = metadata.get("payer_phone", "")
+                        address_str = metadata.get("address", "")
+                        cart_html = metadata.get("cart_html", "")
+                        total = float(metadata.get("total", 0.0))
+                        
+                        # Use asyncio.create_task to not block webhook response
+                        asyncio.create_task(send_botica_order_customer(payer_name, payer_email, cart_html, total))
+                        asyncio.create_task(send_botica_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                        
+            except Exception as e:
+                print(f"Webhook error: {e}")
+                
+    return {"status": "ok"}
