@@ -22,16 +22,16 @@ const PRODUCTS_DB = {
 };
 
 const QUIZ_QUESTIONS = [
-  { id: 1, text: "¿Qué nivel de estrés percibes en tu día a día?", labelMin: "POCO", labelMax: "DEMASIADO", targets: { balance: 1.5, smile: 1.2, mystic: 1 } },
+  { id: 1, text: "¿Qué nivel de estrés percibes en tu día a día?", labelMin: "POCO", labelMax: "DEMASIADO", targets: { balance: 1.5, focus: 1.5, energy: 1.5, mindii: 1.5, smile: 2, mystic: 2 } },
   { id: 2, text: "¿Cómo calificarías tu calidad de descanso?", labelMin: "MALO", labelMax: "EXCELENTE", targets: { balance: 1.5, smile: 1.2, mystic: 1 }, inverse: true },
-  { id: 3, text: "¿Cómo está tu nivel de energía física al despertar?", labelMin: "MUY BAJA", labelMax: "AL MÁXIMO", targets: { energy: 1.5 }, inverse: true },
+  { id: 3, text: "¿Cómo está tu nivel de energía física al despertar?", labelMin: "MUY BAJA", labelMax: "AL MÁXIMO", targets: { energy: 2 }, inverse: true },
   { id: 4, text: "¿Sientes que te falta enfoque o tienes 'niebla mental'?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { focus: 1.5, mindii: 1.2 } },
-  { id: 5, text: "¿Con qué frecuencia sientes tus defensas bajas?", labelMin: "CASI NUNCA", labelMax: "TODO EL TIEMPO", targets: { emuna: 2 } },
-  { id: 6, text: "¿Qué tan presente está la ansiedad rumiante?", labelMin: "CASI NUNCA", labelMax: "MUY PRESENTE", targets: { balance: 1.2, smile: 1.2 } },
-  { id: 7, text: "¿Te sientes desconectado de tu propósito?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { mystic: 2, smile: 0.8 } },
-  { id: 8, text: "¿Sientes fatiga muscular o pesadez física?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { energy: 1, emuna: 0.5 } },
-  { id: 9, text: "¿Necesitas impulsar tu creatividad y abrirte a cosas nuevas?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { mindii: 1, smile: 1.5, mystic: 1.2 } },
-  { id: 10, text: "¿Te permites sentir plenamente y expresas tus emociones?", labelMin: "CASI NUNCA", labelMax: "TODO EL TIEMPO", targets: { balance: 1.5, smile: 1 }, inverse: true },
+  { id: 5, text: "¿Con qué frecuencia sientes tus defensas bajas?", labelMin: "CASI NUNCA", labelMax: "TODO EL TIEMPO", targets: { emuna: 2, energy: 1.5, focus: 1.5, mindii: 1.5 } },
+  { id: 6, text: "¿Qué tan presente está la ansiedad rumiante?", labelMin: "CASI NUNCA", labelMax: "MUY PRESENTE", targets: { balance: 1.2, focus: 2, smile: 2, mystic: 2 } },
+  { id: 7, text: "¿Te sientes desconectado de tu propósito?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { smile: 1.5, mystic: 1.5 } },
+  { id: 8, text: "¿Sientes fatiga muscular o pesadez física?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { energy: 1.5, emuna: 0.5, smile: 1, mystic: 1 } },
+  { id: 9, text: "¿Necesitas impulsar tu creatividad y abrirte a cosas nuevas?", labelMin: "CASI NUNCA", labelMax: "MUCHAS VECES", targets: { mindii: 1, smile: 1.5, mystic: 1.2, focus: 1 } },
+  { id: 10, text: "¿Te permites sentir plenamente y expresas tus emociones?", labelMin: "CASI NUNCA", labelMax: "TODO EL TIEMPO", targets: { balance: 1.5, focus: 1, energy: 1, mindii: 1, smile: 1.5, mystic: 1.5 }, inverse: true },
 ];
 
 let state = {
