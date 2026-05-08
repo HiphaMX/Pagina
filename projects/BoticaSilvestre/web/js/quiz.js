@@ -268,13 +268,29 @@ window.alquimia = {
     },
     submitPersonalData: () => {
         const nameEl = document.getElementById('alquimia-name');
-        const dobEl = document.getElementById('alquimia-dob');
-        if(nameEl && nameEl.value && dobEl && dobEl.value) {
+        const dayEl = document.getElementById('alquimia-dob-day');
+        const monthEl = document.getElementById('alquimia-dob-month');
+        const yearEl = document.getElementById('alquimia-dob-year');
+        
+        if(nameEl && nameEl.value && dayEl && dayEl.value && monthEl && monthEl.value && yearEl && yearEl.value) {
+            let d = dayEl.value.padStart(2, '0');
+            let m = monthEl.value.padStart(2, '0');
+            let y = yearEl.value;
             state.name = nameEl.value;
-            state.dob = dobEl.value;
+            state.dob = `${y}-${m}-${d}`;
             setView('format');
+        } else if (nameEl && document.getElementById('alquimia-dob')) {
+            // fallback in case of old render
+            const dobEl = document.getElementById('alquimia-dob');
+            if(nameEl.value && dobEl.value) {
+                state.name = nameEl.value;
+                state.dob = dobEl.value;
+                setView('format');
+            } else {
+                alert("Por favor ingresa tu nombre y fecha de nacimiento completa.");
+            }
         } else {
-            alert("Por favor ingresa tu nombre y fecha de nacimiento.");
+            alert("Por favor ingresa tu nombre y fecha de nacimiento completa.");
         }
     },
     selectFormat: (format) => {
@@ -353,6 +369,14 @@ function render() {
         `;
     } 
     else if (state.view === 'personalData') {
+        let dobD = "", dobM = "", dobY = "";
+        if (state.dob) {
+            const p = state.dob.split('-');
+            if (p.length === 3) {
+                dobY = p[0]; dobM = p[1]; dobD = p[2];
+            }
+        }
+        
         html = `
             <div class="view-intro view-active">
                 <div class="intro-divider"></div>
@@ -364,7 +388,11 @@ function render() {
                     </div>
                     <div style="margin-bottom: 2rem;">
                         <label class="quiz-input-label">Tu fecha de nacimiento</label>
-                        <input type="date" id="alquimia-dob" value="${state.dob}" class="quiz-input">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="alquimia-dob-day" placeholder="DD" value="${dobD}" min="1" max="31" class="quiz-input" style="flex: 1; text-align: center;">
+                            <input type="number" id="alquimia-dob-month" placeholder="MM" value="${dobM}" min="1" max="12" class="quiz-input" style="flex: 1; text-align: center;">
+                            <input type="number" id="alquimia-dob-year" placeholder="AAAA" value="${dobY}" min="1900" max="2026" class="quiz-input" style="flex: 1.5; text-align: center;">
+                        </div>
                     </div>
                 </div>
                 <div class="alquimia-controls" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
@@ -544,16 +572,24 @@ function render() {
         }
 
         let age = 0;
+        let isMinor = false;
         if (state.dob) {
-            const birthDate = new Date(state.dob);
-            const today = new Date();
-            age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
+            const parts = state.dob.split('-');
+            if (parts.length === 3) {
+                const birthYear = parseInt(parts[0], 10);
+                const birthMonth = parseInt(parts[1], 10) - 1;
+                const birthDay = parseInt(parts[2], 10);
+                
+                const birthDate = new Date(birthYear, birthMonth, birthDay);
+                const today = new Date();
+                age = today.getFullYear() - birthDate.getFullYear();
+                const m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                isMinor = age >= 0 && age < 18;
             }
         }
-        const isMinor = age > 0 && age < 18;
 
         if (isMinor) {
             // Hide floating WhatsApp button for minors
