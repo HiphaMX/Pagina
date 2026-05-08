@@ -692,6 +692,7 @@ function render() {
                             </div>
                             <div class="result-divider"></div>
                             <p class="result-footer-quote">Escucha a tu cuerpo, él guarda toda la sabiduría.</p>
+                            <p style="margin-top: 2rem; font-size: 0.75rem; color: var(--color-text-light); text-align: center; opacity: 0.7; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;">Aviso: Este cuestionario fue diseñado con fines ilustrativos para explorar los beneficios de nuestros adaptógenos. No constituye ni pretende sustituir una prescripción o recomendación médica.</p>
                         </div>
                     </div>
                 </div>
