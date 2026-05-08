@@ -97,6 +97,29 @@ async def create_preference(cart: CartRequest, request: Request):
         if "init_point" not in preference:
             raise Exception("No init_point in response")
             
+        # Format order details and send emails asynchronously
+        if cart.payer and cart.payer.email:
+            import asyncio
+            from app.core.mailer import send_botica_order_customer, send_botica_order_team
+            
+            total_with_shipping = total_price + shipping_cost
+            order_details_html = "<ul>"
+            for item in cart.items:
+                order_details_html += f"<li>{item.quantity}x {item.name} - ${item.price}</li>"
+            order_details_html += "</ul>"
+            if shipping_cost > 0:
+                order_details_html += f"<p>Envío: ${shipping_cost}</p>"
+                
+            payer_name = cart.payer.name or "Cliente"
+            payer_email = cart.payer.email
+            payer_phone = cart.payer.phone or "No provisto"
+            address_str = ""
+            if cart.payer.address:
+                address_str = f"{cart.payer.address.street_name or ''}, CP {cart.payer.address.zip_code or ''}"
+            
+            asyncio.create_task(send_botica_order_customer(payer_name, payer_email, order_details_html, total_with_shipping))
+            asyncio.create_task(send_botica_order_team(payer_name, payer_email, payer_phone, address_str, order_details_html, total_with_shipping))
+
         return {"init_point": preference["init_point"], "id": preference.get("id")}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
