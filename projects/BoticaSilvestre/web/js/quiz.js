@@ -146,6 +146,18 @@ function getNumerologyMessage(dobStr, name) {
     return `${name}, ${msg}`;
 }
 
+function getTransitionCTA(name) {
+    const ctas = [
+        `${name}, con ayuda de tus respuestas fue diseñado tu ritual de conexión. Descubre los elementos que te ayudarán a volver a tu esencia.`,
+        `Gracias por abrirte, ${name}. Hemos preparado este ritual para ti. Conoce las herramientas botánicas que te acompañarán en este nuevo ciclo.`,
+        `${name}, tu cuerpo ha hablado. Aquí tienes tu ritual de conexión, diseñado para nutrirte y devolverte a tu centro.`,
+        `Este es el camino que la naturaleza ha trazado para ti, ${name}. Explora las medicinas de la tierra que te guiarán de regreso a tu paz.`
+    ];
+    const idx = (name || '').length % ctas.length;
+    return ctas[idx];
+}
+
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
@@ -654,11 +666,10 @@ function render() {
                             <p class="result-subtitle">Botica Silvestre</p>
                         </header>
 
-                        ${numerologyText ? `
                         <div class="result-message">
-                            <p>"${numerologyText}"</p>
+                            ${numerologyText ? `<p>"${numerologyText}"</p>` : ''}
+                            <p class="result-transition-cta" style="margin-top: 1.5rem; font-weight: 500; font-style: italic; color: var(--color-primary-dark); font-size: 1.1rem; opacity: 0.9;">${getTransitionCTA(state.name)}</p>
                         </div>
-                        ` : ''}
 
                         <div class="result-list">
                             ${itemsHtml}
