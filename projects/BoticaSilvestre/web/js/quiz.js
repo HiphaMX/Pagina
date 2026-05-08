@@ -1,12 +1,12 @@
 const PRODUCTS_DB = {
   step1: [
-    { id: 'focus', label: 'Focus', product: 'Focus (Microdosis de Melena de León)', desc: 'Claridad mental y neuroplasticidad.', price: 490, image: 'assets/images/Product Shots/Focus 01.webp' },
-    { id: 'balance', label: 'Balance', product: 'Balance (Microdosis de Reishi)', desc: 'Homeostasis y regulación del cortisol.', price: 490, image: 'assets/images/Product Shots/Balance 01.webp' },
-    { id: 'energy', label: 'Energy+', product: 'Energy+ (Microdosis de Cordyceps)', desc: 'Oxigenación celular y vigor.', price: 490, image: 'assets/images/Product Shots/Energy 01.webp' },
-    { id: 'emuna', label: 'Emuná', product: 'Emuná (Microdosis de Cola de Pavo)', desc: 'Inteligencia inmunológica.', price: 490, image: 'assets/images/Product Shots/Emuna 01.webp' },
-    { id: 'mindii', label: 'Mindii', product: 'Mindii (Microdosis de Melena + Mucuna + AMLA)', desc: 'Sinergia dopaminérgica y cognitiva.', price: 490, image: 'assets/images/Product Shots/Mindii 01.webp' },
-    { id: 'smile', label: 'Smile', product: 'Smile (Microdosis de Psilocibina)', desc: 'Bienestar emocional y apertura.', price: 690, image: 'assets/images/Product Shots/Smile 01.webp' },
-    { id: 'mystic', label: 'Mystic', product: 'Mystic (Dosis concentrada de Psilocibina)', desc: 'Exploración profunda del ser.', price: 990, image: 'assets/images/Product Shots/Mystic 01.webp' },
+    { id: 'focus', label: 'Focus', product: 'Focus (Microdosis de Melena de León)', desc: 'Claridad mental y neuroplasticidad.', price: 490, image: 'assets/images/Product Shots/Focus 01.webp', benefits: ['Mejora de la función cognitiva', 'Apoyo a la salud cerebral', 'Reducción de la inﬂamación'] },
+    { id: 'balance', label: 'Balance', product: 'Balance (Microdosis de Reishi)', desc: 'Homeostasis y regulación del cortisol.', price: 490, image: 'assets/images/Product Shots/Balance 01.webp', benefits: ['Fortalecimiento del sistema inmunológico', 'Reducción del estrés y mejora del sueño', 'Propiedades antiinﬂamatorias'] },
+    { id: 'energy', label: 'Energy+', product: 'Energy+ (Microdosis de Cordyceps)', desc: 'Oxigenación celular y vigor.', price: 490, image: 'assets/images/Product Shots/Energy 01.webp', benefits: ['Aumento de la energía y resistencia', 'Mejora del rendimiento atlético', 'Apoyo a la salud respiratoria'] },
+    { id: 'emuna', label: 'Emuná', product: 'Emuná (Microdosis de Cola de Pavo)', desc: 'Inteligencia inmunológica.', price: 490, image: 'assets/images/Product Shots/Emuna 01.webp', benefits: ['Refuerzo del sistema inmunológico', 'Apoyo en tratamientos oncológicos', 'Salud digestiva e intestinal'] },
+    { id: 'mindii', label: 'Mindii', product: 'Mindii (Microdosis de Melena + Mucuna + AMLA)', desc: 'Sinergia dopaminérgica y cognitiva.', price: 490, image: 'assets/images/Product Shots/Mindii 01.webp', benefits: ['Estimula la función cognitiva', 'Neuroprotección a largo plazo', 'Elevación natural de dopamina'] },
+    { id: 'smile', label: 'Smile', product: 'Smile (Microdosis de Psilocibina)', desc: 'Bienestar emocional y apertura.', price: 690, image: 'assets/images/Product Shots/Smile 01.webp', benefits: ['Mejora del estado de ánimo', 'Aumento de la creatividad', 'Claridad mental'] },
+    { id: 'mystic', label: 'Mystic', product: 'Mystic (Dosis concentrada de Psilocibina)', desc: 'Exploración profunda del ser.', price: 990, image: 'assets/images/Product Shots/Mystic 01.webp', benefits: ['Mejora del estado de ánimo', 'Aumento de la creatividad', 'Claridad mental'] },
   ],
   step2: [
     { id: 'rana', product: 'Colita de Rana', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'activity', desc: 'Dolor muscular con la actividad física', price: 190, image: 'https://placehold.co/400x500/E8E6E1/40534C?text=Foto+Pendiente' },
@@ -250,8 +250,12 @@ window.alquimia = {
         
         if (typeof window.addToCart === 'function' && typeof window.openCartView === 'function') {
             if (step1 && step1.length > 0) {
-                step1.forEach(p => {
-                    const productNameWithFormat = `${p.product} (${state.format})`;
+                step1.forEach((p, index) => {
+                    let currentFormat = state.format || 'Tintura';
+                    if (index === 1) {
+                        currentFormat = currentFormat === 'Tintura' ? 'Oleato' : 'Tintura';
+                    }
+                    const productNameWithFormat = `${p.product} (${currentFormat})`;
                     if (p.price) window.addToCart(productNameWithFormat, p.price, p.image);
                 });
             }
@@ -320,12 +324,16 @@ function resetApp() {
 function getWhatsAppUrl() {
     const { step1, step2, step3 } = state.selections;
     
-    let text = "✨ *Hola Botica Silvestre, este es mi Ritual de Reconexión:*\n\n";
+    let text = "✨ *Hola Botica Silvestre, este es mi Ritual de Conexión:*\n\n";
     
     if (step1 && step1.length > 0) {
         text += "🌿 *Tintura Ideal:*\n";
-        step1.forEach(p => {
-            text += `- ${p.product} (${state.format})\n`;
+        step1.forEach((p, index) => {
+            let currentFormat = state.format || 'Tintura';
+            if (index === 1) {
+                currentFormat = currentFormat === 'Tintura' ? 'Oleato' : 'Tintura';
+            }
+            text += `- ${p.product} (${currentFormat})\n`;
         });
         text += "\n";
     }
@@ -524,13 +532,28 @@ function render() {
         
         let step1Html = '';
         if (step1 && step1.length > 0) {
-            step1.forEach(p => {
+            step1.forEach((p, index) => {
+                let currentFormat = state.format || 'Tintura';
+                if (index === 1) {
+                    currentFormat = currentFormat === 'Tintura' ? 'Oleato' : 'Tintura';
+                }
+                
+                let benefitsHtml = '';
+                if (p.benefits && p.benefits.length > 0) {
+                    benefitsHtml = `<ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; opacity: 0.85;">`;
+                    p.benefits.forEach(b => {
+                        benefitsHtml += `<li style="margin-bottom: 4px;">${b}</li>`;
+                    });
+                    benefitsHtml += `</ul>`;
+                }
+
                 step1Html += `
                     <div class="result-item-content">
                         <div>
                             <h3 class="result-item-title font-serif">${p.product}</h3>
-                            <div class="result-item-subtitle">Formato: ${state.format || 'Tintura'}</div>
+                            <div class="result-item-subtitle">Formato recomendado: ${currentFormat}</div>
                             <p class="result-item-desc">${p.desc}</p>
+                            ${benefitsHtml}
                         </div>
                         <i data-lucide="check" class="result-check-icon"></i>
                     </div>
