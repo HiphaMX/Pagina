@@ -149,9 +149,9 @@ function getNumerologyMessage(dobStr, name) {
 function getTransitionCTA(name) {
     const ctas = [
         `${name}, con ayuda de tus respuestas fue diseñado tu ritual de conexión. Descubre los elementos que te ayudarán a volver a tu esencia.`,
-        `Gracias por abrirte, ${name}. Hemos preparado este ritual para ti. Conoce las herramientas botánicas que te acompañarán en este nuevo ciclo.`,
-        `${name}, tu cuerpo ha hablado. Aquí tienes tu ritual de conexión, diseñado para nutrirte y devolverte a tu centro.`,
-        `Este es el camino que la naturaleza ha trazado para ti, ${name}. Explora las medicinas de la tierra que te guiarán de regreso a tu paz.`
+        `Gracias por abrirte ${name}, hemos preparado este ritual para ti. Conoce las herramientas elaboradas con mucho amor que te acompañarán en este nuevo ciclo.`,
+        `${name}, tu cuerpo ha hablado, aquí tienes tu ritual de conexión, diseñado para nutrirte y devolverte a tu centro.`,
+        `${name}, este es el camino que la naturaleza ha trazado para ti. Explora la alquimia de la tierra que te guiará de regreso a tu paz.`
     ];
     const idx = (name || '').length % ctas.length;
     return ctas[idx];
