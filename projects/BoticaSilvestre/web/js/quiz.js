@@ -253,7 +253,7 @@ window.alquimia = {
                 step1.forEach((p, index) => {
                     let currentFormat = state.format || 'Tintura';
                     if (index === 1) {
-                        currentFormat = currentFormat === 'Tintura' ? 'Oleato' : 'Tintura';
+                        currentFormat = 'Oleato';
                     }
                     const productNameWithFormat = `${p.product} (${currentFormat})`;
                     if (p.price) window.addToCart(productNameWithFormat, p.price, p.image);
@@ -331,7 +331,7 @@ function getWhatsAppUrl() {
         step1.forEach((p, index) => {
             let currentFormat = state.format || 'Tintura';
             if (index === 1) {
-                currentFormat = currentFormat === 'Tintura' ? 'Oleato' : 'Tintura';
+                currentFormat = 'Oleato';
             }
             text += `- ${p.product} (${currentFormat})\n`;
         });
@@ -535,7 +535,7 @@ function render() {
             step1.forEach((p, index) => {
                 let currentFormat = state.format || 'Tintura';
                 if (index === 1) {
-                    currentFormat = currentFormat === 'Tintura' ? 'Oleato' : 'Tintura';
+                    currentFormat = 'Oleato';
                 }
                 
                 let benefitsHtml = '';
