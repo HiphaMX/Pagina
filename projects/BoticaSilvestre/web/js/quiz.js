@@ -552,9 +552,9 @@ function render() {
                 
                 let benefitsHtml = '';
                 if (p.benefits && p.benefits.length > 0) {
-                    benefitsHtml = `<ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; opacity: 0.85;">`;
+                    benefitsHtml = `<ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; opacity: 0.85; color: #E8E6E1;">`;
                     p.benefits.forEach(b => {
-                        benefitsHtml += `<li style="margin-bottom: 4px;">${b}</li>`;
+                        benefitsHtml += `<li style="margin-bottom: 4px; color: #E8E6E1;">${b}</li>`;
                     });
                     benefitsHtml += `</ul>`;
                 }
@@ -668,7 +668,7 @@ function render() {
 
                         <div class="result-message">
                             ${numerologyText ? `<p>"${numerologyText}"</p>` : ''}
-                            <p class="result-transition-cta" style="margin-top: 1.5rem; font-weight: 500; font-style: italic; color: var(--color-primary-dark); font-size: 1.1rem; opacity: 0.9;">${getTransitionCTA(state.name)}</p>
+                            <p class="result-transition-cta" style="margin-top: 1.5rem; font-weight: 500; font-style: italic; color: #E8E6E1; font-size: 1.1rem; opacity: 0.9;">${getTransitionCTA(state.name)}</p>
                         </div>
 
                         <div class="result-list">
