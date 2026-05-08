@@ -476,7 +476,7 @@ function render() {
         html = `
             <div class="view-step2 view-active">
                 <span class="quiz-step-label">Conexión Corporal</span>
-                <h2 class="step3-title font-serif">¿Qué es lo que más necesita tu cuerpo?</h2>
+                <h2 class="step3-title font-serif">¿Qué sensaciones expresa tu cuerpo físico en tu día a día?</h2>
                 <div class="grid-cards">
                     ${cardsHtml}
                 </div>
