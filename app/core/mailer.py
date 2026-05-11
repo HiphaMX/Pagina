@@ -270,31 +270,32 @@ async def send_contract_followup_email(form_data):
             <h3 style="color: #0f172a;">Copia de los Términos y Condiciones Aceptados:</h3>
             <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0; font-size: 14px;">
                 
-        <h2>1. Servicios Hipha</h2>
-        <p>La definición del concepto “Tu departamento externo de marketing” se refiere a los servicios brindados por un equipo interdisciplinario de marketing y creatividad, Hipha se convierte en un socio y consultor estratégico, que en algunos casos cuando no existe un departamento interno y el cliente contrata también los servicios de ejecución, bajo ninguna circunstancia se deberá interpretar que el personal de Hipha son subordinados operativos del cliente. Hipha actúa como un proveedor de servicios profesionales con autonomía técnica, por lo que no existe relación laboral ni exclusividad, a menos que se pacte por escrito.</p>
+        <h2>1. Naturaleza del Contrato y Autonomía</h2>
+        <p>Hipha es un prestador de servicios profesionales independiente. El concepto “Tu departamento externo” es una denominación comercial y no constituye una sociedad mercantil, asociación ni relación de subordinación laboral. Hipha conserva plena autonomía técnica y administrativa. El personal de Hipha no está sujeto a la potestad de mando del Cliente, eliminando cualquier indicio de relación laboral bajo la Ley Federal del Trabajo.</p>
 
-        <h2>2. Límites de la disponibilidad y comunicación</h2>
-        <p>Es responsabilidad del cliente designar a una sola persona con poder de decisión para evitar instrucciones contradictorias de diferentes socios del cliente, este líder de proyecto será la única vía para canalizar y dar seguimiento a las solicitudes de diseño y estrategia necesarias. La ventana de horario para programar reuniones virtuales son de lunes a viernes de 9:00 am. - 12:00 pm, nuestro equipo trabaja de manera remota en distintas ubicaciones, por lo que las reuniones presenciales son poco frecuentes, cuando son indispensables serán previamente acordadas y estarán sujetas a disponibilidad del equipo de Hipha.</p>
+        <h2>2. Gestión de Proyecto y Comunicación</h2>
+        <p>El Cliente designará un "Responsable de Proyecto" único con facultades suficientes para autorizar entregables y presupuestos. Las instrucciones de otros socios o terceros no serán vinculantes. La ventana de comunicación para reuniones virtuales es de lunes a viernes de 9:00 am a 12:00 pm (Hora Centro de México). Reuniones presenciales estarán sujetas a disponibilidad y podrán generar cargos adicionales por traslados y viáticos.</p>
 
-        <h2>3. Solicitudes de materiales</h2>
-        <p>Todas las solicitudes de piezas gráficas y materiales deberán realizarse por medio del link de cliente proporcionado por Hipha o mediante las reuniones de seguimiento con el líder de proyecto, la esencia de Hipha es dar acceso a más clientes a servicios de marketing y diseño especializados, para brindar el mejor servicio se establecen como mínimo 72 hrs. para iniciar a procesar las nuevas solicitudes.</p>
-        
-        <p>Gracias a nuestra amplia experiencia, el equipo de Hipha tiene acceso a proveeduría especializada de servicios digitales, de impresión y publicidad, pero esto no implica que se tengan que compartir contactos ni acuerdos comerciales con sus clientes, contamos con la posibilidad de enviar materiales a impresión directo con los proveedores del cliente, sin que esto implique realizar pagos a terceros, supervisar instalaciones, gestionar paqueterías, recolecciones o entregas, esto deberá ser ejecutado por personal interno del cliente.</p>
+        <h2>3. Procesamiento de Solicitudes y Terceros</h2>
+        <p>Toda solicitud de diseño o estrategia requiere un plazo mínimo de 72 horas hábiles para inicio de gestión. Hipha no actúa como comisionista ni intermediario en pagos a terceros. Si el Cliente solicita que Hipha gestione archivos con proveedores externos (imprentas, medios, etc.), Hipha se deslinda de cualquier error en la ejecución, calidad, tiempos de entrega o vicios ocultos de dichos terceros. La ejecución física (recolecciones, instalaciones) es responsabilidad del personal interno del Cliente.</p>
 
-        <h2>4. Responsabilidades del cliente</h2>
-        <p>El equipo de Hipha podrá iniciar un proyecto siempre que se realice el brief inicial, así como logotipos, manual de identidad en caso de existir, tipografías y cualquier material que pueda ser de utilidad (fotografías, videos, referencias de diseños anteriores, vectores, etc.) El retraso del cliente no posterga las fechas de pago ni las fechas de entrega finales.</p>
-        
-        <p><strong>Protocolo de Seguridad:</strong> El cliente es responsable de mantener la seguridad de sus accesos, Hipha no se hace responsable por hackeos o bloqueos derivados de acciones del cliente o de terceros ajenos a la agencia, se proporcionarán todos los accesos y contraseñas, en caso de finalización de contrato, es responsabilidad del cliente revocar los accesos de la agencia en un plazo máximo 24 hrs.</p>
+        <h2>4. Responsabilidad y Seguridad del Cliente</h2>
+        <p>La vigencia de los tiempos de entrega inicia tras la recepción total de los insumos (Brief, manuales, accesos). El retraso del Cliente no suspende la obligación de pago de las facturas o igualas pactadas. Respecto al Protocolo de Seguridad, el Cliente es responsable total de sus claves y accesos. Hipha se deslinda de hackeos, bloqueos o ataques derivados de acciones del Cliente o terceros ajenos a la agencia. Al finalizar la relación, el Cliente debe revocar accesos en un plazo máximo de 24 horas.</p>
 
-        <h2>5. Propiedad intelectual y accesos</h2>
-        <p>Los entregables finales pagados al 100% son propiedad del cliente, entiéndase por diseños publicados en redes sociales, sitio web, fotografías de producto o instalaciones, por mencionar algunos ejemplos, son propiedad de Hipha las metodologías, procesos internos, flujos de trabajo, estrategias preexistentes, archivos fuente y cualquier desarrollo propio realizado para brindar soporte al cliente.</p>
-        
-        <p>Se debe declarar que las cuentas de Ad Manager, Meta Business Suite y Google Analytics son propiedad del cliente y se entregan al líder de proyecto mediante un correo electrónico, la agencia accede como socio externo (Partner).</p>
-        
-        <p>Hipha se reserva el derecho de utilizar capturas de pantalla, métricas (anonimizadas si es necesario) y muestras del trabajo realizado para su propio portafolio, redes sociales y casos de estudio, a menos que exista un acuerdo de confidencialidad (NDA) que lo prohíba explícitamente.</p>
+        <h2>5. Propiedad Intelectual y Uso de Portafolio</h2>
+        <p>La transferencia de derechos patrimoniales de los entregables finales (diseños publicados, sitios web, fotos de producto) ocurrirá únicamente tras la liquidación del 100% del pago. Hipha conserva la propiedad intelectual de sus metodologías, procesos internos, flujos de trabajo, estrategias preexistentes y archivos fuente (editables). Salvo existencia de un acuerdo de confidencialidad (NDA) explícito, el Cliente autoriza a Hipha a utilizar muestras del trabajo para su portafolio y redes sociales.</p>
 
-        <h2>6. Cláusula de Rescisión</h2>
-        <p>Ambas partes pueden terminar la relación con un aviso previo de 30 días naturales, Esto da flujo de caja para reemplazar la cuenta y al cliente tiempo para la transición. En caso de impago, la agencia se reserva el derecho de pausar campañas o retirar servicios hasta que se liquide el adeudo y finiquite la relación comercial.</p>
+        <h2>6. Rescisión y Suspensión de Servicio</h2>
+        <p>Cualquier parte podrá dar por terminado el servicio con un aviso previo de 30 días naturales. En caso de impago, Hipha queda facultado para suspender total o parcialmente los servicios (pausar campañas, retirar servicios digitales) sin responsabilidad alguna por pérdidas económicas, daños o perjuicios que esta interrupción pudiera causar al Cliente.</p>
+
+        <h2>7. Límite de Responsabilidad</h2>
+        <p>La responsabilidad total de Hipha ante cualquier reclamación derivada de la prestación de los servicios, ya sea por negligencia, error u omisión, estará limitada como máximo al monto total pagado por el Cliente en el mes inmediato anterior a la fecha de la reclamación. Bajo ninguna circunstancia Hipha será responsable por lucro cesante o daños indirectos.</p>
+
+        <h2>8. Cláusula de No Solicitud (Anti-Poaching)</h2>
+        <p>El Cliente se compromete a no contratar, solicitar, ni emplear de manera directa o indirecta a ningún colaborador, empleado o consultor de Hipha durante la vigencia de este contrato y hasta por 12 meses posteriores a su terminación. El incumplimiento de esta cláusula generará una pena convencional equivalente a 12 meses de la iguala vigente al momento del incumplimiento.</p>
+
+        <h2>9. Jurisdicción y Competencia</h2>
+        <p>Para la interpretación y cumplimiento del presente, las partes se someten a las leyes comerciales de México y a la jurisdicción de los tribunales competentes en la ciudad de Guadalajara, Jalisco, renunciando expresamente a cualquier otro fuero que pudiera corresponderles por razón de sus domicilios presentes o futuros.</p>
 
             </div>
             
