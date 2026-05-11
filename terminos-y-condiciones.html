@@ -364,6 +364,65 @@
             const paymentMethod = document.getElementById('payment-method').value;
             document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nProyecto: ${projectName}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
         });
+
+        async function submitContactForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const btnText = document.getElementById('contact-btn-text');
+            const btnIcon = document.getElementById('contact-btn-icon');
+            const btn = document.getElementById('contact-submit-btn');
+            const successMsg = document.getElementById('contact-success');
+            const errorMsg = document.getElementById('contact-error');
+
+            // Reset messages
+            successMsg.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+
+            // Loading state
+            btn.disabled = true;
+            btnText.textContent = 'Enviando...';
+            btnIcon.classList.replace('ph-check-circle', 'ph-spinner');
+            btnIcon.classList.add('animate-spin');
+
+            const formData = new FormData(form);
+            const data = {
+                nombre: formData.get('nombre'),
+                email: formData.get('email'),
+                telefono: formData.get('telefono'),
+                mensaje: document.getElementById('hidden-mensaje').value || ''
+            };
+
+            try {
+                const response = await fetch('/api/contact/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    successMsg.classList.remove('hidden');
+                    form.reset();
+                    setTimeout(() => {
+                        if (typeof toggleModal === 'function') {
+                            toggleModal('contract-modal');
+                        }
+                    }, 5000);
+                } else {
+                    errorMsg.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                errorMsg.classList.remove('hidden');
+            } finally {
+                // Restore button state
+                btn.disabled = false;
+                btnText.textContent = 'Firmar Acuerdo';
+                btnIcon.classList.remove('animate-spin');
+                btnIcon.classList.replace('ph-spinner', 'ph-check-circle');
+            }
+        }
     </script>
     <script src="js/app.js?v=5"></script>
 </body>
