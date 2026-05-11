@@ -17,12 +17,17 @@ async def send_lead_followup_email(lead_name: str, lead_email: str):
     
     html_content = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; color: #333;">
-        <h2>¡Hola {lead_name}!</h2>
-        <p>Hemos recibido tus datos con éxito. En breve, uno de nuestros creativos o estrategas se pondrá en contacto contigo para platicar sobre cómo podemos potenciar el crecimiento de tu marca.</p>
-        <p>Mientras tanto, puedes explorar nuestro ecosistema de soluciones en nuestra web.</p>
-        <br>
-        <p>Atentamente,<br><strong>El equipo de HiphaMX</strong></p>
+    <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
+        <div style="background-color: #050810; padding: 30px; text-align: center;">
+            <img src="https://hipha.mx/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha Logo" style="height: 40px; margin: 0 auto; display: block;">
+        </div>
+        <div style="padding: 20px;">
+            <h2>¡Hola {lead_name}!</h2>
+            <p>Hemos recibido tus datos con éxito. En breve, uno de nuestros creativos o estrategas se pondrá en contacto contigo para platicar sobre cómo podemos potenciar el crecimiento de tu marca.</p>
+            <p>Mientras tanto, puedes explorar nuestro ecosistema de soluciones en nuestra web.</p>
+            <br>
+            <p>Atentamente,<br><strong>El equipo de Hipha</strong></p>
+        </div>
     </body>
     </html>
     """
@@ -96,11 +101,16 @@ async def send_newsletter_welcome(subscriber_email: str):
     
     html_content = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; color: #333;">
-        <h2>¡Gracias por suscribirte!</h2>
-        <p>A partir de ahora recibirás nuestros mejores insights y recursos sobre marketing y estrategia digital.</p>
-        <br>
-        <p>Atentamente,<br><strong>El equipo de HiphaMX</strong></p>
+    <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
+        <div style="background-color: #050810; padding: 30px; text-align: center;">
+            <img src="https://hipha.mx/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha Logo" style="height: 40px; margin: 0 auto; display: block;">
+        </div>
+        <div style="padding: 20px;">
+            <h2>¡Gracias por suscribirte!</h2>
+            <p>A partir de ahora recibirás nuestros mejores insights y recursos sobre marketing y estrategia digital.</p>
+            <br>
+            <p>Atentamente,<br><strong>El equipo de Hipha</strong></p>
+        </div>
     </body>
     </html>
     """
@@ -259,7 +269,10 @@ async def send_contract_followup_email(form_data):
     
     html_content = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+    <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0;">
+        <div style="background-color: #050810; padding: 30px; text-align: center;">
+            <img src="https://hipha.mx/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha Logo" style="height: 40px; margin: 0 auto; display: block;">
+        </div>
         <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
             <h2 style="color: #06b6d4;">¡Firma de Contrato Confirmada, {form_data.nombre}!</h2>
             <p>Hemos recibido correctamente tu aceptación de los Términos y Condiciones para comenzar a trabajar juntos.</p>
