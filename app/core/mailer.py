@@ -60,8 +60,10 @@ async def send_lead_notification_to_team(form_data):
         <p><strong>Nombre:</strong> {form_data.nombre}</p>
         <p><strong>Email:</strong> {form_data.email}</p>
         <p><strong>Teléfono:</strong> {form_data.telefono}</p>
-        <p><strong>Mensaje:</strong></p>
-        <p>{form_data.mensaje}</p>
+        <p><strong>Mensaje / Detalles:</strong></p>
+        <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
+            {form_data.mensaje.replace('\n', '<br>')}
+        </div>
     </body>
     </html>
     """
@@ -264,7 +266,12 @@ async def send_contract_followup_email(form_data):
             
             <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
                 <h3 style="margin-top: 0; color: #0f172a;">Detalles del Acuerdo:</h3>
-                <p>{mensaje_formatted}</p>
+                <p style="margin-bottom: 5px;"><strong>Nombre Contacto:</strong> {form_data.nombre}</p>
+                <p style="margin-bottom: 5px;"><strong>Email:</strong> {form_data.email}</p>
+                <p style="margin-bottom: 15px;"><strong>Teléfono:</strong> {form_data.telefono}</p>
+                <div style="border-top: 1px solid #cbd5e1; padding-top: 15px;">
+                    <p>{mensaje_formatted}</p>
+                </div>
             </div>
             
             <h3 style="color: #0f172a;">Copia de los Términos y Condiciones Aceptados:</h3>
