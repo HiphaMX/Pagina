@@ -136,6 +136,12 @@
 
                 <h2>6. Cláusula de Rescisión</h2>
                 <p>Ambas partes pueden terminar la relación con un aviso previo de 30 días naturales, Esto da flujo de caja para reemplazar la cuenta y al cliente tiempo para la transición. En caso de impago, la agencia se reserva el derecho de pausar campañas o retirar servicios hasta que se liquide el adeudo y finiquite la relación comercial.</p>
+                
+                <div class="mt-12 text-center">
+                    <button onclick="toggleModal('contract-modal'); document.getElementById('contract-date').value = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });" class="bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)] transition-all transform hover:scale-105">
+                        Estoy de acuerdo
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -234,6 +240,98 @@
         </div>
     </footer>
 
+    <!-- MODALS OVERLAY -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center px-4">
+        <!-- Contract Modal -->
+        <div id="contract-modal" class="glass-panel w-full max-w-md rounded-2xl p-8 relative hidden transform scale-95 transition-transform duration-300">
+            <button onclick="toggleModal('contract-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-white mb-2">Firma de Acuerdo</h2>
+            <p class="text-slate-400 text-sm mb-6">Por favor, completa tus datos para formalizar el acuerdo.</p>
+            
+            <form id="contact-form" class="space-y-4" onsubmit="submitContactForm(event)">
+                <!-- Fecha de contratación (Auto-rellenada) -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de contratación</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph ph-calendar text-slate-400"></i>
+                        </div>
+                        <input type="text" id="contract-date" readonly
+                            class="w-full bg-slate-800/80 border border-white/5 rounded-lg py-2.5 pl-10 pr-4 text-slate-400 focus:outline-none cursor-not-allowed">
+                    </div>
+                </div>
+                <!-- Nombre Contacto -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Nombre Contacto <span class="text-primary-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-user text-slate-400"></i></div>
+                        <input type="text" name="nombre" required
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500"
+                            placeholder="Ej. Juan Pérez">
+                    </div>
+                </div>
+                <!-- Correo -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Correo Electrónico <span class="text-primary-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-envelope-simple text-slate-400"></i></div>
+                        <input type="email" name="email" required
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500"
+                            placeholder="ejemplo@correo.com">
+                    </div>
+                </div>
+                <!-- Teléfono -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Teléfono <span class="text-primary-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-phone text-slate-400"></i></div>
+                        <input type="tel" name="telefono" required pattern="[\+]?[0-9\s\-\(\)]{8,20}"
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500"
+                            placeholder="Ej. +52 55 1234 5678">
+                    </div>
+                </div>
+                <!-- Checkbox de acuerdo -->
+                <div class="pt-2">
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="checkbox" name="acuerdo" required value="ACEPTADO" class="mt-1 w-4 h-4 rounded border-white/20 bg-slate-800/50 text-primary-500 focus:ring-primary-500 focus:ring-offset-slate-900 cursor-pointer">
+                        <span class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors leading-relaxed">
+                            Estoy de acuerdo con los términos y condiciones para iniciar a trabajar con Hipha.
+                        </span>
+                    </label>
+                </div>
+                
+                <!-- Hidden input para indicar que es un contrato -->
+                <input type="hidden" name="mensaje" id="hidden-mensaje" value="ACEPTACIÓN DE CONTRATO VÍA WEB.">
+
+                <!-- Botón Submit -->
+                <div class="pt-2">
+                    <button type="submit" id="contact-submit-btn"
+                        class="w-full bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(192,38,211,0.4)] hover:shadow-[0_0_25px_rgba(192,38,211,0.6)]">
+                        <span id="contact-btn-text">Firmar Acuerdo</span>
+                        <i id="contact-btn-icon" class="ph-bold ph-check-circle"></i>
+                    </button>
+                </div>
+
+                <!-- Messages -->
+                <div id="contact-success" class="hidden mt-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg flex items-center gap-2 text-green-400 text-sm">
+                    <i class="ph-fill ph-check-circle"></i> Contrato firmado y enviado exitosamente.
+                </div>
+                <div id="contact-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-2 text-red-400 text-sm">
+                    <i class="ph-fill ph-warning-circle"></i> Ocurrió un error. Intenta nuevamente.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Actualizar mensaje oculto al abrir/enviar para capturar la fecha exacta
+        document.getElementById('contact-form').addEventListener('submit', function() {
+            const dateVal = document.getElementById('contract-date').value;
+            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB. Fecha de aceptación: ${dateVal}. El cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
+        });
+    </script>
     <script src="js/app.js?v=5"></script>
 </body>
 </html>
