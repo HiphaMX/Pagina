@@ -241,10 +241,10 @@
     </footer>
 
     <!-- MODALS OVERLAY -->
-    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center px-4">
+    <div id="modal-overlay" onclick="toggleModal('contract-modal')" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center px-4">
         <!-- Contract Modal -->
-        <div id="contract-modal" class="glass-panel w-full max-w-md rounded-2xl p-8 relative hidden transform scale-95 transition-transform duration-300">
-            <button onclick="toggleModal('contract-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <div id="contract-modal" onclick="event.stopPropagation()" class="glass-panel w-full max-w-md rounded-2xl p-8 relative hidden transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
+            <button type="button" onclick="toggleModal('contract-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white z-10 bg-slate-800/80 rounded-full p-1 backdrop-blur-sm shadow-lg">
                 <i class="ph ph-x text-xl"></i>
             </button>
             <h2 class="text-2xl font-bold text-white mb-2">Firma de Acuerdo</h2>
@@ -312,7 +312,7 @@
                             <option value="" disabled selected class="text-slate-500">Selecciona una opción</option>
                             <option value="Cobro mensual a tarjeta de crédito" class="bg-slate-800 text-white">Cobro mensual a tarjeta de crédito</option>
                             <option value="Transferencia o depósito mensual" class="bg-slate-800 text-white">Transferencia o depósito mensual</option>
-                            <option value="Pago único por transferencia (por proyecto)" class="bg-slate-800 text-white">Pago único por transferencia (por proyecto)</option>
+                            <option value="Pago único por proyecto (Depósito o transferencia)" class="bg-slate-800 text-white">Pago único por proyecto (Depósito o transferencia)</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-400">
                             <i class="ph ph-caret-down"></i>
