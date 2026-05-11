@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 from app.core.mailer import (
+    send_contract_followup_email,
     send_lead_followup_email, 
     send_lead_notification_to_team,
     send_newsletter_welcome,
@@ -17,8 +18,13 @@ class ContactForm(BaseModel):
 
 @router.post("/submit")
 async def submit_contact_form(form_data: ContactForm):
+    is_contract = form_data.mensaje.startswith("ACEPTACIÓN DE CONTRATO VÍA WEB")
+    
     # Enviar correo al lead
-    lead_email_sent = await send_lead_followup_email(form_data.nombre, form_data.email)
+    if is_contract:
+        lead_email_sent = await send_contract_followup_email(form_data)
+    else:
+        lead_email_sent = await send_lead_followup_email(form_data.nombre, form_data.email)
     
     # Enviar correo al equipo de HiphaMX
     team_email_sent = await send_lead_notification_to_team(form_data)
