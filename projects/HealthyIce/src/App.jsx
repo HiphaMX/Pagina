@@ -604,15 +604,16 @@ function App() {
                     onClick={() => {
                       const orderDetails = cart.map(item => `${item.quantity}x Paleta ${item.name} (Línea ${item.line}) - $${item.price * item.quantity}`).join('\n');
                       const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-                      setFormData(prev => ({ ...prev, mensaje: `Hola, me gustaría hacer el siguiente pedido:\n\n${orderDetails}\n\nTotal: $${total}.00 MXN\n\nQuedo atento(a) para coordinar el pago y envío.`}));
+                      const message = `Hola, me gustaría hacer el siguiente pedido:\n\n${orderDetails}\n\nTotal: $${total}.00 MXN\n\nQuedo atento(a) para coordinar el pago y envío.`;
+                      const encodedMessage = encodeURIComponent(message);
+                      window.open(`https://wa.me/523334996922?text=${encodedMessage}`, '_blank');
                       setIsCartOpen(false);
-                      setIsModalOpen(true);
                     }}
                     style={{ width: '100%', padding: '1rem', background: '#101729', color: 'white', fontWeight: 700, borderRadius: '999px', border: 'none', cursor: 'pointer', fontSize: '1.125rem', transition: 'background 0.2s' }}
                     onMouseEnter={e => e.currentTarget.style.background = '#1e293b'}
                     onMouseLeave={e => e.currentTarget.style.background = '#101729'}
                   >
-                    Completar Pedido
+                    Hacer mi pedido
                   </button>
                 </div>
               )}
