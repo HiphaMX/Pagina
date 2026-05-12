@@ -156,7 +156,7 @@ function App() {
               onHoverEnd={() => setHoveredPopsicle(null)}
               animate={{ y: item.initialY }}
               transition={{ duration: 6 + idx, repeat: Infinity, ease: "easeInOut", delay: idx * 0.5 }}
-              style={{ position: 'absolute', cursor: 'grab', ...item.style }}
+              style={{ position: 'absolute', cursor: 'grab', ...item.style, zIndex: hoveredPopsicle === item.id ? 100 : (item.style?.zIndex || 1) }}
             >
               {/* Popsicle Image with Rotation and Hover Scale */}
               <motion.div
