@@ -8,8 +8,17 @@ const FlavorCard = ({ flavor, idx, onAddToCart }) => {
 
   return (
     <motion.div 
-      style={{ padding: '2rem 1rem', textAlign: 'center', background: 'white', borderRadius: '24px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-      whileHover={{ scale: 1.05, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}
+      style={{ 
+        padding: '2rem 1rem', textAlign: 'center', 
+        background: 'rgba(255, 255, 255, 0.5)', 
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid rgba(255, 255, 255, 0.8)',
+        borderRadius: '24px', 
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.05)', 
+        display: 'flex', flexDirection: 'column', alignItems: 'center' 
+      }}
+      whileHover={{ scale: 1.05, boxShadow: '0 20px 25px -5px rgba(31, 38, 135, 0.1)' }}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -45,9 +54,8 @@ const FlavorCard = ({ flavor, idx, onAddToCart }) => {
 
       <button 
         onClick={() => onAddToCart({ ...flavor, line: selectedLine, price })}
-        style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', background: '#101729', color: 'white', fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-        onMouseEnter={e => e.currentTarget.style.background = '#1e293b'}
-        onMouseLeave={e => e.currentTarget.style.background = '#101729'}
+        className="btn btn-primary"
+        style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
       >
         <ShoppingCart size={18} /> Añadir
       </button>
@@ -64,6 +72,7 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms'
   
   // Cart state
   const [cart, setCart] = useState([]);
@@ -537,7 +546,11 @@ function App() {
           <div style={{ marginBottom: '1.5rem' }}>
             <a href="mailto:hola@healthyice.mx" style={{ color: '#98BC3C', textDecoration: 'none', fontSize: '1.1rem', fontWeight: 600, fontFamily: "'Quicksand', sans-serif" }}>hola@healthyice.mx</a>
           </div>
-          <p style={{ color: '#94a3b8' }}>© 2026 HealthyIce. Todos los derechos reservados.</p>
+          <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={() => setLegalModal('privacy')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Aviso de Privacidad</button>
+            <button onClick={() => setLegalModal('terms')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Términos y Condiciones</button>
+          </div>
+          <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>© 2026 HealthyIce. Todos los derechos reservados.</p>
         </div>
       </footer>
       {/* Floating Cart Button */}
@@ -726,6 +739,57 @@ function App() {
                   </>
                 )}
               </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Legal Modals */}
+      <AnimatePresence>
+        {legalModal && (
+          <motion.div 
+            style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(10px)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLegalModal(null)}
+          >
+            <motion.div 
+              style={{ background: 'white', borderRadius: '24px', padding: '2rem', width: '100%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto', position: 'relative' }}
+              onClick={e => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+              <button onClick={() => setLegalModal(null)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={24} /></button>
+              
+              {legalModal === 'privacy' && (
+                <div style={{ color: '#101729' }}>
+                  <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', fontFamily: "'Quicksand', sans-serif" }}>Aviso de Privacidad</h2>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>En HealthyIce estamos comprometidos con la protección y privacidad de sus datos personales. De conformidad con lo establecido en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), ponemos a su disposición nuestro Aviso de Privacidad.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>1. Identidad y Domicilio del Responsable</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>HealthyIce, con operaciones en México, es responsable de recabar sus datos personales, del uso que se le dé a los mismos y de su protección.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>2. Finalidad del Tratamiento de Datos</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Los datos que recopilamos (como nombre, correo electrónico y teléfono) serán utilizados exclusivamente para gestionar sus pedidos, responder dudas y comentarios a través de nuestros medios de contacto, y enviarle información relevante sobre nuestros productos, si así lo autoriza.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>3. Derechos ARCO</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Usted tiene derecho de Acceder, Rectificar y Cancelar sus datos personales, así como de Oponerse al tratamiento de los mismos (Derechos ARCO), enviando un correo a hola@healthyice.mx indicando su solicitud.</p>
+                  <p style={{ marginTop: '2rem', fontSize: '0.875rem', color: '#64748b' }}>Última actualización: Mayo 2026</p>
+                </div>
+              )}
+
+              {legalModal === 'terms' && (
+                <div style={{ color: '#101729' }}>
+                  <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', fontFamily: "'Quicksand', sans-serif" }}>Términos y Condiciones</h2>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Bienvenido al sitio web de HealthyIce. El uso de este sitio y la compra de nuestros productos implica la aceptación incondicional de los siguientes términos y condiciones.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>1. Uso del Sitio</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>El contenido de esta página está destinado exclusivamente a uso informativo y transaccional personal. No se permite la reproducción, distribución o uso comercial del contenido (textos, gráficos, logotipos) sin el consentimiento explícito de HealthyIce.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>2. Pedidos y Precios</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Todos los pedidos están sujetos a disponibilidad del producto. Los precios mostrados en el sitio web están en pesos mexicanos (MXN) e incluyen impuestos correspondientes, pero no necesariamente los gastos de envío, los cuales se calcularán antes de finalizar la transacción a través de WhatsApp o correo electrónico.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>3. Políticas de Devolución</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Dado que nuestros productos son alimentos perecederos, no aceptamos devoluciones una vez entregados, salvo en casos de que el producto llegue en mal estado, para lo cual debe notificar a nuestro equipo (hola@healthyice.mx) el mismo día de la recepción con evidencia fotográfica.</p>
+                  <p style={{ marginTop: '2rem', fontSize: '0.875rem', color: '#64748b' }}>Última actualización: Mayo 2026</p>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
