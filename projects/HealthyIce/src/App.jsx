@@ -177,7 +177,7 @@ function App() {
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PROT'],
       initialY: [-10, 10, -10], initialRotate: [20, 25, 20],
-      style: { top: '65%', right: '-5%', width: '180px', height: '270px', zIndex: 5 },
+      style: { top: '50%', right: '-5%', width: '235px', height: '350px', zIndex: 5 },
       boxSide: 'left'
     },
     { 
@@ -185,7 +185,7 @@ function App() {
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PROT'],
       initialY: [-5, 5, -5], initialRotate: [0, 2, 0],
-      style: { top: '50%', left: '-5%', width: '220px', height: '330px', zIndex: 10 },
+      style: { top: '35%', left: '-5%', width: '285px', height: '430px', zIndex: 10 },
       boxSide: 'right'
     }
   ] : [
