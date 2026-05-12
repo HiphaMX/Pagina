@@ -85,18 +85,18 @@ function App() {
       {/* Navigation */}
       <nav className={`nav-bar ${scrolled ? 'nav-scrolled' : ''}`}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', zIndex: 60 }}>
             {/* The Logo from assets folder */}
-            <img src="/logo.svg" alt="HealthyIce Logo" style={{ height: '48px', objectFit: 'contain' }} />
+            <img src="/logo.svg" alt="HealthyIce Logo" className="nav-logo" style={{ height: '48px', objectFit: 'contain' }} />
           </div>
-          <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+          <div className="desktop-links" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
             <a href="#void-fall" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>¿Por qué HealthyIce?</a>
             <a href="#lineas" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Nuestras Líneas</a>
             <a href="#sabores" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Sabores</a>
-            <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>
-              Hacer mi pedido
-            </button>
           </div>
+          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary nav-cta-btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px', zIndex: 60 }}>
+            Hacer mi pedido
+          </button>
         </div>
       </nav>
 
@@ -124,6 +124,7 @@ function App() {
             </p>
           </motion.div>
 
+          <div className="popsicles-wrapper" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           {/* Draggable Collage of 5 Popsicles */}
           {heroPopsiclesData.map((item, idx) => (
             <motion.div
@@ -228,6 +229,7 @@ function App() {
 
             </motion.div>
           ))}
+          </div>
 
         </div>
       </section>

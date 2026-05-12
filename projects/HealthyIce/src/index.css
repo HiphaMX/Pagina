@@ -393,4 +393,46 @@ h1, h2, h3, h4 {
   .hero-section { text-align: center; }
   .hero-content { display: flex; flex-direction: column; align-items: center; }
   .hero-image-container { margin-top: 3rem; }
+
+  /* Navbar Mobile Adjustments */
+  .nav-bar .container {
+    padding: 0 1rem;
+  }
+  .desktop-links {
+    display: none !important;
+  }
+  .nav-cta-btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+  .nav-logo {
+    height: 36px !important;
+  }
+
+  /* Hero Mobile Layout */
+  .hero-scientific {
+    align-items: flex-start;
+  }
+  .hero-scientific-title {
+    top: 15%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-scientific-title h1 {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+  .hero-scientific-title p {
+    justify-content: center;
+  }
+
+  /* Scale down the 3D popsicles collage */
+  .popsicles-wrapper {
+    transform: scale(0.45);
+    transform-origin: center center;
+    margin-top: 10vh;
+  }
 }
