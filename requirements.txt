@@ -3,7 +3,7 @@ annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1
 bcrypt==3.2.2
-black==25.11.0
+black==26.3.1
 certifi==2026.2.25
 cffi==2.0.0
 click==8.1.8
@@ -36,10 +36,10 @@ pydantic-settings==2.11.0
 pydantic_core==2.41.5
 pyflakes==3.4.0
 Pygments==2.20.0
-pytest==8.4.2
-python-dotenv==1.2.1
+pytest==9.0.3
+python-dotenv==1.2.2
 python-jose==3.5.0
-python-multipart==0.0.20
+python-multipart==0.0.27
 pytokens==0.4.1
 rsa==4.9.1
 six==1.17.0
@@ -51,3 +51,5 @@ typing_extensions==4.15.0
 uvicorn==0.39.0
 zipp==3.23.0
 mercadopago==2.3.0
+requests==2.33.0
+urllib3==2.7.0
