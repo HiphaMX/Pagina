@@ -24,7 +24,7 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch('https://hipha.mx/api/contact/healthyice', {
+      const response = await fetch('https://www.hipha.mx/api/contact/healthyice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
