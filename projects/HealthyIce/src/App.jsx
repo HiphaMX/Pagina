@@ -43,7 +43,7 @@ function App() {
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
       initialY: [-20, 20, -20], initialRotate: [10, 15, 10],
-      style: { top: '5%', left: '10%', width: '280px', height: '420px', zIndex: 5 },
+      style: { top: '5%', left: '5%', width: '280px', height: '420px', zIndex: 5 },
       boxSide: 'right'
     },
     { 
@@ -51,7 +51,7 @@ function App() {
       desc: 'Clásico puro desde el origen.', tags: ['El Postre de Rutina', 'Sabor Refrescante', 'Una Delicada Textura'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
       initialY: [15, -15, 15], initialRotate: [-25, -20, -25],
-      style: { bottom: '5%', left: '20%', width: '300px', height: '450px', zIndex: 6 },
+      style: { bottom: '5%', left: '18%', width: '300px', height: '450px', zIndex: 6 },
       boxSide: 'right'
     },
     { 
@@ -59,7 +59,7 @@ function App() {
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
       initialY: [-25, 25, -25], initialRotate: [-2, 2, -2],
-      style: { top: '15%', left: '50%', transform: 'translateX(-50%)', width: '400px', height: '600px', zIndex: 10 },
+      style: { top: '15%', left: '42%', transform: 'translateX(-50%)', width: '400px', height: '600px', zIndex: 10 },
       boxSide: 'right'
     },
     { 
@@ -67,7 +67,7 @@ function App() {
       desc: 'Cremosidad irresistible.', tags: ['La Combinación Perfecta', 'Sin Calorías Extra', 'Tu Snack Ideal'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
       initialY: [20, -20, 20], initialRotate: [20, 25, 20],
-      style: { bottom: '10%', right: '20%', width: '300px', height: '450px', zIndex: 7 },
+      style: { bottom: '10%', right: '15%', width: '300px', height: '450px', zIndex: 7 },
       boxSide: 'left'
     },
     { 
@@ -75,7 +75,7 @@ function App() {
       desc: 'Energía y sabor intenso.', tags: ['Café Mexicano', 'Un shot de energía', 'Ideal para el antojo'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
       initialY: [-15, 15, -15], initialRotate: [-15, -10, -15],
-      style: { top: '10%', right: '10%', width: '250px', height: '380px', zIndex: 4 },
+      style: { top: '10%', right: '5%', width: '250px', height: '380px', zIndex: 4 },
       boxSide: 'left'
     }
   ];
