@@ -10,6 +10,14 @@ function App() {
   const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '', mensaje: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,7 +65,24 @@ function App() {
     { name: "Cookies & Cream", color: "#475569", image: "/paleta_cookies_cream.png" }
   ];
 
-  const heroPopsiclesData = [
+  const heroPopsiclesData = isMobile ? [
+    { 
+      id: 'fresa', name: 'FRESA', image: '/paleta_fresa_full.png',
+      desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
+      linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
+      initialY: [-10, 10, -10], initialRotate: [10, 15, 10],
+      style: { top: '10%', right: '-5%', width: '280px', height: '420px', zIndex: 5 },
+      boxSide: 'left'
+    },
+    { 
+      id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.png',
+      desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
+      linea: ['LÍNEA FIT 0', 'LÍNEA PRO'],
+      initialY: [-15, 15, -15], initialRotate: [-5, 0, -5],
+      style: { bottom: '5%', left: '50%', transform: 'translateX(-50%)', width: '320px', height: '480px', zIndex: 10 },
+      boxSide: 'right'
+    }
+  ] : [
     { 
       id: 'fresa', name: 'FRESA', image: '/paleta_fresa.png',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
