@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
 
 const FlavorCard = ({ flavor, idx, onAddToCart }) => {
-  const [selectedLine, setSelectedLine] = useState('Fit 0 ProT');
-  const price = selectedLine === 'Fit 0 ProT' ? 45 : 55;
+  const [selectedLine, setSelectedLine] = useState('ProT Fit 0');
+  const price = selectedLine === 'ProT Fit 0' ? 45 : 55;
 
   return (
     <motion.div 
@@ -41,17 +41,17 @@ const FlavorCard = ({ flavor, idx, onAddToCart }) => {
       <div style={{ width: '100%', background: '#f8fafc', padding: '1rem', borderRadius: '16px', marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <button 
-            onClick={() => setSelectedLine('Fit 0 ProT')}
+            onClick={() => setSelectedLine('ProT Fit 0')}
             style={{ 
               flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
-              border: selectedLine === 'Fit 0 ProT' ? '2px solid transparent' : '2px solid transparent', 
-              background: selectedLine === 'Fit 0 ProT' ? 'white' : 'rgba(255, 255, 255, 0.4)', 
-              boxShadow: selectedLine === 'Fit 0 ProT' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
+              border: selectedLine === 'ProT Fit 0' ? '2px solid transparent' : '2px solid transparent', 
+              background: selectedLine === 'ProT Fit 0' ? 'white' : 'rgba(255, 255, 255, 0.4)', 
+              boxShadow: selectedLine === 'ProT Fit 0' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
               cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', gap: '0.3rem', alignItems: 'center'
             }}
           >
-            <span style={{ color: selectedLine === 'Fit 0 ProT' ? '#101729' : '#64748b' }}>Línea</span>
-            <span style={{ color: selectedLine === 'Fit 0 ProT' ? '#98BC3C' : '#64748b' }}>Fit 0 ProT</span>
+            <span style={{ color: selectedLine === 'ProT Fit 0' ? '#101729' : '#64748b' }}>Línea</span>
+            <span style={{ color: selectedLine === 'ProT Fit 0' ? '#98BC3C' : '#64748b' }}>ProT Fit 0</span>
           </button>
           <button 
             onClick={() => setSelectedLine('ProT Light')}
@@ -175,7 +175,7 @@ function App() {
     { 
       id: 'fresa', name: 'FRESA', image: '/paleta_fresa_full.png',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [-10, 10, -10], initialRotate: [20, 25, 20],
       style: { top: '30%', right: '-5%', width: '235px', height: '350px', zIndex: 5 },
       boxSide: 'left'
@@ -183,7 +183,7 @@ function App() {
     { 
       id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.png',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [-5, 5, -5], initialRotate: [0, 2, 0],
       style: { top: '15%', left: '-5%', width: '285px', height: '430px', zIndex: 10 },
       boxSide: 'right'
@@ -192,7 +192,7 @@ function App() {
     { 
       id: 'fresa', name: 'FRESA', image: '/paleta_fresa.png',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [-20, 20, -20], initialRotate: [10, 15, 10],
       style: { top: '5%', left: '5%', width: '280px', height: '420px', zIndex: 5 },
       boxSide: 'right'
@@ -200,7 +200,7 @@ function App() {
     { 
       id: 'vainilla', name: 'VAINILLA', image: '/paleta_vainilla.png',
       desc: 'Clásico puro desde el origen.', tags: ['El Postre de Rutina', 'Sabor Refrescante', 'Una Delicada Textura'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [15, -15, 15], initialRotate: [-25, -20, -25],
       style: { bottom: '5%', left: '18%', width: '300px', height: '450px', zIndex: 6 },
       boxSide: 'right'
@@ -208,7 +208,7 @@ function App() {
     { 
       id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.png',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [-25, 25, -25], initialRotate: [-2, 2, -2],
       style: { top: '15%', left: '42%', transform: 'translateX(-50%)', width: '400px', height: '600px', zIndex: 10 },
       boxSide: 'right'
@@ -216,7 +216,7 @@ function App() {
     { 
       id: 'cookies', name: 'COOKIES & CREAM', image: '/paleta_cookies_cream.png',
       desc: 'Cremosidad irresistible.', tags: ['La Combinación Perfecta', 'Sin Calorías Extra', 'Tu Snack Ideal'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [20, -20, 20], initialRotate: [20, 25, 20],
       style: { bottom: '10%', right: '15%', width: '300px', height: '450px', zIndex: 7 },
       boxSide: 'left'
@@ -224,7 +224,7 @@ function App() {
     { 
       id: 'cafe', name: 'CAFÉ', image: '/paleta_cafe.png',
       desc: 'Energía y sabor intenso.', tags: ['Café Mexicano', 'Un shot de energía', 'Ideal para el antojo'],
-      linea: ['LÍNEA FIT 0 PROT', 'LÍNEA PROT LIGHT'],
+      linea: ['LÍNEA PROT FIT 0', 'LÍNEA PROT LIGHT'],
       initialY: [-15, 15, -15], initialRotate: [-15, -10, -15],
       style: { top: '10%', right: '5%', width: '250px', height: '380px', zIndex: 4 },
       boxSide: 'left'
@@ -478,7 +478,7 @@ function App() {
               transition={{ duration: 0.3 }}
             >
               <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: '#98BC3C', opacity: 0.1, borderRadius: '50%', filter: 'blur(30px)' }}></div>
-              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-dark)' }}>Línea <span style={{ color: '#98BC3C' }}>Fit 0 ProT</span></h3>
+              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-dark)' }}>Línea <span style={{ color: '#98BC3C' }}>ProT Fit 0</span></h3>
               <p style={{ fontSize: '1.25rem', color: '#475569', marginBottom: '2rem' }}>
                 El equilibrio perfecto entre dulzura y ligereza. Pensada para disfrutar sin compromisos.
               </p>
@@ -516,7 +516,7 @@ function App() {
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h2 style={{ fontSize: '3rem', marginBottom: '1rem', color: '#101729', textTransform: 'uppercase' }}>Tus Sabores Favoritos</h2>
             <p style={{ fontSize: '1.125rem', color: '#64748b', maxWidth: '800px', margin: '0 auto' }}>
-              Todos los sabores de nuestras paletas los puedes adquirir en ambas líneas Fit 0 ProT y ProT Light, de acuerdo a tus necesidades tenemos una alternativa que te ayudará para alcanzar tus objetivos.
+              Todos los sabores de nuestras paletas los puedes adquirir en ambas líneas ProT Fit 0 y ProT Light, de acuerdo a tus necesidades tenemos una alternativa que te ayudará para alcanzar tus objetivos.
             </p>
           </div>
 
@@ -612,7 +612,7 @@ function App() {
                       <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
                       <div style={{ flex: 1 }}>
                         <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#101729' }}>{item.name}</h4>
-                        <div style={{ fontSize: '0.875rem', color: item.line === 'Fit 0 ProT' ? '#98BC3C' : 'var(--primary)', fontWeight: 600 }}>Línea {item.line}</div>
+                        <div style={{ fontSize: '0.875rem', color: item.line === 'ProT Fit 0' ? '#98BC3C' : 'var(--primary)', fontWeight: 600 }}>Línea {item.line}</div>
                         <div style={{ fontSize: '0.875rem', color: '#64748b' }}>${item.price}.00 MXN</div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -739,7 +739,7 @@ function App() {
                     <div>
                       <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Línea de Interés</label>
                       <select onChange={e => setFormData({...formData, mensaje: `Línea de interés: ${e.target.value}\n\n${formData.mensaje.split('Línea de interés:')[0]}`})} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', background: 'white' }}>
-                        <option value="Línea Fit 0 ProT">Línea Fit 0 ProT</option>
+                        <option value="Línea ProT Fit 0">Línea ProT Fit 0</option>
                         <option value="Línea ProT Light">Línea ProT Light</option>
                         <option value="Ambas">Ambas</option>
                       </select>
