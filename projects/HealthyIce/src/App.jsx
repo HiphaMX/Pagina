@@ -158,16 +158,16 @@ function App() {
       id: 'fresa', name: 'FRESA', image: '/paleta_fresa_full.png',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PROT'],
-      initialY: [-10, 10, -10], initialRotate: [10, 15, 10],
-      style: { top: '10%', right: '-5%', width: '280px', height: '420px', zIndex: 5 },
+      initialY: [-10, 10, -10], initialRotate: [20, 25, 20],
+      style: { top: '65%', right: '-5%', width: '180px', height: '270px', zIndex: 5 },
       boxSide: 'left'
     },
     { 
       id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.png',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
       linea: ['LÍNEA FIT 0', 'LÍNEA PROT'],
-      initialY: [-15, 15, -15], initialRotate: [-5, 0, -5],
-      style: { bottom: '5%', left: '50%', transform: 'translateX(-50%)', width: '320px', height: '480px', zIndex: 10 },
+      initialY: [-5, 5, -5], initialRotate: [0, 2, 0],
+      style: { top: '50%', left: '-5%', width: '220px', height: '330px', zIndex: 10 },
       boxSide: 'right'
     }
   ] : [
