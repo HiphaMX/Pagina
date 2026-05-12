@@ -341,3 +341,92 @@ async def send_contract_followup_email(form_data):
     except Exception as e:
         logger.error(f"Fallo al enviar correo de contrato a {form_data.email}: {str(e)}")
         return False
+
+
+async def send_healthyice_order_customer(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a cliente HealthyIce {form_data.email}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = f"HealthyIce <hola@healthyice.mx>"
+    message["To"] = form_data.email
+    message["Subject"] = f"¡Hemos recibido tus datos, {form_data.nombre}!"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Quicksand', Arial, sans-serif; color: #101729; background-color: #f8fafc; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px;">
+            <h2 style="color: #101729; font-weight: bold;">Hola {form_data.nombre},</h2>
+            <p>Hemos recibido tus datos correctamente. Muy pronto uno de nuestros asesores se pondrá en contacto contigo para darle seguimiento a tu pedido de paletas HealthyIce.</p>
+            <p>Detalles que nos compartiste:</p>
+            <ul>
+                <li><strong>Teléfono:</strong> {form_data.telefono}</li>
+                <li><strong>Mensaje:</strong> {form_data.mensaje}</li>
+            </ul>
+            <br>
+            <p style="color: #98BC3C; font-weight: bold;">El equipo de HealthyIce</p>
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+    
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo a cliente HealthyIce: {str(e)}")
+        return False
+
+async def send_healthyice_order_team(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a equipo HealthyIce")
+        return True
+
+    message = EmailMessage()
+    message["From"] = f"HealthyIce Web <hola@healthyice.mx>"
+    message["To"] = "hola@healthyice.mx"
+    message["Subject"] = f"NUEVO PROSPECTO WEB: {form_data.nombre}"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333;">
+        <h2>¡Nuevo prospecto desde la landing de HealthyIce!</h2>
+        
+        <h3>Datos de Contacto:</h3>
+        <ul>
+            <li><strong>Nombre:</strong> {form_data.nombre}</li>
+            <li><strong>Email:</strong> {form_data.email}</li>
+            <li><strong>Teléfono:</strong> {form_data.telefono}</li>
+        </ul>
+        
+        <h3>Mensaje Personalizado:</h3>
+        <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
+            {form_data.mensaje.replace('\n', '<br>')}
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+    
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo al equipo HealthyIce: {str(e)}")
+        return False

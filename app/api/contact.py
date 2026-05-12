@@ -5,7 +5,9 @@ from app.core.mailer import (
     send_lead_followup_email, 
     send_lead_notification_to_team,
     send_newsletter_welcome,
-    send_newsletter_notification_to_team
+    send_newsletter_notification_to_team,
+    send_healthyice_order_customer,
+    send_healthyice_order_team
 )
 
 router = APIRouter()
@@ -15,6 +17,19 @@ class ContactForm(BaseModel):
     email: EmailStr
     telefono: str
     mensaje: str = ""
+
+@router.post("/healthyice")
+async def submit_healthyice_form(form_data: ContactForm):
+    # Enviar correo de confirmación al cliente
+    customer_email_sent = await send_healthyice_order_customer(form_data)
+    
+    # Enviar correo de notificación al equipo
+    team_email_sent = await send_healthyice_order_team(form_data)
+    
+    if not customer_email_sent and not team_email_sent:
+        raise HTTPException(status_code=500, detail="Error al enviar correos")
+        
+    return {"message": "Formulario recibido correctamente"}
 
 @router.post("/submit")
 async def submit_contact_form(form_data: ContactForm):

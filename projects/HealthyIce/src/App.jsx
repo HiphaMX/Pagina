@@ -7,6 +7,9 @@ function App() {
   const dragConstraintsRef = useRef(null);
   const [hoveredPopsicle, setHoveredPopsicle] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '', mensaje: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +29,35 @@ function App() {
     visible: {
       opacity: 1,
       transition: { staggerChildren: 0.2 }
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('https://hipha.mx/api/contact/healthyice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setSubmitSuccess(false);
+          setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
+        }, 3000);
+      } else {
+        alert('Hubo un error al enviar tus datos. Por favor, intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Hubo un problema de conexión. Por favor revisa tu internet e intenta de nuevo.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -482,34 +514,46 @@ function App() {
                 <p style={{ color: '#64748b', fontSize: '1rem' }}>Déjanos tus datos y nos pondremos en contacto contigo lo antes posible.</p>
               </div>
 
-              <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} onSubmit={(e) => { e.preventDefault(); alert('¡Gracias! Hemos recibido tus datos.'); setIsModalOpen(false); }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Nombre Completo</label>
-                  <input type="text" required style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Juan Pérez" />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Correo Electrónico</label>
-                  <input type="email" required style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="juan@ejemplo.com" />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
-                  <input type="tel" required style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Línea de Interés</label>
-                  <select style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', background: 'white' }}>
-                    <option>Línea Fit 0</option>
-                    <option>Línea Pro</option>
-                    <option>Ambas</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Mensaje Personalizado</label>
-                  <textarea rows="3" style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', resize: 'none' }} placeholder="Escribe aquí tu duda o comentario..."></textarea>
-                </div>
-                <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '1.25rem', marginTop: '0.5rem', fontSize: '1.125rem', borderRadius: '9999px', fontFamily: "'Quicksand', sans-serif", fontWeight: 700 }}>
-                  Hacer mi pedido
-                </button>
+              <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} onSubmit={handleFormSubmit}>
+                {submitSuccess ? (
+                  <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
+                    <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>¡Gracias!</h3>
+                    <p style={{ color: '#64748b' }}>Hemos recibido tus datos y te contactaremos a la brevedad.</p>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Nombre Completo</label>
+                      <input type="text" required value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Juan Pérez" />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Correo Electrónico</label>
+                      <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="juan@ejemplo.com" />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
+                      <input type="tel" required value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Línea de Interés</label>
+                      <select onChange={e => setFormData({...formData, mensaje: `Línea de interés: ${e.target.value}\n\n${formData.mensaje.split('Línea de interés:')[0]}`})} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', background: 'white' }}>
+                        <option value="Línea Fit 0">Línea Fit 0</option>
+                        <option value="Línea Pro">Línea Pro</option>
+                        <option value="Ambas">Ambas</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Mensaje Personalizado</label>
+                      <textarea rows="3" value={formData.mensaje.split('\n\n').pop()} onChange={e => {
+                        const baseMsg = formData.mensaje.includes('Línea de interés:') ? formData.mensaje.split('\n\n')[0] + '\n\n' : '';
+                        setFormData({...formData, mensaje: baseMsg + e.target.value});
+                      }} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', resize: 'none' }} placeholder="Escribe aquí tu duda o comentario..."></textarea>
+                    </div>
+                    <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: '100%', padding: '1.25rem', marginTop: '0.5rem', fontSize: '1.125rem', borderRadius: '9999px', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, opacity: isSubmitting ? 0.7 : 1 }}>
+                      {isSubmitting ? 'Enviando...' : 'Hacer mi pedido'}
+                    </button>
+                  </>
+                )}
               </form>
             </motion.div>
           </motion.div>
