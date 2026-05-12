@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Snowflake, Droplets, ArrowRight, HeartPulse, ChevronRight, Activity, ShieldCheck, Coffee } from 'lucide-react';
+import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck } from 'lucide-react';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,18 +19,6 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 }
-    }
-  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -281,10 +269,11 @@ function App() {
           { name: "Vainilla", image: "/paleta_vainilla.png", highlight: "Ingredientes Naturales", desc: "Calidad pura, formulada desde el origen." },
           { name: "Cookies & Cream", image: "/paleta_cookies_cream.png", highlight: "Placer sin Culpa", desc: "Delicioso sabor y cremosidad extraordinaria." }
         ].map((item, idx) => (
-          <div key={idx} style={{ minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1, padding: '4rem 0' }}>
+          <div key={idx} className="void-fall-item" style={{ minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1, padding: '4rem 0' }}>
             <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: idx % 2 === 0 ? 'flex-start' : 'flex-end', width: '100%', position: 'relative' }}>
               
               <motion.div 
+                className="void-fall-text"
                 initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, margin: "-10%" }}
@@ -297,6 +286,7 @@ function App() {
               </motion.div>
 
               <motion.div 
+                className="void-fall-image"
                 style={{ position: 'absolute', left: '50%', top: '50%', marginLeft: '-300px', marginTop: '-450px', width: '600px', height: '900px', zIndex: 5, pointerEvents: 'none' }}
                 initial={{ y: -1000, opacity: 0, rotateZ: idx % 2 === 0 ? -25 : 25 }}
                 whileInView={{ y: 0, opacity: 1, rotateZ: idx % 2 === 0 ? 5 : -5 }}

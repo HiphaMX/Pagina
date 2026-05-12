@@ -349,7 +349,8 @@ async def send_healthyice_order_customer(form_data):
         return True
 
     message = EmailMessage()
-    message["From"] = f"HealthyIce <hola@healthyice.mx>"
+    message["From"] = f"HealthyIce <{settings.SMTP_USER}>"
+    message.add_header('Reply-To', 'hola@healthyice.mx')
     message["To"] = form_data.email
     message["Subject"] = f"¡Hemos recibido tus datos, {form_data.nombre}!"
     
@@ -392,7 +393,8 @@ async def send_healthyice_order_team(form_data):
         return True
 
     message = EmailMessage()
-    message["From"] = f"HealthyIce Web <hola@healthyice.mx>"
+    message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
+    message.add_header('Reply-To', 'hola@healthyice.mx')
     message["To"] = "hola@healthyice.mx"
     message["Subject"] = f"NUEVO PROSPECTO WEB: {form_data.nombre}"
     

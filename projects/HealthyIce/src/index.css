@@ -431,8 +431,32 @@ h1, h2, h3, h4 {
 
   /* Scale down the 3D popsicles collage */
   .popsicles-wrapper {
-    transform: scale(0.45);
+    transform: scale(0.85);
     transform-origin: center center;
-    margin-top: 10vh;
+    margin-top: 25vh;
+  }
+  
+  /* Void Fall Mobile Fixes */
+  .void-fall-item {
+    min-height: 80vh !important;
+    padding: 2rem 0 !important;
+  }
+  .void-fall-text {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 0 1rem;
+    margin-top: 55vh;
+  }
+  .void-fall-text p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .void-fall-image {
+    width: 400px !important;
+    height: 600px !important;
+    margin-left: -200px !important;
+    margin-top: -300px !important;
+    top: 35% !important;
   }
 }
+
