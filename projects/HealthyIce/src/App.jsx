@@ -544,7 +544,7 @@ function App() {
             </a>
           </div>
           <div style={{ marginBottom: '1.5rem' }}>
-            <a href="mailto:hola@healthyice.mx" style={{ color: '#98BC3C', textDecoration: 'none', fontSize: '1.1rem', fontWeight: 600, fontFamily: "'Quicksand', sans-serif" }}>hola@healthyice.mx</a>
+            <a href="mailto:hola@healthyice.mx" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '1.1rem', fontWeight: 600, fontFamily: "'Quicksand', sans-serif" }}>hola@healthyice.mx</a>
           </div>
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setLegalModal('privacy')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Aviso de Privacidad</button>
