@@ -787,6 +787,8 @@ function App() {
                   <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Todos los pedidos están sujetos a disponibilidad del producto. Los precios mostrados en el sitio web están en pesos mexicanos (MXN) e incluyen impuestos correspondientes, pero no necesariamente los gastos de envío, los cuales se calcularán antes de finalizar la transacción a través de WhatsApp o correo electrónico.</p>
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>3. Políticas de Devolución</h3>
                   <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Dado que nuestros productos son alimentos perecederos, no aceptamos devoluciones una vez entregados, salvo en casos de que el producto llegue en mal estado, para lo cual debe notificar a nuestro equipo (hola@healthyice.mx) el mismo día de la recepción con evidencia fotográfica.</p>
+                  <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>4. Zona de Cobertura</h3>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Nuestros servicios de envío y entrega están limitados exclusivamente a la Zona Metropolitana de Guadalajara (ZMG). Pedidos solicitados fuera de esta área de cobertura podrían no ser procesados o estar sujetos a acuerdos especiales de envío.</p>
                   <p style={{ marginTop: '2rem', fontSize: '0.875rem', color: '#64748b' }}>Última actualización: Mayo 2026</p>
                 </div>
               )}
