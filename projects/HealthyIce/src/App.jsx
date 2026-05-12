@@ -42,12 +42,30 @@ const FlavorCard = ({ flavor, idx, onAddToCart }) => {
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <button 
             onClick={() => setSelectedLine('Fit 0')}
-            style={{ flex: 1, padding: '0.5rem', fontSize: '0.875rem', fontWeight: 600, borderRadius: '8px', border: '1px solid #98BC3C', background: selectedLine === 'Fit 0' ? '#98BC3C' : 'transparent', color: selectedLine === 'Fit 0' ? 'white' : '#98BC3C', cursor: 'pointer', transition: 'all 0.2s' }}
-          >Fit 0</button>
+            style={{ 
+              flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
+              border: selectedLine === 'Fit 0' ? '2px solid transparent' : '2px solid transparent', 
+              background: selectedLine === 'Fit 0' ? 'white' : 'rgba(255, 255, 255, 0.4)', 
+              boxShadow: selectedLine === 'Fit 0' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
+              cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', gap: '0.3rem', alignItems: 'center'
+            }}
+          >
+            <span style={{ color: selectedLine === 'Fit 0' ? '#101729' : '#64748b' }}>Línea</span>
+            <span style={{ color: selectedLine === 'Fit 0' ? '#98BC3C' : '#64748b' }}>Fit 0</span>
+          </button>
           <button 
             onClick={() => setSelectedLine('ProT')}
-            style={{ flex: 1, padding: '0.5rem', fontSize: '0.875rem', fontWeight: 600, borderRadius: '8px', border: '1px solid var(--primary)', background: selectedLine === 'ProT' ? 'var(--primary)' : 'transparent', color: selectedLine === 'ProT' ? 'white' : 'var(--primary)', cursor: 'pointer', transition: 'all 0.2s' }}
-          >ProT</button>
+            style={{ 
+              flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
+              border: selectedLine === 'ProT' ? '2px solid transparent' : '2px solid transparent', 
+              background: selectedLine === 'ProT' ? '#101729' : 'rgba(255, 255, 255, 0.4)', 
+              boxShadow: selectedLine === 'ProT' ? '0 4px 15px rgba(16,23,41,0.2)' : 'none',
+              cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', gap: '0.3rem', alignItems: 'center'
+            }}
+          >
+            <span style={{ color: selectedLine === 'ProT' ? 'white' : '#64748b' }}>Línea</span>
+            <span style={{ color: selectedLine === 'ProT' ? 'var(--primary)' : '#64748b' }}>ProT</span>
+          </button>
         </div>
         <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#101729' }}>${price}.00 <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: 400 }}>MXN</span></div>
       </div>
