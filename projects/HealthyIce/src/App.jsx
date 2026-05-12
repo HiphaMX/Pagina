@@ -288,7 +288,7 @@ function App() {
               <motion.div 
                 className="void-fall-image"
                 style={{ position: 'absolute', left: '50%', top: '50%', marginLeft: '-300px', marginTop: '-450px', width: '600px', height: '900px', zIndex: 5, pointerEvents: 'none' }}
-                initial={{ y: -1000, opacity: 0, rotateZ: idx % 2 === 0 ? -25 : 25 }}
+                initial={{ y: -200, opacity: 0, rotateZ: idx % 2 === 0 ? -25 : 25 }}
                 whileInView={{ y: 0, opacity: 1, rotateZ: idx % 2 === 0 ? 5 : -5 }}
                 viewport={{ once: false, margin: "10%" }}
                 transition={{ type: "spring", bounce: 0.4, duration: 1.8 }}
@@ -304,7 +304,7 @@ function App() {
                     alt={`${item.name} mordida`} 
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1, scale: [1, 0.95, 1.05, 1] }}
-                    viewport={{ once: false, margin: "-20%" }}
+                    viewport={{ once: false, margin: "0px" }}
                     transition={{ 
                       opacity: { delay: 1.2, duration: 0.01 },
                       scale: { delay: 1.2, duration: 0.3 }
@@ -317,7 +317,7 @@ function App() {
                     alt={`${item.name} completa`} 
                     initial={{ opacity: 1 }}
                     whileInView={{ opacity: 0 }}
-                    viewport={{ once: false, margin: "-20%" }}
+                    viewport={{ once: false, margin: "0px" }}
                     transition={{ delay: 1.2, duration: 0.01 }}
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 50px 60px rgba(0,0,0,0.6))' }} 
                   />
