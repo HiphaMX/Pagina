@@ -342,37 +342,37 @@ function App() {
           <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
             {/* Linea Fit 0 */}
             <motion.div 
-              style={{ flex: '1 1 45%', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)', position: 'relative', overflow: 'hidden' }}
+              style={{ flex: '1 1 45%', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: '#ffffff', position: 'relative', overflow: 'hidden' }}
               whileHover={{ y: -5, boxShadow: 'var(--shadow-xl)' }}
               transition={{ duration: 0.3 }}
             >
-              <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: 'var(--primary)', opacity: 0.1, borderRadius: '50%', filter: 'blur(30px)' }}></div>
-              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-dark)' }}>Línea <span style={{ color: 'var(--secondary)' }}>Fit 0</span></h3>
+              <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: '#98BC3C', opacity: 0.1, borderRadius: '50%', filter: 'blur(30px)' }}></div>
+              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-dark)' }}>Línea <span style={{ color: '#98BC3C' }}>Fit 0</span></h3>
               <p style={{ fontSize: '1.25rem', color: '#475569', marginBottom: '2rem' }}>
                 El equilibrio perfecto entre dulzura y ligereza. Pensada para disfrutar sin compromisos.
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="var(--primary)" /> 0% Azúcar Añadida</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Leaf color="var(--primary)" /> Ingredientes Naturales</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Droplets color="var(--primary)" /> Refrescante y Ligera</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="#98BC3C" /> Sin azúcar</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Leaf color="#98BC3C" /> Ingredientes Naturales</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Droplets color="#98BC3C" /> Refrescante y Ligera</li>
               </ul>
             </motion.div>
 
             {/* Linea Pro */}
             <motion.div 
-              style={{ flex: '1 1 45%', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white', position: 'relative', overflow: 'hidden' }}
+              style={{ flex: '1 1 45%', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: '#0f172a', color: 'white', position: 'relative', overflow: 'hidden' }}
               whileHover={{ y: -5, boxShadow: 'var(--shadow-xl)' }}
               transition={{ duration: 0.3 }}
             >
-              <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: '#98BC3C', opacity: 0.2, borderRadius: '50%', filter: 'blur(30px)' }}></div>
-              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'white' }}>Línea <span style={{ color: '#98BC3C' }}>Pro</span></h3>
+              <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: 'var(--primary)', opacity: 0.2, borderRadius: '50%', filter: 'blur(30px)' }}></div>
+              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'white' }}>Línea <span style={{ color: 'var(--primary)' }}>Pro</span></h3>
               <p style={{ fontSize: '1.25rem', color: '#94a3b8', marginBottom: '2rem' }}>
                 Potencia tu recuperación y bienestar. La paleta definitiva para estilos de vida activos.
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><HeartPulse color="#98BC3C" /> Alta en Proteína</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="#98BC3C" /> 0 Sellos (Norma Oficial)</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="#98BC3C" /> Sin Azúcar Añadida</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="var(--primary)" /> Sin azúcar</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><HeartPulse color="var(--primary)" /> Alta en Proteína</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="var(--primary)" /> Cero sellos (Norma Oficial)</li>
               </ul>
             </motion.div>
           </div>
