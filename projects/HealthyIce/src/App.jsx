@@ -263,11 +263,11 @@ function App() {
         <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(255,0,128,0.1) 0%, transparent 70%)', filter: 'blur(90px)', zIndex: 0, pointerEvents: 'none' }}></div>
 
         {[
-          { name: "Fresa", image: "/paleta_fresa.png", highlight: "Sin Azúcar", desc: "Dulzor vibrante sin alterar tus niveles de glucosa." },
-          { name: "Chocolate", image: "/paleta_chocolate.png", highlight: "Alta en Proteína", desc: "Tu mejor aliado para la recuperación muscular." },
-          { name: "Café", image: "/paleta_cafe.png", highlight: "Sin Sellos", desc: "Cumplimiento total con la NOM-051." },
-          { name: "Vainilla", image: "/paleta_vainilla.png", highlight: "Ingredientes Naturales", desc: "Calidad pura, formulada desde el origen." },
-          { name: "Cookies & Cream", image: "/paleta_cookies_cream.png", highlight: "Placer sin Culpa", desc: "Delicioso sabor y cremosidad extraordinaria." }
+          { name: "Fresa", image: "/paleta_fresa.png", fullImage: "/paleta_fresa_full.png", highlight: "Sin Azúcar", desc: "Dulzor vibrante sin alterar tus niveles de glucosa." },
+          { name: "Chocolate", image: "/paleta_chocolate.png", fullImage: "/paleta_chocolate_full.png", highlight: "Alta en Proteína", desc: "Tu mejor aliado para la recuperación muscular." },
+          { name: "Café", image: "/paleta_cafe.png", fullImage: "/paleta_cafe_full.png", highlight: "Sin Sellos", desc: "Cumplimiento total con la NOM-051." },
+          { name: "Vainilla", image: "/paleta_vainilla.png", fullImage: "/paleta_vainilla_full.png", highlight: "Ingredientes Naturales", desc: "Calidad pura, formulada desde el origen." },
+          { name: "Cookies & Cream", image: "/paleta_cookies_cream.png", fullImage: "/paleta_cookies_cream_full.png", highlight: "Placer sin Culpa", desc: "Delicioso sabor y cremosidad extraordinaria." }
         ].map((item, idx) => (
           <div key={idx} className="void-fall-item" style={{ minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1, padding: '4rem 0' }}>
             <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: idx % 2 === 0 ? 'flex-start' : 'flex-end', width: '100%', position: 'relative' }}>
@@ -296,9 +296,31 @@ function App() {
                 <motion.div
                   animate={{ y: [-20, 20, -20] }}
                   transition={{ repeat: Infinity, duration: 5 + (idx % 2), ease: "easeInOut" }}
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: '100%', height: '100%', position: 'relative' }}
                 >
-                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 50px 60px rgba(0,0,0,0.6))' }} />
+                  {/* Bitten image (hidden initially) */}
+                  <motion.img 
+                    src={item.image} 
+                    alt={`${item.name} mordida`} 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1, scale: [1, 0.95, 1.05, 1] }}
+                    viewport={{ once: false, margin: "-20%" }}
+                    transition={{ 
+                      opacity: { delay: 1.2, duration: 0.01 },
+                      scale: { delay: 1.2, duration: 0.3 }
+                    }}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 50px 60px rgba(0,0,0,0.6))' }} 
+                  />
+                  {/* Full image (visible initially, hides exactly when bitten image appears) */}
+                  <motion.img 
+                    src={item.fullImage} 
+                    alt={`${item.name} completa`} 
+                    initial={{ opacity: 1 }}
+                    whileInView={{ opacity: 0 }}
+                    viewport={{ once: false, margin: "-20%" }}
+                    transition={{ delay: 1.2, duration: 0.01 }}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 50px 60px rgba(0,0,0,0.6))' }} 
+                  />
                 </motion.div>
               </motion.div>
 
