@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
 
+const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 15V7A5 5 0 0 0 7 7v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2z" />
+    <path d="M12 17v5" />
+  </svg>
+);
+
 const FlavorCard = ({ flavor, idx, onAddToCart }) => {
   const [selectedLine, setSelectedLine] = useState('ProT Fit 0');
   const price = selectedLine === 'ProT Fit 0' ? 35 : 40;
@@ -484,7 +491,7 @@ function App() {
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Leaf color="#98BC3C" /> Ingredientes Naturales</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="#98BC3C" /> Sin azúcar añadida</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="#98BC3C" /> Cero sellos (Norma Oficial)</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="#98BC3C" /> Antojo aliado de tus objetivos</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><PopsicleIcon color="#98BC3C" /> Antojo aliado de tus objetivos</li>
               </ul>
             </motion.div>
 
