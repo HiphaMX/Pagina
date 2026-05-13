@@ -484,7 +484,7 @@ function App() {
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Leaf color="#98BC3C" /> Ingredientes Naturales</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="#98BC3C" /> Sin azúcar añadida</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="#98BC3C" /> Cero sellos (Norma Oficial)</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Droplets color="#98BC3C" /> El lado fit del placer</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="#98BC3C" /> Antojo aliado de tus objetivos</li>
               </ul>
             </motion.div>
 
@@ -502,8 +502,7 @@ function App() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><HeartPulse color="var(--primary)" /> Alto en proteína</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="var(--primary)" /> Sin azúcar añadida</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Droplets color="var(--primary)" /> Bajo en calorías</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="var(--primary)" /> Antojo aliado de tus objetivos</li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Droplets color="var(--primary)" /> El lado fit del placer</li>
               </ul>
             </motion.div>
           </div>
