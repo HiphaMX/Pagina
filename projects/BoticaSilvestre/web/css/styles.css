@@ -387,6 +387,35 @@ p {
     justify-content: center;
 }
 
+.hero-actions-home {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero-actions-home .btn {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+@media (max-width: 768px) {
+    .hero-actions-home {
+        flex-direction: column;
+        max-width: 380px;
+    }
+}
+
 .btn-outline-light {
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(10px);
