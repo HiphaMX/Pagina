@@ -399,7 +399,6 @@ p {
 }
 
 .hero-actions-home .btn {
-    flex: 1;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -409,10 +408,23 @@ p {
     padding-right: 0;
 }
 
+.hero-actions-home .btn:first-child {
+    flex: 1.4;
+}
+
+.hero-actions-home .btn:last-child {
+    flex: 1;
+}
+
 @media (max-width: 768px) {
     .hero-actions-home {
         flex-direction: column;
         max-width: 380px;
+    }
+    
+    .hero-actions-home .btn:first-child,
+    .hero-actions-home .btn:last-child {
+        flex: none;
     }
 }
 
