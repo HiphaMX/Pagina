@@ -3,6 +3,27 @@ window.selectFormat = function(btn) {
     if (container) {
         container.querySelectorAll('.format-tag').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
+        
+        const card = btn.closest('.product-card');
+        if (card) {
+            const desc = card.querySelector('.product-desc');
+            if (desc && desc.dataset.base) {
+                const format = btn.innerText.trim();
+                let prefix = "";
+                if (format === 'Tintura') {
+                    prefix = "Extracto en alcohol ";
+                } else if (format === 'Oleato') {
+                    prefix = "Extracto en aceite orgánico de aguacate ";
+                }
+                
+                const base = desc.dataset.base;
+                if (!base.startsWith("para") && !base.startsWith("Para")) {
+                    prefix += "que ";
+                }
+                
+                desc.innerText = prefix + base;
+            }
+        }
     }
 };
 
