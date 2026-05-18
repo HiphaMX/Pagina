@@ -13,6 +13,11 @@ def generate_contract_pdf(form_data) -> bytes:
     pdf = FPDF()
     pdf.add_page()
     
+    logo_path = os.path.join("app", "assets", "logo_hipha.png")
+    if os.path.exists(logo_path):
+        pdf.image(logo_path, w=40)
+        pdf.ln(5)
+    
     pdf.set_font("Helvetica", "B", 14)
     pdf.cell(0, 10, text="CONTRATO DE SERVICIOS - HIPHA", new_x="LMARGIN", new_y="NEXT", align='C')
     pdf.ln(5)
@@ -46,9 +51,18 @@ def generate_contract_pdf(form_data) -> bytes:
         pdf.ln(3)
         
     pdf.ln(10)
-    pdf.set_font("Helvetica", "B", 11)
-    pdf.cell(0, 10, text="Firma del Cliente:", new_x="LMARGIN", new_y="NEXT")
     
+    # Check if we need to add a new page to avoid page break in the middle of signatures
+    if pdf.get_y() > 220:
+        pdf.add_page()
+    
+    y_before_sigs = pdf.get_y()
+    
+    # Cliente
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(90, 8, text="El Cliente:", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    client_sig_path = None
     if hasattr(form_data, 'firma') and form_data.firma:
         try:
             if "," in form_data.firma:
@@ -56,15 +70,33 @@ def generate_contract_pdf(form_data) -> bytes:
                 img_data = base64.b64decode(encoded)
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
                     tmp.write(img_data)
-                    tmp_path = tmp.name
-                
-                pdf.image(tmp_path, w=80)
-                os.remove(tmp_path)
+                    client_sig_path = tmp.name
         except Exception as e:
             logger.error(f"Error procesando firma para PDF: {e}")
-            pdf.multi_cell(0, 10, text=f"[Firma Digital Aplicada - Error renderizando imagen]", new_x="LMARGIN", new_y="NEXT")
-    else:
-        pdf.multi_cell(0, 10, text="[Firma no proporcionada]", new_x="LMARGIN", new_y="NEXT")
+                
+    if client_sig_path:
+        pdf.image(client_sig_path, x=25, y=pdf.get_y(), w=50)
+        os.remove(client_sig_path)
+    
+    pdf.set_y(y_before_sigs + 35)
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(90, 5, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.cell(90, 5, text=form_data.nombre.upper(), new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Hipha
+    pdf.set_y(y_before_sigs)
+    pdf.set_x(110)
+    pdf.cell(90, 8, text="Hipha:", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    fran_sig_path = os.path.join("app", "assets", "firma_francisco.jpg")
+    if os.path.exists(fran_sig_path):
+        pdf.image(fran_sig_path, x=130, y=pdf.get_y(), w=50)
+        
+    pdf.set_y(y_before_sigs + 35)
+    pdf.set_x(110)
+    pdf.cell(90, 5, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.set_x(110)
+    pdf.cell(90, 5, text="FRANCISCO DELGADILLO", new_x="LMARGIN", new_y="NEXT", align="C")
         
     return bytes(pdf.output())
 
