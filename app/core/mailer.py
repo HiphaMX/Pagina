@@ -5,6 +5,7 @@ import base64
 import os
 from fpdf import FPDF
 from email.message import EmailMessage
+from email.utils import make_msgid, formatdate
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -110,6 +111,8 @@ async def send_lead_followup_email(lead_name: str, lead_email: str):
     message["From"] = from_header
     message["To"] = lead_email
     message["Subject"] = f"¡Hola {lead_name}! Recibimos tu solicitud en HiphaMX"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="hipha.mx")
     
     html_content = f"""
     <html>
@@ -154,6 +157,8 @@ async def send_lead_notification_to_team(form_data):
     message["From"] = from_header
     message["To"] = settings.EMAILS_FROM_EMAIL
     message["Subject"] = f"Nuevo Lead de HiphaMX: {form_data.nombre}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="hipha.mx")
     
     html_content = f"""
     <html>
@@ -371,6 +376,8 @@ async def send_contract_followup_email(form_data):
     message["From"] = from_header
     message["To"] = form_data.email
     message["Subject"] = "¡Bienvenido a Hipha!"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="hipha.mx")
     
     # We replace newlines in the message to `<br>` for correct HTML formatting
     mensaje_formatted = form_data.mensaje.replace("\n", "<br>")
