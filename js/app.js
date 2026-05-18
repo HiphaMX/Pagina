@@ -28,6 +28,9 @@ function toggleModal(modalId) {
         setTimeout(() => {
             overlay.classList.add('opacity-100');
             modal.classList.add('scale-100');
+            
+            // Dispatch event when modal finishes opening
+            window.dispatchEvent(new CustomEvent('modalOpened', { detail: { modalId: modalId } }));
         }, 10);
         currentModal = modalId;
     }

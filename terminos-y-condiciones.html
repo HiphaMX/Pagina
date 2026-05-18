@@ -394,9 +394,19 @@
         resizeCanvas();
 
         // Cuando el modal se abre y el canvas se vuelve visible, forzar el ajuste de tamaño
+        window.addEventListener('modalOpened', function(e) {
+            if (e.detail.modalId === 'contract-modal') {
+                // Esperar a que termine la animación (300ms + padding)
+                setTimeout(resizeCanvas, 350);
+                // Llamarlo de inmediato también por si acaso
+                resizeCanvas();
+            }
+        });
+
+        // Opcional: El observer sigue siendo util por si acaso
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
-                resizeCanvas();
+                setTimeout(resizeCanvas, 350);
             }
         });
         observer.observe(canvas);
