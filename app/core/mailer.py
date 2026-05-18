@@ -368,7 +368,7 @@ async def send_contract_followup_email(form_data):
     message = EmailMessage()
     message["From"] = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>"
     message["To"] = form_data.email
-    message["Subject"] = f"¡Firma de Contrato Exitosa! - Hipha"
+    message["Subject"] = "¡Bienvenido a Hipha!"
     
     # We replace newlines in the message to `<br>` for correct HTML formatting
     mensaje_formatted = form_data.mensaje.replace("\n", "<br>")
@@ -380,11 +380,11 @@ async def send_contract_followup_email(form_data):
             <img src="https://hipha.mx/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha Logo" style="height: 40px; margin: 0 auto; display: block;">
         </div>
         <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #06b6d4;">¡Firma de Contrato Confirmada, {form_data.nombre}!</h2>
-            <p>Hemos recibido correctamente tu aceptación de los Términos y Condiciones para comenzar a trabajar juntos.</p>
+            <h2 style="color: #06b6d4;">¡Firma de contrato de servicios confirmada!</h2>
+            <p>Hemos recibido correctamente tu contrato, esto indica que aceptas los Términos y Condiciones para comenzar a trabajar juntos y convertirnos en una extensión de tu empresa.</p>
             
             <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0;">
-                <h3 style="margin-top: 0; color: #0f172a;">Detalles del Acuerdo:</h3>
+                <h3 style="margin-top: 0; color: #0f172a;">Detalles generales:</h3>
                 <p style="margin-bottom: 5px;"><strong>Nombre Contacto:</strong> {form_data.nombre}</p>
                 <p style="margin-bottom: 5px;"><strong>Email:</strong> {form_data.email}</p>
                 <p style="margin-bottom: 15px;"><strong>Teléfono:</strong> {form_data.telefono}</p>
@@ -393,41 +393,9 @@ async def send_contract_followup_email(form_data):
                 </div>
             </div>
             
-            <h3 style="color: #0f172a;">Copia de los Términos y Condiciones Aceptados:</h3>
-            <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0; font-size: 14px;">
-                
-        <h2>1. Naturaleza del Contrato y Autonomía</h2>
-        <p>Hipha es un prestador de servicios profesionales independiente. El concepto “Tu departamento externo” es una denominación comercial y no constituye una sociedad mercantil, asociación ni relación de subordinación laboral. Hipha conserva plena autonomía técnica y administrativa. El personal de Hipha no está sujeto a la potestad de mando del Cliente, eliminando cualquier indicio de relación laboral bajo la Ley Federal del Trabajo.</p>
-
-        <h2>2. Gestión de Proyecto y Comunicación</h2>
-        <p>El Cliente designará un "Responsable de Proyecto" único con facultades suficientes para autorizar entregables y presupuestos. Las instrucciones de otros socios o terceros no serán vinculantes. La ventana de comunicación para reuniones virtuales es de lunes a viernes de 9:00 am a 12:00 pm (Hora Centro de México). Reuniones presenciales estarán sujetas a disponibilidad y podrán generar cargos adicionales por traslados y viáticos.</p>
-
-        <h2>3. Procesamiento de Solicitudes y Terceros</h2>
-        <p>Toda solicitud de diseño o estrategia requiere un plazo mínimo de 72 horas hábiles para inicio de gestión. Hipha no actúa como comisionista ni intermediario en pagos a terceros. Si el Cliente solicita que Hipha gestione archivos con proveedores externos (imprentas, medios, etc.), Hipha se deslinda de cualquier error en la ejecución, calidad, tiempos de entrega o vicios ocultos de dichos terceros. La ejecución física (recolecciones, instalaciones) es responsabilidad del personal interno del Cliente.</p>
-
-        <h2>4. Responsabilidad y Seguridad del Cliente</h2>
-        <p>La vigencia de los tiempos de entrega inicia tras la recepción total de los insumos (Brief, manuales, accesos). El retraso del Cliente no suspende la obligación de pago de las facturas o igualas pactadas. Respecto al Protocolo de Seguridad, el Cliente es responsable total de sus claves y accesos. Hipha se deslinda de hackeos, bloqueos o ataques derivados de acciones del Cliente o terceros ajenos a la agencia. Al finalizar la relación, el Cliente debe revocar accesos en un plazo máximo de 24 horas.</p>
-
-        <h2>5. Propiedad Intelectual y Uso de Portafolio</h2>
-        <p>La transferencia de derechos patrimoniales de los entregables finales (diseños publicados, sitios web, fotos de producto) ocurrirá únicamente tras la liquidación del 100% del pago. Hipha conserva la propiedad intelectual de sus metodologías, procesos internos, flujos de trabajo, estrategias preexistentes y archivos fuente (editables). Salvo existencia de un acuerdo de confidencialidad (NDA) explícito, el Cliente autoriza a Hipha a utilizar muestras del trabajo para su portafolio y redes sociales.</p>
-
-        <h2>6. Rescisión y Suspensión de Servicio</h2>
-        <p>Cualquier parte podrá dar por terminado el servicio con un aviso previo de 30 días naturales. En caso de impago, Hipha queda facultado para suspender total o parcialmente los servicios (pausar campañas, retirar servicios digitales) sin responsabilidad alguna por pérdidas económicas, daños o perjuicios que esta interrupción pudiera causar al Cliente.</p>
-
-        <h2>7. Límite de Responsabilidad</h2>
-        <p>La responsabilidad total de Hipha ante cualquier reclamación derivada de la prestación de los servicios, ya sea por negligencia, error u omisión, estará limitada como máximo al monto total pagado por el Cliente en el mes inmediato anterior a la fecha de la reclamación. Bajo ninguna circunstancia Hipha será responsable por lucro cesante o daños indirectos.</p>
-
-        <h2>8. Cláusula de No Solicitud (Anti-Poaching)</h2>
-        <p>El Cliente se compromete a no contratar, solicitar, ni emplear de manera directa o indirecta a ningún colaborador, empleado o consultor de Hipha durante la vigencia de este contrato y hasta por 12 meses posteriores a su terminación. El incumplimiento de esta cláusula generará una pena convencional equivalente a 12 meses de la iguala vigente al momento del incumplimiento.</p>
-
-        <h2>9. Jurisdicción y Competencia</h2>
-        <p>Para la interpretación y cumplimiento del presente, las partes se someten a las leyes comerciales de México y a la jurisdicción de los tribunales competentes en la ciudad de Guadalajara, Jalisco, renunciando expresamente a cualquier otro fuero que pudiera corresponderles por razón de sus domicilios presentes o futuros.</p>
-
-            </div>
-            
-            <p>Adjunto a este correo encontrarás una copia de tu contrato en formato PDF con la firma y los datos ingresados.</p>
+            <p>Adjunto a este correo encontrarás una copia de tu contrato en formato PDF, agradecemos la confianza depositada en nuestro proyecto y estamos seguros que esta sinergia potenciará el tuyo.</p>
             <br>
-            <p>Atentamente,<br><strong>El equipo de Hipha</strong></p>
+            <p>Atentamente,<br><strong>Frank D.</strong><br>El equipo de Hipha</p>
         </div>
     </body>
     </html>
