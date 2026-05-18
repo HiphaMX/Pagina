@@ -377,13 +377,29 @@
         // Ajustar tamaño del canvas
         function resizeCanvas() {
             const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+            // Solo redimensionar si el canvas es visible
+            if (canvas.offsetWidth === 0) return;
+            
+            // Guardar datos existentes si los hay para no perderlos al redimensionar
+            const data = signaturePad.toData();
             canvas.width = canvas.offsetWidth * ratio;
             canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio);
-            signaturePad.clear(); // Opcional: limpiar al redimensionar
+            signaturePad.clear();
+            if (data && data.length > 0) {
+                signaturePad.fromData(data);
+            }
         }
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
+
+        // Cuando el modal se abre y el canvas se vuelve visible, forzar el ajuste de tamaño
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                resizeCanvas();
+            }
+        });
+        observer.observe(canvas);
 
         document.getElementById('clear-signature').addEventListener('click', function() {
             signaturePad.clear();
