@@ -8,11 +8,11 @@ window.selectFormat = function(btn) {
         if (card) {
             const desc = card.querySelector('.product-desc');
             if (desc && desc.dataset.base) {
-                const format = btn.innerText.trim();
+                const format = btn.innerText.trim().toLowerCase();
                 let prefix = "";
-                if (format === 'Tintura') {
+                if (format === 'tintura') {
                     prefix = "Extracto en alcohol ";
-                } else if (format === 'Oleato') {
+                } else if (format === 'oleato') {
                     prefix = "Extracto en aceite orgánico de aguacate ";
                 }
                 
