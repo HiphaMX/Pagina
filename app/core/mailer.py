@@ -1,9 +1,72 @@
+import logging
 import aiosmtplib
+import tempfile
+import base64
+import os
+from fpdf import FPDF
 from email.message import EmailMessage
 from app.core.config import settings
-import logging
 
 logger = logging.getLogger(__name__)
+
+def generate_contract_pdf(form_data) -> bytes:
+    pdf = FPDF()
+    pdf.add_page()
+    
+    pdf.set_font("Helvetica", "B", 14)
+    pdf.cell(0, 10, text="CONTRATO DE SERVICIOS - HIPHA", new_x="LMARGIN", new_y="NEXT", align='C')
+    pdf.ln(5)
+    
+    pdf.set_font("Helvetica", "", 11)
+    pdf.cell(0, 8, text=f"Fecha de aceptacion: {getattr(form_data, 'fecha', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, text=f"Cliente / Contacto: {form_data.nombre}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, text=f"Email: {form_data.email}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, text=f"Telefono: {form_data.telefono}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, text=f"Proyecto: {getattr(form_data, 'proyecto', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, text=f"Forma de Pago: {getattr(form_data, 'forma_pago', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(5)
+    
+    clauses = [
+        ("1. Naturaleza del Contrato y Autonomia", "Hipha es un prestador de servicios profesionales independiente. El concepto “Tu departamento externo” es una denominacion comercial y no constituye una sociedad mercantil, asociacion ni relacion de subordinacion laboral. Hipha conserva plena autonomia tecnica y administrativa. El personal de Hipha no esta sujeto a la potestad de mando del Cliente, eliminando cualquier indicio de relacion laboral bajo la Ley Federal del Trabajo."),
+        ("2. Gestion de Proyecto y Comunicacion", "El Cliente designara un 'Responsable de Proyecto' unico con facultades suficientes para autorizar entregables y presupuestos. Las instrucciones de otros socios o terceros no seran vinculantes. La ventana de comunicacion para reuniones virtuales es de lunes a viernes de 9:00 am a 12:00 pm (Hora Centro de Mexico). Reuniones presenciales estaran sujetas a disponibilidad y podran generar cargos adicionales por traslados y viaticos."),
+        ("3. Procesamiento de Solicitudes y Terceros", "Toda solicitud de diseño o estrategia requiere un plazo minimo de 72 horas habiles para inicio de gestion. Hipha no actua como comisionista ni intermediario en pagos a terceros. Si el Cliente solicita que Hipha gestione archivos con proveedores externos (imprentas, medios, etc.), Hipha se deslinda de cualquier error en la ejecucion, calidad, tiempos de entrega o vicios ocultos de dichos terceros. La ejecucion fisica (recolecciones, instalaciones) es responsabilidad del personal interno del Cliente."),
+        ("4. Responsabilidad y Seguridad del Cliente", "La vigencia de los tiempos de entrega inicia tras la recepcion total de los insumos (Brief, manuales, accesos). El retraso del Cliente no suspende la obligacion de pago de las facturas o igualas pactadas. Respecto al Protocolo de Seguridad, el Cliente es responsable total de sus claves y accesos. Hipha se deslinda de hackeos, bloqueos o ataques derivados de acciones del Cliente o terceros ajenos a la agencia. Al finalizar la relacion, el Cliente debe revocar accesos en un plazo maximo de 24 horas."),
+        ("5. Propiedad Intelectual y Uso de Portafolio", "La transferencia de derechos patrimoniales de los entregables finales (diseños publicados, sitios web, fotos de producto) ocurrira unicamente tras la liquidacion del 100% del pago. Hipha conserva la propiedad intelectual de sus metodologias, procesos internos, flujos de trabajo, estrategias preexistentes y archivos fuente (editables). Salvo existencia de un acuerdo de confidencialidad (NDA) explicito, el Cliente autoriza a Hipha a utilizar muestras del trabajo para su portafolio y redes sociales."),
+        ("6. Rescision y Suspension de Servicio", "Cualquier parte podra dar por terminado el servicio con un aviso previo de 30 dias naturales. En caso de impago, Hipha queda facultado para suspender total o parcialmente los servicios (pausar campañas, retirar servicios digitales) sin responsabilidad alguna por perdidas economicas, daños o perjuicios que esta interrupcion pudiera causar al Cliente."),
+        ("7. Limite de Responsabilidad", "La responsabilidad total de Hipha ante cualquier reclamacion derivada de la prestacion de los servicios, ya sea por negligencia, error u omision, estara limitada como maximo al monto total pagado por el Cliente en el mes inmediato anterior a la fecha de la reclamacion. Bajo ninguna circunstancia Hipha sera responsable por lucro cesante o daños indirectos."),
+        ("8. Clausula de No Solicitud (Anti-Poaching)", "El Cliente se compromete a no contratar, solicitar, ni emplear de manera directa o indirecta a ningun colaborador, empleado o consultor de Hipha durante la vigencia de este contrato y hasta por 12 meses posteriores a su terminacion. El incumplimiento de esta clausula generara una pena convencional equivalente a 12 meses de la iguala vigente al momento del incumplimiento."),
+        ("9. Jurisdiccion y Competencia", "Para la interpretacion y cumplimiento del presente, las partes se someten a las leyes comerciales de Mexico y a la jurisdiccion de los tribunales competentes en la ciudad de Guadalajara, Jalisco, renunciando expresamente a cualquier otro fuero que pudiera corresponderles por razon de sus domicilios presentes o futuros.")
+    ]
+    
+    for title, text in clauses:
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.multi_cell(0, 6, text=title.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font("Helvetica", "", 10)
+        pdf.multi_cell(0, 5, text=text.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+        pdf.ln(3)
+        
+    pdf.ln(10)
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.cell(0, 10, text="Firma del Cliente:", new_x="LMARGIN", new_y="NEXT")
+    
+    if hasattr(form_data, 'firma') and form_data.firma:
+        try:
+            if "," in form_data.firma:
+                header, encoded = form_data.firma.split(",", 1)
+                img_data = base64.b64decode(encoded)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+                    tmp.write(img_data)
+                    tmp_path = tmp.name
+                
+                pdf.image(tmp_path, w=80)
+                os.remove(tmp_path)
+        except Exception as e:
+            logger.error(f"Error procesando firma para PDF: {e}")
+            pdf.multi_cell(0, 10, text=f"[Firma Digital Aplicada - Error renderizando imagen]", new_x="LMARGIN", new_y="NEXT")
+    else:
+        pdf.multi_cell(0, 10, text="[Firma no proporcionada]", new_x="LMARGIN", new_y="NEXT")
+        
+    return bytes(pdf.output())
 
 async def send_lead_followup_email(lead_name: str, lead_email: str):
     if not settings.SMTP_HOST or not settings.SMTP_USER:
@@ -60,7 +123,7 @@ async def send_lead_notification_to_team(form_data):
     
     html_content = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; color: #333;">
+    <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
         <h2>Nuevo contacto desde la web HiphaMX</h2>
         <p><strong>Nombre:</strong> {form_data.nombre}</p>
         <p><strong>Email:</strong> {form_data.email}</p>
@@ -73,6 +136,17 @@ async def send_lead_notification_to_team(form_data):
     </html>
     """
     message.set_content(html_content, subtype="html")
+    
+    # Adjuntar PDF si es contrato
+    if form_data.mensaje.startswith("ACEPTACIÓN DE CONTRATO VÍA WEB") and hasattr(form_data, 'firma') and form_data.firma:
+        try:
+            from email.mime.application import MIMEApplication
+            pdf_bytes = generate_contract_pdf(form_data)
+            pdf_attachment = MIMEApplication(pdf_bytes, _subtype="pdf")
+            pdf_attachment.add_header('Content-Disposition', 'attachment', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
+            message.add_attachment(pdf_attachment.get_payload(decode=True), maintype='application', subtype='pdf', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
+        except Exception as e:
+            logger.error(f"Error al generar o adjuntar PDF en send_lead_notification_to_team: {e}")
     
     try:
         await aiosmtplib.send(
@@ -319,13 +393,24 @@ async def send_contract_followup_email(form_data):
 
             </div>
             
-            <p style="margin-top: 30px;">Estamos muy emocionados de comenzar este proyecto contigo.</p>
+            <p>Adjunto a este correo encontrarás una copia de tu contrato en formato PDF con la firma y los datos ingresados.</p>
+            <br>
             <p>Atentamente,<br><strong>El equipo de Hipha</strong></p>
         </div>
     </body>
     </html>
     """
     message.set_content(html_content, subtype="html")
+    
+    # Adjuntar PDF
+    try:
+        from email.mime.application import MIMEApplication
+        pdf_bytes = generate_contract_pdf(form_data)
+        pdf_attachment = MIMEApplication(pdf_bytes, _subtype="pdf")
+        pdf_attachment.add_header('Content-Disposition', 'attachment', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
+        message.add_attachment(pdf_attachment.get_payload(decode=True), maintype='application', subtype='pdf', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
+    except Exception as e:
+        logger.error(f"Error al generar o adjuntar PDF en send_contract_followup_email: {e}")
     
     try:
         await aiosmtplib.send(
@@ -398,6 +483,7 @@ async def send_healthyice_order_team(form_data):
     message["To"] = "hola@healthyice.mx"
     message["Subject"] = f"NUEVO PROSPECTO WEB: {form_data.nombre}"
     
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>')
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333;">
@@ -412,7 +498,7 @@ async def send_healthyice_order_team(form_data):
         
         <h3>Mensaje Personalizado:</h3>
         <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
-            {form_data.mensaje.replace('\n', '<br>')}
+            {mensaje_formatted}
         </div>
     </body>
     </html>

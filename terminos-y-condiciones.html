@@ -323,6 +323,15 @@
                         <i class="ph-fill ph-info mt-0.5"></i> El límite de la fecha de pago son 3 días después de aceptar los términos y condiciones.
                     </p>
                 </div>
+                <!-- Firma -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Firma autógrafa <span class="text-primary-400">*</span></label>
+                    <div class="bg-white rounded-lg overflow-hidden relative">
+                        <canvas id="signature-pad" class="w-full h-32 cursor-crosshair touch-none"></canvas>
+                        <button type="button" id="clear-signature" class="absolute top-2 right-2 text-xs text-slate-500 hover:text-slate-900 bg-slate-100 px-2 py-1 rounded border border-slate-200">Limpiar</button>
+                    </div>
+                    <p id="signature-error" class="hidden text-[11px] text-red-400 mt-1">Por favor, realiza tu firma antes de continuar.</p>
+                </div>
                 <!-- Checkbox de acuerdo -->
                 <div class="pt-2">
                     <label class="flex items-start gap-3 cursor-pointer group">
@@ -356,7 +365,30 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <script>
+        // Inicializar Signature Pad
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+
+        // Ajustar tamaño del canvas
+        function resizeCanvas() {
+            const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear(); // Opcional: limpiar al redimensionar
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        document.getElementById('clear-signature').addEventListener('click', function() {
+            signaturePad.clear();
+        });
+
         // Actualizar mensaje oculto al abrir/enviar para capturar la fecha exacta
         document.getElementById('contact-form').addEventListener('submit', function() {
             const dateVal = document.getElementById('contract-date').value;
@@ -367,6 +399,15 @@
 
         async function submitContactForm(event) {
             event.preventDefault();
+            
+            const sigError = document.getElementById('signature-error');
+            sigError.classList.add('hidden');
+
+            if (signaturePad.isEmpty()) {
+                sigError.classList.remove('hidden');
+                return;
+            }
+
             const form = event.target;
             const btnText = document.getElementById('contact-btn-text');
             const btnIcon = document.getElementById('contact-btn-icon');
@@ -385,11 +426,17 @@
             btnIcon.classList.add('animate-spin');
 
             const formData = new FormData(form);
+            const signatureData = signaturePad.toDataURL(); // Imagen base64
+
             const data = {
                 nombre: formData.get('nombre'),
                 email: formData.get('email'),
                 telefono: formData.get('telefono'),
-                mensaje: document.getElementById('hidden-mensaje').value || ''
+                mensaje: document.getElementById('hidden-mensaje').value || '',
+                firma: signatureData,
+                fecha: document.getElementById('contract-date').value,
+                proyecto: document.getElementById('project-name').value,
+                forma_pago: document.getElementById('payment-method').value
             };
 
             try {
@@ -404,6 +451,7 @@
                 if (response.ok) {
                     successMsg.classList.remove('hidden');
                     form.reset();
+                    signaturePad.clear();
                     setTimeout(() => {
                         if (typeof toggleModal === 'function') {
                             toggleModal('contract-modal');

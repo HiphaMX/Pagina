@@ -12,11 +12,17 @@ from app.core.mailer import (
 
 router = APIRouter()
 
+from typing import Optional
+
 class ContactForm(BaseModel):
     nombre: str
     email: EmailStr
     telefono: str
     mensaje: str = ""
+    firma: Optional[str] = None
+    fecha: Optional[str] = None
+    proyecto: Optional[str] = None
+    forma_pago: Optional[str] = None
 
 @router.post("/healthyice")
 async def submit_healthyice_form(form_data: ContactForm):
