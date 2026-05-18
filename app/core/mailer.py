@@ -106,7 +106,8 @@ async def send_lead_followup_email(lead_name: str, lead_email: str):
         return True
 
     message = EmailMessage()
-    message["From"] = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>"
+    from_header = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>" if getattr(settings, 'EMAILS_FROM_NAME', '') else settings.EMAILS_FROM_EMAIL
+    message["From"] = from_header
     message["To"] = lead_email
     message["Subject"] = f"¡Hola {lead_name}! Recibimos tu solicitud en HiphaMX"
     
@@ -149,7 +150,8 @@ async def send_lead_notification_to_team(form_data):
         return True
 
     message = EmailMessage()
-    message["From"] = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>"
+    from_header = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>" if getattr(settings, 'EMAILS_FROM_NAME', '') else settings.EMAILS_FROM_EMAIL
+    message["From"] = from_header
     message["To"] = settings.EMAILS_FROM_EMAIL
     message["Subject"] = f"Nuevo Lead de HiphaMX: {form_data.nombre}"
     
@@ -172,11 +174,9 @@ async def send_lead_notification_to_team(form_data):
     # Adjuntar PDF si es contrato
     if form_data.mensaje.startswith("ACEPTACIÓN DE CONTRATO VÍA WEB") and hasattr(form_data, 'firma') and form_data.firma:
         try:
-            from email.mime.application import MIMEApplication
             pdf_bytes = generate_contract_pdf(form_data)
-            pdf_attachment = MIMEApplication(pdf_bytes, _subtype="pdf")
-            pdf_attachment.add_header('Content-Disposition', 'attachment', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
-            message.add_attachment(pdf_attachment.get_payload(decode=True), maintype='application', subtype='pdf', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
+            safe_name = form_data.nombre.replace(' ', '_')
+            message.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename=f"Contrato_Hipha_{safe_name}.pdf")
         except Exception as e:
             logger.error(f"Error al generar o adjuntar PDF en send_lead_notification_to_team: {e}")
     
@@ -366,7 +366,9 @@ async def send_contract_followup_email(form_data):
         return True
 
     message = EmailMessage()
-    message["From"] = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>"
+    # Asegurar que el From no tenga espacios vacíos extra que disparen filtros de SPAM
+    from_header = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>" if getattr(settings, 'EMAILS_FROM_NAME', '') else settings.EMAILS_FROM_EMAIL
+    message["From"] = from_header
     message["To"] = form_data.email
     message["Subject"] = "¡Bienvenido a Hipha!"
     
@@ -404,11 +406,9 @@ async def send_contract_followup_email(form_data):
     
     # Adjuntar PDF
     try:
-        from email.mime.application import MIMEApplication
         pdf_bytes = generate_contract_pdf(form_data)
-        pdf_attachment = MIMEApplication(pdf_bytes, _subtype="pdf")
-        pdf_attachment.add_header('Content-Disposition', 'attachment', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
-        message.add_attachment(pdf_attachment.get_payload(decode=True), maintype='application', subtype='pdf', filename=f"Contrato_Hipha_{form_data.nombre.replace(' ', '_')}.pdf")
+        safe_name = form_data.nombre.replace(' ', '_')
+        message.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename=f"Contrato_Hipha_{safe_name}.pdf")
     except Exception as e:
         logger.error(f"Error al generar o adjuntar PDF en send_contract_followup_email: {e}")
     
