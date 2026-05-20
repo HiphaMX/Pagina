@@ -1,0 +1,5 @@
+# Ignore local development temp files and scrapers
+raw_scraped/
+.DS_Store
+*.py
+.vercel/

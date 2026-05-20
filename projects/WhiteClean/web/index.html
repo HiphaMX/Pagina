@@ -2,7 +2,7 @@
 <html data-wf-domain="www.whiteclean.com.mx" data-wf-page="60ad2904d083d22db4de5e39" data-wf-site="60ad2903d083d20db2de5e33">
   <head>
     <meta charset="utf-8"/>
-    <link href="https://cdn.prod.website-files.com" rel="preconnect" crossorigin="anonymous"/>
+    
     <title>
     White Clean | Limpieza especializada
     </title>
@@ -17,6 +17,7 @@
     <meta content="summary_large_image" name="twitter:card"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <link href="css/webflow.css" rel="stylesheet" type="text/css"/>
+    <link href="css/whiteclean.css" rel="stylesheet" type="text/css"/>
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
     <!-- Webflow local animation failsafe -->
     <script type="text/javascript">
@@ -767,7 +768,7 @@
             <div role="list" class="w-dyn-items w-row">
               <div role="listitem" class="w-dyn-item w-col w-col-4">
                 <a href="/post/detallado-automotriz-premium" class="link-block-6 w-inline-block">
-                <img src="assets/61368f0f4c4283976bd84c23_Capa_7.jpg" loading="lazy" alt="Detallado automotriz premium" class="image-5"/>
+                <img src="assets/61368f0f4c4283976bd84c23_Capa_7.jpg" loading="lazy" alt="Detallado automotriz premium" sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 1279px) 29vw, (max-width: 1439px) 333.328125px, (max-width: 1919px) 366.6640625px, 433.328125px" srcset="assets/61368f0f4c4283976bd84c23_Capa_7-p-500.jpeg 500w, assets/61368f0f4c4283976bd84c23_Capa_7-p-800.jpeg 800w, assets/61368f0f4c4283976bd84c23_Capa_7-p-1600.jpeg 1600w, assets/61368f0f4c4283976bd84c23_Capa_7-p-2000.jpeg 2000w, assets/61368f0f4c4283976bd84c23_Capa_7.jpg 2400w" class="image-5"/>
                 <p class="ultimas-publicaciones white">
                   Detallado automotriz premium
                 </p>
@@ -775,7 +776,7 @@
               </div>
               <div role="listitem" class="w-dyn-item w-col w-col-4">
                 <a href="/post/piedras-mas-comunes-para-cocinas" class="link-block-6 w-inline-block">
-                <img src="assets/61368eb74c4283f1c3d847ee_Capa_3.jpg" loading="lazy" alt="Piedras más comunes para cocinas" class="image-5"/>
+                <img src="assets/61368eb74c4283f1c3d847ee_Capa_3.jpg" loading="lazy" alt="Piedras más comunes para cocinas" sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 1279px) 29vw, (max-width: 1439px) 333.328125px, (max-width: 1919px) 366.6640625px, 433.328125px" srcset="assets/61368eb74c4283f1c3d847ee_Capa_3-p-500.jpeg 500w, assets/61368eb74c4283f1c3d847ee_Capa_3-p-800.jpeg 800w, assets/61368eb74c4283f1c3d847ee_Capa_3-p-1600.jpeg 1600w, assets/61368eb74c4283f1c3d847ee_Capa_3-p-2000.jpeg 2000w, assets/61368eb74c4283f1c3d847ee_Capa_3.jpg 2400w" class="image-5"/>
                 <p class="ultimas-publicaciones white">
                   Piedras más comunes para cocinas
                 </p>
@@ -783,7 +784,7 @@
               </div>
               <div role="listitem" class="w-dyn-item w-col w-col-4">
                 <a href="/post/como-identificar-el-tipo-de-tela-de-mis-muebles" class="link-block-6 w-inline-block">
-                <img src="assets/61368e8b049c609d429e15f5_Capa_4.jpg" loading="lazy" alt="Cómo identificar el tipo de tela de mis muebles" class="image-5"/>
+                <img src="assets/61368e8b049c609d429e15f5_Capa_4.jpg" loading="lazy" alt="Cómo identificar el tipo de tela de mis muebles" sizes="(max-width: 479px) 92vw, (max-width: 767px) 95vw, (max-width: 1279px) 29vw, (max-width: 1439px) 333.328125px, (max-width: 1919px) 366.6640625px, 433.328125px" srcset="assets/61368e8b049c609d429e15f5_Capa_4-p-500.jpeg 500w, assets/61368e8b049c609d429e15f5_Capa_4-p-800.jpeg 800w, assets/61368e8b049c609d429e15f5_Capa_4-p-1600.jpeg 1600w, assets/61368e8b049c609d429e15f5_Capa_4-p-2000.jpeg 2000w, assets/61368e8b049c609d429e15f5_Capa_4.jpg 2400w" class="image-5"/>
                 <p class="ultimas-publicaciones white">
                   Cómo identificar el tipo de tela de mis muebles
                 </p>
@@ -910,12 +911,12 @@
             </div>
             <input type="submit" data-wait="Por favor espere..." title=""Cotizar servicio"" class="botonslider-copy w-button" value="Cotizar"/>
           </form>
-          <div class="success-message w-form-done">
+          <div class="success-message w-form-done" id="form-success">
             <div class="div-block-16">
               Gracias! Tu solicitud ha sido recibida, en breve nos contactaremos contigo.
             </div>
           </div>
-          <div class="w-form-fail">
+          <div class="w-form-fail" id="form-error">
             <div class="div-block-17">
               Encontramos un error, por favor, revisa que todos los campos estén correctos.
             </div>

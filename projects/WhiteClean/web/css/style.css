@@ -15,6 +15,18 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
 }
 
+/* ─── PÁGINA ANCHO Y CONTENEDORES (FIX OVERFLOW/ANCHO DE ESCRITORIO) ─── */
+html, body {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.content-wrapper.w-container,
+.content-wrapper2.w-container {
+  max-width: 1220px !important;
+  width: 100% !important;
+}
+
 /* 2. PRELOADER INICIAL */
 .preloader {
   position: fixed;
@@ -36,39 +48,95 @@ h1, h2, h3, h4, h5, h6 {
   pointer-events: none;
 }
 
-/* 3. BOTONES ESTILO WEBFLOW (.botonslider & .botonslider-copy) */
+/* 3. BOTONES ESTILO WEBFLOW Y PERSONALIZADOS (.botonslider, .botonslider-copy, .boton-search, .div-block-7) */
 .botonslider,
-.botonslider-copy {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #00BAF2;
-  color: #FFFFFF;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 14px 28px;
-  border-radius: 6px;
-  box-shadow: 0 4px 6px -1px rgba(0, 186, 242, 0.15), 0 2px 4px -1px rgba(0, 186, 242, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  border: none;
-  text-decoration: none;
+.botonslider-copy,
+.boton-search {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #0F3D64 !important; /* Deep dark navy/teal default */
+  color: #FFFFFF !important; /* Pure white text */
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 14px 28px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(15, 61, 100, 0.15), 0 2px 4px -1px rgba(15, 61, 100, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  border: none !important;
+  text-decoration: none !important;
+  min-height: 44px !important;
 }
 
 .botonslider:hover,
-.botonslider-copy:hover {
-  background-color: #0F3D64;
-  color: #FFFFFF;
-  box-shadow: 0 10px 15px -3px rgba(15, 61, 100, 0.2), 0 4px 6px -2px rgba(15, 61, 100, 0.1);
-  transform: translateY(-2px);
+.botonslider-copy:hover,
+.boton-search:hover {
+  background-color: #00BAF2 !important; /* Bright cyan hover */
+  color: #FFFFFF !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 186, 242, 0.25), 0 4px 6px -2px rgba(0, 186, 242, 0.15) !important;
+  transform: translateY(-2px) !important;
 }
 
 .botonslider:active,
-.botonslider-copy:active {
-  transform: translateY(0);
+.botonslider-copy:active,
+.boton-search:active {
+  transform: translateY(0) !important;
+}
+
+/* 3.1 COTIZAR HEADER BUTTON */
+.div-block-7 {
+  background-color: #0F3D64 !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  min-width: 140px !important;
+  min-height: 40px !important;
+  border: none !important;
+  box-shadow: 0 4px 6px -1px rgba(15, 61, 100, 0.15) !important;
+}
+
+.div-block-7:hover {
+  background-color: #00BAF2 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 186, 242, 0.25) !important;
+}
+
+.div-block-7:active {
+  transform: translateY(0) !important;
+}
+
+.link-block-5 {
+  text-decoration: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.text-block {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  font-size: 13px !important;
+  text-transform: uppercase !important;
+  padding: 10px 20px !important;
+  line-height: 1 !important;
+  transition: none !important;
+}
+
+.text-block:hover {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
 }
 
 /* 4. PASTILLAS DE SERVICIOS (Specialties Grid) */
@@ -185,15 +253,228 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* 9. GLOBAL WIDTH & OVERFLOW CORRECTIONS (DESKTOP & MOBILE) */
-html, body {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  width: 100% !important;
+/* 9. CORRECCIONES DE DISEÑO Y MAQUETACIÓN (RÉPLICA EXACTA) */
+
+/* Eliminar el fondo gris por defecto de Webflow detrás del slider de testimonios */
+.w-slider, .w-slide {
+  background: transparent !important;
 }
 
+/* Ocultar el bloque de fondo beige que cubre las imágenes de servicio */
+.absolute-bg {
+  display: none !important;
+}
 
-/* 10. REVIEWS TESTIMONIALS SLIDER CORRECTIVE BOUNDS & SPACING */
+/* ─── NORMALIZE DESKTOP SERVICE CARDS (>= 992px) ─── */
+@media (min-width: 992px) {
+  .flex:has(.relative-height) {
+    display: flex !important;
+    align-items: stretch !important;
+  }
+  .flex:has(.relative-height) .column-center,
+  .flex:has(.relative-height) .cuidado-al-maximo {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    width: 50% !important;
+    height: auto !important;
+  }
+  .relative-height {
+    position: relative !important;
+    overflow: hidden !important;
+    height: 100% !important;
+    min-height: 480px !important;
+    width: 100% !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.05) !important;
+  }
+  .relative-height img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    opacity: 0 !important;
+    display: block !important;
+  }
+  .relative-height .desiger,
+  .desiger,
+  .absolute.desiger,
+  .absolute2.desiger,
+  .absolute3.desiger,
+  .alfombras.desiger,
+  .confianza-en-white-clean.desiger,
+  .alfombras-copy.desiger,
+  .pisos.desiger,
+  .vehiculos.desiger {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-size: cover !important;
+    background-position: center !important;
+    z-index: 2 !important;
+  }
+}
+
+/* ─── NORMALIZE MOBILE/TABLET STACKING (< 991px) ─── */
+@media (max-width: 991px) {
+  .flex:has(.relative-height) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .flex:has(.relative-height) .column-center,
+  .flex:has(.relative-height) .cuidado-al-maximo,
+  .flex:has(.relative-height) .text-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  .flex:has(.relative-height) .text-container {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+  .relative-height {
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3 !important;
+    min-height: 280px !important;
+    max-height: 400px !important;
+    border-radius: 12px !important;
+    margin: 16px 0 !important;
+    box-shadow: 0 8px 20px -6px rgba(0,0,0,0.08) !important;
+  }
+  .relative-height img {
+    display: none !important;
+  }
+  .relative-height .desiger,
+  .desiger,
+  .absolute.desiger,
+  .absolute2.desiger,
+  .absolute3.desiger,
+  .alfombras.desiger,
+  .confianza-en-white-clean.desiger,
+  .alfombras-copy.desiger,
+  .pisos.desiger,
+  .vehiculos.desiger {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-size: cover !important;
+    background-position: center !important;
+    z-index: 2 !important;
+  }
+}
+
+/* ==========================================================================
+   10. ENLACES Y BOTÓN COTIZAR (MÓVIL & ESCRITORIO)
+   ========================================================================== */
+a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink):not(.botonslider):not(.botonslider-copy):not(.boton-search):not(.boton-interiores):not(.link-block-5):not(.link-block-6):not(.footer-social-icon):not(.link-block-15):not(.w-tab-link):not(.w-nav-brand) {
+  color: #0F3D64 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease-in-out !important;
+}
+
+a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink):not(.botonslider):not(.botonslider-copy):not(.boton-search):not(.boton-interiores):not(.link-block-5):not(.link-block-6):not(.footer-social-icon):not(.link-block-15):not(.w-tab-link):not(.w-nav-brand):hover {
+  color: #00BAF2 !important;
+  text-decoration: underline !important;
+}
+
+.link-contacto {
+  color: #0F3D64 !important;
+  text-decoration: none !important;
+}
+
+.link-contacto:hover {
+  color: #00BAF2 !important;
+  text-decoration: underline !important;
+}
+
+@media (max-width: 991px) {
+  .w-nav-menu .div-block-7 {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    background-color: #0F3D64 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    float: none !important;
+  }
+  .w-nav-menu .div-block-7:hover {
+    background-color: #00BAF2 !important;
+    transform: none !important;
+  }
+  .w-nav-menu .link-block-5 {
+    display: flex !important;
+    padding: 14px 24px !important;
+    width: 100% !important;
+    height: auto !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+  .w-nav-menu .text-block {
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    padding: 0 !important;
+  }
+}
+
+/* ==========================================================================
+   11. SUPERPOSICIÓN DE SUPERFICIES (MÓVIL)
+   ========================================================================== */
+@media (max-width: 991px) {
+  .whiteclean {
+    height: auto !important;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+  .whiteclean .content-wrapper2 {
+    height: auto !important;
+  }
+  .whiteclean .flex2 {
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .grid-home2 {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    gap: 30px !important;
+  }
+  .grid-hombe {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+  .grid-hombe > div {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .grid-hombe [class^="sup"] {
+    display: block !important;
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    border-radius: 6px !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+  }
+}
+
+/* ==========================================================================
+   12. RESEÑAS SLIDER CENTRADO Y DOTS SPACING (DESKTOP & MOBILE FIXED)
+   ========================================================================== */
 .clientes-white-clean {
   padding-bottom: 50px !important; /* Elegant breathing space for pagination dots */
 }
@@ -211,11 +492,20 @@ html, body {
   overflow: hidden !important; /* Hides horizontal inactive slides */
 }
 
-/* Centered layout inside each testimonial slide (restoring horizontal sliding inline layout) */
 .clientes-white-clean .slide.w-slide {
   text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
   padding: 20px 20px 70px 20px !important; /* Extra bottom padding for dots */
   box-sizing: border-box !important;
+}
+
+.clientes-white-clean .slide.w-slide p {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .clientes-white-clean .nombre-clientes.white {
@@ -238,6 +528,7 @@ html, body {
   font-size: 13px !important;
   margin: 0 auto 12px auto !important;
   width: max-content !important;
+  max-width: 90% !important;
 }
 
 .clientes-white-clean .rese-a-clientes {
@@ -268,7 +559,6 @@ html, body {
   margin: 0 !important;
 }
 
-/* Dots pagination styling & premium design */
 .clientes-white-clean .w-slider-nav {
   position: absolute !important;
   bottom: -25px !important; /* Placed safely below reviews to avoid clipping */
@@ -296,7 +586,6 @@ html, body {
   border-radius: 4px !important;
 }
 
-/* Mobile specific slider height adjustment to prevent content overflow */
 @media (max-width: 767px) {
   .clientes-white-clean .slider-2.w-slider {
     min-height: unset !important;
@@ -315,7 +604,9 @@ html, body {
   }
 }
 
-/* 11. CLIENT LOGOS LAYOUT SPACING & SIZE FIXED */
+/* ==========================================================================
+   13. LOGOTIPOS CLIENTES (ESPACIADO AJUSTADO & SLIDER FIX)
+   ========================================================================== */
 .logotipos .slider-3.w-slider {
   height: 140px !important;
   min-height: unset !important; /* Eliminates huge white spaces */
@@ -398,101 +689,156 @@ html, body {
     grid-row-gap: 20px !important;
   }
   .logotipos .grid-7 img {
-    max-height: 70px !important; /* Beautiful, large icons on mobile */
-    max-width: 130px !important;
+    max-height: 55px !important;
   }
 }
 
-
-/* 12. FOOTER HIGH-CONTRAST EMAIL & MOBILE CENTERING */
-.link-contacto {
-  color: #00BAF2 !important; /* Premium corporate high-contrast cyan */
-  text-decoration: none !important;
-  font-weight: 600 !important;
-  transition: color 0.2s ease !important;
+/* ==========================================================================
+   14. FOOTER STRUCTURAL CENTERING & LINKS LISTS
+   ========================================================================== */
+.footer .grid-2 > div:first-child {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  justify-content: center !important;
 }
 
-.link-contacto:hover {
-  color: #FFFFFF !important;
-  text-decoration: underline !important;
+.footer .contacto-datos {
+  text-align: center !important;
+  margin: 15px auto !important;
+}
+
+.footer .div-block-9 {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: 15px !important;
+}
+
+.footer .footer-social-icon {
+  margin: 0 !important;
+}
+
+.footer a.w-inline-block {
+  display: inline-block !important;
+  margin: 0 auto !important;
+}
+
+.footer img {
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+.footer .div-block-8 {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+}
+
+.footer .div-block-8 a.link-block {
+  display: block !important;
+  width: 100% !important;
+  margin: 8px 0 !important;
+}
+
+.footer .div-block-8 .footerlink {
+  display: block !important;
+  margin: 0 !important;
 }
 
 @media (max-width: 767px) {
-  /* Mobile footer centering alignment */
-  .footer {
-    text-align: center !important;
-    padding-top: 40px !important;
-    padding-bottom: 40px !important;
-  }
-  
-  .footer .grid-2 {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 30px !important;
-    width: 100% !important;
-  }
-  
-  /* Centering logo block and general details */
-  .footer .grid-2 > div:first-child {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    width: 100% !important;
-  }
-  
-  .footer .contacto-datos {
-    text-align: center !important;
-    margin: 15px auto !important;
-    width: 100% !important;
-  }
-  
-  .footer .div-block-9 {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 12px !important;
-    margin-top: 15px !important;
-    width: 100% !important;
-  }
-  
-  /* Centering footer links */
-  .footer .grid-3 {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 25px !important;
-    width: 100% !important;
-  }
-  
   .footer .div-block-8 {
-    display: flex !important;
-    flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    width: 100% !important;
   }
-  
-  .footer .div-block-8 a.link-block {
-    display: block !important;
-    text-align: center !important;
-    margin: 6px 0 !important;
-    width: 100% !important;
+}
+
+/* ==========================================================================
+   15. PREGUNTAS FRECUENTES (ESTILO ACORDEÓN PREMIUM)
+   ========================================================================== */
+.faq-accordion {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 0 15px;
+}
+
+.faq-item {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-item[open] {
+  background: #FFFFFF;
+  border-color: #00BAF2;
+  box-shadow: 0 10px 15px -3px rgba(0, 186, 242, 0.08);
+}
+
+.faq-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #0F3D64;
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.2s ease;
+}
+
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-summary:hover {
+  color: #00BAF2;
+}
+
+.faq-icon {
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid #0F3D64;
+  border-bottom: 2px solid #0F3D64;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.faq-item[open] .faq-summary .faq-icon {
+  transform: rotate(-135deg);
+  border-color: #00BAF2;
+}
+
+.faq-content {
+  padding: 0 24px 20px 24px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #475569;
+  border-top: 1px solid #F1F5F9;
+  animation: slideDown 0.3s ease-out;
+}
+
+.faq-content p {
+  margin: 0;
+  padding-top: 12px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
-  
-  .footer .div-block-8 .text-block-2 {
-    text-align: center !important;
-    margin-bottom: 12px !important;
-    width: 100% !important;
-  }
-  
-  .footerlink {
-    text-align: center !important;
-    margin: 0 auto !important;
-    display: inline-block !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

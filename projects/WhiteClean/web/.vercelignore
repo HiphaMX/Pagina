@@ -1,0 +1,4 @@
+# Ignore raw scraped folder and backups
+raw_scraped/
+*.py
+.DS_Store
