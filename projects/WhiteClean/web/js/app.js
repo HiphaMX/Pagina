@@ -147,6 +147,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Enviar datos al backend en segundo plano (para disparar correos de confirmación y aviso sin bloquear)
+      fetch('/api/contact/whiteclean', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre: nombreVal,
+          apellido: apellidoVal,
+          email: emailVal,
+          telefono: telefonoVal,
+          servicio: servicioVal,
+          ubicacion: ubicacionVal,
+          mensaje: mensajeVal
+        })
+      })
+      .then(res => {
+        if (!res.ok) console.error('Error enviando contacto al servidor.');
+      })
+      .catch(err => console.error('Error de red al enviar contacto:', err));
+
       // Número de WhatsApp del cliente
       const whatsappPhone = '523312998450';
 

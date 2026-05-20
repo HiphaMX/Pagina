@@ -160,6 +160,7 @@ async def send_lead_notification_to_team(form_data):
     message["Date"] = formatdate(localtime=True)
     message["Message-ID"] = make_msgid(domain="hipha.mx")
     
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else ''
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
@@ -169,7 +170,7 @@ async def send_lead_notification_to_team(form_data):
         <p><strong>Teléfono:</strong> {form_data.telefono}</p>
         <p><strong>Mensaje / Detalles:</strong></p>
         <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
-            {form_data.mensaje.replace('\n', '<br>')}
+            {mensaje_formatted}
         </div>
     </body>
     </html>
@@ -524,4 +525,186 @@ async def send_healthyice_order_team(form_data):
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo al equipo HealthyIce: {str(e)}")
+        return False
+
+
+async def send_whiteclean_confirmation_email(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a prospecto WhiteClean {form_data.email}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "WhiteClean Limpieza Especializada <clientes@whiteclean.com.mx>"
+    message["To"] = form_data.email
+    message.add_header('Reply-To', 'clientes@whiteclean.com.mx')
+    message["Subject"] = f"¡Hemos recibido tu solicitud, {form_data.nombre}! ✨"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="whiteclean.com.mx")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin mensaje adicional'
+
+    html_content = f"""
+    <html>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+            
+            <!-- Header con la identidad de WhiteClean -->
+            <div style="background-color: #0F3D64; padding: 35px 20px; text-align: center; border-bottom: 4px solid #00E5FF;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">WhiteClean</h1>
+                <p style="color: #00E5FF; margin: 5px 0 0 0; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Limpieza Especializada</p>
+            </div>
+            
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 40px 30px;">
+                <h2 style="color: #0F3D64; font-size: 22px; font-weight: 700; margin-top: 0; margin-bottom: 20px;">¡Hola, {form_data.nombre}! 👋</h2>
+                <p style="font-size: 16px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
+                    Agradecemos mucho tu interés en nuestros servicios. Hemos recibido correctamente tus datos desde nuestro sitio web y un asesor experto se pondrá en contacto contigo en breve para brindarte una cotización detallada y adaptada a tus necesidades.
+                </p>
+                
+                <!-- Tarjeta con resumen de solicitud -->
+                <div style="background-color: #f0f7ff; border-left: 4px solid #00E5FF; padding: 20px; border-radius: 0 12px 12px 0; margin-bottom: 30px;">
+                    <h3 style="color: #0F3D64; font-size: 15px; font-weight: 700; margin-top: 0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Resumen de tu solicitud:</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.5;">
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; width: 120px; font-weight: 600;">Servicio:</td>
+                            <td style="padding: 4px 0; color: #1e293b; font-weight: bold;">{form_data.servicio}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600;">Ubicación:</td>
+                            <td style="padding: 4px 0; color: #1e293b;">{form_data.ubicacion}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600;">Teléfono:</td>
+                            <td style="padding: 4px 0; color: #1e293b;">{form_data.telefono}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600; vertical-align: top;">Mensaje:</td>
+                            <td style="padding: 4px 0; color: #1e293b; font-style: italic;">{mensaje_formatted}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p style="font-size: 15px; line-height: 1.6; color: #475569; margin-bottom: 0;">
+                    Con más de 20 años de experiencia, en WhiteClean garantizamos procesos certificados con equipos profesionales y productos especializados para que disfrutes de espacios limpios, sanos e impecables.
+                </p>
+            </div>
+            
+            <!-- Footer del Correo -->
+            <div style="background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+                <p style="margin: 0 0 10px 0;">Este es un aviso automático de confirmación de contacto.</p>
+                <p style="margin: 0 0 15px 0;"><strong>WhiteClean Limpieza Especializada</strong></p>
+                <div style="margin-bottom: 0;">
+                    <a href="https://whiteclean.com.mx" style="color: #0F3D64; text-decoration: none; font-weight: bold; margin: 0 10px;">Sitio Web</a>
+                    <span style="color: #cbd5e1;">|</span>
+                    <a href="mailto:clientes@whiteclean.com.mx" style="color: #0F3D64; text-decoration: none; font-weight: bold; margin: 0 10px;">Contacto</a>
+                </div>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info(f"Correo de confirmación WhiteClean enviado exitosamente a {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de confirmación WhiteClean a {form_data.email}: {str(e)}")
+        return False
+
+
+async def send_whiteclean_notification_team(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a equipo WhiteClean")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "WhiteClean Web <clientes@whiteclean.com.mx>"
+    message["To"] = "clientes@whiteclean.com.mx, whiteclean1@hotmail.com"
+    message.add_header('Reply-To', form_data.email)
+    message["Subject"] = f"🚨 NUEVA SOLICITUD WEB: {form_data.nombre} {form_data.apellido} - {form_data.servicio}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="whiteclean.com.mx")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
+
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333333; background-color: #f1f5f9; padding: 20px; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
+            
+            <div style="background-color: #0F3D64; padding: 20px; text-align: center; color: white;">
+                <h2 style="margin: 0; font-size: 20px;">🚨 ¡Nuevo Prospecto Recibido!</h2>
+                <p style="margin: 5px 0 0 0; font-size: 13px; color: #00E5FF; font-weight: bold;">WhiteClean Landing Page</p>
+            </div>
+            
+            <div style="padding: 25px;">
+                <p style="margin-top: 0; font-size: 15px; color: #475569;">Un usuario ha enviado una solicitud de cotización desde la web. A continuación los detalles:</p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0F3D64; width: 150px; background-color: #f8fafc;">Nombre Completo:</td>
+                        <td style="padding: 10px; color: #1e293b;">{form_data.nombre} {form_data.apellido}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0F3D64; background-color: #f8fafc;">Email:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="mailto:{form_data.email}" style="color: #00E5FF; font-weight: bold; text-decoration: none;">{form_data.email}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0F3D64; background-color: #f8fafc;">Teléfono / Celular:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="tel:{form_data.telefono}" style="color: #0F3D64; font-weight: bold; text-decoration: none;">{form_data.telefono}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0F3D64; background-color: #f8fafc;">Servicio Requerido:</td>
+                        <td style="padding: 10px; color: #1e293b; font-weight: bold;">{form_data.servicio}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0F3D64; background-color: #f8fafc;">Ubicación / Municipio:</td>
+                        <td style="padding: 10px; color: #1e293b;">{form_data.ubicacion}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold; color: #0F3D64; background-color: #f8fafc; vertical-align: top;">Mensaje:</td>
+                        <td style="padding: 10px; color: #1e293b; line-height: 1.5; font-style: italic;">{mensaje_formatted}</td>
+                    </tr>
+                </table>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://wa.me/{form_data.telefono.replace(' ', '').replace('+', '')}" style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                        💬 Contactar por WhatsApp
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #cbd5e1;">
+                Mensaje generado de forma automática por el sistema de WhiteClean.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info("Notificación de lead WhiteClean enviada con éxito al equipo y socio.")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación WhiteClean al equipo: {str(e)}")
         return False

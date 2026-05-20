@@ -7,7 +7,9 @@ from app.core.mailer import (
     send_newsletter_welcome,
     send_newsletter_notification_to_team,
     send_healthyice_order_customer,
-    send_healthyice_order_team
+    send_healthyice_order_team,
+    send_whiteclean_confirmation_email,
+    send_whiteclean_notification_team
 )
 
 router = APIRouter()
@@ -70,3 +72,25 @@ async def submit_newsletter_form(form_data: NewsletterForm):
         raise HTTPException(status_code=500, detail="Error al procesar suscripción")
         
     return {"message": "Suscripción exitosa"}
+
+class WhiteCleanForm(BaseModel):
+    nombre: str
+    apellido: str
+    email: EmailStr
+    telefono: str
+    servicio: str
+    ubicacion: str
+    mensaje: Optional[str] = ""
+
+@router.post("/whiteclean")
+async def submit_whiteclean_form(form_data: WhiteCleanForm):
+    # Enviar correo de confirmación al prospecto
+    customer_email_sent = await send_whiteclean_confirmation_email(form_data)
+    
+    # Enviar aviso con los detalles de la solicitud al equipo
+    team_email_sent = await send_whiteclean_notification_team(form_data)
+    
+    if not customer_email_sent and not team_email_sent:
+        raise HTTPException(status_code=500, detail="Error al enviar correos")
+        
+    return {"message": "Formulario recibido correctamente"}
