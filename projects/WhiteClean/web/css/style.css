@@ -487,16 +487,18 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .clientes-white-clean .w-slider-mask {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
+  display: block !important;
+  white-space: nowrap !important;
   overflow: hidden !important;
   height: 100% !important;
   min-height: unset !important;
 }
 
 .clientes-white-clean .slide.w-slide {
-  flex-shrink: 0 !important;
+  display: inline-block !important;
+  vertical-align: top !important;
+  white-space: normal !important;
+  flex-shrink: unset !important;
   width: 100% !important;
   text-align: center !important;
   padding: 40px 20px 70px 20px !important; /* Extra bottom padding for dots, plus top padding for centering */
@@ -593,10 +595,15 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     height: 420px !important;
   }
   .clientes-white-clean .w-slider-mask {
+    display: block !important;
+    white-space: nowrap !important;
     min-height: unset !important;
     height: 100% !important;
   }
   .clientes-white-clean .slide.w-slide {
+    display: inline-block !important;
+    vertical-align: top !important;
+    white-space: normal !important;
     padding: 20px 15px 80px 15px !important;
   }
   .clientes-white-clean .rese-a-clientes {
@@ -616,9 +623,8 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .logotipos .mask-2.w-slider-mask {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
+  display: block !important;
+  white-space: nowrap !important;
   overflow: hidden !important;
   height: 100% !important;
   min-height: unset !important;
@@ -626,7 +632,10 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .logotipos .w-slide {
-  flex-shrink: 0 !important;
+  display: inline-block !important;
+  vertical-align: top !important;
+  white-space: normal !important;
+  flex-shrink: unset !important;
   width: 100% !important;
   height: 100% !important;
   min-height: unset !important;
@@ -685,6 +694,8 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     height: 100px !important;
   }
   .logotipos .mask-2.w-slider-mask {
+    display: block !important;
+    white-space: nowrap !important;
     min-height: unset !important;
     height: 100% !important;
   }
