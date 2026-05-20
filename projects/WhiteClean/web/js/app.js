@@ -141,9 +141,36 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const mensajeVal = document.getElementById('Mensaje')?.value.trim() || '';
 
-      // Validación simple adicional
-      if (!nombreVal || !apellidoVal || !emailVal || !telefonoVal || !servicioVal || !ubicacionVal) {
-        if (formError) formError.classList.remove('hidden');
+      // ─── VALIDACIÓN INTEGRAL Y DETALLADA ───
+      let errorMsg = '';
+      
+      // Sanitizar teléfono (quitar espacios, guiones, etc. para validar longitud de 10 dígitos)
+      const cleanPhone = telefonoVal.replace(/\D/g, '');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!nombreVal) {
+        errorMsg = 'Por favor, ingresa tu nombre.';
+      } else if (!apellidoVal) {
+        errorMsg = 'Por favor, ingresa tu apellido.';
+      } else if (!emailVal || !emailRegex.test(emailVal)) {
+        errorMsg = 'Por favor, ingresa un correo electrónico válido.';
+      } else if (!telefonoVal) {
+        errorMsg = 'Por favor, ingresa tu teléfono de contacto.';
+      } else if (cleanPhone.length !== 10) {
+        errorMsg = 'El teléfono de contacto debe tener exactamente 10 dígitos numéricos.';
+      } else if (!servicioVal) {
+        errorMsg = 'Por favor, selecciona un servicio requerido.';
+      } else if (!ubicacionVal || ubicacionVal === 'Selecciona tu ubicación') {
+        errorMsg = 'Por favor, selecciona un municipio/ubicación válida.';
+      }
+
+      if (errorMsg) {
+        if (formError) {
+          const errorTextDiv = formError.querySelector('.div-block-17') || formError;
+          errorTextDiv.textContent = errorMsg;
+          formError.classList.remove('hidden');
+          formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
         return;
       }
 
