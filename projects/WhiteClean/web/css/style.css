@@ -522,8 +522,8 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 
 .clientes-white-clean .empresa.white {
   display: inline-block !important;
-  background-color: #00BAF2 !important;
-  color: #FFFFFF !important;
+  background-color: #00E5FF !important; /* Cian neón brillante */
+  color: #0F3D64 !important; /* Azul marino profundo */
   padding: 4px 12px !important;
   border-radius: 4px !important;
   font-family: 'Montserrat', sans-serif !important;
@@ -535,7 +535,7 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .clientes-white-clean .rese-a-clientes {
-  color: #1E293B !important;
+  color: #0F3D64 !important; /* Azul marino profundo */
   text-align: center !important;
   font-family: 'Raleway', sans-serif !important;
   font-size: 15px !important;
@@ -553,7 +553,7 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .clientes-white-clean .cuidad {
-  color: #64748B !important;
+  color: #0F3D64 !important; /* Azul marino profundo */
   text-align: center !important;
   font-family: 'Montserrat', sans-serif !important;
   font-size: 11px !important;
@@ -576,23 +576,71 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .clientes-white-clean .w-slider-dot {
-  background-color: #CBD5E1 !important;
-  width: 8px !important;
-  height: 8px !important;
-  margin: 0 4px !important;
+  background-color: #A6A6A6 !important; /* Gris claro sólido */
+  width: 12px !important;
+  height: 12px !important;
+  margin: 0 6px !important;
+  border-radius: 50% !important;
   transition: all 0.3s ease !important;
 }
 
 .clientes-white-clean .w-slider-dot.w-active {
-  background-color: #00BAF2 !important;
-  width: 24px !important;
-  border-radius: 4px !important;
+  background-color: #1A1A1A !important; /* Negro sólido */
+  width: 12px !important; /* Mantener redondo, mismo tamaño */
+  height: 12px !important;
+  border-radius: 50% !important;
 }
 
 @media (max-width: 767px) {
+  /* Centrar contenedores de la rejilla externa */
+  .clientes-white-clean .content-wrapper2 {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+  .clientes-white-clean .flex2 {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+  .clientes-white-clean .clientes {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .clientes-white-clean .cta {
+    text-align: center !important;
+    margin: 0 auto 30px auto !important;
+    display: block !important;
+  }
+  .clientes-white-clean .subtitulo-serviciosb.white {
+    text-align: center !important;
+    margin: 0 auto 10px auto !important;
+  }
+  .clientes-white-clean .h2-regular {
+    text-align: center !important;
+    margin: 0 auto !important;
+  }
+  .clientes-white-clean .div-block-12 {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+  }
   .clientes-white-clean .slider-2.w-slider {
     min-height: unset !important;
     height: 420px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
   .clientes-white-clean .w-slider-mask {
     display: block !important;
@@ -602,6 +650,8 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     width: 100% !important;
     overflow: hidden !important;
   }
+
+  /* Centrar elementos internos del slide */
   .clientes-white-clean .slide.w-slide {
     display: inline-block !important;
     vertical-align: top !important;
@@ -611,6 +661,19 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     padding: 20px 15px 80px 15px !important;
     margin: 0 !important;
     left: 0 !important;
+    text-align: center !important;
+  }
+  .clientes-white-clean .nombre-clientes.white {
+    text-align: center !important;
+    margin: 0 auto 5px auto !important;
+    display: block !important;
+  }
+  .clientes-white-clean .empresa.white {
+    display: inline-block !important;
+    margin: 0 auto 12px auto !important;
+    text-align: center !important;
+    width: max-content !important;
+    max-width: 90% !important;
   }
   .clientes-white-clean .rese-a-clientes {
     max-width: 95% !important;
@@ -619,6 +682,25 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     text-align: center !important;
     white-space: normal !important;
     box-sizing: border-box !important;
+  }
+  .clientes-white-clean .image-4 {
+    margin: 15px auto !important;
+    display: block !important;
+  }
+  .clientes-white-clean .cuidad {
+    text-align: center !important;
+    margin: 0 auto !important;
+    display: block !important;
+  }
+  .clientes-white-clean .w-slider-nav {
+    position: absolute !important;
+    bottom: 20px !important;
+    left: 0 !important;
+    right: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
   }
 }
 
