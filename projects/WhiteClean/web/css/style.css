@@ -599,16 +599,26 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     white-space: nowrap !important;
     min-height: unset !important;
     height: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
   }
   .clientes-white-clean .slide.w-slide {
     display: inline-block !important;
     vertical-align: top !important;
     white-space: normal !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
     padding: 20px 15px 80px 15px !important;
+    margin: 0 !important;
+    left: 0 !important;
   }
   .clientes-white-clean .rese-a-clientes {
     max-width: 95% !important;
     font-size: 14px !important;
+    margin: 10px auto !important;
+    text-align: center !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
   }
 }
 
@@ -691,7 +701,7 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 @media (max-width: 767px) {
   .logotipos .slider-3.w-slider {
     min-height: unset !important;
-    height: 100px !important;
+    height: 170px !important;
   }
   .logotipos .mask-2.w-slider-mask {
     display: block !important;
@@ -700,11 +710,20 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     height: 100% !important;
   }
   .logotipos .grid-7 {
-    grid-column-gap: 30px !important; /* Tight spacing on mobile viewports */
-    grid-row-gap: 20px !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-column-gap: 20px !important;
+    grid-row-gap: 15px !important;
+    width: 100% !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
   }
   .logotipos .grid-7 img {
-    max-height: 55px !important;
+    max-height: 45px !important;
+    max-width: 90px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
   }
 }
 
@@ -854,6 +873,56 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   16. PUBLICACIONES RECIENTES FLOATS & MOBILE OVERLAP FIX
+   ========================================================================== */
+.publicaciones-recientes {
+  display: block !important;
+  height: auto !important;
+  min-height: unset !important;
+  clear: both !important;
+  overflow: visible !important;
+}
+.publicaciones-recientes .content-wrapper,
+.publicaciones-recientes .flex,
+.publicaciones-recientes .collection-list-wrapper-2,
+.publicaciones-recientes .w-dyn-items.w-row {
+  display: block !important;
+  height: auto !important;
+  clear: both !important;
+}
+.publicaciones-recientes .w-dyn-items.w-row::after,
+.publicaciones-recientes .flex::after,
+.publicaciones-recientes::after {
+  content: "" !important;
+  display: table !important;
+  clear: both !important;
+}
+
+@media (max-width: 767px) {
+  .publicaciones-recientes .w-dyn-item.w-col {
+    float: none !important;
+    width: 100% !important;
+    margin-bottom: 30px !important;
+    display: block !important;
+    height: auto !important;
+    clear: both !important;
+  }
+  .publicaciones-recientes .link-block-6 {
+    display: block !important;
+    height: auto !important;
+  }
+  .publicaciones-recientes .image-5 {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+  .publicaciones-recientes .ultimas-publicaciones.white {
+    margin-top: 10px !important;
+    display: block !important;
   }
 }
 
