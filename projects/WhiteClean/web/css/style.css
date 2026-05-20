@@ -1013,6 +1013,18 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
    ========================================================================== */
 /* Reverted general footer colors to Webflow defaults as requested by user */
 
+/* High-contrast email link styling matching the footer's turquoise brand color */
+.footer a.link-contacto {
+  color: #00BAF2 !important; /* Bright high-contrast turquoise */
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+  transition: color 0.2s ease !important;
+}
+
+.footer a.link-contacto:hover {
+  color: #00E5FF !important; /* Vibrant neon cyan on hover */
+}
+
 /* Premium round social circles matching reference */
 .footer .div-block-9 {
   display: flex !important;
@@ -1023,20 +1035,21 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
   flex-wrap: wrap !important;
 }
 
-.footer .footer-social-icon {
+/* Overriding specificity of .footer a.w-inline-block (margin: 0 auto !important) to ensure perfect centering */
+.footer a.footer-social-icon.w-inline-block {
   width: 46px !important;
   height: 46px !important;
   border-radius: 50% !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  margin: 0 !important;
+  margin: 0 !important; /* Perfectly centers the icons as a group within the flex gap */
   background-color: rgba(0, 229, 255, 0.4) !important; /* All icons have the same base tone in normal state */
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease !important;
 }
 
 /* Hover/over state applies the bright neon cian tone to each button */
-.footer .footer-social-icon:hover {
+.footer a.footer-social-icon.w-inline-block:hover {
   background-color: #00E5FF !important; /* Bright neon cyan on hover */
   transform: scale(1.15) !important;
 }
@@ -1047,7 +1060,7 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
   height: 22px !important;
   object-fit: contain !important;
   display: block !important;
-  margin: 0 auto !important;
+  margin: 0 !important; /* Keep margins at 0 to rely purely on flexbox centering */
 }
 
 
