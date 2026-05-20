@@ -199,14 +199,14 @@ html, body {
 }
 
 .clientes-white-clean .slider-2.w-slider {
-  height: auto !important;
+  height: 340px !important;
   min-height: unset !important;
   overflow: visible !important; /* Allows pagination dots to sit cleanly outside the mask */
   background-color: transparent !important;
 }
 
 .clientes-white-clean .w-slider-mask {
-  height: auto !important;
+  height: 100% !important;
   min-height: unset !important;
   overflow: hidden !important; /* Hides horizontal inactive slides */
 }
@@ -300,11 +300,11 @@ html, body {
 @media (max-width: 767px) {
   .clientes-white-clean .slider-2.w-slider {
     min-height: unset !important;
-    height: auto !important;
+    height: 420px !important;
   }
   .clientes-white-clean .w-slider-mask {
     min-height: unset !important;
-    height: auto !important;
+    height: 100% !important;
   }
   .clientes-white-clean .slide.w-slide {
     padding: 20px 15px 80px 15px !important;
@@ -317,20 +317,20 @@ html, body {
 
 /* 11. CLIENT LOGOS LAYOUT SPACING & SIZE FIXED */
 .logotipos .slider-3.w-slider {
-  height: auto !important;
+  height: 140px !important;
   min-height: unset !important; /* Eliminates huge white spaces */
   background-color: transparent !important;
   margin-top: 10px !important;
 }
 
 .logotipos .mask-2.w-slider-mask {
-  height: auto !important;
+  height: 100% !important;
   min-height: unset !important;
   background-color: transparent !important;
 }
 
 .logotipos .w-slide {
-  height: auto !important;
+  height: 100% !important;
   min-height: unset !important;
   display: flex !important;
   justify-content: center !important;
@@ -342,7 +342,7 @@ html, body {
   justify-content: center !important;
   align-items: center !important;
   width: 100% !important;
-  height: auto !important;
+  height: 100% !important;
   min-height: unset !important;
   padding: 10px 0 !important;
 }
@@ -387,11 +387,11 @@ html, body {
 @media (max-width: 767px) {
   .logotipos .slider-3.w-slider {
     min-height: unset !important;
-    height: auto !important;
+    height: 100px !important;
   }
   .logotipos .mask-2.w-slider-mask {
     min-height: unset !important;
-    height: auto !important;
+    height: 100% !important;
   }
   .logotipos .grid-7 {
     grid-column-gap: 30px !important; /* Tight spacing on mobile viewports */
