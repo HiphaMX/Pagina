@@ -1011,29 +1011,9 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 /* ==========================================================================
    17. NEW FOOTER CUSTOM COLOR COMBINATION & PREMIUM ROUND ICONS
    ========================================================================== */
-.footer {
-  background-color: #005066 !important; /* Premium deep teal/ocean-blue */
-  color: #FFFFFF !important;
-}
+/* Reverted general footer colors to Webflow defaults as requested by user */
 
-.footer .contacto-datos {
-  color: #FFFFFF !important;
-  font-size: 15px !important;
-  line-height: 1.6 !important;
-}
-
-.footer .contacto-datos a.link-contacto {
-  color: #00E5FF !important; /* Bright neon cyan */
-  text-decoration: underline !important;
-  font-weight: 500 !important;
-  transition: color 0.3s ease !important;
-}
-
-.footer .contacto-datos a.link-contacto:hover {
-  color: #FFFFFF !important;
-}
-
-/* Social icons round circles */
+/* Premium round social circles matching reference */
 .footer .div-block-9 {
   display: flex !important;
   justify-content: center !important;
@@ -1051,21 +1031,14 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
   align-items: center !important;
   justify-content: center !important;
   margin: 0 !important;
+  background-color: rgba(0, 229, 255, 0.4) !important; /* All icons have the same base tone in normal state */
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease !important;
 }
 
+/* Hover/over state applies the bright neon cian tone to each button */
 .footer .footer-social-icon:hover {
+  background-color: #00E5FF !important; /* Bright neon cyan on hover */
   transform: scale(1.15) !important;
-}
-
-/* Facebook - bright neon cyan background */
-.footer .footer-social-icon[href*="facebook"] {
-  background-color: #00E5FF !important;
-}
-
-/* Others - semi-transparent turquoise background */
-.footer .footer-social-icon:not([href*="facebook"]) {
-  background-color: rgba(0, 229, 255, 0.4) !important;
 }
 
 /* Sizing of SVG social logos inside circle */
@@ -1077,23 +1050,5 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
   margin: 0 auto !important;
 }
 
-/* Text links in footer list */
-.footer .text-block-2 {
-  color: #FFFFFF !important;
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  margin-bottom: 12px !important;
-}
-
-.footer .footerlink {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-size: 14px !important;
-  transition: color 0.2s ease !important;
-}
-
-.footer .footerlink:hover {
-  color: #00E5FF !important;
-}
 
 
