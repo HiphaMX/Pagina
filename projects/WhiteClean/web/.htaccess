@@ -1,0 +1,14 @@
+# ─── WHITE CLEAN APACHE URL REWRITE CONFIGURATION ───
+# Enables support for clean URLs (e.g. /servicios instead of /servicios.html)
+
+RewriteEngine On
+
+# 1. Strip trailing slashes from URLs (e.g. /servicios/ to /servicios)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# 2. Map clean URLs to their physical .html files transparently
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
