@@ -487,18 +487,19 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .clientes-white-clean .w-slider-mask {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
   height: 100% !important;
   min-height: unset !important;
-  overflow: hidden !important; /* Hides horizontal inactive slides */
 }
 
 .clientes-white-clean .slide.w-slide {
+  flex-shrink: 0 !important;
+  width: 100% !important;
   text-align: center !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 20px 20px 70px 20px !important; /* Extra bottom padding for dots */
+  padding: 40px 20px 70px 20px !important; /* Extra bottom padding for dots, plus top padding for centering */
   box-sizing: border-box !important;
 }
 
@@ -615,17 +616,20 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
 }
 
 .logotipos .mask-2.w-slider-mask {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
   height: 100% !important;
   min-height: unset !important;
   background-color: transparent !important;
 }
 
 .logotipos .w-slide {
+  flex-shrink: 0 !important;
+  width: 100% !important;
   height: 100% !important;
   min-height: unset !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
 }
 
 .logotipos .flex2-copy {
