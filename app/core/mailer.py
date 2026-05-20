@@ -549,9 +549,8 @@ async def send_whiteclean_confirmation_email(form_data):
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
             
             <!-- Header con la identidad de WhiteClean -->
-            <div style="background-color: #0F3D64; padding: 35px 20px; text-align: center; border-bottom: 4px solid #00E5FF;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">WhiteClean</h1>
-                <p style="color: #00E5FF; margin: 5px 0 0 0; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Limpieza Especializada</p>
+            <div style="background-color: #0F3D64; padding: 30px 20px; text-align: center; border-bottom: 4px solid #00E5FF;">
+                <img src="https://whiteclean.com.mx/assets/612eb73096523eec44fda754_WhiteCleanW.svg" alt="WhiteClean" style="height: 48px; max-height: 48px; border: 0; display: block; margin: 0 auto;">
             </div>
             
             <!-- Cuerpo del Correo -->
