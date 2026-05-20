@@ -48,23 +48,24 @@ html, body {
   pointer-events: none;
 }
 
-/* 3. BOTONES ESTILO WEBFLOW Y PERSONALIZADOS (.botonslider, .botonslider-copy, .boton-search, .div-block-7) */
+/* 3. BOTONES ESTILO WEBFLOW Y PERSONALIZADOS (.botonslider, .botonslider-copy, .boton-search, .boton-interiores, .div-block-7) */
 .botonslider,
 .botonslider-copy,
-.boton-search {
+.boton-search,
+.boton-interiores {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background-color: #0F3D64 !important; /* Deep dark navy/teal default */
-  color: #FFFFFF !important; /* Pure white text */
-  font-family: 'Montserrat', sans-serif !important;
+  background-color: #005b72 !important; /* Deep dark teal background from reference image */
+  color: #00E5FF !important; /* Vibrant neon cyan text */
+  font-family: 'Quicksand', 'Montserrat', sans-serif !important; /* Rounded geometric premium font family */
   font-weight: 700 !important;
   font-size: 13px !important;
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
   padding: 14px 28px !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 6px -1px rgba(15, 61, 100, 0.15), 0 2px 4px -1px rgba(15, 61, 100, 0.1) !important;
+  border-radius: 50px !important; /* Perfect rounded-pill shape */
+  box-shadow: 0 4px 6px -1px rgba(0, 91, 114, 0.15), 0 2px 4px -1px rgba(0, 91, 114, 0.1) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   border: none !important;
@@ -74,23 +75,25 @@ html, body {
 
 .botonslider:hover,
 .botonslider-copy:hover,
-.boton-search:hover {
-  background-color: #00BAF2 !important; /* Bright cyan hover */
-  color: #FFFFFF !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 186, 242, 0.25), 0 4px 6px -2px rgba(0, 186, 242, 0.15) !important;
+.boton-search:hover,
+.boton-interiores:hover {
+  background-color: #00E5FF !important; /* Neon cyan hover */
+  color: #005b72 !important; /* Deep dark teal text on hover */
+  box-shadow: 0 10px 15px -3px rgba(0, 229, 255, 0.4), 0 4px 6px -2px rgba(0, 229, 255, 0.2) !important;
   transform: translateY(-2px) !important;
 }
 
 .botonslider:active,
 .botonslider-copy:active,
-.boton-search:active {
+.boton-search:active,
+.boton-interiores:active {
   transform: translateY(0) !important;
 }
 
 /* 3.1 COTIZAR HEADER BUTTON */
 .div-block-7 {
-  background-color: #0F3D64 !important;
-  border-radius: 8px !important;
+  background-color: #005b72 !important; /* Matching deep dark teal background */
+  border-radius: 50px !important; /* Perfect rounded-pill corners */
   padding: 0 !important;
   display: flex !important;
   align-items: center !important;
@@ -99,13 +102,17 @@ html, body {
   min-width: 140px !important;
   min-height: 40px !important;
   border: none !important;
-  box-shadow: 0 4px 6px -1px rgba(15, 61, 100, 0.15) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 91, 114, 0.15) !important;
 }
 
 .div-block-7:hover {
-  background-color: #00BAF2 !important;
+  background-color: #00E5FF !important; /* Neon cyan hover */
   transform: translateY(-2px) !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 186, 242, 0.25) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 229, 255, 0.4) !important;
+}
+
+.div-block-7:hover .text-block {
+  color: #005b72 !important; /* Deep teal text on hover */
 }
 
 .div-block-7:active {
@@ -122,20 +129,20 @@ html, body {
 }
 
 .text-block {
-  color: #FFFFFF !important;
+  color: #00E5FF !important; /* Vibrant neon cyan text */
   background-color: transparent !important;
-  font-family: 'Montserrat', sans-serif !important;
+  font-family: 'Quicksand', 'Montserrat', sans-serif !important; /* Rounded geometric premium font family */
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
   font-size: 13px !important;
   text-transform: uppercase !important;
   padding: 10px 20px !important;
   line-height: 1 !important;
-  transition: none !important;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .text-block:hover {
-  color: #FFFFFF !important;
+  color: #00E5FF !important;
   background-color: transparent !important;
 }
 
@@ -398,7 +405,7 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     display: block !important;
     width: 100% !important;
     min-width: 0 !important;
-    background-color: #0F3D64 !important;
+    background-color: #005b72 !important; /* Deep dark teal background */
     border-radius: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -406,8 +413,11 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     float: none !important;
   }
   .w-nav-menu .div-block-7:hover {
-    background-color: #00BAF2 !important;
+    background-color: #00E5FF !important;
     transform: none !important;
+  }
+  .w-nav-menu .div-block-7:hover .text-block {
+    color: #005b72 !important; /* Deep dark teal text on hover */
   }
   .w-nav-menu .link-block-5 {
     display: flex !important;
@@ -418,11 +428,12 @@ a:not(.w-nav-link):not(.w-dropdown-toggle):not(.w-dropdown-link):not(.footerlink
     justify-content: flex-start !important;
   }
   .w-nav-menu .text-block {
-    color: #FFFFFF !important;
+    color: #00E5FF !important;
     font-size: 14px !important;
     font-weight: 700 !important;
     letter-spacing: 2px !important;
     padding: 0 !important;
+    font-family: 'Quicksand', 'Montserrat', sans-serif !important; /* Rounded geometric premium font family */
   }
 }
 
