@@ -113,13 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ─── 4. COTIZADOR E INTEGRACIÓN CON WHATSAPP ───
-  const contactoForm = document.getElementById('Contacto');
+  const oldForm = document.getElementById('Contacto');
   const formSuccess = document.getElementById('form-success');
   const formError = document.getElementById('form-error');
 
-  if (contactoForm) {
+  if (oldForm) {
+    // Clonar el formulario para limpiar cualquier event listener residual de Webflow/jQuery
+    const contactoForm = oldForm.cloneNode(true);
+    oldForm.parentNode.replaceChild(contactoForm, oldForm);
+
     contactoForm.addEventListener('submit', function (e) {
       e.preventDefault();
+      e.stopPropagation();
 
       // Ocultar estados previos
       if (formSuccess) formSuccess.classList.add('hidden');
