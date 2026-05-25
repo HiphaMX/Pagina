@@ -16,65 +16,10 @@
       ]
     }
   ],
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "css/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "js/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "assets/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "projects/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/index\\.html",
-      "status": 308,
-      "headers": { "Location": "/" }
-    },
-    {
-      "src": "/(terminos-y-condiciones|aviso-de-privacidad|letrerama|neon-configurador-premium)\\.html",
-      "status": 308,
-      "headers": { "Location": "/$1" }
-    },
-    {
-      "src": "/terminos-y-condiciones",
-      "dest": "/terminos-y-condiciones.html"
-    },
-    {
-      "src": "/aviso-de-privacidad",
-      "dest": "/aviso-de-privacidad.html"
-    },
-    {
-      "src": "/letrerama",
-      "dest": "/letrerama.html"
-    },
-    {
-      "src": "/neon-configurador-premium",
-      "dest": "/neon-configurador-premium.html"
-    },
-    {
-      "handle": "filesystem"
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
     }
   ]
 }
