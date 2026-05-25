@@ -1,4 +1,6 @@
 venv/
+venv_pdf/
+Hipha Projects/
 projects/DAM/
 __pycache__/
 *.pyc
@@ -6,6 +8,12 @@ tests/
 database.db
 test.db
 deploy.log
+stderr.txt
+stdout.txt
+test_contract.pdf
 .pytest_cache/
 .flake8
 *.sh
+.git/
+
+

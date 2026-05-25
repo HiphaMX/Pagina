@@ -2,6 +2,7 @@
 venv/
 env/
 .venv/
+venv_pdf/
 
 # Base de datos
 *.db
@@ -32,3 +33,16 @@ projects/DAM/assets/Identidad/Manual de exhibición.pdf
 .vercel
 .env*.local
 *.psd
+
+# Secretos y credenciales
+.secrets/
+
+# Subproyectos y carpetas de desarrollo local
+Hipha Projects/
+
+# Logs y temporales de ejecución
+deploy.log
+stderr.txt
+stdout.txt
+test_contract.pdf
+
