@@ -50,8 +50,17 @@ def create_admin_in_db(db_uri, email, password):
         db.close()
 
 def main():
-    email = "hola@hipha.mx"
-    password = "Celi@ThePug2026"
+    # Cargar credenciales de forma segura desde argumentos o variables de entorno
+    email = os.environ.get("ADMIN_EMAIL", "hola@hipha.mx")
+    password = os.environ.get("ADMIN_PASSWORD")
+    
+    if not password:
+        if len(sys.argv) > 1:
+            password = sys.argv[1]
+        else:
+            print(f"❌ Error: Se requiere la contraseña como argumento o en la variable de entorno ADMIN_PASSWORD.")
+            print("Uso: ./venv/bin/python scripts/create_admin.py <contraseña>")
+            sys.exit(1)
     
     # Aplicar a base de datos de producción
     prod_uri = "sqlite:///./database.db"
