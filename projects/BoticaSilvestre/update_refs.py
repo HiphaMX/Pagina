@@ -2,7 +2,8 @@ import os
 import glob
 
 def replace_in_files():
-    directory = 'projects/BoticaSilvestre/web'
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    directory = os.path.join(base_dir, 'web')
     
     # Files to check
     extensions = ('*.html', 'css/*.css', 'js/*.js')

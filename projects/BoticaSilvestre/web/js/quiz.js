@@ -681,7 +681,7 @@ function render() {
                                     <i data-lucide="shopping-cart" style="width:18px;height:18px;"></i>
                                     <span>Añadir mi ritual al carrito</span>
                                 </button>
-                                <a href="botica.html" class="btn btn-quiz-outline" style="width: 100%; max-width: 350px; justify-content: center;">
+                                <a href="botica" class="btn btn-quiz-outline" style="width: 100%; max-width: 350px; justify-content: center;">
                                     <i data-lucide="compass" style="width:18px;height:18px;"></i>
                                     <span>Descubrir la botica</span>
                                 </a>

@@ -20,4 +20,5 @@ def convert_to_webp(directory):
                 print(f"Error converting {path}: {e}")
 
 if __name__ == '__main__':
-    convert_to_webp('projects/BoticaSilvestre/web/assets/images')
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    convert_to_webp(os.path.join(base_dir, 'web/assets/images'))
