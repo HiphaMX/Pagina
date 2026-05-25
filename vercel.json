@@ -20,6 +20,10 @@
     {
       "source": "/api/:path*",
       "destination": "/api"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/projects/HiphaMX/dashboard/index.html"
     }
   ]
 }

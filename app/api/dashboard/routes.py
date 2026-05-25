@@ -1,16 +1,22 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional
 from app.services.analytics import get_basic_metrics, get_top_sections, get_traffic_sources, CLIENTS
+from app.api.deps import get_current_active_user
+from app.schemas.user import User as UserSchema
 
 router = APIRouter()
 
 @router.get("/clients")
-def list_clients():
+def list_clients(current_user: UserSchema = Depends(get_current_active_user)):
     """Devuelve la lista de clientes disponibles para el dashboard."""
     return [{"name": name, "property_id": prop_id} for name, prop_id in CLIENTS.items()]
 
 @router.get("/metrics/overview")
-def get_dashboard_overview(start_date: str = "30daysAgo", end_date: str = "today"):
+def get_dashboard_overview(
+    start_date: str = "30daysAgo", 
+    end_date: str = "today",
+    current_user: UserSchema = Depends(get_current_active_user)
+):
     """
     Recorre todos los clientes para obtener su resumen general.
     Ideal para llenar la tabla principal del dashboard.
@@ -33,7 +39,12 @@ def get_dashboard_overview(start_date: str = "30daysAgo", end_date: str = "today
     return {"data": overview_data}
 
 @router.get("/metrics/client/{property_id}")
-def get_client_details(property_id: str, start_date: str = "30daysAgo", end_date: str = "today"):
+def get_client_details(
+    property_id: str, 
+    start_date: str = "30daysAgo", 
+    end_date: str = "today",
+    current_user: UserSchema = Depends(get_current_active_user)
+):
     """Obtiene el detalle completo para un solo cliente."""
     # Buscar el nombre del cliente
     client_name = next((name for name, pid in CLIENTS.items() if pid == property_id), "Desconocido")
@@ -56,3 +67,4 @@ def get_client_details(property_id: str, start_date: str = "30daysAgo", end_date
         "traffic_sources": traffic_sources
         # Aquí después agregaremos eventos de FB/IG y clics a botones
     }
+
