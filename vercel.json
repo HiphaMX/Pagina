@@ -54,7 +54,7 @@
     },
     {
       "src": "/dashboard",
-      "dest": "/projects/HiphaMX/dashboard/index.html"
+      "dest": "projects/HiphaMX/dashboard/index.html"
     },
     {
       "src": "/(terminos-y-condiciones|aviso-de-privacidad|letrerama|neon-configurador-premium)\\.html",
