@@ -127,8 +127,14 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
 
       // Ocultar estados previos
-      if (formSuccess) formSuccess.classList.add('hidden');
-      if (formError) formError.classList.add('hidden');
+      if (formSuccess) {
+        formSuccess.classList.add('hidden');
+        formSuccess.style.display = 'none';
+      }
+      if (formError) {
+        formError.classList.add('hidden');
+        formError.style.display = 'none';
+      }
 
       // Obtener y limpiar valores de campos
       const nombreVal = document.getElementById('Nombre')?.value.trim() || '';
@@ -174,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const errorTextDiv = formError.querySelector('.div-block-17') || formError;
           errorTextDiv.textContent = errorMsg;
           formError.classList.remove('hidden');
+          formError.style.display = 'block';
           formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         return;
@@ -213,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Mostrar banner de éxito
           if (formSuccess) {
             formSuccess.classList.remove('hidden');
+            formSuccess.style.display = 'block';
             formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }
           // Reiniciar formulario
@@ -231,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const errorTextDiv = formError.querySelector('.div-block-17') || formError;
           errorTextDiv.textContent = 'Hubo un inconveniente al enviar tu solicitud de cotización por correo. Por favor, intenta de nuevo.';
           formError.classList.remove('hidden');
+          formError.style.display = 'block';
           formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
       });
