@@ -1,0 +1,150 @@
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  height: 90vh; /* Reduced slightly from full viewport */
+  min-height: 600px;
+  overflow: hidden;
+  background-color: var(--primary);
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 1;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slideContent {
+  width: 100%;
+  max-width: 800px;
+  color: white;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.8s ease 0.3s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slide.active .slideContent {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.slideContent h2 {
+  font-family: var(--font-barlow), sans-serif;
+  font-size: 55px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.slideContent p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  max-width: 600px;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
+  color: white !important;
+}
+
+
+
+.dots {
+  position: absolute;
+  bottom: 2rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  z-index: 10;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.activeDot {
+  background: var(--accent);
+  transform: scale(1.2);
+}
+
+.watermark {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 10;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .sliderContainer {
+    height: 85vh;
+  }
+  
+  .overlay {
+    align-items: flex-end;
+    padding-bottom: 6rem;
+  }
+  
+  .slideContent h2 {
+    font-size: 2.2rem;
+  }
+  
+  .slideContent p {
+    font-size: 1.1rem;
+  }
+  
+  .controls {
+    display: none; /* Hide arrows on mobile */
+  }
+  
+  .watermark {
+    display: none; /* Hide watermark on mobile to save space */
+  }
+}
