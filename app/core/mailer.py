@@ -33,7 +33,7 @@ def generate_contract_pdf(form_data) -> bytes:
     pdf.ln(5)
     
     clauses = [
-        ("1. Naturaleza del Contrato y Autonomia", "Hipha es un prestador de servicios profesionales independiente. El concepto “Tu departamento externo” es una denominacion comercial y no constituye una sociedad mercantil, asociacion ni relacion de subordinacion laboral. Hipha conserva plena autonomia tecnica y administrativa. El personal de Hipha no esta sujeto a la potestad de mando del Cliente, eliminando cualquier indicio de relacion laboral bajo la Ley Federal del Trabajo."),
+        ("1. Naturaleza del servicio y Autonomia", "Hipha es un prestador de servicios profesionales independiente. El concepto “Tu departamento externo” es una denominacion comercial y no constituye una sociedad mercantil, asociacion ni relacion de subordinacion laboral. Hipha conserva plena autonomia tecnica y administrativa. El personal de Hipha no esta sujeto a la potestad de mando del Cliente, eliminando cualquier indicio de relacion laboral bajo la Ley Federal del Trabajo.\n\nEl cliente puede solicitar asesoria sobre algun tema de su interes, pero sera el quien en base a sus necesidades y experiencia direccione los esfuerzos de marketing y diseño, realizando las solicitudes que desde su vision como lider de su empresa puedan mejorar su desempeño comercial y posicionamiento. En ninguna circunstancia el equipo de Hipha esta habilitado para tomar decisiones respecto a la operacion y funcionamiento de la empresa del Cliente."),
         ("2. Gestion de Proyecto y Comunicacion", "El Cliente designara un 'Responsable de Proyecto' unico con facultades suficientes para autorizar entregables y presupuestos. Las instrucciones de otros socios o terceros no seran vinculantes. La ventana de comunicacion para reuniones virtuales es de lunes a viernes de 9:00 am a 12:00 pm (Hora Centro de Mexico). Reuniones presenciales estaran sujetas a disponibilidad y podran generar cargos adicionales por traslados y viaticos."),
         ("3. Procesamiento de Solicitudes y Terceros", "Toda solicitud de diseño o estrategia requiere un plazo minimo de 72 horas habiles para inicio de gestion. Hipha no actua como comisionista ni intermediario en pagos a terceros. Si el Cliente solicita que Hipha gestione archivos con proveedores externos (imprentas, medios, etc.), Hipha se deslinda de cualquier error en la ejecucion, calidad, tiempos de entrega o vicios ocultos de dichos terceros. La ejecucion fisica (recolecciones, instalaciones) es responsabilidad del personal interno del Cliente."),
         ("4. Responsabilidad y Seguridad del Cliente", "La vigencia de los tiempos de entrega inicia tras la recepcion total de los insumos (Brief, manuales, accesos). El retraso del Cliente no suspende la obligacion de pago de las facturas o igualas pactadas. Respecto al Protocolo de Seguridad, el Cliente es responsable total de sus claves y accesos. Hipha se deslinda de hackeos, bloqueos o ataques derivados de acciones del Cliente o terceros ajenos a la agencia. Al finalizar la relacion, el Cliente debe revocar accesos en un plazo maximo de 24 horas."),
@@ -707,3 +707,192 @@ async def send_whiteclean_notification_team(form_data):
     except Exception as e:
         logger.error(f"Fallo al enviar notificación WhiteClean al equipo: {str(e)}")
         return False
+
+
+async def send_chilechillon_confirmation_email(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a prospecto Chile Chillón {form_data.email}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Chile Chillón <hola@elchilechillon.com.mx>"
+    message["To"] = form_data.email
+    message.add_header('Reply-To', 'hola@elchilechillon.com.mx')
+    message["Subject"] = f"¡Tu sazón está a punto de potenciarse, {form_data.nombre}! 🌶️🔥"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin comentarios adicionales'
+    
+    perfil_map = {
+        "usuario_final": "Usuario Final (Recetas y Promociones)",
+        "restaurante": "Restaurante (Muestras y Precios Especiales)",
+        "distribuidor": "Distribuidor (Incorporar al Catálogo)"
+    }
+    perfil_text = perfil_map.get(form_data.perfil, form_data.perfil)
+
+    html_content = f"""
+    <html>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f1f5f9; background-color: #080505; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #0d0707; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(229, 9, 20, 0.1); border: 1px solid rgba(229, 9, 20, 0.2);">
+            
+            <!-- Header con la identidad de Chile Chillón -->
+            <div style="background-color: #080505; padding: 35px 20px; text-align: center; border-bottom: 4px solid #E50914;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 2px;">CHILE <span style="color: #E50914;">CHILLÓN</span></h1>
+                <p style="color: #FF6A00; margin: 5px 0 0 0; font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">Tu sazón en su máxima potencia</p>
+            </div>
+            
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 40px 30px;">
+                <h2 style="color: #ffffff; font-size: 22px; font-weight: 700; margin-top: 0; margin-bottom: 20px;">¡Hola, {form_data.nombre}! 👋</h2>
+                <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1; margin-bottom: 25px;">
+                    ¡Bienvenido al Club de la Flama! Hemos recibido correctamente tus datos desde nuestra landing page. Nuestro alquimista de sabor está revisando tu solicitud para ayudarte a elevar cada comida y botana de forma fácil y sin complicaciones.
+                </p>
+                
+                <!-- Tarjeta con resumen de solicitud -->
+                <div style="background-color: rgba(229, 9, 20, 0.05); border-left: 4px solid #E50914; padding: 25px; border-radius: 0 16px 16px 0; margin-bottom: 30px; border-top: 1px solid rgba(229, 9, 20, 0.1); border-right: 1px solid rgba(229, 9, 20, 0.1); border-bottom: 1px solid rgba(229, 9, 20, 0.1);">
+                    <h3 style="color: #FF6A00; font-size: 14px; font-weight: 800; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">Detalles de tu registro:</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; color: #e2e8f0;">
+                        <tr>
+                          <td style="padding: 6px 0; color: #94a3b8; width: 120px; font-weight: 600;">Perfil:</td>
+                          <td style="padding: 6px 0; color: #ffffff; font-weight: bold;">{perfil_text}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0; color: #94a3b8; font-weight: 600;">WhatsApp / Cel:</td>
+                            <td style="padding: 6px 0; color: #ffffff;">{form_data.telefono}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0; color: #94a3b8; font-weight: 600; vertical-align: top;">Comentarios:</td>
+                            <td style="padding: 6px 0; color: #cbd5e1; font-style: italic;">{mensaje_formatted}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p style="font-size: 15px; line-height: 1.6; color: #94a3b8; margin-bottom: 0;">
+                    En Chile Chillón elaboramos picante premium con fórmulas minuciosamente balanceadas y 100% naturales, asegurando la consistencia exacta en cada lote desde hace 10 años. ¡Prepárate para experimentar el sazón definitivo!
+                </p>
+            </div>
+            
+            <!-- Footer del Correo -->
+            <div style="background-color: #080505; padding: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: #64748b;">
+                <p style="margin: 0 0 10px 0;">Este es un aviso automático de confirmación de registro.</p>
+                <p style="margin: 0 0 15px 0;"><strong>Chile Chillón &middot; Salsas & Picantes Premium</strong></p>
+                <div style="margin-bottom: 0;">
+                    <a href="https://www.elchilechillon.com.mx" style="color: #FF6A00; text-decoration: none; font-weight: bold; margin: 0 10px;">Sitio Web</a>
+                    <span style="color: rgba(255,255,255,0.1);">|</span>
+                    <a href="mailto:hola@elchilechillon.com.mx" style="color: #E50914; text-decoration: none; font-weight: bold; margin: 0 10px;">Contacto</a>
+                </div>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info(f"Correo de confirmación Chile Chillón enviado con éxito a {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de confirmación Chile Chillón a {form_data.email}: {str(e)}")
+        return False
+
+
+async def send_chilechillon_notification_team(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío de notificación de Chile Chillón al equipo")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Chile Chillón Web <hola@elchilechillon.com.mx>"
+    message["To"] = settings.EMAILS_FROM_EMAIL
+    message.add_header('Reply-To', form_data.email)
+    message["Subject"] = f"🌶️ NUEVA SOLICITUD WEB CHILE CHILLÓN: {form_data.nombre} - {form_data.perfil.upper()}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
+    
+    perfil_map = {
+        "usuario_final": "Usuario Final (Recetas y Promociones)",
+        "restaurante": "Restaurante (Muestras y Precios Especiales)",
+        "distribuidor": "Distribuidor (Incorporar al Catálogo)"
+    }
+    perfil_text = perfil_map.get(form_data.perfil, form_data.perfil)
+
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333333; background-color: #f1f5f9; padding: 20px; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
+            
+            <div style="background-color: #080505; padding: 20px; text-align: center; color: white; border-bottom: 4px solid #E50914;">
+                <h2 style="margin: 0; font-size: 20px; color: #ffffff;">🌶️ ¡Nuevo Prospecto Chile Chillón!</h2>
+                <p style="margin: 5px 0 0 0; font-size: 13px; color: #FF6A00; font-weight: bold;">Ecosistema Web</p>
+            </div>
+            
+            <div style="padding: 25px;">
+                <p style="margin-top: 0; font-size: 15px; color: #475569;">Se ha registrado un usuario en la landing de Chile Chillón con los siguientes detalles:</p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #080505; width: 150px; background-color: #f8fafc;">Nombre:</td>
+                        <td style="padding: 10px; color: #1e293b;">{form_data.nombre}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #080505; background-color: #f8fafc;">Email:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="mailto:{form_data.email}" style="color: #E50914; font-weight: bold; text-decoration: none;">{form_data.email}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #080505; background-color: #f8fafc;">WhatsApp / Celular:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="tel:{form_data.telefono}" style="color: #080505; font-weight: bold; text-decoration: none;">{form_data.telefono}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #080505; background-color: #f8fafc;">Perfil:</td>
+                        <td style="padding: 10px; color: #1e293b; font-weight: bold;">{perfil_text}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold; color: #080505; background-color: #f8fafc; vertical-align: top;">Comentarios:</td>
+                        <td style="padding: 10px; color: #1e293b; line-height: 1.5; font-style: italic;">{mensaje_formatted}</td>
+                    </tr>
+                </table>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://wa.me/{form_data.telefono.replace(' ', '').replace('+', '')}" style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                        💬 Contactar por WhatsApp
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #cbd5e1;">
+                Mensaje generado de forma automática por el sistema de Chile Chillón.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info("Notificación de lead Chile Chillón enviada con éxito al equipo.")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación de Chile Chillón al equipo: {str(e)}")
+        return False
+

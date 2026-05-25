@@ -174,7 +174,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Enviar datos al backend en segundo plano (para disparar correos de confirmación y aviso sin bloquear)
+      // ─── ESTADO DE CARGA EN EL BOTÓN ───
+      const submitBtn = contactoForm.querySelector('input[type="submit"]');
+      const originalBtnVal = submitBtn ? submitBtn.value : 'Cotizar';
+      if (submitBtn) {
+        submitBtn.value = submitBtn.getAttribute('data-wait') || 'Enviando...';
+        submitBtn.disabled = true;
+      }
+
+      // Enviar datos al backend para disparar los correos
       fetch('/api/contact/whiteclean', {
         method: 'POST',
         headers: {
@@ -191,41 +199,36 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       })
       .then(res => {
-        if (!res.ok) console.error('Error enviando contacto al servidor.');
+        if (submitBtn) {
+          submitBtn.value = originalBtnVal;
+          submitBtn.disabled = false;
+        }
+
+        if (res.ok) {
+          // Mostrar banner de éxito
+          if (formSuccess) {
+            formSuccess.classList.remove('hidden');
+            formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+          // Reiniciar formulario
+          contactoForm.reset();
+        } else {
+          throw new Error('Server error');
+        }
       })
-      .catch(err => console.error('Error de red al enviar contacto:', err));
-
-      // Número de WhatsApp del cliente
-      const whatsappPhone = '523312998450';
-
-      // Construcción del mensaje pre-llenado limpio y profesional
-      const rawMessage = `¡Hola! Solicito cotización desde la web.
-
-*Datos de contacto:*
-• Nombre: ${nombreVal} ${apellidoVal}
-• Correo: ${emailVal}
-• Teléfono: ${telefonoVal}
-• Ubicación: ${ubicacionVal}
-
-*Detalles del servicio:*
-• Servicio requerido: ${servicioVal}
-${mensajeVal ? `• Mensaje adicional: ${mensajeVal}` : ''}`;
-
-      // Codificar mensaje para la URL
-      const encodedText = encodeURIComponent(rawMessage);
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodedText}`;
-
-      // Abrir WhatsApp en pestaña nueva
-      window.open(whatsappUrl, '_blank');
-
-      // Mostrar banner de éxito
-      if (formSuccess) {
-        formSuccess.classList.remove('hidden');
-        formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      // Reiniciar formulario
-      contactoForm.reset();
+      .catch(err => {
+        console.error('Error al enviar contacto:', err);
+        if (submitBtn) {
+          submitBtn.value = originalBtnVal;
+          submitBtn.disabled = false;
+        }
+        if (formError) {
+          const errorTextDiv = formError.querySelector('.div-block-17') || formError;
+          errorTextDiv.textContent = 'Hubo un inconveniente al enviar tu solicitud de cotización por correo. Por favor, intenta de nuevo.';
+          formError.classList.remove('hidden');
+          formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
     });
   }
 

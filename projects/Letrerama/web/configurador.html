@@ -1,0 +1,3595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letrerama Studio Pro — Consola de Personalización 3D & Neón</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Preload Google Fonts to prevent visual layout shifts */
+  @font-face { font-family: 'Pacifico'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/pacifico/v22/FwZY7-Qmy14u9lezJ96A4sijpFu_.woff2) format('woff2'); }
+  @font-face { font-family: 'Dancing Script'; font-style: normal; font-weight: 700; src: url(https://fonts.gstatic.com/s/dancingscript/v25/If2cXTr6YS-zF4S-kcSWSVi_sxjsohD9F50Ruu7BMSo3ROp6.woff2) format('woff2'); }
+  @font-face { font-family: 'Anton'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/anton/v25/1Ptgg87LROyAm0Kz8A.woff2) format('woff2'); }
+  @font-face { font-family: 'Permanent Marker'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/permanentmarker/v16/Fh4uPib9Iyv2ucM6pGhBEt-M-SF5e3g.woff2) format('woff2'); }
+  @font-face { font-family: 'Satisfy'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/satisfy/v21/rP2Hp2yn6lkG50LoOZgK.woff2) format('woff2'); }
+  @font-face { font-family: 'Righteous'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/righteous/v17/1cXxaUPXBpj2rGoU7C9WiHGF.woff2) format('woff2'); }
+  @font-face { font-family: 'Sacramento'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/sacramento/v15/buEz7z09tgg3un8el3-Ckmzo.woff2) format('woff2'); }
+  @font-face { font-family: 'Monoton'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/monoton/v19/5h1aiZUrNAJ7dbS_720.woff2) format('woff2'); }
+</style>
+
+<style>
+  :root {
+    --bg-black: #020204;
+    --surface-dark: #06060a;
+    --surface-card: rgba(8, 8, 12, 0.45);
+    
+    --border-tech: rgba(255, 255, 255, 0.05);
+    --border-active: rgba(145, 252, 6, 0.35); /* Brand Green Active Border */
+    
+    --text-primary: #f8fafc;
+    --text-muted: #64748b;
+    --text-hint: #334155;
+    
+    /* Elegant Letrerama Brand Neons (Cyan 33F1FF and Green 91FC06) */
+    --neon-pink: #33f1ff;   /* Brand Cyan */
+    --neon-blue: #91fc06;   /* Brand Green */
+    --neon-green: #39ff72;
+    --neon-gold: #ffb800;
+    --neon-purple: #bf5fff;
+    --neon-red: #ff3e3e;
+    --neon-orange: #ff7a00;
+    --neon-white: #f8fafc;
+    
+    --active-text-glow: var(--neon-pink);
+    --active-icon-glow: var(--neon-blue);
+    --active-text-hex: #33f1ff;
+    --active-icon-hex: #91fc06;
+    
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-black);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Grain texture overlay */
+  .grain {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Technical B2B Grid pattern background */
+  .grid-pattern-overlay {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: rgba(2, 2, 4, 0.7);
+    backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--border-tech);
+    padding: 1.15rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 45, 120, 0.35);
+    font-size: 1.1rem;
+  }
+
+  .logo-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--text-primary);
+  }
+
+  .logo-title span {
+    background: linear-gradient(to right, var(--neon-pink), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .studio-badge {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-tech);
+    color: var(--text-primary);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.45rem 1.1rem;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .studio-badge span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--neon-blue);
+    box-shadow: 0 0 8px var(--neon-blue);
+  }
+
+  /* ─── APP GRID WORKSPACE ─── */
+  .app-container {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    flex: 1;
+    min-height: calc(100vh - 71px);
+    position: relative;
+    z-index: 5;
+  }
+
+  /* ─── PREVIEW CANVAS AREA ─── */
+  .canvas-section {
+    background-color: #040407;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 3rem;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .wall-viewport {
+    position: relative;
+    width: 100%;
+    max-width: 820px;
+    aspect-ratio: 16/10;
+    border-radius: 28px;
+    border: 1px solid var(--border-tech);
+    box-shadow: 
+      0 45px 110px rgba(0, 0, 0, 0.85), 
+      inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+    transition: var(--transition-smooth);
+    z-index: 2;
+  }
+
+  /* Coordinate alignment markers on the viewport corners */
+  .viewport-corner-coord {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-hint);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .viewport-corner-coord.tl { top: 1.25rem; left: 1.25rem; }
+  .viewport-corner-coord.tr { top: 1.25rem; right: 1.25rem; }
+  .viewport-corner-coord.bl { bottom: 1.25rem; left: 1.25rem; }
+  .viewport-corner-coord.br { bottom: 1.25rem; right: 1.25rem; }
+
+  .ambient-glow-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.9;
+    mix-blend-mode: screen;
+    transition: var(--transition-smooth);
+  }
+
+  .wall-texture {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: var(--transition-smooth);
+  }
+
+  /* Simulated walls */
+  .wall-brick {
+    background-color: #170d0b;
+    background-image: 
+      radial-gradient(circle at 50% 50%, transparent 10%, rgba(0,0,0,0.5) 100%),
+      url("data:image/svg+xml,%3Csvg width='80' height='40' viewBox='0 0 80 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h80v40H0z' fill='%23150c0a'/%3E%3Cpath d='M0 20h80M40 0v20M0 20v20M80 20v20' stroke='%23080403' stroke-width='2'/%3E%3C/svg%3E");
+    background-size: cover, 80px 40px;
+    filter: brightness(0.6) contrast(1.15);
+  }
+
+  .wall-marble {
+    background: radial-gradient(circle at 50% 50%, #0e0e13 0%, #040507 100%);
+    background-image: 
+      linear-gradient(55deg, transparent 48%, rgba(229, 193, 88, 0.04) 50%, transparent 52%), 
+      linear-gradient(-35deg, transparent 38%, rgba(255, 255, 255, 0.025) 40%, transparent 42%);
+    background-size: 100% 100%;
+    filter: brightness(0.75) contrast(1.05);
+  }
+
+  .wall-plant {
+    background-color: #07120b;
+    background-image: 
+      radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 100%),
+      url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 8C25 8 8 25 8 50c0 17 12 32 27 39l3-7c-10-5-18-17-18-32 0-19 14-34 30-34s30 15 30 34c0 15-8 27-18 32l3 7c15-7 27-22 27-39C92 25 75 8 50 8z' fill='%23020603' fill-opacity='0.55'/%3E%3C/svg%3E");
+    background-size: cover, 110px 110px;
+    filter: brightness(0.55) contrast(1.15);
+  }
+
+  .wall-concrete {
+    background-color: #1e1e24;
+    background-image: 
+      radial-gradient(rgba(255,255,255,0.015) 1px, transparent 0),
+      radial-gradient(rgba(0,0,0,0.2) 1.5px, transparent 0);
+    background-size: 12px 12px, 8px 8px;
+    filter: brightness(0.68) contrast(1.1);
+  }
+
+  .wall-studio {
+    background: radial-gradient(circle at 50% 50%, #06070a 0%, #010102 100%);
+  }
+
+  /* Support Backing Plate */
+  .acrylic-plate {
+    position: relative;
+    z-index: 2;
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+  }
+
+  .acrylic-plate.rect {
+    background: rgba(255, 255, 255, 0.015);
+    backdrop-filter: blur(3px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.2),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.6),
+      0 25px 55px rgba(0, 0, 0, 0.65);
+  }
+
+  .acrylic-plate.contour {
+    background: rgba(255, 255, 255, 0.003);
+    border: 1px dashed rgba(255, 255, 255, 0.06);
+    border-radius: 40px;
+  }
+
+  /* Metallic standoffs studs */
+  .standoff-studs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transition: var(--transition-smooth);
+  }
+
+  .standoff-studs.visible { opacity: 1; }
+
+  .stud {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #a1a1aa 50%, #27272a 100%);
+    box-shadow: 
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      0 4px 8px rgba(0,0,0,0.65);
+  }
+
+  .stud.tl { top: 12px; left: 12px; }
+  .stud.tr { top: 12px; right: 12px; }
+  .stud.bl { bottom: 12px; left: 12px; }
+  .stud.br { bottom: 12px; right: 12px; }
+
+  /* Bounding Ruler Architectural cota line (Premium design) */
+  .ruler-container {
+    position: absolute;
+    inset: 14px;
+    border: 1px dashed rgba(229, 193, 88, 0.2);
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+    transition: var(--transition-smooth);
+  }
+
+  .ruler-container.visible { opacity: 1; }
+
+  .ruler-label {
+    position: absolute;
+    background: #09090d;
+    border: 1px solid rgba(229, 193, 88, 0.35);
+    color: #e5c158;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  .ruler-label.width {
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .ruler-label.height {
+    right: -11px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  /* ─── PHYSICAL SIGN RENDERING SHADERS ─── */
+  .neon-preview-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .icon-preview-box {
+    margin-bottom: 1.25rem;
+    display: none;
+    transition: var(--transition-smooth);
+  }
+
+  .icon-preview-box.visible { display: block; }
+
+  .icon-preview-box svg {
+    display: block;
+    margin: 0 auto;
+    transition: var(--transition-smooth);
+  }
+
+  .text-preview-box {
+    text-align: center;
+    line-height: 1.1;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-weight: normal;
+    transition: var(--transition-smooth);
+  }
+
+  .preloaded-logo-box, .uploaded-logo-box {
+    display: none;
+    transition: var(--transition-smooth);
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 3D Corpóreo Direct Lit (Front-Lit) Extrusion return shading */
+  .text-preview-box.sign-corporeo-frontal {
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    text-shadow: 
+      0 0 4px #fff,
+      0 0 15px var(--active-text-glow),
+      1px 1px 0px #1e030d, 2px 2px 0px #1e030d, 3px 3px 0px #1e030d, 4px 4px 0px #1e030d, 5px 5px 0px #0a0104,
+      5px 5px 25px rgba(0,0,0,0.9);
+  }
+
+  /* 3D Backlit Indirect Lit (Extremely Luxury Halo effect) */
+  .text-preview-box.sign-corporeo-backlit {
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    position: relative;
+    text-shadow: 
+      1px 1px 0px #475569, 2px 2px 0px #1e293b, 3px 3px 0px #0f172a,
+      0 0 10px rgba(0,0,0,0.85);
+  }
+
+  /* ─── REALTIME CONTROL BAR ─── */
+  .preview-toolbar {
+    margin-top: 1.75rem;
+    display: flex;
+    gap: 1.5rem;
+    z-index: 5;
+    background: rgba(10, 10, 16, 0.85);
+    border: 1px solid var(--border-tech);
+    padding: 0.65rem 1.5rem;
+    border-radius: 30px;
+    backdrop-filter: blur(25px);
+  }
+
+  .tool-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .tool-item:hover, .tool-item.active {
+    color: var(--text-primary);
+  }
+
+  .tool-item input[type="checkbox"] {
+    accent-color: var(--neon-pink);
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+  }
+
+  .env-swatches {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+  }
+
+  .env-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: var(--transition-smooth);
+  }
+
+  .env-swatch.active {
+    border-color: white;
+    transform: scale(1.25);
+    box-shadow: 0 0 8px rgba(255,255,255,0.4);
+  }
+
+  /* Console power switch */
+  .power-switch-container {
+    position: absolute;
+    top: 1.75rem;
+    left: 1.75rem;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .retro-switch {
+    width: 48px;
+    height: 24px;
+    background: #09090e;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition-smooth);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+  }
+
+  .retro-switch-knob {
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #9ca3af 60%, #4b5563 100%);
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .retro-switch.on {
+    background: linear-gradient(to right, rgba(255, 45, 120, 0.2), rgba(0, 207, 255, 0.2));
+    border-color: var(--neon-pink);
+  }
+
+  .retro-switch.on .retro-switch-knob {
+    left: 26px;
+    background: radial-gradient(circle, #ffffff 0%, var(--neon-pink) 100%);
+    box-shadow: 0 0 10px var(--neon-pink);
+  }
+
+  .switch-label {
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+  }
+
+  /* ─── SCALE SIMULATOR SYSTEM ─── */
+  .scale-helper-card {
+    position: absolute;
+    bottom: 1.75rem;
+    left: 1.75rem;
+    z-index: 5;
+    background: rgba(10, 10, 16, 0.85);
+    border: 1px solid var(--border-tech);
+    border-radius: 14px;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.7rem;
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .scale-btn {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+  }
+
+  .scale-btn.active, .scale-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--text-primary);
+    border-color: rgba(255,255,255,0.18);
+  }
+
+  .comparative-silhouette {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: var(--transition-smooth);
+    width: 100%;
+    max-width: 480px;
+    height: 160px;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: contain;
+  }
+
+  .comparative-silhouette.visible { opacity: 0.22; }
+
+  .silhouette-sofa {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 90h360v20H20V90zm10-50h20v50H30V40zm320 0h20v50h-20V40zM50 60h300v30H50V60zm30-40h240v40H80V20z' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E");
+  }
+  
+  .silhouette-desk {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 30h260v10H20V30zm30 10h10v70H50V40zm190 0h10v70h-10V40z' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  .silhouette-person {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 180' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='25' r='15' fill='%23ffffff' fill-opacity='0.4'/%3E%3Cpath d='M35 45h30a10 10 0 0 1 10 10v45H65v70H55v-70H45v70H35v-70H25V55a10 10 0 0 1 10-10z' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E");
+    height: 190px;
+  }
+
+  /* ─── LUXURY FLOATING SIDEBAR ─── */
+  .config-section-sidebar {
+    background-color: var(--surface-dark);
+    border-left: 1px solid var(--border-tech);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -20px 0 50px rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Luxury glassmorphic tab row */
+  .studio-tabs-row {
+    display: flex;
+    background: rgba(255,255,255,0.015);
+    border-bottom: 1px solid var(--border-tech);
+  }
+
+  .studio-tab-item {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 1.25rem 0.5rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: var(--transition-smooth);
+    border-bottom: 2px solid transparent;
+    text-align: center;
+  }
+
+  .studio-tab-item.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--neon-pink);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .sidebar-scrollable-content {
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+  }
+
+  .config-block {
+    display: none;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .config-block.active {
+    display: flex;
+  }
+
+  .control-group-lbl {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .control-group-lbl::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+  }
+
+  /* Inputs Cards */
+  .glass-input-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-tech);
+    border-radius: 18px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: var(--transition-smooth);
+  }
+
+  .glass-input-card:focus-within {
+    border-color: var(--border-active);
+    box-shadow: 0 0 25px rgba(255, 45, 120, 0.05);
+  }
+
+  .premium-textbox {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    resize: none;
+    min-height: 50px;
+    line-height: 1.5;
+  }
+
+  .textbox-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    padding-top: 0.85rem;
+  }
+
+  .align-buttons-deck {
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  .align-button-circle {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+  }
+
+  .align-button-circle:hover, .align-button-circle.active {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .character-limit-display {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  /* DUAL MODE PALETTES Concentric Rings */
+  .color-tabs-header {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-tech);
+    padding: 0.35rem;
+    border-radius: 14px;
+  }
+
+  .color-tab-button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 10px;
+    text-align: center;
+    transition: var(--transition-smooth);
+  }
+
+  .color-tab-button.active {
+    background: rgba(255,255,255,0.06);
+    color: var(--text-primary);
+  }
+
+  .swatch-concentric-circles {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0.6rem;
+  }
+
+  .swatch-circle-btn {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    background: transparent;
+  }
+
+  .swatch-circle-inner {
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+  }
+
+  .swatch-circle-btn:hover {
+    transform: scale(1.15);
+  }
+
+  .swatch-circle-btn.selected {
+    border-color: white;
+    box-shadow: 0 0 15px var(--active-text-glow);
+  }
+
+  /* TYPOGRAPHY LIST SHOWCASE CARDS */
+  .typo-glass-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+
+  .typo-tile {
+    background: rgba(255,255,255,0.012);
+    border: 1px solid var(--border-tech);
+    border-radius: 16px;
+    padding: 1.1rem 0.85rem;
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition-smooth);
+  }
+
+  .typo-tile:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  .typo-tile.selected {
+    border-color: var(--neon-pink);
+    background: rgba(255, 45, 120, 0.04);
+    box-shadow: 0 0 15px rgba(255, 45, 120, 0.06);
+  }
+
+  .typo-meta-txt {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .typo-preview-txt {
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  /* SIGN TYPE Selector */
+  .sign-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+
+  .type-tile {
+    background: rgba(255,255,255,0.012);
+    border: 1px solid var(--border-tech);
+    border-radius: 12px;
+    padding: 0.95rem 0.25rem;
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition-smooth);
+  }
+
+  .type-tile:hover { background: rgba(255,255,255,0.04); }
+  .type-tile.selected { border-color: var(--neon-pink); background: rgba(255,45,120,0.04); }
+
+  .type-tile-title { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+  .type-tile-sub { font-size: 0.6rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+  /* ICONS PANEL */
+  .icon-search-bar {
+    display: flex;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 0.45rem;
+  }
+
+  .icon-search-bar::-webkit-scrollbar { height: 3px; }
+  .icon-search-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+  .icon-tab-btn {
+    background: rgba(255,255,255,0.015);
+    border: 1px solid var(--border-tech);
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.4rem 0.95rem;
+    border-radius: 24px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+  }
+
+  .icon-tab-btn:hover, .icon-tab-btn.active {
+    background: rgba(255,45,120,0.08);
+    color: var(--neon-pink);
+    border-color: rgba(255,45,120,0.25);
+  }
+
+  .icons-grid-selection {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+
+  .icon-box-btn {
+    background: rgba(255,255,255,0.012);
+    border: 1px solid var(--border-tech);
+    border-radius: 14px;
+    padding: 0.85rem 0.25rem 0.65rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .icon-box-btn:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+
+  .icon-box-btn.selected {
+    border-color: var(--neon-blue);
+    background: rgba(0, 207, 255, 0.05);
+  }
+
+  .icon-box-btn svg { width: 28px; height: 28px; display: block; }
+  .icon-box-label { font-size: 0.58rem; color: var(--text-muted); line-height: 1.1; text-align: center; font-weight: 700; }
+
+  .icon-layouts-row {
+    display: flex;
+    gap: 0.45rem;
+    background: rgba(255,255,255,0.012);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-tech);
+  }
+
+  .layout-circle-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.45rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+  }
+
+  .layout-circle-btn.selected, .layout-circle-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+  }
+
+  /* MEASURE SCALE PANEL */
+  .sizes-panel-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+
+  .size-panel-tile {
+    background: rgba(255,255,255,0.012);
+    border: 1px solid var(--border-tech);
+    border-radius: 14px;
+    padding: 0.95rem 0.25rem;
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition-smooth);
+  }
+
+  .size-panel-tile:hover { background: rgba(255,255,255,0.04); }
+  .size-panel-tile.selected { border-color: var(--neon-pink); background: rgba(255,45,120,0.04); }
+
+  .size-panel-lbl { font-size: 0.92rem; font-weight: 900; }
+  .size-panel-cm { font-size: 0.62rem; color: var(--text-muted); margin-top: 0.2rem; font-weight: 700; }
+
+  /* SUPPORT BACKING GRID */
+  .backing-options-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+
+  .backing-tile {
+    background: rgba(255,255,255,0.012);
+    border: 1px solid var(--border-tech);
+    border-radius: 12px;
+    padding: 0.95rem 0.25rem;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    transition: var(--transition-smooth);
+    color: var(--text-muted);
+  }
+
+  .backing-tile:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+  .backing-tile.selected { border-color: var(--neon-pink); background: rgba(255,45,120,0.04); color: var(--text-primary); }
+
+  /* ADDONS INTERACTIVE CARDS */
+  .addon-switch-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.012);
+    border: 1px solid var(--border-tech);
+    padding: 0.95rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .addon-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .addon-lbl { font-size: 0.85rem; font-weight: 800; }
+  .addon-sub { font-size: 0.68rem; color: var(--text-muted); }
+
+  .custom-ios-switch {
+    width: 44px;
+    height: 22px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+  }
+
+  .custom-ios-knob {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: var(--transition-smooth);
+  }
+
+  .custom-ios-switch.on { background-color: var(--neon-green); }
+  .custom-ios-switch.on .custom-ios-knob { left: 24px; }
+
+  /* Smooth slider dimmer */
+  .dimmer-luxury-control {
+    background: rgba(255,255,255,0.008);
+    border: 1px solid var(--border-tech);
+    border-radius: 16px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: var(--transition-smooth);
+  }
+
+  .dimmer-luxury-hdr {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .custom-glow-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.08);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .custom-glow-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--active-text-glow);
+    transition: transform 0.1s;
+  }
+
+  /* SIDEBAR CHECKOUT SECTION */
+  .sidebar-checkout-billing {
+    border-top: 1px solid var(--border-tech);
+    padding: 1.5rem 2rem 2.25rem;
+    background: linear-gradient(to bottom, transparent, rgba(2, 2, 4, 0.45));
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .invoice-glass-card {
+    background: rgba(255, 45, 120, 0.025);
+    border: 1px solid rgba(255, 45, 120, 0.12);
+    border-radius: 20px;
+    padding: 1.35rem 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .invoice-glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 45, 120, 0.2), transparent);
+  }
+
+  .invoice-total-numeric {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .invoice-total-numeric span {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .price-tagline-green {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #10b981;
+    letter-spacing: 0.02em;
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  .vip-coupon-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .vip-coupon-textbox {
+    flex: 1;
+    background: rgba(255,255,255,0.015);
+    border: 1px solid var(--border-tech);
+    border-radius: 11px;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .vip-coupon-apply-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-tech);
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 0 1.3rem;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+  }
+
+  .vip-coupon-apply-btn:hover { background: rgba(255,255,255,0.1); }
+
+  .checkout-btn-solid {
+    background: linear-gradient(135deg, var(--neon-pink) 0%, #c2185b 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 1.3rem;
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 10px 25px rgba(255, 45, 120, 0.3);
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+  }
+
+  .checkout-btn-solid:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(255, 45, 120, 0.5);
+  }
+
+  .checkout-btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-tech);
+    color: var(--text-muted);
+    border-radius: 12px;
+    padding: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+  }
+
+  .checkout-btn-outline:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Confetti animations */
+  .confetti-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    z-index: 100;
+    pointer-events: none;
+    animation: confetti-gravity 2.5s ease-out forwards;
+  }
+
+  @keyframes confetti-gravity {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(650px) rotate(360deg); opacity: 0; }
+  }
+
+  /* Luxury floating notifications */
+  .toast-panel {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    background: #06060a;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.1rem 1.6rem;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    z-index: 1000;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+  }
+
+  /* ─── APP DUAL MODE SELECTOR ─── */
+  .app-mode-selector {
+    display: flex;
+    background: rgba(2, 2, 4, 0.4);
+    border-bottom: 1px solid var(--border-tech);
+    padding: 0.85rem 1.25rem;
+    gap: 0.65rem;
+  }
+
+  .mode-tab-button {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-tech);
+    color: var(--text-muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.68rem 0.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .mode-tab-button:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .mode-tab-button.active {
+    color: var(--bg-black);
+    background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
+    border-color: transparent;
+    box-shadow: 
+      0 6px 20px rgba(51, 241, 255, 0.25),
+      0 0 10px rgba(145, 252, 6, 0.15);
+  }
+
+  /* ─── COTIZACION B2B FORM PANEL ─── */
+  .config-block-cotizacion {
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    overflow-y: auto;
+  }
+
+  .cotizacion-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .cotizacion-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .medidas-flex-row {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .medida-input-col {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-tech);
+    border-radius: 12px;
+    padding: 0.5rem 0.85rem;
+    gap: 0.35rem;
+  }
+
+  .medida-prefix {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .cotiz-num-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    outline: none;
+    text-align: right;
+  }
+
+  .medida-suffix {
+    font-size: 0.72rem;
+    color: var(--neon-pink);
+    font-weight: 800;
+  }
+
+  .cotiz-chips-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+
+  .cotiz-chips-grid.style-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cotiz-chip {
+    background: rgba(255, 255, 255, 0.012);
+    border: 1px solid var(--border-tech);
+    border-radius: 12px;
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cotiz-chip:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+  }
+
+  .cotiz-chip.active {
+    background: rgba(51, 241, 255, 0.04);
+    border-color: var(--neon-pink);
+    color: var(--text-primary);
+    box-shadow: 0 0 12px rgba(51, 241, 255, 0.1);
+  }
+
+  .altura-slider-row {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-tech);
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    gap: 1rem;
+  }
+
+  .cotiz-range {
+    flex: 1;
+    accent-color: var(--neon-pink);
+    cursor: pointer;
+  }
+
+  .altura-indicator {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--neon-pink);
+    white-space: nowrap;
+  }
+
+  .cotiz-upload-box {
+    border: 1.5px dashed var(--border-tech);
+    border-radius: 18px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    background: rgba(255, 255, 255, 0.005);
+  }
+
+  .cotiz-upload-box:hover {
+    border-color: var(--neon-pink);
+    background: rgba(51, 241, 255, 0.01);
+  }
+
+  .upload-icon-cloud {
+    font-size: 1.6rem;
+    margin-bottom: 0.45rem;
+    opacity: 0.75;
+    transition: var(--transition-smooth);
+  }
+
+  .cotiz-upload-box:hover .upload-icon-cloud {
+    transform: translateY(-2px) scale(1.1);
+  }
+
+  .upload-txt-main {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .upload-txt-sub {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    padding: 0 0.5rem;
+  }
+
+  .upload-success-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(145, 252, 6, 0.06);
+    border: 1px solid rgba(145, 252, 6, 0.2);
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--neon-blue);
+    margin-top: 0.5rem;
+  }
+
+  /* 🔒 Exclusivo para Interior Alert */
+  .neon-lock-badge {
+    background: rgba(51, 241, 255, 0.05);
+    border: 1px solid rgba(51, 241, 255, 0.15);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    color: var(--neon-pink);
+    font-size: 0.76rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* RGB Dynamic Animation for LED Multicolor */
+  .rgb-dynamic-glow {
+    animation: rgb-neon-cycle 8s linear infinite !important;
+    text-shadow:
+      0 0 2px #fff,
+      0 0 10px currentColor,
+      0 0 25px currentColor,
+      0 0 50px currentColor,
+      0 0 90px currentColor !important;
+  }
+
+  .rgb-dynamic-glow svg, .rgb-dynamic-glow path, .rgb-dynamic-glow circle, .rgb-dynamic-glow line {
+    animation: rgb-neon-cycle 8s linear infinite !important;
+    stroke: currentColor !important;
+  }
+  .rgb-dynamic-glow svg circle[fill] {
+    fill: currentColor !important;
+  }
+
+  @keyframes rgb-neon-cycle {
+    0% { filter: hue-rotate(0deg); color: #ff2d78; }
+    100% { filter: hue-rotate(360deg); color: #ff2d78; }
+  }
+
+  /* ─── ACRYLIC BACKINGS PRESET OVERRIDES ─── */
+  .acrylic-plate.transparent {
+    background: rgba(255, 255, 255, 0.012);
+    backdrop-filter: blur(3px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.15),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.6),
+      0 25px 55px rgba(0, 0, 0, 0.65);
+  }
+
+  .acrylic-plate.black {
+    background: rgba(8, 8, 12, 0.94);
+    backdrop-filter: none;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255, 255, 255, 0.03);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 25px 55px rgba(0, 0, 0, 0.85);
+  }
+
+  @media (max-width: 1050px) {
+    .app-container { grid-template-columns: 1fr; }
+    .config-section-sidebar { border-left: none; border-top: 1px solid var(--border-tech); }
+    .canvas-section { min-height: 55vh; padding: 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="grid-pattern-overlay"></div>
+
+<!-- HEADER BAR -->
+<header>
+  <a class="logo-area" href="index.html">
+    <svg viewBox="0 0 559.55 252.72" style="height: 34px; width: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#fff">
+        <path d="M322.8,143.71c-4.59,5.62-12.88,17.5-17.61,21.71-3.66,3.26-9.64,2.44-10.3-2.55-1.62-12.28,2.61-26.74,1.22-39.25l-76.69-12.53c-8.26-1.64-16.81-8.03-19.92-15.89-3.79-9.57-3.14-37.57-2.47-48.72.72-11.94,5.86-21.2,17.52-25.31L322.81.23c15.95-1.6,26.24,4.97,29.5,20.88,2.84,13.88,3.6,30.24,5.37,44.49,1.41,11.3,4.34,24.04,5.02,35.24.86,14.12-7.62,24.33-20.95,27.62-2.06.51-6.4.44-7.83,1.13s-9.3,11.87-11.14,14.12ZM307.72,142.06c.6.69,3.91-3.52,4.46-4.17,5.4-6.32,10.06-13.34,15.65-19.51,7.12-1.52,16.32-.32,20.72-7.42,3.15-5.09,1.86-11.43,1.3-17.07-2.28-23.04-6.83-45.95-8.95-69.03-1.8-9.09-5.39-14.14-15.53-13.11-33.7,8.61-71.34,11.11-104.66,20.06-6.37,1.71-10.76,5.18-11.51,12.15-1.05,9.72-.93,31.72-.02,41.58.73,7.98,5.76,12.49,13.3,14.19l82.64,13.29c1.31.96,2.88,1.45,3.22,3.18.78,3.95-1.5,24.87-.63,25.87Z"/>
+        <path d="M393.08,250.36c-2.53,2.65-7.17,2.86-10.49,1.28-2.04-.98-3.64-5.43-3.89-7.61-.75-6.28-.37-18.39,0-24.97,1.29-23.41,12.01-38.33,37.38-35.38,3.66.43,8.55,2.97,11.58,5.05,1.47,1.01,2.38,3.43,4.45,3.23.77-.08,6.68-5.04,8.75-6.02,15.28-7.2,36.81.37,41.34,17.32,2.48,9.3,3.14,31.71,2,41.32-1.1,9.36-12.39,10.65-15.44,3.42-4.95-11.74,4.51-36.36-6.55-45.87-3.75-3.22-12.49-3.33-16.32-.31-.25.2-3.46,4.81-3.68,5.28-3.37,7.29-2.8,22.27-2.75,30.54.03,4.04,2.18,10.88-2.31,13.62-5.87,3.58-13.65.29-14.14-6.76-.38-14.16,4.22-30.81-5.28-42.66-7.31-3.1-14.46-3.32-19.09,3.92-5.77,9.03-2.31,27.98-3.3,38.89-.26,2.87-.38,3.77-2.26,5.73Z"/>
+        <path d="M41.62,225.15c-1.58,1.81,4.36,7.61,5.79,8.59,5.48,3.74,12.98,3.34,18.93,1.11s9.51-11.57,16.8-6.14c2.91,2.17,3.65,5.34,2.4,8.71-1.84,4.93-5.71,7.82-10.25,10.21-26.52,13.94-56.81-7.6-50.66-37.2,6.21-29.88,46.13-36.58,61.22-9.99,3.34,5.89,8.04,19.68.75,23.98-3.7,2.18-4.58.65-7.58.74-12.37.36-25.08,1.53-37.41,0ZM72.96,209.81c-5.58-14.65-25.99-14.08-31.98,0h31.98Z"/>
+        <path d="M204.73,225.79c3.5,10.05,15.67,12.97,24.94,9.26,5.73-2.3,10.28-12.44,17.42-6.08,7.52,6.7-2.67,16.05-8.9,19.07-27.05,13.13-56.26-8.79-49.92-38.38s44.78-35.29,60.46-10.28c3.72,5.93,10.02,24.32-.8,25.79-11.16,1.51-26.05-.89-37.79-.05-1.82.13-3.55.84-5.41.67ZM204.73,209.81h31.98c-5.89-14.2-26.26-14.51-31.98,0Z"/>
+        <path d="M519.94,183.78c16.39-1.98,33.23,7.87,37.57,24.1,2.24,8.36,2.39,26.68,1.61,35.51-.42,4.73-2.86,8.65-8.02,8.65-5.63,0-6.53-4.82-7.74-5.11-.43-.1-6.54,2.98-7.96,3.44-15.43,5-33.1-1.72-40.82-16.04-11.18-20.73,1.8-47.69,25.35-50.54ZM537.76,231.31c16.21-15.38-5.14-42.71-24.4-28.53-20.79,15.3,5.2,46.74,24.4,28.53Z"/>
+        <path d="M357.53,246.96c-3.41.91-6.64,3.03-10.29,3.93-29.84,7.37-53.85-23.82-38.35-50.46,14.21-24.43,50.5-21.84,61.18,4.28,4.88,11.93,1.11,29.45,2.12,42.36-2.93,6.65-11.82,6.75-14.66-.1ZM336.36,199.12c-26.37,2.78-18.66,44.43,7.69,36.44,21.26-6.44,14.5-38.78-7.69-36.44Z"/>
+        <path d="M112.62,183.6c7.41.75,26.84-3.8,24.91,9.22-.32,2.16-3.32,6.12-5.4,6.12h-19.51v22.69c0,5.2,7.93,12.58,12.81,14.04,5.81,1.74,13.79-.15,13.47,8.97-.36,10.22-14.43,7.16-20.69,4.64-30.48-12.3-18.77-50.55-20.79-76.07.83-5.62,8.85-7.59,12.67-4.01.76.71,2.53,3.74,2.53,4.5v9.91Z"/>
+        <path d="M3.47,161.46c4.57-4.14,13.39-.77,13.21,5.84v77.34c-1.11,9.66-14.81,10.42-16-.64,1.59-24.37-2.11-51.39-.02-75.44.22-2.56.84-5.31,2.81-7.1Z"/>
+        <path d="M269.12,183.19c5.32-.15,7.69,5.41,8.2,5.45s7.09-3.5,9.3-4.07c5.85-1.5,13.51-3.23,16.3,3.51,1.09,2.65,1.12,4.05-.41,6.61-2.98,4.99-9.84,3.14-15.28,5.82-16.78,8.27-7.49,31.19-10.36,45.26-1.78,8.72-14.24,8.14-15.23-3.02-1.46-16.43,1.08-35.06.1-51.73.53-4.14,2.83-7.71,7.38-7.84Z"/>
+        <path d="M184.7,185.09c3.09,2.65,3.6,7.3.87,10.38-3.35,3.78-12.18,3.52-17.11,6.55-12.64,7.76-6.07,32.46-8.16,44.9-1.81,3.26-3.92,4.71-7.73,4.48-6.39-.38-6.94-5.36-7.1-10.7-.32-11.34.55-23.02.43-34.44-.06-5.65-3.18-19.26,3.55-21.96,4.32-1.73,10.2-.65,11.14,4.41,6.24-3.03,17.92-8.93,24.1-3.63Z"/>
+      </g>
+    </svg>
+  </a>
+  <div class="studio-badge">
+    <span></span> LETRERAMA STUDIO PRO
+  </div>
+</header>
+
+<div class="app-container">
+  
+  <!-- PREVIEWING DESIGN LIENZO -->
+  <div class="canvas-section">
+    
+    <!-- Analog Electrical switch -->
+    <div class="power-switch-container">
+      <div class="retro-switch on" id="powerSwitch" onclick="toggleConsolePower()">
+        <div class="retro-switch-knob"></div>
+      </div>
+      <div class="switch-label">INTERRUPTOR</div>
+    </div>
+
+    <!-- Realscale silhouettes helper -->
+    <div class="scale-helper-card">
+      <span class="text-muted">Escala:</span>
+      <button class="scale-btn active" id="scaleNoneBtn" onclick="setScaleContext('none')">Vacío</button>
+      <button class="scale-btn" id="scaleSofaBtn" onclick="setScaleContext('sofa')">Sofá (2m)</button>
+      <button class="scale-btn" id="scaleDeskBtn" onclick="setScaleContext('desk')">Escritorio</button>
+      <button class="scale-btn" id="scalePersonBtn" onclick="setScaleContext('person')">Persona</button>
+    </div>
+
+    <!-- Transparent Silhouette overlay -->
+    <div class="comparative-silhouette" id="scaleSilhouette"></div>
+    
+    <!-- Cinematic Room Viewport -->
+    <div class="wall-viewport" id="wallViewport">
+      
+      <!-- Viewport corner coordinate stamps -->
+      <div class="viewport-corner-coord tl">LOC_A // 45.02</div>
+      <div class="viewport-corner-coord tr">LOC_B // 99.88</div>
+      <div class="viewport-corner-coord bl">RAD_X // 0.050</div>
+      <div class="viewport-corner-coord br">SYS_OK // 60FPS</div>
+
+      <!-- Backdrop Texture -->
+      <div class="wall-texture wall-brick" id="wallTexture"></div>
+      
+      <!-- Ambient light glowing overlay -->
+      <div class="ambient-glow-layer" id="ambientWallGlow"></div>
+      
+      <!-- Support Mount Backing Plate -->
+      <div class="acrylic-plate rect" id="acrylicPlate">
+        
+        <!-- Corner metallic standoff studs -->
+        <div class="standoff-studs visible" id="standoffStuds">
+          <div class="stud tl"></div>
+          <div class="stud tr"></div>
+          <div class="stud bl"></div>
+          <div class="stud br"></div>
+        </div>
+
+        <!-- Metric architectural bounding rulers -->
+        <div class="ruler-container" id="rulerContainer">
+          <div class="ruler-label width"><span id="rulerW">55</span> cm</div>
+          <div class="ruler-label height"><span id="rulerH">18</span> cm</div>
+        </div>
+
+        <!-- Rendered Sign output layout -->
+        <div class="neon-preview-layout" id="previewLayout">
+          <div class="icon-preview-box" id="iconPreview">
+            <!-- Rendered SVG dynamically -->
+          </div>
+          <div class="text-preview-box" id="textPreview">
+            Diseña
+          </div>
+          <div class="preloaded-logo-box" id="logoPreloadedPreview">
+            <!-- Preloaded logo goes here dynamically -->
+          </div>
+          <div class="uploaded-logo-box" id="logoUploadedPreview">
+            <!-- Uploaded user logo goes here dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Live controls toolbar -->
+    <div class="preview-toolbar">
+      <div class="tool-item">
+        <span>Fondo:</span>
+        <div class="env-swatches">
+          <div class="env-swatch wall-brick active" onclick="setWallTexture('brick')" title="Ladrillo Rústico"></div>
+          <div class="env-swatch wall-marble" onclick="setWallTexture('marble')" title="Mármol Negro"></div>
+          <div class="env-swatch wall-plant" onclick="setWallTexture('plant')" title="Muro Verde Orgánico"></div>
+          <div class="env-swatch wall-concrete" onclick="setWallTexture('concrete')" title="Concreto Industrial"></div>
+          <div class="env-swatch wall-studio" onclick="setWallTexture('studio')" title="Estudio Oscuro"></div>
+        </div>
+      </div>
+      
+      <div style="width:1px; height:12px; background:rgba(255,255,255,0.08)"></div>
+
+      <div class="tool-item" onclick="toggleTechnicalRuler()">
+        <input type="checkbox" id="rulerCheck">
+        <label for="rulerCheck" style="cursor:pointer">Líneas de Cota</label>
+      </div>
+
+      <div style="width:1px; height:12px; background:rgba(255,255,255,0.08)"></div>
+
+      <div class="tool-item">
+        <span>Frecuencia:</span>
+        <select id="frequencySelect" onchange="setFrequencyEffect(this.value)" style="background:transparent; border:none; color:inherit; font-size:inherit; font-weight:inherit; outline:none; cursor:pointer">
+          <option value="solid" style="background:#07070b">Luz Constante</option>
+          <option value="pulse" style="background:#07070b">Respiración Suave</option>
+          <option value="flicker" style="background:#07070b">Voltaje Inestable</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLOATING CONSOLE SIDEBAR -->
+  <div class="config-section-sidebar">
+    
+    <!-- Dual-Mode Selector (Neón Flex vs. Cotización Letras 3D/Volumétricos) -->
+    <div class="app-mode-selector">
+      <button class="mode-tab-button active" id="btnModeNeon" onclick="setAppMode('neon')">⚡ Diseñar Neón Flex</button>
+      <button class="mode-tab-button" id="btnModeCotizacion" onclick="setAppMode('cotizacion')">🏢 Cotizar Anuncio luminoso</button>
+    </div>
+    
+    <!-- Glassmorphic Tabs -->
+    <div class="studio-tabs-row">
+      <button class="studio-tab-item active" onclick="switchStudioTab('tab-content', this)">✍️ Letras & Logo</button>
+      <button class="studio-tab-item" onclick="switchStudioTab('tab-light', this)">🎨 Luz & Tono</button>
+      <button class="studio-tab-item" onclick="switchStudioTab('tab-structure', this)">📐 Estructura</button>
+      <button class="studio-tab-item" onclick="switchStudioTab('tab-addons', this)">💎 Equipar</button>
+    </div>
+
+    <!-- Scrollable Control Center -->
+    <div class="sidebar-scrollable-content">
+      
+      <!-- Neon Lock Alert (Only for Interior) -->
+      <div class="neon-lock-badge" id="neonLockBadge">
+        <span>🔒</span> Letreros Neón Flex exclusivos para uso en Interiores.
+      </div>
+      
+      <!-- TAB: CONTENT -->
+      <div class="config-block active" id="tab-content">
+        <div class="control-group-lbl">Modo de Diseño</div>
+        <div class="color-tabs-header" style="margin-bottom: 0.5rem">
+          <button class="color-tab-button active" id="btnModeText" onclick="setDesignMode('text')">✍️ Texto</button>
+          <button class="color-tab-button" id="btnModeLogoPre" onclick="setDesignMode('logo-preloaded')">✨ Logo Letrerama</button>
+          <button class="color-tab-button" id="btnModeLogoUpload" onclick="setDesignMode('logo-uploaded')">🎨 Subir Logo</button>
+        </div>
+
+        <!-- EDITOR: TEXT -->
+        <div id="editorTextInputContainer" style="display:flex; flex-direction:column; gap:1.25rem;">
+          <div class="control-group-lbl">Texto del Letrero</div>
+          <div class="glass-input-card">
+            <textarea class="premium-textbox" id="textInput" placeholder="Escribe tu letrero aquí..." maxlength="60">Diseña</textarea>
+            <div class="textbox-footer">
+              <div class="align-buttons-deck">
+                <button class="align-button-circle active" onclick="setTextAlignment('center')" id="alignCenter" title="Centrar">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="5" y1="18" x2="19" y2="18"/></svg>
+                </button>
+                <button class="align-button-circle" onclick="setTextAlignment('left')" id="alignLeft" title="Izquierda">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+                </button>
+                <button class="align-button-circle" onclick="setTextAlignment('right')" id="alignRight" title="Derecha">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="6" y1="18" x2="21" y2="18"/></svg>
+                </button>
+              </div>
+              <div class="character-limit-display"><span id="charCount">6</span>/60</div>
+            </div>
+          </div>
+
+          <div class="control-group-lbl">Íconos Integrados</div>
+          <div class="icon-search-bar" id="iconCats">
+            <!-- Filled by JS -->
+          </div>
+          <div class="icons-grid-selection" id="iconsGrid">
+            <!-- Filled by JS -->
+          </div>
+          
+          <div class="icon-layouts-row" id="iconPosRow" style="display:none">
+            <button class="layout-circle-btn selected" onclick="setIconPlacement('top')" id="posTop">Ícono Arriba</button>
+            <button class="layout-circle-btn" onclick="setIconPlacement('left')" id="posLeft">Izquierda</button>
+            <button class="layout-circle-btn" onclick="setIconPlacement('right')" id="posRight">Derecha</button>
+          </div>
+        </div>
+
+        <!-- EDITOR: PRELOADED LOGO -->
+        <div id="editorLogoPreloadedContainer" style="display:none; flex-direction:column; gap:1.25rem;">
+          <div class="control-group-lbl">Selecciona la Versión</div>
+          <div class="sign-type-grid">
+            <div class="type-tile selected" id="logoPreColor" onclick="selectPreloadedLogoType('color')">
+              <div class="type-tile-title">Original (Color)</div>
+              <div class="type-tile-sub">Luz Rosa & Azul</div>
+            </div>
+            <div class="type-tile" id="logoPreWhite" onclick="selectPreloadedLogoType('white')">
+              <div class="type-tile-title">Blanco (Glow)</div>
+              <div class="type-tile-sub">Cambio de colores</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDITOR: UPLOADED LOGO -->
+        <div id="editorLogoUploadedContainer" style="display:none; flex-direction:column; gap:1.25rem;">
+          <div class="control-group-lbl">Carga tu Logotipo</div>
+          <div class="glass-input-card" id="logoDropZone" onclick="triggerLogoUpload()" style="border: 2px dashed rgba(229,193,88,0.2); cursor:pointer; text-align:center; padding: 2rem 1.5rem; display:flex; flex-direction:column; align-items:center; gap:0.75rem;">
+            <svg width="32" height="32" fill="none" stroke="#e5c158" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1M12 4v12M8 8l4-4 4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div style="font-size:0.75rem; font-weight:800; color:var(--text-primary)">Arrastra tu logo aquí o haz clic</div>
+            <div style="font-size:0.6rem; color:var(--text-muted)">Archivo transparente (.png o .svg) recomendado (Max 5MB)</div>
+            <input type="file" id="logoUploadInput" accept="image/*" style="display:none" onchange="handleLogoFileSelect(event)">
+          </div>
+          
+          <!-- Upload preview file specs -->
+          <div id="logoUploadPreviewCard" style="display:none; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.02); border:1px solid var(--border-tech); padding:0.75rem 1rem; border-radius:12px;">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <div id="logoUploadMiniThumb" style="width:36px; height:36px; background-size:contain; background-repeat:no-repeat; background-position:center; background-color:#111; border-radius:6px; border:1px solid rgba(255,255,255,0.1)"></div>
+              <div style="display:flex; flex-direction:column;">
+                <span id="logoUploadFileName" style="font-size:0.72rem; font-weight:800; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">logo.png</span>
+                <span style="font-size:0.58rem; color:#10b981; font-weight:800;">Logotipo cargado</span>
+              </div>
+            </div>
+            <button onclick="clearLogoUpload()" style="background:transparent; border:none; color:var(--neon-red); font-size:1.4rem; cursor:pointer; padding:0 0.5rem; line-height:1;">&times;</button>
+          </div>
+
+          <div class="control-group-lbl">Modo de Iluminación</div>
+          <div class="sign-type-grid">
+            <div class="type-tile selected" id="logoUploadModeOriginal" onclick="selectUploadedLogoMode('original')">
+              <div class="type-tile-title">Original (Fijo)</div>
+              <div class="type-tile-sub">Colores del archivo</div>
+            </div>
+            <div class="type-tile" id="logoUploadModeWhite" onclick="selectUploadedLogoMode('white')">
+              <div class="type-tile-title">Modo Neón (Glow)</div>
+              <div class="type-tile-sub">Iluminar blanca</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: LIGHT & STYLE -->
+      <div class="config-block" id="tab-light">
+        <div class="control-group-lbl">Tecnología de Iluminación</div>
+        <div class="sign-type-grid" id="signTypeGrid">
+          <div class="type-tile selected" onclick="setSignType('neon', this)">
+            <div class="type-tile-title">Neón LED</div>
+            <div class="type-tile-sub">Silicio Flexible</div>
+          </div>
+          <div class="type-tile" onclick="setSignType('corp-frontal', this)">
+            <div class="type-tile-title">3D Directa</div>
+            <div class="type-tile-sub">Frente Acrílico</div>
+          </div>
+          <div class="type-tile" onclick="setSignType('corp-backlit', this)">
+            <div class="type-tile-title">3D Backlit</div>
+            <div class="type-tile-sub">Efecto Halo</div>
+          </div>
+        </div>
+
+        <div class="control-group-lbl">Gama de Tonos HSL</div>
+        
+        <div class="color-tabs-header" style="margin-bottom: 0.5rem">
+          <button class="color-tab-button active" id="btnColorModeStandard" onclick="setNeonColorMode('standard')">🎨 Color Fijo (Máx 3)</button>
+          <button class="color-tab-button" id="btnColorModeRGB" onclick="setNeonColorMode('rgb')">🌈 LED Multicolor</button>
+        </div>
+        
+        <div class="color-tabs-header" id="colorTargetHeader">
+          <button class="color-tab-button active" id="btnColorText" onclick="setColorTarget('text')">Color Letras</button>
+          <button class="color-tab-button" id="btnColorIcon" onclick="setColorTarget('icon')">Color Ícono</button>
+        </div>
+
+        <div class="swatch-concentric-circles" id="colorsGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="control-group-lbl">Tipografía de Autor</div>
+        <div class="typo-glass-grid" id="fontsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- TAB: STRUCTURE & BASING -->
+      <div class="config-block" id="tab-structure">
+        <div class="control-group-lbl">Dimensiones Técnicas</div>
+        <div class="sizes-panel-row" id="sizesGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="control-group-lbl">Base de Soporte</div>
+        <div class="backing-options-row" id="backingGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- TAB: PREMIUM ADDONS -->
+      <div class="config-block" id="tab-addons">
+        <div class="control-group-lbl">Especificaciones Pro</div>
+        
+        <div class="addon-switch-card">
+          <div class="addon-desc">
+            <span class="addon-lbl">Fachada IP65 (Contra Lluvia)</span>
+            <span class="addon-sub">Sellado de alta durabilidad para exteriores</span>
+          </div>
+          <div class="custom-ios-switch" id="waterproofSwitch" onclick="toggleAddon('waterproof')">
+            <div class="custom-ios-knob"></div>
+          </div>
+        </div>
+
+        <div class="addon-switch-card">
+          <div class="addon-desc">
+            <span class="addon-lbl">Atenuador & Control Pro</span>
+            <span class="addon-sub">Mando inalámbrico para regular brillo</span>
+          </div>
+          <div class="custom-ios-switch on" id="dimmerSwitch" onclick="toggleAddon('dimmer')">
+            <div class="custom-ios-knob"></div>
+          </div>
+        </div>
+
+        <!-- Dimmer console control -->
+        <div class="dimmer-luxury-control" id="dimmerConsole">
+          <div class="dimmer-luxury-hdr">
+            <span>Intensidad Lumínica</span>
+            <span id="dimmerVal">85%</span>
+          </div>
+          <input type="range" class="custom-glow-range" id="dimRange" min="20" max="100" value="85" oninput="updateGlowBrightness(this.value)">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL: COTIZACION B2B (Anuncios Volumétricos & Letras 3D) -->
+    <div class="config-block-cotizacion" id="panel-cotizacion" style="display: none;">
+      <div class="control-group-lbl" style="margin-bottom: 0.25rem;">Especificaciones del Proyecto</div>
+      
+      <!-- Medidas -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Medidas Generales (CM)</label>
+        <div class="medidas-flex-row">
+          <div class="medida-input-col">
+            <span class="medida-prefix">Ancho:</span>
+            <input type="number" id="cotizAncho" class="cotiz-num-input" value="100" min="10" max="1000" oninput="updateCotizacionPreview()">
+            <span class="medida-suffix">CM</span>
+          </div>
+          <div class="medida-input-col">
+            <span class="medida-prefix">Alto:</span>
+            <input type="number" id="cotizAlto" class="cotiz-num-input" value="40" min="10" max="500" oninput="updateCotizacionPreview()">
+            <span class="medida-suffix">CM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Técnica del anuncio -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Técnica del anuncio</label>
+        <div class="cotiz-chips-grid" style="grid-template-columns: repeat(3, 1fr)">
+          <div class="cotiz-chip active" onclick="setCotizTecnica('caja_luz', this)">📦 Caja de luz</div>
+          <div class="cotiz-chip" onclick="setCotizTecnica('letrero_3d', this)">🧱 Letrero 3D</div>
+          <div class="cotiz-chip" onclick="setCotizTecnica('letrero_2d', this)">📋 Letrero 2D</div>
+        </div>
+      </div>
+
+      <!-- Material -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Material Principal</label>
+        <div class="cotiz-chips-grid">
+          <div class="cotiz-chip active" onclick="setCotizMaterial('acrilico', this)">🔍 Acrílico</div>
+          <div class="cotiz-chip" onclick="setCotizMaterial('aluminio', this)">✨ Aluminio Anodizado</div>
+        </div>
+      </div>
+
+      <!-- Técnica de Iluminación -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Técnica de Iluminación</label>
+        <div class="cotiz-chips-grid">
+          <div class="cotiz-chip active" onclick="setCotizLuz('front', this)">💡 Luz Frontal</div>
+          <div class="cotiz-chip" onclick="setCotizLuz('back', this)">🔆 Halo (Retroiluminado)</div>
+          <div class="cotiz-chip" style="grid-column: span 2" onclick="setCotizLuz('none', this)">🌙 Sin Iluminación</div>
+        </div>
+      </div>
+
+      <!-- Ubicación -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Entorno de Instalación</label>
+        <div class="cotiz-chips-grid">
+          <div class="cotiz-chip active" onclick="setCotizUbicacion('interior', this)">🏠 Interior</div>
+          <div class="cotiz-chip" onclick="setCotizUbicacion('exterior', this)">🌳 Exterior</div>
+        </div>
+      </div>
+
+      <!-- Altura de colocación -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Altura de Colocación (Metros)</label>
+        <div class="altura-slider-row">
+          <input type="range" id="cotizAltura" class="cotiz-range" min="1" max="15" step="0.5" value="3.5" oninput="document.getElementById('alturaVal').textContent = this.value; updateCotizacionPreview()">
+          <span class="altura-indicator"><span id="alturaVal">3.5</span> m</span>
+        </div>
+      </div>
+
+      <!-- Logotipo PNG / SVG Drag & Drop -->
+      <div class="cotizacion-field">
+        <label class="cotizacion-label">Logotipo de Marca (PNG, SVG)</label>
+        <div class="cotiz-upload-box" id="cotizDropZone" onclick="document.getElementById('cotizFileInput').click()">
+          <div class="upload-icon-cloud">📂</div>
+          <div class="upload-txt-main">Arrastra tu logotipo aquí</div>
+          <div class="upload-txt-sub">Soporta formatos SVG o PNG con transparencia</div>
+          <input type="file" id="cotizFileInput" accept=".png, .svg" style="display:none;" onchange="handleCotizFileSelect(event)">
+        </div>
+        <div class="upload-success-badge" id="cotizUploadSuccess" style="display: none;">
+          <span>✔️</span> <span id="cotizFileName">logo.png cargado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHECKOUT FOOTER -->
+    <div class="sidebar-checkout-billing">
+      <div class="invoice-glass-card">
+        <div class="price-details">
+          <span class="invoice-total-numeric">$<span id="totalVal">1,290</span> <span>MXN</span></span>
+          <span class="price-tagline-green" id="couponBadge">⚡ Descuento 20% aplicado</span>
+        </div>
+        <div style="font-size: 1.8rem; opacity: 0.15; pointer-events: none">🏷️</div>
+      </div>
+
+      <div class="vip-coupon-row">
+        <input type="text" class="vip-coupon-textbox" id="couponBox" placeholder="CUPÓN DE DESCUENTO">
+        <button class="vip-coupon-apply-btn" onclick="applyStudioCoupon()">Aplicar</button>
+      </div>
+
+      <button class="checkout-btn-solid" onclick="sendWhatsAppOrder()">
+        Solicitar Fabricación Express →
+      </button>
+      
+      <button class="checkout-btn-outline" onclick="shareDesignSpec()">
+        🔗 Compartir especificaciones
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- FLOOR ALERT FLOATER -->
+<div class="toast-panel" id="toastPanel">
+  <span style="font-size:1.15rem">✔️</span>
+  <span id="toastText">Copiado al portapapeles</span>
+</div>
+
+<script>
+// ─── STATIC DATA MODELS ─────────────────────────────────
+
+const COLORS = [
+  { name: 'Cian Letrerama', hex: '#33f1ff', glow: '#33f1ff' },
+  { name: 'Verde Letrerama', hex: '#91fc06', glow: '#91fc06' },
+  { name: 'Azul Eléctrico', hex: '#00cfff', glow: '#00cfff' },
+  { name: 'Oro Cálido',      hex: '#ffb800', glow: '#ffb800' },
+  { name: 'Morado Deep',    hex: '#bf5fff', glow: '#bf5fff' },
+  { name: 'Blanco Cristal',  hex: '#f8fafc', glow: '#cbd5e1' },
+  { name: 'Rojo Laser',      hex: '#ff3e3e', glow: '#ff3e3e' },
+  { name: 'Naranja Flame',  hex: '#ff7a00', glow: '#ff7a00' },
+];
+
+const FONTS = [
+  { name: 'Pacifico Curva', family: 'Pacifico',         fallback: 'cursive', preview: 'Letras' },
+  { name: 'Dancing Script', family: 'Dancing Script',    fallback: 'cursive', preview: 'Estilo' },
+  { name: 'Anton Block',    family: 'Anton',             fallback: 'Impact',  preview: 'MURO' },
+  { name: 'Permanent Mark', family: 'Permanent Marker',  fallback: 'fantasy', preview: 'Cool' },
+  { name: 'Satisfy Script', family: 'Satisfy',           fallback: 'cursive', preview: 'Arte' },
+  { name: 'Righteous Retro',family: 'Righteous',         fallback: 'Impact',  preview: 'Vibes' },
+  { name: 'Sacramento',     family: 'Sacramento',        fallback: 'cursive', preview: 'Delicado' },
+  { name: 'Monoline Retro', family: 'Monoton',           fallback: 'fantasy', preview: 'Neon' },
+];
+
+const SIZES = [
+  { label: 'XS', w: 35, h: 12, kg: 0.5, price: 890 },
+  { label: 'S',  w: 55, h: 18, kg: 0.8, price: 1290 },
+  { label: 'M',  w: 85, h: 28, kg: 1.3, price: 1890 },
+  { label: 'L',  w: 125, h: 42, kg: 2.3, price: 2890 },
+];
+
+const BACKINGS = [
+  { id: 'transparent', label: 'Acrílico Transparente' },
+  { id: 'black', label: 'Acrílico Negro' }
+];
+
+const ICON_CATS = ['Todos', 'Comida', 'Bar & Cafe', 'Negocio'];
+
+const NEON_ICONS = [
+  {
+    id: 'tacos', label: 'Taco', cat: 'Comida',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 44 Q32 10 56 44" stroke="GLOW" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M16 38 Q28 28 36 36" stroke="GLOW" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.75"/>
+      <circle cx="42" cy="30" r="2.5" fill="GLOW" opacity="0.9"/>
+      <circle cx="25" cy="28" r="2" fill="GLOW" opacity="0.8"/>
+      <path d="M12 44 Q32 46 52 44" stroke="GLOW" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+    </svg>`
+  },
+  {
+    id: 'burger', label: 'Burger', cat: 'Comida',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 30 Q32 12 48 30" stroke="GLOW" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <line x1="13" y1="30" x2="51" y2="30" stroke="GLOW" stroke-width="2.5" opacity="0.6"/>
+      <rect x="13" y="34" width="38" height="4" rx="2" stroke="GLOW" stroke-width="2" fill="none"/>
+      <path d="M12 32 Q18 28 24 32 Q30 36 36 32 Q42 28 52 32" stroke="GLOW" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+      <path d="M14 38 Q32 47 50 38" stroke="GLOW" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </svg>`
+  },
+  {
+    id: 'pizza', label: 'Pizza', cat: 'Comida',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32 8 L8 48 L56 48 Z" stroke="GLOW" stroke-width="3" stroke-linejoin="round" fill="none"/>
+      <path d="M8 48 Q32 56 56 48" stroke="GLOW" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.75"/>
+      <circle cx="32" cy="30" r="3.5" stroke="GLOW" stroke-width="2" fill="none" opacity="0.9"/>
+      <circle cx="21" cy="40" r="2.5" stroke="GLOW" stroke-width="2" fill="none" opacity="0.8"/>
+    </svg>`
+  },
+  {
+    id: 'cocktail', label: 'Cocktail', cat: 'Bar & Cafe',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 14 L32 36 L48 14 Z" stroke="GLOW" stroke-width="3" stroke-linejoin="round" fill="none"/>
+      <line x1="32" y1="36" x2="32" y2="52" stroke="GLOW" stroke-width="3" stroke-linecap="round"/>
+      <line x1="20" y1="52" x2="44" y2="52" stroke="GLOW" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="37" cy="17" r="3.5" stroke="GLOW" stroke-width="1.5" fill="none" opacity="0.8"/>
+    </svg>`
+  },
+  {
+    id: 'coffee', label: 'Coffee', cat: 'Bar & Cafe',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 28 Q18 48 32 50 Q46 48 48 28 Z" stroke="GLOW" stroke-width="3" stroke-linejoin="round" fill="none"/>
+      <line x1="14" y1="28" x2="50" y2="28" stroke="GLOW" stroke-width="3" stroke-linecap="round"/>
+      <path d="M48 33 Q58 33 58 40 Q58 47 48 47" stroke="GLOW" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </svg>`
+  },
+  {
+    id: 'scissors', label: 'Tijeras', cat: 'Negocio',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="5.5" stroke="GLOW" stroke-width="3" fill="none"/>
+      <circle cx="44" cy="20" r="5.5" stroke="GLOW" stroke-width="3" fill="none"/>
+      <line x1="24" y1="23" x2="44" y2="48" stroke="GLOW" stroke-width="3" stroke-linecap="round"/>
+      <line x1="40" y1="23" x2="20" y2="48" stroke="GLOW" stroke-width="3" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'shopping', label: 'Shop', cat: 'Negocio',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="12" y="26" width="40" height="28" rx="3" stroke="GLOW" stroke-width="3" fill="none"/>
+      <path d="M22 26 V18 Q22 12 32 12 Q42 12 42 18 V26" stroke="GLOW" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+    </svg>`
+  },
+];
+
+// Preloaded Letrerama SVG logo
+// Preloaded Letrerama SVG logo
+const LETRERAMA_LOGO_SVG = {
+  color: `<svg viewBox="0 0 559.55 252.72" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <g>
+      <path fill="#82b34b" d="M322.8,143.71c-4.59,5.62-12.88,17.5-17.61,21.71-3.66,3.26-9.64,2.44-10.3-2.55-1.62-12.28,2.61-26.74,1.22-39.25l-76.69-12.53c-8.26-1.64-16.81-8.03-19.92-15.89-3.79-9.57-3.14-37.57-2.47-48.72.72-11.94,5.86-21.2,17.52-25.31L322.81.23c15.95-1.6,26.24,4.97,29.5,20.88,2.84,13.88,3.6,30.24,5.37,44.49,1.41,11.3,4.34,24.04,5.02,35.24.86,14.12-7.62,24.33-20.95,27.62-2.06.51-6.4.44-7.83,1.13s-9.3,11.87-11.14,14.12ZM307.72,142.06c.6.69,3.91-3.52,4.46-4.17,5.4-6.32,10.06-13.34,15.65-19.51,7.12-1.52,16.32-.32,20.72-7.42,3.15-5.09,1.86-11.43,1.3-17.07-2.28-23.04-6.83-45.95-8.95-69.03-1.8-9.09-5.39-14.14-15.53-13.11-33.7,8.61-71.34,11.11-104.66,20.06-6.37,1.71-10.76,5.18-11.51,12.15-1.05,9.72-.93,31.72-.02,41.58.73,7.98,5.76,12.49,13.3,14.19l82.64,13.29c1.31.96,2.88,1.45,3.22,3.18.78,3.95-1.5,24.87-.63,25.87Z"/>
+      <path fill="#4d9ad0" d="M393.08,250.36c-2.53,2.65-7.17,2.86-10.49,1.28-2.04-.98-3.64-5.43-3.89-7.61-.75-6.28-.37-18.39,0-24.97,1.29-23.41,12.01-38.33,37.38-35.38,3.66.43,8.55,2.97,11.58,5.05,1.47,1.01,2.38,3.43,4.45,3.23.77-.08,6.68-5.04,8.75-6.02,15.28-7.2,36.81.37,41.34,17.32,2.48,9.3,3.14,31.71,2,41.32-1.1,9.36-12.39,10.65-15.44,3.42-4.95-11.74,4.51-36.36-6.55-45.87-3.75-3.22-12.49-3.33-16.32-.31-.25.2-3.46,4.81-3.68,5.28-3.37,7.29-2.8,22.27-2.75,30.54.03,4.04,2.18,10.88-2.31,13.62-5.87,3.58-13.65.29-14.14-6.76-.38-14.16,4.22-30.81-5.28-42.66-7.31-3.1-14.46-3.32-19.09,3.92-5.77,9.03-2.31,27.98-3.3,38.89-.26,2.87-.38,3.77-2.26,5.73Z"/>
+      <path fill="#4d9ad0" d="M41.62,225.15c-1.58,1.81,4.36,7.61,5.79,8.59,5.48,3.74,12.98,3.34,18.93,1.11s9.51-11.57,16.8-6.14c2.91,2.17,3.65,5.34,2.4,8.71-1.84,4.93-5.71,7.82-10.25,10.21-26.52,13.94-56.81-7.6-50.66-37.2,6.21-29.88,46.13-36.58,61.22-9.99,3.34,5.89,8.04,19.68.75,23.98-3.7,2.18-4.58.65-7.58.74-12.37.36-25.08,1.53-37.41,0ZM72.96,209.81c-5.58-14.65-25.99-14.08-31.98,0h31.98Z"/>
+      <path fill="#4d9ad0" d="M204.73,225.79c3.5,10.05,15.67,12.97,24.94,9.26,5.73-2.3,10.28-12.44,17.42-6.08,7.52,6.7-2.67,16.05-8.9,19.07-27.05,13.13-56.26-8.79-49.92-38.38s44.78-35.29,60.46-10.28c3.72,5.93,10.02,24.32-.8,25.79-11.16,1.51-26.05-.89-37.79-.05-1.82.13-3.55.84-5.41.67ZM204.73,209.81h31.98c-5.89-14.2-26.26-14.51-31.98,0Z"/>
+      <path fill="#4d9ad0" d="M519.94,183.78c16.39-1.98,33.23,7.87,37.57,24.1,2.24,8.36,2.39,26.68,1.61,35.51-.42,4.73-2.86,8.65-8.02,8.65-5.63,0-6.53-4.82-7.74-5.11-.43-.1-6.54,2.98-7.96,3.44-15.43,5-33.1-1.72-40.82-16.04-11.18-20.73,1.8-47.69,25.35-50.54ZM537.76,231.31c16.21-15.38-5.14-42.71-24.4-28.53-20.79,15.3,5.2,46.74,24.4,28.53Z"/>
+      <path fill="#4d9ad0" d="M357.53,246.96c-3.41.91-6.64,3.03-10.29,3.93-29.84,7.37-53.85-23.82-38.35-50.46,14.21-24.43,50.5-21.84,61.18,4.28,4.88,11.93,1.11,29.45,2.12,42.36-2.93,6.65-11.82,6.75-14.66-.1ZM336.36,199.12c-26.37,2.78-18.66,44.43,7.69,36.44,21.26-6.44,14.5-38.78-7.69-36.44Z"/>
+      <path fill="#4d9ad0" d="M112.62,183.6c7.41.75,26.84-3.8,24.91,9.22-.32,2.16-3.32,6.12-5.4,6.12h-19.51v22.69c0,5.2,7.93,12.58,12.81,14.04,5.81,1.74,13.79-.15,13.47,8.97-.36,10.22-14.43,7.16-20.69,4.64-30.48-12.3-18.77-50.55-20.79-76.07.83-5.62,8.85-7.59,12.67-4.01.76.71,2.53,3.74,2.53,4.5v9.91Z"/>
+      <path fill="#4d9ad0" d="M3.47,161.46c4.57-4.14,13.39-.77,13.21,5.84v77.34c-1.11,9.66-14.81,10.42-16-.64,1.59-24.37-2.11-51.39-.02-75.44.22-2.56.84-5.31,2.81-7.1Z"/>
+      <path fill="#4d9ad0" d="M269.12,183.19c5.32-.15,7.69,5.41,8.2,5.45s7.09-3.5,9.3-4.07c5.85-1.5,13.51-3.23,16.3,3.51,1.09,2.65,1.12,4.05-.41,6.61-2.98,4.99-9.84,3.14-15.28,5.82-16.78,8.27-7.49,31.19-10.36,45.26-1.78,8.72-14.24,8.14-15.23-3.02-1.46-16.43,1.08-35.06.1-51.73.53-4.14,2.83-7.71,7.38-7.84Z"/>
+      <path fill="#4d9ad0" d="M184.7,185.09c3.09,2.65,3.6,7.3.87,10.38-3.35,3.78-12.18,3.52-17.11,6.55-12.64,7.76-6.07,32.46-8.16,44.9-1.81,3.26-3.92,4.71-7.73,4.48-6.39-.38-6.94-5.36-7.1-10.7-.32-11.34.55-23.02.43-34.44-.06-5.65-3.18-19.26,3.55-21.96,4.32-1.73,10.2-.65,11.14,4.41,6.24-3.03,17.92-8.93,24.1-3.63Z"/>
+    </g>
+  </svg>`,
+  
+  white: `<svg viewBox="0 0 559.55 252.72" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <g fill="currentColor">
+      <path d="M322.8,143.71c-4.59,5.62-12.88,17.5-17.61,21.71-3.66,3.26-9.64,2.44-10.3-2.55-1.62-12.28,2.61-26.74,1.22-39.25l-76.69-12.53c-8.26-1.64-16.81-8.03-19.92-15.89-3.79-9.57-3.14-37.57-2.47-48.72.72-11.94,5.86-21.2,17.52-25.31L322.81.23c15.95-1.6,26.24,4.97,29.5,20.88,2.84,13.88,3.6,30.24,5.37,44.49,1.41,11.3,4.34,24.04,5.02,35.24.86,14.12-7.62,24.33-20.95,27.62-2.06.51-6.4.44-7.83,1.13s-9.3,11.87-11.14,14.12ZM307.72,142.06c.6.69,3.91-3.52,4.46-4.17,5.4-6.32,10.06-13.34,15.65-19.51,7.12-1.52,16.32-.32,20.72-7.42,3.15-5.09,1.86-11.43,1.3-17.07-2.28-23.04-6.83-45.95-8.95-69.03-1.8-9.09-5.39-14.14-15.53-13.11-33.7,8.61-71.34,11.11-104.66,20.06-6.37,1.71-10.76,5.18-11.51,12.15-1.05,9.72-.93,31.72-.02,41.58.73,7.98,5.76,12.49,13.3,14.19l82.64,13.29c1.31.96,2.88,1.45,3.22,3.18.78,3.95-1.5,24.87-.63,25.87Z"/>
+      <path d="M393.08,250.36c-2.53,2.65-7.17,2.86-10.49,1.28-2.04-.98-3.64-5.43-3.89-7.61-.75-6.28-.37-18.39,0-24.97,1.29-23.41,12.01-38.33,37.38-35.38,3.66.43,8.55,2.97,11.58,5.05,1.47,1.01,2.38,3.43,4.45,3.23.77-.08,6.68-5.04,8.75-6.02,15.28-7.2,36.81.37,41.34,17.32,2.48,9.3,3.14,31.71,2,41.32-1.1,9.36-12.39,10.65-15.44,3.42-4.95-11.74,4.51-36.36-6.55-45.87-3.75-3.22-12.49-3.33-16.32-.31-.25.2-3.46,4.81-3.68,5.28-3.37,7.29-2.8,22.27-2.75,30.54.03,4.04,2.18,10.88-2.31,13.62-5.87,3.58-13.65.29-14.14-6.76-.38-14.16,4.22-30.81-5.28-42.66-7.31-3.1-14.46-3.32-19.09,3.92-5.77,9.03-2.31,27.98-3.3,38.89-.26,2.87-.38,3.77-2.26,5.73Z"/>
+      <path d="M41.62,225.15c-1.58,1.81,4.36,7.61,5.79,8.59,5.48,3.74,12.98,3.34,18.93,1.11s9.51-11.57,16.8-6.14c2.91,2.17,3.65,5.34,2.4,8.71-1.84,4.93-5.71,7.82-10.25,10.21-26.52,13.94-56.81-7.6-50.66-37.2,6.21-29.88,46.13-36.58,61.22-9.99,3.34,5.89,8.04,19.68.75,23.98-3.7,2.18-4.58.65-7.58.74-12.37.36-25.08,1.53-37.41,0ZM72.96,209.81c-5.58-14.65-25.99-14.08-31.98,0h31.98Z"/>
+      <path d="M204.73,225.79c3.5,10.05,15.67,12.97,24.94,9.26,5.73-2.3,10.28-12.44,17.42-6.08,7.52,6.7-2.67,16.05-8.9,19.07-27.05,13.13-56.26-8.79-49.92-38.38s44.78-35.29,60.46-10.28c3.72,5.93,10.02,24.32-.8,25.79-11.16,1.51-26.05-.89-37.79-.05-1.82.13-3.55.84-5.41.67ZM204.73,209.81h31.98c-5.89-14.2-26.26-14.51-31.98,0Z"/>
+      <path d="M519.94,183.78c16.39-1.98,33.23,7.87,37.57,24.1,2.24,8.36,2.39,26.68,1.61,35.51-.42,4.73-2.86,8.65-8.02,8.65-5.63,0-6.53-4.82-7.74-5.11-.43-.1-6.54,2.98-7.96,3.44-15.43,5-33.1-1.72-40.82-16.04-11.18-20.73,1.8-47.69,25.35-50.54ZM537.76,231.31c16.21-15.38-5.14-42.71-24.4-28.53-20.79,15.3,5.2,46.74,24.4,28.53Z"/>
+      <path d="M357.53,246.96c-3.41.91-6.64,3.03-10.29,3.93-29.84,7.37-53.85-23.82-38.35-50.46,14.21-24.43,50.5-21.84,61.18,4.28,4.88,11.93,1.11,29.45,2.12,42.36-2.93,6.65-11.82,6.75-14.66-.1ZM336.36,199.12c-26.37,2.78-18.66,44.43,7.69,36.44,21.26-6.44,14.5-38.78-7.69-36.44Z"/>
+      <path d="M112.62,183.6c7.41.75,26.84-3.8,24.91,9.22-.32,2.16-3.32,6.12-5.4,6.12h-19.51v22.69c0,5.2,7.93,12.58,12.81,14.04,5.81,1.74,13.79-.15,13.47,8.97-.36,10.22-14.43,7.16-20.69,4.64-30.48-12.3-18.77-50.55-20.79-76.07.83-5.62,8.85-7.59,12.67-4.01.76.71,2.53,3.74,2.53,4.5v9.91Z"/>
+      <path d="M3.47,161.46c4.57-4.14,13.39-.77,13.21,5.84v77.34c-1.11,9.66-14.81,10.42-16-.64,1.59-24.37-2.11-51.39-.02-75.44.22-2.56.84-5.31,2.81-7.1Z"/>
+      <path d="M269.12,183.19c5.32-.15,7.69,5.41,8.2,5.45s7.09-3.5,9.3-4.07c5.85-1.5,13.51-3.23,16.3,3.51,1.09,2.65,1.12,4.05-.41,6.61-2.98,4.99-9.84,3.14-15.28,5.82-16.78,8.27-7.49,31.19-10.36,45.26-1.78,8.72-14.24,8.14-15.23-3.02-1.46-16.43,1.08-35.06.1-51.73.53-4.14,2.83-7.71,7.38-7.84Z"/>
+      <path d="M184.7,185.09c3.09,2.65,3.6,7.3.87,10.38-3.35,3.78-12.18,3.52-17.11,6.55-12.64,7.76-6.07,32.46-8.16,44.9-1.81,3.26-3.92,4.71-7.73,4.48-6.39-.38-6.94-5.36-7.1-10.7-.32-11.34.55-23.02.43-34.44-.06-5.65-3.18-19.26,3.55-21.96,4.32-1.73,10.2-.65,11.14,4.41,6.24-3.03,17.92-8.93,24.1-3.63Z"/>
+    </g>
+  </svg>`
+};
+
+// ─── STATE MANAGEMENT ───
+
+let state = {
+  appMode: 'neon', // 'neon' or 'cotizacion'
+  neonColorMode: 'standard', // 'standard' or 'rgb'
+  selectedNeonColors: [0], // Up to 3 selected color indices
+  
+  cotizMaterial: 'acrilico', // 'acrilico', 'aluminio'
+  cotizTecnica: 'caja_luz', // 'caja_luz', 'letrero_3d', 'letrero_2d'
+  cotizLuz: 'front', // 'front', 'back', 'none'
+  cotizUbicacion: 'interior', // 'interior', 'exterior'
+  
+  contentType: 'text', // 'text', 'logo-preloaded', 'logo-uploaded'
+  text: 'Diseña',
+  textAlignment: 'center',
+  signType: 'neon', // 'neon', 'corp-frontal', 'corp-backlit'
+  
+  colorTarget: 'text',
+  textColorIdx: 0,
+  iconColorIdx: 1,
+  
+  fontIdx: 0,
+  iconId: null,
+  iconPlacement: 'top',
+  sizeIdx: 1,
+  backingId: 'transparent',
+  
+  preloadedLogoType: 'color', // 'color', 'white'
+  uploadedLogoData: null, // DataURL
+  uploadedLogoFileName: '',
+  uploadedLogoMode: 'original', // 'original' or 'white' (illuminable)
+  
+  waterproof: false,
+  dimmer: true,
+  brightness: 85,
+  lightEffect: 'solid',
+  
+  wallStyle: 'brick',
+  rulerVisible: false,
+  scaleContext: 'none',
+  
+  appliedCoupon: null,
+  discountPercent: 20
+};
+
+// ─── AUDIO ENGINE SYNTHESIS (WEB AUDIO API) ─────────────
+
+let audioCtx = null;
+let humOsc1 = null;
+let humOsc2 = null;
+let humGain = null;
+let isConsolePowerOn = true;
+
+function initAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+function playSynthesizedClick() {
+  try {
+    initAudioContext();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.08);
+    
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.08);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  } catch(e) {}
+}
+
+function startNeonTransformerHum() {
+  try {
+    initAudioContext();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    stopNeonTransformerHum();
+    
+    if (!isConsolePowerOn) return;
+    
+    humGain = audioCtx.createGain();
+    humGain.connect(audioCtx.destination);
+    
+    // Scale hum volume based directly on the dimmer slider!
+    const baseVolume = 0.018 * (state.brightness / 100);
+    humGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    humGain.gain.linearRampToValueAtTime(baseVolume, audioCtx.currentTime + 0.6);
+    
+    // 60Hz hum core
+    humOsc1 = audioCtx.createOscillator();
+    humOsc1.type = 'sine';
+    humOsc1.frequency.setValueAtTime(60, audioCtx.currentTime);
+    humOsc1.connect(humGain);
+    
+    // 120Hz higher volumetric sizzle
+    humOsc2 = audioCtx.createOscillator();
+    humOsc2.type = 'triangle';
+    humOsc2.frequency.setValueAtTime(120, audioCtx.currentTime);
+    humOsc2.connect(humGain);
+    
+    humOsc1.start();
+    humOsc2.start();
+  } catch(e) {}
+}
+
+function stopNeonTransformerHum() {
+  try {
+    if (humOsc1) { humOsc1.stop(); humOsc1 = null; }
+    if (humOsc2) { humOsc2.stop(); humOsc2 = null; }
+  } catch(e) {}
+}
+
+function updateHumVolumeOnDimmer() {
+  try {
+    if (humGain && isConsolePowerOn) {
+      const targetVolume = 0.018 * (state.brightness / 100);
+      humGain.gain.setValueAtTime(humGain.gain.value, audioCtx.currentTime);
+      humGain.gain.linearRampToValueAtTime(targetVolume, audioCtx.currentTime + 0.1);
+    }
+  } catch(e) {}
+}
+
+// ─── INITIALIZATION & LAYOUT BUILD ──────────────────────
+
+function init() {
+  buildColorsGrid();
+  buildFontsGrid();
+  buildIconsStructure();
+  buildSizesGrid();
+  buildBackingGrid();
+  bindEventHandlers();
+  
+  // Power startup flicker initial sequence
+  triggerPowerFlickerEffect();
+  initCotizacionDragDrop();
+}
+
+function buildColorsGrid() {
+  const grid = document.getElementById('colorsGrid');
+  if (!grid) return;
+  
+  if (state.neonColorMode === 'rgb') {
+    grid.innerHTML = `
+      <div class="rgb-active-banner" style="grid-column: span 4; background: rgba(255,255,255,0.015); border: 1px dashed var(--border-tech); border-radius: 16px; padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.78rem; font-weight: 700; width: 100%;">
+        🌈 LED Multicolor RGB Activo
+        <div style="font-size:0.68rem; font-weight: 500; margin-top:0.35rem; color:var(--text-hint)">El letrero cambia de color continuamente de forma automática.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  grid.innerHTML = COLORS.map((col, idx) => {
+    const isSelected = state.selectedNeonColors.includes(idx);
+    const selNumber = isSelected ? state.selectedNeonColors.indexOf(idx) + 1 : '';
+                       
+    return `
+      <div class="swatch-circle-btn ${isSelected ? 'selected' : ''}" 
+           onclick="selectStudioColor(${idx})"
+           style="position: relative;">
+        <div class="swatch-circle-inner" style="background:${col.hex}; box-shadow: 0 0 12px ${col.glow}44"></div>
+        ${isSelected ? `<span class="swatch-badge-number" style="position: absolute; top: -3px; right: -3px; background: var(--bg-black); color: var(--text-primary); border: 1px solid var(--neon-pink); border-radius: 50%; width: 16px; height: 16px; font-size: 0.65rem; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(51,241,255,0.4)">${selNumber}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function buildFontsGrid() {
+  const grid = document.getElementById('fontsGrid');
+  grid.innerHTML = FONTS.map((f, idx) => `
+    <div class="typo-tile ${idx === state.fontIdx ? 'selected' : ''}" onclick="selectStudioFont(${idx})">
+      <div class="typo-meta-txt">${f.name}</div>
+      <div class="typo-preview-txt" style="font-family:'${f.family}', ${f.fallback}">${f.preview}</div>
+    </div>
+  `).join('');
+}
+
+function buildIconsStructure() {
+  const cats = document.getElementById('iconCats');
+  cats.innerHTML = ICON_CATS.map(c => `
+    <button class="icon-tab-btn ${c === 'Todos' ? 'active' : ''}" onclick="filterStudioIcons('${c}', this)">${c}</button>
+  `).join('');
+  
+  renderIconsPanel('Todos');
+}
+
+function renderIconsPanel(category) {
+  const filtered = category === 'Todos' ? NEON_ICONS : NEON_ICONS.filter(i => i.cat === category);
+  const grid = document.getElementById('iconsGrid');
+  
+  grid.innerHTML = `
+    <div class="icon-box-btn none-box ${state.iconId === null ? 'selected' : ''}" onclick="selectStudioIcon(null)">
+      <svg viewBox="0 0 32 32" fill="none"><line x1="8" y1="8" x2="24" y2="24" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/><line x1="24" y1="8" x2="8" y2="24" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/></svg>
+      <div class="icon-box-label">Sin ícono</div>
+    </div>
+  ` + filtered.map(ic => `
+    <div class="icon-box-btn ${state.iconId === ic.id ? 'selected' : ''}" onclick="selectStudioIcon('${ic.id}')">
+      ${ic.svg.replace(/GLOW/g, 'rgba(255,255,255,0.45)')}
+      <div class="icon-box-label">${ic.label}</div>
+    </div>
+  `).join('');
+}
+
+function buildSizesGrid() {
+  const grid = document.getElementById('sizesGrid');
+  grid.innerHTML = SIZES.map((sz, idx) => `
+    <div class="size-panel-tile ${idx === state.sizeIdx ? 'selected' : ''}" onclick="selectStudioSize(${idx})">
+      <div class="size-panel-lbl">${sz.label}</div>
+      <div class="size-panel-cm">${sz.w}x${sz.h} cm</div>
+    </div>
+  `).join('');
+}
+
+function buildBackingGrid() {
+  const grid = document.getElementById('backingGrid');
+  grid.innerHTML = BACKINGS.map(b => `
+    <div class="backing-tile ${b.id === state.backingId ? 'selected' : ''}" onclick="selectStudioBacking('${b.id}')">
+      ${b.label}
+    </div>
+  `).join('');
+}
+
+function bindEventHandlers() {
+  const input = document.getElementById('textInput');
+  input.addEventListener('input', () => {
+    state.text = input.value || ' ';
+    document.getElementById('charCount').textContent = input.value.length;
+    renderStudioSign();
+  });
+  
+  // Set up drag and drop listeners for uploaded logo
+  const dropZone = document.getElementById('logoDropZone');
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'var(--neon-pink)';
+    dropZone.style.background = 'rgba(255, 45, 120, 0.02)';
+  });
+  
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.style.borderColor = 'rgba(229,193,88,0.2)';
+    dropZone.style.background = 'rgba(255, 255, 255, 0.015)';
+  });
+  
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'rgba(229,193,88,0.2)';
+    dropZone.style.background = 'rgba(255, 255, 255, 0.015)';
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processUploadedLogo(e.dataTransfer.files[0]);
+    }
+  });
+}
+
+// ─── INTERACTION TRIGGERS ───
+
+function switchStudioTab(tabId, tabBtn) {
+  playSynthesizedClick();
+  document.querySelectorAll('.studio-tab-item').forEach(b => b.classList.remove('active'));
+  tabBtn.classList.add('active');
+  
+  document.querySelectorAll('.config-block').forEach(blk => blk.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+}
+
+function setDesignMode(mode) {
+  playSynthesizedClick();
+  state.contentType = mode;
+  
+  document.getElementById('btnModeText').classList.toggle('active', mode === 'text');
+  document.getElementById('btnModeLogoPre').classList.toggle('active', mode === 'logo-preloaded');
+  document.getElementById('btnModeLogoUpload').classList.toggle('active', mode === 'logo-uploaded');
+  
+  document.getElementById('editorTextInputContainer').style.display = mode === 'text' ? 'flex' : 'none';
+  document.getElementById('editorLogoPreloadedContainer').style.display = mode === 'logo-preloaded' ? 'flex' : 'none';
+  document.getElementById('editorLogoUploadedContainer').style.display = mode === 'logo-uploaded' ? 'flex' : 'none';
+  
+  renderStudioSign();
+}
+
+function selectPreloadedLogoType(type) {
+  playSynthesizedClick();
+  state.preloadedLogoType = type;
+  
+  document.getElementById('logoPreColor').classList.toggle('selected', type === 'color');
+  document.getElementById('logoPreWhite').classList.toggle('selected', type === 'white');
+  
+  renderStudioSign();
+}
+
+function triggerLogoUpload() {
+  document.getElementById('logoUploadInput').click();
+}
+
+function handleLogoFileSelect(event) {
+  if (event.target.files && event.target.files[0]) {
+    processUploadedLogo(event.target.files[0]);
+  }
+}
+
+function processUploadedLogo(file) {
+  if (!file.type.match('image.*')) {
+    showStudioAlert('Error: Por favor selecciona un archivo de imagen válido.');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.uploadedLogoData = e.target.result;
+    state.uploadedLogoFileName = file.name;
+    
+    // Display file stats card
+    document.getElementById('logoUploadPreviewCard').style.display = 'flex';
+    document.getElementById('logoUploadFileName').textContent = file.name;
+    document.getElementById('logoUploadMiniThumb').style.backgroundImage = `url(${e.target.result})`;
+    
+    triggerCheckoutConfetti();
+    showStudioAlert('¡Logotipo cargado con éxito!');
+    
+    renderStudioSign();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearLogoUpload() {
+  playSynthesizedClick();
+  state.uploadedLogoData = null;
+  state.uploadedLogoFileName = '';
+  document.getElementById('logoUploadPreviewCard').style.display = 'none';
+  document.getElementById('logoUploadInput').value = '';
+  renderStudioSign();
+}
+
+function selectUploadedLogoMode(mode) {
+  playSynthesizedClick();
+  state.uploadedLogoMode = mode;
+  
+  document.getElementById('logoUploadModeOriginal').classList.toggle('selected', mode === 'original');
+  document.getElementById('logoUploadModeWhite').classList.toggle('selected', mode === 'white');
+  
+  renderStudioSign();
+}
+
+function setSignType(type, element) {
+  playSynthesizedClick();
+  state.signType = type;
+  
+  document.querySelectorAll('.type-tile').forEach(t => t.classList.remove('selected'));
+  element.classList.add('selected');
+  
+  renderStudioSign();
+}
+
+function setColorTarget(target) {
+  playSynthesizedClick();
+  state.colorTarget = target;
+  
+  document.getElementById('btnColorText').classList.toggle('active', target === 'text');
+  document.getElementById('btnColorIcon').classList.toggle('active', target === 'icon');
+  
+  buildColorsGrid();
+}
+
+function selectStudioColor(idx) {
+  playSynthesizedClick();
+  
+  if (state.neonColorMode === 'rgb') {
+    showStudioAlert('Modo LED Multicolor RGB Activo. Cambia a Color Fijo para seleccionar colores.');
+    return;
+  }
+  
+  // Toggle selection in the selectedNeonColors array
+  const pos = state.selectedNeonColors.indexOf(idx);
+  if (pos !== -1) {
+    if (state.selectedNeonColors.length > 1) {
+      state.selectedNeonColors.splice(pos, 1);
+    }
+  } else {
+    if (state.selectedNeonColors.length < 3) {
+      state.selectedNeonColors.push(idx);
+    } else {
+      showStudioAlert('⚠️ Límite de fabricación: Máximo 3 colores permitidos en tu diseño.');
+      return;
+    }
+  }
+  
+  // Set textColorIdx to first selected, iconColorIdx to second selected (or first if only 1 color)
+  state.textColorIdx = state.selectedNeonColors[0];
+  state.iconColorIdx = state.selectedNeonColors.length > 1 ? state.selectedNeonColors[1] : state.selectedNeonColors[0];
+  
+  buildColorsGrid();
+  renderStudioSign();
+}
+
+function selectStudioFont(idx) {
+  playSynthesizedClick();
+  state.fontIdx = idx;
+  buildFontsGrid();
+  renderStudioSign();
+}
+
+function filterStudioIcons(cat, btn) {
+  playSynthesizedClick();
+  document.querySelectorAll('.icon-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderIconsPanel(cat);
+}
+
+function selectStudioIcon(iconId) {
+  playSynthesizedClick();
+  state.iconId = iconId;
+  
+  document.getElementById('iconPosRow').style.display = iconId ? 'flex' : 'none';
+  
+  renderIconsPanel(state.iconId ? NEON_ICONS.find(i => i.id === state.iconId).cat : 'Todos');
+  renderStudioSign();
+}
+
+function setIconPlacement(pos) {
+  playSynthesizedClick();
+  state.iconPlacement = pos;
+  
+  document.querySelectorAll('.layout-circle-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('pos' + pos.charAt(0).toUpperCase() + pos.slice(1)).classList.add('selected');
+  
+  renderStudioSign();
+}
+
+function selectStudioSize(idx) {
+  playSynthesizedClick();
+  state.sizeIdx = idx;
+  buildSizesGrid();
+  renderStudioSign();
+}
+
+function selectStudioBacking(id) {
+  playSynthesizedClick();
+  state.backingId = id;
+  buildBackingGrid();
+  renderStudioSign();
+}
+
+function toggleAddon(opt) {
+  playSynthesizedClick();
+  state[opt] = !state[opt];
+  
+  document.getElementById(opt + 'Switch').classList.toggle('on', state[opt]);
+  
+  if (opt === 'dimmer') {
+    const console = document.getElementById('dimmerConsole');
+    console.style.opacity = state.dimmer ? '1' : '0.25';
+    console.style.pointerEvents = state.dimmer ? 'all' : 'none';
+  }
+  
+  renderStudioSign();
+}
+
+function updateGlowBrightness(val) {
+  state.brightness = val;
+  document.getElementById('dimmerVal').textContent = val + '%';
+  
+  // Realtime audio humming updates
+  updateHumVolumeOnDimmer();
+  
+  if (isConsolePowerOn) {
+    renderStudioSign();
+  }
+}
+
+function setFrequencyEffect(effect) {
+  playSynthesizedClick();
+  state.lightEffect = effect;
+  
+  const textEl = document.getElementById('textPreview');
+  const iconEl = document.getElementById('iconPreview');
+  const preloadedLogoEl = document.getElementById('logoPreloadedPreview');
+  const uploadedLogoEl = document.getElementById('logoUploadedPreview');
+  
+  textEl.style.animation = 'none';
+  if (iconEl) iconEl.style.animation = 'none';
+  preloadedLogoEl.style.animation = 'none';
+  uploadedLogoEl.style.animation = 'none';
+  
+  if (effect === 'pulse') {
+    textEl.style.animation = 'glow-pulse 2s infinite ease-in-out';
+    if (iconEl) iconEl.style.animation = 'glow-pulse 2s infinite ease-in-out';
+    preloadedLogoEl.style.animation = 'glow-pulse 2s infinite ease-in-out';
+    uploadedLogoEl.style.animation = 'glow-pulse 2s infinite ease-in-out';
+  } else if (effect === 'flicker') {
+    textEl.style.animation = 'glow-flicker-retro 4s infinite';
+    if (iconEl) iconEl.style.animation = 'glow-flicker-retro 4s infinite';
+    preloadedLogoEl.style.animation = 'glow-flicker-retro 4s infinite';
+    uploadedLogoEl.style.animation = 'glow-flicker-retro 4s infinite';
+  }
+}
+
+function setTextAlignment(align) {
+  playSynthesizedClick();
+  state.textAlignment = align;
+  
+  document.querySelectorAll('.align-button-circle').forEach(b => b.classList.remove('active'));
+  document.getElementById('align' + align.charAt(0).toUpperCase() + align.slice(1)).classList.add('active');
+  
+  document.getElementById('textPreview').style.textAlign = align;
+}
+
+function setWallTexture(style) {
+  playSynthesizedClick();
+  state.wallStyle = style;
+  
+  document.querySelectorAll('.env-swatch').forEach(sw => sw.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  const tex = document.getElementById('wallTexture');
+  tex.className = 'wall-texture';
+  tex.classList.add('wall-' + style);
+}
+
+// Architectural Grid cotas
+function toggleTechnicalRuler() {
+  playSynthesizedClick();
+  state.rulerVisible = !state.rulerVisible;
+  document.getElementById('rulerCheck').checked = state.rulerVisible;
+  document.getElementById('rulerContainer').classList.toggle('visible', state.rulerVisible);
+}
+
+function setScaleContext(type) {
+  playSynthesizedClick();
+  state.scaleContext = type;
+  
+  document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('scale' + type.charAt(0).toUpperCase() + type.slice(1) + 'Btn').classList.add('active');
+  
+  const sil = document.getElementById('scaleSilhouette');
+  sil.className = 'comparative-silhouette';
+  if (type !== 'none') {
+    sil.classList.add('visible', 'silhouette-' + type);
+  }
+  
+  const plate = document.getElementById('acrylicPlate');
+  const scales = {
+    'none': 'scale(1)',
+    'sofa': 'scale(0.52) translateY(-45px)',
+    'desk': 'scale(0.65) translateY(-30px)',
+    'person': 'scale(0.55) translateY(-60px)'
+  };
+  plate.style.transform = scales[type];
+}
+
+// ─── RETRO SWITCH & encendido parpadeante ───
+
+function toggleConsolePower() {
+  isConsolePowerOn = !isConsolePowerOn;
+  const sw = document.getElementById('powerSwitch');
+  
+  if (isConsolePowerOn) {
+    sw.classList.add('on');
+    triggerPowerFlickerEffect();
+  } else {
+    sw.classList.remove('on');
+    playSynthesizedClick();
+    stopNeonTransformerHum();
+    
+    // Turning off all visual illumination models
+    const textEl = document.getElementById('textPreview');
+    const iconEl = document.getElementById('iconPreview');
+    const preloadedLogoEl = document.getElementById('logoPreloadedPreview');
+    const uploadedLogoEl = document.getElementById('logoUploadedPreview');
+    const ambient = document.getElementById('ambientWallGlow');
+    
+    // Shut off Text
+    textEl.style.textShadow = 'none';
+    textEl.style.color = '#1b1c22';
+    textEl.style.opacity = '0.35';
+    
+    // Shut off Icon
+    if (iconEl) {
+      const svg = iconEl.querySelector('svg');
+      if (svg) {
+        svg.style.filter = 'none';
+        svg.style.opacity = '0.25';
+        svg.querySelectorAll('path, circle, line').forEach(el => {
+          el.setAttribute('stroke', '#1b1c22');
+        });
+      }
+    }
+    
+    // Shut off Preloaded Logo
+    const preloadedSvg = preloadedLogoEl.querySelector('svg');
+    if (preloadedSvg) {
+      preloadedSvg.style.filter = 'none';
+      preloadedSvg.style.opacity = '0.25';
+      preloadedSvg.querySelectorAll('path, stroke, text, linearGradient').forEach(el => {
+        el.setAttribute('stroke', '#1b1c22');
+        el.setAttribute('fill', '#1b1c22');
+      });
+    }
+    
+    // Shut off Uploaded logo
+    const uploadedImg = uploadedLogoEl.querySelector('img');
+    const uploadedDiv = uploadedLogoEl.querySelector('.logo-mask-render');
+    if (uploadedImg) {
+      uploadedImg.style.filter = 'grayscale(1) brightness(0.2)';
+      uploadedImg.style.opacity = '0.3';
+    }
+    if (uploadedDiv) {
+      uploadedDiv.style.filter = 'grayscale(1) brightness(0.2)';
+      uploadedDiv.style.opacity = '0.3';
+    }
+    
+    ambient.style.opacity = '0';
+  }
+}
+
+function triggerPowerFlickerEffect() {
+  const textEl = document.getElementById('textPreview');
+  const iconEl = document.getElementById('iconPreview');
+  const preloadedLogoEl = document.getElementById('logoPreloadedPreview');
+  const uploadedLogoEl = document.getElementById('logoUploadedPreview');
+  const ambient = document.getElementById('ambientWallGlow');
+  
+  playSynthesizedClick();
+  startNeonTransformerHum();
+  
+  let ticks = 0;
+  const maxTicks = 9;
+  const timer = setInterval(() => {
+    const isLit = Math.random() > 0.4;
+    const op = isLit ? state.brightness / 100 : 0.06;
+    
+    textEl.style.opacity = op;
+    if (iconEl) iconEl.style.opacity = op;
+    preloadedLogoEl.style.opacity = op;
+    uploadedLogoEl.style.opacity = op;
+    ambient.style.opacity = isLit ? '1' : '0.08';
+    
+    ticks++;
+    if (ticks >= maxTicks) {
+      clearInterval(timer);
+      renderStudioSign();
+    }
+  }, 45);
+}
+
+// ─── VISUAL SHADERS RENDERING ───
+
+function renderStudioSign() {
+  const textCol = COLORS[state.textColorIdx];
+  const iconCol = COLORS[state.iconColorIdx];
+  const font = FONTS[state.fontIdx];
+  const size = SIZES[state.sizeIdx];
+  
+  document.documentElement.style.setProperty('--active-text-glow', textCol.glow);
+  document.documentElement.style.setProperty('--active-icon-glow', iconCol.glow);
+  document.documentElement.style.setProperty('--active-text-hex', textCol.hex);
+  document.documentElement.style.setProperty('--active-icon-hex', iconCol.hex);
+  
+  const textEl = document.getElementById('textPreview');
+  const iconEl = document.getElementById('iconPreview');
+  const logoPreEl = document.getElementById('logoPreloadedPreview');
+  const logoUpEl = document.getElementById('logoUploadedPreview');
+  const ambient = document.getElementById('ambientWallGlow');
+  const plate = document.getElementById('acrylicPlate');
+  const studs = document.getElementById('standoffStuds');
+  
+  const bri = state.brightness / 100;
+  
+  if (!isConsolePowerOn) return;
+  
+  // Clean elements display toggles
+  textEl.style.display = 'none';
+  iconEl.style.display = 'none';
+  logoPreEl.style.display = 'none';
+  logoUpEl.style.display = 'none';
+  
+  textEl.className = 'text-preview-box';
+  textEl.style.animation = 'none';
+  if (iconEl) iconEl.style.animation = 'none';
+  logoPreEl.style.animation = 'none';
+  logoUpEl.style.animation = 'none';
+  
+  // ─── RENDERING CONTENT TARGET: TEXT ───
+  if (state.contentType === 'text') {
+    textEl.style.display = 'block';
+    
+    if (state.signType === 'neon') {
+      textEl.style.color = textCol.hex;
+      textEl.style.textShadow = `
+        0 0 2px #fff,
+        0 0 8px ${textCol.glow},
+        0 0 20px ${textCol.glow},
+        0 0 50px ${textCol.glow}cc,
+        0 0 90px ${textCol.glow}55
+      `;
+      textEl.style.background = 'none';
+      textEl.style.webkitBackgroundClip = 'initial';
+      textEl.style.webkitTextFillColor = 'initial';
+    } else if (state.signType === 'corp-frontal') {
+      textEl.classList.add('sign-corporeo-frontal');
+      textEl.style.color = textCol.hex;
+      textEl.style.background = 'none';
+      textEl.style.webkitBackgroundClip = 'initial';
+      textEl.style.webkitTextFillColor = 'initial';
+    } else if (state.signType === 'corp-backlit') {
+      textEl.classList.add('sign-corporeo-backlit');
+      const metals = {
+        0: 'linear-gradient(135deg, #ff9eb6 0%, #d81b60 50%, #8c0c3c 100%)', // Rose gold
+        1: 'linear-gradient(135deg, #a5f3fc 0%, #0891b2 50%, #0e7490 100%)', // Blue steel
+        2: 'linear-gradient(135deg, #a7f3d0 0%, #059669 50%, #065f46 100%)', // Emerald
+        3: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 50%, #854d0e 100%)', // Gold
+        4: 'linear-gradient(135deg, #f3e8ff 0%, #7c3aed 50%, #5b21b6 100%)', // Violet
+        5: 'linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #475569 100%)', // Silver
+        6: 'linear-gradient(135deg, #fecaca 0%, #dc2626 50%, #991b1b 100%)', // Crimson
+        7: 'linear-gradient(135deg, #fed7aa 0%, #ea580c 50%, #9a3412 100%)', // Copper
+      };
+      textEl.style.background = metals[state.textColorIdx] || '#cbd5e1';
+      textEl.style.webkitBackgroundClip = 'text';
+      textEl.style.webkitTextFillColor = 'transparent';
+      textEl.style.textShadow = `
+        1px 1px 0px #475569, 2px 2px 0px #1e293b, 3px 3px 0px #0f172a,
+        0 0 25px ${textCol.glow}cc, 0 0 50px ${textCol.glow}77
+      `;
+    }
+    
+    textEl.textContent = state.text;
+    textEl.style.fontFamily = `'${font.family}', ${font.fallback}`;
+    textEl.style.opacity = bri;
+    
+    const fontSizes = [2.5, 3.5, 4.8, 6.2];
+    textEl.style.fontSize = fontSizes[state.sizeIdx] + 'rem';
+    
+    // Volumetric Icon
+    if (state.iconId) {
+      const icObj = NEON_ICONS.find(i => i.id === state.iconId);
+      if (icObj) {
+        let filterStack = '';
+        if (state.signType === 'corp-backlit') {
+          filterStack = `
+            drop-shadow(1px 1px 1px #1e293b)
+            drop-shadow(0 0 20px ${iconCol.glow})
+            drop-shadow(0 0 45px ${iconCol.glow}99)
+          `;
+        } else {
+          filterStack = `
+            drop-shadow(0 0 2px #fff)
+            drop-shadow(0 0 6px ${iconCol.glow})
+            drop-shadow(0 0 16px ${iconCol.glow}aa)
+          `;
+        }
+        
+        const coloredSvg = icObj.svg
+          .replace(/GLOW/g, iconCol.hex)
+          .replace(/stroke="GLOW"/g, `stroke="${iconCol.hex}"`)
+          .replace(/fill="GLOW"/g, `fill="${iconCol.hex}"`);
+          
+        iconEl.innerHTML = coloredSvg;
+        const svg = iconEl.querySelector('svg');
+        
+        const iconSizes = [52, 74, 98, 128];
+        const sz = iconSizes[state.sizeIdx];
+        svg.style.width = sz + 'px';
+        svg.style.height = sz + 'px';
+        svg.style.filter = filterStack;
+        svg.style.opacity = bri;
+        
+        iconEl.classList.add('visible');
+        iconEl.style.display = 'block';
+        
+        const layout = document.getElementById('previewLayout');
+        if (state.iconPlacement === 'left') {
+          layout.style.flexDirection = 'row';
+          layout.style.gap = '2rem';
+          iconEl.style.marginBottom = '0';
+        } else if (state.iconPlacement === 'right') {
+          layout.style.flexDirection = 'row-reverse';
+          layout.style.gap = '2rem';
+          iconEl.style.marginBottom = '0';
+        } else {
+          layout.style.flexDirection = 'column';
+          layout.style.gap = '0.5rem';
+          iconEl.style.marginBottom = '1.25rem';
+        }
+      }
+    }
+  } 
+  // ─── RENDERING PRELOADED LETRERAMA LOGO ───
+  else if (state.contentType === 'logo-preloaded') {
+    logoPreEl.style.display = 'flex';
+    
+    if (state.preloadedLogoType === 'color') {
+      logoPreEl.innerHTML = LETRERAMA_LOGO_SVG.color;
+      const svg = logoPreEl.querySelector('svg');
+      
+      const widthVal = [120, 180, 240, 310];
+      svg.style.width = widthVal[state.sizeIdx] + 'px';
+      svg.style.height = 'auto';
+      svg.style.opacity = bri;
+      
+      // Combine original pink/blue glows dynamically
+      svg.style.filter = `
+        drop-shadow(0 0 3px #fff)
+        drop-shadow(0 0 10px rgba(255, 45, 120, 0.65))
+        drop-shadow(0 0 20px rgba(0, 207, 255, 0.4))
+      `;
+    } else {
+      let template = LETRERAMA_LOGO_SVG.white;
+      template = template.replace(/currentColor/g, textCol.hex);
+      logoPreEl.innerHTML = template;
+      
+      const svg = logoPreEl.querySelector('svg');
+      const widthVal = [120, 180, 240, 310];
+      svg.style.width = widthVal[state.sizeIdx] + 'px';
+      svg.style.height = 'auto';
+      svg.style.opacity = bri;
+      
+      // Applied lighting shaders
+      if (state.signType === 'neon') {
+        svg.style.filter = `
+          drop-shadow(0 0 3px #fff)
+          drop-shadow(0 0 10px ${textCol.glow})
+          drop-shadow(0 0 25px ${textCol.glow}cc)
+        `;
+      } else if (state.signType === 'corp-frontal') {
+        svg.style.filter = `
+          drop-shadow(0 0 2px #fff)
+          drop-shadow(0 0 8px ${textCol.glow})
+          drop-shadow(1px 1px 0px #1e030d)
+          drop-shadow(2px 2px 0px #0a0104)
+        `;
+      } else if (state.signType === 'corp-backlit') {
+        // Metallic golden outline face and volumetric backlit halo shadow
+        const beveledPath = svg.querySelector('path:first-child');
+        if (beveledPath) {
+          beveledPath.setAttribute('stroke', '#caca8a');
+          beveledPath.setAttribute('opacity', '0.7');
+        }
+        svg.style.filter = `
+          drop-shadow(1px 1px 1px rgba(0,0,0,0.85))
+          drop-shadow(0 0 22px ${textCol.glow})
+          drop-shadow(0 0 45px ${textCol.glow}aa)
+        `;
+      }
+    }
+  } 
+  // ─── RENDERING UPLOADED LOGO ───
+  else if (state.contentType === 'logo-uploaded') {
+    logoUpEl.style.display = 'flex';
+    
+    if (!state.uploadedLogoData) {
+      logoUpEl.innerHTML = `
+        <div style="font-size:0.75rem; color:var(--text-muted); font-weight:800; border:1px dashed rgba(229,193,88,0.2); padding:2rem; border-radius:18px; text-align:center;">
+          ⚠️ Sube tu logotipo (.png / .svg) en la barra lateral
+        </div>
+      `;
+    } else {
+      const widthVal = [120, 180, 240, 310];
+      const maxW = widthVal[state.sizeIdx];
+      
+      if (state.uploadedLogoMode === 'original') {
+        // Draw normal transparent image
+        logoUpEl.innerHTML = `
+          <img src="${state.uploadedLogoData}" style="
+            max-width: ${maxW}px;
+            max-height: 180px;
+            object-fit: contain;
+            opacity: ${bri};
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.7)) ${state.signType === 'corp-backlit' ? `drop-shadow(0 0 22px ${textCol.glow}cc)` : ''};
+            transition: var(--transition-smooth);
+          " />
+        `;
+      } else {
+        // DYNAMIC SHADER MASK COLORIZATION ENGINE (Illuminating the white logo)
+        const maskBg = state.signType === 'corp-backlit' ? 
+          `linear-gradient(135deg, #fcefa6 0%, #b89025 50%, #8c6a15 100%)` : 
+          textCol.hex;
+          
+        let shaderFilter = '';
+        if (state.signType === 'neon') {
+          shaderFilter = `
+            drop-shadow(0 0 3px #fff)
+            drop-shadow(0 0 8px ${textCol.glow})
+            drop-shadow(0 0 25px ${textCol.glow}cc)
+          `;
+        } else if (state.signType === 'corp-frontal') {
+          shaderFilter = `
+            drop-shadow(0 0 2px #fff)
+            drop-shadow(0 0 6px ${textCol.glow})
+            drop-shadow(1.5px 1.5px 0px #1e030d)
+          `;
+        } else if (state.signType === 'corp-backlit') {
+          shaderFilter = `
+            drop-shadow(1px 1px 1px rgba(0,0,0,0.85))
+            drop-shadow(0 0 25px ${textCol.glow})
+            drop-shadow(0 0 50px ${textCol.glow}aa)
+          `;
+        }
+        
+        logoUpEl.innerHTML = `
+          <div class="logo-mask-render" style="
+            width: ${maxW}px;
+            height: 170px;
+            background-color: ${textCol.hex};
+            background-image: ${state.signType === 'corp-backlit' ? maskBg : 'none'};
+            -webkit-mask-image: url(${state.uploadedLogoData});
+            mask-image: url(${state.uploadedLogoData});
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            opacity: ${bri};
+            filter: ${shaderFilter};
+            transition: var(--transition-smooth);
+          "></div>
+        `;
+      }
+    }
+  }
+  
+  // ─── AMBIENT WALL LIGHT REFLECTIONS ───
+  if (state.appMode === 'cotizacion') {
+    if (state.cotizLuz === 'front') {
+      ambient.style.background = `radial-gradient(circle, #33f1ff22 0%, #91fc0611 50%, transparent 75%)`;
+      ambient.style.opacity = 1;
+      
+      textEl.style.color = '#33f1ff';
+      textEl.style.textShadow = '0 0 10px #33f1ff, 0 0 25px #91fc06';
+      if (logoUpEl) logoUpEl.style.filter = 'drop-shadow(0 0 12px #33f1ff) drop-shadow(0 0 25px #91fc0655)';
+    } else if (state.cotizLuz === 'back') {
+      ambient.style.background = `radial-gradient(circle, #91fc0633 0%, #33f1ff1c 45%, transparent 75%)`;
+      ambient.style.opacity = 1;
+      
+      textEl.style.color = '#f8fafc';
+      textEl.style.textShadow = '0 0 15px rgba(145,252,6,0.8), 0 0 35px rgba(51,241,255,0.5)';
+      if (logoUpEl) logoUpEl.style.filter = 'drop-shadow(0 0 20px rgba(145,252,6,0.75))';
+    } else {
+      // Sin Iluminación
+      ambient.style.background = 'none';
+      ambient.style.opacity = 0;
+      
+      textEl.style.color = '#64748b';
+      textEl.style.textShadow = 'none';
+      if (logoUpEl) logoUpEl.style.filter = 'grayscale(1) brightness(0.6) drop-shadow(0 8px 16px rgba(0,0,0,0.5))';
+    }
+  } else {
+    // Normal / RGB Dynamic Neon lighting preview
+    if (state.neonColorMode === 'rgb') {
+      ambient.style.background = `radial-gradient(circle, #33f1ff18 0%, #91fc060d 45%, transparent 75%)`;
+      ambient.style.opacity = bri;
+      
+      textEl.classList.add('rgb-dynamic-glow');
+      if (iconEl) iconEl.classList.add('rgb-dynamic-glow');
+      
+      textEl.style.color = '';
+      textEl.style.textShadow = '';
+      const svg = iconEl.querySelector('svg');
+      if (svg) svg.style.filter = 'drop-shadow(0 0 10px currentColor) drop-shadow(0 0 30px currentColor)';
+    } else {
+      textEl.classList.remove('rgb-dynamic-glow');
+      if (iconEl) iconEl.classList.remove('rgb-dynamic-glow');
+      
+      if (state.contentType === 'logo-preloaded' && state.preloadedLogoType === 'color') {
+        ambient.style.background = `radial-gradient(circle, #33f1ff1a 0%, #91fc0610 45%, transparent 75%)`;
+      } else {
+        ambient.style.background = `radial-gradient(circle, ${textCol.glow}26 0%, ${textCol.glow}0d 50%, transparent 75%)`;
+      }
+      ambient.style.opacity = bri;
+    }
+  }
+  
+  // Backing base plates
+  plate.className = 'acrylic-plate ' + state.backingId;
+  studs.classList.toggle('visible', state.backingId !== 'stand');
+  
+  let w = size.w;
+  let h = size.h;
+  if (state.appMode === 'cotizacion') {
+    w = parseInt(document.getElementById('cotizAncho').value) || 100;
+    h = parseInt(document.getElementById('cotizAlto').value) || 40;
+  }
+  document.getElementById('rulerW').textContent = w;
+  document.getElementById('rulerH').textContent = h;
+  
+  updatePriceTicket();
+}
+
+function updatePriceTicket() {
+  const checkoutBtn = document.querySelector('.checkout-btn-solid');
+  if (state.appMode === 'cotizacion') {
+    const numericEl = document.getElementById('totalVal');
+    if (numericEl) {
+      const parent = numericEl.parentElement;
+      if (parent) {
+        parent.innerHTML = `<span id="totalVal">Proyecto Especializado</span>`;
+      }
+    }
+    const badge = document.getElementById('couponBadge');
+    if (badge) {
+      badge.textContent = `💼 Cotización B2B personalizada`;
+    }
+    if (checkoutBtn) {
+      checkoutBtn.innerHTML = 'Solicitar cotización &rarr;';
+    }
+    return;
+  }
+  
+  if (checkoutBtn) {
+    checkoutBtn.innerHTML = 'Solicitar Fabricación Express &rarr;';
+  }
+  
+  const size = SIZES[state.sizeIdx];
+  let price = size.price;
+  
+  if (state.signType === 'corp-frontal') price += 300;
+  if (state.signType === 'corp-backlit') price += 450;
+  if (state.waterproof) price += 350;
+  if (state.dimmer) price += 180;
+  if (state.backingId === 'contour') price += 120;
+  if (state.contentType === 'logo-uploaded') price += 250;
+  
+  const discountFactor = (100 - state.discountPercent) / 100;
+  price = Math.round(price * discountFactor);
+  
+  const numericEl = document.getElementById('totalVal');
+  if (numericEl) {
+    const parent = numericEl.parentElement;
+    if (parent) {
+      parent.innerHTML = `$<span id="totalVal">${price.toLocaleString('es-MX')}</span> <span>MXN</span>`;
+    }
+  }
+  const badge = document.getElementById('couponBadge');
+  if (badge) {
+    badge.textContent = `⚡ Descuento ${state.discountPercent}% aplicado`;
+  }
+}
+
+// ─── ADDONS & INTERACTIVE CHECKOUT ───
+
+function applyStudioCoupon() {
+  const code = document.getElementById('couponBox').value.trim().toUpperCase();
+  
+  if (code === 'NEON20' || code === 'HIPHA20') {
+    state.discountPercent = 20;
+    triggerCheckoutConfetti();
+    showStudioAlert('¡Cupón del 20% aplicado con éxito!');
+  } else if (code === 'VIP30') {
+    state.discountPercent = 30;
+    triggerCheckoutConfetti();
+    showStudioAlert('¡Cupón VIP del 30% aplicado con éxito!');
+  } else if (code !== '') {
+    showStudioAlert('Código no válido. Prueba con NEON20');
+    return;
+  }
+  updatePriceTicket();
+}
+
+function triggerCheckoutConfetti() {
+  const colors = ['#ff2d78', '#00cfff', '#39ff72', '#ffb800', '#bf5fff'];
+  for (let i = 0; i < 40; i++) {
+    const part = document.createElement('div');
+    part.className = 'confetti-dot';
+    part.style.left = Math.random() * 100 + 'vw';
+    part.style.top = '-10px';
+    part.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    part.style.transform = `scale(${Math.random() * 0.8 + 0.4})`;
+    part.style.animationDelay = Math.random() * 0.5 + 's';
+    
+    document.body.appendChild(part);
+    setTimeout(() => part.remove(), 2500);
+  }
+}
+
+function showStudioAlert(msg) {
+  const panel = document.getElementById('toastPanel');
+  document.getElementById('toastText').textContent = msg;
+  panel.classList.add('show');
+  
+  setTimeout(() => {
+    panel.classList.remove('show');
+  }, 3500);
+}
+
+function sendWhatsAppOrder() {
+  if (state.appMode === 'cotizacion') {
+    const tecnicaLabels = {
+      caja_luz: 'Caja de luz',
+      letrero_3d: 'Letrero 3D',
+      letrero_2d: 'Letrero 2D'
+    };
+    const matLabels = {
+      acrilico: 'Acrílico',
+      aluminio: 'Aluminio Anodizado'
+    };
+    const luzLabels = {
+      front: 'Iluminación Frontal Directa',
+      back: 'Retroiluminación (Halo Backlit)',
+      none: 'Sin Iluminación (Estructura Sólida)'
+    };
+    const ubicLabels = {
+      interior: 'Uso en Interior',
+      exterior: 'Uso en Exterior (Intemperie)'
+    };
+    
+    const w = document.getElementById('cotizAncho').value || 100;
+    const h = document.getElementById('cotizAlto').value || 40;
+    const alt = document.getElementById('cotizAltura').value || 3.5;
+    
+    const msg = encodeURIComponent(
+      `¡Hola Letrerama! Me gustaría solicitar la cotización para un proyecto de anuncio luminoso premium configurado en Studio Pro:\n\n` +
+      `🏢 *Tipo de Proyecto:* Anuncio Luminoso\n` +
+      `📐 *Medidas Solicitadas:* ${w} x ${h} cm\n` +
+      `🛠️ *Técnica del Anuncio:* ${tecnicaLabels[state.cotizTecnica]}\n` +
+      `🔨 *Material Principal:* ${matLabels[state.cotizMaterial]}\n` +
+      `💡 *Técnica de Iluminación:* ${luzLabels[state.cotizLuz]}\n` +
+      `🌳 *Entorno:* ${ubicLabels[state.cotizUbicacion]}\n` +
+      `📏 *Altura de Colocación:* ${alt} metros\n` +
+      `📂 *Logotipo Adjunto:* ${state.uploadedLogoFileName ? state.uploadedLogoFileName : 'No cargado (lo adjunto en esta conversación)'}`
+    );
+    
+    window.open(`https://wa.me/521XXXXXXXXXX?text=${msg}`, '_blank');
+    return;
+  }
+
+  const textCol = COLORS[state.textColorIdx];
+  const iconCol = COLORS[state.iconColorIdx];
+  const font = FONTS[state.fontIdx];
+  const size = SIZES[state.sizeIdx];
+  const wW = size.w;
+  const wH = size.h;
+  const icObj = state.iconId ? NEON_ICONS.find(i => i.id === state.iconId) : null;
+  const back = BACKINGS.find(b => b.id === state.backingId);
+  const total = document.getElementById('totalVal').textContent;
+  
+  const typeLabels = {
+    'neon': 'Letrero de Neón LED',
+    'corp-frontal': 'Corpóreo 3D Luz Directa',
+    'corp-backlit': 'Corpóreo 3D Backlit (Halo)'
+  };
+  
+  let designContentText = '';
+  if (state.contentType === 'text') {
+    designContentText = `📝 *Texto:* "${state.text}"\n✍ *Fuente:* ${font.name}\n` + (icObj ? `🎨 *Ícono:* ${icObj.label} (${state.iconPlacement})\n` : '');
+  } else if (state.contentType === 'logo-preloaded') {
+    designContentText = `✨ *Logotipo Letrerama:* ${state.preloadedLogoType === 'color' ? 'Versión Original Color' : 'Versión Blanca (Iluminada)'}\n`;
+  } else {
+    designContentText = `🎨 *Logotipo Personalizado Subido:* ${state.uploadedLogoFileName || 'Archivo cargado'} (${state.uploadedLogoMode === 'original' ? 'Color original' : 'Modo Neón iluminado'})\n`;
+  }
+  
+  let colorsText = '';
+  if (state.neonColorMode === 'rgb') {
+    colorsText = '🌈 LED Multicolor RGB (Dinámico)';
+  } else {
+    colorsText = state.selectedNeonColors.map(idx => COLORS[idx].name).join(', ');
+  }
+  
+  const msg = encodeURIComponent(
+    `¡Hola Letrerama! Me gustaría cotizar mi diseño de Neón Flex configurado en Studio Pro:\n\n` +
+    `🔮 *Tecnología:* ${typeLabels[state.signType]} (Uso Interior)\n` +
+    designContentText +
+    `🎨 *Gama de Colores:* ${colorsText}\n` +
+    `📐 *Medidas:* ${size.label} (${wW}x${wH} cm)\n` +
+    `💎 *Base de Soporte:* ${back ? back.label : 'Acrílico Transparente'}\n` +
+    `⚡ *Dimmer & Mando:* ${state.dimmer ? 'Sí' : 'No'} (Brillo: ${state.brightness}%)\n\n` +
+    `🏷️ *Costo Estimado:* $${total} MXN`
+  );
+  
+  window.open(`https://wa.me/521XXXXXXXXXX?text=${msg}`, '_blank');
+}
+
+function shareDesignSpec() {
+  if (state.appMode === 'cotizacion') {
+    const tecnicaLabels = {
+      caja_luz: 'Caja de luz',
+      letrero_3d: 'Letrero 3D',
+      letrero_2d: 'Letrero 2D'
+    };
+    const matLabels = {
+      acrilico: 'Acrílico',
+      aluminio: 'Aluminio Anodizado'
+    };
+    const luzLabels = {
+      front: 'Iluminación Frontal Directa',
+      back: 'Retroiluminación (Halo Backlit)',
+      none: 'Sin Iluminación (Estructura Sólida)'
+    };
+    
+    const w = document.getElementById('cotizAncho').value || 100;
+    const h = document.getElementById('cotizAlto').value || 40;
+    const alt = document.getElementById('cotizAltura').value || 3.5;
+    
+    const specs = 
+      `ESPECIFICACIONES DE COTIZACIÓN B2B - LETRERAMA\n` +
+      `-----------------------------------------\n` +
+      `Proyecto: Anuncio Luminoso\n` +
+      `Medidas: ${w} x ${h} CM\n` +
+      `Técnica del Anuncio: ${tecnicaLabels[state.cotizTecnica]}\n` +
+      `Material Principal: ${matLabels[state.cotizMaterial]}\n` +
+      `Técnica de Iluminación: ${luzLabels[state.cotizLuz]}\n` +
+      `Entorno: ${state.cotizUbicacion === 'interior' ? 'Interior' : 'Exterior'}\n` +
+      `Altura de Colocación: ${alt} Metros\n` +
+      `Logotipo: ${state.uploadedLogoFileName ? state.uploadedLogoFileName : 'No adjunto'}`;
+      
+    navigator.clipboard.writeText(specs).then(() => {
+      showStudioAlert('✔️ ¡Ficha de Cotización B2B copiada al portapapeles!');
+    });
+    return;
+  }
+  
+  const font = FONTS[state.fontIdx];
+  const size = SIZES[state.sizeIdx];
+  
+  let specText = '';
+  if (state.contentType === 'text') {
+    specText = `Diseño Letrerama: "${state.text}" | Fuente: ${font.name} | Medidas: ${size.w}x${size.h}cm`;
+  } else if (state.contentType === 'logo-preloaded') {
+    specText = `Diseño Letrerama: Logotipo de Marca | Medidas: ${size.w}x${size.h}cm`;
+  } else {
+    specText = `Diseño Letrerama: Logotipo Personalizado | Medidas: ${size.w}x${size.h}cm`;
+  }
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'Mi diseño en Letrerama Studio Pro',
+      text: specText,
+      url: window.location.href,
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(`${specText} - Diseñado en: ${window.location.href}`);
+    showStudioAlert('¡Especificaciones copiadas al portapapeles!');
+  }
+}
+
+// ─── DUAL MODE & COTIZACION B2B HANDLERS ───
+
+function setAppMode(mode) {
+  playSynthesizedClick();
+  state.appMode = mode;
+  
+  const btnNeon = document.getElementById('btnModeNeon');
+  const btnCotizacion = document.getElementById('btnModeCotizacion');
+  
+  if (btnNeon) btnNeon.classList.toggle('active', mode === 'neon');
+  if (btnCotizacion) btnCotizacion.classList.toggle('active', mode === 'cotizacion');
+  
+  const scrollableContent = document.querySelector('.sidebar-scrollable-content');
+  const tabsRow = document.querySelector('.studio-tabs-row');
+  const panelCotizacion = document.getElementById('panel-cotizacion');
+  
+  if (scrollableContent) scrollableContent.style.display = mode === 'neon' ? 'block' : 'none';
+  if (tabsRow) tabsRow.style.display = mode === 'neon' ? 'flex' : 'none';
+  if (panelCotizacion) panelCotizacion.style.display = mode === 'cotizacion' ? 'block' : 'none';
+  
+  updatePriceTicket();
+  renderStudioSign();
+}
+
+function setNeonColorMode(mode) {
+  playSynthesizedClick();
+  state.neonColorMode = mode;
+  
+  const btnStandard = document.getElementById('btnColorModeStandard');
+  const btnRGB = document.getElementById('btnColorModeRGB');
+  const targetHeader = document.getElementById('colorTargetHeader');
+  
+  if (btnStandard) btnStandard.classList.toggle('active', mode === 'standard');
+  if (btnRGB) btnRGB.classList.toggle('active', mode === 'rgb');
+  
+  if (targetHeader) {
+    targetHeader.style.display = mode === 'rgb' ? 'none' : 'flex';
+  }
+  
+  buildColorsGrid();
+  renderStudioSign();
+}
+
+function setCotizTecnica(tecnica, element) {
+  playSynthesizedClick();
+  state.cotizTecnica = tecnica;
+  
+  const chips = element.parentElement.querySelectorAll('.cotiz-chip');
+  chips.forEach(c => c.classList.remove('active'));
+  element.classList.add('active');
+  
+  renderStudioSign();
+}
+
+function setCotizMaterial(material, element) {
+  playSynthesizedClick();
+  state.cotizMaterial = material;
+  
+  const chips = element.parentElement.querySelectorAll('.cotiz-chip');
+  chips.forEach(c => c.classList.remove('active'));
+  element.classList.add('active');
+  
+  renderStudioSign();
+}
+
+function setCotizLuz(luz, element) {
+  playSynthesizedClick();
+  state.cotizLuz = luz;
+  
+  const chips = element.parentElement.querySelectorAll('.cotiz-chip');
+  chips.forEach(c => c.classList.remove('active'));
+  element.classList.add('active');
+  
+  renderStudioSign();
+}
+
+// ... other helper functions ...
+function setCotizUbicacion(ubic, element) {
+  playSynthesizedClick();
+  state.cotizUbicacion = ubic;
+  
+  const chips = element.parentElement.querySelectorAll('.cotiz-chip');
+  chips.forEach(c => c.classList.remove('active'));
+  element.classList.add('active');
+  
+  renderStudioSign();
+}
+
+function updateCotizacionPreview() {
+  renderStudioSign();
+}
+
+function handleCotizFileSelect(event) {
+  if (event.target.files && event.target.files[0]) {
+    processCotizLogo(event.target.files[0]);
+  }
+}
+
+function processCotizLogo(file) {
+  if (!file.type.match('image.*')) {
+    showStudioAlert('Error: Por favor selecciona un logotipo PNG o SVG válido.');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.uploadedLogoData = e.target.result;
+    state.uploadedLogoFileName = file.name;
+    state.contentType = 'logo-uploaded'; // Switch to uploaded logo mode
+    
+    document.getElementById('cotizUploadSuccess').style.display = 'flex';
+    document.getElementById('cotizFileName').textContent = file.name;
+    
+    triggerCheckoutConfetti();
+    showStudioAlert('¡Logotipo B2B cargado con éxito!');
+    
+    renderStudioSign();
+  };
+  reader.readAsDataURL(file);
+}
+
+function initCotizacionDragDrop() {
+  const dropZone = document.getElementById('cotizDropZone');
+  if (!dropZone) return;
+  
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'var(--neon-pink)';
+    dropZone.style.background = 'rgba(51, 241, 255, 0.05)';
+  });
+  
+  dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'rgba(229,193,88,0.2)';
+    dropZone.style.background = 'rgba(255, 255, 255, 0.015)';
+  });
+  
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'rgba(229,193,88,0.2)';
+    dropZone.style.background = 'rgba(255, 255, 255, 0.015)';
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processCotizLogo(e.dataTransfer.files[0]);
+    }
+  });
+}
+
+// ─── RUN ───
+init();
+</script>
+
+<style>
+  /* Custom micro-interactions animation loops */
+  @keyframes glow-pulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(0.85); }
+  }
+
+  @keyframes glow-flicker-retro {
+    0%, 100%, 30%, 35%, 45%, 50%, 70%, 90% { opacity: 1; filter: brightness(1); }
+    32%, 48%, 72% { opacity: 0.25; filter: brightness(0.4); }
+    33%, 73% { opacity: 0.95; filter: brightness(0.9); }
+  }
+</style>
+
+</body>
+</html>

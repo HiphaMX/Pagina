@@ -9,7 +9,9 @@ from app.core.mailer import (
     send_healthyice_order_customer,
     send_healthyice_order_team,
     send_whiteclean_confirmation_email,
-    send_whiteclean_notification_team
+    send_whiteclean_notification_team,
+    send_chilechillon_confirmation_email,
+    send_chilechillon_notification_team
 )
 
 router = APIRouter()
@@ -89,6 +91,24 @@ async def submit_whiteclean_form(form_data: WhiteCleanForm):
     
     # Enviar aviso con los detalles de la solicitud al equipo
     team_email_sent = await send_whiteclean_notification_team(form_data)
+    
+    if not customer_email_sent and not team_email_sent:
+        raise HTTPException(status_code=500, detail="Error al enviar correos")
+        
+    return {"message": "Formulario recibido correctamente"}
+
+class ChileChillonForm(BaseModel):
+    nombre: str
+    apellido: Optional[str] = ""
+    email: EmailStr
+    telefono: str
+    perfil: str
+    mensaje: Optional[str] = ""
+
+@router.post("/chilechillon")
+async def submit_chilechillon_form(form_data: ChileChillonForm):
+    customer_email_sent = await send_chilechillon_confirmation_email(form_data)
+    team_email_sent = await send_chilechillon_notification_team(form_data)
     
     if not customer_email_sent and not team_email_sent:
         raise HTTPException(status_code=500, detail="Error al enviar correos")

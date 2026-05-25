@@ -54,3 +54,5 @@ mercadopago==2.3.0
 requests==2.33.0
 urllib3==2.7.0
 fpdf2==2.8.4
+google-auth==2.50.0
+google-analytics-data==0.22.0

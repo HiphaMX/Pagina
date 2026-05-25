@@ -1,0 +1,365 @@
+/* 🌶️ Chile Chillón — Ecosistema CSS Custom */
+
+/* --- Configuración de Fuentes --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rubik:wght@600&display=swap');
+
+@font-face {
+  font-family: 'Chubzy Funk';
+  src: url('../Assets/fonts/ChubzyFunk.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-light-bg: #FFFFFF;
+  --color-light-cream: #FAF9F6;
+  --color-text-charcoal: #0D0B0B;
+  --color-text-muted: #4B5563;
+  --color-flama: #D30611;      /* Rojo Chile Intenso */
+  --color-habanero: #FF5A00;   /* Naranja Habanero Brillante */
+  --color-cilantro: #D30611;   /* Verde Jalapeño Orgánico */
+  --color-dark: #080505;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-light-bg);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+}
+
+.font-rubik {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+}
+
+.font-chubzy {
+  font-family: 'Chubzy Funk', cursive, sans-serif;
+  font-weight: normal;
+}
+
+/* Ocultar cursor en desktop para inyección de custom cursor */
+@media (min-width: 1024px) {
+  body {
+    cursor: none !important;
+  }
+  a, button, input, select, textarea, [role="button"] {
+    cursor: none !important;
+  }
+}
+
+/* --- Preloader --- */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-light-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#preloader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* --- Blobs de Calor Animados (Brasas en el Fondo) --- */
+.blob-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  transition: background-color 1s ease, transform 2s ease, opacity 1s ease;
+}
+
+.blob-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--color-flama) 0%, rgba(211, 6, 17, 0) 70%);
+  top: -10%;
+  right: -5%;
+  animation: floatBlob1 25s infinite alternate ease-in-out;
+}
+
+.blob-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--color-habanero) 0%, rgba(255, 90, 0, 0) 70%);
+  bottom: -15%;
+  left: -10%;
+  animation: floatBlob2 30s infinite alternate ease-in-out;
+}
+
+.blob-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, var(--color-flama) 0%, rgba(211, 6, 17, 0) 70%);
+  top: 40%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  opacity: 0.04;
+  transition: background 0.8s ease;
+}
+
+@keyframes floatBlob1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-80px, 60px) scale(1.1); }
+  100% { transform: translate(50px, -40px) scale(0.95); }
+}
+
+@keyframes floatBlob2 {
+  0% { transform: translate(0, 0) scale(0.9); }
+  50% { transform: translate(100px, -80px) scale(1.05); }
+  100% { transform: translate(-50px, 50px) scale(1); }
+}
+
+/* --- Glassmorphism en Fondo Claro (Frosted White Premium) --- */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(211, 6, 17, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(211, 6, 17, 0.06);
+}
+
+.glass-panel-cilantro:hover {
+  border-color: rgba(211, 6, 17, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(211, 6, 17, 0.06);
+}
+
+.glass-panel-habanero:hover {
+  border-color: rgba(255, 90, 0, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(255, 90, 0, 0.06);
+}
+
+/* --- Custom Cursor --- */
+.custom-cursor {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-flama);
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999999;
+  transition: width 0.1s, height 0.1s, background-color 0.3s;
+}
+
+.custom-cursor-glow {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(211, 6, 17, 0.3);
+  background-color: rgba(211, 6, 17, 0.02);
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999998;
+  transition: transform 0.08s ease-out, width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s;
+}
+
+.cursor-hover .custom-cursor {
+  width: 14px;
+  height: 14px;
+  background-color: var(--color-habanero);
+}
+
+.cursor-hover .custom-cursor-glow {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(255, 90, 0, 0.6);
+  background-color: rgba(255, 90, 0, 0.05);
+}
+
+/* --- Botón Glow Flama --- */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-flama);
+  filter: blur(15px);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 8px 25px rgba(211, 6, 17, 0.3);
+  transform: translateY(-2px);
+}
+
+/* --- Termómetro Scoville en Fondo Claro --- */
+.thermometer-track {
+  height: 350px;
+  width: 12px;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.thermometer-fill {
+  width: 100%;
+  height: 30%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-radius: 10px;
+  background: linear-gradient(to top, var(--color-flama), var(--color-habanero));
+  transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease;
+}
+
+.scoville-glow {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Scrollbar Custom en Fondo Claro --- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-light-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 5px;
+  border: 2px solid var(--color-light-cream);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-flama);
+}
+
+/* --- Scroll Reveal en Fondo Claro (De Gris a Negro Puro) --- */
+.reveal-text span {
+  display: inline-block;
+  opacity: 0;
+  color: var(--color-text-muted);
+  transition: opacity 0.4s ease, color 0.4s ease;
+}
+
+.reveal-text span.active {
+  opacity: 1;
+  color: var(--color-text-charcoal);
+}
+
+/* ==================== AMPLIFICADOR DE ANTOJOS ==================== */
+.dish-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              border-color 0.3s ease, 
+              box-shadow 0.3s ease, 
+              background-color 0.3s ease;
+}
+
+.dish-card:hover {
+  transform: translateY(-6px);
+}
+
+.dish-card.active {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-8px) scale(1.03);
+}
+
+.dish-card[data-dish="tacos"].active,
+.dish-card[data-dish="sopas"].active {
+  border-color: var(--color-habanero) !important;
+  box-shadow: 0 10px 30px -5px rgba(255, 90, 0, 0.2), 0 0 15px rgba(255, 90, 0, 0.05);
+}
+
+.dish-card[data-dish="mariscos"].active,
+.dish-card[data-dish="sushi"].active {
+  border-color: var(--color-cilantro) !important;
+  box-shadow: 0 10px 30px -5px rgba(211, 6, 17, 0.2), 0 0 15px rgba(211, 6, 17, 0.05);
+}
+
+.dish-card[data-dish="hamburguesa"].active {
+  border-color: var(--color-flama) !important;
+  box-shadow: 0 10px 30px -5px rgba(211, 6, 17, 0.2), 0 0 15px rgba(211, 6, 17, 0.05);
+}
+
+/* Transición para el panel de maridaje */
+#dish-pairing-panel {
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ==================== RECETARIO DE LA FLAMA ==================== */
+.fav-btn {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fav-btn:hover {
+  transform: scale(1.12);
+  background-color: rgba(211, 6, 17, 0.1) !important;
+  border-color: rgba(211, 6, 17, 0.2) !important;
+  color: var(--color-flama) !important;
+}
+
+.fav-btn.active {
+  background-color: var(--color-flama) !important;
+  border-color: var(--color-flama) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(211, 6, 17, 0.4);
+}
+
+.fav-btn.active i {
+  color: #ffffff !important;
+}
+
+/* Micro-animación al dar clic en el botón de favoritos (Pop) */
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.heart-pop {
+  animation: heartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
