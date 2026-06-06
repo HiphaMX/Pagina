@@ -382,6 +382,19 @@
         const saved = localStorage.getItem('chilechillon-mundial-state');
         if (saved) {
           state = JSON.parse(saved);
+          if (state.matches && Array.isArray(state.matches)) {
+            initialMatches.forEach(initialMatch => {
+              const userMatch = state.matches.find(m => m.id === initialMatch.id);
+              if (userMatch) {
+                if (initialMatch.status === 'active' && userMatch.status === 'upcoming') {
+                  userMatch.status = 'active';
+                }
+              } else {
+                state.matches.push(JSON.parse(JSON.stringify(initialMatch)));
+              }
+            });
+            state.matches.sort((a, b) => a.id - b.id);
+          }
         }
       } catch (e) {
         console.warn("localStorage bloqueado o no disponible:", e);
