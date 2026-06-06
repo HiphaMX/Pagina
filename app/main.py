@@ -6,6 +6,7 @@ from app.api import contact, mercadopago, auth
 from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal
 from app.models.user import User
+from app.models.chilechillon_lead import ChileChillonLead
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")
@@ -49,6 +50,30 @@ def startup_db_setup():
         db.rollback()
     finally:
         db.close()
+
+    # Escribir secretos de Google Analytics si estamos en Vercel
+    if os.environ.get("VERCEL") == "1":
+        print("Configurando secretos de Google Analytics en /tmp...")
+        secrets_dir = "/tmp/.secrets"
+        os.makedirs(secrets_dir, exist_ok=True)
+        
+        # Leer el contenido de las variables de entorno
+        ga_token = os.environ.get("GA_TOKEN_JSON")
+        ga_client_secret = os.environ.get("GA_CLIENT_SECRET_JSON")
+        
+        if ga_token:
+            with open(os.path.join(secrets_dir, "token.json"), "w") as f:
+                f.write(ga_token)
+            print("✓ token.json configurado con éxito en /tmp.")
+        else:
+            print("⚠️ Advertencia: GA_TOKEN_JSON no está configurado en las variables de entorno.")
+            
+        if ga_client_secret:
+            with open(os.path.join(secrets_dir, "client_secret.json"), "w") as f:
+                f.write(ga_client_secret)
+            print("✓ client_secret.json configurado con éxito en /tmp.")
+        else:
+            print("⚠️ Advertencia: GA_CLIENT_SECRET_JSON no está configurado en las variables de entorno.")
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])

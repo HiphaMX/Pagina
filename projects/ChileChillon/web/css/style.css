@@ -46,10 +46,15 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Ocultar cursor en desktop para inyección de custom cursor */
 @media (min-width: 1024px) {
-  body {
+  body.has-custom-cursor {
     cursor: none !important;
   }
-  a, button, input, select, textarea, [role="button"] {
+  body.has-custom-cursor a, 
+  body.has-custom-cursor button, 
+  body.has-custom-cursor input, 
+  body.has-custom-cursor select, 
+  body.has-custom-cursor textarea, 
+  body.has-custom-cursor [role="button"] {
     cursor: none !important;
   }
 }
@@ -272,6 +277,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* --- Scroll Reveal en Fondo Claro (De Gris a Negro Puro) --- */
+.reveal-text {
+  font-size: 1.98rem;
+  line-height: 1.85;
+}
+
+@media (min-width: 768px) {
+  .reveal-text {
+    font-size: 3rem;
+    line-height: 1.85;
+  }
+}
+
 .reveal-text span {
   display: inline-block;
   opacity: 0;
@@ -361,5 +378,85 @@ h1, h2, h3, h4, h5, h6 {
 
 .heart-pop {
   animation: heartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* ==================== CARRITO DRAWER & E-COMMERCE STYLES ==================== */
+#cart-drawer.open {
+  transform: translateX(0);
+}
+
+#cart-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#toast-notification.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Animación de rebote (pop) en el badge del carrito */
+@keyframes badgePop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+.badge-pop {
+  animation: badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Estilos de los productos dentro del carrito */
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #FAF9F6;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.cart-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(211, 6, 17, 0.1);
+}
+
+/* Personalización del botón de cerrar y eliminar */
+.cart-remove-btn {
+  color: #9CA3AF;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.cart-remove-btn:hover {
+  color: #D30611;
+  transform: scale(1.1);
+}
+
+/* Controles de cantidad */
+.quantity-control-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #4B5563;
+  transition: all 0.2s ease;
+}
+
+.quantity-control-btn:hover {
+  background-color: #FAF9F6;
+  border-color: rgba(211, 6, 17, 0.2);
+  color: #D30611;
+}
+
+.quantity-control-btn:active {
+  transform: scale(0.9);
 }
 

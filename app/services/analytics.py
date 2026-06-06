@@ -24,7 +24,11 @@ CLIENTS = {
 
 def get_ga4_client():
     """Inicializa y retorna el cliente de GA4 usando el token guardado."""
-    secrets_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.secrets')
+    if os.environ.get("VERCEL") == "1":
+        secrets_dir = "/tmp/.secrets"
+    else:
+        secrets_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.secrets')
+        
     token_file = os.path.join(secrets_dir, 'token.json')
     client_secrets_file = os.path.join(secrets_dir, 'client_secret.json')
     

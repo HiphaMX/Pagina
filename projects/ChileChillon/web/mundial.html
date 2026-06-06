@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa Mundial Chile Chillón 🌶️</title>
+  
+  <!-- Tailwind CSS & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            rubik: ['"Rubik"', 'sans-serif'],
+            chubzy: ['"Chubzy Funk"', 'cursive', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <!-- Importar estilos de la tienda principal -->
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="shortcut icon" href="https://www.elchilechillon.com.mx/favicon.ico" type="image/x-icon">
+</head>
+<body class="bg-[#FAF9F6] text-slate-800 min-h-screen relative antialiased overflow-x-hidden selection:bg-[#D30611] selection:text-white pb-24">
+
+  <!-- ==================== BLOBS DE CALOR (BACKGROUND) ==================== -->
+  <div class="blob-container">
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+    <div id="blob-dynamic" class="glow-blob blob-3"></div>
+  </div>
+
+  <!-- ==================== HEADER NAVBAR ── INTEGRADO ==================== -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-[#D30611] shadow-md">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+        <img src="Assets/Logo texto.svg" alt="Chile Chillón Logo" class="h-12 w-auto">
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="px-5 py-2.5 rounded-full bg-[#FFEED3] hover:bg-[#FFEED3]/90 text-xs font-bold uppercase tracking-wider text-[#D30611] transition-all duration-300 shadow-md">
+          Volver a Tienda
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ GATE SCREEN (LOCK) ═══ -->
+  <div id="gate-screen" class="fixed inset-0 bg-[#FAF9F6]/80 backdrop-blur-2xl z-[999] flex items-start justify-center p-6 overflow-y-auto transition-all duration-500">
+    <div class="bg-white border border-slate-100 border-t-4 border-[#D30611] rounded-[40px] max-w-lg w-full p-8 md:p-10 text-center shadow-2xl relative my-auto">
+      
+      <!-- Logotipo oficial antiguo para el lanzamiento -->
+      <div class="flex justify-center mb-6 select-none">
+        <img src="Assets/Chile Chillon OLD.svg" alt="Chile Chillón Logo" class="h-28 w-auto object-contain">
+      </div>
+
+      <!-- PASO A: BIENVENIDA -->
+      <div id="gate-step1-view">
+        <span class="inline-block px-3 py-1 rounded-full bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/20 text-[10px] uppercase tracking-wider font-bold mb-4 font-rubik">Acceso Limitado</span>
+        
+        <p class="text-xs md:text-sm text-slate-500 leading-relaxed mb-6 font-medium">
+          Estamos preparando el lanzamiento de la nueva imagen de Chile Chillón. Por ahora estamos realizando la Copa Mundial Chile Chillón, obtén tu pase digital dejándonos una reseña en Google y registrándo tus datos ¡Vota en la quiniela y participa en el sorteo de nuestros premios!
+        </p>
+        
+        <button onclick="showGateStep2()" class="w-full py-4 bg-[#D30611] hover:bg-[#D30611]/90 text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-lg font-rubik btn-glow mb-4">
+          🔥 Participar
+        </button>
+      </div>
+
+      <!-- PASO B: REGISTRO (Inicialmente oculto) -->
+      <div id="gate-step2-view" style="display: none;">
+        <span class="inline-block px-3 py-1 rounded-full bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/20 text-[10px] uppercase tracking-wider font-bold mb-4 font-rubik">Registro de Pase</span>
+        
+        <!-- Beneficios -->
+        <div class="space-y-3 text-left mb-6 bg-[#FAF9F6] border border-slate-100 p-5 rounded-3xl">
+          <div class="flex items-start gap-3 text-xs text-slate-600">
+            <span class="text-base">👕</span>
+            <div><strong class="text-slate-800">Sorteo de Playeras Oficiales:</strong> Sortearemos playeras exclusivas de Chile Chillón entre los usuarios que sumen más puntos en la quiniela.</div>
+          </div>
+          <div class="flex items-start gap-3 text-xs text-slate-600">
+            <span class="text-base">🗳️</span>
+            <div><strong class="text-slate-800">Dinámica Quiniela:</strong> Pronostica el ganador de cada partido para ganar 3 puntos por acierto, y 3 puntos adicionales si aciertas al campeón del torneo.</div>
+          </div>
+        </div>
+
+        <a href="https://g.page/r/CXKl4A5rHWLzEBM/review" target="_blank" class="block w-full text-center py-4 bg-[#FFEED3] border border-dashed border-[#D30611]/30 hover:bg-[#FFEED3]/90 text-[#D30611] font-bold text-sm uppercase tracking-wider rounded-full transition-all mb-4 font-rubik">
+          ⭐ Paso 1: Dejar mi reseña en Google →
+        </a>
+        
+        <div class="text-left mb-4">
+          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Paso 2: Tu nombre (como aparece en Google) <span class="normal-case font-normal text-slate-400 block mt-1">(será la manera de validar tu reseña en caso de ganar algún premio)</span></label>
+          <input type="text" id="gate-name-input" placeholder="ej. María García" class="w-full bg-[#FAF9F6] border border-slate-200 focus:border-[#D30611] rounded-full px-5 py-4 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400">
+        </div>
+
+        <div class="text-left mb-4">
+          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Paso 3: Tu correo electrónico</label>
+          <input type="email" id="gate-email-input" placeholder="ej. maria@gmail.com" class="w-full bg-[#FAF9F6] border border-slate-200 focus:border-[#D30611] rounded-full px-5 py-4 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400">
+        </div>
+
+        <div class="text-left mb-5">
+          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Paso 4: ¿Qué salsa crees que ganará la copa? 🏆</label>
+          <select id="gate-champion-select" class="w-full bg-[#FAF9F6] border border-slate-200 focus:border-[#D30611] rounded-full px-5 py-4 text-sm text-slate-800 outline-none transition-all cursor-pointer">
+            <option value="" disabled selected>Selecciona tu salsa campeona</option>
+            <option value="arb">DE ÁRBOL 🌶️</option>
+            <option value="hab">HABANERO 🍊</option>
+            <option value="tat">TATEMADO 🔥</option>
+            <option value="ser">SERRANO 🟢</option>
+            <option value="neg">NEGRA 🌑</option>
+          </select>
+        </div>
+        
+        <button onclick="registerPass()" class="w-full py-4 bg-[#D30611] hover:bg-[#D30611]/90 text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-lg font-rubik btn-glow">
+          🎟️ Obtener mi pase al torneo
+        </button>
+      </div>
+
+      <p class="text-[10px] text-slate-400 mt-4 leading-relaxed">
+        Solo necesitas hacer esto una vez. Tu pase queda guardado en este dispositivo.
+      </p>
+      <div onclick="simulateDevAccess()" class="text-[9px] text-slate-300 hover:text-slate-400 cursor-pointer select-none tracking-wider uppercase font-bold mt-3 font-rubik">
+        🔧 Simular Acceso (Desarrollo)
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Banner -->
+  <header class="relative z-10 pt-36 pb-8 text-center">
+    <span class="text-5xl inline-block mb-3 drop-shadow-md">🏆</span>
+    <h1 class="font-chubzy text-4xl md:text-6xl leading-tight text-transparent bg-clip-text bg-gradient-to-r from-[#D30611] to-[#FF5A00] tracking-tight">
+      COPA MUNDIAL CHILLÓN
+    </h1>
+    <p class="font-rubik text-[10px] uppercase tracking-widest text-slate-500 mt-2 font-bold">
+      Deja tu reseña · Obtén tu pase · ¡Compite por premios!
+    </p>
+  </header>
+
+  <!-- ═══ PASS BAR ═══ -->
+  <div id="pass-bar" class="max-w-4xl mx-auto px-6 mb-10 relative z-10">
+    <div class="glass-panel bg-white/75 backdrop-blur-md rounded-3xl border border-slate-100 p-5 flex justify-between items-center gap-4 shadow-sm">
+      <div class="flex items-center gap-4">
+        <div id="pass-avatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FF5A00] to-[#D30611] text-white font-chubzy text-xl flex justify-center items-center shadow-md">
+          ?
+        </div>
+        <div>
+          <div id="pass-name-label" class="font-rubik font-bold text-slate-800 text-sm uppercase tracking-tight">—</div>
+          <div class="text-[9px] text-[#D30611] font-bold uppercase tracking-wider">🎟️ PASE DE TORNEO ACTIVO</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="pass-prediction-container" class="hidden items-center gap-2 bg-[#FF5A00]/5 border border-[#FF5A00]/10 px-4 py-2 rounded-2xl">
+          <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Tu campeón:</span>
+          <span id="pass-prediction-val" class="font-chubzy text-base text-[#FF5A00] leading-none">—</span>
+          <select id="pass-prediction-select-inline" class="hidden bg-transparent border-none outline-none font-chubzy text-xs text-[#FF5A00] cursor-pointer" onchange="setInlinePrediction(this.value)">
+            <option value="" disabled selected>Elegir</option>
+            <option value="arb">DE ÁRBOL</option>
+            <option value="hab">HABANERO</option>
+            <option value="tat">TATEMADO</option>
+            <option value="ser">SERRANO</option>
+            <option value="neg">NEGRA</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2.5 bg-[#D30611]/5 border border-[#D30611]/10 px-4 py-2 rounded-2xl">
+          <span id="pass-points-val" class="font-chubzy text-xl text-[#D30611] leading-none">0</span>
+          <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">PTS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <div class="max-w-4xl mx-auto px-6 mb-8 relative z-10 flex justify-center flex-wrap gap-2">
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all" onclick="showTab('partidos')">⚽ Partidos</button>
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('tabla')">📊 Tabla</button>
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('bracket')">🗂 Bracket</button>
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('misvotos')">🎟️ Mi pase</button>
+  </div>
+
+  <!-- ═══ VIEW: PARTIDOS ═══ -->
+  <div class="view max-w-4xl mx-auto px-6 pb-24 relative z-10" id="view-partidos">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="font-chubzy text-2xl text-slate-900">Partidos del Torneo</h2>
+      <span id="phase-pill" class="px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm">En Curso</span>
+    </div>
+    <div id="matches-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  </div>
+
+  <!-- ═══ VIEW: TABLA ═══ -->
+  <div class="view max-w-4xl mx-auto px-6 pb-24 relative z-10 hidden" id="view-tabla">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="font-chubzy text-2xl text-slate-900">Tabla de Posiciones</h2>
+      <span id="group-pill" class="px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm">Fase de Grupos</span>
+    </div>
+    <div class="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-[#FAF9F6] border-b border-slate-100 text-[10px] font-rubik font-bold text-slate-400 tracking-wider uppercase">
+              <th class="py-4 px-4">#</th>
+              <th class="py-4 px-4">Producto</th>
+              <th class="py-4 px-4">PJ</th>
+              <th class="py-4 px-4">G</th>
+              <th class="py-4 px-4">P</th>
+              <th class="py-4 px-4">Pts</th>
+              <th class="py-4 px-4">Forma</th>
+            </tr>
+          </thead>
+          <tbody id="standings-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="text-[10px] text-slate-400 mt-4 tracking-wider uppercase font-bold px-1">
+      🟢 Clasifican a semifinales · 🔴 Eliminado (último lugar)
+    </p>
+  </div>
+
+  <!-- ═══ VIEW: BRACKET ═══ -->
+  <div class="view max-w-4xl mx-auto px-6 pb-24 relative z-10 hidden" id="view-bracket">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <div class="flex flex-col gap-5">
+        <div class="font-chubzy text-lg text-[#D30611] flex items-center gap-2 border-b border-slate-100 pb-2">⚽ Semifinal 1</div>
+        <div class="text-[9px] text-[#D30611] font-extrabold uppercase tracking-wider bg-[#D30611]/5 border border-[#D30611]/10 px-3.5 py-2 rounded-2xl flex items-center gap-1.5">
+          <i class="ph-bold ph-clock"></i>
+          <span>Se revelará 2-3 días tras Fase de Grupos</span>
+        </div>
+        <div class="flex flex-col gap-3">
+          <div id="semi1-a"></div>
+          <div class="text-center text-slate-300 font-chubzy text-sm my-1">VS</div>
+          <div id="semi1-b"></div>
+        </div>
+      </div>
+      
+      <div class="flex flex-col gap-5">
+        <div class="font-chubzy text-lg text-[#D30611] flex items-center gap-2 border-b border-slate-100 pb-2">⚽ Semifinal 2</div>
+        <div class="text-[9px] text-[#D30611] font-extrabold uppercase tracking-wider bg-[#D30611]/5 border border-[#D30611]/10 px-3.5 py-2 rounded-2xl flex items-center gap-1.5">
+          <i class="ph-bold ph-clock"></i>
+          <span>Se revelará 2-3 días tras Fase de Grupos</span>
+        </div>
+        <div class="flex flex-col gap-3">
+          <div id="semi2-a"></div>
+          <div class="text-center text-slate-300 font-chubzy text-sm my-1">VS</div>
+          <div id="semi2-b"></div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-5">
+        <div class="font-chubzy text-lg text-[#FF5A00] flex items-center gap-2 border-b border-slate-100 pb-2">🏆 Gran Final</div>
+        <div class="text-[9px] text-[#FF5A00] font-extrabold uppercase tracking-wider bg-[#FF5A00]/5 border border-[#FF5A00]/10 px-3.5 py-2 rounded-2xl flex items-center gap-1.5">
+          <i class="ph-bold ph-clock"></i>
+          <span>Se revelará 1 semana tras Semifinales</span>
+        </div>
+        <div class="flex flex-col gap-3">
+          <div id="final-a"></div>
+          <div class="text-center text-slate-300 font-chubzy text-sm my-1">VS</div>
+          <div id="final-b"></div>
+        </div>
+      </div>
+      
+    </div>
+
+    <div id="champion-container" class="mt-12 hidden">
+      <div class="bg-gradient-to-tr from-[#FF5A00]/5 to-[#D30611]/2 border border-dashed border-[#D30611]/30 rounded-3xl p-8 text-center shadow-inner">
+        <span class="text-6xl inline-block mb-3 drop-shadow-md">🏆</span>
+        <h3 class="font-rubik text-xs font-bold uppercase tracking-widest text-[#FF5A00] mb-2">Salsa Campeona</h3>
+        <h2 id="champion-name" class="font-chubzy text-3xl md:text-4xl text-[#D30611] leading-none">—</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VIEW: MI PASE ═══ -->
+  <div class="view max-w-4xl mx-auto px-6 pb-24 relative z-10 hidden" id="view-misvotos">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="font-chubzy text-2xl text-slate-900">Mi Historial de Votación</h2>
+      <span class="px-3.5 py-1.5 bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/20 text-[9px] font-bold uppercase tracking-widest rounded-full">Activo</span>
+    </div>
+    <div id="my-votes-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  </div>
+
+  <!-- ═══ VIEW: ADMIN ═══ -->
+  <div class="view max-w-4xl mx-auto px-6 pb-24 relative z-10 hidden" id="view-admin">
+    <div class="bg-white border border-slate-100 rounded-[32px] p-6 md:p-8 shadow-sm">
+      <h3 class="font-chubzy text-xl text-[#D30611] mb-2">Panel de Control del Torneo</h3>
+      <p class="text-xs text-slate-500 mb-6">Simula el avance del torneo, activa partidos, cierra votaciones y asigna resultados.</p>
+      
+      <button class="w-full py-4 bg-[#FF5A00] hover:bg-[#e04f00] text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-md font-rubik btn-glow mb-6" onclick="simulateVotes()">
+        ⚡ Simular 50 votos aleatorios (Partido Activo)
+      </button>
+      
+      <div id="admin-matches-list" class="divide-y divide-slate-100"></div>
+      
+      <button class="w-full py-4 bg-transparent border border-dashed border-[#D30611]/30 hover:border-[#D30611] hover:bg-[#D30611]/2 text-[#D30611] font-bold text-sm uppercase tracking-wider rounded-full transition-all mt-8 font-rubik" onclick="resetTournament()">
+        ⚠️ Reiniciar Torneo Completo
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL DE VOTACIÓN ═══ -->
+  <div id="vote-modal" class="fixed inset-0 bg-[#0D0B0B]/60 backdrop-blur-md z-[100] flex items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-white border border-slate-100 border-t-4 border-[#D30611] rounded-[40px] max-w-md w-full p-8 text-center shadow-2xl relative transform translate-y-4 transition-transform duration-300">
+      <button class="absolute top-5 right-6 text-slate-300 hover:text-slate-600 font-rubik text-xl outline-none" onclick="closeVoteModal()">&times;</button>
+      <div class="text-[9px] font-bold uppercase tracking-widest text-[#D30611] mb-2">Confirmación de Voto</div>
+      <h2 class="font-chubzy text-2xl text-slate-900 mb-3">¿Confirmas tu voto?</h2>
+      <p class="text-xs text-slate-500 leading-relaxed mb-5">Tu voto se registrará en el pase de <strong class="text-slate-800" id="modal-user-name"></strong> para la siguiente salsa:</p>
+      
+      <div class="flex items-center gap-3 bg-[#FAF9F6] border border-slate-100 rounded-2xl p-4 mb-6 justify-center">
+        <div id="modal-team-badge" class="w-10 h-10 rounded-xl flex items-center justify-center font-rubik font-black text-white text-[10px] shadow-sm relative overflow-hidden"></div>
+        <span id="modal-team-name" class="font-rubik font-bold text-sm text-slate-800"></span>
+      </div>
+
+      <div class="text-left bg-[#D30611]/5 border border-[#D30611]/10 rounded-2xl p-4 mb-6 flex gap-3.5">
+        <div class="w-6 h-6 rounded-full border border-[#D30611] flex items-center justify-center font-rubik font-bold text-xs text-[#D30611] shrink-0">1</div>
+        <div class="text-xs text-slate-600 leading-relaxed">Apoya la marca con tu opinión en Google Maps para validar y activar la votación en tu pase.</div>
+      </div>
+
+      <a href="https://g.page/r/CXKl4A5rHWLzEBM/review" target="_blank" class="block w-full text-center py-4 bg-[#FFEED3] border border-dashed border-[#D30611]/30 hover:bg-[#FFEED3]/90 text-[#D30611] font-bold text-sm uppercase tracking-wider rounded-full transition-all mb-4 font-rubik">
+        ⭐ Paso 1: Ir a calificar en Google →
+      </a>
+
+      <button class="w-full py-4 bg-[#D30611] hover:bg-[#D30611]/90 text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-md font-rubik" onclick="confirmVote()">
+        ✅ Paso 2: Registrar voto
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#D30611] text-white font-rubik text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded-full shadow-lg z-[200] opacity-0 pointer-events-none transition-all duration-300">¡Voto registrado con éxito!</div>
+
+  <!-- JS LOGIC -->
+  <script>
+    // Configuración inicial de equipos
+    const teams = {
+      arb: { id: 'arb', name: 'DE ÁRBOL', badge: 'ARB', color: '#D30611', image: 'Assets/Mundial/de_arbol.webp' },
+      hab: { id: 'hab', name: 'HABANERO', badge: 'HAB', color: '#FF5A00', image: 'Assets/Mundial/habanero.webp' },
+      tat: { id: 'tat', name: 'TATEMADO', badge: 'TAT', color: '#7A0207', image: 'Assets/Mundial/tatemado.webp' },
+      neg: { id: 'neg', name: 'NEGRA', badge: 'NEG', color: '#111927', image: 'Assets/Mundial/negra.webp' },
+      ser: { id: 'ser', name: 'SERRANO', badge: 'SER', color: '#1f5535', image: 'Assets/Mundial/serrano.webp' }
+    };
+
+    // 10 Partidos iniciales de Fase de Grupos
+    const initialMatches = [
+      { id: 1, phase: 'grupo', teamA: 'arb', teamB: 'neg', scoreA: null, scoreB: null, votesA: 12, votesB: 9, status: 'active' },
+      { id: 2, phase: 'grupo', teamA: 'hab', teamB: 'tat', scoreA: null, scoreB: null, votesA: 15, votesB: 14, status: 'active' },
+      { id: 3, phase: 'grupo', teamA: 'ser', teamB: 'arb', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 4, phase: 'grupo', teamA: 'neg', teamB: 'hab', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 5, phase: 'grupo', teamA: 'tat', teamB: 'ser', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 6, phase: 'grupo', teamA: 'arb', teamB: 'hab', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 7, phase: 'grupo', teamA: 'neg', teamB: 'tat', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 8, phase: 'grupo', teamA: 'ser', teamB: 'hab', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 9, phase: 'grupo', teamA: 'arb', teamB: 'tat', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      { id: 10, phase: 'grupo', teamA: 'neg', teamB: 'ser', scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'active' },
+      
+      // Semifinales (se calculan dinámicamente)
+      { id: 11, phase: 'semifinal', teamA: null, teamB: null, scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'upcoming' },
+      { id: 12, phase: 'semifinal', teamA: null, teamB: null, scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'upcoming' },
+      
+      // Final (se calcula dinámicamente)
+      { id: 13, phase: 'final', teamA: null, teamB: null, scoreA: null, scoreB: null, votesA: 0, votesB: 0, status: 'upcoming' }
+    ];
+
+    // Estado local
+    let state = {
+      userName: null,
+      userPoints: 0,
+      userVotes: {}, // matchId -> 'A' | 'B'
+      matches: JSON.parse(JSON.stringify(initialMatches)),
+      standings: [
+        { teamId: 'arb', pj: 0, g: 0, p: 0, pts: 0, form: [] },
+        { teamId: 'hab', pj: 0, g: 0, p: 0, pts: 0, form: [] },
+        { teamId: 'tat', pj: 0, g: 0, p: 0, pts: 0, form: [] },
+        { teamId: 'neg', pj: 0, g: 0, p: 0, pts: 0, form: [] },
+        { teamId: 'ser', pj: 0, g: 0, p: 0, pts: 0, form: [] }
+      ],
+      champion: null
+    };
+
+    // Almacenamiento local seguro
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('chilechillon-mundial-state');
+        if (saved) {
+          state = JSON.parse(saved);
+        }
+      } catch (e) {
+        console.warn("localStorage bloqueado o no disponible:", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('chilechillon-mundial-state', JSON.stringify(state));
+      } catch (e) {
+        console.warn("No se pudo guardar el estado en localStorage:", e);
+      }
+    }
+
+    // Registro de Pase
+    function registerPass() {
+      const nameInput = document.getElementById('gate-name-input');
+      const name = nameInput ? nameInput.value.trim() : "";
+      if (!name) {
+        alert("Por favor introduce tu nombre tal como aparece en Google para validar tu pase.");
+        return;
+      }
+
+      const emailInput = document.getElementById('gate-email-input');
+      const email = emailInput ? emailInput.value.trim() : "";
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert("Por favor introduce un correo electrónico válido.");
+        return;
+      }
+
+      const champSelect = document.getElementById('gate-champion-select');
+      const champPrediction = champSelect ? champSelect.value : "";
+      if (!champPrediction) {
+        alert("Por favor selecciona tu predicción de qué salsa ganará la copa.");
+        return;
+      }
+
+      const btn = document.querySelector("button[onclick='registerPass()']");
+      const originalText = btn ? btn.innerHTML : "";
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = "🎟️ Creando tu pase...";
+      }
+
+      fetch("/api/contact/chilechillon/quiniela/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nombre: name,
+          email: email,
+          telefono: null,
+          prediccion_campeon: champPrediction
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.detail || "Error en el servidor"); });
+        }
+        return response.json();
+      })
+      .then(data => {
+        state.userName = name;
+        state.userEmail = email;
+        state.userPhone = null;
+        state.championPrediction = champPrediction;
+        saveState();
+        
+        const gate = document.getElementById('gate-screen');
+        gate.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => gate.classList.add('hidden'), 500);
+        document.body.style.overflow = "";
+        
+        initUI();
+        showToast("¡Pase de Torneo Activado! 🎟️");
+      })
+      .catch(err => {
+        console.warn("Error al registrar lead en el servidor:", err);
+        if (confirm("No se pudo conectar con el servidor para registrar tus datos. ¿Deseas activar tu pase en modo de simulación local (offline) para poder iterar y probar la quiniela?")) {
+          state.userName = name;
+          state.userEmail = email;
+          state.userPhone = null;
+          state.championPrediction = champPrediction;
+          saveState();
+          
+          const gate = document.getElementById('gate-screen');
+          gate.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => gate.classList.add('hidden'), 500);
+          document.body.style.overflow = "";
+          
+          initUI();
+          showToast("¡Pase de Torneo Activado (Local)! 🎟️");
+        } else {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+          }
+        }
+      });
+    }
+
+    window.simulateDevAccess = function() {
+      state.userName = "Invitado de Desarrollo";
+      state.userEmail = "dev.invite@chilechillon.com";
+      state.userPhone = null;
+      state.championPrediction = "arb";
+      saveState();
+      
+      const gate = document.getElementById('gate-screen');
+      if (gate) {
+        gate.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => gate.classList.add('hidden'), 500);
+      }
+      document.body.style.overflow = "";
+      
+      initUI();
+      showToast("¡Pase de Torneo Simulado! 🎟️");
+    };
+
+    // Cambiar Tabs
+    function showTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => {
+        t.className = "tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent";
+      });
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+
+      // Activar tab actual
+      const activeTabBtn = Array.from(document.querySelectorAll('.tab')).find(btn => btn.getAttribute('onclick').includes(tabName));
+      if (activeTabBtn) {
+        activeTabBtn.className = "tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all";
+      }
+
+      const targetView = document.getElementById(`view-${tabName}`);
+      if (targetView) targetView.classList.remove('hidden');
+
+      renderTabContent(tabName);
+    }
+
+    // Renderizar contenidos de tab
+    function renderTabContent(tabName) {
+      if (tabName === 'partidos') renderMatches();
+      if (tabName === 'tabla') renderStandings();
+      if (tabName === 'bracket') renderBracket();
+      if (tabName === 'misvotos') renderMyVotes();
+      if (tabName === 'admin') renderAdminPanel();
+    }
+
+    // Obtener siglas del nombre de usuario
+    function getInitials(name) {
+      if (!name) return "?";
+      const parts = name.split(" ");
+      return parts.map(p => p[0]).slice(0, 2).join("").toUpperCase();
+    }
+
+    // Renderizar la lista de partidos del usuario
+    function renderMatches() {
+      const container = document.getElementById('matches-container');
+      container.innerHTML = '';
+
+      // Mostrar partidos correspondientes a la fase actual activa
+      const currentActiveMatch = state.matches.find(m => m.status === 'active');
+      const activePhase = currentActiveMatch ? currentActiveMatch.phase : (state.champion ? 'final' : 'grupo');
+
+      // Actualizar píldora de fase
+      const phasePill = document.getElementById('phase-pill');
+      if (phasePill) {
+        if (activePhase === 'grupo') {
+          phasePill.innerText = "Fase de Grupos";
+          phasePill.className = "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm";
+        } else if (activePhase === 'semifinal') {
+          phasePill.innerText = "Semifinales";
+          phasePill.className = "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm animate-pulse";
+        } else {
+          phasePill.innerText = state.champion ? "Torneo Finalizado" : "Gran Final";
+          phasePill.className = state.champion ? "px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm" : "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm animate-pulse";
+        }
+      }
+
+      // Filtrar y renderizar partidos
+      const phaseMatches = state.matches.filter(m => m.phase === activePhase);
+      
+      if (phaseMatches.length === 0) {
+        container.innerHTML = '<p class="text-slate-400 text-center py-8 col-span-full font-rubik text-sm">No hay partidos en esta fase.</p>';
+        return;
+      }
+
+      phaseMatches.forEach(m => {
+        const card = createMatchCard(m);
+        container.appendChild(card);
+      });
+    }
+
+    // Helpers de Colores
+    function colorClass(teamId) {
+      const colors = {
+        arb: 'bg-[#D30611]',
+        hab: 'bg-[#FF5A00]',
+        tat: 'bg-[#7A0207]',
+        neg: 'bg-[#111927]',
+        ser: 'bg-[#1f5535]'
+      };
+      return colors[teamId] || 'bg-slate-400';
+    }
+
+    function colorTextClass(teamId) {
+      const colors = {
+        arb: 'text-[#D30611]',
+        hab: 'text-[#FF5A00]',
+        tat: 'text-[#7A0207]',
+        neg: 'text-[#111927]',
+        ser: 'text-[#1f5535]'
+      };
+      return colors[teamId] || 'text-slate-500';
+    }
+
+    function voteBtnClass(teamId, isVoted) {
+      if (isVoted) {
+        return 'bg-slate-800 text-white cursor-default';
+      }
+      const classes = {
+        arb: 'bg-[#D30611] hover:bg-[#b8050e] btn-glow',
+        hab: 'bg-[#FF5A00] hover:bg-[#e04f00] btn-glow',
+        tat: 'bg-[#7A0207] hover:bg-[#5a0105]',
+        neg: 'bg-[#111927] hover:bg-[#090e16]',
+        ser: 'bg-[#1f5535] hover:bg-[#153a24]'
+      };
+      return classes[teamId] || 'bg-slate-500';
+    }
+
+    function badgeClass(teamId) {
+      if (!teamId || teamId === 'tbd') return 'bg-gradient-to-tr from-slate-200 to-slate-300 text-slate-500';
+      const gradients = {
+        arb: 'bg-gradient-to-tr from-[#D30611] to-[#7A0207]',
+        hab: 'bg-gradient-to-tr from-[#FF5A00] to-[#D30611]',
+        tat: 'bg-gradient-to-tr from-[#7A0207] to-[#080505] border border-slate-800',
+        neg: 'bg-gradient-to-tr from-[#111927] to-[#060a0f] border border-slate-800',
+        ser: 'bg-gradient-to-tr from-[#1f5535] to-[#1a4a2e]'
+      };
+      return gradients[teamId] || 'bg-gradient-to-tr from-slate-200 to-slate-300 text-slate-500';
+    }
+
+    function renderTeamLogoHTML(teamId, sizeClass = 'w-16 h-16', imgSizeClass = 'h-14', badgeSizeClass = 'text-base', roundedClass = 'rounded-2xl') {
+      if (!teamId || teamId === 'tbd') {
+        return `<div class="${sizeClass} ${roundedClass} flex items-center justify-center font-rubik font-black text-slate-400 bg-gradient-to-tr from-slate-200 to-slate-300 ${badgeSizeClass} shadow-sm relative overflow-hidden">TBD</div>`;
+      }
+      const team = teams[teamId];
+      if (team && team.image) {
+        return `<div class="${sizeClass} ${roundedClass} flex items-center justify-center bg-white border border-slate-100 shadow-md relative overflow-hidden"><img src="${team.image}" alt="${team.name}" class="${imgSizeClass} w-auto object-contain relative z-10"></div>`;
+      }
+      const badgeText = team ? team.badge : 'TBD';
+      return `<div class="${sizeClass} ${roundedClass} flex items-center justify-center font-rubik font-black text-white shadow-md relative overflow-hidden ${badgeClass(teamId)} ${badgeSizeClass}">${badgeText}</div>`;
+    }
+
+    // Crear la tarjeta de partido
+    function createMatchCard(match) {
+      const card = document.createElement('div');
+      card.className = `glass-panel bg-white/75 backdrop-blur-md rounded-[32px] border border-slate-100 p-6 flex flex-col gap-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden ${match.status === 'active' ? 'border-[#D30611]/30 shadow-md ring-1 ring-[#D30611]/10' : ''} ${match.status === 'finished' ? 'opacity-85' : ''}`;
+
+      const teamA = teams[match.teamA] || { name: 'Por Definir', badge: 'TBD', color: '#1e2d40' };
+      const teamB = teams[match.teamB] || { name: 'Por Definir', badge: 'TBD', color: '#1e2d40' };
+
+      // Calcular porcentajes de votos
+      const totalVotes = match.votesA + match.votesB;
+      const pctA = totalVotes > 0 ? Math.round((match.votesA / totalVotes) * 100) : 50;
+      const pctB = totalVotes > 0 ? 100 - pctA : 50;
+
+      // Header info
+      let matchLabel = `Partido ${match.id}`;
+      if (match.phase === 'semifinal') matchLabel = `Semifinal ${match.id === 11 ? '1' : '2'}`;
+      if (match.phase === 'final') matchLabel = `Gran Final 🏆`;
+
+      let statusBadge = '';
+      if (match.status === 'active') statusBadge = '<span class="px-2.5 py-1 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full animate-pulse">En Vivo</span>';
+      if (match.status === 'finished') statusBadge = '<span class="px-2.5 py-1 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full">Finalizado</span>';
+      if (match.status === 'upcoming') statusBadge = '<span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-400 text-[9px] font-bold uppercase tracking-widest rounded-full">Próximamente</span>';
+
+      // Scores
+      let vsContent = `<span class="font-chubzy text-2xl text-slate-300 tracking-wider">VS</span>`;
+      if (match.status === 'finished') {
+        vsContent = `<span class="font-chubzy text-3xl text-slate-900 tracking-wide">${match.scoreA} - ${match.scoreB}</span>`;
+      } else if (match.status === 'active') {
+        vsContent = `<span class="font-chubzy text-2xl text-slate-300 tracking-wider">VS</span><span class="font-rubik text-[10px] font-black uppercase tracking-widest text-[#D30611] mt-1.5 px-3 py-1 bg-[#D30611]/10 rounded-full animate-bounce">Vota Ya</span>`;
+      }
+
+      // Winner class
+      let teamAClass = '';
+      let teamBClass = '';
+      if (match.status === 'finished') {
+        if (match.scoreA > match.scoreB) {
+          teamAClass = 'scale-105 transition-transform font-extrabold';
+          teamBClass = 'opacity-50 grayscale-[30%]';
+        } else {
+          teamBClass = 'scale-105 transition-transform font-extrabold';
+          teamAClass = 'opacity-50 grayscale-[30%]';
+        }
+      }
+
+      // Check user vote
+      const userVote = state.userVotes[match.id];
+      const hasVoted = !!userVote;
+
+      card.innerHTML = `
+        <div class="flex justify-between items-center pb-4 border-b border-slate-100 text-xs font-rubik text-slate-400 font-bold uppercase tracking-wider">
+          <span class="text-[#D30611] font-extrabold">${matchLabel}</span>
+          ${statusBadge}
+        </div>
+        <div class="grid grid-cols-3 items-center gap-4 py-4">
+          <div class="${teamAClass} flex flex-col items-center gap-3 text-center">
+            ${renderTeamLogoHTML(match.teamA, 'w-28 h-28 md:w-36 md:h-36', 'h-24 md:h-32 scale-[1.7]', 'text-2xl', 'rounded-3xl')}
+            <div class="font-rubik font-bold text-xs md:text-sm text-slate-800 leading-tight max-w-[120px]">${teamA.name}</div>
+          </div>
+          <div class="flex flex-col items-center justify-center text-center">
+            ${vsContent}
+          </div>
+          <div class="${teamBClass} flex flex-col items-center gap-3 text-center">
+            ${renderTeamLogoHTML(match.teamB, 'w-28 h-28 md:w-36 md:h-36', 'h-24 md:h-32 scale-[1.7]', 'text-2xl', 'rounded-3xl')}
+            <div class="font-rubik font-bold text-xs md:text-sm text-slate-800 leading-tight max-w-[120px]">${teamB.name}</div>
+          </div>
+        </div>
+      `;
+
+      // Si es un partido activo y no está finalizado
+      if (match.status === 'active' && match.teamA && match.teamB) {
+        const voteSec = document.createElement('div');
+        voteSec.className = 'border-t border-slate-100 pt-4';
+        
+        voteSec.innerHTML = `
+          <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex shadow-inner">
+            <div class="h-full rounded-r-none transition-all duration-1000 ${colorClass(match.teamA)}" style="width: ${pctA}%"></div>
+            <div class="h-full rounded-l-none transition-all duration-1000 ${colorClass(match.teamB)}" style="width: ${pctB}%"></div>
+          </div>
+          <div class="flex justify-between items-center text-xs font-bold font-rubik mt-2.5 px-1">
+            <span class="${colorTextClass(match.teamA)}">${pctA}%</span>
+            <span class="text-slate-400 text-[10px] font-medium tracking-wide uppercase">Total: ${totalVotes} votos</span>
+            <span class="${colorTextClass(match.teamB)}">${pctB}%</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-5">
+            <button class="py-3 px-4 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-md hover:shadow-lg active:scale-95 transition-all ${voteBtnClass(match.teamA, userVote === 'A')}" onclick="openVoteModal(${match.id}, 'A')" ${hasVoted ? 'disabled' : ''}>
+              ${userVote === 'A' ? '✓ Votado A' : `Votar ${teamA.badge}`}
+            </button>
+            <button class="py-3 px-4 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-md hover:shadow-lg active:scale-95 transition-all ${voteBtnClass(match.teamB, userVote === 'B')}" onclick="openVoteModal(${match.id}, 'B')" ${hasVoted ? 'disabled' : ''}>
+              ${userVote === 'B' ? '✓ Votado B' : `Votar ${teamB.badge}`}
+            </button>
+          </div>
+        `;
+        card.appendChild(voteSec);
+      } else if (match.status === 'finished') {
+        // Mostrar barra final de votos
+        const voteSec = document.createElement('div');
+        voteSec.className = 'mt-4 pt-4 border-t border-slate-100';
+        voteSec.innerHTML = `
+          <div class="w-full bg-slate-100/50 h-1.5 rounded-full overflow-hidden flex opacity-60">
+            <div class="h-full transition-all duration-1000 ${colorClass(match.teamA)}" style="width: ${pctA}%"></div>
+            <div class="h-full transition-all duration-1000 ${colorClass(match.teamB)}" style="width: ${pctB}%"></div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] font-bold font-rubik text-slate-400 mt-2 px-1">
+            <span>${pctA}% (${match.votesA})</span>
+            <span class="uppercase tracking-wider font-extrabold">${userVote ? `Tu voto: ${userVote === 'A' ? teamA.badge : teamB.badge}` : 'Sin voto'}</span>
+            <span>${pctB}% (${match.votesB})</span>
+          </div>
+        `;
+        card.appendChild(voteSec);
+      }
+
+      return card;
+    }
+
+    // Modal de votación
+    let pendingVote = null; // { matchId, teamOption }
+
+    function openVoteModal(matchId, teamOption) {
+      pendingVote = { matchId, teamOption };
+      
+      const match = state.matches.find(m => m.id === matchId);
+      const teamId = teamOption === 'A' ? match.teamA : match.teamB;
+      const team = teams[teamId];
+
+      document.getElementById('modal-user-name').innerText = state.userName;
+      
+      const badge = document.getElementById('modal-team-badge');
+      if (team.image) {
+        badge.className = "w-32 h-32 md:w-36 md:h-36 rounded-[32px] flex items-center justify-center bg-white border border-slate-100 shadow-md relative overflow-hidden";
+        badge.innerHTML = `<img src="${team.image}" alt="${team.name}" class="h-28 md:h-32 w-auto object-contain scale-[1.7] relative z-10">`;
+      } else {
+        badge.className = `w-32 h-32 md:w-36 md:h-36 rounded-[32px] flex items-center justify-center font-rubik font-black text-white text-2xl md:text-3xl shadow-sm relative overflow-hidden ${badgeClass(teamId)}`;
+        badge.innerText = team.badge;
+      }
+
+      document.getElementById('modal-team-name').innerText = team.name;
+
+      const modal = document.getElementById('vote-modal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.firstElementChild.classList.remove('translate-y-4');
+    }
+
+    function closeVoteModal() {
+      const modal = document.getElementById('vote-modal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.firstElementChild.classList.add('translate-y-4');
+      pendingVote = null;
+    }
+
+    function confirmVote() {
+      if (!pendingVote) return;
+      
+      const { matchId, teamOption } = pendingVote;
+      const match = state.matches.find(m => m.id === matchId);
+
+      if (teamOption === 'A') {
+        match.votesA++;
+      } else {
+        match.votesB++;
+      }
+
+      state.userVotes[matchId] = teamOption;
+      saveState();
+      
+      closeVoteModal();
+      renderMatches();
+      showToast("¡Voto registrado en tu pase!");
+    }
+
+    // Render Tabla de posiciones
+    function renderStandings() {
+      const tbody = document.getElementById('standings-body');
+      tbody.innerHTML = '';
+
+      // Ordenar posiciones por puntos y luego por partidos ganados
+      const sorted = [...state.standings].sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        return b.g - a.g;
+      });
+
+      sorted.forEach((row, index) => {
+        const team = teams[row.teamId];
+        const tr = document.createElement('tr');
+        
+        tr.className = `border-b border-slate-100 transition-colors hover:bg-slate-50/50 ${index < 4 ? 'border-l-4 border-[#1f5535]' : 'border-l-4 border-[#D30611]'}`;
+
+        const posClass = index === 0 ? 'font-chubzy text-lg text-[#D30611]' : 'font-rubik text-sm font-bold text-slate-400';
+        const ptsClass = index === 0 ? 'font-chubzy text-xl text-[#D30611]' : 'font-chubzy text-lg text-slate-800';
+
+        // Generar puntos de forma
+        const formHTML = row.form.map(f => {
+          if (f === 'W') return '<span class="w-2.5 h-2.5 rounded-full bg-[#1f5535] inline-block shadow-sm"></span>';
+          if (f === 'L') return '<span class="w-2.5 h-2.5 rounded-full bg-[#D30611] inline-block shadow-sm"></span>';
+          return '<span class="w-2.5 h-2.5 rounded-full bg-slate-200 inline-block"></span>';
+        }).join("");
+
+        tr.innerHTML = `
+          <td class="py-4 px-4"><span class="${posClass}">${index + 1}</span></td>
+          <td class="py-4 px-4">
+            <div class="flex items-center gap-3">
+              ${renderTeamLogoHTML(row.teamId, 'w-12 h-12', 'h-10', 'text-xs', 'rounded-lg')}
+              <span class="font-rubik font-bold text-xs md:text-sm text-slate-800">${team.name}</span>
+            </div>
+          </td>
+          <td class="py-4 px-4 font-rubik text-xs text-slate-500 font-bold">${row.pj}</td>
+          <td class="py-4 px-4 font-rubik text-xs text-[#1f5535] font-black">${row.g}</td>
+          <td class="py-4 px-4 font-rubik text-xs text-[#D30611] font-black">${row.p}</td>
+          <td class="py-4 px-4"><span class="${ptsClass}">${row.pts}</span></td>
+          <td class="py-4 px-4">
+            <div class="flex gap-1.5">${formHTML || '<span class="text-slate-300 text-xs font-semibold">—</span>'}</div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Render Bracket / Fase Final
+    function renderBracket() {
+      const match11 = state.matches.find(m => m.id === 11);
+      const match12 = state.matches.find(m => m.id === 12);
+      const match13 = state.matches.find(m => m.id === 13);
+
+      updateBracketSlot('semi1-a', match11 ? match11.teamA : null, match11 ? match11.scoreA : null);
+      updateBracketSlot('semi1-b', match11 ? match11.teamB : null, match11 ? match11.scoreB : null);
+
+      updateBracketSlot('semi2-a', match12 ? match12.teamA : null, match12 ? match12.scoreA : null);
+      updateBracketSlot('semi2-b', match12 ? match12.teamB : null, match12 ? match12.scoreB : null);
+
+      updateBracketSlot('final-a', match13 ? match13.teamA : null, match13 ? match13.scoreA : null);
+      updateBracketSlot('final-b', match13 ? match13.teamB : null, match13 ? match13.scoreB : null);
+
+      const champContainer = document.getElementById('champion-container');
+      const champName = document.getElementById('champion-name');
+      if (state.champion) {
+        champContainer.classList.remove('hidden');
+        champName.innerText = teams[state.champion].name;
+      } else {
+        champContainer.classList.add('hidden');
+      }
+    }
+
+    function updateBracketSlot(elementId, teamId, score) {
+      const slot = document.getElementById(elementId);
+      if (!slot) return;
+
+      if (!teamId) {
+        slot.className = "w-full bg-[#FAF9F6] border border-slate-200/60 rounded-2xl p-4 flex justify-between items-center text-slate-400 font-rubik text-xs italic tracking-wide";
+        slot.innerText = 'Por definir';
+      } else {
+        const team = teams[teamId];
+        slot.className = "w-full bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-sm font-rubik font-bold text-xs md:text-sm text-slate-800 uppercase tracking-wide";
+        slot.innerHTML = `
+          <div class="flex items-center gap-3">
+            ${renderTeamLogoHTML(teamId, 'w-10 h-10', 'h-8', 'text-[10px]', 'rounded-md')}
+            <span>${team.name}</span>
+          </div>
+          ${score !== null ? `<span class="font-chubzy text-xl text-[#D30611] ml-2">${score}</span>` : ''}
+        `;
+      }
+    }
+
+    // Render Mis Votos / Pase Historial
+    function renderMyVotes() {
+      const container = document.getElementById('my-votes-container');
+      container.innerHTML = '';
+
+      const votedMatches = state.matches.filter(m => !!state.userVotes[m.id]);
+
+      if (votedMatches.length === 0) {
+        container.innerHTML = '<p class="text-slate-400 text-center py-8 col-span-full font-rubik text-sm">No has emitido ningún voto todavía. ¡Apoya a tus salsas favoritas en la tab de Partidos!</p>';
+        return;
+      }
+
+      votedMatches.forEach(m => {
+        const card = createMatchCard(m);
+        container.appendChild(card);
+      });
+    }
+
+    // Render Admin Panel
+    function renderAdminPanel() {
+      const container = document.getElementById('admin-matches-list');
+      container.innerHTML = '';
+
+      state.matches.forEach(m => {
+        const row = document.createElement('div');
+        row.className = 'flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 border-b border-slate-100 gap-4';
+
+        const teamA = teams[m.teamA] || { name: 'TBD' };
+        const teamB = teams[m.teamB] || { name: 'TBD' };
+
+        let details = `${teamA.name} vs ${teamB.name}`;
+        let buttons = '';
+
+        if (m.status === 'upcoming') {
+          const hasActive = state.matches.some(x => x.status === 'active');
+          if (hasActive) {
+            buttons = `<button class="px-4 py-2 rounded-full font-rubik text-[10px] font-bold uppercase tracking-wide bg-slate-100 text-slate-400 cursor-not-allowed" disabled>Upcoming</button>`;
+          } else {
+            if (m.teamA && m.teamB) {
+              buttons = `<button class="px-4 py-2 rounded-full font-rubik text-[10px] font-bold uppercase tracking-wide bg-[#1f5535]/10 hover:bg-[#1f5535]/20 text-[#1f5535] transition-all" onclick="activateMatch(${m.id})">Activar</button>`;
+            } else {
+              buttons = `<button class="px-4 py-2 rounded-full font-rubik text-[10px] font-bold uppercase tracking-wide bg-slate-100 text-slate-400 cursor-not-allowed" disabled>Esperando equipos</button>`;
+            }
+          }
+        } else if (m.status === 'active') {
+          buttons = `<button class="px-4 py-2 rounded-full font-rubik text-[10px] font-bold uppercase tracking-wide bg-[#FF5A00]/10 hover:bg-[#FF5A00]/20 text-[#FF5A00] transition-all" onclick="adminCloseMatch(${m.id})">Simular y Cerrar</button>`;
+        } else if (m.status === 'finished') {
+          buttons = `<span class="text-slate-400 font-rubik text-[10px] font-bold uppercase tracking-wide">Finalizado (${m.scoreA}-${m.scoreB})</span>`;
+        }
+
+        row.innerHTML = `
+          <div>
+            <div class="font-rubik font-bold text-slate-800 text-sm">${details}</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mt-1 font-semibold">Partido ${m.id} · Fase: ${m.phase.toUpperCase()} · Votos: A(${m.votesA}) B(${m.votesB})</div>
+          </div>
+          <div>${buttons}</div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // Activar un partido desde el panel de administración
+    function activateMatch(matchId) {
+      state.matches.forEach(m => {
+        if (m.id === matchId) {
+          m.status = 'active';
+        }
+      });
+      saveState();
+      renderAdminPanel();
+      showToast("¡Partido Activado! Ya se puede votar.");
+    }
+
+    // Simular votos aleatorios para el partido activo
+    function simulateVotes() {
+      const activeMatch = state.matches.find(m => m.status === 'active');
+      if (!activeMatch) {
+        alert("No hay ningún partido activo actualmente para simular votos.");
+        return;
+      }
+
+      for (let i = 0; i < 50; i++) {
+        if (Math.random() > 0.45) {
+          activeMatch.votesA++;
+        } else {
+          activeMatch.votesB++;
+        }
+      }
+
+      saveState();
+      renderAdminPanel();
+      showToast("¡50 votos aleatorios simulados!");
+    }
+
+    // Cerrar partido desde el admin
+    function adminCloseMatch(matchId) {
+      const match = state.matches.find(m => m.id === matchId);
+      if (!match) return;
+
+      // Generar score aleatorio cargado según los votos
+      const total = match.votesA + match.votesB;
+      const ratioA = total > 0 ? match.votesA / total : 0.5;
+      
+      let winner = 'A';
+      if (Math.random() > ratioA) {
+        winner = 'B';
+      }
+
+      let scoreWinner = Math.floor(Math.random() * 3) + 2; // 2, 3, 4 goles
+      let scoreLoser = Math.floor(Math.random() * (scoreWinner)); // menor que el ganador
+
+      const scoreA = winner === 'A' ? scoreWinner : scoreLoser;
+      const scoreB = winner === 'B' ? scoreWinner : scoreLoser;
+
+      match.scoreA = scoreA;
+      match.scoreB = scoreB;
+      match.status = 'finished';
+
+      // Actualizar puntos del usuario si votó correctamente (3 puntos por voto acertado)
+      const userVote = state.userVotes[matchId];
+      if (userVote) {
+        if ((userVote === 'A' && scoreA > scoreB) || (userVote === 'B' && scoreB > scoreA)) {
+          state.userPoints += 3;
+        }
+      }
+
+      // Recalcular estadísticas e ir a la siguiente fase
+      recalcStandings();
+      checkFaseProgression();
+
+      // Si es el partido de la gran final y el usuario acertó su campeón predicho, sumar 3 puntos
+      if (matchId === 13 && state.champion && state.champion === state.championPrediction) {
+        state.userPoints += 3;
+      }
+
+      saveState();
+      renderAdminPanel();
+      initUI();
+      showToast("¡Partido cerrado exitosamente!");
+    }
+
+    // Recalcular toda la tabla a partir de los partidos cerrados
+    function recalcStandings() {
+      // Reset
+      state.standings.forEach(row => {
+        row.pj = 0;
+        row.g = 0;
+        row.p = 0;
+        row.pts = 0;
+        row.form = [];
+      });
+
+      // Calcular
+      state.matches.filter(m => m.phase === 'grupo' && m.status === 'finished').forEach(m => {
+        const rowA = state.standings.find(r => r.teamId === m.teamA);
+        const rowB = state.standings.find(r => r.teamId === m.teamB);
+
+        rowA.pj++;
+        rowB.pj++;
+
+        if (m.scoreA > m.scoreB) {
+          rowA.g++;
+          rowA.pts += 3;
+          rowA.form.push('W');
+          
+          rowB.p++;
+          rowB.form.push('L');
+        } else {
+          rowB.g++;
+          rowB.pts += 3;
+          rowB.form.push('W');
+          
+          rowA.p++;
+          rowA.form.push('L');
+        }
+      });
+    }
+
+    // Controlar progresión de llaves y fases del torneo
+    function checkFaseProgression() {
+      const groupFinished = state.matches.filter(m => m.phase === 'grupo' && m.status === 'finished').length;
+      
+      // Si ya terminaron todos los partidos del grupo
+      if (groupFinished === 10) {
+        const m11 = state.matches.find(m => m.id === 11);
+        const m12 = state.matches.find(m => m.id === 12);
+
+        // Si las semis aún no están definidas, definirlas
+        if (!m11.teamA) {
+          // Ordenar standings
+          const sorted = [...state.standings].sort((a, b) => {
+            if (b.pts !== a.pts) return b.pts - a.pts;
+            return b.g - a.g;
+          });
+
+          // Clasificados: top 4
+          // Semifinal 1 (11): 1 vs 4
+          m11.teamA = sorted[0].teamId;
+          m11.teamB = sorted[3].teamId;
+          m11.status = 'active';
+          
+          // Semifinal 2 (12): 2 vs 3
+          m12.teamA = sorted[1].teamId;
+          m12.teamB = sorted[2].teamId;
+          m12.status = 'active';
+        }
+      }
+
+      // Si terminaron las semifinales
+      const semisFinished = state.matches.filter(m => m.phase === 'semifinal' && m.status === 'finished').length;
+      if (semisFinished === 2) {
+        const m13 = state.matches.find(m => m.id === 13);
+        if (!m13.teamA) {
+          const m11 = state.matches.find(m => m.id === 11);
+          const m12 = state.matches.find(m => m.id === 12);
+
+          const winner11 = m11.scoreA > m11.scoreB ? m11.teamA : m11.teamB;
+          const winner12 = m12.scoreA > m12.scoreB ? m12.teamA : m12.teamB;
+
+          m13.teamA = winner11;
+          m13.teamB = winner12;
+          m13.status = 'active';
+        }
+      }
+
+      // Si terminó la final
+      const finalMatch = state.matches.find(m => m.id === 13);
+      if (finalMatch && finalMatch.status === 'finished') {
+        state.champion = finalMatch.scoreA > finalMatch.scoreB ? finalMatch.teamA : finalMatch.teamB;
+      }
+    }
+
+    // Reiniciar torneo completo
+    function resetTournament() {
+      if (!confirm("¿Seguro que deseas reiniciar el torneo? Se perderán las simulaciones y el historial de votos.")) return;
+      state.matches = JSON.parse(JSON.stringify(initialMatches));
+      state.userVotes = {};
+      state.userPoints = 0;
+      state.champion = null;
+      recalcStandings();
+      saveState();
+      initUI();
+      showTab('partidos');
+      showToast("¡Torneo reiniciado con éxito!");
+    }
+
+    // Mostrar notificaciones flotantes toast
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // Inicializar UI principal
+    function initUI() {
+      // Ocultar o mostrar gate screen
+      const gate = document.getElementById('gate-screen');
+      if (state.userName) {
+        gate.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => gate.classList.add('hidden'), 500);
+        document.body.style.overflow = "";
+      } else {
+        gate.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+        document.body.style.overflow = "hidden";
+        
+        // Reset to Step 1
+        const step1 = document.getElementById("gate-step1-view");
+        const step2 = document.getElementById("gate-step2-view");
+        if (step1) step1.style.display = "block";
+        if (step2) step2.style.display = "none";
+      }
+
+      // Actualizar pass bar
+      const nameLabel = document.getElementById('pass-name-label');
+      const avatar = document.getElementById('pass-avatar');
+      const pointsVal = document.getElementById('pass-points-val');
+      const predictionContainer = document.getElementById('pass-prediction-container');
+      const predictionVal = document.getElementById('pass-prediction-val');
+
+      if (nameLabel) nameLabel.innerText = state.userName || "Invitado";
+      if (avatar) avatar.innerText = getInitials(state.userName);
+      if (pointsVal) pointsVal.innerText = state.userPoints;
+
+      if (predictionContainer && predictionVal) {
+        const inlineSelect = document.getElementById('pass-prediction-select-inline');
+        predictionContainer.classList.remove('hidden');
+        predictionContainer.classList.add('flex');
+        
+        if (state.championPrediction) {
+          const team = teams[state.championPrediction];
+          predictionVal.innerText = team ? team.badge : state.championPrediction.toUpperCase();
+          predictionVal.classList.remove('hidden');
+          if (inlineSelect) inlineSelect.classList.add('hidden');
+        } else {
+          predictionVal.classList.add('hidden');
+          if (inlineSelect) inlineSelect.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Guardar predicción desde la barra superior de pase (caso de migración)
+    function setInlinePrediction(val) {
+      if (!val) return;
+      state.championPrediction = val;
+      saveState();
+      initUI();
+      showToast("¡Predicción de Campeón guardada! 🏆");
+    }
+
+    // Cargar e Inicializar en DOMContentLoaded
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initUI();
+      // Inicializar tab principal
+      showTab('partidos');
+    });
+
+    window.showGateStep2 = function() {
+      const step1 = document.getElementById("gate-step1-view");
+      const step2 = document.getElementById("gate-step2-view");
+      if (step1) step1.style.display = "none";
+      if (step2) step2.style.display = "block";
+    };
+  </script>
+</body>
+</html>

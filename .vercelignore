@@ -15,5 +15,11 @@ test_contract.pdf
 .flake8
 *.sh
 .git/
-
-
+projects/HealthyIce/
+projects/BoticaSilvestre/
+projects/WhiteClean/
+projects/uro-oncology/
+projects/ChileChillon/
+projects/GrupoGari/
+projects/Letrerama/
+projects/ni2/

@@ -1,0 +1,967 @@
+/* ==========================================================================
+   GRUPO GARI - SISTEMA DE DISEÑO TÉCNICO INDUSTRIAL (CSS)
+   Inspirado en Planos de Ingeniería, Rejillas de Precisión y Estructura B2B
+   ========================================================================== */
+
+/* --- Importación de Tipografías Geométricas y Monoespaciadas --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* --- Variables y Tokens de Diseño --- */
+:root {
+    /* Paleta Estricta Neutra Industrial + Acento de Advertencia Técnica */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    --bg-tertiary: #E9ECEF;
+    --bg-blueprint: #0A0D14; /* Usado para secciones de alto contraste */
+    
+    --text-primary: #121417;
+    --text-secondary: #495057;
+    --text-tertiary: #868E96;
+    --text-blueprint: #F8F9FA;
+    
+    --border-color: #DEE2E6;
+    --border-color-dark: #343A40;
+    --border-blueprint: #1E293B;
+    
+    --acento-warn: #FF9F1C;         /* Naranja de advertencia industrial */
+    --acento-warn-hover: #E65F00;   /* Naranja oscuro para hover */
+    --acento-ok: #20C997;           /* Verde de cumplimiento legal/normativo */
+    --acento-info: #0D6EFD;         /* Azul de información técnica */
+    
+    /* Fuentes */
+    --font-sans: 'Inter', sans-serif;
+    --font-tech: 'Space Grotesk', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    
+    /* Configuración de Rejilla de Plano (Blueprint Grid) */
+    --grid-size: 20px;
+    --grid-line-color: rgba(33, 37, 41, 0.035);
+    --grid-subline-color: rgba(33, 37, 41, 0.015);
+    
+    --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- Reseteo Estructural de Ingeniería --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+    /* Rejilla técnica de fondo simulando papel milimétrico */
+    background-image: 
+        linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-subline-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-subline-color) 1px, transparent 1px);
+    background-size: 
+        100px 100px, 
+        100px 100px, 
+        var(--grid-size) var(--grid-size), 
+        var(--grid-size) var(--grid-size);
+}
+
+/* --- Estructuración de Contenedores y Bordes de Planos --- */
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Rejilla de Planos con Líneas Ortogonales */
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1px;
+    background-color: var(--border-color);
+    border: 1px solid var(--border-color);
+}
+
+.tech-grid-item {
+    background-color: var(--bg-primary);
+    padding: 2rem;
+    position: relative;
+}
+
+/* --- Marcadores Técnicos de Esquina (Corner Crosshairs) --- */
+.tech-box {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: border-color var(--transition-smooth);
+}
+
+.tech-box::before, .tech-box::after,
+.tech-box > .corner-bottom-left, .tech-box > .corner-bottom-right {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-color: var(--text-tertiary);
+    border-style: solid;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Superior Izquierda */
+.tech-box::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+}
+
+/* Superior Derecha */
+.tech-box::after {
+    top: -1px;
+    right: -1px;
+    border-width: 2px 2px 0 0;
+}
+
+/* Inferior Izquierda */
+.tech-box .corner-bottom-left {
+    bottom: -1px;
+    left: -1px;
+    border-width: 0 0 2px 2px;
+}
+
+/* Inferior Derecha */
+.tech-box .corner-bottom-right {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+}
+
+.tech-box:hover {
+    border-color: var(--acento-warn);
+}
+
+/* Etiqueta Técnica Monoespaciada */
+.tech-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--acento-warn);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.tech-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--acento-warn);
+}
+
+.tech-tag.ok {
+    color: var(--acento-ok);
+}
+.tech-tag.ok::before {
+    background-color: var(--acento-ok);
+}
+
+/* --- Tipografía y Títulos Modulares --- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    text-wrap: balance;
+}
+
+h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    text-wrap: balance;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    font-family: var(--font-sans);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+}
+
+.text-mono {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+}
+
+/* --- Botones B2B Técnicos (CTAs) --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: var(--font-tech);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem 2rem;
+    border: 1px solid var(--text-primary);
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.btn:hover::after {
+    left: 100%;
+}
+
+.btn:hover {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.btn-warn {
+    border-color: var(--acento-warn);
+    background-color: var(--acento-warn);
+    color: var(--bg-blueprint);
+}
+
+.btn-warn:hover {
+    background-color: var(--bg-blueprint);
+    color: var(--acento-warn);
+    border-color: var(--bg-blueprint);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--text-primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+/* --- Encabezado de Página (Navigation) --- */
+.tech-header {
+    width: 100%;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.logo-symbol {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--text-primary);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-symbol::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-color: var(--acento-warn);
+    display: block;
+}
+
+.logo-text {
+    font-family: var(--font-tech);
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.tech-nav {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+.nav-link {
+    font-family: var(--font-tech);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color var(--transition-fast);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--acento-warn);
+    transition: width var(--transition-fast);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-primary);
+}
+
+/* --- Sección Hero Técnica --- */
+.hero-section {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-layout {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3rem;
+    align-items: center;
+}
+
+.hero-content {
+    grid-column: span 7;
+}
+
+.hero-blueprint {
+    grid-column: span 5;
+    background-color: var(--bg-blueprint);
+    border: 1px solid var(--border-color-dark);
+    padding: 2.5rem;
+    position: relative;
+    color: var(--text-blueprint);
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.hero-blueprint::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+    background-size: 15px 15px;
+    pointer-events: none;
+}
+
+.blueprint-header {
+    border-bottom: 1px solid var(--border-blueprint);
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--acento-warn);
+}
+
+.blueprint-body {
+    margin: 2rem 0;
+    font-family: var(--font-mono);
+}
+
+.blueprint-line {
+    font-size: 0.85rem;
+    color: #64748B;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.blueprint-line .highlight {
+    color: var(--text-blueprint);
+}
+
+.blueprint-render {
+    width: 100%;
+    height: 140px;
+    border: 1px dashed var(--border-blueprint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.blueprint-crosshair {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+}
+
+.blueprint-crosshair::before, .blueprint-crosshair::after {
+    content: '';
+    position: absolute;
+    background-color: var(--acento-warn);
+}
+
+.blueprint-crosshair::before {
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    left: 0;
+}
+
+.blueprint-crosshair::after {
+    width: 1px;
+    height: 100%;
+    left: 50%;
+    top: 0;
+}
+
+/* --- Selector de Segmento B2B --- */
+.b2b-selector-section {
+    padding: 3rem 0;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.b2b-layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.b2b-card {
+    cursor: pointer;
+    background-color: var(--bg-primary);
+    transition: all var(--transition-smooth);
+}
+
+.b2b-card.active {
+    border-color: var(--acento-warn);
+    box-shadow: 0 10px 30px rgba(255, 159, 28, 0.05);
+}
+
+.b2b-card.active::before {
+    border-color: var(--acento-warn);
+}
+
+/* --- Módulos de Soluciones (Grids de 3 Columnas) --- */
+.solutions-section {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.solution-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 380px;
+}
+
+.solution-icon-wrap {
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.solution-icon-wrap svg {
+    width: 24px;
+    height: 24px;
+}
+
+.solution-links {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.solution-link {
+    font-family: var(--font-tech);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color var(--transition-fast);
+}
+
+.solution-link::after {
+    content: '→';
+    transition: transform var(--transition-fast);
+}
+
+.solution-link:hover {
+    color: var(--acento-warn);
+}
+
+.solution-link:hover::after {
+    transform: translateX(4px);
+}
+
+/* --- Matriz de Cumplimiento Técnico (Compliance Matrix) --- */
+.matrix-section {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.matrix-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    margin-top: 3rem;
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    text-align: left;
+}
+
+.matrix-table th, .matrix-table td {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.matrix-table th {
+    background-color: var(--bg-secondary);
+    font-family: var(--font-tech);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+.matrix-table td.mono {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dot.ok { background-color: var(--acento-ok); }
+.status-dot.warn { background-color: var(--acento-warn); }
+.status-dot.info { background-color: var(--acento-info); }
+
+/* --- Formulario de Diagnóstico / Cotización Multietapa --- */
+.diagnostic-form-wrap {
+    max-width: 800px;
+    margin: 3rem auto 0 auto;
+}
+
+.form-step-indicators {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    position: relative;
+}
+
+.form-step-dot {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    padding-bottom: 1.1rem;
+    bottom: -1px;
+}
+
+.form-step-dot.active {
+    color: var(--acento-warn);
+    border-bottom: 2px solid var(--acento-warn);
+}
+
+.form-step-dot.completed {
+    color: var(--acento-ok);
+}
+
+.form-step-content {
+    display: none;
+}
+
+.form-step-content.active {
+    display: block;
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    display: block;
+    font-family: var(--font-tech);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--acento-warn);
+    background-color: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(255, 159, 28, 0.15);
+}
+
+.form-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.form-option-card {
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    cursor: pointer;
+    background-color: var(--bg-primary);
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+.form-option-card.selected {
+    border-color: var(--acento-warn);
+    background-color: var(--bg-secondary);
+}
+
+.form-option-card.selected::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--acento-warn);
+}
+
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Sección Lead Magnet (Descargas) --- */
+.download-section {
+    padding: 6rem 0;
+    background-color: var(--bg-blueprint);
+    color: var(--text-blueprint);
+    border-bottom: 1px solid var(--border-color-dark);
+    position: relative;
+}
+
+.download-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 25px 25px;
+    pointer-events: none;
+}
+
+.download-layout {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3rem;
+    align-items: center;
+}
+
+.download-content {
+    grid-column: span 7;
+}
+
+.download-visual {
+    grid-column: span 5;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.doc-blueprint {
+    width: 100%;
+    max-width: 280px;
+    height: 380px;
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.doc-blueprint::before {
+    content: 'CHECKLIST DE CUMPLIMIENTO';
+    position: absolute;
+    top: 2rem;
+    left: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--acento-warn);
+    letter-spacing: 0.1em;
+}
+
+.doc-schema {
+    margin: 4rem 0 2rem 0;
+    border-left: 2px solid #334155;
+    padding-left: 1rem;
+}
+
+.doc-line {
+    height: 6px;
+    background-color: #1E293B;
+    margin-bottom: 0.75rem;
+    border-radius: 2px;
+}
+
+.doc-line.short { width: 60%; }
+.doc-line.mid { width: 85%; }
+.doc-line.accent { background-color: rgba(255, 159, 28, 0.3); }
+
+/* --- Pie de Página (Footer) --- */
+.tech-footer {
+    padding: 4rem 0;
+    background-color: var(--bg-blueprint);
+    color: var(--text-blueprint);
+    border-top: 1px solid var(--border-color-dark);
+    margin-top: auto;
+}
+
+.footer-layout {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3rem;
+}
+
+.footer-brand {
+    grid-column: span 4;
+}
+
+.footer-links-col {
+    grid-column: span 2;
+}
+
+.footer-contact-col {
+    grid-column: span 4;
+}
+
+.footer-title {
+    font-family: var(--font-tech);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+    color: var(--text-blueprint);
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+    color: #94A3B8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--acento-warn);
+}
+
+.footer-bottom {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #1E293B;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: #64748B;
+}
+
+/* --- Animaciones CSS --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Soporte Responsivo (Mobile First y Adaptativo) --- */
+@media (max-width: 1024px) {
+    .hero-layout, .download-layout {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .hero-content, .hero-blueprint, .download-content, .download-visual {
+        grid-column: span 12;
+    }
+    .solutions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+    .b2b-layout, .solutions-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-options-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-layout {
+        grid-template-columns: 1fr;
+    }
+    .footer-brand, .footer-links-col, .footer-contact-col {
+        grid-column: span 12;
+    }
+    .header-container {
+        flex-direction: column;
+        height: auto;
+        padding: 1.5rem 0;
+        gap: 1.5rem;
+    }
+}

@@ -284,34 +284,6 @@ con todos los módulos de coherencia aplicables y parámetros técnicos 8K.""",
     },
     {
         "id": 9,
-        "key": "curadordam",
-        "name": "CuradorDAM",
-        "icon": "🏺",
-        "color": C.fg(245, 158, 11),      # Amber/Gold
-        "role": "Curador Profesional · Arquitecto Constructor (DAM)",
-        "file": "AGENT_CURADORDAM.md",
-        "badge": "Específico para DAM",
-        "tags": ["dam", "interiorismo", "azulejos", "pisos", "construcción", "curaduría"],
-        "when_to_use": [
-            "Encontrar equivalencias de materiales de catálogos DAM",
-            "Analizar una imagen de inspiración arquitectónica",
-            "Combinar formatos de pisos o recubrimientos",
-        ],
-        "activation": """Actúa como CuradorDAM, curador experto en interiores para DAM.
-
-TAREA: Analizar esta inspiración y proponer equivalencias.
-VIBRA DESEADA: [estilo / sensación]
-RESTRICCIONES: 
-- CERO alucinación de marcas (Solo Daltile, Urrea, Helvex, Total Shower).
-- Si hay un piso obligatorio, céntrate en él.
-
-ENTREGA ESPERADA:
-- Diagnóstico de vibra
-- Selección de productos reales
-- Instrucciones para IMAGENOLOGO para generar el render.""",
-    },
-    {
-        "id": 10,
         "key": "datos",
         "name": "DATOS",
         "icon": "📊",
@@ -451,7 +423,6 @@ def wizard():
         ("Necesito crear contenido B2B para LinkedIn, Twitter o email.",      ["launchbuzz"]),
         ("Necesito crear contenido viral B2C (TikTok, IG Reels) y hooks.",    ["viralgen"]),
         ("Necesito super-prompts 8K para fotografía publicitaria Gemini.",    ["imagenologo"]),
-        ("Tengo un proyecto de interiorismo/arquitectura específico de DAM.", ["curadordam"]),
         ("Necesito documentar endpoints, README o el proyecto.",              ["docagent"]),
         ("Tengo un problema de seguridad o quiero auditar el código.",        ["codeguardian"]),
         ("No sé bien, muéstrame todos los agentes.",                          None),

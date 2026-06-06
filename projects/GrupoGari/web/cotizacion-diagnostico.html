@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Técnico de Cumplimiento y Cotización | Grupo Gari</title>
+    <meta name="description" content="Inicie su autodiagnóstico de cumplimiento de normativas STPS, Protección Civil o ISO. Reciba una propuesta modular técnica a la medida en menos de 24 horas.">
+    <link rel="stylesheet" href="css/gari-tech.css">
+</head>
+<body>
+
+    <!-- NAV HEADER -->
+    <header class="tech-header">
+        <div class="container header-container">
+            <a href="index" class="logo-link">
+                <img src="Assets/fondo%20blanco.svg" alt="Grupo Gari Logo" style="height: 48px; width: auto; display: block;">
+            </a>
+            <nav>
+                <ul class="tech-nav">
+                    <li><a href="index" class="nav-link">Inicio</a></li>
+                    <li><a href="certificacion-iso" class="nav-link">Normativas ISO</a></li>
+                    <li><a href="certificacion-best-place-to-work" class="nav-link">Best Place to Work</a></li>
+                    <li><a href="permisos-gubernamentales" class="nav-link">Permisos Gobierno</a></li>
+                    <li><a href="proteccion-civil" class="nav-link">Protección Civil</a></li>
+                </ul>
+            </nav>
+            <div>
+                <a href="cotizacion-diagnostico" class="btn btn-outline active">Diagnóstico Técnico</a>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 4rem 0;">
+        <div class="container">
+            <!-- CABECERA DEL FORMULARIO -->
+            <div style="text-align: center; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <span class="tech-tag" style="justify-content: center;">PROCEDIMIENTO DE ENTRADA</span>
+                <h2>Autodiagnóstico Técnico Industrial</h2>
+                <p style="margin-top: 1rem;">
+                    Complete las variables exactas de su organización. Nuestro sistema tabulará su nivel de riesgo regulatorio para proponer soluciones de mitigación modular inmediata.
+                </p>
+            </div>
+
+            <!-- CONTENEDOR MULTIETAPA -->
+            <div class="diagnostic-form-wrap">
+                <!-- Indicador de Etapas -->
+                <div class="form-step-indicators" id="step-indicators-container">
+                    <div class="form-step-dot active" id="dot-step-1"><span>01</span> VARIABLES</div>
+                    <div class="form-step-dot" id="dot-step-2"><span>02</span> SOLUCIÓN</div>
+                    <div class="form-step-dot" id="dot-step-3"><span>03</span> CONTACTO</div>
+                </div>
+
+                <!-- Formulario Principal -->
+                <form id="diagnostic-form" novalidate>
+                    <!-- ==========================================
+                         ETAPA 1: VARIABLES CORPORATIVAS
+                         ========================================== -->
+                    <div class="form-step-content active" data-step-title="Variables Corporativas" id="step-1-content">
+                        <span class="tech-tag" style="margin-bottom: 1.5rem;">CÓDIGO: GARI-STEP.01</span>
+                        
+                        <!-- Rol de Decisión (Selector de Perfil) -->
+                        <div class="form-group">
+                            <label class="form-label">Posición Corporativa del Solicitante *</label>
+                            <input type="hidden" name="rol" id="field-rol" value="">
+                            <div class="form-options-grid" data-required-grid="true" data-target-input="field-rol">
+                                <div class="form-option-card" data-value="hr" id="role-option-hr">
+                                    <h4 style="margin-bottom: 0.5rem;">Gestión de Recursos Humanos / Capacitación</h4>
+                                    <p style="font-size: 0.85rem;">Enfoque en constancias DC-3, NOM-035, rotación y plan de capacitación anual.</p>
+                                </div>
+                                <div class="form-option-card" data-value="owner" id="role-option-owner">
+                                    <h4 style="margin-bottom: 0.5rem;">Dueño de Empresa / Operaciones</h4>
+                                    <p style="font-size: 0.85rem;">Enfoque en continuidad de planta, Protección Civil y prevención de multas.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Número de Empleados (Tamaño de Empresa) -->
+                        <div class="form-group">
+                            <label class="form-label" for="field-empleados">Volumen de Colaboradores en Planta *</label>
+                            <select class="form-select" id="field-empleados" required>
+                                <option value="" disabled selected>Seleccione el rango de empleados...</option>
+                                <option value="1-50">1 - 50 empleados (Micro/Pequeña)</option>
+                                <option value="51-250">51 - 250 empleados (Mediana)</option>
+                                <option value="251-500">251 - 500 empleados (Grande)</option>
+                                <option value="501+">Más de 500 empleados (Corporativo de alta densidad)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tipo de Industria -->
+                        <div class="form-group">
+                            <label class="form-label" for="field-industria">Giro o Industria de la Empresa *</label>
+                            <select class="form-select" id="field-industria" required>
+                                <option value="" disabled selected>Seleccione la industria...</option>
+                                <option value="manufactura">Manufactura / Producción Industrial</option>
+                                <option value="logistica">Logística / Almacén / Distribución</option>
+                                <option value="salud">Sector Salud / Farmacéutico</option>
+                                <option value="alimentos">Alimentos / Restaurantes / Consumo</option>
+                                <option value="servicios">Servicios Generales / Oficinas Corporativas</option>
+                                <option value="construccion">Construcción / Obra Civil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         ETAPA 2: REQUERIMIENTO O SOLUCIÓN
+                         ========================================== -->
+                    <div class="form-step-content" data-step-title="Requerimiento de Solución" id="step-2-content">
+                        <span class="tech-tag" style="margin-bottom: 1.5rem;">CÓDIGO: GARI-STEP.02</span>
+
+                        <!-- Certificación o Solicitud Requerida -->
+                        <div class="form-group">
+                            <label class="form-label">Solución o Certificación Requerida *</label>
+                            <input type="hidden" name="servicio" id="field-servicio" value="">
+                            <div class="form-options-grid" data-required-grid="true" data-target-input="field-servicio">
+                                <div class="form-option-card" data-value="ISO" id="service-option-iso">
+                                    <h4 style="margin-bottom: 0.5rem;">Consultoría / Implantación ISO</h4>
+                                    <p style="font-size: 0.85rem;">Estándares de calidad, salud laboral o ambiental (ISO 9001, 14001, 45001).</p>
+                                </div>
+                                <div class="form-option-card" data-value="Proteccion Civil" id="service-option-pc">
+                                    <h4 style="margin-bottom: 0.5rem;">Plan de Protección Civil y Peritaje</h4>
+                                    <p style="font-size: 0.85rem;">Programas internos y dictámenes estructurales de naves industriales.</p>
+                                </div>
+                                <div class="form-option-card" data-value="Best Place to Work" id="service-option-bptw">
+                                    <h4 style="margin-bottom: 0.5rem;">Clima Laboral & NOM-035/036</h4>
+                                    <p style="font-size: 0.85rem;">Higiene ocupacional, riesgos psicosociales y ergonomía organizacional.</p>
+                                </div>
+                                <div class="form-option-card" data-value="Permisos Gobierno" id="service-option-gov">
+                                    <h4 style="margin-bottom: 0.5rem;">Dictámenes Ambientales & Trámites</h4>
+                                    <p style="font-size: 0.85rem;">Defensa legal de auditorías federales y Manifestaciones de Impacto Ambiental.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detalles Adicionales -->
+                        <div class="form-group">
+                            <label class="form-label" for="field-mensaje">Detalles Adicionales del Proyecto</label>
+                            <textarea class="form-textarea" id="field-mensaje" rows="4" placeholder="Describa brevemente si cuenta con auditorías en curso, fechas límites de Protección Civil o requerimientos de DC-3..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         ETAPA 3: DATOS DE CONTACTO (CAPTURA LEAD)
+                         ========================================== -->
+                    <div class="form-step-content" data-step-title="Datos de Contacto" id="step-3-content">
+                        <span class="tech-tag" style="margin-bottom: 1.5rem;">CÓDIGO: GARI-STEP.03</span>
+
+                        <!-- Nombre Completo -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                            <div>
+                                <label class="form-label" for="field-nombre">Nombre *</label>
+                                <input type="text" class="form-input" id="field-nombre" placeholder="Nombre completo" required>
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-apellido">Apellidos</label>
+                                <input type="text" class="form-input" id="field-apellido" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <!-- Email y Teléfono -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                            <div>
+                                <label class="form-label" for="field-email">Email Corporativo *</label>
+                                <input type="email" class="form-input" id="field-email" placeholder="correo@empresa.com" required>
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-telefono">Celular / WhatsApp *</label>
+                                <input type="tel" class="form-input" id="field-telefono" placeholder="Ej: 33 0000 0000" required>
+                            </div>
+                        </div>
+
+                        <!-- Aviso Legal de Privacidad Obligatorio -->
+                        <div style="background-color: var(--bg-secondary); padding: 1.25rem; border: 1px solid var(--border-color); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+                            Al enviar el formulario, usted acepta que sus datos serán almacenados y tratados bajo nuestra política corporativa de privacidad para la cotización y envío de checklists técnicos. Cumplimos con la Ley Federal de Protección de Datos Personales en Posesión de Particulares de México.
+                        </div>
+                    </div>
+
+                    <!-- NAVEGACIÓN Y ENVIAR -->
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline" id="btn-prev" style="display: none;">← Etapa Anterior</button>
+                        <span style="flex-grow: 1;"></span>
+                        <button type="button" class="btn btn-warn" id="btn-next">Siguiente Etapa →</button>
+                        <button type="submit" class="btn btn-warn" id="btn-submit" style="display: none;">⚙️ Procesar Diagnóstico</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER TÉCNICO -->
+    <footer class="tech-footer">
+        <div class="container footer-layout">
+            <div class="footer-brand">
+                <img src="Assets/fondo%20gris.svg" alt="Grupo Gari Logo" style="height: 50px; width: auto; display: block; margin-bottom: 1.5rem;">
+                <p style="color: #94A3B8; font-size: 0.9rem;">
+                    Simplificación de cumplimiento industrial, higiene y medio ambiente. Validez oficial garantizada ante la STPS.
+                </p>
+            </div>
+            <div class="footer-links-col">
+                <h4 class="footer-title">Certificaciones</h4>
+                <ul class="footer-links">
+                    <li><a href="certificacion-iso">Sistemas ISO</a></li>
+                    <li><a href="certificacion-best-place-to-work">Best Place to Work</a></li>
+                    <li><a href="proteccion-civil">Protección Civil</a></li>
+                    <li><a href="permisos-gubernamentales">Permisos Gobierno</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-col">
+                <h4 class="footer-title">Contacto Rápido</h4>
+                <ul class="footer-links">
+                    <li><a href="tel:+523300000000">📞 Guardia Técnica</a></li>
+                    <li><a href="https://wa.me/523300000000" data-analytics="whatsapp" data-placement="diagnostico_landing">💬 WhatsApp Urgente</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <span>© 2026 Grupo Gari. Todos los derechos reservados conforme a normativas de la Ley Federal del Trabajo.</span>
+            <span>LIC. SEG-2026-PC</span>
+        </div>
+    </footer>
+
+    <script src="js/gari-core.js"></script>
+</body>
+</html>

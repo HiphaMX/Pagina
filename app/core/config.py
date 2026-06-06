@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     EMAILS_FROM_EMAIL: str = ""
     EMAILS_FROM_NAME: str = ""
+
+    GOOGLE_PLACES_API_KEY: str = ""
+
     class Config:
         env_file = ".env"
 

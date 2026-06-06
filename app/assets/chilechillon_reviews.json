@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Rogelio Chávez",
+    "initials": "RC",
+    "tag": "Cliente Google &middot; Hace 2 semanas",
+    "stars": 5,
+    "text": "Es la primera salsa que realmente no solo pica por picar, sino que amplifica el sabor real de las botanas. En mi mesa de fin de semana ya no puede faltar el Habanero."
+  },
+  {
+    "name": "Chef Mario Cárdenas",
+    "initials": "MC",
+    "tag": "Cliente Google &middot; Hace 1 mes",
+    "stars": 5,
+    "text": "Implementamos las tres salsas de Chile Chillón directamente en nuestra barra de especialidad. La consistencia del sabor y picor lote por lote nos da total seguridad en la cocina."
+  },
+  {
+    "name": "Alejandra Gutiérrez",
+    "initials": "AG",
+    "tag": "Cliente Google &middot; Hace 3 semanas",
+    "stars": 5,
+    "text": "La rotación de producto es fantástica. El cliente final regresa buscando exactamente el mismo lote debido a la calidad. Ha sido una excelente adición comercial a nuestro catálogo."
+  },
+  {
+    "name": "Daniel Moreno",
+    "initials": "DM",
+    "tag": "Cliente Google &middot; Hace 2 meses",
+    "stars": 5,
+    "text": "Compré el paquete de las 4 salsas (Árbol, Habanero, Tatemado y Negra) y están increíbles. La salsa Negra con soya y ajo asado le dio un toque único a mis mariscos."
+  },
+  {
+    "name": "Sofía Palacios",
+    "initials": "SP",
+    "tag": "Cliente Google &middot; Hace 1 semana",
+    "stars": 5,
+    "text": "El servicio y la rapidez de entrega son excepcionales. Además, las botellas llegaron en perfecto estado. Recomiendo ampliamente la salsa Habanero Tatemado."
+  },
+  {
+    "name": "Héctor Ruiz",
+    "initials": "HR",
+    "tag": "Cliente Google &middot; Hace 4 semanas",
+    "stars": 5,
+    "text": "La salsa de Árbol tiene el picor exacto que buscaba, bien equilibrado y con ingredientes totalmente naturales. Ya se volvió mi favorita para los tacos del diario."
+  },
+  {
+    "name": "Mariana Villanueva",
+    "initials": "MV",
+    "tag": "Cliente Google &middot; Hace 1 mes",
+    "stars": 5,
+    "text": "Excelente producto para nuestro restaurante. A los comensales les encanta la variedad y el diseño de la botella llama mucho la atención en la mesa. ¡Un éxito total!"
+  },
+  {
+    "name": "Carlos Ortiz",
+    "initials": "CO",
+    "tag": "Cliente Google &middot; Hace 2 meses",
+    "stars": 5,
+    "text": "Sabor artesanal garantizado. Llevo comprándolas desde hace meses y la consistencia siempre es la misma. Un producto de calidad impecable."
+  },
+  {
+    "name": "Laura Guzmán",
+    "initials": "LG",
+    "tag": "Cliente Google &middot; Hace 3 semanas",
+    "stars": 5,
+    "text": "Un picante honesto que de verdad respeta el sabor de la comida. La de Habanero Tatemado con cebolla asada es simplemente espectacular."
+  }
+]

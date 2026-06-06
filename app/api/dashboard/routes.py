@@ -1,8 +1,15 @@
 from fastapi import APIRouter, HTTPException, Depends
+from fastapi.responses import StreamingResponse
 from typing import Optional
+from sqlalchemy.orm import Session
+import io
+import csv
+
 from app.services.analytics import get_basic_metrics, get_top_sections, get_traffic_sources, CLIENTS
 from app.api.deps import get_current_active_user
 from app.schemas.user import User as UserSchema
+from app.core.database import get_db
+from app.models.chilechillon_lead import ChileChillonLead
 
 router = APIRouter()
 
@@ -67,4 +74,29 @@ def get_client_details(
         "traffic_sources": traffic_sources
         # Aquí después agregaremos eventos de FB/IG y clics a botones
     }
+
+@router.get("/chilechillon/quiniela/export")
+def export_chilechillon_leads(db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_active_user)):
+    """Genera un archivo CSV con todos los leads registrados para la quiniela."""
+    leads = db.query(ChileChillonLead).all()
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "Fecha Registro", "Nombre", "Email", "Telefono", "Prediccion Campeon"])
+    for lead in leads:
+        writer.writerow([
+            lead.id,
+            lead.created_at.strftime("%Y-%m-%d %H:%M:%S") if lead.created_at else "",
+            lead.nombre,
+            lead.email,
+            lead.telefono,
+            lead.prediccion_campeon.upper()
+        ])
+    
+    output.seek(0)
+    return StreamingResponse(
+        io.BytesIO(output.getvalue().encode("utf-8")),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=chilechillon_quiniela_leads.csv"}
+    )
 

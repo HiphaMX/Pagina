@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ni2 | Inmobiliaria de Respuesta y Trámite Ágil</title>
+  <meta name="description" content="Vendemos, rentamos o encontramos tu propiedad en tiempo récord. Valuamos en menos de 48 horas. Sin burocracia, sin exclusivas obligatorias y cero spam.">
+  
+  <!-- Estilos y Fuentes -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Cabecera / Header -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo-link" id="logo-header">
+        ni2<span class="logo-dot">.</span>
+      </a>
+      
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#properties-carousel" class="nav-link" onclick="scrollToElement('properties-carousel')">Ver Propiedades</a></li>
+          <li><a href="#propietarios-section" class="nav-link" onclick="scrollToElement('propietarios-section')">Soy Propietario</a></li>
+        </ul>
+      </nav>
+
+      <!-- Click de llamada directo (Táctil, 44px+ min height) -->
+      <a href="tel:5512345678" class="phone-cta-link" id="header-phone-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+        </svg>
+        <span class="phone-text">55-1234-5678</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. HERO SECTION & CONVERSION BOX -->
+    <section class="hero-section">
+      <div class="hero-container">
+        
+        <div class="hero-info">
+          <span class="badge-tagline reveal-on-load">Respuesta y Trámite Ágil</span>
+          <h1 class="hero-title reveal-on-load delay-100">Tu propiedad vendida, rentada o encontrada. <strong>Sin burocracia.</strong></h1>
+          <p class="hero-subtitle reveal-on-load delay-200" style="margin-bottom: 0;">Evaluamos tu inmueble en menos de 48 horas o filtramos tu búsqueda de forma rápida y sin spam. Tu tiempo es nuestro activo más valioso.</p>
+        </div>
+
+        <!-- Caja de Conversión Principal con Pestañas -->
+        <div class="conversion-box reveal-on-load delay-400">
+          <div class="tab-headers">
+            <button class="tab-btn active" id="tab-search">Quiero Comprar / Rentar</button>
+            <button class="tab-btn" id="tab-sell">Quiero Vender / Rentar Inmueble</button>
+          </div>
+
+          <!-- Pestaña 1: Buscador Rápido -->
+          <form class="tab-content active" id="content-search" action="#properties-carousel" onsubmit="scrollToElement('properties-carousel'); return false;">
+            <div class="form-grid-row">
+              <div class="form-group">
+                <label for="search-intent">¿Qué buscas?</label>
+                <select id="search-intent" name="intent">
+                  <option value="buy">Comprar Propiedad</option>
+                  <option value="rent">Rentar Propiedad</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="search-property-type">Tipo de inmueble</label>
+                <select id="search-property-type" name="type">
+                  <option value="house">Casa</option>
+                  <option value="apartment">Departamento</option>
+                  <option value="land">Terreno</option>
+                  <option value="office">Oficina</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column: span 2;">
+                <label for="search-location">Ubicación de interés</label>
+                <select id="search-location" name="location">
+                  <option value="zmg-providencia">Guadalajara - Providencia / Americana</option>
+                  <option value="zmg-zapopan">Zapopan - Puerta de Hierro / Valle Real</option>
+                  <option value="zmg-tlaquepaque">Tlaquepaque - Centro / Chapalita</option>
+                  <option value="zmg-tlajomulco">Tlajomulco - López Mateos / Bugambilias</option>
+                </select>
+              </div>
+              <div style="grid-column: span 2; margin-top: 0.5rem;">
+                <button type="submit" class="cta-button-accent" id="cta-hero-buscar">Buscar Propiedades</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Pestaña 2: Vendedores / Propietarios -->
+          <div class="tab-content" id="content-sell">
+            <div class="owner-quick-pitch">
+              <h3 style="font-size: 1.125rem; font-family: var(--font-sans); font-weight: 600;">¿Quieres vender o rentar sin intermediarios lentos?</h3>
+              <p>Evaluamos comercialmente tu propiedad en 48 horas sin costo. Diseñamos un plan de comercialización digital de alta velocidad adaptado a tu zona geográfica.</p>
+              <button class="cta-button-accent" id="cta-hero-vender" onclick="scrollToElement('propietarios-section')">
+                Iniciar Valuación en Línea
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila Completa de Viñetas de Confianza (Pie de Grilla Suizo) -->
+        <div class="trust-bullets-wrapper reveal-on-load delay-300">
+          <div class="trust-bullets">
+            <div class="bullet-item">
+              <svg class="bullet-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Valuación en &lt; 48 hrs</span>
+            </div>
+            <div class="bullet-item">
+              <svg class="bullet-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Respuesta WhatsApp en 10 min</span>
+            </div>
+            <div class="bullet-item">
+              <svg class="bullet-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span>Trámites 100% Seguros</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. FEATURES GRID (Estilo Tenity con bordes delgados) -->
+    <section class="features-section reveal-on-scroll">
+      <div class="grid-container">
+        
+        <div class="section-header">
+          <span class="badge-tagline">El método ni2</span>
+          <h2 class="section-title">¿Por qué somos una inmobiliaria de trámite ágil?</h2>
+          <p>Rediseñamos la experiencia inmobiliaria tradicional eliminando la burocracia que te hace perder tiempo y dinero.</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Card 1 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3>Valuación Ágil en 48 Horas</h3>
+            <p>Usamos análisis comparativo de mercado automatizado y cruzado con datos notariales para darte el precio de venta real en tiempo récord.</p>
+          </article>
+          
+          <!-- Card 2 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3>Filtrado de Compradores</h3>
+            <p>No perdemos el tiempo abriendo tu puerta a curiosos. Validamos la capacidad financiera y pre-crédito bancario de cada interesado antes de agendar.</p>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              </svg>
+            </div>
+            <h3>Cero Spam. Privacidad Absoluta.</h3>
+            <p>Protegemos tus datos de forma estricta. Te contactamos únicamente a través de canales directos que autorices y nunca vendemos tu información.</p>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. FORMULARIO DE CAPTACIÓN MULTIPASO PARA PROPIETARIOS -->
+    <section class="properties-section reveal-on-scroll" id="propietarios-section" style="background-color: var(--bg-primary);">
+      <div class="grid-container" style="max-width: 680px;">
+        
+        <div class="section-header">
+          <span class="badge-tagline">Paso ágil</span>
+          <h2 class="section-title">Registra tu propiedad y recibe tu valuación gratis</h2>
+          <p>Llena este breve formulario de 3 pasos. Un asesor experto evaluará tu inmueble y te contactará por WhatsApp en minutos.</p>
+        </div>
+
+        <div class="form-multistep">
+          <div class="form-multistep-header">
+            <div class="step-indicator">
+              <span>Registra tu inmueble</span>
+              <span id="current-step-label">Paso 1 de 3</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="form-progress-fill"></div>
+            </div>
+          </div>
+
+          <!-- Mensaje de Éxito Embebido -->
+          <div id="form-success-message" style="display: none; text-align: center; padding: 2rem 0;">
+            <div style="background-color: var(--accent-light); color: var(--accent-color); width: 4rem; height: 4rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 2.25rem; height: 2.25rem;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">¡Valuación Iniciada con Éxito!</h3>
+            <p style="margin-bottom: 1.5rem;">Hemos recibido los datos de tu inmueble. Nuestro analista experto está procesando la información y te contactará por WhatsApp en menos de 10 minutos para coordinar tu reporte comercial gratuito de 48 horas.</p>
+            <button class="cta-button-secondary" onclick="location.reload()" style="max-width: 240px;">Registrar otra propiedad</button>
+          </div>
+
+          <form id="propietarios-form">
+            <div id="form-multistep-inner">
+              
+              <!-- PASO 1: Datos Básicos del Inmueble -->
+              <div class="form-step active" data-step-name="datos_basicos">
+                <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">1. Tipo de inmueble y ubicación</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label>Tipo de Propiedad *</label>
+                  <div class="options-grid">
+                    <label class="option-card selected">
+                      <input type="radio" name="property-type" value="house" checked required>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                      <span>Casa</span>
+                    </label>
+                    <label class="option-card">
+                      <input type="radio" name="property-type" value="apartment" required>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <span>Departamento</span>
+                    </label>
+                    <label class="option-card">
+                      <input type="radio" name="property-type" value="land" required>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>Terreno</span>
+                    </label>
+                    <label class="option-card">
+                      <input type="radio" name="property-type" value="office" required>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <span>Oficina</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="owner-location">Ubicación o Alcaldía *</label>
+                  <select id="owner-location" name="owner-location" required>
+                    <option value="">Selecciona la zona...</option>
+                    <option value="guadalajara">Guadalajara (Providencia, Americana, Chapalita)</option>
+                    <option value="zapopan">Zapopan (Puerta de Hierro, Valle Real, Ciudad Granja)</option>
+                    <option value="tlaquepaque">Tlaquepaque (Centro, Chapalita Sur)</option>
+                    <option value="tlajomulco">Tlajomulco (Bugambilias, El Palomar, Santa Anita)</option>
+                  </select>
+                  <span class="form-error-msg" data-error-for="owner-location">Selecciona la ubicación de tu propiedad.</span>
+                </div>
+
+                <div class="form-navigation">
+                  <button type="button" class="cta-button-accent btn-next">Continuar</button>
+                </div>
+              </div>
+
+              <!-- PASO 2: Rango e Intención -->
+              <div class="form-step" data-step-name="valor_e_intencion">
+                <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">2. Rango de valor e intención de tiempo</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="price-range">Valor Comercial Estimado *</label>
+                  <select id="price-range" name="price-range" required>
+                    <option value="">Selecciona un rango estimado...</option>
+                    <option value="under-2m">Menos de $2,000,000 MXN</option>
+                    <option value="2m-4m">$2,000,000 - $4,000,000 MXN</option>
+                    <option value="4m-8m">$4,000,000 - $8,000,000 MXN</option>
+                    <option value="above-8m">Más de $8,000,000 MXN</option>
+                  </select>
+                  <span class="form-error-msg" data-error-for="price-range">Selecciona un rango comercial aproximado.</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label>¿Qué tanta prisa tienes por cerrar? *</label>
+                  <div class="options-grid" style="grid-template-columns: 1fr;">
+                    <label class="option-card" style="flex-direction: row; justify-content: flex-start; text-align: left; padding: 0.75rem 1rem;">
+                      <input type="radio" name="urgency" value="urgent" required>
+                      <div style="background: rgba(220, 38, 38, 0.1); color: var(--error-color); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">⚡</div>
+                      <div>
+                        <strong>Urgente</strong>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Quiero vender/rentar en menos de 30 días.</div>
+                      </div>
+                    </label>
+                    <label class="option-card" style="flex-direction: row; justify-content: flex-start; text-align: left; padding: 0.75rem 1rem;">
+                      <input type="radio" name="urgency" value="medium" required checked>
+                      <div style="background: rgba(5, 150, 105, 0.1); color: var(--accent-color); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">📅</div>
+                      <div>
+                        <strong>Intermedio</strong>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Tengo un margen de 1 a 3 meses.</div>
+                      </div>
+                    </label>
+                    <label class="option-card" style="flex-direction: row; justify-content: flex-start; text-align: left; padding: 0.75rem 1rem;">
+                      <input type="radio" name="urgency" value="evaluate" required>
+                      <div style="background: var(--bg-tertiary); color: var(--text-secondary); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">🔍</div>
+                      <div>
+                        <strong>Solo evaluar</strong>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Solo quiero conocer el valor comercial actual.</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-navigation">
+                  <button type="button" class="cta-button-secondary btn-prev">Atrás</button>
+                  <button type="button" class="cta-button-accent btn-next">Continuar</button>
+                </div>
+              </div>
+
+              <!-- PASO 3: Datos de Contacto Directo -->
+              <div class="form-step" data-step-name="contacto_directo">
+                <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">3. Datos de contacto ágil</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="owner-name">Nombre Completo *</label>
+                  <input type="text" id="owner-name" name="owner-name" placeholder="Escribe tu nombre y apellido" required autocomplete="name">
+                  <span class="form-error-msg" data-error-for="owner-name">Ingresa tu nombre completo.</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label for="owner-phone">WhatsApp / Celular de contacto *</label>
+                  <input type="tel" id="owner-phone" name="owner-phone" placeholder="10 dígitos ej. 5512345678" required autocomplete="tel">
+                  <span class="form-error-msg" data-error-for="owner-phone">Ingresa un número telefónico de 10 dígitos.</span>
+                  <span class="form-helper-text">Te contactaremos exclusivamente por este medio para coordinar la valuación en menos de 10 minutos. Cero llamadas molestas de publicidad.</span>
+                </div>
+
+                <div class="form-navigation">
+                  <button type="button" class="cta-button-secondary btn-prev">Atrás</button>
+                  <button type="submit" class="cta-button-accent">Quiero Valuación en 48 hrs</button>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. CAROUSEL DE PROPIEDADES DESTACADAS -->
+    <section class="properties-section reveal-on-scroll" id="properties-carousel-section">
+      <div class="grid-container">
+        
+        <div class="properties-carousel-header">
+          <div>
+            <span class="badge-tagline">Inventario Verificado</span>
+            <h2 class="section-title" style="margin-bottom: 0;">Propiedades Destacadas</h2>
+          </div>
+          
+          <div class="carousel-controls">
+            <button class="carousel-control-btn" id="carousel-btn-prev" aria-label="Anterior">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button class="carousel-control-btn" id="carousel-btn-next" aria-label="Siguiente">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="carousel-container" id="properties-carousel">
+          
+          <!-- Mensaje amigable cuando no hay resultados (Oculto por defecto) -->
+          <div id="no-properties-message" class="no-properties-container" style="display: none;">
+            <div class="no-properties-icon">🔍</div>
+            <h3 class="no-properties-title">No se encontraron propiedades</h3>
+            <p class="no-properties-text">No tenemos inmuebles activos con las características seleccionadas. Intenta cambiando tus filtros o solicita una valuación gratuita en línea.</p>
+            <button type="button" class="cta-button-secondary" id="btn-reset-filters">Restablecer Filtros</button>
+          </div>
+
+          <!-- Propiedad 1: Departamento en Providencia -->
+          <article class="property-card" data-intent="buy" data-type="apartment" data-location="zmg-providencia">
+            <div class="property-img-wrapper">
+              <div style="width:100%; height:100%; background: linear-gradient(135deg, #344152 0%, #0F172A 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <span class="property-badge">Venta</span>
+            </div>
+            
+            <div class="property-content">
+              <div class="property-price">$4,850,000 MXN</div>
+              <h3 class="property-title">Departamento en Providencia</h3>
+              <div class="property-location">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Guadalajara, Jalisco</span>
+              </div>
+              
+              <div class="property-specs">
+                <div class="property-spec-item">🛏️ <span>3 Rec.</span></div>
+                <div class="property-spec-item">🛁 <span>2 Baños</span></div>
+                <div class="property-spec-item">📐 <span>110 m²</span></div>
+              </div>
+              <a href="#" class="property-card-cta" onclick="alert('Detalles de propiedad (simulado)'); return false;">Ver Detalles</a>
+            </div>
+          </article>
+
+          <!-- Propiedad 2: Loft Moderno Colonia Americana -->
+          <article class="property-card" data-intent="rent" data-type="apartment" data-location="zmg-providencia">
+            <div class="property-img-wrapper">
+              <div style="width:100%; height:100%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <span class="property-badge" style="background-color: var(--accent-color);">Renta</span>
+            </div>
+            
+            <div class="property-content">
+              <div class="property-price">$26,500 MXN / mes</div>
+              <h3 class="property-title">Loft en Colonia Americana</h3>
+              <div class="property-location">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Guadalajara, Jalisco</span>
+              </div>
+              
+              <div class="property-specs">
+                <div class="property-spec-item">🛏️ <span>1 Rec.</span></div>
+                <div class="property-spec-item">🛁 <span>1.5 Baños</span></div>
+                <div class="property-spec-item">📐 <span>75 m²</span></div>
+              </div>
+              <a href="#" class="property-card-cta" onclick="alert('Detalles de propiedad (simulado)'); return false;">Ver Detalles</a>
+            </div>
+          </article>
+
+          <!-- Propiedad 3: Casa Vista Hermosa Bugambilias -->
+          <article class="property-card" data-intent="buy" data-type="house" data-location="zmg-tlajomulco">
+            <div class="property-img-wrapper">
+              <div style="width:100%; height:100%; background: linear-gradient(135deg, #0d9488 0%, #115e59 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <span class="property-badge">Venta</span>
+            </div>
+            
+            <div class="property-content">
+              <div class="property-price">$12,900,000 MXN</div>
+              <h3 class="property-title">Casa Vista Hermosa Bugambilias</h3>
+              <div class="property-location">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Zapopan, Jalisco</span>
+              </div>
+              
+              <div class="property-specs">
+                <div class="property-spec-item">🛏️ <span>4 Rec.</span></div>
+                <div class="property-spec-item">🛁 <span>4.5 Baños</span></div>
+                <div class="property-spec-item">📐 <span>320 m²</span></div>
+              </div>
+              <a href="#" class="property-card-cta" onclick="alert('Detalles de propiedad (simulado)'); return false;">Ver Detalles</a>
+            </div>
+          </article>
+
+          <!-- Propiedad 4: Terreno en Valle Real -->
+          <article class="property-card" data-intent="buy" data-type="land" data-location="zmg-zapopan">
+            <div class="property-img-wrapper">
+              <div style="width:100%; height:100%; background: linear-gradient(135deg, #64748b 0%, #334155 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <span class="property-badge">Venta</span>
+            </div>
+            
+            <div class="property-content">
+              <div class="property-price">$24,500,000 MXN</div>
+              <h3 class="property-title">Terreno en Valle Real</h3>
+              <div class="property-location">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Zapopan, Jalisco</span>
+              </div>
+              
+              <div class="property-specs">
+                <div class="property-spec-item">🌲 <span>Zona Res.</span></div>
+                <div class="property-spec-item">⚡ <span>Servicios</span></div>
+                <div class="property-spec-item">📐 <span>550 m²</span></div>
+              </div>
+              <a href="#" class="property-card-cta" onclick="alert('Detalles de propiedad (simulado)'); return false;">Ver Detalles</a>
+            </div>
+          </article>
+
+          <!-- Propiedad 5: Oficina Corporativa Puerta de Hierro -->
+          <article class="property-card" data-intent="rent" data-type="office" data-location="zmg-zapopan">
+            <div class="property-img-wrapper">
+              <div style="width:100%; height:100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span class="property-badge" style="background-color: var(--accent-color);">Renta</span>
+            </div>
+            
+            <div class="property-content">
+              <div class="property-price">$85,000 MXN / mes</div>
+              <h3 class="property-title">Oficina Corporativa Puerta de Hierro</h3>
+              <div class="property-location">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Zapopan, Jalisco</span>
+              </div>
+              
+              <div class="property-specs">
+                <div class="property-spec-item">💼 <span>Equipada</span></div>
+                <div class="property-spec-item">🛁 <span>2 Baños</span></div>
+                <div class="property-spec-item">📐 <span>180 m²</span></div>
+              </div>
+              <a href="#" class="property-card-cta" onclick="alert('Detalles de propiedad (simulado)'); return false;">Ver Detalles</a>
+            </div>
+          </article>
+
+          <!-- Propiedad 6: Penthouse en Chapalita -->
+          <article class="property-card" data-intent="buy" data-type="apartment" data-location="zmg-tlaquepaque">
+            <div class="property-img-wrapper">
+              <div style="width:100%; height:100%; background: linear-gradient(135deg, #344152 0%, #1e293b 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <span class="property-badge">Venta</span>
+            </div>
+            
+            <div class="property-content">
+              <div class="property-price">$9,200,000 MXN</div>
+              <h3 class="property-title">Penthouse en Chapalita</h3>
+              <div class="property-location">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Guadalajara, Jalisco</span>
+              </div>
+              
+              <div class="property-specs">
+                <div class="property-spec-item">🛏️ <span>3 Rec.</span></div>
+                <div class="property-spec-item">🛁 <span>3.5 Baños</span></div>
+                <div class="property-spec-item">📐 <span>210 m²</span></div>
+              </div>
+              <a href="#" class="property-card-cta" onclick="alert('Detalles de propiedad (simulado)'); return false;">Ver Detalles</a>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="grid-container footer-container">
+      <div>
+        <p style="font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+          ni2<span style="color: var(--accent-color);">.</span>
+        </p>
+        <p style="max-width: 320px; font-size: 0.8125rem;">Plataforma de intermediación inmobiliaria de alta velocidad en la ZMG (Jalisco). Cero burocracia, valuaciones precisas y absoluta seriedad.</p>
+      </div>
+      
+      <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+        <div class="footer-links">
+          <a href="#" class="footer-link">Aviso de Privacidad</a>
+          <span style="color: var(--border-dark)">|</span>
+          <a href="#" class="footer-link">Términos y Condiciones</a>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-light);">&copy; 2026 ni2 Inmobiliaria Ágil. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>

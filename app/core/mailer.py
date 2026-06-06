@@ -896,3 +896,198 @@ async def send_chilechillon_notification_team(form_data):
         logger.error(f"Fallo al enviar notificación de Chile Chillón al equipo: {str(e)}")
         return False
 
+
+async def send_grupogari_confirmation_email(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a prospecto Grupo Gari {form_data.email}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Grupo Gari | Cumplimiento Regulatorio <contacto@grupogari.com>"
+    message["To"] = form_data.email
+    message.add_header('Reply-To', 'contacto@grupogari.com')
+    message["Subject"] = f"Autodiagnóstico Recibido - Registro GARI-{form_data.nombre.upper()} 📄"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="grupogari.com")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin detalles adicionales'
+    rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
+
+    html_content = f"""
+    <html>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+            
+            <!-- Header Técnico Estilo Blueprint -->
+            <div style="background-color: #0A0D14; padding: 30px 20px; text-align: center; border-bottom: 4px solid #FF9F1C;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 2px;">GRUPO <span style="color: #FF9F1C;">GARI</span></h1>
+                <p style="color: #64748B; margin: 5px 0 0 0; font-size: 11px; font-family: monospace; letter-spacing: 1px; text-transform: uppercase;">[REGULACIÓN · HIGIENE · SEGURIDAD]</p>
+            </div>
+            
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 40px 30px;">
+                <h2 style="color: #0A0D14; font-size: 20px; font-weight: 700; margin-top: 0; margin-bottom: 20px;">Estimado(a) {form_data.nombre},</h2>
+                <p style="font-size: 15px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
+                    Confirmamos la recepción de las variables operativas de su empresa para el proceso de autodiagnóstico preliminar de cumplimiento industrial. Nuestro departamento de ingeniería regulatoria está analizando la información suministrada para emitir su matriz de soluciones técnicas modulares.
+                </p>
+                
+                <!-- Resumen de Variables Capturadas -->
+                <div style="background-color: #f8fafc; border-left: 4px solid #FF9F1C; padding: 20px; border-radius: 0 12px 12px 0; margin-bottom: 30px; border: 1px solid #e2e8f0; border-left-width: 4px;">
+                    <h3 style="color: #0A0D14; font-size: 14px; font-weight: 700; margin-top: 0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Variables de Diagnóstico Registradas:</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.5; font-family: sans-serif;">
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; width: 140px; font-weight: 600;">Posición B2B:</td>
+                            <td style="padding: 4px 0; color: #1e293b; font-weight: bold;">{rol_text}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600;">Industria:</td>
+                            <td style="padding: 4px 0; color: #1e293b; text-transform: uppercase;">{form_data.industria}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600;">Volumen de Personal:</td>
+                            <td style="padding: 4px 0; color: #1e293b;">{form_data.empleados} colaboradores</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600;">Servicio Requerido:</td>
+                            <td style="padding: 4px 0; color: #1e293b; font-weight: bold;">{form_data.servicio}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0; color: #64748b; font-weight: 600; vertical-align: top;">Requerimientos:</td>
+                            <td style="padding: 4px 0; color: #1e293b; font-style: italic;">{mensaje_formatted}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 0;">
+                    Nuestro equipo técnico se comunicará en un plazo máximo de 24 horas hábiles para presentar la propuesta económica de cumplimiento y agendamiento preventivo de firmas autorizadas ante Protección Civil y la STPS.
+                </p>
+            </div>
+            
+            <!-- Footer -->
+            <div style="background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8;">
+                <p style="margin: 0 0 10px 0;">Este es un aviso procedimental automatizado de Grupo Gari.</p>
+                <p style="margin: 0 0 15px 0;"><strong>Grupo Gari | Consultoría de Cumplimiento Regulatorio</strong></p>
+                <div style="margin-bottom: 0;">
+                    <a href="https://wa.me/523300000000" style="color: #FF9F1C; text-decoration: none; font-weight: bold;">Canal Directo de WhatsApp</a>
+                </div>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info(f"Correo de confirmación Grupo Gari enviado exitosamente a {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de confirmación Grupo Gari a {form_data.email}: {str(e)}")
+        return False
+
+
+async def send_grupogari_notification_team(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a equipo Grupo Gari")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Grupo Gari Web <contacto@grupogari.com>"
+    message["To"] = settings.EMAILS_FROM_EMAIL
+    message.add_header('Reply-To', form_data.email)
+    message["Subject"] = f"🚨 NUEVO DIAGNÓSTICO WEB GARI: {form_data.nombre.upper()} - {form_data.servicio.upper()}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="grupogari.com")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
+    rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
+
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333333; background-color: #f1f5f9; padding: 20px; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
+            
+            <div style="background-color: #0A0D14; padding: 20px; text-align: center; color: white; border-bottom: 4px solid #FF9F1C;">
+                <h2 style="margin: 0; font-size: 18px; color: #ffffff;">🚨 NUEVA SOLICITUD DE DIAGNÓSTICO</h2>
+                <p style="margin: 5px 0 0 0; font-size: 11px; color: #FF9F1C; font-weight: bold; font-family: monospace;">[Ecosistema Grupo Gari]</p>
+            </div>
+            
+            <div style="padding: 25px;">
+                <p style="margin-top: 0; font-size: 14px; color: #475569;">Se han capturado las siguientes variables desde la plataforma de autodiagnóstico:</p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; width: 160px; background-color: #f8fafc; font-size: 13px;">Prospecto:</td>
+                        <td style="padding: 10px; color: #1e293b; font-size: 13px;">{form_data.nombre} {form_data.apellido}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; font-size: 13px;">Email Corporativo:</td>
+                        <td style="padding: 10px; color: #1e293b; font-size: 13px;"><a href="mailto:{form_data.email}" style="color: #FF9F1C; font-weight: bold; text-decoration: none;">{form_data.email}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; font-size: 13px;">Teléfono / WhatsApp:</td>
+                        <td style="padding: 10px; color: #1e293b; font-size: 13px;"><a href="tel:{form_data.telefono}" style="color: #0A0D14; font-weight: bold; text-decoration: none;">{form_data.telefono}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; font-size: 13px;">Rol B2B:</td>
+                        <td style="padding: 10px; color: #1e293b; font-size: 13px;">{rol_text}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; font-size: 13px;">Colaboradores:</td>
+                        <td style="padding: 10px; color: #1e293b; font-size: 13px;">{form_data.empleados} empleados</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; font-size: 13px;">Giro de Industria:</td>
+                        <td style="padding: 10px; color: #1e293b; text-transform: uppercase; font-size: 13px;">{form_data.industria}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; font-size: 13px;">Servicio Requerido:</td>
+                        <td style="padding: 10px; color: #1e293b; font-weight: bold; font-size: 13px;">{form_data.servicio}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold; color: #0A0D14; background-color: #f8fafc; vertical-align: top; font-size: 13px;">Detalles:</td>
+                        <td style="padding: 10px; color: #1e293b; line-height: 1.5; font-style: italic; font-size: 13px;">{mensaje_formatted}</td>
+                    </tr>
+                </table>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://wa.me/{form_data.telefono.replace(' ', '').replace('+', '')}" style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                        💬 Contactar por WhatsApp de Inmediato
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #cbd5e1;">
+                Mensaje generado de forma automática por el sistema de Grupo Gari.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info("Notificación de lead Grupo Gari enviada con éxito al equipo.")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación de Grupo Gari al equipo: {str(e)}")
+        return False
+
+
