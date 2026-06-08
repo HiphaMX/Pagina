@@ -1052,7 +1052,7 @@ function App() {
                     <div style={{ maxWidth: '400px', margin: '2rem auto', textAlign: 'center' }}>
                       <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Acceso Restringido</h2>
                       <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                        Esta sección está protegida. Ingresa la contraseña de socio comercial para continuar:
+                        Esta sección está protegida. Ingresa la contraseña para continuar
                       </p>
                       <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <input
