@@ -212,6 +212,27 @@ function App() {
   });
   const [isPartnerSubmitting, setIsPartnerSubmitting] = useState(false);
   const [partnerSubmitSuccess, setPartnerSubmitSuccess] = useState(false);
+  const [partnerInputPassword, setPartnerInputPassword] = useState('');
+  const [isPartnerUnlocked, setIsPartnerUnlocked] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  useEffect(() => {
+    if (legalModal !== 'partners') {
+      setIsPartnerUnlocked(false);
+      setPartnerInputPassword('');
+      setPasswordError(false);
+    }
+  }, [legalModal]);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (partnerInputPassword === 'HealthyIce2026') {
+      setIsPartnerUnlocked(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  };
 
   useEffect(() => {
     const today = new Date();
@@ -1027,20 +1048,52 @@ function App() {
 
               {legalModal === 'partners' && (
                 <div style={{ color: '#101729' }}>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Socios Comerciales</h2>
-                  <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-                    Completa el formulario a continuación para generar tu contrato de distribución y alianza comercial de HealthyIce de forma digital.
-                  </p>
-
-                  {partnerSubmitSuccess ? (
-                    <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
-                      <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 700 }}>¡Contrato Generado con Éxito!</h3>
-                      <p style={{ color: '#64748b', lineHeight: 1.6 }}>
-                        El contrato en formato PDF se ha generado e iniciado su descarga en tu navegador para su impresión y firma física. ¡Bienvenido a la red de socios comerciales de HealthyIce!
+                  {!isPartnerUnlocked ? (
+                    <div style={{ maxWidth: '400px', margin: '2rem auto', textAlign: 'center' }}>
+                      <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Acceso Restringido</h2>
+                      <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                        Esta sección está protegida. Ingresa la contraseña de socio comercial para continuar:
                       </p>
+                      <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <input
+                          type="password"
+                          placeholder="Contraseña"
+                          required
+                          value={partnerInputPassword}
+                          onChange={e => {
+                            setPartnerInputPassword(e.target.value);
+                            setPasswordError(false);
+                          }}
+                          style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: passwordError ? '1.5px solid #ff3366' : '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', textAlign: 'center' }}
+                        />
+                        {passwordError && (
+                          <span style={{ color: '#ff3366', fontSize: '0.85rem', fontWeight: 600 }}>Contraseña incorrecta. Intenta de nuevo.</span>
+                        )}
+                        <button
+                          type="submit"
+                          className="btn btn-primary"
+                          style={{ padding: '0.75rem 1.5rem', fontSize: '1rem', width: '100%', borderRadius: '12px', cursor: 'pointer' }}
+                        >
+                          Desbloquear
+                        </button>
+                      </form>
                     </div>
                   ) : (
-                    <form onSubmit={handlePartnerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <>
+                      <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Socios Comerciales</h2>
+                      <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                        Completa el formulario a continuación para generar tu contrato de distribución y alianza comercial de HealthyIce de forma digital.
+                      </p>
+
+                      {partnerSubmitSuccess ? (
+                        <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
+                          <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 700 }}>¡Contrato Generado con Éxito!</h3>
+                          <p style={{ color: '#64748b', lineHeight: 1.6 }}>
+                            El contrato en formato PDF se ha generado e iniciado su descarga en tu navegador para su impresión y firma física. ¡Bienvenido a la red de socios comerciales de HealthyIce!
+                          </p>
+                        </div>
+                      ) : (
+                        <form onSubmit={handlePartnerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                       <div className="partner-form-grid">
                         <div style={{ gridColumn: 'span 2' }}>
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Razón Social / Nombre Comercial *</label>
@@ -1346,10 +1399,12 @@ function App() {
                       >
                         {isPartnerSubmitting ? 'Procesando contrato...' : 'Generar y Enviar Contrato'}
                       </button>
-                    </form>
-                  )}
-                </div>
-              )}
+                      </form>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
             </motion.div>
           </motion.div>
         )}
