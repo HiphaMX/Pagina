@@ -233,13 +233,24 @@ function App() {
   const handlePartnerSubmit = async (e) => {
     e.preventDefault();
     setIsPartnerSubmitting(true);
+    
+    // Convert all string fields to uppercase before sending
+    const uppercasedForm = {};
+    for (const key in partnerForm) {
+      if (typeof partnerForm[key] === 'string') {
+        uppercasedForm[key] = partnerForm[key].toUpperCase();
+      } else {
+        uppercasedForm[key] = partnerForm[key];
+      }
+    }
+
     try {
       const response = await fetch('https://www.hipha.mx/api/contact/healthyice/contract', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(partnerForm)
+        body: JSON.stringify(uppercasedForm)
       });
       if (response.ok) {
         // Recibir como archivo blob e iniciar descarga
@@ -1038,7 +1049,7 @@ function App() {
                             required
                             placeholder="e.g. Distribuidora del Occidente S.A."
                             value={partnerForm.razon_social}
-                            onChange={e => setPartnerForm({ ...partnerForm, razon_social: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, razon_social: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1049,7 +1060,7 @@ function App() {
                             required
                             placeholder="e.g. Juan Pérez"
                             value={partnerForm.nombre}
-                            onChange={e => setPartnerForm({ ...partnerForm, nombre: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, nombre: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1060,7 +1071,7 @@ function App() {
                             required
                             placeholder="e.g. Abarrotes El Puerto"
                             value={partnerForm.nombre_establecimiento}
-                            onChange={e => setPartnerForm({ ...partnerForm, nombre_establecimiento: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, nombre_establecimiento: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1071,7 +1082,7 @@ function App() {
                             required
                             placeholder="e.g. XAXX010101000"
                             value={partnerForm.rfc}
-                            onChange={e => setPartnerForm({ ...partnerForm, rfc: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, rfc: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1082,7 +1093,7 @@ function App() {
                             required
                             placeholder="e.g. 3312345678"
                             value={partnerForm.telefono}
-                            onChange={e => setPartnerForm({ ...partnerForm, telefono: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, telefono: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1093,7 +1104,7 @@ function App() {
                             required
                             placeholder="e.g. Av. Vallarta 1234, Guadalajara, Jal."
                             value={partnerForm.domicilio}
-                            onChange={e => setPartnerForm({ ...partnerForm, domicilio: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, domicilio: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1104,7 +1115,7 @@ function App() {
                             required
                             placeholder="e.g. contacto@socio.com"
                             value={partnerForm.email}
-                            onChange={e => setPartnerForm({ ...partnerForm, email: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, email: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1115,7 +1126,7 @@ function App() {
                             required
                             placeholder="e.g. Guadalajara, Jalisco"
                             value={partnerForm.ciudad_jurisdiccion}
-                            onChange={e => setPartnerForm({ ...partnerForm, ciudad_jurisdiccion: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, ciudad_jurisdiccion: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1126,7 +1137,7 @@ function App() {
                             required
                             placeholder="e.g. FRANCISCO DELGADILLO"
                             value={partnerForm.representante_healthyice}
-                            onChange={e => setPartnerForm({ ...partnerForm, representante_healthyice: e.target.value })}
+                            onChange={e => setPartnerForm({ ...partnerForm, representante_healthyice: e.target.value.toUpperCase() })}
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
@@ -1164,7 +1175,7 @@ function App() {
                               required
                               placeholder="Escriba el esquema acordado"
                               value={partnerForm.esquema_comercial_otro}
-                              onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial_otro: e.target.value })}
+                              onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial_otro: e.target.value.toUpperCase() })}
                               style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                             />
                           </div>
@@ -1203,7 +1214,7 @@ function App() {
                               required
                               placeholder="Escriba el método de pago acordado"
                               value={partnerForm.metodo_pago_otro}
-                              onChange={e => setPartnerForm({ ...partnerForm, metodo_pago_otro: e.target.value })}
+                              onChange={e => setPartnerForm({ ...partnerForm, metodo_pago_otro: e.target.value.toUpperCase() })}
                               style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                             />
                           </div>
