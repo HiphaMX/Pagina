@@ -13,6 +13,7 @@ from app.core.mailer import (
     send_healthyice_order_team,
     send_healthyice_contract_customer,
     send_healthyice_contract_team,
+    generate_healthyice_contract_pdf,
     send_whiteclean_confirmation_email,
     send_whiteclean_notification_team,
     send_chilechillon_confirmation_email,
