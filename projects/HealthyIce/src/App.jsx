@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2 } from 'lucide-react';
+import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight } from 'lucide-react';
 
 const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -215,12 +215,14 @@ function App() {
   const [partnerInputPassword, setPartnerInputPassword] = useState('');
   const [isPartnerUnlocked, setIsPartnerUnlocked] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [activePartnerSection, setActivePartnerSection] = useState('menu'); // 'menu' or 'contract_form'
 
   useEffect(() => {
     if (legalModal !== 'partners') {
       setIsPartnerUnlocked(false);
       setPartnerInputPassword('');
       setPasswordError(false);
+      setActivePartnerSection('menu');
     }
   }, [legalModal]);
 
@@ -1080,10 +1082,225 @@ function App() {
                     </div>
                   ) : (
                     <>
-                      <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Socios Comerciales</h2>
-                      <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-                        Completa el formulario a continuación para generar tu contrato de distribución y alianza comercial de HealthyIce de forma digital.
-                      </p>
+                      {activePartnerSection === 'menu' ? (
+                        <div>
+                          <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Socios Comerciales</h2>
+                          <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                            Selecciona una opción para continuar:
+                          </p>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+                            <button
+                              onClick={() => setActivePartnerSection('contract_form')}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '1.25rem',
+                                borderRadius: '16px',
+                                border: '1px solid #cbd5e1',
+                                background: '#f8fafc',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                                transition: 'all 0.2s ease',
+                                width: '100%',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f1f5f9';
+                                e.currentTarget.style.borderColor = '#98BC3C';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#f8fafc';
+                                e.currentTarget.style.borderColor = '#cbd5e1';
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <FileText size={24} color="#98BC3C" />
+                                <div>
+                                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Contrato de colaboración comercial</h4>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Genera y descarga el contrato personalizado para firmar</p>
+                                </div>
+                              </div>
+                              <ChevronRight size={20} color="#64748b" />
+                            </button>
+
+                            {/* Button 2: Entrega mercancía a consigna */}
+                            <a
+                              href="#void-consigna"
+                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '1.25rem',
+                                borderRadius: '16px',
+                                border: '1px solid #e2e8f0',
+                                background: '#f8fafc',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: '#101729',
+                                transition: 'all 0.2s ease',
+                                width: '100%',
+                                opacity: 0.8
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f1f5f9';
+                                e.currentTarget.style.borderColor = '#cbd5e1';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#f8fafc';
+                                e.currentTarget.style.borderColor = '#e2e8f0';
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <FileText size={24} color="#64748b" />
+                                <div>
+                                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Entrega mercancía a consigna</h4>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Documento de entrega (Próximamente)</p>
+                                </div>
+                              </div>
+                              <ChevronRight size={20} color="#cbd5e1" />
+                            </a>
+
+                            {/* Button 3: Cobro de mercancía */}
+                            <a
+                              href="#void-cobro"
+                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '1.25rem',
+                                borderRadius: '16px',
+                                border: '1px solid #e2e8f0',
+                                background: '#f8fafc',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: '#101729',
+                                transition: 'all 0.2s ease',
+                                width: '100%',
+                                opacity: 0.8
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f1f5f9';
+                                e.currentTarget.style.borderColor = '#cbd5e1';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#f8fafc';
+                                e.currentTarget.style.borderColor = '#e2e8f0';
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <FileText size={24} color="#64748b" />
+                                <div>
+                                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Cobro de mercancía</h4>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Control y recibo de cobros (Próximamente)</p>
+                                </div>
+                              </div>
+                              <ChevronRight size={20} color="#cbd5e1" />
+                            </a>
+
+                            {/* Button 4: Registro de socio de negocio */}
+                            <a
+                              href="#void-registro"
+                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '1.25rem',
+                                borderRadius: '16px',
+                                border: '1px solid #e2e8f0',
+                                background: '#f8fafc',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: '#101729',
+                                transition: 'all 0.2s ease',
+                                width: '100%',
+                                opacity: 0.8
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f1f5f9';
+                                e.currentTarget.style.borderColor = '#cbd5e1';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#f8fafc';
+                                e.currentTarget.style.borderColor = '#e2e8f0';
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <FileText size={24} color="#64748b" />
+                                <div>
+                                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Registro de socio de negocio</h4>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Formato de alta de socio comercial (Próximamente)</p>
+                                </div>
+                              </div>
+                              <ChevronRight size={20} color="#cbd5e1" />
+                            </a>
+
+                            {/* Button 5: Responsiva de congelador */}
+                            <a
+                              href="#void-responsiva"
+                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '1.25rem',
+                                borderRadius: '16px',
+                                border: '1px solid #e2e8f0',
+                                background: '#f8fafc',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: '#101729',
+                                transition: 'all 0.2s ease',
+                                width: '100%',
+                                opacity: 0.8
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f1f5f9';
+                                e.currentTarget.style.borderColor = '#cbd5e1';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#f8fafc';
+                                e.currentTarget.style.borderColor = '#e2e8f0';
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <FileText size={24} color="#64748b" />
+                                <div>
+                                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Responsiva de congelador</h4>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Carta responsiva de equipo de frío (Próximamente)</p>
+                                </div>
+                              </div>
+                              <ChevronRight size={20} color="#cbd5e1" />
+                            </a>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <button
+                            onClick={() => setActivePartnerSection('menu')}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              background: 'none',
+                              border: 'none',
+                              color: '#98BC3C',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              fontSize: '0.95rem',
+                              marginBottom: '1rem',
+                              padding: 0,
+                              fontFamily: "'Quicksand', sans-serif"
+                            }}
+                          >
+                            <ArrowLeft size={18} /> Volver al menú
+                          </button>
+                          <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Socios Comerciales</h2>
+                          <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                            Completa el formulario a continuación para generar tu contrato de distribución y alianza comercial de HealthyIce de forma digital.
+                          </p>
 
                       {partnerSubmitSuccess ? (
                         <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
@@ -1401,10 +1618,12 @@ function App() {
                       </button>
                       </form>
                     )}
-                  </>
+                  </div>
                 )}
-              </div>
+              </>
             )}
+          </div>
+        )}
             </motion.div>
           </motion.div>
         )}
