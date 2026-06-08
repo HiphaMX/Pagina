@@ -86,6 +86,95 @@ const FlavorCard = ({ flavor, idx, onAddToCart }) => {
   );
 };
 
+const SignatureCanvas = ({ onSave }) => {
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+  }, []);
+
+  const getCoordinates = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  };
+
+  const startDrawing = (e) => {
+    const coords = getCoordinates(e);
+    const ctx = canvasRef.current.getContext('2d');
+    ctx.beginPath();
+    ctx.moveTo(coords.x, coords.y);
+    setIsDrawing(true);
+  };
+
+  const draw = (e) => {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const coords = getCoordinates(e);
+    const ctx = canvasRef.current.getContext('2d');
+    ctx.lineTo(coords.x, coords.y);
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    if (isDrawing) {
+      setIsDrawing(false);
+      const canvas = canvasRef.current;
+      onSave(canvas.toDataURL());
+    }
+  };
+
+  const clear = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    onSave('');
+  };
+
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+        <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#101729' }}>Firma del Socio Comercial (Representante Legal) *</span>
+        <button type="button" onClick={clear} style={{ fontSize: '0.75rem', color: '#ff3366', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>Limpiar firma</button>
+      </div>
+      <canvas
+        ref={canvasRef}
+        width={500}
+        height={150}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
+        style={{
+          width: '100%',
+          height: '150px',
+          background: '#f8fafc',
+          border: '2px dashed #cbd5e1',
+          borderRadius: '12px',
+          cursor: 'crosshair',
+          touchAction: 'none'
+        }}
+      />
+    </div>
+  );
+};
+
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const dragConstraintsRef = useRef(null);
@@ -95,7 +184,106 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms'
+  const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms' or 'partners'
+
+  // Partners contract form state
+  const [partnerForm, setPartnerForm] = useState({
+    nombre: '',
+    razon_social: '',
+    nombre_establecimiento: '',
+    rfc: '',
+    domicilio: '',
+    email: '',
+    telefono: '',
+    tipo_alianza: 'Punto de Venta',
+    firma: '',
+    fecha: '',
+    esquema_comercial: 'Compra directa',
+    esquema_comercial_otro: '',
+    frecuencia_pagos: 'Semanal',
+    metodo_pago: 'Transferencia bancaria',
+    metodo_pago_otro: '',
+    vigencia_meses: 12,
+    fecha_inicio_dia: '',
+    fecha_inicio_mes: '',
+    fecha_inicio_anio: '',
+    ciudad_jurisdiccion: 'Guadalajara, Jalisco',
+    representante_healthyice: 'FRANCISCO DELGADILLO'
+  });
+  const [isPartnerSubmitting, setIsPartnerSubmitting] = useState(false);
+  const [partnerSubmitSuccess, setPartnerSubmitSuccess] = useState(false);
+
+  useEffect(() => {
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('es-MX', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    const mes = today.toLocaleDateString('es-MX', { month: 'long' });
+    setPartnerForm(prev => ({ 
+      ...prev, 
+      fecha: formattedDate,
+      fecha_inicio_dia: prev.fecha_inicio_dia || today.getDate(),
+      fecha_inicio_mes: prev.fecha_inicio_mes || mes,
+      fecha_inicio_anio: prev.fecha_inicio_anio || today.getFullYear()
+    }));
+  }, [legalModal]);
+
+  const handlePartnerSubmit = async (e) => {
+    e.preventDefault();
+    if (!partnerForm.firma) {
+      alert('Por favor, dibuja tu firma digital en el recuadro antes de enviar.');
+      return;
+    }
+    setIsPartnerSubmitting(true);
+    try {
+      const response = await fetch('https://www.hipha.mx/api/contact/healthyice/contract', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(partnerForm)
+      });
+      if (response.ok) {
+        setPartnerSubmitSuccess(true);
+        setTimeout(() => {
+          setLegalModal(null);
+          setPartnerSubmitSuccess(false);
+          setPartnerForm(prev => ({
+            nombre: '',
+            razon_social: '',
+            nombre_establecimiento: '',
+            rfc: '',
+            domicilio: '',
+            email: '',
+            telefono: '',
+            tipo_alianza: 'Punto de Venta',
+            firma: '',
+            fecha: prev.fecha,
+            esquema_comercial: 'Compra directa',
+            esquema_comercial_otro: '',
+            frecuencia_pagos: 'Semanal',
+            metodo_pago: 'Transferencia bancaria',
+            metodo_pago_otro: '',
+            vigencia_meses: 12,
+            fecha_inicio_dia: new Date().getDate(),
+            fecha_inicio_mes: new Date().toLocaleDateString('es-MX', { month: 'long' }),
+            fecha_inicio_anio: new Date().getFullYear(),
+            ciudad_jurisdiccion: 'Guadalajara, Jalisco',
+            representante_healthyice: 'FRANCISCO DELGADILLO'
+          }));
+        }, 8000);
+      } else {
+        alert('Hubo un error al procesar tu contrato. Por favor, intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Hubo un problema de conexión. Por favor revisa tu internet e intenta de nuevo.');
+    } finally {
+      setIsPartnerSubmitting(false);
+    }
+  };
   
   // Cart state
   const [cart, setCart] = useState([]);
@@ -573,6 +761,7 @@ function App() {
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setLegalModal('privacy')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Aviso de Privacidad</button>
             <button onClick={() => setLegalModal('terms')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Términos y Condiciones</button>
+            <button onClick={() => setLegalModal('partners')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Socios comerciales</button>
           </div>
           <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>© 2026 HealthyIce. Todos los derechos reservados.</p>
         </div>
@@ -814,6 +1003,324 @@ function App() {
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>4. Zona de Cobertura</h3>
                   <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Nuestros servicios de envío y entrega están limitados exclusivamente a la Zona Metropolitana de Guadalajara (ZMG). Pedidos solicitados fuera de esta área de cobertura podrían no ser procesados o estar sujetos a acuerdos especiales de envío.</p>
                   <p style={{ marginTop: '2rem', fontSize: '0.875rem', color: '#64748b' }}>Última actualización: Mayo 2026</p>
+                </div>
+              )}
+
+              {legalModal === 'partners' && (
+                <div style={{ color: '#101729' }}>
+                  <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800 }}>Socios Comerciales</h2>
+                  <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                    Completa el formulario a continuación para generar tu contrato de distribución y alianza comercial de HealthyIce de forma digital.
+                  </p>
+
+                  {partnerSubmitSuccess ? (
+                    <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
+                      <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 700 }}>¡Contrato Firmado y Enviado!</h3>
+                      <p style={{ color: '#64748b', lineHeight: 1.6 }}>
+                        Hemos recibido correctamente los datos y tu firma. Se ha enviado una copia del contrato en formato PDF a <strong>{partnerForm.email}</strong>. ¡Bienvenido a la red de socios comerciales de HealthyIce!
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handlePartnerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div style={{ gridColumn: 'span 2' }}>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Razón Social / Nombre Comercial *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Distribuidora del Occidente S.A."
+                            value={partnerForm.razon_social}
+                            onChange={e => setPartnerForm({ ...partnerForm, razon_social: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Representante Legal *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Juan Pérez"
+                            value={partnerForm.nombre}
+                            onChange={e => setPartnerForm({ ...partnerForm, nombre: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Nombre del Establecimiento *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Abarrotes El Puerto"
+                            value={partnerForm.nombre_establecimiento}
+                            onChange={e => setPartnerForm({ ...partnerForm, nombre_establecimiento: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>RFC *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. XAXX010101000"
+                            value={partnerForm.rfc}
+                            onChange={e => setPartnerForm({ ...partnerForm, rfc: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Teléfono *</label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="e.g. 3312345678"
+                            value={partnerForm.telefono}
+                            onChange={e => setPartnerForm({ ...partnerForm, telefono: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div style={{ gridColumn: 'span 2' }}>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Domicilio Comercial Completo *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Av. Vallarta 1234, Guadalajara, Jal."
+                            value={partnerForm.domicilio}
+                            onChange={e => setPartnerForm({ ...partnerForm, domicilio: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Correo Electrónico *</label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="e.g. contacto@socio.com"
+                            value={partnerForm.email}
+                            onChange={e => setPartnerForm({ ...partnerForm, email: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Ciudad Jurisdicción *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Guadalajara, Jalisco"
+                            value={partnerForm.ciudad_jurisdiccion}
+                            onChange={e => setPartnerForm({ ...partnerForm, ciudad_jurisdiccion: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Esquema Comercial *</label>
+                          <select
+                            value={partnerForm.esquema_comercial}
+                            onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
+                          >
+                            <option value="Compra directa">Compra directa</option>
+                            <option value="Consignación">Consignación</option>
+                            <option value="Otro">Otro</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Frecuencia de Pagos *</label>
+                          <select
+                            value={partnerForm.frecuencia_pagos}
+                            onChange={e => setPartnerForm({ ...partnerForm, frecuencia_pagos: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
+                          >
+                            <option value="Semanal">Semanal</option>
+                            <option value="Quincenal">Quincenal</option>
+                            <option value="Mensual">Mensual</option>
+                          </select>
+                        </div>
+
+                        {partnerForm.esquema_comercial === 'Otro' && (
+                          <div style={{ gridColumn: 'span 2' }}>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Especifique Esquema Comercial *</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Escriba el esquema acordado"
+                              value={partnerForm.esquema_comercial_otro}
+                              onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial_otro: e.target.value })}
+                              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                            />
+                          </div>
+                        )}
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Método de Pago *</label>
+                          <select
+                            value={partnerForm.metodo_pago}
+                            onChange={e => setPartnerForm({ ...partnerForm, metodo_pago: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
+                          >
+                            <option value="Transferencia bancaria">Transferencia bancaria</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Depósito">Depósito</option>
+                            <option value="Otro">Otro</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Vigencia (Meses) *</label>
+                          <input
+                            type="number"
+                            required
+                            min="1"
+                            value={partnerForm.vigencia_meses}
+                            onChange={e => setPartnerForm({ ...partnerForm, vigencia_meses: parseInt(e.target.value) || 12 })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+
+                        {partnerForm.metodo_pago === 'Otro' && (
+                          <div style={{ gridColumn: 'span 2' }}>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Especifique Método de Pago *</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Escriba el método de pago acordado"
+                              value={partnerForm.metodo_pago_otro}
+                              onChange={e => setPartnerForm({ ...partnerForm, metodo_pago_otro: e.target.value })}
+                              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                            />
+                          </div>
+                        )}
+
+                        <div style={{ gridColumn: 'span 2' }}>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Fecha de Inicio de Operaciones *</label>
+                          <input
+                            type="date"
+                            required
+                            onChange={e => {
+                              if (!e.target.value) return;
+                              const selectedDate = new Date(e.target.value + 'T00:00:00');
+                              const day = selectedDate.getDate();
+                              const month = selectedDate.toLocaleDateString('es-MX', { month: 'long' });
+                              const year = selectedDate.getFullYear();
+                              setPartnerForm({
+                                ...partnerForm,
+                                fecha_inicio_dia: day,
+                                fecha_inicio_mes: month,
+                                fecha_inicio_anio: year
+                              });
+                            }}
+                            defaultValue={new Date().toISOString().split('T')[0]}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Dynamic Contract Preview */}
+                      <div style={{ marginTop: '1rem' }}>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#101729', display: 'block', marginBottom: '0.5rem' }}>Vista Previa del Contrato</span>
+                        <div style={{
+                          height: '220px',
+                          overflowY: 'auto',
+                          border: '1px solid #cbd5e1',
+                          borderRadius: '12px',
+                          padding: '1rem',
+                          background: '#f8fafc',
+                          fontSize: '0.8rem',
+                          lineHeight: 1.6,
+                          color: '#334155'
+                        }}>
+                          <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>CONTRATO DE COLABORACIÓN COMERCIAL</p>
+                          <p style={{ marginBottom: '1rem' }}>
+                            CONTRATO DE COLABORACIÓN COMERCIAL que celebran por una parte HEALTHY ICE, representada por <strong>{partnerForm.representante_healthyice || 'FRANCISCO DELGADILLO'}</strong>, a quien en lo sucesivo se le denominará "HEALTHY ICE", y por la otra <strong>{partnerForm.razon_social || '[Razón Social / Nombre Comercial]'}</strong>, representada por <strong>{partnerForm.nombre || '[Nombre del Representante Legal]'}</strong> (Nombre del Establecimiento: <strong>{partnerForm.nombre_establecimiento || '[Nombre del Establecimiento]'}</strong>), a quien en lo sucesivo se le denominará "SOCIO DE NEGOCIO", al tenor de las siguientes declaraciones y cláusulas:
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>DECLARACIONES</p>
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>I. DECLARA HEALTHY ICE:</p>
+                          <p style={{ marginBottom: '0.25rem' }}>1. Que es una empresa dedicada a la fabricación, comercialización y distribución de paletas, helados y alimentos congelados con enfoque saludable.</p>
+                          <p style={{ marginBottom: '0.25rem' }}>2. Que cuenta con capacidad legal para celebrar el presente contrato.</p>
+                          <p style={{ marginBottom: '0.75rem' }}>3. Que tiene interés en comercializar sus productos a través de puntos de venta externos.</p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>II. DECLARA EL SOCIO DE NEGOCIO:</p>
+                          <p style={{ marginBottom: '0.25rem' }}>1. Que es propietario, representante o administrador del establecimiento denominado: <strong>{partnerForm.nombre_establecimiento || '[Nombre del Establecimiento]'}</strong></p>
+                          <p style={{ marginBottom: '0.25rem' }}>2. Que cuenta con las instalaciones necesarias para la exhibición, conservación y venta de los productos HEALTHY ICE.</p>
+                          <p style={{ marginBottom: '0.25rem' }}>3. Que tiene interés en comercializar los productos objeto de este contrato.</p>
+                          <p style={{ marginBottom: '0.75rem' }}>4. Que cuenta con facultades suficientes para celebrar el presente acuerdo.</p>
+                          <p style={{ marginBottom: '1rem' }}>Ambas partes manifiestan su voluntad para sujetarse a las siguientes:</p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>CLÁUSULAS</p>
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>PRIMERA. OBJETO</p>
+                          <p style={{ marginBottom: '0.75rem' }}>
+                            HEALTHY ICE entregará productos al SOCIO DE NEGOCIO para su comercialización dentro de su establecimiento bajo el esquema de: <strong>{partnerForm.esquema_comercial === 'Otro' ? (partnerForm.esquema_comercial_otro || 'Otro') : partnerForm.esquema_comercial}</strong>.
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SEGUNDA. PRODUCTOS</p>
+                          <p style={{ marginBottom: '0.75rem' }}>Los productos incluidos en este acuerdo serán aquellos comercializados por HEALTHY ICE, pudiendo modificarse, ampliarse o sustituirse mediante aviso entre las partes.</p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>TERCERA. PRECIOS</p>
+                          <p style={{ marginBottom: '0.75rem' }}>Las partes acuerdan que los precios de venta al SOCIO DE NEGOCIO serán establecidos por HEALTHY ICE mediante listas de precios vigentes. El precio público sugerido será comunicado por HEALTHY ICE para mantener la uniformidad comercial de la marca.</p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>CUARTA. CONSERVACIÓN DEL PRODUCTO</p>
+                          <p style={{ marginBottom: '0.75rem' }}>
+                            El SOCIO DE NEGOCIO deberá mantener los productos a la temperatura adecuada para garantizar su calidad. Cualquier pérdida derivada de:<br/>
+                            ● Desconexión del congelador.<br/>
+                            ● Fallas eléctricas no reportadas.<br/>
+                            ● Manejo inadecuado.<br/>
+                            ● Negligencia operativa.<br/>
+                            será responsabilidad del SOCIO DE NEGOCIO.
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>QUINTA. PAGOS</p>
+                          <p style={{ marginBottom: '0.75rem' }}>
+                            Los pagos deberán realizarse de forma: <strong>{partnerForm.frecuencia_pagos}</strong>. Mediante: <strong>{partnerForm.metodo_pago === 'Otro' ? (partnerForm.metodo_pago_otro || 'Otro') : partnerForm.metodo_pago}</strong>.
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SEXTA. PUBLICIDAD Y MARCA</p>
+                          <p style={{ marginBottom: '0.75rem' }}>El SOCIO DE NEGOCIO podrá utilizar materiales promocionales proporcionados por HEALTHY ICE únicamente para promover los productos objeto de este contrato. Las marcas, logotipos, diseños e imagen comercial seguirán siendo propiedad exclusiva de HEALTHY ICE.</p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SÉPTIMA. VIGENCIA</p>
+                          <p style={{ marginBottom: '0.75rem' }}>
+                            El presente contrato tendrá una vigencia inicial de: <strong>{partnerForm.vigencia_meses || 12}</strong> meses. Iniciando el día <strong>{partnerForm.fecha_inicio_dia || new Date().getDate()}</strong> de <strong>{partnerForm.fecha_inicio_mes || new Date().toLocaleDateString('es-MX', { month: 'long' })}</strong> de <strong>{partnerForm.fecha_inicio_anio || new Date().getFullYear()}</strong>. Al concluir dicho plazo podrá renovarse por acuerdo entre las partes.
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>OCTAVA. TERMINACIÓN ANTICIPADA</p>
+                          <p style={{ marginBottom: '0.75rem' }}>
+                            Cualquiera de las partes podrá dar por terminado el contrato mediante aviso por escrito con al menos 15 días naturales de anticipación. Asimismo, HEALTHY ICE podrá rescindir inmediatamente el contrato por:<br/>
+                            ● Falta de pago.<br/>
+                            ● Uso indebido de la marca.<br/>
+                            ● Alteración de productos.<br/>
+                            ● Mal uso del equipo.<br/>
+                            ● Información falsa.<br/>
+                            ● Incumplimiento de las obligaciones establecidas.
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>NOVENA. CONFIDENCIALIDAD</p>
+                          <p style={{ marginBottom: '0.75rem' }}>El SOCIO DE NEGOCIO se obliga a mantener confidencial cualquier información comercial, financiera, operativa o estratégica proporcionada por HEALTHY ICE.</p>
+
+                          <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>DÉCIMA TERCERA. JURISDICCIÓN</p>
+                          <p style={{ marginBottom: '1.5rem' }}>
+                            Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: <strong>{partnerForm.ciudad_jurisdiccion || 'Guadalajara, Jalisco'}</strong>, renunciando a cualquier otro fuero que pudiera corresponderles.
+                          </p>
+
+                          <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>FIRMAS</p>
+                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b' }}>
+                            Leído que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman digitalmente y por duplicado.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Signature Canvas */}
+                      <SignatureCanvas onSave={(base64Sig) => setPartnerForm(prev => ({ ...prev, firma: base64Sig }))} />
+
+                      {/* Submit button */}
+                      <button
+                        type="submit"
+                        disabled={isPartnerSubmitting || !partnerForm.firma}
+                        className="btn btn-primary"
+                        style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: (!partnerForm.firma || isPartnerSubmitting) ? 0.6 : 1 }}
+                      >
+                        {isPartnerSubmitting ? 'Procesando contrato...' : 'Firmar y Enviar Contrato'}
+                      </button>
+                    </form>
+                  )}
                 </div>
               )}
             </motion.div>

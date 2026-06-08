@@ -528,6 +528,415 @@ async def send_healthyice_order_team(form_data):
         return False
 
 
+def generate_healthyice_contract_pdf(form_data) -> bytes:
+    # Set up FPDF with margins
+    pdf = FPDF()
+    pdf.set_margins(15, 20, 15)
+    pdf.add_page()
+    
+    # Header Logo or Title
+    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_text_color(16, 23, 41)
+    pdf.cell(0, 8, text="CONTRATO DE COLABORACION COMERCIAL", new_x="LMARGIN", new_y="NEXT", align='C')
+    pdf.ln(5)
+    
+    # Body text / Introduction
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(30, 41, 59)
+    
+    # Extract form data fields
+    razon_social_val = getattr(form_data, 'razon_social', '') or ''
+    nombre_val = getattr(form_data, 'nombre', '') or ''
+    nombre_establecimiento_val = getattr(form_data, 'nombre_establecimiento', '') or ''
+    rfc_val = getattr(form_data, 'rfc', '') or ''
+    domicilio_val = getattr(form_data, 'domicilio', '') or ''
+    email_val = getattr(form_data, 'email', '') or ''
+    telefono_val = getattr(form_data, 'telefono', '') or ''
+    
+    esquema = getattr(form_data, 'esquema_comercial', '') or 'Compra directa'
+    esquema_otro = getattr(form_data, 'esquema_comercial_otro', '') or ''
+    if esquema == "Otro" and esquema_otro:
+        esquema = f"Otro: {esquema_otro}"
+        
+    metodo = getattr(form_data, 'metodo_pago', '') or 'Transferencia bancaria'
+    metodo_otro = getattr(form_data, 'metodo_pago_otro', '') or ''
+    if metodo == "Otro" and metodo_otro:
+        metodo = f"Otro: {metodo_otro}"
+
+    rep_healthy = getattr(form_data, 'representante_healthyice', '') or "FRANCISCO DELGADILLO"
+    frecuencia_pagos_val = getattr(form_data, 'frecuencia_pagos', '') or 'Semanal'
+    vigencia_meses_val = getattr(form_data, 'vigencia_meses', 12) or 12
+    
+    fecha_inicio_dia_val = getattr(form_data, 'fecha_inicio_dia', None)
+    fecha_inicio_mes_val = getattr(form_data, 'fecha_inicio_mes', '') or ''
+    fecha_inicio_anio_val = getattr(form_data, 'fecha_inicio_anio', None)
+    
+    # Fallback to current date if details are missing
+    import datetime
+    now = datetime.datetime.now()
+    if fecha_inicio_dia_val is None:
+        fecha_inicio_dia_val = now.day
+    if not fecha_inicio_mes_val:
+        meses_es = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+        fecha_inicio_mes_val = meses_es[now.month - 1]
+    if fecha_inicio_anio_val is None:
+        fecha_inicio_anio_val = now.year
+
+    fecha_val = getattr(form_data, 'fecha', '') or f"{fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}"
+    ciudad_jurisdiccion_val = getattr(form_data, 'ciudad_jurisdiccion', '') or 'Guadalajara, Jalisco'
+    
+    intro_text = (
+        f"CONTRATO DE COLABORACION COMERCIAL que celebran por una parte HEALTHY ICE, representada por "
+        f"{rep_healthy}, a quien en lo sucesivo se le denominara \"HEALTHY ICE\", y por la otra "
+        f"{razon_social_val}, representada por {nombre_val} (Nombre del Establecimiento: {nombre_establecimiento_val}), "
+        f"a quien en lo sucesivo se le denominara \"SOCIO DE NEGOCIO\", al tenor de las siguientes declaraciones "
+        f"y clausulas:"
+    )
+    pdf.multi_cell(0, 5, text=intro_text.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(4)
+    
+    # Declaraciones
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(0, 6, text="DECLARACIONES", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(1)
+    
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(0, 5, text="I. DECLARA HEALTHY ICE:", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "", 9)
+    dec_hi = [
+        "1. Que es una empresa dedicada a la fabricacion, comercializacion y distribucion de paletas, helados y alimentos congelados con enfoque saludable.",
+        "2. Que cuenta con capacidad legal para celebrar el presente contrato.",
+        "3. Que tiene interes en comercializar sus productos a traves de puntos de venta externos."
+    ]
+    for dec in dec_hi:
+        pdf.multi_cell(0, 4.5, text=dec.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(2)
+    
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(0, 5, text="II. DECLARA EL SOCIO DE NEGOCIO:", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "", 9)
+    
+    dec_socio = [
+        f"1. Que es propietario, representante o administrador del establecimiento denominado: {nombre_establecimiento_val}",
+        f"2. Que cuenta con las instalaciones necesarias para la exhibicion, conservacion y venta de los productos HEALTHY ICE (incluyendo domicilio en {domicilio_val} y RFC {rfc_val}).",
+        "3. Que tiene interes en comercializar los productos objeto de este contrato.",
+        "4. Que cuenta con facultades suficientes para celebrar el presente acuerdo."
+    ]
+    for dec in dec_socio:
+        pdf.multi_cell(0, 4.5, text=dec.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(3)
+    
+    pdf.set_font("Helvetica", "", 9)
+    pdf.multi_cell(0, 4.5, text="Ambas partes manifiestan su voluntad para sujetarse a las siguientes:".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(3)
+    
+    # Clausulas
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.cell(0, 6, text="CLAUSULAS", new_x="LMARGIN", new_y="NEXT", align='C')
+    pdf.ln(2)
+    
+    # List of clauses
+    clauses = [
+        ("PRIMERA. OBJETO", 
+         f"HEALTHY ICE entregara productos al SOCIO DE NEGOCIO para su comercializacion dentro de su establecimiento bajo el esquema de: {esquema}."),
+        
+        ("SEGUNDA. PRODUCTOS", 
+         "Los productos incluidos en este acuerdo seran aquellos comercializados por HEALTHY ICE, pudiendo modificarse, ampliarse o sustituirse mediante aviso entre las partes."),
+        
+        ("TERCERA. PRECIOS", 
+         "Las partes acuerdan que los precios de venta al SOCIO DE NEGOCIO seran establecidos por HEALTHY ICE mediante listas de precios vigentes.\nEl precio publico sugerido sera comunicado por HEALTHY ICE para mantener la uniformidad comercial de la marca."),
+        
+        ("CUARTA. CONSERVACION DEL PRODUCTO", 
+         "El SOCIO DE NEGOCIO debera mantener los productos a la temperatura adecuada para garantizar su calidad. Cualquier perdida derivada de:\n"
+         "  - Desconexion del congelador.\n"
+         "  - Fallas electricas no reportadas.\n"
+         "  - Manejo inadecuado.\n"
+         "  - Negligencia operativa.\n"
+         "sera responsabilidad del SOCIO DE NEGOCIO."),
+        
+        ("QUINTA. PAGOS", 
+         f"Los pagos deberan realizarse de forma: {frecuencia_pagos_val}. Mediante: {metodo}."),
+        
+        ("SEXTA. PUBLICIDAD Y MARCA", 
+         "El SOCIO DE NEGOCIO podra utilizar materiales promocionales proporcionados por HEALTHY ICE unicamente para promover los productos objeto de este contrato.\n"
+         "Las marcas, logotipos, diseños e imagen comercial seguiran siendo propiedad exclusiva de HEALTHY ICE."),
+        
+        ("SEPTIMA. VIGENCIA", 
+         f"El presente contrato tendra una vigencia inicial de: {vigencia_meses_val} meses. Iniciando el dia {fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}.\n"
+         "Al concluir dicho plazo podra renovarse por acuerdo entre las partes."),
+        
+        ("OCTAVA. TERMINACION ANTICIPADA", 
+         "Cualquiera de las partes podra dar por terminado el contrato mediante aviso por escrito con al menos 15 dias naturales de anticipacion.\n"
+         "Asimismo, HEALTHY ICE podra rescindir inmediatamente el contrato por:\n"
+         "  - Falta de pago.\n"
+         "  - Uso indebido de la marca.\n"
+         "  - Alteracion de productos.\n"
+         "  - Mal uso del equipo.\n"
+         "  - Informacion falsa.\n"
+         "  - Incumplimiento de las obligaciones establecidas."),
+        
+        ("NOVENA. CONFIDENCIALIDAD", 
+         "El SOCIO DE NEGOCIO se obliga a mantener confidencial cualquier informacion comercial, financiera, operativa o estrategica proporcionada por HEALTHY ICE."),
+        
+        ("DECIMA TERCERA. JURISDICCION", 
+         f"Para la interpretacion y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: {ciudad_jurisdiccion_val}, renunciando a cualquier otro fuero que pudiera corresponderles.")
+    ]
+    
+    for title, text in clauses:
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.multi_cell(0, 5, text=title.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font("Helvetica", "", 9)
+        pdf.multi_cell(0, 4.5, text=text.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
+        pdf.ln(2.5)
+        
+    pdf.ln(5)
+    
+    # Signatures page break detection
+    if pdf.get_y() > 180:
+        pdf.add_page()
+        
+    pdf.set_font("Helvetica", "", 9)
+    pdf.multi_cell(0, 4.5, text="Leido que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman por duplicado.".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align='C')
+    pdf.ln(10)
+    
+    y_before_sigs = pdf.get_y()
+    
+    # Column 1: HEALTHY ICE
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(90, 5, text="HEALTHY ICE", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Optional HealthyIce signature image
+    fran_sig_path = os.path.join("app", "assets", "firma_francisco.jpg")
+    if os.path.exists(fran_sig_path):
+        pdf.image(fran_sig_path, x=25, y=pdf.get_y(), w=40)
+        
+    pdf.set_y(y_before_sigs + 25)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.cell(90, 4, text=f"Nombre: {rep_healthy}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.cell(90, 4, text="Cargo: Representante Legal", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Column 2: SOCIO DE NEGOCIO
+    pdf.set_y(y_before_sigs)
+    pdf.set_x(110)
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(90, 5, text="SOCIO DE NEGOCIO", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Optional Client signature image
+    client_sig_path = None
+    if getattr(form_data, 'firma', None):
+        try:
+            if "," in form_data.firma:
+                header, encoded = form_data.firma.split(",", 1)
+                img_data = base64.b64decode(encoded)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+                    tmp.write(img_data)
+                    client_sig_path = tmp.name
+        except Exception as e:
+            logger.error(f"Error drawing client signature in mailer: {e}")
+            
+    if client_sig_path:
+        pdf.image(client_sig_path, x=135, y=pdf.get_y(), w=40)
+        os.remove(client_sig_path)
+        
+    pdf.set_y(y_before_sigs + 25)
+    pdf.set_x(110)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.cell(90, 4, text=f"Razon Social / Nombre: {razon_social_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.set_x(110)
+    pdf.cell(90, 4, text=f"Representante: {nombre_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.set_x(110)
+    pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Witness Row
+    pdf.ln(15)
+    if pdf.get_y() > 220:
+        pdf.add_page()
+        
+    y_witnesses = pdf.get_y()
+    
+    # Witness 1
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(90, 5, text="TESTIGO 1", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.ln(10)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.cell(90, 4, text="Nombre:", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Witness 2
+    pdf.set_y(y_witnesses)
+    pdf.set_x(110)
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(90, 5, text="TESTIGO 2", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.ln(10)
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_x(110)
+    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.set_x(110)
+    pdf.cell(90, 4, text="Nombre:", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    return bytes(pdf.output())
+
+
+async def send_healthyice_contract_customer(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce a {form_data.email}")
+        return True
+        
+    message = EmailMessage()
+    from_header = f"HealthyIce <{settings.SMTP_USER}>"
+    message["From"] = from_header
+    message["To"] = form_data.email
+    message.add_header('Reply-To', 'hola@healthyice.mx')
+    message["Subject"] = "¡Bienvenido a HealthyIce! Contrato de Colaboracion Comercial"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="healthyice.mx")
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Quicksand', Arial, sans-serif; color: #101729; background-color: #f8fafc; padding: 20px; line-height: 1.6;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <h2 style="color: #0077ff; font-weight: bold; margin-top: 0;">¡Firma de Contrato Confirmada!</h2>
+            <p>Hola <strong>{form_data.nombre}</strong>,</p>
+            <p>Queremos darte la mas cordial bienvenida a nuestra red de socios comerciales. Hemos recibido correctamente la firma de tu contrato digital de colaboracion comercial.</p>
+            
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #cbd5e1; font-size: 14px;">
+                <h3 style="margin-top: 0; color: #101729;">Resumen de tu Contrato Comercial:</h3>
+                <p style="margin: 5px 0;"><strong>Razon Social / Nombre:</strong> {form_data.razon_social}</p>
+                <p style="margin: 5px 0;"><strong>Representante:</strong> {form_data.nombre}</p>
+                <p style="margin: 5px 0;"><strong>Establecimiento:</strong> {getattr(form_data, 'nombre_establecimiento', 'N/A')}</p>
+                <p style="margin: 5px 0;"><strong>RFC:</strong> {form_data.rfc}</p>
+                <p style="margin: 5px 0;"><strong>Esquema Comercial:</strong> {getattr(form_data, 'esquema_comercial', 'N/A')}</p>
+                <p style="margin: 5px 0;"><strong>Frecuencia de Pagos:</strong> {getattr(form_data, 'frecuencia_pagos', 'N/A')}</p>
+                <p style="margin: 5px 0;"><strong>Domicilio:</strong> {form_data.domicilio}</p>
+            </div>
+            
+            <p>Adjunto a este correo encontraras tu contrato firmado en formato PDF. Por favor, conservalo para tus registros.</p>
+            <p>Muy pronto un miembro de nuestro equipo comercial se comunicara contigo para coordinar tu primer pedido y la instalacion del equipo de congelacion si aplica.</p>
+            
+            <br>
+            <p style="color: #98BC3C; font-weight: bold; margin-bottom: 0;">El equipo de HealthyIce</p>
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+    
+    try:
+        pdf_bytes = generate_healthyice_contract_pdf(form_data)
+        safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
+        message.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename=f"Contrato_HealthyIce_{safe_name}.pdf")
+    except Exception as e:
+        logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_customer: {e}")
+        
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info(f"Correo de contrato HealthyIce enviado a cliente: {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de contrato HealthyIce a cliente: {str(e)}")
+        return False
+
+
+async def send_healthyice_contract_team(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce al equipo")
+        return True
+        
+    message = EmailMessage()
+    from_header = f"HealthyIce Web <{settings.SMTP_USER}>"
+    message["From"] = from_header
+    message["To"] = "hola@healthyice.mx"
+    message.add_header('Reply-To', 'hola@healthyice.mx')
+    message["Subject"] = f"NUEVO SOCIO COMERCIAL FIRMADO: {form_data.razon_social}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="healthyice.mx")
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #33; line-height: 1.6;">
+        <h2>¡Nuevo Socio Comercial Firmado desde la Web!</h2>
+        <p>Se ha recibido un nuevo contrato firmado digitalmente. A continuacion, se detallan los datos del socio comercial:</p>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; max-width: 600px; border: 1px solid #ddd;">
+            <tr style="background: #f4f4f4; border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold; width: 180px;">Razon Social / Nombre:</td>
+                <td style="padding: 10px;">{form_data.razon_social}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Representante Legal:</td>
+                <td style="padding: 10px;">{getattr(form_data, 'nombre', 'N/A')}</td>
+            </tr>
+            <tr style="background: #f4f4f4; border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Establecimiento:</td>
+                <td style="padding: 10px;">{getattr(form_data, 'nombre_establecimiento', 'N/A')}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">RFC:</td>
+                <td style="padding: 10px;">{form_data.rfc}</td>
+            </tr>
+            <tr style="background: #f4f4f4; border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Esquema Comercial:</td>
+                <td style="padding: 10px;">{getattr(form_data, 'esquema_comercial', 'N/A')}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Frecuencia de Pagos:</td>
+                <td style="padding: 10px;">{getattr(form_data, 'frecuencia_pagos', 'N/A')}</td>
+            </tr>
+            <tr style="background: #f4f4f4; border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Metodo de Pago:</td>
+                <td style="padding: 10px;">{getattr(form_data, 'metodo_pago', 'N/A')}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Domicilio Comercial:</td>
+                <td style="padding: 10px;">{form_data.domicilio}</td>
+            </tr>
+            <tr style="background: #f4f4f4; border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Email:</td>
+                <td style="padding: 10px;"><a href="mailto:{form_data.email}">{form_data.email}</a></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">Telefono:</td>
+                <td style="padding: 10px;">{form_data.telefono}</td>
+            </tr>
+        </table>
+        
+        <p>Adjunto encontraras la copia del contrato en formato PDF con la firma del socio.</p>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+    
+    try:
+        pdf_bytes = generate_healthyice_contract_pdf(form_data)
+        safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
+        message.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename=f"Contrato_HealthyIce_{safe_name}.pdf")
+    except Exception as e:
+        logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_team: {e}")
+        
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            start_tls=True
+        )
+        logger.info("Notificacion de contrato HealthyIce enviada al equipo")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificacion de contrato HealthyIce al equipo: {str(e)}")
+        return False
+
+
 async def send_whiteclean_confirmation_email(form_data):
     if not settings.SMTP_HOST or not settings.SMTP_USER:
         logger.warning(f"SMTP no configurado. Simulando envío a prospecto WhiteClean {form_data.email}")

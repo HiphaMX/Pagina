@@ -11,6 +11,8 @@ from app.core.mailer import (
     send_newsletter_notification_to_team,
     send_healthyice_order_customer,
     send_healthyice_order_team,
+    send_healthyice_contract_customer,
+    send_healthyice_contract_team,
     send_whiteclean_confirmation_email,
     send_whiteclean_notification_team,
     send_chilechillon_confirmation_email,
@@ -33,6 +35,31 @@ class ContactForm(BaseModel):
     proyecto: Optional[str] = None
     forma_pago: Optional[str] = None
 
+class HealthyIceContractForm(BaseModel):
+    nombre: Optional[str] = None # Representante legal
+    razon_social: str
+    rfc: str
+    domicilio: str
+    email: EmailStr
+    telefono: str
+    tipo_alianza: Optional[str] = "Punto de Venta"
+    firma: str
+    fecha: Optional[str] = None
+    
+    # Nuevos campos del contrato de colaboracion comercial
+    nombre_establecimiento: Optional[str] = ""
+    esquema_comercial: Optional[str] = "Compra directa"
+    esquema_comercial_otro: Optional[str] = ""
+    frecuencia_pagos: Optional[str] = "Semanal"
+    metodo_pago: Optional[str] = "Transferencia bancaria"
+    metodo_pago_otro: Optional[str] = ""
+    vigencia_meses: Optional[int] = 12
+    fecha_inicio_dia: Optional[int] = None
+    fecha_inicio_mes: Optional[str] = ""
+    fecha_inicio_anio: Optional[int] = None
+    ciudad_jurisdiccion: Optional[str] = "Guadalajara, Jalisco"
+    representante_healthyice: Optional[str] = "FRANCISCO DELGADILLO"
+
 @router.post("/healthyice")
 async def submit_healthyice_form(form_data: ContactForm):
     # Enviar correo de confirmación al cliente
@@ -45,6 +72,16 @@ async def submit_healthyice_form(form_data: ContactForm):
         raise HTTPException(status_code=500, detail="Error al enviar correos")
         
     return {"message": "Formulario recibido correctamente"}
+
+@router.post("/healthyice/contract")
+async def submit_healthyice_contract(form_data: HealthyIceContractForm):
+    customer_email_sent = await send_healthyice_contract_customer(form_data)
+    team_email_sent = await send_healthyice_contract_team(form_data)
+    
+    if not customer_email_sent and not team_email_sent:
+        raise HTTPException(status_code=500, detail="Error al enviar correos del contrato")
+        
+    return {"message": "Contrato procesado y enviado correctamente"}
 
 @router.post("/submit")
 async def submit_contact_form(form_data: ContactForm):
