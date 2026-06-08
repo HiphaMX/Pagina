@@ -232,10 +232,6 @@ function App() {
 
   const handlePartnerSubmit = async (e) => {
     e.preventDefault();
-    if (!partnerForm.firma) {
-      alert('Por favor, dibuja tu firma digital en el recuadro antes de enviar.');
-      return;
-    }
     setIsPartnerSubmitting(true);
     try {
       const response = await fetch('https://www.hipha.mx/api/contact/healthyice/contract', {
@@ -1111,6 +1107,17 @@ function App() {
                             style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
                           />
                         </div>
+                        <div style={{ gridColumn: 'span 2' }}>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Representante HEALTHY ICE *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. FRANCISCO DELGADILLO"
+                            value={partnerForm.representante_healthyice}
+                            onChange={e => setPartnerForm({ ...partnerForm, representante_healthyice: e.target.value })}
+                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                          />
+                        </div>
 
                         <div>
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Esquema Comercial *</label>
@@ -1301,23 +1308,20 @@ function App() {
                           </p>
 
                           <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>FIRMAS</p>
-                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b' }}>
-                            Leído que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman digitalmente y por duplicado.
+                           <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b' }}>
+                            Leído que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman por duplicado.
                           </p>
                         </div>
                       </div>
 
-                      {/* Signature Canvas */}
-                      <SignatureCanvas onSave={(base64Sig) => setPartnerForm(prev => ({ ...prev, firma: base64Sig }))} />
-
                       {/* Submit button */}
                       <button
                         type="submit"
-                        disabled={isPartnerSubmitting || !partnerForm.firma}
+                        disabled={isPartnerSubmitting}
                         className="btn btn-primary"
-                        style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: (!partnerForm.firma || isPartnerSubmitting) ? 0.6 : 1 }}
+                        style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isPartnerSubmitting ? 0.6 : 1 }}
                       >
-                        {isPartnerSubmitting ? 'Procesando contrato...' : 'Firmar y Enviar Contrato'}
+                        {isPartnerSubmitting ? 'Procesando contrato...' : 'Generar y Enviar Contrato'}
                       </button>
                     </form>
                   )}

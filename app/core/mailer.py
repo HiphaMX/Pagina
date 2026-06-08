@@ -705,13 +705,10 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     pdf.set_font("Helvetica", "B", 9)
     pdf.cell(90, 5, text="HEALTHY ICE", new_x="LMARGIN", new_y="NEXT", align="C")
     
-    # Optional HealthyIce signature image
-    fran_sig_path = os.path.join("app", "assets", "firma_francisco.jpg")
-    if os.path.exists(fran_sig_path):
-        pdf.image(fran_sig_path, x=25, y=pdf.get_y(), w=40)
-        
-    pdf.set_y(y_before_sigs + 25)
+    # Empty space for physical signature
+    pdf.ln(18)
     pdf.set_font("Helvetica", "", 9)
+    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
     pdf.cell(90, 4, text=f"Nombre: {rep_healthy}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
     pdf.cell(90, 4, text="Cargo: Representante Legal", new_x="LMARGIN", new_y="NEXT", align="C")
     pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
@@ -722,26 +719,12 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     pdf.set_font("Helvetica", "B", 9)
     pdf.cell(90, 5, text="SOCIO DE NEGOCIO", new_x="LMARGIN", new_y="NEXT", align="C")
     
-    # Optional Client signature image
-    client_sig_path = None
-    if getattr(form_data, 'firma', None):
-        try:
-            if "," in form_data.firma:
-                header, encoded = form_data.firma.split(",", 1)
-                img_data = base64.b64decode(encoded)
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-                    tmp.write(img_data)
-                    client_sig_path = tmp.name
-        except Exception as e:
-            logger.error(f"Error drawing client signature in mailer: {e}")
-            
-    if client_sig_path:
-        pdf.image(client_sig_path, x=135, y=pdf.get_y(), w=40)
-        os.remove(client_sig_path)
-        
-    pdf.set_y(y_before_sigs + 25)
+    # Empty space for physical signature
+    pdf.set_y(y_before_sigs + 23)
     pdf.set_x(110)
     pdf.set_font("Helvetica", "", 9)
+    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+    pdf.set_x(110)
     pdf.cell(90, 4, text=f"Razon Social / Nombre: {razon_social_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
     pdf.set_x(110)
     pdf.cell(90, 4, text=f"Representante: {nombre_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
