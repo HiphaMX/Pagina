@@ -242,6 +242,18 @@ function App() {
         body: JSON.stringify(partnerForm)
       });
       if (response.ok) {
+        // Recibir como archivo blob e iniciar descarga
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const filename = `Contrato_HealthyIce_${partnerForm.razon_social.replace(/\s+/g, '_')}.pdf`;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
         setPartnerSubmitSuccess(true);
         setTimeout(() => {
           setLegalModal(null);
@@ -1011,9 +1023,9 @@ function App() {
 
                   {partnerSubmitSuccess ? (
                     <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
-                      <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 700 }}>¡Contrato Firmado y Enviado!</h3>
+                      <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 700 }}>¡Contrato Generado con Éxito!</h3>
                       <p style={{ color: '#64748b', lineHeight: 1.6 }}>
-                        Hemos recibido correctamente los datos y tu firma. Se ha enviado una copia del contrato en formato PDF a <strong>{partnerForm.email}</strong>. ¡Bienvenido a la red de socios comerciales de HealthyIce!
+                        El contrato en formato PDF se ha generado e iniciado su descarga en tu navegador para su impresión y firma física. ¡Bienvenido a la red de socios comerciales de HealthyIce!
                       </p>
                     </div>
                   ) : (

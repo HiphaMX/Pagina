@@ -73,15 +73,25 @@ async def submit_healthyice_form(form_data: ContactForm):
         
     return {"message": "Formulario recibido correctamente"}
 
+from fastapi import Response
+
 @router.post("/healthyice/contract")
 async def submit_healthyice_contract(form_data: HealthyIceContractForm):
-    customer_email_sent = await send_healthyice_contract_customer(form_data)
-    team_email_sent = await send_healthyice_contract_team(form_data)
-    
-    if not customer_email_sent and not team_email_sent:
-        raise HTTPException(status_code=500, detail="Error al enviar correos del contrato")
-        
-    return {"message": "Contrato procesado y enviado correctamente"}
+    try:
+        pdf_bytes = generate_healthyice_contract_pdf(form_data)
+        safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=Contrato_HealthyIce_{safe_name}.pdf",
+                "Access-Control-Expose-Headers": "Content-Disposition"
+            }
+        )
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error al generar PDF: {str(e)}")
 
 @router.post("/submit")
 async def submit_contact_form(form_data: ContactForm):
