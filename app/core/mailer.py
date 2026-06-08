@@ -535,6 +535,13 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     pdf.add_page()
     
     # Header Logo or Title
+    logo_path = os.path.join("app", "assets", "logo_healthyice.svg")
+    if os.path.exists(logo_path):
+        pdf.image(logo_path, x=150, y=10, w=45)
+        pdf.set_y(32)
+    else:
+        pdf.set_y(20)
+        
     pdf.set_font("Helvetica", "B", 14)
     pdf.set_text_color(16, 23, 41)
     pdf.cell(0, 8, text="CONTRATO DE COLABORACION COMERCIAL", new_x="LMARGIN", new_y="NEXT", align='C')
