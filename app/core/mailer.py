@@ -528,20 +528,20 @@ async def send_healthyice_order_team(form_data):
         return False
 
 
+class HealthyIcePDF(FPDF):
+    def header(self):
+        logo_path = os.path.join("app", "assets", "logo_healthyice.svg")
+        if os.path.exists(logo_path):
+            self.image(logo_path, x=150, y=10, w=45)
+
+
 def generate_healthyice_contract_pdf(form_data) -> bytes:
-    # Set up FPDF with margins
-    pdf = FPDF()
-    pdf.set_margins(15, 20, 15)
+    # Set up FPDF with margins (top margin 32 to avoid overlapping header logo on all pages)
+    pdf = HealthyIcePDF()
+    pdf.set_margins(15, 32, 15)
     pdf.add_page()
     
-    # Header Logo or Title
-    logo_path = os.path.join("app", "assets", "logo_healthyice.svg")
-    if os.path.exists(logo_path):
-        pdf.image(logo_path, x=150, y=10, w=45)
-        pdf.set_y(32)
-    else:
-        pdf.set_y(20)
-        
+    # Title
     pdf.set_font("Helvetica", "B", 14)
     pdf.set_text_color(16, 23, 41)
     pdf.cell(0, 8, text="CONTRATO DE COLABORACION COMERCIAL", new_x="LMARGIN", new_y="NEXT", align='C')

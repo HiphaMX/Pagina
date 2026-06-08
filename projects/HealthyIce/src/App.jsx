@@ -1030,7 +1030,7 @@ function App() {
                     </div>
                   ) : (
                     <form onSubmit={handlePartnerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div className="partner-form-grid">
                         <div style={{ gridColumn: 'span 2' }}>
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Razón Social / Nombre Comercial *</label>
                           <input
