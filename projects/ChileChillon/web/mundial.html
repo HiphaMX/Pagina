@@ -1280,12 +1280,19 @@
           return '<span class="w-2.5 h-2.5 rounded-full bg-slate-200 inline-block"></span>';
         }).join("");
 
+        const statusBadge = index < 4 
+          ? `<span class="px-2 py-0.5 rounded-full bg-[#1f5535]/10 text-[#1f5535] text-[8px] uppercase tracking-wider font-black shadow-sm shrink-0">Clasificado</span>`
+          : `<span class="px-2 py-0.5 rounded-full bg-[#D30611]/10 text-[#D30611] text-[8px] uppercase tracking-wider font-black shadow-sm shrink-0">Eliminado</span>`;
+
         tr.innerHTML = `
           <td class="py-4 px-4"><span class="${posClass}">${index + 1}</span></td>
           <td class="py-4 px-4">
             <div class="flex items-center gap-3">
               ${renderTeamLogoHTML(row.teamId, 'w-10 h-14', 'h-14', 'text-xs', 'rounded-lg')}
-              <span class="font-rubik font-bold text-xs md:text-sm text-slate-800">${team.name}</span>
+              <div class="flex flex-col sm:flex-row sm:items-center gap-1.5">
+                <span class="font-rubik font-bold text-xs md:text-sm text-slate-800">${team.name}</span>
+                ${statusBadge}
+              </div>
             </div>
           </td>
           <td class="py-4 px-4 font-rubik text-xs text-slate-500 font-bold">${row.pj}</td>
