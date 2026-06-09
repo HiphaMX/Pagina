@@ -1502,7 +1502,7 @@
         
         if (state.championPrediction) {
           const team = teams[state.championPrediction];
-          predictionVal.innerText = team ? team.badge : state.championPrediction.toUpperCase();
+          predictionVal.innerText = team ? team.name : state.championPrediction.toUpperCase();
           predictionVal.classList.remove('hidden');
           if (inlineSelect) inlineSelect.classList.add('hidden');
         } else {
