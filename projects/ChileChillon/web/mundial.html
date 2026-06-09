@@ -641,7 +641,7 @@
       }
       const team = teams[teamId];
       if (team && team.image) {
-        return `<div class="${sizeClass} ${roundedClass} flex items-center justify-center bg-white border border-slate-100 shadow-md relative overflow-hidden"><img src="${team.image}" alt="${team.name}" class="${imgSizeClass} w-auto object-contain relative z-10"></div>`;
+        return `<div class="${sizeClass} ${roundedClass} flex items-center justify-center relative overflow-visible"><img src="${team.image}" alt="${team.name}" class="${imgSizeClass} w-auto object-contain relative z-10 mix-blend-multiply"></div>`;
       }
       const badgeText = team ? team.badge : 'TBD';
       return `<div class="${sizeClass} ${roundedClass} flex items-center justify-center font-rubik font-black text-white shadow-md relative overflow-hidden ${badgeClass(teamId)} ${badgeSizeClass}">${badgeText}</div>`;
@@ -702,14 +702,14 @@
         </div>
         <div class="grid grid-cols-3 items-center gap-4 py-4">
           <div class="${teamAClass} flex flex-col items-center gap-3 text-center">
-            ${renderTeamLogoHTML(match.teamA, 'w-24 h-36 md:w-32 md:h-48', 'h-32 md:h-44', 'text-2xl', 'rounded-3xl')}
+            ${renderTeamLogoHTML(match.teamA, 'w-24 h-36 md:w-32 md:h-48', 'h-36 md:h-48', 'text-2xl', 'rounded-3xl')}
             <div class="font-rubik font-bold text-xs md:text-sm text-slate-800 leading-tight max-w-[120px]">${teamA.name}</div>
           </div>
           <div class="flex flex-col items-center justify-center text-center">
             ${vsContent}
           </div>
           <div class="${teamBClass} flex flex-col items-center gap-3 text-center">
-            ${renderTeamLogoHTML(match.teamB, 'w-24 h-36 md:w-32 md:h-48', 'h-32 md:h-44', 'text-2xl', 'rounded-3xl')}
+            ${renderTeamLogoHTML(match.teamB, 'w-24 h-36 md:w-32 md:h-48', 'h-36 md:h-48', 'text-2xl', 'rounded-3xl')}
             <div class="font-rubik font-bold text-xs md:text-sm text-slate-800 leading-tight max-w-[120px]">${teamB.name}</div>
           </div>
         </div>
@@ -775,8 +775,8 @@
       
       const badge = document.getElementById('modal-team-badge');
       if (team.image) {
-        badge.className = "w-24 h-36 md:w-28 md:h-42 rounded-[24px] flex items-center justify-center bg-white border border-slate-100 shadow-md relative overflow-hidden";
-        badge.innerHTML = `<img src="${team.image}" alt="${team.name}" class="h-32 md:h-38 w-auto object-contain relative z-10">`;
+        badge.className = "w-24 h-36 md:w-28 md:h-42 rounded-[24px] flex items-center justify-center relative overflow-visible";
+        badge.innerHTML = `<img src="${team.image}" alt="${team.name}" class="h-36 md:h-42 w-auto object-contain relative z-10 mix-blend-multiply">`;
       } else {
         badge.className = `w-24 h-36 md:w-28 md:h-42 rounded-[24px] flex items-center justify-center font-rubik font-black text-white text-2xl md:text-3xl shadow-sm relative overflow-hidden ${badgeClass(teamId)}`;
         badge.innerText = team.badge;
@@ -847,7 +847,7 @@
           <td class="py-4 px-4"><span class="${posClass}">${index + 1}</span></td>
           <td class="py-4 px-4">
             <div class="flex items-center gap-3">
-              ${renderTeamLogoHTML(row.teamId, 'w-10 h-14', 'h-12', 'text-xs', 'rounded-lg')}
+              ${renderTeamLogoHTML(row.teamId, 'w-10 h-14', 'h-14', 'text-xs', 'rounded-lg')}
               <span class="font-rubik font-bold text-xs md:text-sm text-slate-800">${team.name}</span>
             </div>
           </td>
@@ -900,7 +900,7 @@
         slot.className = "w-full bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-sm font-rubik font-bold text-xs md:text-sm text-slate-800 uppercase tracking-wide";
         slot.innerHTML = `
           <div class="flex items-center gap-3">
-            ${renderTeamLogoHTML(teamId, 'w-8 h-12', 'h-10', 'text-[10px]', 'rounded-md')}
+            ${renderTeamLogoHTML(teamId, 'w-8 h-12', 'h-12', 'text-[10px]', 'rounded-md')}
             <span>${team.name}</span>
           </div>
           ${score !== null ? `<span class="font-chubzy text-xl text-[#D30611] ml-2">${score}</span>` : ''}
