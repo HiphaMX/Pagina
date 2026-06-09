@@ -147,7 +147,11 @@
         </div>
         <div>
           <div id="pass-name-label" class="font-rubik font-bold text-slate-800 text-sm uppercase tracking-tight">—</div>
-          <div class="text-[9px] text-[#D30611] font-bold uppercase tracking-wider">🎟️ PASE DE TORNEO ACTIVO</div>
+          <div class="text-[9px] text-[#D30611] font-bold uppercase tracking-wider flex items-center gap-2 flex-wrap">
+            <span>🎟️ PASE DE TORNEO ACTIVO</span>
+            <span class="text-slate-300">|</span>
+            <button onclick="logout()" class="text-slate-400 hover:text-[#D30611] underline normal-case font-medium transition-colors">Cerrar sesión / Registrar otro correo</button>
+          </div>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -595,6 +599,21 @@
       
       initUI();
       showToast("¡Pase de Torneo Simulado! 🎟️");
+    };
+
+    window.logout = function() {
+      if (!confirm("¿Seguro que deseas cerrar sesión? Tendrás que registrarte nuevamente para votar.")) return;
+      localStorage.removeItem('chilechillon-mundial-state');
+      state.userName = null;
+      state.userEmail = null;
+      state.userPhone = null;
+      state.championPrediction = null;
+      state.userVotes = {};
+      state.userPoints = 0;
+      state.matches = JSON.parse(JSON.stringify(initialMatches));
+      saveState();
+      initUI();
+      showToast("Sesión cerrada");
     };
 
     // Cambiar Tabs
@@ -1204,10 +1223,25 @@
         })
         .catch(err => {
           console.warn("Error al registrar voto en el servidor:", err);
-          alert("No se pudo registrar tu voto: " + err.message);
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
+          if (err.message === "Usuario no registrado") {
+            alert("Tu sesión ha expirado o tu usuario no está registrado en el servidor. El sistema se reiniciará para que puedas registrarte de nuevo.");
+            localStorage.removeItem('chilechillon-mundial-state');
+            state.userName = null;
+            state.userEmail = null;
+            state.userPhone = null;
+            state.championPrediction = null;
+            state.userVotes = {};
+            state.userPoints = 0;
+            state.matches = JSON.parse(JSON.stringify(initialMatches));
+            saveState();
+            initUI();
+            closeVoteModal();
+          } else {
+            alert("No se pudo registrar tu voto: " + err.message);
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML = originalText;
+            }
           }
         });
       }
