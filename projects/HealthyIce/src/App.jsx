@@ -258,6 +258,53 @@ function App() {
     e.preventDefault();
     setIsPartnerSubmitting(true);
     
+    if (partnerForm.llenado_manual) {
+      try {
+        const a = document.createElement('a');
+        a.href = "/Formatos/Contrato de colaboración comercial.pdf";
+        a.download = "Contrato_HealthyIce_Formato_Manual.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        
+        setPartnerSubmitSuccess(true);
+        setTimeout(() => {
+          setLegalModal(null);
+          setPartnerSubmitSuccess(false);
+          setPartnerForm(prev => ({
+            nombre: '',
+            razon_social: '',
+            nombre_establecimiento: '',
+            rfc: '',
+            domicilio: '',
+            email: '',
+            telefono: '',
+            tipo_alianza: 'Punto de Venta',
+            firma: '',
+            fecha: prev.fecha,
+            esquema_comercial: 'Compra directa',
+            esquema_comercial_otro: '',
+            frecuencia_pagos: 'Semanal',
+            metodo_pago: 'Transferencia bancaria',
+            metodo_pago_otro: '',
+            vigencia_meses: 12,
+            fecha_inicio_dia: new Date().getDate(),
+            fecha_inicio_mes: new Date().toLocaleDateString('es-MX', { month: 'long' }),
+            fecha_inicio_anio: new Date().getFullYear(),
+            ciudad_jurisdiccion: 'Guadalajara, Jalisco',
+            representante_healthyice: 'FRANCISCO DELGADILLO',
+            llenado_manual: false
+          }));
+        }, 3000);
+      } catch (error) {
+        console.error('Error downloading manual contract:', error);
+        alert('Hubo un problema al descargar el archivo. Por favor intenta de nuevo.');
+      } finally {
+        setIsPartnerSubmitting(false);
+      }
+      return;
+    }
+
     // Convert all string fields to uppercase before sending
     const uppercasedForm = {};
     for (const key in partnerForm) {
