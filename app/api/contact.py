@@ -470,16 +470,7 @@ async def get_quiniela_results(db: Session = Depends(get_db)):
         # Initialize counts for matches 1 to 13
         results = {str(i): {"A": 0, "B": 0} for i in range(1, 14)}
         
-        # Base/simulated votes for matching initial design
-        base_votes = {
-            "1": {"A": 12, "B": 9},
-            "2": {"A": 15, "B": 14}
-        }
-        for k, v in base_votes.items():
-            results[k]["A"] += v["A"]
-            results[k]["B"] += v["B"]
-            
-        for lead in leads:
+        for lead in db.query(ChileChillonLead).all():
             if lead.votos:
                 try:
                     user_votes = json.loads(lead.votos)
