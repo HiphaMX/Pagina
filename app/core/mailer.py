@@ -551,50 +551,71 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(30, 41, 59)
     
-    # Extract form data fields and convert to uppercase
-    razon_social_val = (getattr(form_data, 'razon_social', '') or '').upper()
-    nombre_val = (getattr(form_data, 'nombre', '') or '').upper()
-    nombre_establecimiento_val = (getattr(form_data, 'nombre_establecimiento', '') or '').upper()
-    rfc_val = (getattr(form_data, 'rfc', '') or '').upper()
-    domicilio_val = (getattr(form_data, 'domicilio', '') or '').upper()
-    email_val = (getattr(form_data, 'email', '') or '').upper()
-    telefono_val = (getattr(form_data, 'telefono', '') or '').upper()
+    # Extract form data fields and convert to uppercase, handling blank spaces if manual print is requested
+    llenado_manual = getattr(form_data, 'llenado_manual', False)
     
-    esquema = (getattr(form_data, 'esquema_comercial', '') or 'COMPRA DIRECTA').upper()
-    esquema_otro = (getattr(form_data, 'esquema_comercial_otro', '') or '').upper()
-    if esquema == "OTRO" and esquema_otro:
-        esquema = f"OTRO: {esquema_otro}"
-    elif esquema == "OTRO":
-        esquema = "OTRO"
+    if llenado_manual:
+        razon_social_val = "________________________________________________"
+        nombre_val = "________________________________________________"
+        nombre_establecimiento_val = "________________________________________________"
+        rfc_val = "________________________"
+        domicilio_val = "________________________________________________"
+        email_val = "________________________"
+        telefono_val = "________________________"
+        esquema = "________________________"
+        metodo = "________________________"
+        rep_healthy = (getattr(form_data, 'representante_healthyice', '') or '').upper() or "________________________"
+        frecuencia_pagos_val = "________________________"
+        vigencia_meses_val = "____"
+        fecha_inicio_dia_val = "____"
+        fecha_inicio_mes_val = "________________"
+        fecha_inicio_anio_val = "________"
+        fecha_val = "________________________"
+        ciudad_jurisdiccion_val = (getattr(form_data, 'ciudad_jurisdiccion', '') or '').upper() or "________________________"
+    else:
+        razon_social_val = (getattr(form_data, 'razon_social', '') or '').upper() or "________________________________________________"
+        nombre_val = (getattr(form_data, 'nombre', '') or '').upper() or "________________________________________________"
+        nombre_establecimiento_val = (getattr(form_data, 'nombre_establecimiento', '') or '').upper() or "________________________________________________"
+        rfc_val = (getattr(form_data, 'rfc', '') or '').upper() or "________________________"
+        domicilio_val = (getattr(form_data, 'domicilio', '') or '').upper() or "________________________________________________"
+        email_val = (getattr(form_data, 'email', '') or '').upper() or "________________________"
+        telefono_val = (getattr(form_data, 'telefono', '') or '').upper() or "________________________"
         
-    metodo = (getattr(form_data, 'metodo_pago', '') or 'TRANSFERENCIA BANCARIA').upper()
-    metodo_otro = (getattr(form_data, 'metodo_pago_otro', '') or '').upper()
-    if metodo == "OTRO" and metodo_otro:
-        metodo = f"OTRO: {metodo_otro}"
-    elif metodo == "OTRO":
-        metodo = "OTRO"
-
-    rep_healthy = (getattr(form_data, 'representante_healthyice', '') or "FRANCISCO DELGADILLO").upper()
-    frecuencia_pagos_val = (getattr(form_data, 'frecuencia_pagos', '') or 'SEMANAL').upper()
-    vigencia_meses_val = getattr(form_data, 'vigencia_meses', 12) or 12
+        esquema = (getattr(form_data, 'esquema_comercial', '') or 'COMPRA DIRECTA').upper()
+        esquema_otro = (getattr(form_data, 'esquema_comercial_otro', '') or '').upper()
+        if esquema == "OTRO" and esquema_otro:
+            esquema = f"OTRO: {esquema_otro}"
+        elif esquema == "OTRO":
+            esquema = "OTRO"
+            
+        metodo = (getattr(form_data, 'metodo_pago', '') or 'TRANSFERENCIA BANCARIA').upper()
+        metodo_otro = (getattr(form_data, 'metodo_pago_otro', '') or '').upper()
+        if metodo == "OTRO" and metodo_otro:
+            metodo = f"OTRO: {metodo_otro}"
+        elif metodo == "OTRO":
+            metodo = "OTRO"
     
-    fecha_inicio_dia_val = getattr(form_data, 'fecha_inicio_dia', None)
-    fecha_inicio_mes_val = (getattr(form_data, 'fecha_inicio_mes', '') or '').upper()
-    fecha_inicio_anio_val = getattr(form_data, 'fecha_inicio_anio', None)
+        rep_healthy = (getattr(form_data, 'representante_healthyice', '') or "FRANCISCO DELGADILLO").upper()
+        frecuencia_pagos_val = (getattr(form_data, 'frecuencia_pagos', '') or 'SEMANAL').upper()
+        vigencia_meses_val = getattr(form_data, 'vigencia_meses', 12) or 12
+        
+        fecha_inicio_dia_val = getattr(form_data, 'fecha_inicio_dia', None)
+        fecha_inicio_mes_val = (getattr(form_data, 'fecha_inicio_mes', '') or '').upper()
+        fecha_inicio_anio_val = getattr(form_data, 'fecha_inicio_anio', None)
+        
+        # Fallback to current date if details are missing
+        import datetime
+        now = datetime.datetime.now()
+        if fecha_inicio_dia_val is None:
+            fecha_inicio_dia_val = now.day
+        if not fecha_inicio_mes_val:
+            meses_es = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
+            fecha_inicio_mes_val = meses_es[now.month - 1]
+        if fecha_inicio_anio_val is None:
+            fecha_inicio_anio_val = now.year
     
-    # Fallback to current date if details are missing
-    import datetime
-    now = datetime.datetime.now()
-    if fecha_inicio_dia_val is None:
-        fecha_inicio_dia_val = now.day
-    if not fecha_inicio_mes_val:
-        meses_es = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
-        fecha_inicio_mes_val = meses_es[now.month - 1]
-    if fecha_inicio_anio_val is None:
-        fecha_inicio_anio_val = now.year
-
-    fecha_val = (getattr(form_data, 'fecha', '') or f"{fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}").upper()
-    ciudad_jurisdiccion_val = (getattr(form_data, 'ciudad_jurisdiccion', '') or 'GUADALAJARA, JALISCO').upper()
+        fecha_val = (getattr(form_data, 'fecha', '') or f"{fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}").upper()
+        ciudad_jurisdiccion_val = (getattr(form_data, 'ciudad_jurisdiccion', '') or 'GUADALAJARA, JALISCO').upper()
     
     intro_text = (
         f"CONTRATO DE COLABORACION COMERCIAL que celebran por una parte HEALTHY ICE, representada por "

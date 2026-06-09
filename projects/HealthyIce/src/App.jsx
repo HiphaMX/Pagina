@@ -208,7 +208,8 @@ function App() {
     fecha_inicio_mes: '',
     fecha_inicio_anio: '',
     ciudad_jurisdiccion: 'Guadalajara, Jalisco',
-    representante_healthyice: 'FRANCISCO DELGADILLO'
+    representante_healthyice: 'FRANCISCO DELGADILLO',
+    llenado_manual: false
   });
   const [isPartnerSubmitting, setIsPartnerSubmitting] = useState(false);
   const [partnerSubmitSuccess, setPartnerSubmitSuccess] = useState(false);
@@ -281,7 +282,10 @@ function App() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        const filename = `Contrato_HealthyIce_${partnerForm.razon_social.replace(/\s+/g, '_')}.pdf`;
+        const cleanRazonSocial = (partnerForm.razon_social || '').trim().replace(/\s+/g, '_');
+        const filename = partnerForm.llenado_manual
+          ? 'Contrato_HealthyIce_Formato_Manual.pdf'
+          : `Contrato_HealthyIce_${cleanRazonSocial || 'Socio_Comercial'}.pdf`;
         a.download = filename;
         document.body.appendChild(a);
         a.click();
@@ -313,7 +317,8 @@ function App() {
             fecha_inicio_mes: new Date().toLocaleDateString('es-MX', { month: 'long' }),
             fecha_inicio_anio: new Date().getFullYear(),
             ciudad_jurisdiccion: 'Guadalajara, Jalisco',
-            representante_healthyice: 'FRANCISCO DELGADILLO'
+            representante_healthyice: 'FRANCISCO DELGADILLO',
+            llenado_manual: false
           }));
         }, 8000);
       } else {
@@ -465,6 +470,52 @@ function App() {
       boxSide: 'left'
     }
   ];
+
+  const getPreviewVal = (field, fallback, manualFallback = '________________________') => {
+    if (partnerForm.llenado_manual) {
+      return manualFallback;
+    }
+    return partnerForm[field] || fallback;
+  };
+
+  const getEsquemaPreview = () => {
+    if (partnerForm.llenado_manual) {
+      return '________________________';
+    }
+    return partnerForm.esquema_comercial === 'Otro'
+      ? (partnerForm.esquema_comercial_otro || 'Otro')
+      : partnerForm.esquema_comercial;
+  };
+
+  const getMetodoPreview = () => {
+    if (partnerForm.llenado_manual) {
+      return '________________________';
+    }
+    return partnerForm.metodo_pago === 'Otro'
+      ? (partnerForm.metodo_pago_otro || 'Otro')
+      : partnerForm.metodo_pago;
+  };
+
+  const getFechaInicioDiaPreview = () => {
+    if (partnerForm.llenado_manual) {
+      return '____';
+    }
+    return partnerForm.fecha_inicio_dia || new Date().getDate();
+  };
+
+  const getFechaInicioMesPreview = () => {
+    if (partnerForm.llenado_manual) {
+      return '________________';
+    }
+    return partnerForm.fecha_inicio_mes || new Date().toLocaleDateString('es-MX', { month: 'long' });
+  };
+
+  const getFechaInicioAnioPreview = () => {
+    if (partnerForm.llenado_manual) {
+      return '________';
+    }
+    return partnerForm.fecha_inicio_anio || new Date().getFullYear();
+  };
 
   return (
     <>
@@ -1311,208 +1362,256 @@ function App() {
                         </div>
                       ) : (
                         <form onSubmit={handlePartnerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                      <div className="partner-form-grid">
-                        <div style={{ gridColumn: 'span 2' }}>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Razón Social / Nombre Comercial *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. Distribuidora del Occidente S.A."
-                            value={partnerForm.razon_social}
-                            onChange={e => setPartnerForm({ ...partnerForm, razon_social: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Representante Legal *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. Juan Pérez"
-                            value={partnerForm.nombre}
-                            onChange={e => setPartnerForm({ ...partnerForm, nombre: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Nombre del Establecimiento *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. Abarrotes El Puerto"
-                            value={partnerForm.nombre_establecimiento}
-                            onChange={e => setPartnerForm({ ...partnerForm, nombre_establecimiento: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>RFC *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. XAXX010101000"
-                            value={partnerForm.rfc}
-                            onChange={e => setPartnerForm({ ...partnerForm, rfc: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Teléfono *</label>
-                          <input
-                            type="tel"
-                            required
-                            placeholder="e.g. 3312345678"
-                            value={partnerForm.telefono}
-                            onChange={e => setPartnerForm({ ...partnerForm, telefono: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div style={{ gridColumn: 'span 2' }}>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Domicilio Comercial Completo *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. Av. Vallarta 1234, Guadalajara, Jal."
-                            value={partnerForm.domicilio}
-                            onChange={e => setPartnerForm({ ...partnerForm, domicilio: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Correo Electrónico *</label>
-                          <input
-                            type="email"
-                            required
-                            placeholder="e.g. contacto@socio.com"
-                            value={partnerForm.email}
-                            onChange={e => setPartnerForm({ ...partnerForm, email: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Ciudad Jurisdicción *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. Guadalajara, Jalisco"
-                            value={partnerForm.ciudad_jurisdiccion}
-                            onChange={e => setPartnerForm({ ...partnerForm, ciudad_jurisdiccion: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div style={{ gridColumn: 'span 2' }}>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Representante HEALTHY ICE *</label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. FRANCISCO DELGADILLO"
-                            value={partnerForm.representante_healthyice}
-                            onChange={e => setPartnerForm({ ...partnerForm, representante_healthyice: e.target.value.toUpperCase() })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Esquema Comercial *</label>
-                          <select
-                            value={partnerForm.esquema_comercial}
-                            onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial: e.target.value })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
-                          >
-                            <option value="Compra directa">Compra directa</option>
-                            <option value="Consignación">Consignación</option>
-                            <option value="Otro">Otro</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Frecuencia de Pagos *</label>
-                          <select
-                            value={partnerForm.frecuencia_pagos}
-                            onChange={e => setPartnerForm({ ...partnerForm, frecuencia_pagos: e.target.value })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
-                          >
-                            <option value="Semanal">Semanal</option>
-                            <option value="Quincenal">Quincenal</option>
-                            <option value="Mensual">Mensual</option>
-                          </select>
-                        </div>
-
-                        {partnerForm.esquema_comercial === 'Otro' && (
-                          <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Especifique Esquema Comercial *</label>
+                          {/* Checkbox de llenado manual */}
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            padding: '0.75rem 1rem',
+                            background: '#f8fafc',
+                            borderRadius: '12px',
+                            border: '1px solid #cbd5e1',
+                            cursor: 'pointer',
+                            userSelect: 'none'
+                          }} onClick={() => setPartnerForm(prev => ({ ...prev, llenado_manual: !prev.llenado_manual }))}>
                             <input
-                              type="text"
-                              required
-                              placeholder="Escriba el esquema acordado"
-                              value={partnerForm.esquema_comercial_otro}
-                              onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial_otro: e.target.value.toUpperCase() })}
-                              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              type="checkbox"
+                              id="llenado_manual"
+                              checked={partnerForm.llenado_manual}
+                              onChange={e => {
+                                e.stopPropagation();
+                                setPartnerForm(prev => ({ ...prev, llenado_manual: e.target.checked }));
+                              }}
+                              style={{
+                                width: '18px',
+                                height: '18px',
+                                cursor: 'pointer',
+                                accentColor: '#98BC3C'
+                              }}
                             />
+                            <label htmlFor="llenado_manual" style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1e293b', cursor: 'pointer', margin: 0 }}>
+                              Descargar formato para llenado manual (campos en blanco)
+                            </label>
                           </div>
-                        )}
 
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Método de Pago *</label>
-                          <select
-                            value={partnerForm.metodo_pago}
-                            onChange={e => setPartnerForm({ ...partnerForm, metodo_pago: e.target.value })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
-                          >
-                            <option value="Transferencia bancaria">Transferencia bancaria</option>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Depósito">Depósito</option>
-                            <option value="Otro">Otro</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Vigencia (Meses) *</label>
-                          <input
-                            type="number"
-                            required
-                            min="1"
-                            value={partnerForm.vigencia_meses}
-                            onChange={e => setPartnerForm({ ...partnerForm, vigencia_meses: parseInt(e.target.value) || 12 })}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
+                          <div className="partner-form-grid" style={{ opacity: partnerForm.llenado_manual ? 0.6 : 1, transition: 'opacity 0.25s ease' }}>
+                            <div style={{ gridColumn: 'span 2' }}>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Razón Social / Nombre Comercial {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. Distribuidora del Occidente S.A."
+                                value={partnerForm.razon_social}
+                                onChange={e => setPartnerForm({ ...partnerForm, razon_social: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Representante Legal {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. Juan Pérez"
+                                value={partnerForm.nombre}
+                                onChange={e => setPartnerForm({ ...partnerForm, nombre: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Nombre del Establecimiento {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. Abarrotes El Puerto"
+                                value={partnerForm.nombre_establecimiento}
+                                onChange={e => setPartnerForm({ ...partnerForm, nombre_establecimiento: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>RFC {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. XAXX010101000"
+                                value={partnerForm.rfc}
+                                onChange={e => setPartnerForm({ ...partnerForm, rfc: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Teléfono {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="tel"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. 3312345678"
+                                value={partnerForm.telefono}
+                                onChange={e => setPartnerForm({ ...partnerForm, telefono: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Domicilio Comercial Completo {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. Av. Vallarta 1234, Guadalajara, Jal."
+                                value={partnerForm.domicilio}
+                                onChange={e => setPartnerForm({ ...partnerForm, domicilio: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Correo Electrónico {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="email"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. contacto@socio.com"
+                                value={partnerForm.email}
+                                onChange={e => setPartnerForm({ ...partnerForm, email: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Ciudad Jurisdicción {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. Guadalajara, Jalisco"
+                                value={partnerForm.ciudad_jurisdiccion}
+                                onChange={e => setPartnerForm({ ...partnerForm, ciudad_jurisdiccion: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Representante HEALTHY ICE {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="text"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                placeholder="e.g. FRANCISCO DELGADILLO"
+                                value={partnerForm.representante_healthyice}
+                                onChange={e => setPartnerForm({ ...partnerForm, representante_healthyice: e.target.value.toUpperCase() })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
 
-                        {partnerForm.metodo_pago === 'Otro' && (
-                          <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Especifique Método de Pago *</label>
-                            <input
-                              type="text"
-                              required
-                              placeholder="Escriba el método de pago acordado"
-                              value={partnerForm.metodo_pago_otro}
-                              onChange={e => setPartnerForm({ ...partnerForm, metodo_pago_otro: e.target.value.toUpperCase() })}
-                              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                            />
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Esquema Comercial {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <select
+                                value={partnerForm.esquema_comercial}
+                                disabled={partnerForm.llenado_manual}
+                                onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial: e.target.value })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
+                              >
+                                <option value="Compra directa">Compra directa</option>
+                                <option value="Consignación">Consignación</option>
+                                <option value="Otro">Otro</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Frecuencia de Pagos {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <select
+                                value={partnerForm.frecuencia_pagos}
+                                disabled={partnerForm.llenado_manual}
+                                onChange={e => setPartnerForm({ ...partnerForm, frecuencia_pagos: e.target.value })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
+                              >
+                                <option value="Semanal">Semanal</option>
+                                <option value="Quincenal">Quincenal</option>
+                                <option value="Mensual">Mensual</option>
+                              </select>
+                            </div>
+
+                            {partnerForm.esquema_comercial === 'Otro' && (
+                              <div style={{ gridColumn: 'span 2' }}>
+                                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Especifique Esquema Comercial {partnerForm.llenado_manual ? '' : '*'}</label>
+                                <input
+                                  type="text"
+                                  required={!partnerForm.llenado_manual}
+                                  disabled={partnerForm.llenado_manual}
+                                  placeholder="Escriba el esquema acordado"
+                                  value={partnerForm.esquema_comercial_otro}
+                                  onChange={e => setPartnerForm({ ...partnerForm, esquema_comercial_otro: e.target.value.toUpperCase() })}
+                                  style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                                />
+                              </div>
+                            )}
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Método de Pago {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <select
+                                value={partnerForm.metodo_pago}
+                                disabled={partnerForm.llenado_manual}
+                                onChange={e => setPartnerForm({ ...partnerForm, metodo_pago: e.target.value })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem', background: 'white' }}
+                              >
+                                <option value="Transferencia bancaria">Transferencia bancaria</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Depósito">Depósito</option>
+                                <option value="Otro">Otro</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Vigencia (Meses) {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="number"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                min="1"
+                                value={partnerForm.vigencia_meses}
+                                onChange={e => setPartnerForm({ ...partnerForm, vigencia_meses: parseInt(e.target.value) || 12 })}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
+
+                            {partnerForm.metodo_pago === 'Otro' && (
+                              <div style={{ gridColumn: 'span 2' }}>
+                                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Especifique Método de Pago {partnerForm.llenado_manual ? '' : '*'}</label>
+                                <input
+                                  type="text"
+                                  required={!partnerForm.llenado_manual}
+                                  disabled={partnerForm.llenado_manual}
+                                  placeholder="Escriba el método de pago acordado"
+                                  value={partnerForm.metodo_pago_otro}
+                                  onChange={e => setPartnerForm({ ...partnerForm, metodo_pago_otro: e.target.value.toUpperCase() })}
+                                  style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                                />
+                              </div>
+                            )}
+
+                            <div style={{ gridColumn: 'span 2' }}>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Fecha de Inicio de Operaciones {partnerForm.llenado_manual ? '' : '*'}</label>
+                              <input
+                                type="date"
+                                required={!partnerForm.llenado_manual}
+                                disabled={partnerForm.llenado_manual}
+                                onChange={e => {
+                                  if (!e.target.value) return;
+                                  const selectedDate = new Date(e.target.value + 'T00:00:00');
+                                  const day = selectedDate.getDate();
+                                  const month = selectedDate.toLocaleDateString('es-MX', { month: 'long' });
+                                  const year = selectedDate.getFullYear();
+                                  setPartnerForm({
+                                    ...partnerForm,
+                                    fecha_inicio_dia: day,
+                                    fecha_inicio_mes: month,
+                                    fecha_inicio_anio: year
+                                  });
+                                }}
+                                defaultValue={new Date().toISOString().split('T')[0]}
+                                style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                              />
+                            </div>
                           </div>
-                        )}
-
-                        <div style={{ gridColumn: 'span 2' }}>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>Fecha de Inicio de Operaciones *</label>
-                          <input
-                            type="date"
-                            required
-                            onChange={e => {
-                              if (!e.target.value) return;
-                              const selectedDate = new Date(e.target.value + 'T00:00:00');
-                              const day = selectedDate.getDate();
-                              const month = selectedDate.toLocaleDateString('es-MX', { month: 'long' });
-                              const year = selectedDate.getFullYear();
-                              setPartnerForm({
-                                ...partnerForm,
-                                fecha_inicio_dia: day,
-                                fecha_inicio_mes: month,
-                                fecha_inicio_anio: year
-                              });
-                            }}
-                            defaultValue={new Date().toISOString().split('T')[0]}
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
-                          />
-                        </div>
-                      </div>
 
                       {/* Dynamic Contract Preview */}
                       <div style={{ marginTop: '1rem' }}>
@@ -1530,7 +1629,7 @@ function App() {
                         }}>
                           <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>CONTRATO DE COLABORACIÓN COMERCIAL</p>
                           <p style={{ marginBottom: '1rem' }}>
-                            CONTRATO DE COLABORACIÓN COMERCIAL que celebran por una parte HEALTHY ICE, representada por <strong>{partnerForm.representante_healthyice || 'FRANCISCO DELGADILLO'}</strong>, a quien en lo sucesivo se le denominará "HEALTHY ICE", y por la otra <strong>{partnerForm.razon_social || '[Razón Social / Nombre Comercial]'}</strong>, representada por <strong>{partnerForm.nombre || '[Nombre del Representante Legal]'}</strong> (Nombre del Establecimiento: <strong>{partnerForm.nombre_establecimiento || '[Nombre del Establecimiento]'}</strong>), a quien en lo sucesivo se le denominará "SOCIO DE NEGOCIO", al tenor de las siguientes declaraciones y cláusulas:
+                            CONTRATO DE COLABORACIÓN COMERCIAL que celebran por una parte HEALTHY ICE, representada por <strong>{getPreviewVal('representante_healthyice', 'FRANCISCO DELGADILLO', '________________________')}</strong>, a quien en lo sucesivo se le denominará "HEALTHY ICE", y por la otra <strong>{getPreviewVal('razon_social', '[Razón Social / Nombre Comercial]', '________________________________________________')}</strong>, representada por <strong>{getPreviewVal('nombre', '[Nombre del Representante Legal]', '________________________________________________')}</strong> (Nombre del Establecimiento: <strong>{getPreviewVal('nombre_establecimiento', '[Nombre del Establecimiento]', '________________________________________________')}</strong>), a quien en lo sucesivo se le denominará "SOCIO DE NEGOCIO", al tenor de las siguientes declaraciones y cláusulas:
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>DECLARACIONES</p>
@@ -1540,8 +1639,8 @@ function App() {
                           <p style={{ marginBottom: '0.75rem' }}>3. Que tiene interés en comercializar sus productos a través de puntos de venta externos.</p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>II. DECLARA EL SOCIO DE NEGOCIO:</p>
-                          <p style={{ marginBottom: '0.25rem' }}>1. Que es propietario, representante o administrador del establecimiento denominado: <strong>{partnerForm.nombre_establecimiento || '[Nombre del Establecimiento]'}</strong></p>
-                          <p style={{ marginBottom: '0.25rem' }}>2. Que cuenta con las instalaciones necesarias para la exhibición, conservación y venta de los productos HEALTHY ICE.</p>
+                          <p style={{ marginBottom: '0.25rem' }}>1. Que es propietario, representante o administrador del establecimiento denominado: <strong>{getPreviewVal('nombre_establecimiento', '[Nombre del Establecimiento]', '________________________________________________')}</strong></p>
+                          <p style={{ marginBottom: '0.25rem' }}>2. Que cuenta con las instalaciones necesarias para la exhibición, conservación y venta de los productos HEALTHY ICE (incluyendo domicilio en <strong>{getPreviewVal('domicilio', '[Domicilio Comercial Completo]', '________________________________________________')}</strong> y RFC <strong>{getPreviewVal('rfc', '[RFC]', '________________________')}</strong>).</p>
                           <p style={{ marginBottom: '0.25rem' }}>3. Que tiene interés en comercializar los productos objeto de este contrato.</p>
                           <p style={{ marginBottom: '0.75rem' }}>4. Que cuenta con facultades suficientes para celebrar el presente acuerdo.</p>
                           <p style={{ marginBottom: '1rem' }}>Ambas partes manifiestan su voluntad para sujetarse a las siguientes:</p>
@@ -1549,7 +1648,7 @@ function App() {
                           <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>CLÁUSULAS</p>
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>PRIMERA. OBJETO</p>
                           <p style={{ marginBottom: '0.75rem' }}>
-                            HEALTHY ICE entregará productos al SOCIO DE NEGOCIO para su comercialización dentro de su establecimiento bajo el esquema de: <strong>{partnerForm.esquema_comercial === 'Otro' ? (partnerForm.esquema_comercial_otro || 'Otro') : partnerForm.esquema_comercial}</strong>.
+                            HEALTHY ICE entregará productos al SOCIO DE NEGOCIO para su comercialización dentro de su establecimiento bajo el esquema de: <strong>{getEsquemaPreview()}</strong>.
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SEGUNDA. PRODUCTOS</p>
@@ -1570,7 +1669,7 @@ function App() {
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>QUINTA. PAGOS</p>
                           <p style={{ marginBottom: '0.75rem' }}>
-                            Los pagos deberán realizarse de forma: <strong>{partnerForm.frecuencia_pagos}</strong>. Mediante: <strong>{partnerForm.metodo_pago === 'Otro' ? (partnerForm.metodo_pago_otro || 'Otro') : partnerForm.metodo_pago}</strong>.
+                            Los pagos deberán realizarse de forma: <strong>{getPreviewVal('frecuencia_pagos', 'Semanal', '________________________')}</strong>. Mediante: <strong>{getMetodoPreview()}</strong>.
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SEXTA. PUBLICIDAD Y MARCA</p>
@@ -1578,7 +1677,7 @@ function App() {
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SÉPTIMA. VIGENCIA</p>
                           <p style={{ marginBottom: '0.75rem' }}>
-                            El presente contrato tendrá una vigencia inicial de: <strong>{partnerForm.vigencia_meses || 12}</strong> meses. Iniciando el día <strong>{partnerForm.fecha_inicio_dia || new Date().getDate()}</strong> de <strong>{partnerForm.fecha_inicio_mes || new Date().toLocaleDateString('es-MX', { month: 'long' })}</strong> de <strong>{partnerForm.fecha_inicio_anio || new Date().getFullYear()}</strong>. Al concluir dicho plazo podrá renovarse por acuerdo entre las partes.
+                            El presente contrato tendrá una vigencia inicial de: <strong>{getPreviewVal('vigencia_meses', 12, '____')}</strong> meses. Iniciando el día <strong>{getFechaInicioDiaPreview()}</strong> de <strong>{getFechaInicioMesPreview()}</strong> de <strong>{getFechaInicioAnioPreview()}</strong>. Al concluir dicho plazo podrá renovarse por acuerdo entre las partes.
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>OCTAVA. TERMINACIÓN ANTICIPADA</p>
@@ -1597,11 +1696,11 @@ function App() {
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>DÉCIMA TERCERA. JURISDICCIÓN</p>
                           <p style={{ marginBottom: '1.5rem' }}>
-                            Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: <strong>{partnerForm.ciudad_jurisdiccion || 'Guadalajara, Jalisco'}</strong>, renunciando a cualquier otro fuero que pudiera corresponderles.
+                            Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: <strong>{getPreviewVal('ciudad_jurisdiccion', 'Guadalajara, Jalisco', '________________________')}</strong>, renunciando a cualquier otro fuero que pudiera corresponderles.
                           </p>
 
                           <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>FIRMAS</p>
-                           <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b' }}>
+                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b' }}>
                             Leído que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman por duplicado.
                           </p>
                         </div>
@@ -1614,7 +1713,7 @@ function App() {
                         className="btn btn-primary"
                         style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isPartnerSubmitting ? 0.6 : 1 }}
                       >
-                        {isPartnerSubmitting ? 'Procesando contrato...' : 'Generar y Enviar Contrato'}
+                        {isPartnerSubmitting ? 'Procesando contrato...' : (partnerForm.llenado_manual ? 'Descargar Formato para Llenado Manual' : 'Generar y Descargar Contrato')}
                       </button>
                       </form>
                     )}

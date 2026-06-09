@@ -38,13 +38,13 @@ class ContactForm(BaseModel):
 
 class HealthyIceContractForm(BaseModel):
     nombre: Optional[str] = None # Representante legal
-    razon_social: str
-    rfc: str
-    domicilio: str
-    email: EmailStr
-    telefono: str
+    razon_social: Optional[str] = None
+    rfc: Optional[str] = None
+    domicilio: Optional[str] = None
+    email: Optional[str] = None
+    telefono: Optional[str] = None
     tipo_alianza: Optional[str] = "Punto de Venta"
-    firma: str
+    firma: Optional[str] = ""
     fecha: Optional[str] = None
     
     # Nuevos campos del contrato de colaboracion comercial
@@ -60,6 +60,7 @@ class HealthyIceContractForm(BaseModel):
     fecha_inicio_anio: Optional[int] = None
     ciudad_jurisdiccion: Optional[str] = "Guadalajara, Jalisco"
     representante_healthyice: Optional[str] = "FRANCISCO DELGADILLO"
+    llenado_manual: Optional[bool] = False
 
 @router.post("/healthyice")
 async def submit_healthyice_form(form_data: ContactForm):
@@ -80,7 +81,8 @@ from fastapi import Response
 async def submit_healthyice_contract(form_data: HealthyIceContractForm):
     try:
         pdf_bytes = generate_healthyice_contract_pdf(form_data)
-        safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
+        razon_social = form_data.razon_social or "Formato_Manual"
+        safe_name = razon_social.replace(' ', '_').replace('/', '_')
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
