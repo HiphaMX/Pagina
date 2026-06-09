@@ -1223,8 +1223,10 @@ function App() {
 
                             {/* Button 2: Entrega mercancía a consigna */}
                             <a
-                              href="#void-consigna"
-                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              href="/Formatos/Entrega de mercancía a consigna.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download="Entrega_de_mercancia_a_consigna.pdf"
                               style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -1237,8 +1239,7 @@ function App() {
                                 textDecoration: 'none',
                                 color: '#101729',
                                 transition: 'all 0.2s ease',
-                                width: '100%',
-                                opacity: 0.8
+                                width: '100%'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = '#f1f5f9';
@@ -1250,19 +1251,21 @@ function App() {
                               }}
                             >
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <FileText size={24} color="#64748b" />
+                                <FileText size={24} color="#98BC3C" />
                                 <div>
                                   <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Entrega mercancía a consigna</h4>
-                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Documento de entrega (Próximamente)</p>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Descarga el formato de entrega de mercancía</p>
                                 </div>
                               </div>
-                              <ChevronRight size={20} color="#cbd5e1" />
+                              <ChevronRight size={20} color="#64748b" />
                             </a>
 
                             {/* Button 3: Cobro de mercancía */}
                             <a
-                              href="#void-cobro"
-                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              href="/Formatos/Formato de cobro de mercancía.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download="Formato_de_cobro_de_mercancia.pdf"
                               style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -1275,8 +1278,7 @@ function App() {
                                 textDecoration: 'none',
                                 color: '#101729',
                                 transition: 'all 0.2s ease',
-                                width: '100%',
-                                opacity: 0.8
+                                width: '100%'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = '#f1f5f9';
@@ -1288,13 +1290,13 @@ function App() {
                               }}
                             >
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <FileText size={24} color="#64748b" />
+                                <FileText size={24} color="#98BC3C" />
                                 <div>
                                   <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Cobro de mercancía</h4>
-                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Control y recibo de cobros (Próximamente)</p>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Descarga el formato de cobro de mercancía</p>
                                 </div>
                               </div>
-                              <ChevronRight size={20} color="#cbd5e1" />
+                              <ChevronRight size={20} color="#64748b" />
                             </a>
 
                             {/* Button 4: Registro de socio de negocio */}
