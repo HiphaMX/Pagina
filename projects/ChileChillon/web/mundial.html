@@ -82,7 +82,15 @@
           </div>
           <div class="flex items-start gap-3 text-xs text-slate-600">
             <span class="text-base">🗳️</span>
-            <div><strong class="text-slate-800">Dinámica Quiniela:</strong> Pronostica el ganador de cada partido para ganar 3 puntos por acierto, y 3 puntos adicionales si aciertas al campeón del torneo.</div>
+            <div>
+              <strong class="text-slate-800">Dinámica de Puntos:</strong>
+              <ul class="list-disc list-inside mt-1 space-y-1 text-slate-500 text-[11px] font-rubik">
+                <li><strong>Fase 1 (11 Jun):</strong> +3 pts por acierto, -1 pt por error.</li>
+                <li><strong>Semifinales (1-14 Jul):</strong> +6 pts por acierto, -1 pt por error.</li>
+                <li><strong>Gran Final (15-19 Jul):</strong> +9 pts si aciertas al campeón.</li>
+                <li><strong>Salsa Favorita:</strong> +30 pts de bonus si tu favorita elegida queda campeona.</li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -182,6 +190,61 @@
       <h2 class="font-chubzy text-2xl text-slate-900">Partidos del Torneo</h2>
       <span id="phase-pill" class="px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm">En Curso</span>
     </div>
+
+    <!-- Sección de Ganadores (Se revela el 20 de Julio) -->
+    <div id="leaderboard-section" class="hidden mb-12 bg-white border border-slate-100 rounded-[32px] p-6 md:p-8 shadow-sm animate-fade-in">
+      <div class="flex items-center gap-3.5 mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-[#FFEED3] flex items-center justify-center text-2xl">🏆</div>
+        <div>
+          <h3 class="font-chubzy text-xl text-slate-900 leading-tight">Top 10 Ganadores de la Copa</h3>
+          <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-bold font-rubik">Clasificación Final del Sorteo (20 de Julio)</p>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-100 text-[10px] font-rubik font-bold text-slate-400 tracking-wider uppercase bg-[#FAF9F6]">
+              <th class="py-3 px-4 rounded-l-xl">Pos</th>
+              <th class="py-3 px-4">Usuario</th>
+              <th class="py-3 px-4">Correo</th>
+              <th class="py-3 px-4">Salsa Favorita</th>
+              <th class="py-3 px-4 rounded-r-xl">Puntos</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Banner Informativo de Reglas y Puntos -->
+    <div id="rules-banner" class="mb-8 glass-panel bg-white/70 backdrop-blur-md border border-slate-100 rounded-3xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-2xl bg-[#D30611]/10 flex items-center justify-center text-lg shrink-0">🌶️</div>
+        <div>
+          <h4 class="font-rubik font-extrabold text-xs uppercase tracking-wider text-slate-800">Reglas del Torneo y Puntuación</h4>
+          <p class="text-[10px] text-slate-500 mt-1">Suma puntos pronosticando los partidos de cada fase y compite por premios oficiales.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+        <div class="bg-white border border-slate-100 p-2.5 rounded-2xl">
+          <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Fase 1</div>
+          <div class="text-[10px] font-rubik font-black text-[#D30611] mt-0.5">+3 / -1 PTS</div>
+        </div>
+        <div class="bg-white border border-slate-100 p-2.5 rounded-2xl">
+          <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Semifinal</div>
+          <div class="text-[10px] font-rubik font-black text-[#D30611] mt-0.5">+6 / -1 PTS</div>
+        </div>
+        <div class="bg-white border border-slate-100 p-2.5 rounded-2xl">
+          <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Gran Final</div>
+          <div class="text-[10px] font-rubik font-black text-[#D30611] mt-0.5">+9 PTS</div>
+        </div>
+        <div class="bg-white border border-slate-100 p-2.5 rounded-2xl">
+          <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Bonus Salsa</div>
+          <div class="text-[10px] font-rubik font-black text-[#D30611] mt-0.5">+30 PTS</div>
+        </div>
+      </div>
+    </div>
+
     <div id="matches-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </div>
 
@@ -283,6 +346,22 @@
       <h3 class="font-chubzy text-xl text-[#D30611] mb-2">Panel de Control del Torneo</h3>
       <p class="text-xs text-slate-500 mb-6">Simula el avance del torneo, activa partidos, cierra votaciones y asigna resultados.</p>
       
+      <!-- Date Simulator Dropdown -->
+      <div class="mb-6 bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h4 class="font-rubik font-bold text-xs uppercase tracking-wide text-slate-700">Simulador de Fecha del Torneo</h4>
+          <p class="text-[10px] text-slate-400 mt-1">Controla en qué fecha del calendario se encuentra el usuario para probar las activaciones y el ranking.</p>
+        </div>
+        <select id="admin-date-simulator" class="bg-white border border-slate-200 text-xs font-medium rounded-full px-4 py-2.5 outline-none font-rubik text-slate-700 cursor-pointer" onchange="setSimulatedDate(this.value)">
+          <option value="real">Fecha Real (Hoy)</option>
+          <option value="2026-06-09">Pre-Torneo (9 de Junio)</option>
+          <option value="2026-06-12">Fase de Grupos (12 de Junio)</option>
+          <option value="2026-07-05">Semifinales (5 de Julio)</option>
+          <option value="2026-07-16">Gran Final (16 de Julio)</option>
+          <option value="2026-07-21">Post-Torneo / Top 10 (21 de Julio)</option>
+        </select>
+      </div>
+
       <button class="w-full py-4 bg-[#FF5A00] hover:bg-[#e04f00] text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-md font-rubik btn-glow mb-6" onclick="simulateVotes()">
         ⚡ Simular 50 votos aleatorios (Partido Activo)
       </button>
@@ -371,7 +450,8 @@
         { teamId: 'neg', pj: 0, g: 0, p: 0, pts: 0, form: [] },
         { teamId: 'ser', pj: 0, g: 0, p: 0, pts: 0, form: [] }
       ],
-      champion: null
+      champion: null,
+      simulatedDate: null
     };
 
     // Almacenamiento local seguro
@@ -548,27 +628,260 @@
       return parts.map(p => p[0]).slice(0, 2).join("").toUpperCase();
     }
 
+    // Helpers de Fecha y Calendario del Torneo
+    function getCurrentDate() {
+      if (state.simulatedDate) {
+        return new Date(state.simulatedDate + "T12:00:00");
+      }
+      return new Date();
+    }
+
+    function getActivePhaseByDate(date) {
+      const time = date.getTime();
+      const date11Jun = new Date("2026-06-11T00:00:00").getTime();
+      const date01Jul = new Date("2026-07-01T00:00:00").getTime();
+      const date15Jul = new Date("2026-07-15T00:00:00").getTime();
+      const date20Jul = new Date("2026-07-20T00:00:00").getTime();
+
+      if (time < date11Jun) {
+        return 'pre-torneo';
+      } else if (time >= date11Jun && time < date01Jul) {
+        return 'grupo';
+      } else if (time >= date01Jul && time < date15Jul) {
+        return 'semifinal';
+      } else if (time >= date15Jul && time < date20Jul) {
+        return 'final';
+      } else {
+        return 'post-torneo';
+      }
+    }
+
+    function getEffectiveMatchStatus(match, currentDate) {
+      if (match.status === 'finished') return 'finished';
+      
+      const activePhase = getActivePhaseByDate(currentDate);
+      
+      if (activePhase === 'pre-torneo') return 'upcoming';
+      
+      if (match.phase === 'grupo') {
+        if (activePhase === 'grupo') return match.status;
+        return 'finished';
+      }
+      
+      if (match.phase === 'semifinal') {
+        if (activePhase === 'semifinal') return match.status;
+        if (activePhase === 'grupo' || activePhase === 'pre-torneo') return 'upcoming';
+        return 'finished';
+      }
+      
+      if (match.phase === 'final') {
+        if (activePhase === 'final') return match.status;
+        return 'upcoming';
+      }
+      
+      return match.status;
+    }
+
+    // Recalcular puntos del usuario dinámicamente según las nuevas reglas
+    function recalcUserPoints() {
+      let points = 0;
+      
+      state.matches.forEach(m => {
+        if (m.status !== 'finished') return;
+        
+        const userVote = state.userVotes[m.id];
+        if (!userVote) return;
+        
+        const winner = m.scoreA > m.scoreB ? 'A' : (m.scoreB > m.scoreA ? 'B' : null);
+        if (winner === null) return;
+        
+        if (m.phase === 'grupo') {
+          // Fase 1: ganado +3, perdido -1
+          if (userVote === winner) {
+            points += 3;
+          } else {
+            points -= 1;
+          }
+        } else if (m.phase === 'semifinal') {
+          // Semifinales: ganado +6, perdido -1
+          if (userVote === winner) {
+            points += 6;
+          } else {
+            points -= 1;
+          }
+        } else if (m.phase === 'final') {
+          // Final: ganado +9, no hay penalización
+          if (userVote === winner) {
+            points += 9;
+          }
+        }
+      });
+      
+      // Bonus Salsa Favorita:
+      // Si la salsa elegida al inicio llega a la final y la gana (es la campeona), suma 30 pts
+      const finalMatch = state.matches.find(m => m.id === 13);
+      if (finalMatch && finalMatch.status === 'finished') {
+        const actualChamp = finalMatch.scoreA > finalMatch.scoreB ? finalMatch.teamA : finalMatch.teamB;
+        if (actualChamp && state.championPrediction === actualChamp) {
+          points += 30;
+        }
+      }
+      
+      state.userPoints = Math.max(0, points); // Evitar mostrar puntos negativos para motivar al usuario
+    }
+
+    // Renderizar ranking final el 20 de Julio
+    function renderLeaderboard() {
+      const section = document.getElementById('leaderboard-section');
+      const tbody = document.getElementById('leaderboard-body');
+      if (!section || !tbody) return;
+
+      const currentDate = getCurrentDate();
+      const activePhase = getActivePhaseByDate(currentDate);
+
+      if (activePhase !== 'post-torneo') {
+        section.classList.add('hidden');
+        const rBanner = document.getElementById('rules-banner');
+        if (rBanner) rBanner.classList.remove('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      const rBanner = document.getElementById('rules-banner');
+      if (rBanner) rBanner.classList.add('hidden');
+      tbody.innerHTML = '';
+
+      // Competidores simulados
+      const competitors = [
+        { name: "Carlos Mendoza", email: "car***@gmail.com", fav: "hab", points: 75 },
+        { name: "Sofía Rodríguez", email: "sof***@hotmail.com", fav: "arb", points: 72 },
+        { name: "Alejandro Ortiz", email: "ale***@gmail.com", fav: "neg", points: 68 },
+        { name: "Valeria Gómez", email: "val***@yahoo.com", fav: "ser", points: 63 },
+        { name: "Mauricio Silva", email: "mau***@outlook.com", fav: "tat", points: 58 },
+        { name: "Gabriela Torres", email: "gab***@gmail.com", fav: "hab", points: 54 },
+        { name: "Daniela Ruiz", email: "dan***@gmail.com", fav: "neg", points: 49 },
+        { name: "Eduardo Castillo", email: "edu***@live.com", fav: "ser", points: 45 },
+        { name: "Lucía Morales", email: "luc***@gmail.com", fav: "arb", points: 40 },
+        { name: "Javier Delgado", email: "jav***@gmail.com", fav: "tat", points: 35 }
+      ];
+
+      const currentUser = {
+        name: state.userName || "Invitado",
+        email: state.userEmail || "tu-correo@chilechillon.com",
+        fav: state.championPrediction || "hab",
+        points: state.userPoints,
+        isCurrentUser: true
+      };
+
+      let all = [...competitors];
+      if (!all.some(c => c.isCurrentUser)) {
+        all.push(currentUser);
+      }
+      all.sort((a, b) => b.points - a.points);
+
+      const top10 = all.slice(0, 10);
+      const userRank = all.findIndex(c => c.isCurrentUser) + 1;
+      const userInTop10 = userRank <= 10;
+
+      top10.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        const isMe = row.isCurrentUser;
+        
+        tr.className = `border-b border-slate-100 transition-colors hover:bg-slate-50/50 ${isMe ? 'bg-[#FFEED3]/40 border-l-4 border-[#D30611]' : ''}`;
+        
+        const posClass = (index + 1) === 1 ? 'font-chubzy text-lg text-[#D30611]' : 'font-rubik text-sm font-bold text-slate-400';
+        const pointsClass = (index + 1) === 1 ? 'font-chubzy text-xl text-[#D30611]' : 'font-chubzy text-lg text-slate-800';
+        const favSauce = teams[row.fav] ? teams[row.fav].name : '—';
+
+        tr.innerHTML = `
+          <td class="py-3 px-4"><span class="${posClass}">${index + 1}</span></td>
+          <td class="py-3 px-4 font-rubik font-bold text-xs md:text-sm text-slate-800">${row.name} ${isMe ? '🔑 (Tú)' : ''}</td>
+          <td class="py-3 px-4 font-rubik text-xs text-slate-500">${row.email}</td>
+          <td class="py-3 px-4 font-rubik text-xs text-slate-600 font-semibold">${favSauce}</td>
+          <td class="py-3 px-4"><span class="${pointsClass}">${row.points} pts</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (!userInTop10) {
+        const dividerTr = document.createElement('tr');
+        dividerTr.innerHTML = `
+          <td colspan="5" class="py-2 text-center text-slate-400 font-rubik text-[10px] uppercase tracking-wider font-bold bg-slate-50">
+            •••
+          </td>
+        `;
+        tbody.appendChild(dividerTr);
+
+        const tr = document.createElement('tr');
+        tr.className = `bg-[#FFEED3]/40 border-l-4 border-[#D30611]`;
+        const favSauce = teams[currentUser.fav] ? teams[currentUser.fav].name : '—';
+        
+        tr.innerHTML = `
+          <td class="py-3 px-4"><span class="font-rubik text-sm font-bold text-slate-400">${userRank}</span></td>
+          <td class="py-3 px-4 font-rubik font-bold text-xs md:text-sm text-slate-800">${currentUser.name} 🔑 (Tú)</td>
+          <td class="py-3 px-4 font-rubik text-xs text-slate-500">${currentUser.email}</td>
+          <td class="py-3 px-4 font-rubik text-xs text-slate-600 font-semibold">${favSauce}</td>
+          <td class="py-3 px-4"><span class="font-chubzy text-lg text-slate-800">${currentUser.points} pts</span></td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Cambiar la fecha simulada en desarrollo
+    window.setSimulatedDate = function(val) {
+      if (val === 'real') {
+        state.simulatedDate = null;
+      } else {
+        state.simulatedDate = val;
+      }
+      recalcUserPoints();
+      saveState();
+      initUI();
+      renderMatches();
+      if (typeof renderStandings === 'function') renderStandings();
+      if (typeof renderBracket === 'function') renderBracket();
+      if (typeof renderMyVotes === 'function') renderMyVotes();
+      renderAdminPanel();
+      showToast(`Simulando fecha: ${val === 'real' ? 'Hoy' : val}`);
+    };
+
     // Renderizar la lista de partidos del usuario
     function renderMatches() {
       const container = document.getElementById('matches-container');
       container.innerHTML = '';
 
-      // Mostrar partidos correspondientes a la fase actual activa
-      const currentActiveMatch = state.matches.find(m => m.status === 'active');
-      const activePhase = currentActiveMatch ? currentActiveMatch.phase : (state.champion ? 'final' : 'grupo');
+      // Primero actualizamos el ranking de ganadores si corresponde
+      renderLeaderboard();
+
+      const currentDate = getCurrentDate();
+      const activePhaseByDate = getActivePhaseByDate(currentDate);
+
+      // Determinar qué fase mostrar en pantalla
+      let activePhase = 'grupo';
+      if (activePhaseByDate === 'semifinal') {
+        activePhase = 'semifinal';
+      } else if (activePhaseByDate === 'final' || activePhaseByDate === 'post-torneo') {
+        activePhase = 'final';
+      }
 
       // Actualizar píldora de fase
       const phasePill = document.getElementById('phase-pill');
       if (phasePill) {
-        if (activePhase === 'grupo') {
+        if (activePhaseByDate === 'pre-torneo') {
+          phasePill.innerText = "Inicia el 11 de Junio";
+          phasePill.className = "px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm";
+        } else if (activePhaseByDate === 'grupo') {
           phasePill.innerText = "Fase de Grupos";
           phasePill.className = "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm";
-        } else if (activePhase === 'semifinal') {
+        } else if (activePhaseByDate === 'semifinal') {
           phasePill.innerText = "Semifinales";
           phasePill.className = "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm animate-pulse";
+        } else if (activePhaseByDate === 'final') {
+          phasePill.innerText = "Gran Final";
+          phasePill.className = "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm animate-pulse";
         } else {
-          phasePill.innerText = state.champion ? "Torneo Finalizado" : "Gran Final";
-          phasePill.className = state.champion ? "px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm" : "px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm animate-pulse";
+          phasePill.innerText = "Torneo Finalizado";
+          phasePill.className = "px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm";
         }
       }
 
@@ -649,8 +962,11 @@
 
     // Crear la tarjeta de partido
     function createMatchCard(match) {
+      const currentDate = getCurrentDate();
+      const effectiveStatus = getEffectiveMatchStatus(match, currentDate);
+
       const card = document.createElement('div');
-      card.className = `glass-panel bg-white backdrop-blur-md rounded-[32px] border border-slate-100 p-6 flex flex-col gap-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden ${match.status === 'active' ? 'border-[#D30611]/30 shadow-md ring-1 ring-[#D30611]/10' : ''} ${match.status === 'finished' ? 'opacity-85' : ''}`;
+      card.className = `glass-panel bg-white backdrop-blur-md rounded-[32px] border border-slate-100 p-6 flex flex-col gap-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden ${effectiveStatus === 'active' ? 'border-[#D30611]/30 shadow-md ring-1 ring-[#D30611]/10' : ''} ${effectiveStatus === 'finished' ? 'opacity-85' : ''}`;
 
       const teamA = teams[match.teamA] || { name: 'Por Definir', badge: 'TBD', color: '#1e2d40' };
       const teamB = teams[match.teamB] || { name: 'Por Definir', badge: 'TBD', color: '#1e2d40' };
@@ -666,22 +982,22 @@
       if (match.phase === 'final') matchLabel = `Gran Final 🏆`;
 
       let statusBadge = '';
-      if (match.status === 'active') statusBadge = '<span class="px-2.5 py-1 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full animate-pulse">En Vivo</span>';
-      if (match.status === 'finished') statusBadge = '<span class="px-2.5 py-1 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full">Finalizado</span>';
-      if (match.status === 'upcoming') statusBadge = '<span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-400 text-[9px] font-bold uppercase tracking-widest rounded-full">Próximamente</span>';
+      if (effectiveStatus === 'active') statusBadge = '<span class="px-2.5 py-1 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full animate-pulse">En Vivo</span>';
+      if (effectiveStatus === 'finished') statusBadge = '<span class="px-2.5 py-1 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full">Finalizado</span>';
+      if (effectiveStatus === 'upcoming') statusBadge = '<span class="px-2.5 py-1 bg-white border border-slate-200 text-slate-400 text-[9px] font-bold uppercase tracking-widest rounded-full">Próximamente</span>';
 
       // Scores
       let vsContent = `<span class="font-chubzy text-2xl text-slate-300 tracking-wider">VS</span>`;
-      if (match.status === 'finished') {
+      if (effectiveStatus === 'finished') {
         vsContent = `<span class="font-chubzy text-3xl text-slate-900 tracking-wide">${match.scoreA} - ${match.scoreB}</span>`;
-      } else if (match.status === 'active') {
+      } else if (effectiveStatus === 'active') {
         vsContent = `<span class="font-chubzy text-2xl text-slate-300 tracking-wider">VS</span><span class="font-rubik text-[10px] font-black uppercase tracking-widest text-[#D30611] mt-1.5 px-3 py-1 bg-[#D30611]/10 rounded-full animate-bounce">Vota Ya</span>`;
       }
 
       // Winner class
       let teamAClass = '';
       let teamBClass = '';
-      if (match.status === 'finished') {
+      if (effectiveStatus === 'finished') {
         if (match.scoreA > match.scoreB) {
           teamAClass = 'scale-105 transition-transform font-extrabold';
           teamBClass = 'opacity-50 grayscale-[30%]';
@@ -716,7 +1032,7 @@
       `;
 
       // Si es un partido activo y no está finalizado
-      if (match.status === 'active' && match.teamA && match.teamB) {
+      if (effectiveStatus === 'active' && match.teamA && match.teamB) {
         const voteSec = document.createElement('div');
         voteSec.className = 'border-t border-slate-100 pt-4';
         
@@ -740,7 +1056,7 @@
           </div>
         `;
         card.appendChild(voteSec);
-      } else if (match.status === 'finished') {
+      } else if (effectiveStatus === 'finished') {
         // Mostrar barra final de votos
         const voteSec = document.createElement('div');
         voteSec.className = 'mt-4 pt-4 border-t border-slate-100';
@@ -809,10 +1125,12 @@
       }
 
       state.userVotes[matchId] = teamOption;
+      recalcUserPoints();
       saveState();
       
       closeVoteModal();
       renderMatches();
+      initUI();
       showToast("¡Voto registrado en tu pase!");
     }
 
@@ -1026,22 +1344,12 @@
       match.scoreB = scoreB;
       match.status = 'finished';
 
-      // Actualizar puntos del usuario si votó correctamente (3 puntos por voto acertado)
-      const userVote = state.userVotes[matchId];
-      if (userVote) {
-        if ((userVote === 'A' && scoreA > scoreB) || (userVote === 'B' && scoreB > scoreA)) {
-          state.userPoints += 3;
-        }
-      }
-
       // Recalcular estadísticas e ir a la siguiente fase
       recalcStandings();
       checkFaseProgression();
 
-      // Si es el partido de la gran final y el usuario acertó su campeón predicho, sumar 3 puntos
-      if (matchId === 13 && state.champion && state.champion === state.championPrediction) {
-        state.userPoints += 3;
-      }
+      // Recalcular puntos del usuario dinámicamente según las nuevas reglas
+      recalcUserPoints();
 
       saveState();
       renderAdminPanel();
@@ -1145,8 +1453,9 @@
       if (!confirm("¿Seguro que deseas reiniciar el torneo? Se perderán las simulaciones y el historial de votos.")) return;
       state.matches = JSON.parse(JSON.stringify(initialMatches));
       state.userVotes = {};
-      state.userPoints = 0;
       state.champion = null;
+      state.simulatedDate = null;
+      recalcUserPoints();
       recalcStandings();
       saveState();
       initUI();
@@ -1209,6 +1518,11 @@
           if (inlineSelect) inlineSelect.classList.remove('hidden');
         }
       }
+
+      const dateSimulator = document.getElementById('admin-date-simulator');
+      if (dateSimulator) {
+        dateSimulator.value = state.simulatedDate || 'real';
+      }
     }
 
     // Guardar predicción desde la barra superior de pase (caso de migración)
@@ -1223,6 +1537,7 @@
     // Cargar e Inicializar en DOMContentLoaded
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
+      recalcUserPoints();
       initUI();
       // Inicializar tab principal
       showTab('partidos');
