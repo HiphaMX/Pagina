@@ -1622,15 +1622,18 @@ function App() {
                           border: '1px solid #cbd5e1',
                           borderRadius: '12px',
                           padding: '1rem',
-                          background: '#f8fafc',
-                          fontSize: '0.8rem',
-                          lineHeight: 1.6,
-                          color: '#334155'
+                          background: '#f8fafc'
                         }}>
                           <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>CONTRATO DE COLABORACIÓN COMERCIAL</p>
-                          <p style={{ marginBottom: '1rem' }}>
-                            CONTRATO DE COLABORACIÓN COMERCIAL que celebran por una parte HEALTHY ICE, representada por <strong>{getPreviewVal('representante_healthyice', 'FRANCISCO DELGADILLO', '________________________')}</strong>, a quien en lo sucesivo se le denominará "HEALTHY ICE", y por la otra <strong>{getPreviewVal('razon_social', '[Razón Social / Nombre Comercial]', '________________________________________________')}</strong>, representada por <strong>{getPreviewVal('nombre', '[Nombre del Representante Legal]', '________________________________________________')}</strong> (Nombre del Establecimiento: <strong>{getPreviewVal('nombre_establecimiento', '[Nombre del Establecimiento]', '________________________________________________')}</strong>), a quien en lo sucesivo se le denominará "SOCIO DE NEGOCIO", al tenor de las siguientes declaraciones y cláusulas:
-                          </p>
+                          {partnerForm.llenado_manual ? (
+                            <p style={{ marginBottom: '1rem' }}>
+                              CONTRATO DE COLABORACIÓN COMERCIAL que celebran por una parte HEALTHY ICE, representada por ________________________________, a quien en lo sucesivo se le denominará "HEALTHY ICE", y por la otra ________________________________ , representada por ___________________________________( Nombre del Establecimiento), a quien en lo sucesivo se le denominará "SOCIO DE NEGOCIO", al tenor de las siguientes declaraciones y cláusulas:
+                            </p>
+                          ) : (
+                            <p style={{ marginBottom: '1rem' }}>
+                              CONTRATO DE COLABORACIÓN COMERCIAL que celebran por una parte HEALTHY ICE, representada por <strong>{getPreviewVal('representante_healthyice', 'FRANCISCO DELGADILLO', '________________________')}</strong>, a quien en lo sucesivo se le denominará "HEALTHY ICE", y por la otra <strong>{getPreviewVal('razon_social', '[Razón Social / Nombre Comercial]', '________________________________________________')}</strong>, representada por <strong>{getPreviewVal('nombre', '[Nombre del Representante Legal]', '________________________________________________')}</strong> (Nombre del Establecimiento: <strong>{getPreviewVal('nombre_establecimiento', '[Nombre del Establecimiento]', '________________________________________________')}</strong>), a quien en lo sucesivo se le denominará "SOCIO DE NEGOCIO", al tenor de las siguientes declaraciones y cláusulas:
+                            </p>
+                          )}
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>DECLARACIONES</p>
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>I. DECLARA HEALTHY ICE:</p>
@@ -1639,16 +1642,38 @@ function App() {
                           <p style={{ marginBottom: '0.75rem' }}>3. Que tiene interés en comercializar sus productos a través de puntos de venta externos.</p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>II. DECLARA EL SOCIO DE NEGOCIO:</p>
-                          <p style={{ marginBottom: '0.25rem' }}>1. Que es propietario, representante o administrador del establecimiento denominado: <strong>{getPreviewVal('nombre_establecimiento', '[Nombre del Establecimiento]', '________________________________________________')}</strong></p>
-                          <p style={{ marginBottom: '0.25rem' }}>2. Que cuenta con las instalaciones necesarias para la exhibición, conservación y venta de los productos HEALTHY ICE (incluyendo domicilio en <strong>{getPreviewVal('domicilio', '[Domicilio Comercial Completo]', '________________________________________________')}</strong> y RFC <strong>{getPreviewVal('rfc', '[RFC]', '________________________')}</strong>).</p>
-                          <p style={{ marginBottom: '0.25rem' }}>3. Que tiene interés en comercializar los productos objeto de este contrato.</p>
-                          <p style={{ marginBottom: '0.75rem' }}>4. Que cuenta con facultades suficientes para celebrar el presente acuerdo.</p>
+                          {partnerForm.llenado_manual ? (
+                            <>
+                              <p style={{ marginBottom: '0.25rem' }}>1. Que es propietario, representante o administrador del establecimiento denominado:<br/>_______________________________________________________</p>
+                              <p style={{ marginBottom: '0.25rem' }}>1. Que cuenta con las instalaciones necesarias para la exhibición, conservación y venta de los productos HEALTHY ICE.</p>
+                              <p style={{ marginBottom: '0.25rem' }}>2. Que tiene interés en comercializar los productos objeto de este contrato.</p>
+                              <p style={{ marginBottom: '0.75rem' }}>3. Que cuenta con facultades suficientes para celebrar el presente acuerdo.</p>
+                            </>
+                          ) : (
+                            <>
+                              <p style={{ marginBottom: '0.25rem' }}>1. Que es propietario, representante o administrador del establecimiento denominado: <strong>{getPreviewVal('nombre_establecimiento', '[Nombre del Establecimiento]', '________________________________________________')}</strong></p>
+                              <p style={{ marginBottom: '0.25rem' }}>2. Que cuenta con las instalaciones necesarias para la exhibición, conservación y venta de los productos HEALTHY ICE (incluyendo domicilio en <strong>{getPreviewVal('domicilio', '[Domicilio Comercial Completo]', '________________________________________________')}</strong> y RFC <strong>{getPreviewVal('rfc', '[RFC]', '________________________')}</strong>).</p>
+                              <p style={{ marginBottom: '0.25rem' }}>3. Que tiene interés en comercializar los productos objeto de este contrato.</p>
+                              <p style={{ marginBottom: '0.75rem' }}>4. Que cuenta con facultades suficientes para celebrar el presente acuerdo.</p>
+                            </>
+                          )}
                           <p style={{ marginBottom: '1rem' }}>Ambas partes manifiestan su voluntad para sujetarse a las siguientes:</p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>CLÁUSULAS</p>
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>PRIMERA. OBJETO</p>
                           <p style={{ marginBottom: '0.75rem' }}>
-                            HEALTHY ICE entregará productos al SOCIO DE NEGOCIO para su comercialización dentro de su establecimiento bajo el esquema de: <strong>{getEsquemaPreview()}</strong>.
+                            {partnerForm.llenado_manual ? (
+                              <>
+                                HEALTHY ICE entregará productos al SOCIO DE NEGOCIO para su comercialización dentro de su establecimiento bajo el esquema de:<br/>
+                                ( ) Consignación<br/>
+                                ( ) Compra directa<br/>
+                                ( ) Otro: __________________________
+                              </>
+                            ) : (
+                              <>
+                                HEALTHY ICE entregará productos al SOCIO DE NEGOCIO para su comercialización dentro de su establecimiento bajo el esquema de: <strong>{getEsquemaPreview()}</strong>.
+                              </>
+                            )}
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SEGUNDA. PRODUCTOS</p>
@@ -1669,7 +1694,23 @@ function App() {
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>QUINTA. PAGOS</p>
                           <p style={{ marginBottom: '0.75rem' }}>
-                            Los pagos deberán realizarse de forma: <strong>{getPreviewVal('frecuencia_pagos', 'Semanal', '________________________')}</strong>. Mediante: <strong>{getMetodoPreview()}</strong>.
+                            {partnerForm.llenado_manual ? (
+                              <>
+                                Los pagos deberán realizarse de forma:<br/>
+                                ( ) Semanal<br/>
+                                ( ) Quincenal<br/>
+                                ( ) Mensual<br/>
+                                Mediante:<br/>
+                                ( ) Transferencia bancaria<br/>
+                                ( ) Efectivo<br/>
+                                ( ) Depósito<br/>
+                                ( ) Otro: ___________________
+                              </>
+                            ) : (
+                              <>
+                                Los pagos deberán realizarse de forma: <strong>{getPreviewVal('frecuencia_pagos', 'Semanal', '________________________')}</strong>. Mediante: <strong>{getMetodoPreview()}</strong>.
+                              </>
+                            )}
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SEXTA. PUBLICIDAD Y MARCA</p>
@@ -1677,7 +1718,18 @@ function App() {
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SÉPTIMA. VIGENCIA</p>
                           <p style={{ marginBottom: '0.75rem' }}>
-                            El presente contrato tendrá una vigencia inicial de: <strong>{getPreviewVal('vigencia_meses', 12, '____')}</strong> meses. Iniciando el día <strong>{getFechaInicioDiaPreview()}</strong> de <strong>{getFechaInicioMesPreview()}</strong> de <strong>{getFechaInicioAnioPreview()}</strong>. Al concluir dicho plazo podrá renovarse por acuerdo entre las partes.
+                            {partnerForm.llenado_manual ? (
+                              <>
+                                El presente contrato tendrá una vigencia inicial de:<br/>
+                                _______ meses.<br/>
+                                Iniciando el día ____ de ______________ de _______.<br/>
+                                Al concluir dicho plazo podrá renovarse por acuerdo entre las partes.
+                              </>
+                            ) : (
+                              <>
+                                El presente contrato tendrá una vigencia inicial de: <strong>{getPreviewVal('vigencia_meses', 12, '____')}</strong> meses. Iniciando el día <strong>{getFechaInicioDiaPreview()}</strong> de <strong>{getFechaInicioMesPreview()}</strong> de <strong>{getFechaInicioAnioPreview()}</strong>. Al concluir dicho plazo podrá renovarse por acuerdo entre las partes.
+                              </>
+                            )}
                           </p>
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>OCTAVA. TERMINACIÓN ANTICIPADA</p>
@@ -1696,13 +1748,63 @@ function App() {
 
                           <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>DÉCIMA TERCERA. JURISDICCIÓN</p>
                           <p style={{ marginBottom: '1.5rem' }}>
-                            Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: <strong>{getPreviewVal('ciudad_jurisdiccion', 'Guadalajara, Jalisco', '________________________')}</strong>, renunciando a cualquier otro fuero que pudiera corresponderles.
+                            {partnerForm.llenado_manual ? (
+                              <>
+                                Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de:<br/><br/>
+                                renunciando a cualquier otro fuero que pudiera corresponderles.
+                              </>
+                            ) : (
+                              <>
+                                Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: <strong>{getPreviewVal('ciudad_jurisdiccion', 'Guadalajara, Jalisco', '________________________')}</strong>, renunciando a cualquier otro fuero que pudiera corresponderles.
+                              </>
+                            )}
                           </p>
 
                           <p style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: '1rem' }}>FIRMAS</p>
-                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b' }}>
+                          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b', marginBottom: '1.5rem' }}>
                             Leído que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman por duplicado.
                           </p>
+                          {partnerForm.llenado_manual ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', fontSize: '0.75rem', lineHeight: 1.5, textAlign: 'left' }}>
+                              <div>
+                                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>HEALTHY ICE</p>
+                                <p>Nombre: ____________________________________</p>
+                                <p>Cargo: ______________________________________</p>
+                                <p>Firma: ______________________________________</p>
+                                <p>Fecha: ______________________________________</p>
+                              </div>
+                              <div>
+                                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>SOCIO DE NEGOCIO</p>
+                                <p>Razón Social / Nombre: ________________________</p>
+                                <p>Representante: _______________________________</p>
+                                <p>Firma: ______________________________________</p>
+                                <p>Fecha: ______________________________________</p>
+                              </div>
+                              <div>
+                                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>TESTIGO 1</p>
+                                <p>Nombre: ____________________________________</p>
+                                <p>Firma: ______________________________________</p>
+                              </div>
+                              <div>
+                                <p style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>TESTIGO 2</p>
+                                <p>Nombre: ____________________________________</p>
+                                <p>Firma: ______________________________________</p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.75rem', textAlign: 'center' }}>
+                              <div>
+                                <p style={{ borderBottom: '1px solid #cbd5e1', paddingBottom: '2.5rem', marginBottom: '0.25rem' }}></p>
+                                <p style={{ fontWeight: 'bold' }}>HEALTHY ICE</p>
+                                <p style={{ fontSize: '0.7rem', color: '#64748b' }}>Nombre: {getPreviewVal('representante_healthyice', 'FRANCISCO DELGADILLO')}</p>
+                              </div>
+                              <div>
+                                <p style={{ borderBottom: '1px solid #cbd5e1', paddingBottom: '2.5rem', marginBottom: '0.25rem' }}></p>
+                                <p style={{ fontWeight: 'bold' }}>SOCIO DE NEGOCIO</p>
+                                <p style={{ fontSize: '0.7rem', color: '#64748b' }}>Nombre: {getPreviewVal('nombre', '[Nombre del Representante Legal]')}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
 

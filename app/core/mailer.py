@@ -617,13 +617,22 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
         fecha_val = (getattr(form_data, 'fecha', '') or f"{fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}").upper()
         ciudad_jurisdiccion_val = (getattr(form_data, 'ciudad_jurisdiccion', '') or 'GUADALAJARA, JALISCO').upper()
     
-    intro_text = (
-        f"CONTRATO DE COLABORACION COMERCIAL que celebran por una parte HEALTHY ICE, representada por "
-        f"{rep_healthy}, a quien en lo sucesivo se le denominara \"HEALTHY ICE\", y por la otra "
-        f"{razon_social_val}, representada por {nombre_val} (Nombre del Establecimiento: {nombre_establecimiento_val}), "
-        f"a quien en lo sucesivo se le denominara \"SOCIO DE NEGOCIO\", al tenor de las siguientes declaraciones "
-        f"y clausulas:"
-    )
+    if llenado_manual:
+        intro_text = (
+            "CONTRATO DE COLABORACION COMERCIAL que celebran por una parte HEALTHY ICE, representada por "
+            "________________________________, a quien en lo sucesivo se le denominara \"HEALTHY ICE\", y por la otra "
+            "________________________________ , representada por ___________________________________( Nombre del Establecimiento), "
+            "a quien en lo sucesivo se le denominara \"SOCIO DE NEGOCIO\", al tenor de las siguientes declaraciones "
+            "y clausulas:"
+        )
+    else:
+        intro_text = (
+            f"CONTRATO DE COLABORACION COMERCIAL que celebran por una parte HEALTHY ICE, representada por "
+            f"{rep_healthy}, a quien en lo sucesivo se le denominara \"HEALTHY ICE\", y por la otra "
+            f"{razon_social_val}, representada por {nombre_val} (Nombre del Establecimiento: {nombre_establecimiento_val}), "
+            f"a quien en lo sucesivo se le denominara \"SOCIO DE NEGOCIO\", al tenor de las siguientes declaraciones "
+            f"y clausulas:"
+        )
     pdf.multi_cell(0, 5, text=intro_text.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(4)
     
@@ -648,12 +657,20 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     pdf.cell(0, 5, text="II. DECLARA EL SOCIO DE NEGOCIO:", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 9)
     
-    dec_socio = [
-        f"1. Que es propietario, representante o administrador del establecimiento denominado: {nombre_establecimiento_val}",
-        f"2. Que cuenta con las instalaciones necesarias para la exhibicion, conservacion y venta de los productos HEALTHY ICE (incluyendo domicilio en {domicilio_val} y RFC {rfc_val}).",
-        "3. Que tiene interes en comercializar los productos objeto de este contrato.",
-        "4. Que cuenta con facultades suficientes para celebrar el presente acuerdo."
-    ]
+    if llenado_manual:
+        dec_socio = [
+            "1. Que es propietario, representante o administrador del establecimiento denominado:\n_______________________________________________________",
+            "1. Que cuenta con las instalaciones necesarias para la exhibicion, conservacion y venta de los productos HEALTHY ICE.",
+            "2. Que tiene interes en comercializar los productos objeto de este contrato.",
+            "3. Que cuenta con facultades suficientes para celebrar el presente acuerdo."
+        ]
+    else:
+        dec_socio = [
+            f"1. Que es propietario, representante o administrador del establecimiento denominado: {nombre_establecimiento_val}",
+            f"2. Que cuenta con las instalaciones necesarias para la exhibicion, conservacion y venta de los productos HEALTHY ICE (incluyendo domicilio en {domicilio_val} y RFC {rfc_val}).",
+            "3. Que tiene interes en comercializar los productos objeto de este contrato.",
+            "4. Que cuenta con facultades suficientes para celebrar el presente acuerdo."
+        ]
     for dec in dec_socio:
         pdf.multi_cell(0, 4.5, text=dec.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(3)
@@ -668,51 +685,115 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     pdf.ln(2)
     
     # List of clauses
-    clauses = [
-        ("PRIMERA. OBJETO", 
-         f"HEALTHY ICE entregara productos al SOCIO DE NEGOCIO para su comercializacion dentro de su establecimiento bajo el esquema de: {esquema}."),
-        
-        ("SEGUNDA. PRODUCTOS", 
-         "Los productos incluidos en este acuerdo seran aquellos comercializados por HEALTHY ICE, pudiendo modificarse, ampliarse o sustituirse mediante aviso entre las partes."),
-        
-        ("TERCERA. PRECIOS", 
-         "Las partes acuerdan que los precios de venta al SOCIO DE NEGOCIO seran establecidos por HEALTHY ICE mediante listas de precios vigentes.\nEl precio publico sugerido sera comunicado por HEALTHY ICE para mantener la uniformidad comercial de la marca."),
-        
-        ("CUARTA. CONSERVACION DEL PRODUCTO", 
-         "El SOCIO DE NEGOCIO debera mantener los productos a la temperatura adecuada para garantizar su calidad. Cualquier perdida derivada de:\n"
-         "  - Desconexion del congelador.\n"
-         "  - Fallas electricas no reportadas.\n"
-         "  - Manejo inadecuado.\n"
-         "  - Negligencia operativa.\n"
-         "sera responsabilidad del SOCIO DE NEGOCIO."),
-        
-        ("QUINTA. PAGOS", 
-         f"Los pagos deberan realizarse de forma: {frecuencia_pagos_val}. Mediante: {metodo}."),
-        
-        ("SEXTA. PUBLICIDAD Y MARCA", 
-         "El SOCIO DE NEGOCIO podra utilizar materiales promocionales proporcionados por HEALTHY ICE unicamente para promover los productos objeto de este contrato.\n"
-         "Las marcas, logotipos, diseños e imagen comercial seguiran siendo propiedad exclusiva de HEALTHY ICE."),
-        
-        ("SEPTIMA. VIGENCIA", 
-         f"El presente contrato tendra una vigencia inicial de: {vigencia_meses_val} meses. Iniciando el dia {fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}.\n"
-         "Al concluir dicho plazo podra renovarse por acuerdo entre las partes."),
-        
-        ("OCTAVA. TERMINACION ANTICIPADA", 
-         "Cualquiera de las partes podra dar por terminado el contrato mediante aviso por escrito con al menos 15 dias naturales de anticipacion.\n"
-         "Asimismo, HEALTHY ICE podra rescindir inmediatamente el contrato por:\n"
-         "  - Falta de pago.\n"
-         "  - Uso indebido de la marca.\n"
-         "  - Alteracion de productos.\n"
-         "  - Mal uso del equipo.\n"
-         "  - Informacion falsa.\n"
-         "  - Incumplimiento de las obligaciones establecidas."),
-        
-        ("NOVENA. CONFIDENCIALIDAD", 
-         "El SOCIO DE NEGOCIO se obliga a mantener confidencial cualquier informacion comercial, financiera, operativa o estrategica proporcionada por HEALTHY ICE."),
-        
-        ("DECIMA TERCERA. JURISDICCION", 
-         f"Para la interpretacion y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: {ciudad_jurisdiccion_val}, renunciando a cualquier otro fuero que pudiera corresponderles.")
-    ]
+    if llenado_manual:
+        clauses = [
+            ("PRIMERA. OBJETO", 
+             "HEALTHY ICE entregara productos al SOCIO DE NEGOCIO para su comercializacion dentro de su establecimiento bajo el esquema de:\n"
+             "( ) Consignacion\n"
+             "( ) Compra directa\n"
+             "( ) Otro: __________________________"),
+            
+            ("SEGUNDA. PRODUCTOS", 
+             "Los productos incluidos en este acuerdo seran aquellos comercializados por HEALTHY ICE, pudiendo modificarse, ampliarse o sustituirse mediante aviso entre las partes."),
+            
+            ("TERCERA. PRECIOS", 
+             "Las partes acuerdan que los precios de venta al SOCIO DE NEGOCIO seran establecidos por HEALTHY ICE mediante listas de precios vigentes.\n"
+             "El precio publico sugerido sera comunicado por HEALTHY ICE para mantener la uniformidad comercial de la marca."),
+            
+            ("CUARTA. CONSERVACION DEL PRODUCTO", 
+             "El SOCIO DE NEGOCIO debera mantener los productos a la temperatura adecuada para garantizar su calidad.\n"
+             "Cualquier perdida derivada de:\n"
+             "*      Desconexion del congelador.\n"
+             "*      Fallas electricas no reportadas.\n"
+             "*      Manejo inadecuado.\n"
+             "*      Negligencia operativa.\n"
+             "sera responsabilidad del SOCIO DE NEGOCIO."),
+            
+            ("QUINTA. PAGOS", 
+             "Los pagos deberan realizarse de forma:\n"
+             "( ) Semanal\n"
+             "( ) Quincenal\n"
+             "( ) Mensual\n"
+             "Mediante:\n"
+             "( ) Transferencia bancaria\n"
+             "( ) Efectivo\n"
+             "( ) Deposito\n"
+             "( ) Otro: ___________________"),
+            
+            ("SEXTA. PUBLICIDAD Y MARCA", 
+             "El SOCIO DE NEGOCIO podra utilizar materiales promocionales proporcionados por HEALTHY ICE unicamente para promover los productos objeto de este contrato.\n"
+             "Las marcas, logotipos, designs e imagen comercial seguiran siendo propiedad exclusiva de HEALTHY ICE."),
+            
+            ("SEPTIMA. VIGENCIA", 
+             "El presente contrato tendra una vigencia inicial de:\n"
+             "_______ meses.\n"
+             "Iniciando el dia ____ de ______________ de _______.\n"
+             "Al concluir dicho plazo podra renovarse por acuerdo entre las partes."),
+            
+            ("OCTAVA. TERMINACION ANTICIPADA", 
+             "Cualquiera de las partes podra dar por terminado el contrato mediante aviso por escrito con al menos 15 dias naturales de anticipacion.\n"
+             "Asimismo, HEALTHY ICE podra rescindir inmediatamente el contrato por:\n"
+             "*      Falta de pago.\n"
+             "*      Uso indebido de la marca.\n"
+             "*      Alteracion de productos.\n"
+             "*      Mal uso del equipo.\n"
+             "*      Informacion falsa.\n"
+             "*      Incumplimiento de las obligaciones establecidas."),
+            
+            ("NOVENA. CONFIDENCIALIDAD", 
+             "El SOCIO DE NEGOCIO se obliga a mantener confidencial cualquier informacion comercial, financiera, operativa o estrategica proporcionada por HEALTHY ICE."),
+            
+            ("DECIMA TERCERA. JURISDICCION", 
+             "Para la interpretacion y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de:\n\n"
+             "renunciando a cualquier otro fuero que pudiera corresponderles.")
+         ]
+    else:
+        clauses = [
+            ("PRIMERA. OBJETO", 
+             f"HEALTHY ICE entregara productos al SOCIO DE NEGOCIO para su comercializacion dentro de su establecimiento bajo el esquema de: {esquema}."),
+            
+            ("SEGUNDA. PRODUCTOS", 
+             "Los productos incluidos en este acuerdo seran aquellos comercializados por HEALTHY ICE, pudiendo modificarse, ampliarse o sustituirse mediante aviso entre las partes."),
+            
+            ("TERCERA. PRECIOS", 
+             "Las partes acuerdan que los precios de venta al SOCIO DE NEGOCIO seran establecidos por HEALTHY ICE mediante listas de precios vigentes.\n"
+             "El precio publico sugerido sera comunicado por HEALTHY ICE para mantener la uniformidad comercial de la marca."),
+            
+            ("CUARTA. CONSERVACION DEL PRODUCTO", 
+             "El SOCIO DE NEGOCIO debera mantener los productos a la temperatura adecuada para garantizar su calidad. Cualquier perdida derivada de:\n"
+             "  - Desconexion del congelador.\n"
+             "  - Fallas electricas no reportadas.\n"
+             "  - Manejo inadecuado.\n"
+             "  - Negligencia operativa.\n"
+             "sera responsabilidad del SOCIO DE NEGOCIO."),
+            
+            ("QUINTA. PAGOS", 
+             f"Los pagos deberan realizarse de forma: {frecuencia_pagos_val}. Mediante: {metodo}."),
+            
+            ("SEXTA. PUBLICIDAD Y MARCA", 
+             "El SOCIO DE NEGOCIO podra utilizar materiales promocionales proporcionados por HEALTHY ICE unicamente para promover los productos objeto de este contrato.\n"
+             "Las marcas, logotipos, diseños e imagen comercial seguiran siendo propiedad exclusiva de HEALTHY ICE."),
+            
+            ("SEPTIMA. VIGENCIA", 
+             f"El presente contrato tendra una vigencia inicial de: {vigencia_meses_val} meses. Iniciando el dia {fecha_inicio_dia_val} de {fecha_inicio_mes_val} de {fecha_inicio_anio_val}.\n"
+             "Al concluir dicho plazo podra renovarse por acuerdo entre las partes."),
+            
+            ("OCTAVA. TERMINACION ANTICIPADA", 
+             "Cualquiera de las partes podra dar por terminado el contrato mediante aviso por escrito con al menos 15 dias naturales de anticipacion.\n"
+             "Asimismo, HEALTHY ICE podra rescindir inmediatamente el contrato por:\n"
+             "  - Falta de pago.\n"
+             "  - Uso indebido de la marca.\n"
+             "  - Alteracion de productos.\n"
+             "  - Mal uso del equipo.\n"
+             "  - Informacion falsa.\n"
+             "  - Incumplimiento de las obligaciones establecidas."),
+            
+            ("NOVENA. CONFIDENCIALIDAD", 
+             "El SOCIO DE NEGOCIO se obliga a mantener confidencial cualquier informacion comercial, financiera, operativa o estrategica proporcionada por HEALTHY ICE."),
+            
+            ("DECIMA TERCERA. JURISDICCION", 
+             f"Para la interpretacion y cumplimiento del presente contrato, las partes se someten a las leyes y tribunales competentes de la ciudad de: {ciudad_jurisdiccion_val}, renunciando a cualquier otro fuero que pudiera corresponderles.")
+        ]
     
     for title, text in clauses:
         pdf.set_font("Helvetica", "B", 9)
@@ -720,11 +801,15 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
         pdf.set_font("Helvetica", "", 9)
         pdf.multi_cell(0, 4.5, text=text.encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT")
         pdf.ln(2.5)
+        # Extra spacing for blank checkboxes
+        if llenado_manual and title in ["PRIMERA. OBJETO", "QUINTA. PAGOS"]:
+            pdf.ln(4)
         
     pdf.ln(5)
     
-    # Signatures page break detection
-    if pdf.get_y() > 180:
+    # Signatures page break detection (more space needed for sequential vertical signatures block in blank mode)
+    limit_y = 150 if llenado_manual else 180
+    if pdf.get_y() > limit_y:
         pdf.add_page()
         
     pdf.set_font("Helvetica", "", 9)
@@ -733,62 +818,99 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
     
     y_before_sigs = pdf.get_y()
     
-    # Column 1: HEALTHY ICE
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.cell(90, 5, text="HEALTHY ICE", new_x="LMARGIN", new_y="NEXT", align="C")
-    
-    # Empty space for physical signature
-    pdf.ln(18)
-    pdf.set_font("Helvetica", "", 9)
-    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.cell(90, 4, text=f"Nombre: {rep_healthy}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.cell(90, 4, text="Cargo: Representante Legal", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
-    
-    # Column 2: SOCIO DE NEGOCIO
-    pdf.set_y(y_before_sigs)
-    pdf.set_x(110)
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.cell(90, 5, text="SOCIO DE NEGOCIO", new_x="LMARGIN", new_y="NEXT", align="C")
-    
-    # Empty space for physical signature
-    pdf.set_y(y_before_sigs + 23)
-    pdf.set_x(110)
-    pdf.set_font("Helvetica", "", 9)
-    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.set_x(110)
-    pdf.cell(90, 4, text=f"Razon Social / Nombre: {razon_social_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.set_x(110)
-    pdf.cell(90, 4, text=f"Representante: {nombre_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.set_x(110)
-    pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
-    
-    # Witness Row
-    pdf.ln(15)
-    if pdf.get_y() > 220:
-        pdf.add_page()
+    if llenado_manual:
+        # Sequential vertical signatures as requested in the template
+        # HEALTHY ICE
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(0, 5, text="HEALTHY ICE", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(0, 5, text="Nombre: ____________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Cargo: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Firma: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Fecha: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.ln(5)
         
-    y_witnesses = pdf.get_y()
-    
-    # Witness 1
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.cell(90, 5, text="TESTIGO 1", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.ln(10)
-    pdf.set_font("Helvetica", "", 9)
-    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.cell(90, 4, text="Nombre:", new_x="LMARGIN", new_y="NEXT", align="C")
-    
-    # Witness 2
-    pdf.set_y(y_witnesses)
-    pdf.set_x(110)
-    pdf.set_font("Helvetica", "B", 9)
-    pdf.cell(90, 5, text="TESTIGO 2", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.ln(10)
-    pdf.set_font("Helvetica", "", 9)
-    pdf.set_x(110)
-    pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.set_x(110)
-    pdf.cell(90, 4, text="Nombre:", new_x="LMARGIN", new_y="NEXT", align="C")
+        # SOCIO DE NEGOCIO
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(0, 5, text="SOCIO DE NEGOCIO", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(0, 5, text="Razon Social / Nombre: ________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Representante: _______________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Firma: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Fecha: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.ln(5)
+        
+        # Witness 1
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(0, 5, text="TESTIGO 1", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(0, 5, text="Nombre: ____________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Firma: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.ln(5)
+        
+        # Witness 2
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(0, 5, text="TESTIGO 2", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(0, 5, text="Nombre: ____________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+        pdf.cell(0, 5, text="Firma: ______________________________________", new_x="LMARGIN", new_y="NEXT", align="L")
+    else:
+        # Column 1: HEALTHY ICE
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(90, 5, text="HEALTHY ICE", new_x="LMARGIN", new_y="NEXT", align="C")
+        
+        # Empty space for physical signature
+        pdf.ln(18)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.cell(90, 4, text=f"Nombre: {rep_healthy}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.cell(90, 4, text="Cargo: Representante Legal", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
+        
+        # Column 2: SOCIO DE NEGOCIO
+        pdf.set_y(y_before_sigs)
+        pdf.set_x(110)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(90, 5, text="SOCIO DE NEGOCIO", new_x="LMARGIN", new_y="NEXT", align="C")
+        
+        # Empty space for physical signature
+        pdf.set_y(y_before_sigs + 23)
+        pdf.set_x(110)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.set_x(110)
+        pdf.cell(90, 4, text=f"Razon Social / Nombre: {razon_social_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.set_x(110)
+        pdf.cell(90, 4, text=f"Representante: {nombre_val}".encode('latin-1', 'replace').decode('latin-1'), new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.set_x(110)
+        pdf.cell(90, 4, text=f"Fecha: {fecha_val}", new_x="LMARGIN", new_y="NEXT", align="C")
+        
+        # Witness Row
+        pdf.ln(15)
+        if pdf.get_y() > 220:
+            pdf.add_page()
+            
+        y_witnesses = pdf.get_y()
+        
+        # Witness 1
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(90, 5, text="TESTIGO 1", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.ln(10)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.cell(90, 4, text="Nombre:", new_x="LMARGIN", new_y="NEXT", align="C")
+        
+        # Witness 2
+        pdf.set_y(y_witnesses)
+        pdf.set_x(110)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.cell(90, 5, text="TESTIGO 2", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.ln(10)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_x(110)
+        pdf.cell(90, 4, text="________________________________", new_x="LMARGIN", new_y="NEXT", align="C")
+        pdf.set_x(110)
+        pdf.cell(90, 4, text="Nombre:", new_x="LMARGIN", new_y="NEXT", align="C")
     
     return bytes(pdf.output())
 
