@@ -380,28 +380,118 @@ class QuinielaRegisterForm(BaseModel):
     telefono: Optional[str] = None
     prediccion_campeon: str
 
+class QuinielaVoteForm(BaseModel):
+    email: EmailStr
+    match_id: int
+    voto: str # 'A' or 'B'
+
 @router.post("/chilechillon/quiniela/register")
 async def register_chilechillon_quiniela(form_data: QuinielaRegisterForm, db: Session = Depends(get_db)):
     try:
-        # Check if lead already exists based on email
+        import json
         db_lead = db.query(ChileChillonLead).filter(ChileChillonLead.email == form_data.email).first()
+        
+        existing_votes = {}
+        
         if db_lead:
+            # Keep original name and phone updates, but KEEP original prediction
             db_lead.nombre = form_data.nombre
             db_lead.telefono = form_data.telefono
-            db_lead.prediccion_campeon = form_data.prediccion_campeon
+            
+            # If they already had a prediction in database, keep it to prevent manipulation
+            if not db_lead.prediccion_campeon:
+                db_lead.prediccion_campeon = form_data.prediccion_campeon
+                
+            pred_campeon = db_lead.prediccion_campeon
+            if db_lead.votos:
+                try:
+                    existing_votes = json.loads(db_lead.votos)
+                except Exception:
+                    existing_votes = {}
         else:
             new_lead = ChileChillonLead(
                 nombre=form_data.nombre,
                 email=form_data.email,
                 telefono=form_data.telefono,
-                prediccion_campeon=form_data.prediccion_campeon
+                prediccion_campeon=form_data.prediccion_campeon,
+                votos="{}"
             )
             db.add(new_lead)
+            pred_campeon = form_data.prediccion_campeon
+            
         db.commit()
-        return {"message": "Registro exitoso"}
+        return {
+            "message": "Registro exitoso",
+            "prediccion_campeon": pred_campeon,
+            "votos": existing_votes
+        }
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al registrar participante: {str(e)}")
+
+@router.post("/chilechillon/quiniela/vote")
+async def register_chilechillon_vote(form_data: QuinielaVoteForm, db: Session = Depends(get_db)):
+    try:
+        import json
+        db_lead = db.query(ChileChillonLead).filter(ChileChillonLead.email == form_data.email).first()
+        if not db_lead:
+            raise HTTPException(status_code=404, detail="Usuario no registrado")
+        
+        votes = {}
+        if db_lead.votos:
+            try:
+                votes = json.loads(db_lead.votos)
+            except Exception:
+                votes = {}
+                
+        match_id_str = str(form_data.match_id)
+        
+        # Prevent modifying votes
+        if match_id_str in votes:
+            raise HTTPException(status_code=400, detail="Ya has votado en este partido y no se puede modificar")
+            
+        votes[match_id_str] = form_data.voto
+        db_lead.votos = json.dumps(votes)
+        db.commit()
+        
+        return {"message": "Voto registrado exitosamente", "votos": votes}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al registrar voto: {str(e)}")
+
+@router.get("/chilechillon/quiniela/results")
+async def get_quiniela_results(db: Session = Depends(get_db)):
+    try:
+        import json
+        leads = db.query(ChileChillonLead).all()
+        
+        # Initialize counts for matches 1 to 13
+        results = {str(i): {"A": 0, "B": 0} for i in range(1, 14)}
+        
+        # Base/simulated votes for matching initial design
+        base_votes = {
+            "1": {"A": 12, "B": 9},
+            "2": {"A": 15, "B": 14}
+        }
+        for k, v in base_votes.items():
+            results[k]["A"] += v["A"]
+            results[k]["B"] += v["B"]
+            
+        for lead in leads:
+            if lead.votos:
+                try:
+                    user_votes = json.loads(lead.votos)
+                    for match_id, opt in user_votes.items():
+                        if match_id in results and opt in ["A", "B"]:
+                            results[match_id][opt] += 1
+                except Exception:
+                    continue
+                    
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener resultados: {str(e)}")
 
 
 

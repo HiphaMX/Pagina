@@ -10,4 +10,5 @@ class ChileChillonLead(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     telefono = Column(String, nullable=True)
     prediccion_campeon = Column(String, nullable=False)
+    votos = Column(String, nullable=True, default="{}")
     created_at = Column(DateTime(timezone=True), server_default=func.now())

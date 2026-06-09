@@ -126,7 +126,10 @@
 
   <!-- Header Banner -->
   <header class="relative z-10 pt-36 pb-8 text-center">
-    <span class="text-5xl inline-block mb-3 drop-shadow-md">🏆</span>
+    <!-- Logotipo oficial antiguo para el lanzamiento -->
+    <div class="flex justify-center mb-6 select-none">
+      <img src="Assets/Chile Chillon OLD.svg" alt="Chile Chillón Logo" class="h-28 w-auto object-contain">
+    </div>
     <h1 class="font-chubzy text-4xl md:text-6xl leading-tight text-transparent bg-clip-text bg-gradient-to-r from-[#D30611] to-[#FF5A00] tracking-tight">
       COPA MUNDIAL CHILLÓN
     </h1>
@@ -531,7 +534,11 @@
         state.userName = name;
         state.userEmail = email;
         state.userPhone = null;
-        state.championPrediction = champPrediction;
+        // Load locked value and past votes from DB to prevent client-side manipulation
+        state.championPrediction = data.prediccion_campeon || champPrediction;
+        state.userVotes = data.votos || {};
+        localStorage.removeItem('chilechillon-offline-mode');
+        recalcUserPoints();
         saveState();
         
         const gate = document.getElementById('gate-screen');
@@ -540,6 +547,10 @@
         document.body.style.overflow = "";
         
         initUI();
+        // Sync votes and start live polling immediately on activation
+        fetchLiveResults();
+        setInterval(fetchLiveResults, 10000);
+        
         showToast("¡Pase de Torneo Activado! 🎟️");
       })
       .catch(err => {
@@ -549,6 +560,7 @@
           state.userEmail = email;
           state.userPhone = null;
           state.championPrediction = champPrediction;
+          localStorage.setItem('chilechillon-offline-mode', 'true');
           saveState();
           
           const gate = document.getElementById('gate-screen');
@@ -626,6 +638,25 @@
         return new Date(state.simulatedDate + "T12:00:00");
       }
       return new Date();
+    }
+
+    function fetchLiveResults() {
+      const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
+      if (isOfflineMode) return;
+      
+      fetch("/api/contact/chilechillon/quiniela/results")
+        .then(res => res.json())
+        .then(data => {
+          state.matches.forEach(m => {
+            const votes = data[m.id];
+            if (votes) {
+              m.votesA = votes.A;
+              m.votesB = votes.B;
+            }
+          });
+          renderMatches();
+        })
+        .catch(err => console.warn("Error al cargar resultados en tiempo real:", err));
     }
 
     function getActivePhaseByDate(date) {
@@ -1110,20 +1141,76 @@
       const { matchId, teamOption } = pendingVote;
       const match = state.matches.find(m => m.id === matchId);
 
-      if (teamOption === 'A') {
-        match.votesA++;
-      } else {
-        match.votesB++;
+      // Prevent modifying or double-voting in frontend
+      if (state.userVotes[matchId]) {
+        alert("Ya has votado en este partido y no se puede modificar.");
+        closeVoteModal();
+        return;
       }
 
-      state.userVotes[matchId] = teamOption;
-      recalcUserPoints();
-      saveState();
-      
-      closeVoteModal();
-      renderMatches();
-      initUI();
-      showToast("¡Voto registrado en tu pase!");
+      const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
+
+      if (isOfflineMode) {
+        // Offline simulator mode: perform local mutation
+        if (teamOption === 'A') {
+          match.votesA++;
+        } else {
+          match.votesB++;
+        }
+        state.userVotes[matchId] = teamOption;
+        recalcUserPoints();
+        saveState();
+        closeVoteModal();
+        renderMatches();
+        initUI();
+        showToast("¡Voto registrado (Simulación Local)!");
+      } else {
+        // Online mode: POST to backend to ensure transparency and database integrity
+        const btn = document.querySelector("button[onclick='confirmVote()']");
+        const originalText = btn ? btn.innerHTML : "";
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = "⏳ Registrando voto...";
+        }
+
+        fetch("/api/contact/chilechillon/quiniela/vote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: state.userEmail,
+            match_id: matchId,
+            voto: teamOption
+          })
+        })
+        .then(res => {
+          if (!res.ok) {
+            return res.json().then(err => { throw new Error(err.detail || "Error al registrar el voto"); });
+          }
+          return res.json();
+        })
+        .then(data => {
+          // Sync state with backend database values
+          state.userVotes = data.votos || {};
+          recalcUserPoints();
+          saveState();
+          
+          closeVoteModal();
+          // Force immediate real-time results sync
+          fetchLiveResults();
+          initUI();
+          showToast("¡Voto registrado oficialmente! 🎟️");
+        })
+        .catch(err => {
+          console.warn("Error al registrar voto en el servidor:", err);
+          alert("No se pudo registrar tu voto: " + err.message);
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+          }
+        });
+      }
     }
 
     // Render Tabla de posiciones
@@ -1520,6 +1607,10 @@
     // Guardar predicción desde la barra superior de pase (caso de migración)
     function setInlinePrediction(val) {
       if (!val) return;
+      if (state.championPrediction) {
+        alert("Ya has seleccionado tu campeón y no se puede modificar.");
+        return;
+      }
       state.championPrediction = val;
       saveState();
       initUI();
@@ -1533,6 +1624,13 @@
       initUI();
       // Inicializar tab principal
       showTab('partidos');
+
+      // Sincronizar votos en tiempo real al cargar e iniciar intervalo (si está online)
+      const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
+      if (!isOfflineMode) {
+        fetchLiveResults();
+        setInterval(fetchLiveResults, 10000); // Polling cada 10 segundos
+      }
     });
 
     window.showGateStep2 = function() {

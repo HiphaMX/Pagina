@@ -136,7 +136,7 @@ def test_register_quiniela_lead_duplicate_updates(client):
     assert lead is not None
     assert lead.nombre == "Juan P. Modificado"
     assert lead.telefono == "3399887766"
-    assert lead.prediccion_campeon == "ser"
+    assert lead.prediccion_campeon == "tat"
     db.close()
 
 def test_register_quiniela_lead_invalid_email(client):
@@ -201,6 +201,6 @@ def test_export_leads_authorized(client):
     assert "Juan P. Modificado" in csv_data
     assert "juan.perez@example.com" in csv_data
     assert "3399887766" in csv_data
-    assert "SER" in csv_data
+    assert "TAT" in csv_data
 
 
