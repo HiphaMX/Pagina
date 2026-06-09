@@ -732,10 +732,10 @@
           </div>
           <div class="grid grid-cols-2 gap-4 mt-5">
             <button class="py-3 px-4 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-md hover:shadow-lg active:scale-95 transition-all ${voteBtnClass(match.teamA, userVote === 'A')}" onclick="openVoteModal(${match.id}, 'A')" ${hasVoted ? 'disabled' : ''}>
-              ${userVote === 'A' ? '✓ Votado A' : `Votar ${teamA.badge}`}
+              ${userVote === 'A' ? '✓ Votado' : `Votar ${teamA.name}`}
             </button>
             <button class="py-3 px-4 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-md hover:shadow-lg active:scale-95 transition-all ${voteBtnClass(match.teamB, userVote === 'B')}" onclick="openVoteModal(${match.id}, 'B')" ${hasVoted ? 'disabled' : ''}>
-              ${userVote === 'B' ? '✓ Votado B' : `Votar ${teamB.badge}`}
+              ${userVote === 'B' ? '✓ Votado' : `Votar ${teamB.name}`}
             </button>
           </div>
         `;
@@ -751,7 +751,7 @@
           </div>
           <div class="flex justify-between items-center text-[10px] font-bold font-rubik text-slate-400 mt-2 px-1">
             <span>${pctA}% (${match.votesA})</span>
-            <span class="uppercase tracking-wider font-extrabold">${userVote ? `Tu voto: ${userVote === 'A' ? teamA.badge : teamB.badge}` : 'Sin voto'}</span>
+            <span class="uppercase tracking-wider font-extrabold">${userVote ? `Tu voto: ${userVote === 'A' ? teamA.name : teamB.name}` : 'Sin voto'}</span>
             <span>${pctB}% (${match.votesB})</span>
           </div>
         `;
