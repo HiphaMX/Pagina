@@ -303,8 +303,8 @@
       <h2 class="font-chubzy text-2xl text-slate-900 mb-3">¿Confirmas tu voto?</h2>
       <p class="text-xs text-slate-500 leading-relaxed mb-5">Tu voto se registrará en el pase de <strong class="text-slate-800" id="modal-user-name"></strong> para la siguiente salsa:</p>
       
-      <div class="flex items-center gap-3 bg-[#FAF9F6] border border-slate-100 rounded-2xl p-4 mb-6 justify-center">
-        <div id="modal-team-badge" class="w-10 h-10 rounded-xl flex items-center justify-center font-rubik font-black text-white text-[10px] shadow-sm relative overflow-hidden"></div>
+      <div class="flex flex-col items-center gap-3 bg-[#FAF9F6] border border-slate-100 rounded-2xl p-5 mb-6 justify-center">
+        <div id="modal-team-badge" class="w-24 h-36 md:w-28 md:h-42 rounded-2xl flex items-center justify-center font-rubik font-black text-white text-[10px] shadow-sm relative overflow-hidden"></div>
         <span id="modal-team-name" class="font-rubik font-bold text-sm text-slate-800"></span>
       </div>
 
@@ -702,14 +702,14 @@
         </div>
         <div class="grid grid-cols-3 items-center gap-4 py-4">
           <div class="${teamAClass} flex flex-col items-center gap-3 text-center">
-            ${renderTeamLogoHTML(match.teamA, 'w-28 h-28 md:w-36 md:h-36', 'h-24 md:h-32 scale-[1.7]', 'text-2xl', 'rounded-3xl')}
+            ${renderTeamLogoHTML(match.teamA, 'w-24 h-36 md:w-32 md:h-48', 'h-32 md:h-44', 'text-2xl', 'rounded-3xl')}
             <div class="font-rubik font-bold text-xs md:text-sm text-slate-800 leading-tight max-w-[120px]">${teamA.name}</div>
           </div>
           <div class="flex flex-col items-center justify-center text-center">
             ${vsContent}
           </div>
           <div class="${teamBClass} flex flex-col items-center gap-3 text-center">
-            ${renderTeamLogoHTML(match.teamB, 'w-28 h-28 md:w-36 md:h-36', 'h-24 md:h-32 scale-[1.7]', 'text-2xl', 'rounded-3xl')}
+            ${renderTeamLogoHTML(match.teamB, 'w-24 h-36 md:w-32 md:h-48', 'h-32 md:h-44', 'text-2xl', 'rounded-3xl')}
             <div class="font-rubik font-bold text-xs md:text-sm text-slate-800 leading-tight max-w-[120px]">${teamB.name}</div>
           </div>
         </div>
@@ -775,10 +775,10 @@
       
       const badge = document.getElementById('modal-team-badge');
       if (team.image) {
-        badge.className = "w-32 h-32 md:w-36 md:h-36 rounded-[32px] flex items-center justify-center bg-white border border-slate-100 shadow-md relative overflow-hidden";
-        badge.innerHTML = `<img src="${team.image}" alt="${team.name}" class="h-28 md:h-32 w-auto object-contain scale-[1.7] relative z-10">`;
+        badge.className = "w-24 h-36 md:w-28 md:h-42 rounded-[24px] flex items-center justify-center bg-white border border-slate-100 shadow-md relative overflow-hidden";
+        badge.innerHTML = `<img src="${team.image}" alt="${team.name}" class="h-32 md:h-38 w-auto object-contain relative z-10">`;
       } else {
-        badge.className = `w-32 h-32 md:w-36 md:h-36 rounded-[32px] flex items-center justify-center font-rubik font-black text-white text-2xl md:text-3xl shadow-sm relative overflow-hidden ${badgeClass(teamId)}`;
+        badge.className = `w-24 h-36 md:w-28 md:h-42 rounded-[24px] flex items-center justify-center font-rubik font-black text-white text-2xl md:text-3xl shadow-sm relative overflow-hidden ${badgeClass(teamId)}`;
         badge.innerText = team.badge;
       }
 
@@ -847,7 +847,7 @@
           <td class="py-4 px-4"><span class="${posClass}">${index + 1}</span></td>
           <td class="py-4 px-4">
             <div class="flex items-center gap-3">
-              ${renderTeamLogoHTML(row.teamId, 'w-12 h-12', 'h-10', 'text-xs', 'rounded-lg')}
+              ${renderTeamLogoHTML(row.teamId, 'w-10 h-14', 'h-12', 'text-xs', 'rounded-lg')}
               <span class="font-rubik font-bold text-xs md:text-sm text-slate-800">${team.name}</span>
             </div>
           </td>
@@ -900,7 +900,7 @@
         slot.className = "w-full bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-sm font-rubik font-bold text-xs md:text-sm text-slate-800 uppercase tracking-wide";
         slot.innerHTML = `
           <div class="flex items-center gap-3">
-            ${renderTeamLogoHTML(teamId, 'w-10 h-10', 'h-8', 'text-[10px]', 'rounded-md')}
+            ${renderTeamLogoHTML(teamId, 'w-8 h-12', 'h-10', 'text-[10px]', 'rounded-md')}
             <span>${team.name}</span>
           </div>
           ${score !== null ? `<span class="font-chubzy text-xl text-[#D30611] ml-2">${score}</span>` : ''}
