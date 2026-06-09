@@ -62,7 +62,7 @@
         <span class="inline-block px-3 py-1 rounded-full bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/20 text-[10px] uppercase tracking-wider font-bold mb-4 font-rubik">Acceso Limitado</span>
         
         <p class="text-xs md:text-sm text-slate-500 leading-relaxed mb-6 font-medium">
-          Estamos preparando el lanzamiento de la nueva imagen de Chile Chillón. Por ahora estamos realizando la Copa Mundial Chile Chillón, obtén tu pase digital dejándonos una reseña en Google y registrándo tus datos ¡Vota en la quiniela y participa en el sorteo de nuestros premios!
+          Estamos preparando el lanzamiento de la nueva imagen de Chile Chillón. Por ahora estamos realizando la Copa Mundial Chile Chillón. ¡Vota en la quiniela y participa en el sorteo de nuestros premios!
         </p>
         
         <button onclick="showGateStep2()" class="w-full py-4 bg-[#D30611] hover:bg-[#D30611]/90 text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-lg font-rubik btn-glow mb-4">
@@ -86,22 +86,18 @@
           </div>
         </div>
 
-        <a href="https://g.page/r/CXKl4A5rHWLzEBM/review" target="_blank" class="block w-full text-center py-4 bg-[#FFEED3] border border-dashed border-[#D30611]/30 hover:bg-[#FFEED3]/90 text-[#D30611] font-bold text-sm uppercase tracking-wider rounded-full transition-all mb-4 font-rubik">
-          ⭐ Paso 1: Dejar mi reseña en Google →
-        </a>
-        
         <div class="text-left mb-4">
-          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Paso 2: Tu nombre (como aparece en Google) <span class="normal-case font-normal text-slate-400 block mt-1">(será la manera de validar tu reseña en caso de ganar algún premio)</span></label>
+          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Tu nombre completo</label>
           <input type="text" id="gate-name-input" placeholder="ej. María García" class="w-full bg-[#FAF9F6] border border-slate-200 focus:border-[#D30611] rounded-full px-5 py-4 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400">
         </div>
 
         <div class="text-left mb-4">
-          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Paso 3: Tu correo electrónico</label>
+          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Tu correo electrónico</label>
           <input type="email" id="gate-email-input" placeholder="ej. maria@gmail.com" class="w-full bg-[#FAF9F6] border border-slate-200 focus:border-[#D30611] rounded-full px-5 py-4 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400">
         </div>
 
         <div class="text-left mb-5">
-          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Paso 4: ¿Qué salsa crees que ganará la copa? 🏆</label>
+          <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">¿Qué salsa crees que ganará la copa? 🏆</label>
           <select id="gate-champion-select" class="w-full bg-[#FAF9F6] border border-slate-200 focus:border-[#D30611] rounded-full px-5 py-4 text-sm text-slate-800 outline-none transition-all cursor-pointer">
             <option value="" disabled selected>Selecciona tu salsa campeona</option>
             <option value="arb">DE ÁRBOL 🌶️</option>
@@ -110,6 +106,10 @@
             <option value="ser">SERRANO 🟢</option>
             <option value="neg">NEGRA 🌑</option>
           </select>
+        </div>
+
+        <div class="text-left text-[11px] text-slate-500 mb-5 italic font-medium leading-relaxed px-2">
+          * Se validará que el ganador del sorteo hubiera dejado su reseña en la página de Google de Chile Chillón.
         </div>
         
         <button onclick="registerPass()" class="w-full py-4 bg-[#D30611] hover:bg-[#D30611]/90 text-white font-bold text-sm uppercase tracking-wider rounded-full transition-all shadow-lg font-rubik btn-glow">
@@ -133,7 +133,7 @@
       COPA MUNDIAL CHILLÓN
     </h1>
     <p class="font-rubik text-[10px] uppercase tracking-widest text-slate-500 mt-2 font-bold">
-      Deja tu reseña · Obtén tu pase · ¡Compite por premios!
+      Pronostica los partidos · Obtén tu pase · ¡Compite por premios!
     </p>
   </header>
 
@@ -414,7 +414,7 @@
       const nameInput = document.getElementById('gate-name-input');
       const name = nameInput ? nameInput.value.trim() : "";
       if (!name) {
-        alert("Por favor introduce tu nombre tal como aparece en Google para validar tu pase.");
+        alert("Por favor introduce tu nombre completo.");
         return;
       }
 
