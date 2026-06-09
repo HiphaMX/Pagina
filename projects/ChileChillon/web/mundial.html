@@ -349,7 +349,7 @@
         </div>
         <select id="admin-date-simulator" class="bg-white border border-slate-200 text-xs font-medium rounded-full px-4 py-2.5 outline-none font-rubik text-slate-700 cursor-pointer" onchange="setSimulatedDate(this.value)">
           <option value="real">Fecha Real (Hoy)</option>
-          <option value="2026-06-09">Pre-Torneo (9 de Junio)</option>
+          <option value="2026-06-08">Pre-Torneo (8 de Junio)</option>
           <option value="2026-06-12">Fase de Grupos (12 de Junio)</option>
           <option value="2026-07-05">Semifinales (5 de Julio)</option>
           <option value="2026-07-16">Gran Final (16 de Julio)</option>
@@ -661,7 +661,7 @@
 
     function getActivePhaseByDate(date) {
       const time = date.getTime();
-      const date11Jun = new Date("2026-06-11T00:00:00").getTime();
+      const date11Jun = new Date("2026-06-09T00:00:00").getTime();
       const date01Jul = new Date("2026-07-01T00:00:00").getTime();
       const date15Jul = new Date("2026-07-15T00:00:00").getTime();
       const date20Jul = new Date("2026-07-20T00:00:00").getTime();
@@ -891,7 +891,7 @@
       const phasePill = document.getElementById('phase-pill');
       if (phasePill) {
         if (activePhaseByDate === 'pre-torneo') {
-          phasePill.innerText = "Inicia el 11 de Junio";
+          phasePill.innerText = "Inicia el 9 de Junio";
           phasePill.className = "px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm";
         } else if (activePhaseByDate === 'grupo') {
           phasePill.innerText = "Fase de Grupos";
