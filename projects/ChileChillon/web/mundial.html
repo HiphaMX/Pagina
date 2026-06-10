@@ -185,10 +185,10 @@
 
   <!-- Nav Tabs -->
   <div class="max-w-4xl mx-auto px-6 mb-8 relative z-10 flex justify-center flex-wrap gap-2">
-    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all" onclick="showTab('partidos')">⚽ Partidos</button>
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all" onclick="showTab('misvotos')">🎟️ Mi pase</button>
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('partidos')">⚽ Top 5 usuarios</button>
     <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('tabla')">📊 Tabla</button>
     <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('bracket')">🗂 Finales</button>
-    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('misvotos')">🎟️ Mi pase</button>
   </div>
 
   <!-- ═══ VIEW: PARTIDOS ═══ -->
@@ -1410,7 +1410,7 @@
       const votedMatches = state.matches.filter(m => !!state.userVotes[m.id]);
 
       if (votedMatches.length === 0) {
-        container.innerHTML = '<p class="text-slate-400 text-center py-8 col-span-full font-rubik text-sm">No has emitido ningún voto todavía. ¡Apoya a tus salsas favoritas en la tab de Partidos!</p>';
+        container.innerHTML = '<p class="text-slate-400 text-center py-8 col-span-full font-rubik text-sm">No has emitido ningún voto todavía. ¡Apoya a tus salsas favoritas en la pestaña de Top 5 usuarios!</p>';
         return;
       }
 
@@ -1635,7 +1635,7 @@
       recalcStandings();
       saveState();
       initUI();
-      showTab('partidos');
+      showTab('misvotos');
       showToast("¡Torneo reiniciado con éxito!");
     }
 
@@ -1720,7 +1720,7 @@
       recalcUserPoints();
       initUI();
       // Inicializar tab principal
-      showTab('partidos');
+      showTab('misvotos');
 
       // Sincronizar votos en tiempo real al cargar e iniciar intervalo (si está online)
       const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
