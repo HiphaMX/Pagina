@@ -203,8 +203,8 @@
       <div class="flex items-center gap-3.5 mb-6">
         <div class="w-12 h-12 rounded-2xl bg-[#FFEED3] flex items-center justify-center text-2xl">🏆</div>
         <div>
-          <h3 class="font-chubzy text-xl text-slate-900 leading-tight">Top 10 Ganadores de la Copa</h3>
-          <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-bold font-rubik">Clasificación Final del Sorteo (20 de Julio)</p>
+          <h3 class="font-chubzy text-xl text-slate-900 leading-tight">Top 5 Participantes</h3>
+          <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-bold font-rubik">Clasificación en Tiempo Real de la Quiniela</p>
         </div>
       </div>
       <div class="overflow-x-auto">
@@ -458,7 +458,8 @@
         { teamId: 'ser', pj: 0, g: 0, p: 0, pts: 0, form: [] }
       ],
       champion: null,
-      simulatedDate: null
+      simulatedDate: null,
+      leaderboard: []
     };
 
     // Almacenamiento local seguro
@@ -684,6 +685,14 @@
           renderMatches();
         })
         .catch(err => console.warn("Error al cargar resultados en tiempo real:", err));
+
+      fetch("/api/contact/chilechillon/quiniela/leaderboard")
+        .then(res => res.json())
+        .then(list => {
+          state.leaderboard = list || [];
+          renderLeaderboard();
+        })
+        .catch(err => console.warn("Error al cargar tabla de posiciones:", err));
     }
 
     function getActivePhaseByDate(date) {
@@ -780,60 +789,94 @@
       state.userPoints = Math.max(0, points); // Evitar mostrar puntos negativos para motivar al usuario
     }
 
-    // Renderizar ranking final el 20 de Julio
+    function calculatePointsForParticipant(userVotes) {
+      let points = 0;
+      state.matches.forEach(m => {
+        if (m.status !== 'finished') return;
+        const vote = userVotes[m.id];
+        if (!vote) return;
+        const winner = m.scoreA > m.scoreB ? 'A' : (m.scoreB > m.scoreA ? 'B' : null);
+        if (winner === null) return;
+        if (m.phase === 'grupo') {
+          if (vote === winner) {
+            points += 3;
+          } else {
+            points -= 1;
+          }
+        } else if (m.phase === 'semifinal') {
+          if (vote === winner) {
+            points += 6;
+          } else {
+            points -= 1;
+          }
+        } else if (m.phase === 'final') {
+          if (vote === winner) {
+            points += 9;
+          }
+        }
+      });
+      return Math.max(0, points);
+    }
+
     function renderLeaderboard() {
       const section = document.getElementById('leaderboard-section');
       const tbody = document.getElementById('leaderboard-body');
       if (!section || !tbody) return;
 
-      const currentDate = getCurrentDate();
-      const activePhase = getActivePhaseByDate(currentDate);
-
-      if (activePhase !== 'post-torneo') {
-        section.classList.add('hidden');
-        const rBanner = document.getElementById('rules-banner');
-        if (rBanner) rBanner.classList.remove('hidden');
-        return;
-      }
-
+      // Mostrar el ranking de inmediato
       section.classList.remove('hidden');
       const rBanner = document.getElementById('rules-banner');
       if (rBanner) rBanner.classList.add('hidden');
       tbody.innerHTML = '';
 
-      // Competidores simulados
-      const competitors = [
-        { name: "Carlos Mendoza", email: "car***@gmail.com", fav: "hab", points: 75 },
-        { name: "Sofía Rodríguez", email: "sof***@hotmail.com", fav: "arb", points: 72 },
-        { name: "Alejandro Ortiz", email: "ale***@gmail.com", fav: "neg", points: 68 },
-        { name: "Valeria Gómez", email: "val***@yahoo.com", fav: "ser", points: 63 },
-        { name: "Mauricio Silva", email: "mau***@outlook.com", fav: "tat", points: 58 },
-        { name: "Gabriela Torres", email: "gab***@gmail.com", fav: "hab", points: 54 },
-        { name: "Daniela Ruiz", email: "dan***@gmail.com", fav: "neg", points: 49 },
-        { name: "Eduardo Castillo", email: "edu***@live.com", fav: "ser", points: 45 },
-        { name: "Lucía Morales", email: "luc***@gmail.com", fav: "arb", points: 40 },
-        { name: "Javier Delgado", email: "jav***@gmail.com", fav: "tat", points: 35 }
+      // Competidores simulados base para rellenar
+      const simulatedCompetitors = [
+        { name: "Carlos Mendoza", email: "car***@gmail.com", fav: "hab", points: 21 },
+        { name: "Sofía Rodríguez", email: "sof***@hotmail.com", fav: "arb", points: 18 },
+        { name: "Alejandro Ortiz", email: "ale***@gmail.com", fav: "neg", points: 15 },
+        { name: "Valeria Gómez", email: "val***@yahoo.com", fav: "ser", points: 12 },
+        { name: "Mauricio Silva", email: "mau***@outlook.com", fav: "tat", points: 9 }
       ];
 
-      const currentUser = {
-        name: state.userName || "Invitado",
-        email: state.userEmail || "tu-correo@chilechillon.com",
-        fav: state.championPrediction || "hab",
-        points: state.userPoints,
-        isCurrentUser: true
-      };
+      // Mapear los competidores reales de la base de datos
+      const realParticipants = state.leaderboard.map(p => {
+        const points = calculatePointsForParticipant(p.votes);
+        return {
+          name: p.name,
+          email: p.email,
+          fav: p.fav,
+          points: points,
+          isCurrentUser: p.email === state.userEmail
+        };
+      });
 
-      let all = [...competitors];
-      if (!all.some(c => c.isCurrentUser)) {
-        all.push(currentUser);
+      let all = [...realParticipants];
+      const isCurrentUserInRealList = realParticipants.some(p => p.isCurrentUser);
+      if (!isCurrentUserInRealList && state.userEmail) {
+        all.push({
+          name: state.userName || "Invitado",
+          email: state.userEmail,
+          fav: state.championPrediction || "hab",
+          points: state.userPoints,
+          isCurrentUser: true
+        });
       }
+
+      // Rellenar con los competidores simulados si hay menos de 5
+      simulatedCompetitors.forEach(sc => {
+        if (all.length < 5 && !all.some(a => a.name === sc.name)) {
+          all.push(sc);
+        }
+      });
+
+      // Ordenar por puntaje
       all.sort((a, b) => b.points - a.points);
 
-      const top10 = all.slice(0, 10);
+      const top5 = all.slice(0, 5);
       const userRank = all.findIndex(c => c.isCurrentUser) + 1;
-      const userInTop10 = userRank <= 10;
+      const userInTop5 = userRank <= 5;
 
-      top10.forEach((row, index) => {
+      top5.forEach((row, index) => {
         const tr = document.createElement('tr');
         const isMe = row.isCurrentUser;
         
@@ -853,7 +896,7 @@
         tbody.appendChild(tr);
       });
 
-      if (!userInTop10) {
+      if (state.userEmail && !userInTop5) {
         const dividerTr = document.createElement('tr');
         dividerTr.innerHTML = `
           <td colspan="5" class="py-2 text-center text-slate-400 font-rubik text-[10px] uppercase tracking-wider font-bold bg-slate-50">
@@ -863,15 +906,14 @@
         tbody.appendChild(dividerTr);
 
         const tr = document.createElement('tr');
-        tr.className = `bg-[#FFEED3]/40 border-l-4 border-[#D30611]`;
-        const favSauce = teams[currentUser.fav] ? teams[currentUser.fav].name : '—';
-        
+        tr.className = 'bg-[#FFEED3]/40 border-l-4 border-[#D30611]';
+        const favSauce = teams[state.championPrediction] ? teams[state.championPrediction].name : '—';
         tr.innerHTML = `
           <td class="py-3 px-4"><span class="font-rubik text-sm font-bold text-slate-400">${userRank}</span></td>
-          <td class="py-3 px-4 font-rubik font-bold text-xs md:text-sm text-slate-800">${currentUser.name} 🔑 (Tú)</td>
-          <td class="py-3 px-4 font-rubik text-xs text-slate-500">${currentUser.email}</td>
+          <td class="py-3 px-4 font-rubik font-bold text-xs md:text-sm text-slate-800">${state.userName || "Invitado"} 🔑 (Tú)</td>
+          <td class="py-3 px-4 font-rubik text-xs text-slate-500">${state.userEmail}</td>
           <td class="py-3 px-4 font-rubik text-xs text-slate-600 font-semibold">${favSauce}</td>
-          <td class="py-3 px-4"><span class="font-chubzy text-lg text-slate-800">${currentUser.points} pts</span></td>
+          <td class="py-3 px-4"><span class="font-chubzy text-lg text-slate-800">${state.userPoints} pts</span></td>
         `;
         tbody.appendChild(tr);
       }

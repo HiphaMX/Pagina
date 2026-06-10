@@ -484,5 +484,35 @@ async def get_quiniela_results(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener resultados: {str(e)}")
 
+@router.get("/chilechillon/quiniela/leaderboard")
+async def get_quiniela_leaderboard(db: Session = Depends(get_db)):
+    try:
+        import json
+        leads = db.query(ChileChillonLead).all()
+        leaderboard_data = []
+        for lead in leads:
+            email_parts = lead.email.split("@")
+            if len(email_parts) == 2:
+                local_part, domain = email_parts
+                masked_local = local_part[:2] + "***" if len(local_part) > 2 else local_part + "***"
+                masked_email = f"{masked_local}@{domain}"
+            else:
+                masked_email = "***"
+            
+            try:
+                votes_dict = json.loads(lead.votos) if lead.votos else {}
+            except Exception:
+                votes_dict = {}
+                
+            leaderboard_data.append({
+                "name": lead.nombre,
+                "email": masked_email,
+                "fav": lead.prediccion_campeon,
+                "votes": votes_dict
+            })
+        return leaderboard_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener tabla de posiciones: {str(e)}")
+
 
 
