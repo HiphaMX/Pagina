@@ -613,6 +613,7 @@
     window.logout = function() {
       if (!confirm("¿Seguro que deseas cerrar sesión? Tendrás que registrarte nuevamente para votar.")) return;
       localStorage.removeItem('chilechillon-mundial-state');
+      localStorage.removeItem('chilechillon-offline-mode');
       state.userName = null;
       state.userEmail = null;
       state.userPhone = null;
