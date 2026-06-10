@@ -1301,8 +1301,10 @@ function App() {
 
                             {/* Button 4: Registro de socio de negocio */}
                             <a
-                              href="#void-registro"
-                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              href="/Formatos/Registro de socio de negocio.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download="Registro_de_socio_de_negocio.pdf"
                               style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -1315,8 +1317,7 @@ function App() {
                                 textDecoration: 'none',
                                 color: '#101729',
                                 transition: 'all 0.2s ease',
-                                width: '100%',
-                                opacity: 0.8
+                                width: '100%'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = '#f1f5f9';
@@ -1328,19 +1329,21 @@ function App() {
                               }}
                             >
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <FileText size={24} color="#64748b" />
+                                <FileText size={24} color="#98BC3C" />
                                 <div>
                                   <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Registro de socio de negocio</h4>
-                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Formato de alta de socio comercial (Próximamente)</p>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Descarga el formato de alta de socio comercial</p>
                                 </div>
                               </div>
-                              <ChevronRight size={20} color="#cbd5e1" />
+                              <ChevronRight size={20} color="#64748b" />
                             </a>
 
                             {/* Button 5: Responsiva de congelador */}
                             <a
-                              href="#void-responsiva"
-                              onClick={(e) => { e.preventDefault(); alert("Este documento estará disponible próximamente."); }}
+                              href="/Formatos/Responsiva de congelador.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download="Responsiva_de_congelador.pdf"
                               style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -1353,8 +1356,7 @@ function App() {
                                 textDecoration: 'none',
                                 color: '#101729',
                                 transition: 'all 0.2s ease',
-                                width: '100%',
-                                opacity: 0.8
+                                width: '100%'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = '#f1f5f9';
@@ -1366,13 +1368,13 @@ function App() {
                               }}
                             >
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <FileText size={24} color="#64748b" />
+                                <FileText size={24} color="#98BC3C" />
                                 <div>
                                   <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>Responsiva de congelador</h4>
-                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Carta responsiva de equipo de frío (Próximamente)</p>
+                                  <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '0.25rem 0 0 0' }}>Descarga la carta responsiva de equipo de frío</p>
                                 </div>
                               </div>
-                              <ChevronRight size={20} color="#cbd5e1" />
+                              <ChevronRight size={20} color="#64748b" />
                             </a>
                           </div>
                         </div>
