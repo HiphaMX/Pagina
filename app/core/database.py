@@ -4,6 +4,8 @@ import os
 
 from app.core.config import settings
 
+from sqlalchemy.pool import NullPool
+
 db_uri = os.environ.get("DATABASE_URL") or settings.SQLALCHEMY_DATABASE_URI
 if db_uri and db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
@@ -13,10 +15,18 @@ if db_uri and db_uri.startswith("postgres://"):
 if not os.environ.get("DATABASE_URL") and os.environ.get("VERCEL") == "1":
     db_uri = "sqlite:////tmp/database.db"
 
-engine = create_engine(
-    db_uri, connect_args={"check_same_thread": False} if "sqlite" in db_uri else {}
-)
+if "sqlite" in db_uri:
+    engine = create_engine(
+        db_uri, connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(
+        db_uri,
+        poolclass=NullPool,
+        pool_pre_ping=True
+    )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 Base = declarative_base()
 
