@@ -267,15 +267,16 @@
                             class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500">
                     </div>
                 </div>
-                <!-- Fecha de pago -->
+                <!-- Día de pago -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de pago <span class="text-primary-400">*</span></label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Día de pago <span class="text-primary-400">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="ph ph-calendar-check text-slate-400"></i>
                         </div>
-                        <input type="date" id="payment-date" required
-                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500">
+                        <input type="number" id="payment-date" min="1" max="31" required
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500"
+                            placeholder="Ej. 5">
                     </div>
                 </div>
                 <!-- Nombre del Proyecto -->
@@ -286,6 +287,23 @@
                         <input type="text" id="project-name" required
                             class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500"
                             placeholder="Ej. Rebranding Marca X">
+                    </div>
+                </div>
+                <!-- Plan contratado -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Plan contratado <span class="text-primary-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-briefcase text-slate-400"></i></div>
+                        <select id="contracted-plan" required
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-8 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all appearance-none cursor-pointer">
+                            <option value="" disabled selected class="text-slate-500">Selecciona un plan</option>
+                            <option value="WEB" class="bg-slate-800 text-white">WEB ($770/mes)</option>
+                            <option value="DESIGN" class="bg-slate-800 text-white">DESIGN ($2,770/mes)</option>
+                            <option value="FULL" class="bg-slate-800 text-white">FULL ($7,760/mes)</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-400">
+                            <i class="ph ph-caret-down"></i>
+                        </div>
                     </div>
                 </div>
                 <!-- Nombre Contacto -->
@@ -433,7 +451,31 @@
             const paymentDateVal = document.getElementById('payment-date').value;
             const projectName = document.getElementById('project-name').value;
             const paymentMethod = document.getElementById('payment-method').value;
-            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nFecha de pago comprometida: ${paymentDateVal}\nProyecto: ${projectName}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
+            const planContratado = document.getElementById('contracted-plan').value;
+            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nDía de pago comprometido: ${paymentDateVal}\nProyecto: ${projectName}\nPlan contratado: ${planContratado}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
+        });
+
+        // Preseleccionar plan y abrir modal si viene en los parámetros de la URL
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planParam = urlParams.get('plan');
+            if (planParam) {
+                const planSelect = document.getElementById('contracted-plan');
+                if (planSelect) {
+                    const normalizedPlan = planParam.toUpperCase();
+                    const optionExists = Array.from(planSelect.options).some(opt => opt.value === normalizedPlan);
+                    if (optionExists) {
+                        planSelect.value = normalizedPlan;
+                        const contractDateInput = document.getElementById('contract-date');
+                        if (contractDateInput && !contractDateInput.value) {
+                            contractDateInput.value = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+                        }
+                        if (typeof toggleModal === 'function') {
+                            toggleModal('contract-modal');
+                        }
+                    }
+                }
+            }
         });
 
         async function submitContactForm(event) {
@@ -476,7 +518,8 @@
                 fecha: document.getElementById('contract-date').value,
                 fecha_pago: document.getElementById('payment-date').value,
                 proyecto: document.getElementById('project-name').value,
-                forma_pago: document.getElementById('payment-method').value
+                forma_pago: document.getElementById('payment-method').value,
+                plan_contratado: document.getElementById('contracted-plan').value
             };
 
             try {

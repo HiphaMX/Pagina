@@ -37,6 +37,7 @@ class ContactForm(BaseModel):
     fecha_pago: Optional[str] = None
     proyecto: Optional[str] = None
     forma_pago: Optional[str] = None
+    plan_contratado: Optional[str] = None
 
 class HealthyIceContractForm(BaseModel):
     nombre: Optional[str] = None # Representante legal
