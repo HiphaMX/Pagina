@@ -10,6 +10,25 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+def format_spanish_date(date_str: str) -> str:
+    if not date_str:
+        return 'N/A'
+    try:
+        parts = date_str.split('-')
+        if len(parts) == 3 and len(parts[0]) == 4:
+            year, month, day = parts
+            months = {
+                '01': 'enero', '02': 'febrero', '03': 'marzo', '04': 'abril',
+                '05': 'mayo', '06': 'junio', '07': 'julio', '08': 'agosto',
+                '09': 'septiembre', '10': 'octubre', '11': 'noviembre', '12': 'diciembre'
+            }
+            day_num = int(day)
+            month_name = months.get(month, month)
+            return f"{day_num} de {month_name} de {year}"
+    except Exception:
+        pass
+    return date_str
+
 def generate_contract_pdf(form_data) -> bytes:
     pdf = FPDF()
     pdf.add_page()
@@ -24,7 +43,8 @@ def generate_contract_pdf(form_data) -> bytes:
     pdf.ln(5)
     
     pdf.set_font("Helvetica", "", 11)
-    pdf.cell(0, 8, text=f"Fecha de aceptacion: {getattr(form_data, 'fecha', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
+    fecha_acuerdo = format_spanish_date(getattr(form_data, 'fecha', '') or 'N/A')
+    pdf.cell(0, 8, text=f"Fecha de aceptacion: {fecha_acuerdo}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Dia de pago: {getattr(form_data, 'fecha_pago', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Cliente / Contacto: {form_data.nombre}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Email: {form_data.email}", new_x="LMARGIN", new_y="NEXT")
