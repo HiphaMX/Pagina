@@ -473,3 +473,12 @@ function closeMobileMenu() {
 }
 // Close menu on Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
+
+// Lógica para preselección de planes de suscripción
+function selectSubscriptionPlan(planName) {
+    const messageTextarea = document.querySelector('#contact-modal textarea[name="mensaje"]');
+    if (messageTextarea) {
+        messageTextarea.value = `Hola Hipha, estoy interesado en contratar el Plan de Suscripción ${planName}.`;
+    }
+    toggleModal('contact-modal');
+}

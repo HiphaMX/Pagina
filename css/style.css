@@ -617,3 +617,45 @@ html:not(.dark) .mobile-float-cta {
     .mobile-float-cta { display: none !important; }
     .mobile-nav { display: none !important; }
 }
+
+/* ─── Tabla Comparativa de Suscripciones ───────────────────────────────── */
+details.pricing-details-details[open] summary i {
+    transform: rotate(180deg);
+}
+
+.pricing-details-details table th {
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.pricing-details-details table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pricing-details-details table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Soporte para modo claro */
+html:not(.dark) .pricing-details-details table th {
+    color: #0f172a !important;
+    background: #f1f5f9 !important;
+}
+
+html:not(.dark) .pricing-details-details table td {
+    color: #334155 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.dark) .pricing-details-details table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+html:not(.dark) .pricing-details-details table tbody tr.bg-slate-900\/40 {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+}
+
+html:not(.dark) .pricing-details-details table tbody tr.bg-slate-900\/40 td {
+    color: #475569 !important;
+}

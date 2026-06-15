@@ -83,6 +83,7 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
                 <a href="#soluciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Ecosistema de Soluciones</a>
+                <a href="#suscripciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Suscripciones</a>
                 <a href="#about" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Nuestra Raíz</a>
                 <button onclick="toggleModal('contact-modal')" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
                     Conecta con Nosotros
@@ -109,6 +110,7 @@
                 </button>
             </div>
             <a href="#soluciones" class="mobile-nav-link" onclick="closeMobileMenu()">Ecosistema de Soluciones</a>
+            <a href="#suscripciones" class="mobile-nav-link" onclick="closeMobileMenu()">Suscripciones</a>
             <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Nuestra Raíz</a>
             <a href="#valores" class="mobile-nav-link" onclick="closeMobileMenu()">Filosofía</a>
             <button onclick="toggleModal('contact-modal'); closeMobileMenu();" class="mobile-nav-cta">
@@ -509,6 +511,274 @@
                 class="glass-panel text-white font-medium px-8 py-4 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-2 focus:ring-4 focus:ring-white/30">
                 ¿Tu marca aún no está aquí? &nbsp;<span class="font-bold">Hablemos →</span>
             </button>
+        </div>
+    </section>
+
+    <!-- Suscripciones Section -->
+    <section id="suscripciones" aria-labelledby="suscripciones-heading" class="relative z-10 py-24 border-t border-white/5 bg-slate-900/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="block text-primary-500 font-semibold tracking-wide uppercase text-sm mb-2">Planes Mensuales</span>
+                <h2 id="suscripciones-heading" class="text-3xl md:text-5xl font-bold text-white mb-4">Planes de Suscripción</h2>
+                <p class="text-slate-400 max-w-xl mx-auto text-base">Elige el plan ideal para tu marca. Sin plazos forzosos y con el respaldo de tu departamento de marketing externo.</p>
+            </div>
+
+            <!-- Pricing Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <!-- Card WEB -->
+                <div class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-cyan-500 relative group hover:-translate-y-2 transition-transform duration-300">
+                    <div>
+                        <div class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Plan Web</div>
+                        <div class="text-4xl font-extrabold text-white mb-2">$770 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
+                        <p class="text-slate-400 text-sm mb-6">Ideal para lanzar y posicionar tu sitio web, ecommerce y SEO básico.</p>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-cyan-400"></i> Diseño y desarrollo web
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-cyan-400"></i> Optimización SEO
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-cyan-400"></i> Configuración tienda en línea
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-cyan-400"></i> Registro de dominio
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-cyan-400"></i> Cortesía: Logotipo / ADN de marca
+                            </li>
+                        </ul>
+                    </div>
+                    <button onclick="selectSubscriptionPlan('WEB')" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_25px_rgba(6,182,212,0.5)]">
+                        Contratar Plan Web
+                    </button>
+                </div>
+
+                <!-- Card DESIGN (Destacada) -->
+                <div class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-fuchsia-500 relative group hover:-translate-y-2 transition-transform duration-300 md:scale-105 shadow-[0_0_30px_rgba(240,79,215,0.15)] border border-fuchsia-500/30">
+                    <div class="absolute -top-3.5 right-6 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">Más Popular</div>
+                    <div>
+                        <div class="text-xs font-bold text-fuchsia-400 uppercase tracking-widest mb-2">Plan Design</div>
+                        <div class="text-4xl font-extrabold text-white mb-2">$2,770 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
+                        <p class="text-slate-400 text-sm mb-6">Perfecto para marcas que requieren branding constante y contenido en redes.</p>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-fuchsia-400"></i> Logotipo / ADN de marca completo
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-fuchsia-400"></i> Diseño de herramientas de venta
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-fuchsia-400"></i> Hasta 18 piezas de contenido RRSS
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-fuchsia-400"></i> Branding e identidad corporativa
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-fuchsia-400"></i> Asesoría en merchandising
+                            </li>
+                        </ul>
+                    </div>
+                    <button onclick="selectSubscriptionPlan('DESIGN')" class="w-full bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(192,38,211,0.4)] hover:shadow-[0_0_30px_rgba(192,38,211,0.6)]">
+                        Contratar Plan Design
+                    </button>
+                </div>
+
+                <!-- Card FULL -->
+                <div class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-purple-500 relative group hover:-translate-y-2 transition-transform duration-300">
+                    <div>
+                        <div class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Plan Full</div>
+                        <div class="text-4xl font-extrabold text-white mb-2">$7,760 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
+                        <p class="text-slate-400 text-sm mb-6">Tu departamento de marketing externo completo y a máxima velocidad.</p>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-purple-400"></i> Todo el Plan Web + Plan Design
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-purple-400"></i> Estrategia de Marketing & FODA
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-purple-400"></i> Pauta en Meta ADS y Google ADS
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-purple-400"></i> 3 Cuentas de correo corporativo
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-purple-400"></i> Videollamada mensual
+                            </li>
+                        </ul>
+                    </div>
+                    <button onclick="selectSubscriptionPlan('FULL')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_25px_rgba(147,51,234,0.5)]">
+                        Contratar Plan Full
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Comparison Table details element -->
+            <details class="group pricing-details-details">
+                <summary class="flex items-center justify-center gap-2 cursor-pointer text-sm font-bold text-slate-400 hover:text-white transition-colors py-3 select-none outline-none">
+                    <span>Ver tabla comparativa detallada</span>
+                    <i class="ph-bold ph-caret-down transition-transform duration-300 group-open:rotate-180"></i>
+                </summary>
+                
+                <div class="mt-8 overflow-x-auto rounded-2xl border border-white/10 glass-panel shadow-2xl">
+                    <table class="w-full min-w-[700px] border-collapse text-left text-sm text-slate-300">
+                        <thead>
+                            <tr class="bg-slate-950/60 border-b border-white/10 text-white">
+                                <th class="py-4 px-6 font-bold text-base">CARACTERÍSTICAS</th>
+                                <th class="py-4 px-6 text-center font-bold text-cyan-400 text-base">WEB</th>
+                                <th class="py-4 px-6 text-center font-bold text-fuchsia-400 text-base">DESIGN</th>
+                                <th class="py-4 px-6 text-center font-bold text-purple-400 text-base">FULL</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <!-- CATEGORY: DISEÑO Y CREATIVIDAD -->
+                            <tr class="bg-slate-900/40 text-white font-bold">
+                                <td colspan="4" class="py-3 px-6 text-xs uppercase tracking-wider text-slate-400">Diseño y Creatividad</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Logotipo / ADN de marca</td>
+                                <td class="py-4 px-6 text-center text-cyan-400/90 italic font-medium">Cortesía</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Diseño de herramientas de venta</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Diseño gráfico de contenido RRSS</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-fuchsia-400 font-semibold text-xs">hasta 18 pzas.</td>
+                                <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">hasta 18 pzas.</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Branding e identidad corporativa</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Asesoría en proyectos de merchandising</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Comunicación Interna</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Videollamada mensual</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+
+                            <!-- CATEGORY: PÁGINA WEB -->
+                            <tr class="bg-slate-900/40 text-white font-bold">
+                                <td colspan="4" class="py-3 px-6 text-xs uppercase tracking-wider text-slate-400">Página Web</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Diseño y programación de página web</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Administración de publicidad en Meta ADS y Google ADS</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Optimización SEO para posicionamiento</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Registro de dominio .com, .mx, .com.mx</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Cuentas de correo incluidas</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">3 cuentas</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Configuración para tienda en línea</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Instalación de etiquetas o píxel en código</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+
+                            <!-- CATEGORY: MARKETING -->
+                            <tr class="bg-slate-900/40 text-white font-bold">
+                                <td colspan="4" class="py-3 px-6 text-xs uppercase tracking-wider text-slate-400">Marketing</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium">+ Asesoría en ÁREA COMERCIAL</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium pl-10">- Análisis y estrategia FODA</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium pl-10">- Plan de marketing y comunicación</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium pl-10">- Valores agregados / Embudo comercial</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium pl-10">- Diseño de encuestas de satisfacción</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium pl-10">- Relaciones con cliente interno, externo y proveedores</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-6 font-medium pl-10">- Mystery shopper, benchmarking</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
         </div>
     </section>
 
