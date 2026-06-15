@@ -45,7 +45,9 @@ def generate_contract_pdf(form_data) -> bytes:
     pdf.set_font("Helvetica", "", 11)
     fecha_acuerdo = format_spanish_date(getattr(form_data, 'fecha', '') or 'N/A')
     pdf.cell(0, 8, text=f"Fecha de aceptacion: {fecha_acuerdo}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 8, text=f"Dia de pago: {getattr(form_data, 'fecha_pago', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
+    dia_pago = getattr(form_data, 'fecha_pago', '')
+    dia_pago_formatted = f"{dia_pago} (de cada mes)" if dia_pago else 'N/A'
+    pdf.cell(0, 8, text=f"Dia de pago: {dia_pago_formatted}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Cliente / Contacto: {form_data.nombre}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Email: {form_data.email}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Telefono: {form_data.telefono}", new_x="LMARGIN", new_y="NEXT")
