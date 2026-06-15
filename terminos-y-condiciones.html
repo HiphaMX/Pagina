@@ -119,13 +119,15 @@
                 <p>El Cliente designará un "Responsable de Proyecto" único con facultades suficientes para autorizar entregables y presupuestos. Las instrucciones de otros socios o terceros no serán vinculantes. La ventana de comunicación para reuniones virtuales es de lunes a viernes de 9:00 am a 12:00 pm (Hora Centro de México). Reuniones presenciales estarán sujetas a disponibilidad y podrán generar cargos adicionales por traslados y viáticos.</p>
 
                 <h2>3. Procesamiento de Solicitudes y Terceros</h2>
-                <p>Toda solicitud de diseño o estrategia requiere un plazo mínimo de 72 horas hábiles para inicio de gestión. Hipha no actúa como comisionista ni intermediario en pagos a terceros. Si el Cliente solicita que Hipha gestione archivos con proveedores externos (imprentas, medios, etc.), Hipha se deslinda de cualquier error en la ejecución, calidad, tiempos de entrega o vicios ocultos de dichos terceros. La ejecución física (recolecciones, instalaciones) es responsabilidad del personal interno del Cliente.</p>
+                <p>Toda solicitud de diseño o estrategia requiere un plazo mínimo de 72 horas hábiles para inicio de gestión. Si el Cliente solicita que Hipha gestione archivos con proveedores externos (imprentas, medios, etc.), es posible, pero se debe considerar que Hipha no actúa como comisionista ni intermediario en pagos a terceros. Contamos con algunos proveedores con los que tenemos experiencia trabajando, sin embargo es responsabilidad exclusiva del cliente seleccionar el proveedor ideal para su proyecto, validar pruebas y calidad de impresión.</p>
+                <p>Es nuestro trabajo generar las propuestas de diseño y enviar al cliente el previo para revisión, es responsabilidad del cliente validar el contenido de los proyectos y autorizarlos o solicitar cambios cuando corresponda, Hipha se deslinda de diseño sobre diseños autorizados, además de cualquier error en la ejecución, calidad de los materiales y tiempos de entrega de terceros.</p>
 
                 <h2>4. Responsabilidad y Seguridad del Cliente</h2>
                 <p>La vigencia de los tiempos de entrega inicia tras la recepción total de los insumos (Brief, manuales, accesos). El retraso del Cliente no suspende la obligación de pago de las facturas o igualas pactadas. Respecto al Protocolo de Seguridad, el Cliente es responsable total de sus claves y accesos. Hipha se deslinda de hackeos, bloqueos o ataques derivados de acciones del Cliente o terceros ajenos a la agencia. Al finalizar la relación, el Cliente debe revocar accesos en un plazo máximo de 24 horas.</p>
 
                 <h2>5. Propiedad Intelectual y Uso de Portafolio</h2>
-                <p>La transferencia de derechos patrimoniales de los entregables finales (diseños publicados, sitios web, fotos de producto) ocurrirá únicamente tras la liquidación del 100% del pago. Hipha conserva la propiedad intelectual de sus metodologías, procesos internos, flujos de trabajo, estrategias preexistentes y archivos fuente (editables). Salvo existencia de un acuerdo de confidencialidad (NDA) explícito, el Cliente autoriza a Hipha a utilizar muestras del trabajo para su portafolio y redes sociales.</p>
+                <p>La transferencia de derechos patrimoniales de los entregables finales (diseños publicados, sitios web, fotos de producto) ocurrirá únicamente tras la liquidación del 100% del pago. Hipha conserva la propiedad intelectual de sus metodologías, procesos internos, flujos de trabajo, estrategias preexistentes y archivos fuente (editables). Salvo existencia de un acuerdo de confidencialidad (NDA) explícito, el Cliente autoriza a Hipha a utilizar muestras del trabajo para su portafolio y/o redes sociales.</p>
+                <p>Hipha recomienda ampliamente tener buenas prácticas respecto a la propiedad intelectual, por una parte realizar el registro de su marca en las clases correspondientes ante el IMPI, además de evitar utilizar fotografías sin las licencias correspondientes.</p>
 
                 <h2>6. Rescisión y Suspensión de Servicio</h2>
                 <p>Cualquier parte podrá dar por terminado el servicio con un aviso previo de 30 días naturales. En caso de impago, Hipha queda facultado para suspender total o parcialmente los servicios (pausar campañas, retirar servicios digitales) sin responsabilidad alguna por pérdidas económicas, daños o perjuicios que esta interrupción pudiera causar al Cliente.</p>
@@ -254,15 +256,26 @@
             <p class="text-slate-400 text-sm mb-6">Por favor, completa tus datos para formalizar el acuerdo.</p>
             
             <form id="contact-form" class="space-y-4" onsubmit="submitContactForm(event)">
-                <!-- Fecha de contratación (Auto-rellenada) -->
+                <!-- Fecha de contratación -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de contratación</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de contratación <span class="text-primary-400">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="ph ph-calendar text-slate-400"></i>
                         </div>
-                        <input type="text" id="contract-date" readonly
-                            class="w-full bg-slate-800/80 border border-white/5 rounded-lg py-2.5 pl-10 pr-4 text-slate-400 focus:outline-none cursor-not-allowed">
+                        <input type="text" id="contract-date" required
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500">
+                    </div>
+                </div>
+                <!-- Fecha de pago -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Fecha de pago <span class="text-primary-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph ph-calendar-check text-slate-400"></i>
+                        </div>
+                        <input type="date" id="payment-date" required
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all placeholder:text-slate-500">
                     </div>
                 </div>
                 <!-- Nombre del Proyecto -->
@@ -321,9 +334,6 @@
                             <i class="ph ph-caret-down"></i>
                         </div>
                     </div>
-                    <p class="text-[11px] text-fuchsia-400/80 mt-1.5 flex items-start gap-1">
-                        <i class="ph-fill ph-info mt-0.5"></i> El límite de la fecha de pago son 3 días después de aceptar los términos y condiciones.
-                    </p>
                 </div>
                 <!-- Firma -->
                 <div>
@@ -420,9 +430,10 @@
         // Actualizar mensaje oculto al abrir/enviar para capturar la fecha exacta
         document.getElementById('contact-form').addEventListener('submit', function() {
             const dateVal = document.getElementById('contract-date').value;
+            const paymentDateVal = document.getElementById('payment-date').value;
             const projectName = document.getElementById('project-name').value;
             const paymentMethod = document.getElementById('payment-method').value;
-            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nProyecto: ${projectName}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
+            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nFecha de pago comprometida: ${paymentDateVal}\nProyecto: ${projectName}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
         });
 
         async function submitContactForm(event) {
@@ -463,6 +474,7 @@
                 mensaje: document.getElementById('hidden-mensaje').value || '',
                 firma: signatureData,
                 fecha: document.getElementById('contract-date').value,
+                fecha_pago: document.getElementById('payment-date').value,
                 proyecto: document.getElementById('project-name').value,
                 forma_pago: document.getElementById('payment-method').value
             };

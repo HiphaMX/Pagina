@@ -3,6 +3,7 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.chilechillon_lead import ChileChillonLead
+from app.models.chilechillon_match import ChileChillonMatch
 from app.core.mailer import (
     send_contract_followup_email,
     send_lead_followup_email, 
@@ -33,6 +34,7 @@ class ContactForm(BaseModel):
     mensaje: str = ""
     firma: Optional[str] = None
     fecha: Optional[str] = None
+    fecha_pago: Optional[str] = None
     proyecto: Optional[str] = None
     forma_pago: Optional[str] = None
 
@@ -485,13 +487,17 @@ async def get_quiniela_results(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Error al obtener resultados: {str(e)}")
 
 @router.get("/chilechillon/quiniela/leaderboard")
-async def get_quiniela_leaderboard(db: Session = Depends(get_db)):
+async def get_quiniela_leaderboard(email: Optional[str] = None, db: Session = Depends(get_db)):
     try:
         import json
         leads = db.query(ChileChillonLead).all()
         leaderboard_data = []
+        
+        current_user_email = email.lower().strip() if email else ""
+        
         for lead in leads:
-            email_parts = lead.email.split("@")
+            lead_email_lower = lead.email.lower().strip()
+            email_parts = lead_email_lower.split("@")
             if len(email_parts) == 2:
                 local_part, domain = email_parts
                 masked_local = local_part[:2] + "***" if len(local_part) > 2 else local_part + "***"
@@ -508,11 +514,171 @@ async def get_quiniela_leaderboard(db: Session = Depends(get_db)):
                 "name": lead.nombre,
                 "email": masked_email,
                 "fav": lead.prediccion_campeon,
-                "votes": votes_dict
+                "votes": votes_dict,
+                "is_me": (lead_email_lower == current_user_email)
             })
         return leaderboard_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener tabla de posiciones: {str(e)}")
 
+@router.get("/chilechillon/quiniela/user")
+async def get_quiniela_user(email: str, db: Session = Depends(get_db)):
+    try:
+        import json
+        email = email.lower().strip()
+        lead = db.query(ChileChillonLead).filter(ChileChillonLead.email == email).first()
+        if not lead:
+            raise HTTPException(status_code=404, detail="Usuario no registrado")
+        
+        try:
+            votes_dict = json.loads(lead.votos) if lead.votos else {}
+        except Exception:
+            votes_dict = {}
+            
+        return {
+            "nombre": lead.nombre,
+            "email": lead.email,
+            "prediccion_campeon": lead.prediccion_campeon,
+            "votos": votes_dict
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener datos del usuario: {str(e)}")
+
+INITIAL_MATCHES = [
+    { "id": 1, "phase": "grupo", "teamA": "arb", "teamB": "neg", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 2, "phase": "grupo", "teamA": "hab", "teamB": "tat", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 3, "phase": "grupo", "teamA": "ser", "teamB": "arb", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 4, "phase": "grupo", "teamA": "neg", "teamB": "hab", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 5, "phase": "grupo", "teamA": "tat", "teamB": "ser", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 6, "phase": "grupo", "teamA": "arb", "teamB": "hab", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 7, "phase": "grupo", "teamA": "neg", "teamB": "tat", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 8, "phase": "grupo", "teamA": "ser", "teamB": "hab", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 9, "phase": "grupo", "teamA": "arb", "teamB": "tat", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 10, "phase": "grupo", "teamA": "neg", "teamB": "ser", "scoreA": None, "scoreB": None, "status": "active" },
+    { "id": 11, "phase": "semifinal", "teamA": None, "teamB": None, "scoreA": None, "scoreB": None, "status": "upcoming" },
+    { "id": 12, "phase": "semifinal", "teamA": None, "teamB": None, "scoreA": None, "scoreB": None, "status": "upcoming" },
+    { "id": 13, "phase": "final", "teamA": None, "teamB": None, "scoreA": None, "scoreB": None, "status": "upcoming" }
+]
+
+class QuinielaMatchUpdateForm(BaseModel):
+    email: str
+    password: str
+    id: int
+    phase: str
+    teamA: Optional[str] = None
+    teamB: Optional[str] = None
+    scoreA: Optional[int] = None
+    scoreB: Optional[int] = None
+    status: str
+
+class QuinielaMatchResetForm(BaseModel):
+    email: str
+    password: str
+
+class QuinielaAdminVerifyForm(BaseModel):
+    email: str
+    password: str
+
+@router.post("/chilechillon/quiniela/admin/verify")
+async def verify_quiniela_admin(form_data: QuinielaAdminVerifyForm):
+    email = form_data.email.lower().strip()
+    if email == "efe.creativo@gmail.com" and form_data.password == "SoyElWero":
+        return {"status": "ok", "message": "Autenticación exitosa"}
+    raise HTTPException(status_code=401, detail="Usuario o contraseña de administrador incorrectos")
+
+@router.get("/chilechillon/quiniela/matches")
+async def get_quiniela_matches(db: Session = Depends(get_db)):
+    try:
+        matches = db.query(ChileChillonMatch).order_by(ChileChillonMatch.id.asc()).all()
+        if not matches:
+            for m_data in INITIAL_MATCHES:
+                db_match = ChileChillonMatch(
+                    id=m_data["id"],
+                    phase=m_data["phase"],
+                    teamA=m_data["teamA"],
+                    teamB=m_data["teamB"],
+                    scoreA=m_data["scoreA"],
+                    scoreB=m_data["scoreB"],
+                    status=m_data["status"]
+                )
+                db.add(db_match)
+            db.commit()
+            matches = db.query(ChileChillonMatch).order_by(ChileChillonMatch.id.asc()).all()
+            
+        return [
+            {
+                "id": m.id,
+                "phase": m.phase,
+                "teamA": m.teamA,
+                "teamB": m.teamB,
+                "scoreA": m.scoreA,
+                "scoreB": m.scoreB,
+                "status": m.status
+            }
+            for m in matches
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener partidos: {str(e)}")
+
+@router.post("/chilechillon/quiniela/matches/update")
+async def update_quiniela_match(form_data: QuinielaMatchUpdateForm, db: Session = Depends(get_db)):
+    try:
+        email = form_data.email.lower().strip()
+        if email != "efe.creativo@gmail.com" or form_data.password != "SoyElWero":
+            raise HTTPException(status_code=403, detail="No tienes permisos para modificar partidos")
+            
+        db_match = db.query(ChileChillonMatch).filter(ChileChillonMatch.id == form_data.id).first()
+        if not db_match:
+            raise HTTPException(status_code=404, detail="Partido no encontrado")
+            
+        db_match.phase = form_data.phase
+        db_match.teamA = form_data.teamA
+        db_match.teamB = form_data.teamB
+        db_match.scoreA = form_data.scoreA
+        db_match.scoreB = form_data.scoreB
+        db_match.status = form_data.status
+        
+        db.commit()
+        return {"message": "Partido actualizado exitosamente"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al actualizar partido: {str(e)}")
+
+@router.post("/chilechillon/quiniela/matches/reset")
+async def reset_quiniela_matches(form_data: QuinielaMatchResetForm, db: Session = Depends(get_db)):
+    try:
+        email = form_data.email.lower().strip()
+        if email != "efe.creativo@gmail.com" or form_data.password != "SoyElWero":
+            raise HTTPException(status_code=403, detail="No tienes permisos para reiniciar partidos")
+            
+        db.query(ChileChillonMatch).delete()
+        
+        for m_data in INITIAL_MATCHES:
+            db_match = ChileChillonMatch(
+                id=m_data["id"],
+                phase=m_data["phase"],
+                teamA=m_data["teamA"],
+                teamB=m_data["teamB"],
+                scoreA=m_data["scoreA"],
+                scoreB=m_data["scoreB"],
+                status=m_data["status"]
+            )
+            db.add(db_match)
+            
+        leads = db.query(ChileChillonLead).all()
+        for lead in leads:
+            lead.votos = "{}"
+            
+        db.commit()
+        return {"message": "Partidos y votos reiniciados exitosamente"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al reiniciar partidos: {str(e)}")
 
 

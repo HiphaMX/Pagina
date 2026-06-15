@@ -7,6 +7,7 @@ from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal
 from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
+from app.models.chilechillon_match import ChileChillonMatch
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")

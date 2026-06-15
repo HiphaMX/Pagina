@@ -182,11 +182,10 @@
       </div>
     </div>
   </div>
-
   <!-- Nav Tabs -->
-  <div class="max-w-4xl mx-auto px-6 mb-8 relative z-10 flex justify-center flex-wrap gap-2">
-    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all" onclick="showTab('misvotos')">🎟️ Mi pase</button>
-    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('partidos')">⚽ Top 5 usuarios</button>
+  <div id="nav-tabs-container" class="max-w-4xl mx-auto px-6 mb-8 relative z-10 flex justify-center flex-wrap gap-2">
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all" onclick="showTab('partidos')">🎟️ Mi pase</button>
+    <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('misvotos')">⚽ Top 5 usuarios</button>
     <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('tabla')">📊 Tabla</button>
     <button class="tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent" onclick="showTab('bracket')">🗂 Finales</button>
   </div>
@@ -196,31 +195,6 @@
     <div class="flex items-center justify-between mb-8">
       <h2 class="font-chubzy text-2xl text-slate-900">Partidos del Torneo</h2>
       <span id="phase-pill" class="px-3.5 py-1.5 bg-[#D30611] text-white text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm">En Curso</span>
-    </div>
-
-    <!-- Sección de Ganadores (Se revela el 20 de Julio) -->
-    <div id="leaderboard-section" class="hidden mb-12 bg-white border border-slate-100 rounded-[32px] p-6 md:p-8 shadow-sm animate-fade-in">
-      <div class="flex items-center gap-3.5 mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-[#FFEED3] flex items-center justify-center text-2xl">🏆</div>
-        <div>
-          <h3 class="font-chubzy text-xl text-slate-900 leading-tight">Top 5 Participantes</h3>
-          <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-bold font-rubik">Clasificación en Tiempo Real de la Quiniela</p>
-        </div>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-sm">
-          <thead>
-            <tr class="border-b border-slate-100 text-[10px] font-rubik font-bold text-slate-400 tracking-wider uppercase bg-[#FAF9F6]">
-              <th class="py-3 px-4 rounded-l-xl">Pos</th>
-              <th class="py-3 px-4">Usuario</th>
-              <th class="py-3 px-4">Correo</th>
-              <th class="py-3 px-4">Salsa Favorita</th>
-              <th class="py-3 px-4 rounded-r-xl">Puntos</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body"></tbody>
-        </table>
-      </div>
     </div>
 
     <!-- Banner Informativo de Reglas y Puntos -->
@@ -338,8 +312,33 @@
     </div>
   </div>
 
-  <!-- ═══ VIEW: MI PASE ═══ -->
+  <!-- ═══ VIEW: MI PASE (Top 5 usuarios + Historial) ═══ -->
   <div class="view max-w-4xl mx-auto px-6 pb-24 relative z-10 hidden" id="view-misvotos">
+    <!-- Sección de Ganadores -->
+    <div id="leaderboard-section" class="hidden mb-12 bg-white border border-slate-100 rounded-[32px] p-6 md:p-8 shadow-sm animate-fade-in">
+      <div class="flex items-center gap-3.5 mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-[#FFEED3] flex items-center justify-center text-2xl">🏆</div>
+        <div>
+          <h3 class="font-chubzy text-xl text-slate-900 leading-tight">Top 5 Participantes</h3>
+          <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-bold font-rubik">Clasificación en Tiempo Real de la Quiniela</p>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-100 text-[10px] font-rubik font-bold text-slate-400 tracking-wider uppercase bg-[#FAF9F6]">
+              <th class="py-3 px-4 rounded-l-xl">Pos</th>
+              <th class="py-3 px-4">Usuario</th>
+              <th class="py-3 px-4">Correo</th>
+              <th class="py-3 px-4">Salsa Favorita</th>
+              <th class="py-3 px-4 rounded-r-xl">Puntos</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="flex items-center justify-between mb-8">
       <h2 class="font-chubzy text-2xl text-slate-900">Mi Historial de Votación</h2>
       <span class="px-3.5 py-1.5 bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/20 text-[9px] font-bold uppercase tracking-widest rounded-full">Activo</span>
@@ -628,13 +627,51 @@
 
     // Cambiar Tabs
     function showTab(tabName) {
+      if (tabName === 'admin') {
+        if (!state.adminPassword) {
+          const pwd = prompt("Introduce la contraseña de administrador:");
+          if (!pwd) {
+            showToast("Acceso de administrador cancelado");
+            showTab('partidos');
+            return;
+          }
+          // Verificar en el servidor
+          fetch("/api/contact/chilechillon/quiniela/admin/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: state.userEmail,
+              password: pwd
+            })
+          })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error("Contraseña incorrecta");
+            }
+            return res.json();
+          })
+          .then(data => {
+            state.adminPassword = pwd;
+            showToast("¡Autenticación de admin exitosa! ⚙️");
+            showTab('admin');
+          })
+          .catch(err => {
+            alert("Acceso denegado: " + err.message);
+            showTab('partidos');
+          });
+          return;
+        }
+      }
+
       document.querySelectorAll('.tab').forEach(t => {
         t.className = "tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent";
       });
       document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
 
       // Activar tab actual
-      const activeTabBtn = Array.from(document.querySelectorAll('.tab')).find(btn => btn.getAttribute('onclick').includes(tabName));
+      const activeTabBtn = Array.from(document.querySelectorAll('.tab')).find(btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName));
       if (activeTabBtn) {
         activeTabBtn.className = "tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#FFEED3] text-[#D30611] border border-[#D30611]/10 font-extrabold shadow-sm transition-all";
       }
@@ -673,27 +710,61 @@
       const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
       if (isOfflineMode) return;
       
-      fetch("/api/contact/chilechillon/quiniela/results")
-        .then(res => res.json())
-        .then(data => {
+      const emailParam = encodeURIComponent(state.userEmail);
+      
+      Promise.all([
+        fetch("/api/contact/chilechillon/quiniela/matches").then(res => res.json()),
+        fetch("/api/contact/chilechillon/quiniela/results").then(res => res.json()),
+        fetch(`/api/contact/chilechillon/quiniela/user?email=${emailParam}`).then(res => res.ok ? res.json() : null)
+      ])
+      .then(([dbMatches, voteResults, userData]) => {
+        if (userData) {
+          state.userVotes = userData.votos || {};
+          state.championPrediction = userData.prediccion_campeon || state.championPrediction;
+          state.userName = userData.nombre || state.userName;
+          saveState();
+        }
+        
+        if (dbMatches && dbMatches.length > 0) {
+          dbMatches.forEach(dbm => {
+            const m = state.matches.find(x => x.id === dbm.id);
+            if (m) {
+              m.status = dbm.status;
+              m.scoreA = dbm.scoreA;
+              m.scoreB = dbm.scoreB;
+              m.teamA = dbm.teamA;
+              m.teamB = dbm.teamB;
+              m.phase = dbm.phase;
+            }
+          });
+        }
+        
+        if (voteResults) {
           state.matches.forEach(m => {
-            const votes = data[m.id];
+            const votes = voteResults[m.id];
             if (votes) {
               m.votesA = votes.A;
               m.votesB = votes.B;
             }
           });
-          renderMatches();
-        })
-        .catch(err => console.warn("Error al cargar resultados en tiempo real:", err));
+        }
 
-      fetch("/api/contact/chilechillon/quiniela/leaderboard")
-        .then(res => res.json())
-        .then(list => {
-          state.leaderboard = list || [];
-          renderLeaderboard();
-        })
-        .catch(err => console.warn("Error al cargar tabla de posiciones:", err));
+        recalcStandings();
+        checkFaseProgression();
+        recalcUserPoints();
+        renderMatches();
+        
+        // Actualizar el valor de puntos en la barra superior
+        const pointsVal = document.getElementById('pass-points-val');
+        if (pointsVal) pointsVal.innerText = state.userPoints;
+        
+        return fetch(`/api/contact/chilechillon/quiniela/leaderboard?email=${emailParam}`).then(res => res.json());
+      })
+      .then(list => {
+        state.leaderboard = list || [];
+        renderLeaderboard();
+      })
+      .catch(err => console.warn("Error en la sincronización en tiempo real:", err));
     }
 
     function getActivePhaseByDate(date) {
@@ -717,28 +788,6 @@
     }
 
     function getEffectiveMatchStatus(match, currentDate) {
-      if (match.status === 'finished') return 'finished';
-      
-      const activePhase = getActivePhaseByDate(currentDate);
-      
-      if (activePhase === 'pre-torneo') return 'upcoming';
-      
-      if (match.phase === 'grupo') {
-        if (activePhase === 'grupo') return match.status;
-        return 'finished';
-      }
-      
-      if (match.phase === 'semifinal') {
-        if (activePhase === 'semifinal') return match.status;
-        if (activePhase === 'grupo' || activePhase === 'pre-torneo') return 'upcoming';
-        return 'finished';
-      }
-      
-      if (match.phase === 'final') {
-        if (activePhase === 'final') return match.status;
-        return 'upcoming';
-      }
-      
       return match.status;
     }
 
@@ -751,6 +800,15 @@
         
         const userVote = state.userVotes[m.id];
         if (!userVote) return;
+        
+        // Regla de empate (draw)
+        const isDraw = m.scoreA !== null && m.scoreB !== null && m.scoreA === m.scoreB;
+        if (isDraw) {
+          if (m.phase === 'grupo') {
+            points += 1;
+          }
+          return;
+        }
         
         const winner = m.scoreA > m.scoreB ? 'A' : (m.scoreB > m.scoreA ? 'B' : null);
         if (winner === null) return;
@@ -796,6 +854,16 @@
         if (m.status !== 'finished') return;
         const vote = userVotes[m.id];
         if (!vote) return;
+        
+        // Regla de empate (draw)
+        const isDraw = m.scoreA !== null && m.scoreB !== null && m.scoreA === m.scoreB;
+        if (isDraw) {
+          if (m.phase === 'grupo') {
+            points += 1;
+          }
+          return;
+        }
+
         const winner = m.scoreA > m.scoreB ? 'A' : (m.scoreB > m.scoreA ? 'B' : null);
         if (winner === null) return;
         if (m.phase === 'grupo') {
@@ -847,7 +915,7 @@
           email: p.email,
           fav: p.fav,
           points: points,
-          isCurrentUser: p.email === state.userEmail
+          isCurrentUser: !!p.is_me
         };
       });
 
@@ -1405,6 +1473,7 @@
 
     // Render Mis Votos / Pase Historial
     function renderMyVotes() {
+      renderLeaderboard();
       const container = document.getElementById('my-votes-container');
       container.innerHTML = '';
 
@@ -1464,16 +1533,54 @@
       });
     }
 
+    function syncMatchToBackend(match) {
+      const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
+      if (isOfflineMode) return Promise.resolve();
+
+      return fetch("/api/contact/chilechillon/quiniela/matches/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: state.userEmail,
+          password: state.adminPassword || "",
+          id: match.id,
+          phase: match.phase,
+          teamA: match.teamA,
+          teamB: match.teamB,
+          scoreA: match.scoreA,
+          scoreB: match.scoreB,
+          status: match.status
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => { throw new Error(err.detail || "Error"); });
+        }
+        return res.json();
+      })
+      .catch(err => {
+        console.error(err);
+        showToast("Error al guardar en servidor: " + err.message);
+      });
+    }
+
     // Activar un partido desde el panel de administración
     function activateMatch(matchId) {
+      let activatedMatch = null;
       state.matches.forEach(m => {
         if (m.id === matchId) {
           m.status = 'active';
+          activatedMatch = m;
         }
       });
       saveState();
       renderAdminPanel();
       showToast("¡Partido Activado! Ya se puede votar.");
+      if (activatedMatch) {
+        syncMatchToBackend(activatedMatch);
+      }
     }
 
     // Simular votos aleatorios para el partido activo
@@ -1502,20 +1609,29 @@
       const match = state.matches.find(m => m.id === matchId);
       if (!match) return;
 
-      // Generar score aleatorio cargado según los votos
-      const total = match.votesA + match.votesB;
-      const ratioA = total > 0 ? match.votesA / total : 0.5;
+      const teamAName = teams[match.teamA] ? teams[match.teamA].name : 'A';
+      const teamBName = teams[match.teamB] ? teams[match.teamB].name : 'B';
       
-      let winner = 'A';
-      if (Math.random() > ratioA) {
-        winner = 'B';
+      const scoreAStr = prompt(`Introduce goles para ${teamAName}:`, "2");
+      if (scoreAStr === null) return; // cancelado
+      const scoreBStr = prompt(`Introduce goles para ${teamBName}:`, "2");
+      if (scoreBStr === null) return; // cancelado
+
+      const scoreA = parseInt(scoreAStr.trim(), 10);
+      const scoreB = parseInt(scoreBStr.trim(), 10);
+
+      if (isNaN(scoreA) || isNaN(scoreB) || scoreA < 0 || scoreB < 0) {
+        alert("Goles inválidos. Deben ser números enteros mayores o iguales a 0.");
+        return;
       }
 
-      let scoreWinner = Math.floor(Math.random() * 3) + 2; // 2, 3, 4 goles
-      let scoreLoser = Math.floor(Math.random() * (scoreWinner)); // menor que el ganador
+      // En semifinales y finales debe haber un ganador
+      if (match.phase !== 'grupo' && scoreA === scoreB) {
+        alert("En semifinales y finales no se permiten empates (debe haber un ganador).");
+        return;
+      }
 
-      const scoreA = winner === 'A' ? scoreWinner : scoreLoser;
-      const scoreB = winner === 'B' ? scoreWinner : scoreLoser;
+      const oldMatches = JSON.parse(JSON.stringify(state.matches));
 
       match.scoreA = scoreA;
       match.scoreB = scoreB;
@@ -1531,7 +1647,16 @@
       saveState();
       renderAdminPanel();
       initUI();
+      renderLeaderboard();
       showToast("¡Partido cerrado exitosamente!");
+
+      // Sincronizar partidos modificados
+      state.matches.forEach((m, idx) => {
+        const oldM = oldMatches[idx];
+        if (oldM.status !== m.status || oldM.scoreA !== m.scoreA || oldM.scoreB !== m.scoreB || oldM.teamA !== m.teamA || oldM.teamB !== m.teamB) {
+          syncMatchToBackend(m);
+        }
+      });
     }
 
     // Recalcular toda la tabla a partir de los partidos cerrados
@@ -1550,6 +1675,8 @@
         const rowA = state.standings.find(r => r.teamId === m.teamA);
         const rowB = state.standings.find(r => r.teamId === m.teamB);
 
+        if (!rowA || !rowB) return;
+
         rowA.pj++;
         rowB.pj++;
 
@@ -1560,13 +1687,20 @@
           
           rowB.p++;
           rowB.form.push('L');
-        } else {
+        } else if (m.scoreB > m.scoreA) {
           rowB.g++;
           rowB.pts += 3;
           rowB.form.push('W');
           
           rowA.p++;
           rowA.form.push('L');
+        } else {
+          // Empate
+          rowA.pts += 1;
+          rowA.form.push('D');
+          
+          rowB.pts += 1;
+          rowB.form.push('D');
         }
       });
     }
@@ -1628,16 +1762,55 @@
     // Reiniciar torneo completo
     function resetTournament() {
       if (!confirm("¿Seguro que deseas reiniciar el torneo? Se perderán las simulaciones y el historial de votos.")) return;
-      state.matches = JSON.parse(JSON.stringify(initialMatches));
-      state.userVotes = {};
-      state.champion = null;
-      state.simulatedDate = null;
-      recalcUserPoints();
-      recalcStandings();
-      saveState();
-      initUI();
-      showTab('misvotos');
-      showToast("¡Torneo reiniciado con éxito!");
+      
+      const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';
+      if (!isOfflineMode) {
+        fetch("/api/contact/chilechillon/quiniela/matches/reset", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: state.userEmail,
+            password: state.adminPassword || ""
+          })
+        })
+        .then(res => {
+          if (!res.ok) {
+            return res.json().then(err => { throw new Error(err.detail || "Error al reiniciar"); });
+          }
+          return res.json();
+        })
+        .then(data => {
+          state.matches = JSON.parse(JSON.stringify(initialMatches));
+          state.userVotes = {};
+          state.champion = null;
+          state.simulatedDate = null;
+          recalcUserPoints();
+          recalcStandings();
+          saveState();
+          initUI();
+          renderLeaderboard();
+          showTab('partidos');
+          showToast("¡Torneo y votos reiniciados en el servidor! 🏆");
+        })
+        .catch(err => {
+          console.error("Error al reiniciar en servidor:", err);
+          showToast("Error al reiniciar en servidor: " + err.message);
+        });
+      } else {
+        state.matches = JSON.parse(JSON.stringify(initialMatches));
+        state.userVotes = {};
+        state.champion = null;
+        state.simulatedDate = null;
+        recalcUserPoints();
+        recalcStandings();
+        saveState();
+        initUI();
+        renderLeaderboard();
+        showTab('partidos');
+        showToast("¡Torneo reiniciado localmente!");
+      }
     }
 
     // Mostrar notificaciones flotantes toast
@@ -1700,6 +1873,27 @@
       if (dateSimulator) {
         dateSimulator.value = state.simulatedDate || 'real';
       }
+
+      // Mostrar pestaña de Admin si el usuario es administrador
+      const tabsContainer = document.getElementById('nav-tabs-container');
+      if (tabsContainer) {
+        let adminTabBtn = Array.from(tabsContainer.querySelectorAll('button')).find(btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('admin'));
+        const isAdmin = state.userEmail && state.userEmail.toLowerCase() === 'efe.creativo@gmail.com';
+        
+        if (isAdmin) {
+          if (!adminTabBtn) {
+            const btn = document.createElement('button');
+            btn.className = "tab px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-800 hover:bg-slate-100/50 transition-all border border-transparent";
+            btn.setAttribute('onclick', "showTab('admin')");
+            btn.innerHTML = "⚙️ Admin";
+            tabsContainer.appendChild(btn);
+          }
+        } else {
+          if (adminTabBtn) {
+            adminTabBtn.remove();
+          }
+        }
+      }
     }
 
     // Guardar predicción desde la barra superior de pase (caso de migración)
@@ -1721,7 +1915,7 @@
       recalcUserPoints();
       initUI();
       // Inicializar tab principal
-      showTab('misvotos');
+      showTab('partidos');
 
       // Sincronizar votos en tiempo real al cargar e iniciar intervalo (si está online)
       const isOfflineMode = !state.userEmail || state.userEmail.includes("dev.invite") || localStorage.getItem('chilechillon-offline-mode') === 'true';

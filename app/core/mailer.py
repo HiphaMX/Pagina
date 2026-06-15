@@ -25,6 +25,7 @@ def generate_contract_pdf(form_data) -> bytes:
     
     pdf.set_font("Helvetica", "", 11)
     pdf.cell(0, 8, text=f"Fecha de aceptacion: {getattr(form_data, 'fecha', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, text=f"Fecha de pago: {getattr(form_data, 'fecha_pago', '') or 'N/A'}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Cliente / Contacto: {form_data.nombre}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Email: {form_data.email}", new_x="LMARGIN", new_y="NEXT")
     pdf.cell(0, 8, text=f"Telefono: {form_data.telefono}", new_x="LMARGIN", new_y="NEXT")
