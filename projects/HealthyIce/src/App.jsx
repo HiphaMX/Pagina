@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight } from 'lucide-react';
+import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail } from 'lucide-react';
 
 const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -11,7 +11,7 @@ const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
 
 const FlavorCard = ({ flavor, idx, onAddToCart }) => {
   const [selectedLine, setSelectedLine] = useState('ProT Fit 0');
-  const price = selectedLine === 'ProT Fit 0' ? 35 : 40;
+  const price = 40;
 
   return (
     <motion.div 
@@ -894,9 +894,12 @@ function App() {
             <a href="https://wa.me/523334996922?text=vi%20sus%20paletas%20en%20su%20p%C3%A1gina%20web%20y%20necesito%20informes" target="_blank" rel="noopener noreferrer" style={{ color: 'white', opacity: 0.8, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.8}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
             </a>
+            <a href="mailto:contacto@healthyice.mx" style={{ color: 'white', opacity: 0.8, transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.8}>
+              <Mail size={24} />
+            </a>
           </div>
           <div style={{ marginBottom: '1.5rem' }}>
-            <a href="mailto:hola@healthyice.mx" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '1.1rem', fontWeight: 600, fontFamily: "'Quicksand', sans-serif" }}>hola@healthyice.mx</a>
+            <a href="mailto:contacto@healthyice.mx" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '1.1rem', fontWeight: 600, fontFamily: "'Quicksand', sans-serif" }}>contacto@healthyice.mx</a>
           </div>
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setLegalModal('privacy')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Aviso de Privacidad</button>
@@ -1125,7 +1128,7 @@ function App() {
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>2. Finalidad del Tratamiento de Datos</h3>
                   <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Los datos que recopilamos (como nombre, correo electrónico y teléfono) serán utilizados exclusivamente para gestionar sus pedidos, responder dudas y comentarios a través de nuestros medios de contacto, y enviarle información relevante sobre nuestros productos, si así lo autoriza.</p>
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>3. Derechos ARCO</h3>
-                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Usted tiene derecho de Acceder, Rectificar y Cancelar sus datos personales, así como de Oponerse al tratamiento de los mismos (Derechos ARCO), enviando un correo a hola@healthyice.mx indicando su solicitud.</p>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Usted tiene derecho de Acceder, Rectificar y Cancelar sus datos personales, así como de Oponerse al tratamiento de los mismos (Derechos ARCO), enviando un correo a contacto@healthyice.mx indicando su solicitud.</p>
                   <p style={{ marginTop: '2rem', fontSize: '0.875rem', color: '#64748b' }}>Última actualización: Mayo 2026</p>
                 </div>
               )}
@@ -1139,7 +1142,7 @@ function App() {
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>2. Pedidos y Precios</h3>
                   <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Todos los pedidos están sujetos a disponibilidad del producto. Los precios mostrados en el sitio web están en pesos mexicanos (MXN) e incluyen impuestos correspondientes, pero no necesariamente los gastos de envío, los cuales se calcularán antes de finalizar la transacción a través de WhatsApp o correo electrónico.</p>
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>3. Políticas de Devolución</h3>
-                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Dado que nuestros productos son alimentos perecederos, no aceptamos devoluciones una vez entregados, salvo en casos de que el producto llegue en mal estado, para lo cual debe notificar a nuestro equipo (hola@healthyice.mx) el mismo día de la recepción con evidencia fotográfica.</p>
+                  <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Dado que nuestros productos son alimentos perecederos, no aceptamos devoluciones una vez entregados, salvo en casos de que el producto llegue en mal estado, para lo cual debe notificar a nuestro equipo (contacto@healthyice.mx) el mismo día de la recepción con evidencia fotográfica.</p>
                   <h3 style={{ fontSize: '1.25rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>4. Zona de Cobertura</h3>
                   <p style={{ marginBottom: '1rem', lineHeight: 1.6 }}>Nuestros servicios de envío y entrega están limitados exclusivamente a la Zona Metropolitana de Guadalajara (ZMG). Pedidos solicitados fuera de esta área de cobertura podrían no ser procesados o estar sujetos a acuerdos especiales de envío.</p>
                   <p style={{ marginTop: '2rem', fontSize: '0.875rem', color: '#64748b' }}>Última actualización: Mayo 2026</p>
