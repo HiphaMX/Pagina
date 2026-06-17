@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail } from 'lucide-react';
+import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail, TrendingUp, Megaphone, Award, Users } from 'lucide-react';
 
 const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -185,6 +185,83 @@ function App() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms' or 'partners'
+
+  // B2B Gym Partners lead form state
+  const [partnerLeadForm, setPartnerLeadForm] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+    gymName: '',
+    activeMembers: 400,
+    city: '',
+    mensaje: ''
+  });
+  const [isPartnerLeadSubmitting, setIsPartnerLeadSubmitting] = useState(false);
+  const [partnerLeadSubmitSuccess, setPartnerLeadSubmitSuccess] = useState(false);
+
+  // Calculator state
+  const [calcMembers, setCalcMembers] = useState(400);
+  const [calcRate, setCalcRate] = useState(0.10); // 0.05, 0.10, or 0.15
+
+  const handlePartnerLeadSubmit = async (e) => {
+    e.preventDefault();
+    setIsPartnerLeadSubmitting(true);
+    
+    const calculatedDaily = Math.round(calcMembers * calcRate);
+    const calculatedMonthly = calculatedDaily * 30;
+    const calculatedMargin = calcRate === 0.05 ? 8.50 : 9.50;
+    const calculatedProfit = calculatedMonthly * calculatedMargin;
+
+    const formattedMessage = `SOLICITUD DE SOCIO COMERCIAL (GIMNASIO)
+Establecimiento: ${partnerLeadForm.gymName}
+Ciudad/Estado: ${partnerLeadForm.city}
+Socios Activos: ${calcMembers}
+Escenario Calculado: ${calcRate * 100}% de compra diaria
+Paletas/Día Estimadas: ${calculatedDaily}
+Volumen Mensual Estimado: ${calculatedMonthly} paletas
+Ganancia Mensual Estimada: $${calculatedProfit.toLocaleString('es-MX')} MXN
+
+Mensaje de Contacto:
+${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
+
+    try {
+      const response = await fetch('https://www.hipha.mx/api/contact/healthyice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: partnerLeadForm.nombre,
+          email: partnerLeadForm.email,
+          telefono: partnerLeadForm.telefono,
+          mensaje: formattedMessage
+        })
+      });
+      
+      if (response.ok) {
+        setPartnerLeadSubmitSuccess(true);
+        setTimeout(() => {
+          setPartnerLeadSubmitSuccess(false);
+          setPartnerLeadForm({
+            nombre: '',
+            email: '',
+            telefono: '',
+            gymName: '',
+            activeMembers: 400,
+            city: '',
+            mensaje: ''
+          });
+        }, 5000);
+      } else {
+        alert('Hubo un error al enviar tus datos. Por favor, intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error al enviar solicitud de socio:', error);
+      alert('Hubo un problema de conexión. Por favor revisa tu internet e intenta de nuevo.');
+    } finally {
+      setIsPartnerLeadSubmitting(false);
+    }
+  };
 
   // Partners contract form state
   const [partnerForm, setPartnerForm] = useState({
@@ -578,6 +655,7 @@ function App() {
             <a href="#void-fall" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>¿Por qué HealthyIce?</a>
             <a href="#lineas" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Nuestras Opciones</a>
             <a href="#sabores" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Sabores</a>
+            <a href="#hazte-socio" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Hazte Socio</a>
           </div>
           <button onClick={() => setIsModalOpen(true)} className="btn btn-primary nav-cta-btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px', zIndex: 60 }}>
             Hacer mi pedido
@@ -863,7 +941,348 @@ function App() {
           </div>
         </div>
       </section>
-      
+
+      {/* Hazte Socio Section */}
+      <section id="hazte-socio" className="section" style={{ background: '#020617', color: 'white', position: 'relative', overflow: 'hidden', borderTop: '1px solid rgba(255, 255, 255, 0.05)', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+        {/* Futuristic Background grid & lights */}
+        <div className="hero-grid-bg" style={{ opacity: 0.1, backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1.5px, transparent 1.5px)' }}></div>
+        <div style={{ position: 'absolute', top: '20%', left: '10%', width: '400px', height: '400px', background: '#98BC3C', opacity: 0.05, borderRadius: '50%', filter: 'blur(100px)' }}></div>
+        <div style={{ position: 'absolute', bottom: '20%', right: '10%', width: '400px', height: '400px', background: '#00e5ff', opacity: 0.05, borderRadius: '50%', filter: 'blur(100px)' }}></div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <span style={{ fontSize: '0.875rem', fontFamily: 'monospace', color: '#98BC3C', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'inline-block', marginBottom: '1rem', background: 'rgba(152, 188, 60, 0.1)', padding: '0.5rem 1rem', borderRadius: '999px', border: '1px solid rgba(152, 188, 60, 0.2)' }}>
+              [ PROGRAMA DE SOCIOS B2B ]
+            </span>
+            <h2 style={{ fontSize: 'clamp(2.25rem, 4vw, 3.5rem)', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, color: 'white', marginBottom: '1.25rem', letterSpacing: '-1px' }}>
+              Distribuye <span style={{ color: '#98BC3C' }}>HealthyIce</span> en tu Gimnasio
+            </h2>
+            <p style={{ fontSize: '1.2rem', color: '#94a3b8', maxWidth: '800px', margin: '0 auto', lineHeight: 1.6 }}>
+              Conviértete en socio comercial y aumenta tus ingresos de forma orgánica ofreciendo a tus miembros el snack de proteína post-entrenamiento número uno.
+            </p>
+          </div>
+
+          {/* Intro block with 2 columns */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem', marginBottom: '5rem' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.02)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)' }}>
+              <div style={{ background: 'rgba(152, 188, 60, 0.1)', border: '1px solid rgba(152, 188, 60, 0.3)', width: '48px', height: '48px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <HeartPulse color="#98BC3C" size={24} />
+              </div>
+              <h3 style={{ fontSize: '1.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: 'white', marginBottom: '1rem' }}>No solo es una paleta, es Proteína</h3>
+              <p style={{ color: '#94a3b8', fontSize: '1.05rem', lineHeight: 1.6 }}>
+                Redefinimos el concepto de recuperación post-entrenamiento. Ofrecemos una alternativa deliciosa, refrescante y altamente nutritiva formulada especialmente para el consumidor fitness. Una solución práctica para tus socios, lista para consumir, que se integra perfectamente a su estilo de vida dinámico sin comprometer sus objetivos.
+              </p>
+            </div>
+
+            <div style={{ background: 'rgba(255, 255, 255, 0.02)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '24px', padding: '2.5rem', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)' }}>
+              <div style={{ background: 'rgba(0, 229, 255, 0.1)', border: '1px solid rgba(0, 229, 255, 0.3)', width: '48px', height: '48px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <Users color="#00e5ff" size={24} />
+              </div>
+              <h3 style={{ fontSize: '1.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: 'white', marginBottom: '1rem' }}>Tu base de socios cautiva</h3>
+              <p style={{ color: '#94a3b8', fontSize: '1.05rem', lineHeight: 1.6 }}>
+                Tus socios ya están comprometidos con su bienestar y consumen activamente suplementos o snacks saludables con frecuencia. Ellos buscan de forma constante opciones saludables para alimentarse mejor, productos prácticos que se adapten a su ritmo de vida y variedad que no interfiera con sus metas corporales. Nosotros te ayudamos a capitalizarlos de manera orgánica y sin fricción de venta.
+              </p>
+            </div>
+          </div>
+
+          {/* Calculator and Form Row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', marginBottom: '5rem', alignItems: 'start' }}>
+            
+            {/* Interactive Calculator Card */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: 'white', marginBottom: '0.5rem' }}>Calculadora de Ganancias</h3>
+              <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '2rem' }}>
+                Ajusta los parámetros para ver una estimación del beneficio mensual de tu gimnasio.
+              </p>
+
+              {/* Members Slider */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <label style={{ fontSize: '1rem', fontWeight: 600, color: '#e2e8f0' }}>Socios Activos:</label>
+                  <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#98BC3C', fontFamily: "'Quicksand', sans-serif", background: 'rgba(152, 188, 60, 0.1)', padding: '0.25rem 1rem', borderRadius: '12px', border: '1px solid rgba(152, 188, 60, 0.2)' }}>
+                    {calcMembers}
+                  </span>
+                </div>
+                <input 
+                  type="range" 
+                  min="50" 
+                  max="1000" 
+                  step="10"
+                  value={calcMembers} 
+                  onChange={e => setCalcMembers(parseInt(e.target.value))}
+                  style={{ 
+                    width: '100%', 
+                    height: '8px', 
+                    borderRadius: '999px', 
+                    background: 'rgba(255,255,255,0.1)', 
+                    outline: 'none', 
+                    cursor: 'pointer', 
+                    accentColor: '#98BC3C'
+                  }} 
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>
+                  <span>50</span>
+                  <span>500</span>
+                  <span>1000+</span>
+                </div>
+              </div>
+
+              {/* Purchase Rate Cards */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <label style={{ display: 'block', fontSize: '1rem', fontWeight: 600, color: '#e2e8f0', marginBottom: '1rem' }}>
+                  Escenario de Compra Diaria:
+                </label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {[
+                    { rate: 0.05, label: '5% (Conservador)', desc: 'Venta de 5 paletas por cada 100 socios activos', margin: 8.50 },
+                    { rate: 0.10, label: '10% (Moderado)', desc: 'Venta de 10 paletas por cada 100 socios activos', margin: 9.50 },
+                    { rate: 0.15, label: '15% (Optimista)', desc: 'Venta de 15 paletas por cada 100 socios activos', margin: 9.50 }
+                  ].map((item) => (
+                    <button
+                      key={item.rate}
+                      type="button"
+                      onClick={() => setCalcRate(item.rate)}
+                      style={{
+                        textAlign: 'left',
+                        padding: '1rem',
+                        borderRadius: '16px',
+                        border: calcRate === item.rate ? '2px solid #98BC3C' : '1px solid rgba(255, 255, 255, 0.08)',
+                        background: calcRate === item.rate ? 'rgba(152, 188, 60, 0.08)' : 'rgba(255, 255, 255, 0.01)',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        width: '100%'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                        <span style={{ fontWeight: 700, color: calcRate === item.rate ? '#98BC3C' : '#e2e8f0', fontSize: '1rem' }}>{item.label}</span>
+                        <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600 }}>Margen: ${item.margin.toFixed(2)} / u</span>
+                      </div>
+                      <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>{item.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Calculator Output Displays */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '20px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.75rem' }}>
+                  <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Venta diaria promedio:</span>
+                  <span style={{ fontWeight: 700, color: 'white' }}>{Math.round(calcMembers * calcRate)} paletas / día</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                  <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Volumen mensual (30 días):</span>
+                  <span style={{ fontWeight: 700, color: 'white', background: 'rgba(255,255,255,0.05)', padding: '0.1rem 0.5rem', borderRadius: '6px' }}>{Math.round(calcMembers * calcRate) * 30} paletas</span>
+                </div>
+                
+                {/* Projected Profit Glowing Box */}
+                <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(152, 188, 60, 0.15) 0%, rgba(0, 229, 255, 0.05) 100%)', border: '1px solid rgba(152, 188, 60, 0.3)', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 0 20px rgba(152, 188, 60, 0.15)' }}>
+                  <span style={{ display: 'block', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#98BC3C', fontWeight: 700, marginBottom: '0.5rem' }}>
+                    GANANCIA ESTIMADA MENSUAL
+                  </span>
+                  <h4 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'white', letterSpacing: '-1px', margin: 0, fontFamily: "'Quicksand', sans-serif" }}>
+                    ${(Math.round(calcMembers * calcRate) * 30 * (calcRate === 0.05 ? 8.50 : 9.50)).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span style={{ fontSize: '1rem', fontWeight: 600, color: '#94a3b8' }}>MXN</span>
+                  </h4>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>
+                    *Precio de venta sugerido por paleta: $40 MXN
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* B2B Lead Form Card */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+              <h3 style={{ fontSize: '1.8rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: 'white', marginBottom: '0.5rem' }}>Comienza a distribuir</h3>
+              <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '2rem' }}>
+                Completa tus datos y un ejecutivo comercial se pondrá en contacto para presentarte la propuesta formal.
+              </p>
+
+              {partnerLeadSubmitSuccess ? (
+                <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#98BC3C' }}>
+                  <div style={{ background: 'rgba(152, 188, 60, 0.1)', border: '1px solid rgba(152, 188, 60, 0.3)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+                    <ShieldCheck size={36} color="#98BC3C" />
+                  </div>
+                  <h4 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white', marginBottom: '0.75rem', fontFamily: "'Quicksand', sans-serif" }}>¡Solicitud Enviada!</h4>
+                  <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.5 }}>
+                    Hemos recibido tus datos correctamente. Nuestro equipo comercial analizará la información de tu gimnasio y te contactará a la brevedad.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handlePartnerLeadSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Tu Nombre</label>
+                      <input 
+                        type="text" 
+                        required 
+                        placeholder="Nombre completo"
+                        value={partnerLeadForm.nombre}
+                        onChange={e => setPartnerLeadForm({...partnerLeadForm, nombre: e.target.value})}
+                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Nombre del Gimnasio</label>
+                      <input 
+                        type="text" 
+                        required 
+                        placeholder="Ej. Muscle Gym"
+                        value={partnerLeadForm.gymName}
+                        onChange={e => setPartnerLeadForm({...partnerLeadForm, gymName: e.target.value})}
+                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Correo de Contacto</label>
+                      <input 
+                        type="email" 
+                        required 
+                        placeholder="ejemplo@gym.com"
+                        value={partnerLeadForm.email}
+                        onChange={e => setPartnerLeadForm({...partnerLeadForm, email: e.target.value})}
+                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Teléfono / WhatsApp</label>
+                      <input 
+                        type="tel" 
+                        required 
+                        placeholder="10 dígitos"
+                        value={partnerLeadForm.telefono}
+                        onChange={e => setPartnerLeadForm({...partnerLeadForm, telefono: e.target.value})}
+                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Ciudad y Estado</label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="Ej. Guadalajara, Jalisco"
+                      value={partnerLeadForm.city}
+                      onChange={e => setPartnerLeadForm({...partnerLeadForm, city: e.target.value})}
+                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Mensaje o Comentarios (Opcional)</label>
+                    <textarea 
+                      rows="3" 
+                      placeholder="Dinos tu horario de contacto preferido o dudas específicas..."
+                      value={partnerLeadForm.mensaje}
+                      onChange={e => setPartnerLeadForm({...partnerLeadForm, mensaje: e.target.value})}
+                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem', resize: 'none' }} 
+                    />
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    disabled={isPartnerLeadSubmitting}
+                    style={{ 
+                      width: '100%', 
+                      padding: '1.125rem', 
+                      borderRadius: '999px', 
+                      background: 'linear-gradient(135deg, #98BC3C 0%, #7ca12b 100%)', 
+                      color: 'white', 
+                      border: 'none', 
+                      fontSize: '1.1rem', 
+                      fontFamily: "'Quicksand', sans-serif", 
+                      fontWeight: 700, 
+                      cursor: 'pointer', 
+                      boxShadow: '0 8px 24px rgba(152, 188, 60, 0.3)',
+                      transition: 'all 0.3s ease',
+                      opacity: isPartnerLeadSubmitting ? 0.7 : 1,
+                      marginTop: '0.5rem'
+                    }}
+                    onMouseEnter={e => {
+                      if (!isPartnerLeadSubmitting) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 12px 30px rgba(152, 188, 60, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(152, 188, 60, 0.3)';
+                    }}
+                  >
+                    {isPartnerLeadSubmitting ? 'Enviando solicitud...' : 'Enviar Solicitud B2B'}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+
+          {/* Benefits Grid */}
+          <div>
+            <h3 style={{ fontSize: '2rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, textAlign: 'center', color: 'white', marginBottom: '3rem' }}>
+              Beneficios de ser Socio <span style={{ color: '#98BC3C' }}>HealthyIce</span>
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+              {[
+                {
+                  icon: <ShieldCheck size={28} color="#98BC3C" />,
+                  title: 'Sin inversión en desarrollo',
+                  desc: 'Obtén de manera inmediata un snack formulado con la más alta tecnología alimentaria y listo para su distribución.'
+                },
+                {
+                  icon: <Activity size={28} color="#98BC3C" />,
+                  title: 'Producto de alta rotación',
+                  desc: 'Los snacks congelados ricos en proteína representan una de las categorías de mayor crecimiento y consumo recurrente en centros deportivos.'
+                },
+                {
+                  icon: <TrendingUp size={28} color="#98BC3C" />,
+                  title: 'Margen de ganancia creciente',
+                  desc: 'Maximiza el retorno de flujo de efectivo al coordinarse directamente con los niveles escalonados de compra de tu gimnasio.'
+                },
+                {
+                  icon: <Megaphone size={28} color="#98BC3C" />,
+                  title: 'Apoyo promocional continuo',
+                  desc: 'Facilitamos material visual y activaciones de marca directo en tu sucursal para detonar el interés de tus socios desde el primer día.'
+                },
+                {
+                  icon: <Award size={28} color="#98BC3C" />,
+                  title: 'Efecto KD (Recomendado)',
+                  desc: 'Contamos con el apoyo y recomendación de Kevin Dino "Mr. México juvenil absoluto 2026", quien visitará periódicamente las sucursales de los socios.'
+                }
+              ].map((benefit, idx) => (
+                <motion.div 
+                  key={idx}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    borderRadius: '20px',
+                    padding: '2rem',
+                    boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  whileHover={{ 
+                    scale: 1.03, 
+                    background: 'rgba(255, 255, 255, 0.04)', 
+                    borderColor: 'rgba(152, 188, 60, 0.2)',
+                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.2)' 
+                  }}
+                >
+                  <div style={{ marginBottom: '1.25rem', background: 'rgba(255, 255, 255, 0.03)', width: '52px', height: '52px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {benefit.icon}
+                  </div>
+                  <h4 style={{ fontSize: '1.2rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: 'white', marginBottom: '0.75rem' }}>{benefit.title}</h4>
+                  <p style={{ color: '#94a3b8', fontSize: '0.925rem', lineHeight: 1.5, margin: 0 }}>{benefit.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section" style={{ position: 'relative', overflow: 'hidden', background: '#f8fafc' }}>
         <div className="hero-grid-bg"></div>
