@@ -80,7 +80,7 @@ const FlavorCard = ({ flavor, idx, onPedir }) => {
         className="btn btn-primary"
         style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
       >
-        Pedir ahora
+        Hacer mi pedido
       </button>
     </motion.div>
   );
@@ -180,88 +180,23 @@ function App() {
   const dragConstraintsRef = useRef(null);
   const [hoveredPopsicle, setHoveredPopsicle] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '', mensaje: '' });
+  const [formData, setFormData] = useState({ 
+    nombre: '', 
+    email: '', 
+    telefono: '', 
+    opcionInteres: 'ProT Fit 0', 
+    producto: '', 
+    mensaje: '' 
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms' or 'partners'
 
-  // B2B Gym Partners lead form state
-  const [partnerLeadForm, setPartnerLeadForm] = useState({
-    nombre: '',
-    email: '',
-    telefono: '',
-    gymName: '',
-    activeMembers: 400,
-    city: '',
-    mensaje: ''
-  });
-  const [isPartnerLeadSubmitting, setIsPartnerLeadSubmitting] = useState(false);
-  const [partnerLeadSubmitSuccess, setPartnerLeadSubmitSuccess] = useState(false);
-
   // Calculator state
   const [calcMembers, setCalcMembers] = useState(400);
   const [calcRate, setCalcRate] = useState(0.10); // 0.05, 0.10, or 0.15
 
-  const handlePartnerLeadSubmit = async (e) => {
-    e.preventDefault();
-    setIsPartnerLeadSubmitting(true);
-    
-    const calculatedDaily = Math.round(calcMembers * calcRate);
-    const calculatedMonthly = calculatedDaily * 30;
-    const calculatedMargin = calcRate === 0.05 ? 8.50 : 9.50;
-    const calculatedProfit = calculatedMonthly * calculatedMargin;
-
-    const formattedMessage = `SOLICITUD DE SOCIO COMERCIAL (GIMNASIO)
-Establecimiento: ${partnerLeadForm.gymName}
-Ciudad/Estado: ${partnerLeadForm.city}
-Socios Activos: ${calcMembers}
-Escenario Calculado: ${calcRate * 100}% de compra diaria
-Paletas/Día Estimadas: ${calculatedDaily}
-Volumen Mensual Estimado: ${calculatedMonthly} paletas
-Ganancia Mensual Estimada: $${calculatedProfit.toLocaleString('es-MX')} MXN
-
-Mensaje de Contacto:
-${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
-
-    try {
-      const response = await fetch('https://www.hipha.mx/api/contact/healthyice', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nombre: partnerLeadForm.nombre,
-          email: partnerLeadForm.email,
-          telefono: partnerLeadForm.telefono,
-          mensaje: formattedMessage
-        })
-      });
-      
-      if (response.ok) {
-        setPartnerLeadSubmitSuccess(true);
-        setTimeout(() => {
-          setPartnerLeadSubmitSuccess(false);
-          setPartnerLeadForm({
-            nombre: '',
-            email: '',
-            telefono: '',
-            gymName: '',
-            activeMembers: 400,
-            city: '',
-            mensaje: ''
-          });
-        }, 5000);
-      } else {
-        alert('Hubo un error al enviar tus datos. Por favor, intenta de nuevo.');
-      }
-    } catch (error) {
-      console.error('Error al enviar solicitud de socio:', error);
-      alert('Hubo un problema de conexión. Por favor revisa tu internet e intenta de nuevo.');
-    } finally {
-      setIsPartnerLeadSubmitting(false);
-    }
-  };
 
   // Partners contract form state
   const [partnerForm, setPartnerForm] = useState({
@@ -483,10 +418,33 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
   };
 
   const handleFlavorOrder = (flavor, line) => {
-    setFormData(prev => ({
-      ...prev,
-      mensaje: `Me interesa la paleta sabor ${flavor.name} (${line}).`
-    }));
+    setFormData({
+      nombre: '',
+      email: '',
+      telefono: '',
+      opcionInteres: line,
+      producto: `Paleta sabor ${flavor.name}`,
+      mensaje: ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleB2BOrder = () => {
+    const calculatedDaily = Math.round(calcMembers * calcRate);
+    const calculatedMonthly = calculatedDaily * 30;
+    const calculatedMargin = calcRate === 0.05 ? 8.50 : 9.50;
+    const calculatedProfit = calculatedMonthly * calculatedMargin;
+
+    const b2bDetails = `Distribución B2B (Gimnasio):\n- Socios Activos: ${calcMembers}\n- Escenario de Compra Diaria: ${calcRate * 100}%\n- Volumen Mensual Estimado: ${calculatedMonthly} paletas\n- Ganancia Mensual Estimada: $${calculatedProfit.toLocaleString('es-MX')} MXN`;
+
+    setFormData({
+      nombre: '',
+      email: '',
+      telefono: '',
+      opcionInteres: 'Distribuir en Gimnasio (B2B)',
+      producto: '',
+      mensaje: b2bDetails
+    });
     setIsModalOpen(true);
   };
 
@@ -509,20 +467,34 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    const fullMessage = [
+      formData.opcionInteres ? `Opción de Interés: ${formData.opcionInteres}` : '',
+      formData.producto ? `Producto: ${formData.producto}` : '',
+      formData.mensaje ? `Detalles / Mensaje:\n${formData.mensaje}` : ''
+    ].filter(Boolean).join('\n\n');
+
+    const payload = {
+      nombre: formData.nombre,
+      email: formData.email,
+      telefono: formData.telefono,
+      mensaje: fullMessage
+    };
+
     try {
       const response = await fetch('https://www.hipha.mx/api/contact/healthyice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
       if (response.ok) {
         setSubmitSuccess(true);
         setTimeout(() => {
           setIsModalOpen(false);
           setSubmitSuccess(false);
-          setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
+          setFormData({ nombre: '', email: '', telefono: '', opcionInteres: 'ProT Fit 0', producto: '', mensaje: '' });
         }, 3000);
       } else {
         alert('Hubo un error al enviar tus datos. Por favor, intenta de nuevo.');
@@ -1087,130 +1059,59 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
               </div>
             </div>
 
-            {/* B2B Lead Form Card */}
-            <div style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Distribuye HealthyIce</h3>
-              <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '2rem' }}>
-                Completa tus datos y un ejecutivo comercial se pondrá en contacto para presentarte la propuesta formal.
-              </p>
-
-              {partnerLeadSubmitSuccess ? (
-                <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#00e5ff' }}>
-                  <div style={{ background: 'rgba(0, 229, 255, 0.1)', border: '1px solid rgba(0, 229, 255, 0.3)', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
-                    <ShieldCheck size={36} color="#00e5ff" />
-                  </div>
-                  <h4 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white', marginBottom: '0.75rem' }}>¡Solicitud Enviada!</h4>
-                  <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.5 }}>
-                    Hemos recibido tus datos correctamente. Nuestro equipo comercial analizará la información de tu gimnasio y te contactará a la brevedad.
-                  </p>
+            {/* B2B Lead CTA Card */}
+            <div style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+              <div>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginBottom: '1rem', textTransform: 'uppercase', fontFamily: "'Outfit', sans-serif" }}>Distribuye HealthyIce</h3>
+                <p style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+                  Conviértete en socio comercial y aumenta tus ingresos de forma orgánica. Al unirte, tendrás acceso a precios especiales de distribuidor, apoyo en marketing, material de punto de venta y más.
+                </p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2.5rem' }}>
+                  {[
+                    'Margen de ganancia de hasta 24% por paleta.',
+                    'Equipo de congelación sin costo de arrendamiento.',
+                    'Activación y promoción de marca en tu gimnasio.'
+                  ].map((benefit, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ minWidth: '8px', height: '8px', borderRadius: '50%', background: '#00e5ff' }} />
+                      <span style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>{benefit}</span>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <form onSubmit={handlePartnerLeadSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Tu Nombre</label>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="Nombre completo"
-                        value={partnerLeadForm.nombre}
-                        onChange={e => setPartnerLeadForm({...partnerLeadForm, nombre: e.target.value})}
-                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Nombre del Gimnasio</label>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="Ej. Muscle Gym"
-                        value={partnerLeadForm.gymName}
-                        onChange={e => setPartnerLeadForm({...partnerLeadForm, gymName: e.target.value})}
-                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
-                      />
-                    </div>
-                  </div>
+              </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Correo de Contacto</label>
-                      <input 
-                        type="email" 
-                        required 
-                        placeholder="ejemplo@gym.com"
-                        value={partnerLeadForm.email}
-                        onChange={e => setPartnerLeadForm({...partnerLeadForm, email: e.target.value})}
-                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Teléfono / WhatsApp</label>
-                      <input 
-                        type="tel" 
-                        required 
-                        placeholder="10 dígitos"
-                        value={partnerLeadForm.telefono}
-                        onChange={e => setPartnerLeadForm({...partnerLeadForm, telefono: e.target.value})}
-                        style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Ciudad y Estado</label>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder="Ej. Guadalajara, Jalisco"
-                      value={partnerLeadForm.city}
-                      onChange={e => setPartnerLeadForm({...partnerLeadForm, city: e.target.value})}
-                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem' }} 
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Mensaje o Comentarios (Opcional)</label>
-                    <textarea 
-                      rows="3" 
-                      value={partnerLeadForm.mensaje}
-                      onChange={e => setPartnerLeadForm({...partnerLeadForm, mensaje: e.target.value})}
-                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem', resize: 'none' }} 
-                    />
-                  </div>
-
-                  <button 
-                    type="submit" 
-                    disabled={isPartnerLeadSubmitting}
-                    style={{ 
-                      width: '100%', 
-                      padding: '1.125rem', 
-                      borderRadius: '999px', 
-                      background: 'linear-gradient(135deg, #0077ff 0%, #00e5ff 100%)', 
-                      color: 'white', 
-                      border: 'none', 
-                      fontSize: '1.1rem', 
-                      fontWeight: 700, 
-                      cursor: 'pointer', 
-                      boxShadow: '0 8px 24px rgba(0, 119, 255, 0.3)',
-                      transition: 'all 0.3s ease',
-                      opacity: isPartnerLeadSubmitting ? 0.7 : 1,
-                      marginTop: '0.5rem'
-                    }}
-                    onMouseEnter={e => {
-                      if (!isPartnerLeadSubmitting) {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 119, 255, 0.4)';
-                      }
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 119, 255, 0.3)';
-                    }}
-                  >
-                    {isPartnerLeadSubmitting ? 'Enviando solicitud...' : 'Enviar solicitud'}
-                  </button>
-                </form>
-              )}
+              <button 
+                onClick={handleB2BOrder}
+                className="btn"
+                style={{ 
+                  width: '100%', 
+                  padding: '1.25rem', 
+                  borderRadius: '999px', 
+                  background: 'linear-gradient(135deg, #0077ff 0%, #00e5ff 100%)', 
+                  color: 'white', 
+                  border: 'none', 
+                  fontSize: '1.125rem', 
+                  fontWeight: 700, 
+                  cursor: 'pointer', 
+                  boxShadow: '0 8px 24px rgba(0, 119, 255, 0.3)',
+                  transition: 'all 0.3s ease',
+                  fontFamily: "'Quicksand', sans-serif",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 119, 255, 0.5)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 119, 255, 0.3)';
+                }}
+              >
+                Hacer mi pedido
+              </button>
             </div>
           </div>
         </div>
@@ -1397,20 +1298,44 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
                       <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
                       <input type="tel" required value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
                     </div>
+                    
+                    {formData.producto && (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0, 229, 255, 0.08)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '0.75rem 1rem', borderRadius: '12px', marginTop: '0.25rem' }}>
+                        <span style={{ fontSize: '0.9rem', color: '#101729', fontWeight: 600 }}>
+                          Sabor seleccionado: <strong style={{ color: '#0077ff' }}>{formData.producto}</strong>
+                        </span>
+                        <button 
+                          type="button" 
+                          onClick={() => setFormData(prev => ({ ...prev, producto: '' }))} 
+                          style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.95rem', fontWeight: 700 }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+
                     <div>
                       <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Opción de Interés</label>
-                      <select onChange={e => setFormData({...formData, mensaje: `Opción de interés: ${e.target.value}\n\n${formData.mensaje.split('Opción de interés:')[0]}`})} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', background: 'white' }}>
+                      <select 
+                        value={formData.opcionInteres}
+                        onChange={e => setFormData({...formData, opcionInteres: e.target.value})} 
+                        style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', background: 'white' }}
+                      >
                         <option value="ProT Fit 0">ProT Fit 0</option>
                         <option value="ProT Light">ProT Light</option>
                         <option value="Ambas">Ambas</option>
+                        <option value="Distribuir en Gimnasio (B2B)">Distribuir en Gimnasio (B2B)</option>
                       </select>
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Mensaje Personalizado</label>
-                      <textarea rows="3" value={formData.mensaje.split('\n\n').pop()} onChange={e => {
-                        const baseMsg = formData.mensaje.includes('Opción de interés:') ? formData.mensaje.split('\n\n')[0] + '\n\n' : '';
-                        setFormData({...formData, mensaje: baseMsg + e.target.value});
-                      }} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', resize: 'none' }} placeholder="Escribe aquí tu duda o comentario..."></textarea>
+                      <textarea 
+                        rows="4" 
+                        value={formData.mensaje} 
+                        onChange={e => setFormData({...formData, mensaje: e.target.value})} 
+                        style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', resize: 'none' }} 
+                        placeholder="Escribe aquí tus dudas, comentarios o detalles del pedido..."
+                      />
                     </div>
                     <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: '100%', padding: '1.25rem', marginTop: '0.5rem', fontSize: '1.125rem', borderRadius: '9999px', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, opacity: isSubmitting ? 0.7 : 1 }}>
                       {isSubmitting ? 'Enviando...' : 'Hacer mi pedido'}
