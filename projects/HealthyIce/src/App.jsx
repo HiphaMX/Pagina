@@ -952,7 +952,7 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h2 style={{ fontSize: 'clamp(2.25rem, 4vw, 3.5rem)', fontWeight: 800, color: 'white', marginBottom: '1.25rem', letterSpacing: '-1px', textTransform: 'uppercase' }}>
-              Distribuye <span style={{ color: '#00e5ff' }}>HealthyIce</span> en tu Gimnasio
+              <span style={{ color: '#00e5ff' }}>HealthyIce</span> en tu Gimnasio
             </h2>
             <p style={{ fontSize: '1.125rem', color: '#94a3b8', maxWidth: '800px', margin: '0 auto', lineHeight: 1.6 }}>
               Conviértete en socio comercial y aumenta tus ingresos de forma orgánica ofreciendo a tus miembros el snack de proteína post-entrenamiento número uno.
@@ -1065,7 +1065,7 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
 
             {/* B2B Lead Form Card */}
             <div style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '32px', padding: '2.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Comienza a distribuir</h3>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Distribuye HealthyIce</h3>
               <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginBottom: '2rem' }}>
                 Completa tus datos y un ejecutivo comercial se pondrá en contacto para presentarte la propuesta formal.
               </p>
@@ -1148,7 +1148,6 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.5rem' }}>Mensaje o Comentarios (Opcional)</label>
                     <textarea 
                       rows="3" 
-                      placeholder="Dinos tu horario de contacto preferido o dudas específicas..."
                       value={partnerLeadForm.mensaje}
                       onChange={e => setPartnerLeadForm({...partnerLeadForm, mensaje: e.target.value})}
                       style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none', fontSize: '0.95rem', resize: 'none' }} 
@@ -1184,7 +1183,7 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
                       e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 119, 255, 0.3)';
                     }}
                   >
-                    {isPartnerLeadSubmitting ? 'Enviando solicitud...' : 'Enviar Solicitud B2B'}
+                    {isPartnerLeadSubmitting ? 'Enviando solicitud...' : 'Enviar solicitud'}
                   </button>
                 </form>
               )}
