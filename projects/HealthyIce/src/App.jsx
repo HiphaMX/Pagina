@@ -455,7 +455,8 @@ function App() {
     { name: "Chocolate", color: "#5c4033", image: "/paleta_chocolate.png" },
     { name: "Café", color: "#8c6239", image: "/paleta_cafe.png" },
     { name: "Vainilla", color: "#f3e5ab", image: "/paleta_vainilla.png" },
-    { name: "Cookies & Cream", color: "#475569", image: "/paleta_cookies_cream.png" }
+    { name: "Cookies & Cream", color: "#475569", image: "/paleta_cookies_cream.png" },
+    { name: "Rol de Canela", color: "#b87d4b", image: "/Paleta_roldecanela.png" }
   ];
 
   const heroPopsiclesData = isMobile ? [
@@ -731,7 +732,8 @@ function App() {
           { name: "Chocolate", image: "/paleta_chocolate.png", fullImage: "/paleta_chocolate_full.png", highlight: "Alta en Proteína", desc: "Tu mejor aliado para la recuperación muscular." },
           { name: "Café", image: "/paleta_cafe.png", fullImage: "/paleta_cafe_full.png", highlight: "Sin Sellos", desc: "Cumplimiento total con la NOM-051." },
           { name: "Vainilla", image: "/paleta_vainilla.png", fullImage: "/paleta_vainilla_full.png", highlight: "Ingredientes Naturales", desc: "Calidad pura, formulada desde el origen." },
-          { name: "Cookies & Cream", image: "/paleta_cookies_cream.png", fullImage: "/paleta_cookies_cream_full.png", highlight: "No es solo un snack", desc: "Es nutrición para tus músculos" }
+          { name: "Cookies & Cream", image: "/paleta_cookies_cream.png", fullImage: "/paleta_cookies_cream_full.png", highlight: "No es solo un snack", desc: "Es nutrición para tus músculos" },
+          { name: "Rol de Canela", image: "/Paleta_roldecanela.png", fullImage: "/Paleta_roldecanelafull.png", highlight: "Sabor Irresistible", desc: "La perfecta armonía del rol de canela en una versión saludable." }
         ].map((item, idx) => (
           <div key={idx} className="void-fall-item" style={{ minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1, padding: '4rem 0' }}>
             <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: idx % 2 === 0 ? 'flex-start' : 'flex-end', width: '100%', position: 'relative' }}>
