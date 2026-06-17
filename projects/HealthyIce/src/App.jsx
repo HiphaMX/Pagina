@@ -1189,68 +1189,70 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
               )}
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Benefits Grid */}
-          <div>
-            <h3 style={{ fontSize: '2rem', fontWeight: 800, textAlign: 'center', color: 'white', marginBottom: '3rem', textTransform: 'uppercase' }}>
-              Beneficios de ser Socio <span style={{ color: '#00e5ff' }}>HealthyIce</span>
-            </h3>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-              {[
-                {
-                  icon: <ShieldCheck size={28} color="#00e5ff" />,
-                  title: 'Sin inversión en desarrollo',
-                  desc: 'Obtén de manera inmediata un snack formulado con la más alta tecnología alimentaria y listo para su distribución.'
-                },
-                {
-                  icon: <Activity size={28} color="#00e5ff" />,
-                  title: 'Producto de alta rotación',
-                  desc: 'Los snacks congelados ricos en proteína representan una de las categorías de mayor crecimiento y consumo recurrente en centros deportivos.'
-                },
-                {
-                  icon: <TrendingUp size={28} color="#00e5ff" />,
-                  title: 'Margen de ganancia creciente',
-                  desc: 'Maximiza el retorno de flujo de efectivo al coordinarse directamente con los niveles escalonados de compra de tu gimnasio.'
-                },
-                {
-                  icon: <Megaphone size={28} color="#00e5ff" />,
-                  title: 'Apoyo promocional continuo',
-                  desc: 'Facilitamos material visual y activaciones de marca directo en tu sucursal para detonar el interés de tus socios desde el primer día.'
-                },
-                {
-                  icon: <Award size={28} color="#00e5ff" />,
-                  title: 'Efecto KD (Recomendado)',
-                  desc: 'Contamos con el apoyo y recomendación de Kevin Dino "Mr. México juvenil absoluto 2026", quien visitará periódicamente las sucursales de los socios.'
-                }
-              ].map((benefit, idx) => (
-                <motion.div 
-                  key={idx}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)',
-                    borderRadius: '20px',
-                    padding: '2rem',
-                    boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  whileHover={{ 
-                    scale: 1.03, 
-                    background: 'rgba(255, 255, 255, 0.04)', 
-                    borderColor: 'rgba(0, 229, 255, 0.2)',
-                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.2)' 
-                  }}
-                >
-                  <div style={{ marginBottom: '1.25rem', background: 'rgba(255, 255, 255, 0.03)', width: '52px', height: '52px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {benefit.icon}
-                  </div>
-                  <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', marginBottom: '0.75rem' }}>{benefit.title}</h4>
-                  <p style={{ color: '#94a3b8', fontSize: '0.925rem', lineHeight: 1.5, margin: 0 }}>{benefit.desc}</p>
-                </motion.div>
-              ))}
-            </div>
+      {/* Beneficios Section */}
+      <section className="section" style={{ background: 'var(--bg-color)', borderBottom: '1px solid rgba(0, 0, 0, 0.05)' }}>
+        <div className="container">
+          <h3 style={{ fontSize: '2.5rem', fontWeight: 800, textAlign: 'center', color: '#101729', marginBottom: '4rem', textTransform: 'uppercase' }}>
+            Beneficios de ser Socio <span style={{ color: 'var(--secondary)' }}>HealthyIce</span>
+          </h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            {[
+              {
+                icon: <ShieldCheck size={28} color="var(--secondary)" />,
+                title: 'Sin inversión en desarrollo',
+                desc: 'Obtén de manera inmediata un snack formulado con la más alta tecnología alimentaria y listo para su distribución.'
+              },
+              {
+                icon: <Activity size={28} color="var(--secondary)" />,
+                title: 'Producto de alta rotación',
+                desc: 'Los snacks congelados ricos en proteína representan una de las categorías de mayor crecimiento y consumo recurrente en centros deportivos.'
+              },
+              {
+                icon: <TrendingUp size={28} color="var(--secondary)" />,
+                title: 'Margen de ganancia creciente',
+                desc: 'Maximiza el retorno de flujo de efectivo al coordinarse directamente con los niveles escalonados de compra de tu gimnasio.'
+              },
+              {
+                icon: <Megaphone size={28} color="var(--secondary)" />,
+                title: 'Apoyo promocional continuo',
+                desc: 'Facilitamos material visual y activaciones de marca directo en tu sucursal para detonar el interés de tus socios desde el primer día.'
+              },
+              {
+                icon: <Award size={28} color="var(--secondary)" />,
+                title: 'Efecto KD (Recomendado)',
+                desc: 'Contamos con el apoyo y recomendación de Kevin Dino "Mr. México juvenil absoluto 2026", quien visitará periódicamente las sucursales de los socios.'
+              }
+            ].map((benefit, idx) => (
+              <motion.div 
+                key={idx}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  backdropFilter: 'blur(24px)',
+                  WebkitBackdropFilter: 'blur(24px)',
+                  border: '1px solid rgba(255, 255, 255, 0.8)',
+                  borderRadius: '24px',
+                  padding: '2.5rem',
+                  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.05)',
+                  transition: 'all 0.3s ease'
+                }}
+                whileHover={{ 
+                  scale: 1.03, 
+                  background: 'rgba(255, 255, 255, 0.8)', 
+                  borderColor: 'var(--secondary)',
+                  boxShadow: '0 12px 30px rgba(31, 38, 135, 0.1)' 
+                }}
+              >
+                <div style={{ marginBottom: '1.25rem', background: 'rgba(0, 119, 255, 0.05)', width: '52px', height: '52px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {benefit.icon}
+                </div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#101729', marginBottom: '0.75rem' }}>{benefit.title}</h4>
+                <p style={{ color: '#475569', fontSize: '0.925rem', lineHeight: 1.5, margin: 0 }}>{benefit.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
