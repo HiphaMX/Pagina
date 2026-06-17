@@ -451,17 +451,17 @@ function App() {
   };
 
   const flavors = [
-    { name: "Fresa", color: "#ff4d6d", image: "/paleta_fresa.png" },
-    { name: "Chocolate", color: "#5c4033", image: "/paleta_chocolate.png" },
-    { name: "Café", color: "#8c6239", image: "/paleta_cafe.png" },
-    { name: "Vainilla", color: "#f3e5ab", image: "/paleta_vainilla.png" },
-    { name: "Cookies & Cream", color: "#475569", image: "/paleta_cookies_cream.png" },
+    { name: "Fresa", color: "#ff4d6d", image: "/paleta_fresa.webp" },
+    { name: "Chocolate", color: "#5c4033", image: "/paleta_chocolate.webp" },
+    { name: "Café", color: "#8c6239", image: "/paleta_cafe.webp" },
+    { name: "Vainilla", color: "#f3e5ab", image: "/paleta_vainilla.webp" },
+    { name: "Cookies & Cream", color: "#475569", image: "/paleta_cookies_cream.webp" },
     { name: "Rol de Canela", color: "#b87d4b", image: "/Paleta_roldecanela.webp" }
   ];
 
   const heroPopsiclesData = isMobile ? [
     { 
-      id: 'fresa', name: 'FRESA', image: '/paleta_fresa_full.png',
+      id: 'fresa', name: 'FRESA', image: '/paleta_fresa_full.webp',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [-10, 10, -10], initialRotate: [20, 25, 20],
@@ -469,7 +469,7 @@ function App() {
       boxSide: 'left'
     },
     { 
-      id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.png',
+      id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.webp',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [-5, 5, -5], initialRotate: [0, 2, 0],
@@ -478,7 +478,7 @@ function App() {
     }
   ] : [
     { 
-      id: 'fresa', name: 'FRESA', image: '/paleta_fresa.png',
+      id: 'fresa', name: 'FRESA', image: '/paleta_fresa.webp',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [-20, 20, -20], initialRotate: [10, 15, 10],
@@ -486,7 +486,7 @@ function App() {
       boxSide: 'right'
     },
     { 
-      id: 'vainilla', name: 'VAINILLA', image: '/paleta_vainilla.png',
+      id: 'vainilla', name: 'VAINILLA', image: '/paleta_vainilla.webp',
       desc: 'Clásico puro desde el origen.', tags: ['El Postre de Rutina', 'Sabor Refrescante', 'Una Delicada Textura'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [15, -15, 15], initialRotate: [-25, -20, -25],
@@ -494,7 +494,7 @@ function App() {
       boxSide: 'right'
     },
     { 
-      id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.png',
+      id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.webp',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [-25, 25, -25], initialRotate: [-2, 2, -2],
@@ -502,7 +502,7 @@ function App() {
       boxSide: 'right'
     },
     { 
-      id: 'cookies', name: 'COOKIES & CREAM', image: '/paleta_cookies_cream.png',
+      id: 'cookies', name: 'COOKIES & CREAM', image: '/paleta_cookies_cream.webp',
       desc: 'Cremosidad irresistible.', tags: ['La Combinación Perfecta', 'Sin Calorías Extra', 'Tu Snack Ideal'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [20, -20, 20], initialRotate: [20, 25, 20],
@@ -510,7 +510,7 @@ function App() {
       boxSide: 'left'
     },
     { 
-      id: 'cafe', name: 'CAFÉ', image: '/paleta_cafe.png',
+      id: 'cafe', name: 'CAFÉ', image: '/paleta_cafe.webp',
       desc: 'Energía y sabor intenso.', tags: ['Café Mexicano', 'Un shot de energía', 'Ideal para el antojo'],
       linea: ['PROT FIT 0', 'PROT LIGHT'],
       initialY: [-15, 15, -15], initialRotate: [-15, -10, -15],
@@ -728,11 +728,11 @@ function App() {
         <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(255,0,128,0.1) 0%, transparent 70%)', filter: 'blur(90px)', zIndex: 0, pointerEvents: 'none' }}></div>
 
         {[
-          { name: "Fresa", image: "/paleta_fresa.png", fullImage: "/paleta_fresa_full.png", highlight: "Sin Azúcar", desc: "Dulzor vibrante sin alterar tus niveles de glucosa." },
-          { name: "Chocolate", image: "/paleta_chocolate.png", fullImage: "/paleta_chocolate_full.png", highlight: "Alta en Proteína", desc: "Tu mejor aliado para la recuperación muscular." },
-          { name: "Café", image: "/paleta_cafe.png", fullImage: "/paleta_cafe_full.png", highlight: "Sin Sellos", desc: "Cumplimiento total con la NOM-051." },
-          { name: "Vainilla", image: "/paleta_vainilla.png", fullImage: "/paleta_vainilla_full.png", highlight: "Ingredientes Naturales", desc: "Calidad pura, formulada desde el origen." },
-          { name: "Cookies & Cream", image: "/paleta_cookies_cream.png", fullImage: "/paleta_cookies_cream_full.png", highlight: "No es solo un snack", desc: "Es nutrición para tus músculos" },
+          { name: "Fresa", image: "/paleta_fresa.webp", fullImage: "/paleta_fresa_full.webp", highlight: "Sin Azúcar", desc: "Dulzor vibrante sin alterar tus niveles de glucosa." },
+          { name: "Chocolate", image: "/paleta_chocolate.webp", fullImage: "/paleta_chocolate_full.webp", highlight: "Alta en Proteína", desc: "Tu mejor aliado para la recuperación muscular." },
+          { name: "Café", image: "/paleta_cafe.webp", fullImage: "/paleta_cafe_full.webp", highlight: "Sin Sellos", desc: "Cumplimiento total con la NOM-051." },
+          { name: "Vainilla", image: "/paleta_vainilla.webp", fullImage: "/paleta_vainilla_full.webp", highlight: "Ingredientes Naturales", desc: "Calidad pura, formulada desde el origen." },
+          { name: "Cookies & Cream", image: "/paleta_cookies_cream.webp", fullImage: "/paleta_cookies_cream_full.webp", highlight: "No es solo un snack", desc: "Es nutrición para tus músculos" },
           { name: "Rol de Canela", image: "/Paleta_roldecanela.webp", fullImage: "/Paleta_roldecanelafull.webp", highlight: "Sabor Irresistible", desc: "La perfecta armonía del rol de canela en una versión saludable." }
         ].map((item, idx) => (
           <div key={idx} className="void-fall-item" style={{ minHeight: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1, padding: '4rem 0' }}>
