@@ -679,7 +679,7 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
             style={{ zIndex: 20, pointerEvents: 'none' }}
           >
             <h1>
-              PLACER<br/>SIN<br/>CULPA.
+              PROTEÍNA<br/>FRÍA PARA<br/>RECUPERACIÓN<br/>MUSCULAR.
             </h1>
             <p>
               <span className="pulse-dot"></span>
