@@ -9,7 +9,7 @@ const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
   </svg>
 );
 
-const FlavorCard = ({ flavor, idx, onAddToCart }) => {
+const FlavorCard = ({ flavor, idx, onPedir }) => {
   const [selectedLine, setSelectedLine] = useState('ProT Fit 0');
   const price = 40;
 
@@ -76,11 +76,11 @@ const FlavorCard = ({ flavor, idx, onAddToCart }) => {
       </div>
 
       <button 
-        onClick={() => onAddToCart({ ...flavor, line: selectedLine, price })}
+        onClick={() => onPedir(flavor, selectedLine)}
         className="btn btn-primary"
         style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
       >
-        <ShoppingCart size={18} /> Añadir
+        Pedir ahora
       </button>
     </motion.div>
   );
@@ -480,6 +480,14 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
       }
       return newCart;
     });
+  };
+
+  const handleFlavorOrder = (flavor, line) => {
+    setFormData(prev => ({
+      ...prev,
+      mensaje: `Me interesa la paleta sabor ${flavor.name} (${line}).`
+    }));
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -936,7 +944,7 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
 
           <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {flavors.map((flavor, idx) => (
-              <FlavorCard key={idx} flavor={flavor} idx={idx} onAddToCart={addToCart} />
+              <FlavorCard key={idx} flavor={flavor} idx={idx} onPedir={handleFlavorOrder} />
             ))}
           </div>
         </div>
@@ -1304,87 +1312,7 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
           <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>© 2026 HealthyIce. Todos los derechos reservados.</p>
         </div>
       </footer>
-      {/* Floating Cart Button */}
-      <button 
-        onClick={() => setIsCartOpen(true)}
-        style={{ position: 'fixed', bottom: '2rem', right: '2rem', width: '64px', height: '64px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, boxShadow: '0 10px 25px rgba(0,229,255,0.4)', border: 'none', cursor: 'pointer', transition: 'transform 0.2s' }}
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
-        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-      >
-        <ShoppingCart size={28} />
-        {cart.length > 0 && (
-          <span style={{ position: 'absolute', top: 0, right: 0, background: '#ff4d6d', color: 'white', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 'bold', border: '2px solid white' }}>
-            {cart.reduce((acc, item) => acc + item.quantity, 0)}
-          </span>
-        )}
-      </button>
 
-      {/* Cart Modal */}
-      <AnimatePresence>
-        {isCartOpen && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000, display: 'flex', justifyContent: 'flex-end', background: 'rgba(0,0,0,0.5)' }} onClick={() => setIsCartOpen(false)}>
-            <motion.div 
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              style={{ width: '100%', maxWidth: '400px', height: '100%', background: 'white', padding: '2rem', display: 'flex', flexDirection: 'column', boxShadow: '-10px 0 25px rgba(0,0,0,0.1)' }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#101729', margin: 0 }}>Tu Carrito</h2>
-                <button onClick={() => setIsCartOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={24} /></button>
-              </div>
-
-              <div style={{ flex: 1, overflowY: 'auto' }}>
-                {cart.length === 0 ? (
-                  <p style={{ color: '#64748b', textAlign: 'center', marginTop: '2rem' }}>Tu carrito está vacío</p>
-                ) : (
-                  cart.map((item, idx) => (
-                    <div key={idx} style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', alignItems: 'center', background: '#f8fafc', padding: '1rem', borderRadius: '12px' }}>
-                      <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
-                      <div style={{ flex: 1 }}>
-                        <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#101729' }}>{item.name}</h4>
-                        <div style={{ fontSize: '0.875rem', color: item.line === 'ProT Fit 0' ? '#98BC3C' : 'var(--primary)', fontWeight: 600 }}>{item.line}</div>
-                        <div style={{ fontSize: '0.875rem', color: '#64748b' }}>${item.price}.00 MXN</div>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <button onClick={() => updateCartQuantity(idx, -1)} style={{ padding: '0.25rem', border: '1px solid #cbd5e1', background: 'white', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={16} /></button>
-                        <span style={{ fontWeight: 600, width: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                        <button onClick={() => updateCartQuantity(idx, 1)} style={{ padding: '0.25rem', border: '1px solid #cbd5e1', background: 'white', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={16} /></button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {cart.length > 0 && (
-                <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid #e2e8f0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', fontSize: '1.25rem', fontWeight: 800, color: '#101729' }}>
-                    <span>Total:</span>
-                    <span>${cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}.00 MXN</span>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      const orderDetails = cart.map(item => `${item.quantity}x Paleta ${item.name} (${item.line}) - $${item.price * item.quantity}`).join('\n');
-                      const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-                      const message = `Hola, me gustaría hacer el siguiente pedido:\n\n${orderDetails}\n\nTotal: $${total}.00 MXN\n\nQuedo atento(a) para coordinar el pago y envío.`;
-                      const encodedMessage = encodeURIComponent(message);
-                      window.open(`https://wa.me/523334996922?text=${encodedMessage}`, '_blank');
-                      setIsCartOpen(false);
-                    }}
-                    style={{ width: '100%', padding: '1rem', background: '#101729', color: 'white', fontWeight: 700, borderRadius: '999px', border: 'none', cursor: 'pointer', fontSize: '1.125rem', transition: 'background 0.2s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#1e293b'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#101729'}
-                  >
-                    Hacer mi pedido
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Pop-up Form (Modal) */}
       <AnimatePresence>
