@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centro Escolar El Paraíso — Escuela Constructivista de Vanguardia</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Centro Escolar El Paraíso: Un espacio educativo constructivista enfocado en matemáticas conceptuales (CIME), robótica, equitación, inglés Oxford y artes.">
+  <meta name="keywords" content="colegio constructivista, escuela activa, CIME matemáticas, robótica escolar, equitación infantil, inglés Oxford OTE, educación activa, desarrollo emocional">
+  <meta name="author" content="HiphaMX">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- --- CINEMATIC LOADING SPLASH SCREEN (Media Arts Style) --- -->
+  <div id="loading-splash" class="loading-splash">
+    <div class="splash-content">
+      <div class="splash-logo">Paraíso<span>.</span></div>
+      <div class="splash-loader-bar">
+        <div class="splash-loader-progress"></div>
+      </div>
+      <span class="text-mono splash-status" style="font-size: 0.7rem; color: var(--color-accent-green); margin-top: 12px; display: block; letter-spacing: 0.1em;">Cargando Entorno Constructivo</span>
+    </div>
+  </div>
+
+  <!-- --- HEADER & NAVIGATION --- -->
+  <header class="header" id="main-header">
+    <div class="container nav-container">
+      <a href="#" class="logo" id="header-logo">
+        <img src="assets/logotipo/color.svg" alt="Centro Escolar El Paraíso" class="logo-img logo-light">
+        <img src="assets/logotipo/white.svg" alt="Centro Escolar El Paraíso" class="logo-img logo-dark">
+      </a>
+      <div class="header-actions">
+        <button type="button" class="menu-trigger-btn" id="menu-trigger-btn" aria-label="Abrir menú de navegación">
+          <span class="menu-trigger-text">Menú</span>
+          <div class="burger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- --- HERO SECTION --- -->
+    <section class="hero-section" id="inicio">
+      <!-- Dynamic Background Multiply Slideshow -->
+      <div class="hero-bg-container" id="hero-bg-container">
+        <div class="hero-bg-overlay" id="hero-bg-overlay"></div>
+        <div class="hero-bg-slide active" style="background-image: url('hero.png');" data-index="0"></div>
+        <div class="hero-bg-slide" style="background-image: url('cime_bg.png');" data-index="1"></div>
+        <div class="hero-bg-slide" style="background-image: url('robotics_bg.png');" data-index="2"></div>
+        <div class="hero-bg-slide" style="background-image: url('equitation_bg.png');" data-index="3"></div>
+        <div class="hero-bg-slide" style="background-image: url('english_bg.png');" data-index="4"></div>
+        <div class="hero-bg-slide" style="background-image: url('art_bg.png');" data-index="5"></div>
+      </div>
+      
+      <div class="container">
+        <div class="grid-12" style="position: relative; z-index: 2;">
+        <div class="hero-left" id="hero-left-content">
+          <div class="hero-brand-header">
+            <span class="text-mono text-accent-green" id="hero-program-tag">// CENTRO ESCOLAR EL PARAÍSO</span>
+          </div>
+          
+          <div class="hero-program-card active" id="hero-program-card">
+            <h1 class="text-massive hero-display-title" id="hero-display-title">
+              El futuro<br>comienza<br>hoy
+            </h1>
+            <p class="text-body hero-display-desc" id="hero-display-desc"></p>
+            <div class="hero-display-benefit text-mono" id="hero-display-benefit">
+              <span class="benefit-dot"></span> <span id="hero-benefit-text">Aprendizaje Activo y Constructivista</span>
+            </div>
+          </div>
+          
+          <div class="hero-actions">
+            <a href="#modelo-educativo" class="btn" id="hero-cta-primary">Explorar Modelo</a>
+            <a href="#proceso-admision" class="btn btn-secondary" id="hero-cta-secondary" style="margin-left: 12px;">Inscripciones</a>
+          </div>
+        </div>
+        
+        <div class="hero-right" id="hero-right-visual">
+          <div class="rotary-dial-container" id="rotary-dial-container" aria-label="Carrusel interactivo de áreas educativas">
+            
+            <!-- Destellos mágicos / Partículas flotantes -->
+            <div class="dial-sparkle sparkle-1"></div>
+            <div class="dial-sparkle sparkle-2"></div>
+            <div class="dial-sparkle sparkle-3"></div>
+            <div class="dial-sparkle sparkle-4"></div>
+            
+            <!-- Dial de Control (Rueda que gira) -->
+            <div class="rotary-wheel" id="rotary-wheel">
+              
+              <!-- Líneas del dial conectando al centro (SVG) -->
+              <svg class="rotary-spoke-lines" viewBox="0 0 500 500">
+                <line x1="250" y1="250" x2="250" y2="30" stroke="var(--color-border)" stroke-width="1" />
+                <line x1="250" y1="250" x2="440" y2="140" stroke="var(--color-border)" stroke-width="1" />
+                <line x1="250" y1="250" x2="440" y2="360" stroke="var(--color-border)" stroke-width="1" />
+                <line x1="250" y1="250" x2="250" y2="470" stroke="var(--color-border)" stroke-width="1" />
+                <line x1="250" y1="250" x2="60" y2="360" stroke="var(--color-border)" stroke-width="1" />
+                <line x1="250" y1="250" x2="60" y2="140" stroke="var(--color-border)" stroke-width="1" />
+              </svg>
+              
+              <!-- Nodos (Spokes) colocados a 0, 60, 120, 180, 240, 300 grados -->
+              <div class="rotary-node-wrapper" style="--node-angle: 0deg;">
+                <div class="rotary-node-float">
+                  <button type="button" class="rotary-node active" data-index="0" aria-label="Constructivismo Fundacional">
+                    <div class="node-content">
+                      <span class="node-number">00</span>
+                      <span class="node-label">CON</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="rotary-node-wrapper" style="--node-angle: 60deg;">
+                <div class="rotary-node-float">
+                  <button type="button" class="rotary-node" data-index="1" aria-label="CIME Matemáticas">
+                    <div class="node-content">
+                      <span class="node-number">01</span>
+                      <span class="node-label">CIME</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="rotary-node-wrapper" style="--node-angle: 120deg;">
+                <div class="rotary-node-float">
+                  <button type="button" class="rotary-node" data-index="2" aria-label="Robótica Aplicada">
+                    <div class="node-content">
+                      <span class="node-number">02</span>
+                      <span class="node-label">ROB</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="rotary-node-wrapper" style="--node-angle: 180deg;">
+                <div class="rotary-node-float">
+                  <button type="button" class="rotary-node" data-index="3" aria-label="Equitación Co-curricular">
+                    <div class="node-content">
+                      <span class="node-number">03</span>
+                      <span class="node-label">EQ</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="rotary-node-wrapper" style="--node-angle: 240deg;">
+                <div class="rotary-node-float">
+                  <button type="button" class="rotary-node" data-index="4" aria-label="Oxford Inglés OTE">
+                    <div class="node-content">
+                      <span class="node-number">04</span>
+                      <span class="node-label">ENG</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="rotary-node-wrapper" style="--node-angle: 300deg;">
+                <div class="rotary-node-float">
+                  <button type="button" class="rotary-node" data-index="5" aria-label="Artes Visuales">
+                    <div class="node-content">
+                      <span class="node-number">05</span>
+                      <span class="node-label">ART</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+            </div>
+            
+            <!-- Centro estático del Dial -->
+            <div class="rotary-center" id="rotary-center">
+              <div class="rotary-center-content">
+                <img src="assets/logotipo/green.svg" alt="Paraíso" class="center-logo logo-light">
+                <img src="assets/logotipo/white.svg" alt="Paraíso" class="center-logo logo-dark">
+                <span class="center-instruction text-mono">Gira o haz clic</span>
+              </div>
+            </div>
+            
+            <!-- Controles de navegación manual (Soporte accesibilidad y móviles) -->
+            <div class="rotary-controls">
+              <button type="button" class="rotary-arrow-btn" id="rotary-btn-prev" aria-label="Anterior programa">←</button>
+              <button type="button" class="rotary-arrow-btn" id="rotary-btn-next" aria-label="Siguiente programa">→</button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    <!-- --- MODELO EDUCATIVO SECTION (MODULAR GRID) --- -->
+    <section class="py-large container" id="modelo-educativo">
+      <div style="margin-bottom: 60px; border-bottom: 1px solid var(--color-border); padding-bottom: 24px;">
+        <span class="text-mono text-accent-green">[ 01 / PROPUESTA PEDAGÓGICA ]</span>
+        <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Áreas de Aprendizaje Activo</h2>
+      </div>
+      
+      <div class="learning-areas-container">
+        
+        <!-- ROW 1: CIME MATEMÁTICAS -->
+        <div class="specialism-row">
+          <!-- Primary Card (Left) -->
+          <a href="#modelo-educativo" class="specialism-card card-primary" style="background-image: linear-gradient(180deg, rgba(11, 93, 54, 0.35) 0%, rgba(12, 27, 18, 0.85) 100%), url('cime_bg.png');">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                  </svg>
+                </div>
+                <span class="card-tag">[ 01.1 / METODOLOGÍA ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">CIME Matemáticas</h3>
+                <p class="card-text">Sistema táctil conceptual mediante regletas de colores. Los alumnos deducen principios algebraicos y aritméticos resolviendo retos prácticos.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Ver Metodología <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Secondary Card (Right) -->
+          <a href="#modelo-educativo" class="specialism-card card-secondary">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <span class="card-tag">[ PENSAMIENTO ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Razonamiento Lógico</h3>
+                <p class="card-text">Nuestros alumnos desarrollan habilidades lógico-matemáticas avanzadas mediante la manipulación física y el descubrimiento guiado.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Saber más <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- ROW 2: ROBÓTICA APLICADA -->
+        <div class="specialism-row">
+          <!-- Secondary Card (Left) -->
+          <a href="#modelo-educativo" class="specialism-card card-secondary">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <span class="card-tag">[ ENFOQUE ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Pensamiento Computacional</h3>
+                <p class="card-text">Formulación de problemas y algoritmos lógicos aplicados para el desarrollo cognitivo temprano de proyectos reales.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Saber más <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Primary Card (Right) -->
+          <a href="#modelo-educativo" class="specialism-card card-primary" style="background-image: linear-gradient(180deg, rgba(11, 93, 54, 0.35) 0%, rgba(12, 27, 18, 0.85) 100%), url('robotics_bg.png');">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+                    <rect x="9" y="9" width="6" height="6"/>
+                    <line x1="9" y1="1" x2="9" y2="4"/>
+                    <line x1="15" y1="1" x2="15" y2="4"/>
+                    <line x1="9" y1="20" x2="9" y2="23"/>
+                    <line x1="15" y1="20" x2="15" y2="23"/>
+                    <line x1="20" y1="9" x2="23" y2="9"/>
+                    <line x1="20" y1="15" x2="23" y2="15"/>
+                    <line x1="1" y1="9" x2="4" y2="9"/>
+                    <line x1="1" y1="15" x2="4" y2="15"/>
+                  </svg>
+                </div>
+                <span class="card-tag">[ 01.2 / TECNOLOGÍA ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Robótica Aplicada</h3>
+                <p class="card-text">Aulas de experimentación física y programación. Solución de problemas mecánicos mediante diseño de circuitos y código.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Ver Proyectos <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- ROW 3: EQUITACIÓN -->
+        <div class="specialism-row">
+          <!-- Primary Card (Left) -->
+          <a href="#modelo-educativo" class="specialism-card card-primary" style="background-image: linear-gradient(180deg, rgba(11, 93, 54, 0.35) 0%, rgba(12, 27, 18, 0.85) 100%), url('equitation_bg.png');">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                  </svg>
+                </div>
+                <span class="card-tag">[ 01.3 / NATURALEZA ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Equitación</h3>
+                <p class="card-text">Contacto directo con animales en nuestra pista escolar. Fomenta el equilibrio, la empatía y la autorregulación emocional.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Ver Pista <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Secondary Card (Right) -->
+          <a href="#modelo-educativo" class="specialism-card card-secondary">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <span class="card-tag">[ CONECTIVIDAD ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Desarrollo Ecuestre</h3>
+                <p class="card-text">Clases de equitación integradas al horario escolar, promoviendo destrezas motoras y respeto a la vida animal.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Saber más <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- ROW 4: OXFORD TEST OF ENGLISH -->
+        <div class="specialism-row">
+          <!-- Secondary Card (Left) -->
+          <a href="#modelo-educativo" class="specialism-card card-secondary">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <span class="card-tag">[ COMPETENCIA ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Comunicación Global</h3>
+                <p class="card-text">Dominio del idioma mediante inmersión cultural y preparación sistemática para certificaciones de validez internacional.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Saber más <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Primary Card (Right) -->
+          <a href="#modelo-educativo" class="specialism-card card-primary" style="background-image: linear-gradient(180deg, rgba(11, 93, 54, 0.35) 0%, rgba(12, 27, 18, 0.85) 100%), url('english_bg.png');">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                </div>
+                <span class="card-tag">[ 01.4 / IDIOMAS ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Oxford Test of English</h3>
+                <p class="card-text">Certificación de inglés adaptativa y multicanal. Evaluamos el progreso real basado en competencias lingüísticas comunicativas.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Ver Certificación <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- ROW 5: ARTES VISUALES -->
+        <div class="specialism-row">
+          <!-- Primary Card (Left) -->
+          <a href="#modelo-educativo" class="specialism-card card-primary" style="background-image: linear-gradient(180deg, rgba(11, 93, 54, 0.35) 0%, rgba(12, 27, 18, 0.85) 100%), url('art_bg.png');">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.02106 19.1625 5.25367 19.2323 5.47493 19.1843C6.77259 18.9029 8.01633 19.3496 8.79093 20.3129C9.52427 21.2244 10.6729 22 12 22Z"/>
+                    <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/>
+                    <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/>
+                    <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"/>
+                  </svg>
+                </div>
+                <span class="card-tag">[ 01.5 / CREATIVIDAD ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Artes Visuales</h3>
+                <p class="card-text">Talleres al aire libre diseñados para liberar el potencial plástico del alumno. Fomentamos la libre expresión sin moldes estéticos preestablecidos.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Ver Talleres <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Secondary Card (Right) -->
+          <a href="#modelo-educativo" class="specialism-card card-secondary">
+            <div class="card-content-wrap">
+              <div class="card-top">
+                <span class="card-tag">[ EXPRESIÓN ]</span>
+              </div>
+              <div class="card-middle">
+                <h3 class="card-title">Criterio Propio</h3>
+                <p class="card-text">Desarrollamos el sentido de apreciación estética y estimulamos la creatividad artística en entornos naturales abiertos.</p>
+              </div>
+              <div class="card-bottom">
+                <span class="action-link">Saber más <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- --- ADMISSIONS PROCESS ROADMAP --- -->
+    <section class="py-large" id="proceso-admision" style="border-top: 1px solid var(--color-border);">
+      <div class="container">
+        <div style="margin-bottom: 60px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 24px;">
+          <span class="text-mono text-accent-green">[ 02 / ADMISIONES VIGENTES ]</span>
+          <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Camino de Ingreso Familiar</h2>
+        </div>
+
+        <div class="roadmap-container" id="admission-roadmap">
+          <div class="roadmap-line"></div>
+          
+          <!-- Step 1 -->
+          <div class="roadmap-step" id="step-1">
+            <div class="roadmap-node">01</div>
+            <h3 class="text-subheading" style="font-size: 1.15rem; margin-bottom: 12px;">Visita Guiada</h3>
+            <p class="text-body" style="font-size: 0.95rem;">
+              Agenda un recorrido personalizado para explorar nuestras instalaciones, conocer nuestras metodologías de aprendizaje y resolver dudas.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="roadmap-step" id="step-2">
+            <div class="roadmap-node">02</div>
+            <h3 class="text-subheading" style="font-size: 1.15rem; margin-bottom: 12px;">Sesión Inmersiva</h3>
+            <p class="text-body" style="font-size: 0.95rem;">
+              Realizamos una valoración integral del niño permitiendole vivir un día completo en su futuro entorno para asegurar la alineación al modelo constructivista.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="roadmap-step" id="step-3">
+            <div class="roadmap-node">03</div>
+            <h3 class="text-subheading" style="font-size: 1.15rem; margin-bottom: 12px;">Inscripción</h3>
+            <p class="text-body" style="font-size: 0.95rem;">
+              Al confirmarse la admisión por parte de la familia, formalizamos el ingreso y compartimos toda la información necesaria para integrarse al siguiente ciclo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- PARENT TESTIMONIALS SECTION --- -->
+    <section class="py-medium container" id="testimonios">
+      <div class="testimonials-wrapper" id="testimonials-block">
+        <div class="quote-icon">“</div>
+        <div class="testimonials-slider">
+          
+          <!-- Testimonial 1 -->
+          <div class="testimonial-slide active" id="slide-1">
+            <p class="testimonial-text" data-split-scroll>
+              "Ver a mi hijo de 6 años resolver problemas matemáticos usando regletas de madera y explicando la lógica con total entusiasmo cambió mi perspectiva sobre la educación tradicional escolar."
+            </p>
+            <div class="testimonial-author">
+              <span class="author-name">Claudia M.</span>
+              <span class="author-role">Madre de Alumno en Primaria CIME</span>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="testimonial-slide" id="slide-2">
+            <p class="testimonial-text" data-split-scroll>
+              "La combinación de robótica técnica y la equitación al aire libre ha desarrollado en mi hija una confianza y resiliencia increíbles. El colegio es profesional, humano y muy ambicioso."
+            </p>
+            <div class="testimonial-author">
+              <span class="author-name">Alejandro V.</span>
+              <span class="author-role">Padre de Alumna en Preescolar y Equitación</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- --- TRAYECTORIA Y CIFRAS (LOKALAPPS STATS STYLE) --- -->
+    <section class="section_stats container" id="trayectoria-cifras">
+      <div class="stats_header">
+        <span class="text-mono text-accent-green">// COMPROMISO Y RESULTADOS</span>
+        <h2 class="text-heading" style="margin-top: 12px; line-height: 1.15;">
+          Resultados que impulsan <span class="gradient-span" style="background: linear-gradient(135deg, var(--color-accent-green) 0%, var(--color-accent-blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">nuestra comunidad</span>
+        </h2>
+      </div>
+
+      <div class="stats_grid">
+        <!-- Stat Block 1 -->
+        <div class="stats_block">
+          <h3 class="stats_number"><span class="number-val" data-count-to="10">0</span></h3>
+          <div class="stats_content">
+            <span class="stats_detail">Años</span>
+            <p class="stats_para">de trayectoria escolar construyendo aprendizaje activo.</p>
+          </div>
+        </div>
+
+        <!-- Stat Block 2 -->
+        <div class="stats_block">
+          <h3 class="stats_number"><span class="number-prefix">+</span><span class="number-val" data-count-to="3500">0</span></h3>
+          <div class="stats_content">
+            <span class="stats_detail">Egresados</span>
+            <p class="stats_para">con sólidas competencias lógicas y resolución de problemas.</p>
+          </div>
+        </div>
+
+        <!-- Stat Block 3 -->
+        <div class="stats_block">
+          <h3 class="stats_number"><span class="number-val" data-count-to="100">0</span><span class="number-suffix">%</span></h3>
+          <div class="stats_content">
+            <span class="stats_detail">Aceptación</span>
+            <p class="stats_para">en la secundaria elegida por cada una de nuestras familias.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- NUESTROS GUÍAS (BNS TALENT CARDS) --- -->
+    <section class="py-large container" id="nuestros-guias" style="border-top: 1px solid var(--color-border);">
+      <div style="margin-bottom: 60px; border-bottom: 1px solid var(--color-border); padding-bottom: 24px;">
+        <span class="text-mono text-accent-green">[ 03 / EQUIPO PEDAGÓGICO ]</span>
+        <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Guías Pedagógicos / Talento</h2>
+      </div>
+
+      <div class="grid-12">
+        <!-- Guía 1 (Con foto director.png) -->
+        <div class="guide-card" style="grid-column: span 4;" id="guide-1">
+          <div class="guide-image-wrapper">
+            <img src="director.png" alt="Directora de Matemáticas CIME, Sofia Varela" class="guide-image">
+            <div class="guide-overlay">
+              <span class="text-mono">[ VER PERFIL ]</span>
+            </div>
+          </div>
+          <div class="guide-info">
+            <h3 class="text-subheading" style="margin-top: 16px; font-size: 1.15rem;">Sofia Varela</h3>
+            <span class="text-mono" style="font-size: 0.75rem; color: var(--color-accent-green); display: block; margin-top: 4px;">Directora de Matemáticas CIME</span>
+          </div>
+        </div>
+
+        <!-- Guía 2 -->
+        <div class="guide-card" style="grid-column: span 4;" id="guide-2">
+          <div class="guide-image-wrapper">
+            <div class="guide-image-placeholder" style="background-color: var(--color-accent-blue); width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md);">
+              <span style="font-size: 3rem; font-weight: 800; color: #ffffff;">MR</span>
+            </div>
+            <div class="guide-overlay">
+              <span class="text-mono">[ VER PERFIL ]</span>
+            </div>
+          </div>
+          <div class="guide-info">
+            <h3 class="text-subheading" style="margin-top: 16px; font-size: 1.15rem;">Mateo Ruiz</h3>
+            <span class="text-mono" style="font-size: 0.75rem; color: var(--color-accent-green); display: block; margin-top: 4px;">Coordinador de Robótica Aplicada</span>
+          </div>
+        </div>
+
+        <!-- Guía 3 -->
+        <div class="guide-card" style="grid-column: span 4;" id="guide-3">
+          <div class="guide-image-wrapper">
+            <div class="guide-image-placeholder" style="background-color: var(--color-accent-green); width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md);">
+              <span style="font-size: 3rem; font-weight: 800; color: #ffffff;">LG</span>
+            </div>
+            <div class="guide-overlay">
+              <span class="text-mono">[ VER PERFIL ]</span>
+            </div>
+          </div>
+          <div class="guide-info">
+            <h3 class="text-subheading" style="margin-top: 16px; font-size: 1.15rem;">Lucia Gómez</h3>
+            <span class="text-mono" style="font-size: 0.75rem; color: var(--color-accent-green); display: block; margin-top: 4px;">Directora de Equitación & Psicopedagogía</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- PORTAL COMUNIDAD & CHATBOT RAG --- -->
+    <section class="py-large container" id="portal-comunidad" style="border-top: 1px solid var(--color-border);">
+      <div style="margin-bottom: 60px; border-bottom: 1px solid var(--color-border); padding-bottom: 24px;">
+        <span class="text-mono text-accent-green">[ 04 / PORTAL COMUNIDAD ]</span>
+        <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Preguntas frecuentes</h2>
+      </div>
+
+      <div class="grid-12">
+        <div class="chat-container" id="tutor-rag-container">
+          <!-- Sidebar del Chat -->
+          <div class="chat-sidebar">
+            <div>
+              <span class="text-mono text-accent-green" style="display: block; margin-bottom: 16px;">// CONSULTA PEDAGÓGICA</span>
+              <h3 class="text-subheading" style="margin-bottom: 16px;">Asistente Virtual</h3>
+              <p class="text-body" style="font-size: 0.875rem;">
+                Asistente entrenado bajo la filosofía pedagógica del Centro Escolar El Paraíso, resuelva sus dudas de forma inmediata sobre el método constructivista, la oferta académica, clases vespertinas, eventos y todo lo que pasa en nuestro centro escolar.
+              </p>
+            </div>
+            <div>
+              <span class="text-mono" style="display: block; font-size: 0.7rem; color: var(--color-fg-muted);">ESTADO DEL ASISTENTE:</span>
+              <span class="text-mono" style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--color-accent-green);">🟢 EN LÍNEA (GEMINI RAG)</span>
+            </div>
+          </div>
+          
+          <!-- Ventana de Chat -->
+          <div class="chat-window">
+            <div class="chat-messages" id="chat-messages-box">
+              <div class="message message-bot" id="msg-init">
+                <p>Estimado padre de familia, bienvenido al portal de orientación pedagógica. ¿En qué puedo apoyarle hoy acerca del modelo educativo activo, admisiones, clases vespertinas, eventos o la oferta académica de El Paraíso?</p>
+                <span class="message-source">[Base de Conocimiento Escolar, Sección Orientación]</span>
+              </div>
+            </div>
+            
+            <!-- Entrada del Chat -->
+            <div class="chat-input-area">
+              <input type="text" id="chat-input-field" class="chat-input" placeholder="Consulte sobre CIME, equitación, horarios o inscripciones..." aria-label="Escriba su pregunta para el Tutor">
+              <button type="button" id="chat-submit-btn" class="chat-send-btn">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- LEAD MAGNET SECTION --- -->
+    <section class="lead-section container" id="lead-magnet" style="margin-top: 80px;">
+      <div class="lead-grid">
+        <div class="lead-info-panel">
+          <div>
+            <span class="text-mono text-accent-green">[ 05 / GUÍA GRATUITA ]</span>
+            <h2 class="text-heading" style="margin-top: 16px; margin-bottom: 24px;">Constructivismo<br>en Casa</h2>
+            <p class="text-body">
+              Complete sus datos para descargar nuestra guía pedagógica práctica en formato PDF. Aprenda a mediar la resolución de retos lógico-matemáticos en la vida cotidiana y a fomentar la autonomía cognitiva de sus hijos en el hogar.
+            </p>
+          </div>
+          <span class="text-mono" style="margin-top: 40px; display: block; color: var(--color-accent-green);">[ FORMATO: PDF MINIMALISTA / REJILLA SUIZA ]</span>
+        </div>
+
+        <div class="lead-form-panel">
+          <form id="lead-magnet-form" novalidate>
+            <div class="form-group">
+              <label for="lead-name" class="form-label">Nombre Completo</label>
+              <input type="text" id="lead-name" class="form-input" placeholder="Ej. Ana Rodríguez" required>
+              <span class="form-feedback" id="feedback-name"></span>
+            </div>
+            
+            <div class="form-group">
+              <label for="lead-email" class="form-label">Correo Electrónico</label>
+              <input type="email" id="lead-email" class="form-input" placeholder="Ej. ana.rodriguez@email.com" required>
+              <span class="form-feedback" id="feedback-email"></span>
+            </div>
+            
+            <div class="form-group">
+              <label for="lead-phone" class="form-label">Teléfono celular</label>
+              <input type="tel" id="lead-phone" class="form-input" placeholder="Ej. 55 1234 5678" required>
+              <span class="form-feedback" id="feedback-phone"></span>
+            </div>
+
+            <button type="submit" class="btn" id="lead-submit-btn" style="width: 100%; border: none;">Descargar Guía en PDF</button>
+            <span class="form-feedback" id="form-general-feedback" style="margin-top: 16px; text-align: center;"></span>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- BLOG SECTION --- -->
+    <section class="py-large container" id="blog" style="border-top: 1px solid var(--color-border); margin-top: 80px;">
+      <div style="margin-bottom: 60px; border-bottom: 1px solid var(--color-border); padding-bottom: 24px;">
+        <span class="text-mono text-accent-green">[ 06 / BLOG PEDAGÓGICO ]</span>
+        <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Artículos e Investigación</h2>
+      </div>
+
+      <div class="news_list">
+        
+        <!-- Post 1 -->
+        <div class="news_item">
+          <div class="news_bg_fold">
+            <div class="news_fold-1"></div>
+            <div class="news_fold-2"></div>
+            <div class="news_fold-3"></div>
+          </div>
+          <div class="news_block">
+            <div class="news_inner">
+              <div class="news_img_wrap">
+                <img src="art_bg.png" alt="El error como motor cognitivo constructivista" class="img-cover">
+              </div>
+              <div class="news_content">
+                <div class="news_meta">
+                  <span class="text-mono text-accent-green" style="font-size: 0.8rem; font-weight: 600;">// PEDAGOGÍA</span>
+                  <span class="news_meta_dot">•</span>
+                  <span class="news_meta_val">15 de Junio, 2026</span>
+                  <span class="news_meta_dot">•</span>
+                  <span class="news_meta_val" style="font-family: var(--font-mono); font-size: 0.8rem;">5 min Read</span>
+                </div>
+                <h3 class="news_title heading-style-h6" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--color-fg); line-height: 1.3; margin: 4px 0 10px 0;">
+                  El error como motor cognitivo constructivista
+                </h3>
+                <p class="text-body" style="font-size: 0.95rem; line-height: 1.6; color: var(--color-fg-muted); margin: 0;">
+                  Análisis sobre por qué penalizar el fallo bloquea el aprendizaje. Cómo mediar y acompañar el auto-descubrimiento en lugar de imponer la respuesta correcta inmediata.
+                </p>
+              </div>
+            </div>
+            
+            <div class="hide-mobile-landscape">
+              <a href="#blog" class="button w-inline-block ann-cta-btn" style="padding: 10px 24px; font-size: 0.85rem; border-radius: 100px; text-decoration: none; font-weight: 600;">
+                <span class="z-index-2">Leer</span>
+              </a>
+            </div>
+          </div>
+          <div class="news_item_divider"></div>
+          <a href="#blog" class="news_link"></a>
+        </div>
+
+        <!-- Post 2 -->
+        <div class="news_item">
+          <div class="news_bg_fold">
+            <div class="news_fold-1"></div>
+            <div class="news_fold-2"></div>
+            <div class="news_fold-3"></div>
+          </div>
+          <div class="news_block">
+            <div class="news_inner">
+              <div class="news_img_wrap">
+                <img src="cime_bg.png" alt="Matemáticas manipulativas y transición conceptual" class="img-cover">
+              </div>
+              <div class="news_content">
+                <div class="news_meta">
+                  <span class="text-mono text-accent-green" style="font-size: 0.8rem; font-weight: 600;">// MATEMÁTICAS</span>
+                  <span class="news_meta_dot">•</span>
+                  <span class="news_meta_val">10 de Junio, 2026</span>
+                  <span class="news_meta_dot">•</span>
+                  <span class="news_meta_val" style="font-family: var(--font-mono); font-size: 0.8rem;">6 min Read</span>
+                </div>
+                <h3 class="news_title heading-style-h6" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--color-fg); line-height: 1.3; margin: 4px 0 10px 0;">
+                  Matemáticas manipulativas y transición conceptual
+                </h3>
+                <p class="text-body" style="font-size: 0.95rem; line-height: 1.6; color: var(--color-fg-muted); margin: 0;">
+                  Por qué el cerebro de un niño requiere interactuar con objetos tridimensionales (regletas y bloques CIME) para asimilar el concepto formal de multiplicación y división.
+                </p>
+              </div>
+            </div>
+            
+            <div class="hide-mobile-landscape">
+              <a href="#blog" class="button w-inline-block ann-cta-btn" style="padding: 10px 24px; font-size: 0.85rem; border-radius: 100px; text-decoration: none; font-weight: 600;">
+                <span class="z-index-2">Leer</span>
+              </a>
+            </div>
+          </div>
+          <div class="news_item_divider"></div>
+          <a href="#blog" class="news_link"></a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- --- ANUNCIOS DEL MES (LOKALAPPS SYNCHRONIZED SLIDER) --- -->
+    <section class="py-large container" id="anuncios-mes" style="border-top: 1px solid var(--color-border); margin-top: 80px;">
+      <div style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <span class="text-mono text-accent-green">// COMUNICACIÓN ESCOLAR</span>
+          <h2 class="text-heading" style="margin-top: 12px;">Anuncios del Mes</h2>
+        </div>
+        <div class="announcement-controls">
+          <button type="button" class="announcement-arrow" id="ann-prev" aria-label="Anterior">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          </button>
+          <button type="button" class="announcement-arrow" id="ann-next" aria-label="Siguiente">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="announcement-slider-wrap">
+        <!-- Background Slide -->
+        <div class="announcement-bg-wrap">
+          <div class="announcement-bg-slide active" style="background-image: linear-gradient(90deg, rgba(12, 27, 18, 0.92) 30%, rgba(12, 27, 18, 0.3) 100%), url('hero.png');"></div>
+          <div class="announcement-bg-slide" style="background-image: linear-gradient(90deg, rgba(12, 27, 18, 0.92) 30%, rgba(12, 27, 18, 0.3) 100%), url('robotics_bg.png');"></div>
+          <div class="announcement-bg-slide" style="background-image: linear-gradient(90deg, rgba(12, 27, 18, 0.92) 30%, rgba(12, 27, 18, 0.3) 100%), url('equitation_bg.png');"></div>
+        </div>
+
+        <!-- Overlaid Content -->
+        <div class="announcement-content-card">
+          <div class="announcement-content-slide active">
+            <span class="ann-label text-mono">[ PROCESO DE ADMISIÓN ]</span>
+            <h3 class="ann-title">Inscripciones abiertas para el ciclo escolar 2026-2027</h3>
+            <p class="ann-desc">Inicia el camino formativo de tu familia en preescolar y primaria. Cupos limitados para el modelo CIME constructivista.</p>
+            <a href="#proceso-admision" class="ann-cta-btn">Ver requisitos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+          <div class="announcement-content-slide">
+            <span class="ann-label text-mono">[ TALLER DE ROBÓTICA ]</span>
+            <h3 class="ann-title">Hackatón de verano y programación activa en Julio</h3>
+            <p class="ann-desc">Aulas abiertas para el diseño de circuitos y código para alumnos de preescolar y primaria. ¡Inscribe a tu hijo!</p>
+            <a href="#modelo-educativo" class="ann-cta-btn">Más información <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+          <div class="announcement-content-slide">
+            <span class="ann-label text-mono">[ EVENTO ECUESTRE ]</span>
+            <h3 class="ann-title">Gran exhibición de equitación y salto en pista escolar</h3>
+            <p class="ann-desc">Acompáñanos a presenciar los avances en autorregulación y empatía de nuestros alumnos en la pista de equitación natural.</p>
+            <a href="#modelo-educativo" class="ann-cta-btn">Ver calendario <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+
+        <!-- Right Arch Badge -->
+        <div class="announcement-arch-container">
+          <div class="announcement-arch-inner">
+            <div class="announcement-badge-slide active" style="background-image: linear-gradient(180deg, rgba(12, 27, 18, 0.4) 0%, rgba(12, 27, 18, 0.8) 100%), url('hero.png');">
+              <div class="badge-circle">
+                <span class="badge-letter" style="color: var(--color-accent-green);">A</span>
+              </div>
+            </div>
+            <div class="announcement-badge-slide" style="background-image: linear-gradient(180deg, rgba(12, 27, 18, 0.4) 0%, rgba(12, 27, 18, 0.8) 100%), url('robotics_bg.png');">
+              <div class="badge-circle">
+                <span class="badge-letter" style="color: var(--color-accent);">R</span>
+              </div>
+            </div>
+            <div class="announcement-badge-slide" style="background-image: linear-gradient(180deg, rgba(12, 27, 18, 0.4) 0%, rgba(12, 27, 18, 0.8) 100%), url('equitation_bg.png');">
+              <div class="badge-circle">
+                <span class="badge-letter" style="color: var(--color-accent-blue);">E</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- --- FOOTER --- -->
+  <footer class="footer" id="main-footer">
+    <div class="container">
+      <div class="grid-12 footer-grid">
+        <div class="footer-col">
+          <div class="footer-logo">
+            <img src="assets/logotipo/white.svg" alt="Centro Escolar El Paraíso" class="footer-logo-img">
+          </div>
+          <p class="text-body" style="color: rgba(255,255,255,0.6); max-width: 320px;">
+            Centro Escolar El Paraíso. Formando pensadores lógicos, autónomos y equilibrados en sintonía con la tecnología y el medio ambiente.
+          </p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="text-mono" style="color: rgba(255,255,255,0.8); margin-bottom: 24px;">// ENLACES RÁPIDOS</h4>
+          <ul class="footer-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#modelo-educativo">Modelo Educativo</a></li>
+            <li><a href="#proceso-admision">Proceso Admisiones</a></li>
+            <li><a href="#nuestros-guias">Equipo Guías</a></li>
+            <li><a href="#portal-comunidad">Asistente Virtual</a></li>
+            <li><a href="#blog">Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="text-mono" style="color: rgba(255,255,255,0.8); margin-bottom: 24px;">// CONTACTO ESCOLAR</h4>
+          <p class="text-body" style="color: rgba(255,255,255,0.5); font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.8;">
+            Admisiones: admisiones@elparaiso.edu.mx<br>
+            Teléfono: +52 (55) 1234 5678<br>
+            Dirección: Bosque Real de El Paraíso, No. 12, Edo. de México
+          </p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div>© 2026 Centro Escolar El Paraíso. Todos los derechos reservados.</div>
+        <div>DISEÑO E IMPLEMENTACIÓN COMPORTAMENTAL POR HIPHAMX.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- --- FULLSCREEN NAVIGATION MENU OVERLAY (Korowa Style) --- -->
+  <dialog id="nav-menu" class="nav-menu_component">
+    <div class="nav-menu_wrapper">
+      <div class="nav-menu_left-bg"></div>
+      
+      <div class="nav-menu_container container">
+        <div class="nav-menu_content-grid">
+          
+          <!-- Top Row: Logo & Search & Close Button -->
+          <div class="nav-menu_top-wrapper">
+            <div class="nav-menu_logo-wrapper">
+              <img src="assets/logotipo/white.svg" alt="Centro Escolar El Paraíso" class="nav-menu_logo-img">
+            </div>
+            
+            <div class="nav-menu_search-wrapper">
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Buscar en el colegio..." aria-label="Buscar contenido">
+              </div>
+            </div>
+            
+            <button type="button" class="nav-menu_close-btn" id="nav-menu-close-btn" aria-label="Cerrar menú">
+              <span class="close-icon-text">Cerrar</span>
+              <div class="close-circle-icon">✕</div>
+            </button>
+          </div>
+          
+          <!-- Middle Row: Left Accordion Subgrid & Right Frosted Glass Box -->
+          <div class="nav-menu_links-wrapper" id="nav-menu-accordion">
+            <div class="nav-menu_links-subtitle text-mono">// ¿DÓNDE IR?</div>
+            
+            <!-- Category 1: Nosotros -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component" open>
+              <summary class="nav-menu_link-group-tab_title">
+                <span class="nav-menu_link-group-tab_title-text">El Colegio</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="#modelo-educativo" class="nav-menu_link-anchor">Filosofía Constructivista</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#nuestros-guias" class="nav-menu_link-anchor">Nuestros Guías</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#modelo-educativo" class="nav-menu_link-anchor">Infraestructura y Espacios</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#blog" class="nav-menu_link-anchor">Noticias y Eventos</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+            
+            <!-- Category 2: Aprendizaje -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component">
+              <summary class="nav-menu_link-group-tab_title">
+                <span class="nav-menu_link-group-tab_title-text">Aprendizaje</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="#inicio" class="nav-menu_link-anchor">Programas Educativos</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#inicio" class="nav-menu_link-anchor">Método CIME Lógica</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#inicio" class="nav-menu_link-anchor">Maker Space & Robótica</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#inicio" class="nav-menu_link-anchor">Equitación & Deportes</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+            
+            <!-- Category 3: Admisiones -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component">
+              <summary class="nav-menu_link-group-tab_title">
+                <span class="nav-menu_link-group-tab_title-text">Admisiones</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="#proceso-admision" class="nav-menu_link-anchor">Proceso de Ingreso</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#proceso-admision" class="nav-menu_link-anchor">Agenda una Visita</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#proceso-admision" class="nav-menu_link-anchor">Costos y Colegiaturas</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#proceso-admision" class="nav-menu_link-anchor">Preguntas Frecuentes</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+            
+            <!-- Category 4: Comunidad -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component">
+              <summary class="nav-menu_link-group-tab_title">
+                <span class="nav-menu_link-group-tab_title-text">Comunidad</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="#portal-comunidad" class="nav-menu_link-anchor">Asistente Virtual</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#blog" class="nav-menu_link-anchor">Blog Educativo</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#portal-comunidad" class="nav-menu_link-anchor">Portal para Familias</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+          </div>
+          
+          <!-- Column 3: Quicklinks Card -->
+          <div class="nav-menu_quicklinks_component">
+            <div class="nav-menu_quicklinks_wrap">
+              <div class="nav-menu_quicklinks-title text-mono">// RECURSOS</div>
+              <ul class="nav-menu_quicklinks_list">
+                <li class="nav-menu_quicklinks_item">
+                  <a href="#proceso-admision" class="nav-menu_quicklinks_item-link">Agenda una Cita</a>
+                </li>
+                <li class="nav-menu_quicklinks_item">
+                  <a href="#main-footer" class="nav-menu_quicklinks_item-link">Contacto Directo</a>
+                </li>
+                <li class="nav-menu_quicklinks_item">
+                  <a href="#main-footer" class="nav-menu_quicklinks_item-link">Ubicación Google Maps</a>
+                </li>
+                <li class="nav-menu_quicklinks_item">
+                  <a href="aviso-de-privacidad.html" target="_blank" class="nav-menu_quicklinks_item-link">Aviso de Privacidad</a>
+                </li>
+                <li class="nav-menu_quicklinks_item">
+                  <a href="terminos-y-condiciones.html" target="_blank" class="nav-menu_quicklinks_item-link">Términos y Condiciones</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Bottom Row: Footer credentials & social -->
+          <div class="nav-menu_footer-wrapper">
+            <div class="nav-menu_footer-credits">
+              <p class="nav-menu_credits-text text-mono">© 2026 Centro Escolar El Paraíso</p>
+              <span class="nav-menu_credits-separator">//</span>
+              <a href="https://maps.app.goo.gl/MAz2HkypCU6WLNyF9" target="_blank" class="nav-menu_footer-link">Edo. de México, México</a>
+              <span class="nav-menu_credits-separator">//</span>
+              <a href="tel:+525512345678" class="nav-menu_footer-link">+52 (55) 1234 5678</a>
+            </div>
+            
+            <div class="nav-menu_footer-socials">
+              <a href="#" class="social-icon-link" aria-label="Facebook">Fb</a>
+              <a href="#" class="social-icon-link" aria-label="Instagram">Ig</a>
+              <a href="#" class="social-icon-link" aria-label="LinkedIn">Ln</a>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </dialog>
+
+  <!-- --- JAVASCRIPT LOGIC --- -->
+  <script src="app.js"></script>
+</body>
+</html>
