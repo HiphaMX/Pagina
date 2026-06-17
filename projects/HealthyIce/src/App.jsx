@@ -942,6 +942,22 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="section" style={{ position: 'relative', overflow: 'hidden', background: '#f8fafc' }}>
+        <div className="hero-grid-bg"></div>
+        <div className="hero-crosshair-x"></div>
+        <div className="hero-crosshair-y"></div>
+        <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+          <h2 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: '#101729' }}>¿Listo para hacer tu pedido?</h2>
+          <p style={{ fontSize: '1.25rem', marginBottom: '2.5rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto 2.5rem auto', color: '#101729' }}>
+            Únete a la revolución de los postres saludables. Prueba la línea de paletas HealthyIce hoy mismo y sorpréndete.
+          </p>
+          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ padding: '1.25rem 3rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, borderRadius: '9999px' }}>
+            Hacer mi pedido
+          </button>
+        </div>
+      </section>
+
       {/* Hazte Socio Section */}
       <section id="hazte-socio" className="section" style={{ background: '#020617', color: 'white', position: 'relative', overflow: 'hidden', borderTop: '1px solid rgba(255, 255, 255, 0.05)', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
         {/* Futuristic Background grid & lights */}
@@ -1254,22 +1270,6 @@ ${partnerLeadForm.mensaje || 'Sin mensaje adicional.'}`;
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section" style={{ position: 'relative', overflow: 'hidden', background: '#f8fafc' }}>
-        <div className="hero-grid-bg"></div>
-        <div className="hero-crosshair-x"></div>
-        <div className="hero-crosshair-y"></div>
-        <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <h2 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: '#101729' }}>¿Listo para el cambio?</h2>
-          <p style={{ fontSize: '1.25rem', marginBottom: '2.5rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto 2.5rem auto', color: '#101729' }}>
-            Únete a la revolución de los postres saludables. Prueba la línea de paletas HealthyIce hoy mismo y sorpréndete.
-          </p>
-          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ padding: '1.25rem 3rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, borderRadius: '9999px' }}>
-            Hacer mi pedido
-          </button>
         </div>
       </section>
       
