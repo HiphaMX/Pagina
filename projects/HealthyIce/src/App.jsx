@@ -11,7 +11,7 @@ const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
 
 const FlavorCard = ({ flavor, idx, onPedir }) => {
   const [selectedLine, setSelectedLine] = useState('ProT Fit 0');
-  const price = 40;
+  const price = 45;
 
   return (
     <motion.div 
@@ -1053,7 +1053,7 @@ function App() {
                     ${(Math.round(calcMembers * calcRate) * 30 * (calcRate === 0.05 ? 8.50 : 9.50)).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span style={{ fontSize: '1rem', fontWeight: 600, color: '#94a3b8' }}>MXN</span>
                   </h4>
                   <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>
-                    *Precio de venta sugerido por paleta: $40 MXN
+                    *Precio de venta sugerido por paleta: $45 MXN
                   </span>
                 </div>
               </div>
