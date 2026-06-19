@@ -81,17 +81,7 @@ app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dashboard"])
 
-@app.get("/api/debug-smtp")
-def debug_smtp():
-    from app.core.config import settings
-    return {
-        "SMTP_HOST": settings.SMTP_HOST,
-        "SMTP_PORT": settings.SMTP_PORT,
-        "SMTP_USER": settings.SMTP_USER,
-        "SMTP_PASSWORD_LEN": len(settings.SMTP_PASSWORD),
-        "SMTP_PASSWORD_MASK": settings.SMTP_PASSWORD[:2] + "..." + settings.SMTP_PASSWORD[-2:] if len(settings.SMTP_PASSWORD) > 4 else "...",
-        "EMAILS_FROM_EMAIL": settings.EMAILS_FROM_EMAIL
-    }
+
 
 @app.get("/")
 def read_root():

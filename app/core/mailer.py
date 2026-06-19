@@ -10,6 +10,20 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+async def _send_smtp(message):
+    use_tls = (settings.SMTP_PORT == 465)
+    start_tls = (settings.SMTP_PORT != 465)
+    await aiosmtplib.send(
+        message,
+        hostname=settings.SMTP_HOST,
+        port=settings.SMTP_PORT,
+        username=settings.SMTP_USER,
+        password=settings.SMTP_PASSWORD,
+        use_tls=use_tls,
+        start_tls=start_tls
+    )
+
+
 def format_spanish_date(date_str: str) -> str:
     if not date_str:
         return 'N/A'
@@ -157,14 +171,7 @@ async def send_lead_followup_email(lead_name: str, lead_email: str):
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info(f"Correo enviado exitosamente a {lead_email}")
         return True
     except Exception as e:
@@ -211,14 +218,7 @@ async def send_lead_notification_to_team(form_data):
             logger.error(f"Error al generar o adjuntar PDF en send_lead_notification_to_team: {e}")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info("Notificación de lead enviada al equipo")
         return True
     except Exception as e:
@@ -253,14 +253,7 @@ async def send_newsletter_welcome(subscriber_email: str):
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar bienvenida de newsletter: {str(e)}")
@@ -286,14 +279,7 @@ async def send_newsletter_notification_to_team(subscriber_email: str):
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar notificación de newsletter al equipo: {str(e)}")
@@ -330,14 +316,7 @@ async def send_botica_order_customer(payer_name: str, payer_email: str, order_de
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo a cliente botica: {str(e)}")
@@ -376,14 +355,7 @@ async def send_botica_order_team(payer_name: str, payer_email: str, payer_phone:
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo al equipo botica: {str(e)}")
@@ -445,14 +417,7 @@ async def send_contract_followup_email(form_data):
         logger.error(f"Error al generar o adjuntar PDF en send_contract_followup_email: {e}")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info(f"Correo de contrato enviado exitosamente a {form_data.email}")
         return True
     except Exception as e:
@@ -491,14 +456,7 @@ async def send_healthyice_order_customer(form_data):
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo a cliente HealthyIce: {str(e)}")
@@ -538,14 +496,7 @@ async def send_healthyice_order_team(form_data):
     message.set_content(html_content, subtype="html")
     
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo al equipo HealthyIce: {str(e)}")
@@ -991,14 +942,7 @@ async def send_healthyice_contract_customer(form_data):
         logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_customer: {e}")
         
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info(f"Correo de contrato HealthyIce enviado a cliente: {form_data.email}")
         return True
     except Exception as e:
@@ -1083,14 +1027,7 @@ async def send_healthyice_contract_team(form_data):
         logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_team: {e}")
         
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info("Notificacion de contrato HealthyIce enviada al equipo")
         return True
     except Exception as e:
@@ -1176,14 +1113,7 @@ async def send_whiteclean_confirmation_email(form_data):
     message.set_content(html_content, subtype="html")
 
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info(f"Correo de confirmación WhiteClean enviado exitosamente a {form_data.email}")
         return True
     except Exception as e:
@@ -1264,14 +1194,7 @@ async def send_whiteclean_notification_team(form_data):
     message.set_content(html_content, subtype="html")
 
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info("Notificación de lead WhiteClean enviada con éxito al equipo y socio.")
         return True
     except Exception as e:
@@ -1361,14 +1284,7 @@ async def send_chilechillon_confirmation_email(form_data):
     message.set_content(html_content, subtype="html")
 
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info(f"Correo de confirmación Chile Chillón enviado con éxito a {form_data.email}")
         return True
     except Exception as e:
@@ -1452,14 +1368,7 @@ async def send_chilechillon_notification_team(form_data):
     message.set_content(html_content, subtype="html")
 
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info("Notificación de lead Chile Chillón enviada con éxito al equipo.")
         return True
     except Exception as e:
@@ -1549,14 +1458,7 @@ async def send_grupogari_confirmation_email(form_data):
     message.set_content(html_content, subtype="html")
 
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info(f"Correo de confirmación Grupo Gari enviado exitosamente a {form_data.email}")
         return True
     except Exception as e:
@@ -1646,14 +1548,7 @@ async def send_grupogari_notification_team(form_data):
     message.set_content(html_content, subtype="html")
 
     try:
-        await aiosmtplib.send(
-            message,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            start_tls=True
-        )
+        await _send_smtp(message)
         logger.info("Notificación de lead Grupo Gari enviada con éxito al equipo.")
         return True
     except Exception as e:
