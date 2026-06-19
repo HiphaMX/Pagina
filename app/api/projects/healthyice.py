@@ -5,7 +5,9 @@ from app.api.projects.hipha import ContactForm
 from app.core.mailer import (
     send_healthyice_order_customer,
     send_healthyice_order_team,
-    generate_healthyice_contract_pdf
+    generate_healthyice_contract_pdf,
+    send_healthyice_contract_customer,
+    send_healthyice_contract_team
 )
 
 router = APIRouter()
@@ -53,6 +55,17 @@ async def submit_healthyice_form(form_data: ContactForm):
 async def submit_healthyice_contract(form_data: HealthyIceContractForm):
     try:
         pdf_bytes = generate_healthyice_contract_pdf(form_data)
+        
+        # If it's a digital signature/submission, email the contract to customer and team
+        if not form_data.llenado_manual:
+            try:
+                await send_healthyice_contract_customer(form_data)
+                await send_healthyice_contract_team(form_data)
+            except Exception as email_err:
+                # Log email failure but don't block the user's PDF download
+                import logging
+                logging.getLogger(__name__).error(f"Error sending contract emails: {str(email_err)}")
+                
         razon_social = form_data.razon_social or "Formato_Manual"
         safe_name = razon_social.replace(' ', '_').replace('/', '_')
         return Response(
