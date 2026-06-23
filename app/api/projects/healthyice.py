@@ -40,12 +40,14 @@ class HealthyIceContractForm(BaseModel):
 
 @router.post("/healthyice")
 async def submit_healthyice_form(form_data: ContactForm):
-    # Por ahora omitimos el envío de correos de notificación del lead por petición del usuario
-    # customer_email_sent = await send_healthyice_order_customer(form_data)
-    # team_email_sent = await send_healthyice_order_team(form_data)
+    # Enviar correo de confirmación al cliente
+    customer_email_sent = await send_healthyice_order_customer(form_data)
     
-    # if not customer_email_sent and not team_email_sent:
-    #     raise HTTPException(status_code=500, detail="Error al enviar correos")
+    # Enviar correo de notificación al equipo
+    team_email_sent = await send_healthyice_order_team(form_data)
+    
+    if not customer_email_sent and not team_email_sent:
+        raise HTTPException(status_code=500, detail="Error al enviar correos")
         
     return {"message": "Formulario recibido correctamente"}
 
@@ -57,10 +59,8 @@ async def submit_healthyice_contract(form_data: HealthyIceContractForm):
         # If it's a digital signature/submission, email the contract to customer and team
         if not form_data.llenado_manual:
             try:
-                # Por ahora omitimos el envío de correos de contrato por petición del usuario
-                # await send_healthyice_contract_customer(form_data)
-                # await send_healthyice_contract_team(form_data)
-                pass
+                await send_healthyice_contract_customer(form_data)
+                await send_healthyice_contract_team(form_data)
             except Exception as email_err:
                 # Log email failure but don't block the user's PDF download
                 import logging
