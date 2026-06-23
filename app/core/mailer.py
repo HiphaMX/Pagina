@@ -1556,3 +1556,90 @@ async def send_grupogari_notification_team(form_data):
         return False
 
 
+async def send_valencia_servicios_notification_team(form_data):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a equipo Valencia Servicios: {form_data.nombre_completo}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Valencia Servicios Web <contacto@valenciaservicios.com.mx>"
+    recipient = settings.SMTP_USER if settings.SMTP_USER else "contacto@valenciaservicios.com.mx"
+    message["To"] = recipient
+    message["Subject"] = f"🛠️ NUEVO SERVICIO SOLICITADO: {form_data.nombre_completo} - {form_data.servicio_requerido}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="valenciaservicios.com.mx")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1f2937; background-color: #f3f4f6; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;">
+            
+            <!-- Header con la identidad de Valencia Servicios -->
+            <div style="background-color: #0f172a; padding: 30px 20px; text-align: center; border-bottom: 4px solid #00f0ff;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">
+                    <span style="color: #00f0ff;">Valencia</span> Servicios
+                </h1>
+                <p style="margin: 5px 0 0 0; font-size: 13px; color: #94a3b8; letter-spacing: 1px;">NOTIFICACIÓN DE NUEVA SOLICITUD</p>
+            </div>
+            
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 40px 30px;">
+                <p style="font-size: 16px; line-height: 1.6; color: #4b5563; margin-top: 0; margin-bottom: 25px;">
+                    Se ha recibido una nueva solicitud de servicio desde el formulario de la landing page. A continuación, se detallan los datos del cliente para su atención inmediata:
+                </p>
+                
+                <!-- Tabla con detalles de solicitud -->
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 15px;">
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #0f172a; width: 160px; background-color: #f9fafb; border-radius: 8px 0 0 8px;">Nombre Completo:</td>
+                        <td style="padding: 12px 10px; color: #111827; background-color: #f9fafb; border-radius: 0 8px 8px 0;">{form_data.nombre_completo}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #0f172a; background-color: #ffffff;">Teléfono:</td>
+                        <td style="padding: 12px 10px; color: #111827; background-color: #ffffff;">
+                            <a href="tel:{form_data.telefono}" style="color: #00b4d8; text-decoration: none; font-weight: bold;">{form_data.telefono}</a>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #0f172a; background-color: #f9fafb; border-radius: 8px 0 0 8px;">Servicio Solicitado:</td>
+                        <td style="padding: 12px 10px; color: #00b4d8; font-weight: bold; background-color: #f9fafb; border-radius: 0 8px 8px 0;">{form_data.servicio_requerido}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #0f172a; background-color: #ffffff;">Dirección del Servicio:</td>
+                        <td style="padding: 12px 10px; color: #111827; background-color: #ffffff;">{form_data.direccion}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #0f172a; background-color: #f9fafb; border-radius: 8px 0 0 8px;">Horario Preferido:</td>
+                        <td style="padding: 12px 10px; color: #111827; background-color: #f9fafb; border-radius: 0 8px 8px 0;">{form_data.horario_preferido}</td>
+                    </tr>
+                </table>
+                
+                <div style="background-color: #ecfeff; border-left: 4px solid #00f0ff; padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px;">
+                    <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #0e7490; font-weight: 500;">
+                        💡 <strong>Sugerencia:</strong> Haz clic en el número de teléfono arriba para llamar directamente al cliente o guardarlo.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Footer del Correo -->
+            <div style="background-color: #f9fafb; padding: 25px; text-align: center; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af;">
+                <p style="margin: 0 0 8px 0;">Este correo fue generado automáticamente por la landing page de <strong>Valencia Servicios</strong>.</p>
+                <p style="margin: 0;">Zona de Servicio Principal: Zapopan, Jalisco.</p>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message)
+        logger.info(f"Notificación de Valencia Servicios enviada con éxito para el cliente {form_data.nombre_completo}")
+        return True
+    except Exception as e:
+        logger.error(f"Error al enviar notificación de Valencia Servicios para el cliente {form_data.nombre_completo}: {str(e)}")
+        return False
+
+
+

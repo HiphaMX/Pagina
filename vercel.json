@@ -11,7 +11,7 @@
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob:; connect-src 'self' https://api.whatsapp.com https://www.instagram.com"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://api.whatsapp.com https://www.instagram.com"
         }
       ]
     }
@@ -50,6 +50,14 @@
     {
       "src": "/neon-configurador-premium",
       "dest": "/neon-configurador-premium.html"
+    },
+    {
+      "src": "/valencia-servicios",
+      "dest": "/projects/ValenciaServicios/index.html"
+    },
+    {
+      "src": "/Assets/(.*)",
+      "dest": "/projects/ValenciaServicios/Assets/$1"
     },
     {
       "handle": "filesystem"
