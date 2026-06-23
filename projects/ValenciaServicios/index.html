@@ -1302,6 +1302,15 @@
                 left: 12px;
                 bottom: 12px;
             }
+            .why-card {
+                align-items: center;
+                text-align: center;
+                padding: 2rem 1.5rem;
+            }
+            .why-icon {
+                margin-left: auto;
+                margin-right: auto;
+            }
         }
     </style>
 </head>
@@ -1985,7 +1994,7 @@
         }
 
         // --- Form Submission Handling (with WhatsApp Redirect) ---
-        async function handleFormSubmit(e) {
+        function handleFormSubmit(e) {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
@@ -2012,59 +2021,43 @@
                 return;
             }
 
-            // Set loading state
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            feedback.style.display = 'none';
+            // 1. Format WhatsApp URL with prefilled text
+            const message = `Hola Valencia Servicios, me gustaría solicitar una cotización para un servicio técnico.\n\n` +
+                            `*Nombre completo:* ${nombre}\n` +
+                            `*Teléfono:* ${telefono}\n` +
+                            `*Servicio requerido:* ${servicio}\n` +
+                            `*Dirección:* ${direccion}\n` +
+                            `*Horario preferido:* ${horarioVal}`;
+            
+            const encodedText = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/523315848420?text=${encodedText}`;
 
-            try {
-                // 1. Submit to FastAPI backend for tracking and logs/email alerts
-                const response = await fetch('/api/contact/valencia-servicios', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        nombre_completo: nombre,
-                        telefono: telefono,
-                        servicio_requerido: servicio,
-                        direccion: direccion,
-                        horario_preferido: horarioVal
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showFeedback('¡Solicitud registrada! Redirigiendo a WhatsApp para enviar tus datos...', 'success');
-                    
-                    // 2. Format WhatsApp URL with prefilled text
-                    const message = `Hola Valencia Servicios, me gustaría solicitar una cotización para un servicio técnico.\n\n` +
-                                    `*Nombre completo:* ${nombre}\n` +
-                                    `*Teléfono:* ${telefono}\n` +
-                                    `*Servicio requerido:* ${servicio}\n` +
-                                    `*Dirección:* ${direccion}\n` +
-                                    `*Horario preferido:* ${horarioVal}`;
-                    
-                    const encodedText = encodeURIComponent(message);
-                    const whatsappUrl = `https://wa.me/523315848420?text=${encodedText}`;
-                    
-                    // 3. Open WhatsApp in new window and reset form
-                    setTimeout(() => {
-                        window.open(whatsappUrl, '_blank');
-                        document.getElementById('serviceForm').reset();
-                        feedback.style.display = 'none';
-                    }, 1200);
-                } else {
-                    showFeedback(data.detail || 'Hubo un problema al procesar tu solicitud. Inténtalo de nuevo.', 'error');
-                }
-            } catch (err) {
-                console.error(err);
-                showFeedback('No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.', 'error');
-            } finally {
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
+            // 2. Open WhatsApp instantly in a new window/tab (synchronously inside the click handler to bypass popup blockers)
+            const newWindow = window.open(whatsappUrl, '_blank');
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                // If popup blocker active, fallback to direct redirect in same tab
+                window.location.href = whatsappUrl;
             }
+
+            // 3. Reset form and show success feedback in current page
+            document.getElementById('serviceForm').reset();
+            showFeedback('¡Solicitud enviada! Se ha abierto WhatsApp para continuar tu cotización.', 'success');
+
+            // 4. Submit to FastAPI backend in the background (with keepalive to guarantee delivery on page unload)
+            fetch('/api/contact/valencia-servicios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre_completo: nombre,
+                    telefono: telefono,
+                    servicio_requerido: servicio,
+                    direccion: direccion,
+                    horario_preferido: horarioVal
+                }),
+                keepalive: true
+            }).catch(err => console.error("Error reporting lead in background:", err));
         }
 
         function showFeedback(message, type) {
