@@ -18,14 +18,3 @@ node_modules/
 **/node_modules/
 **/venv/
 
-# Ignore frontend projects not served by backend routes
-projects/HealthyIce/
-projects/BoticaSilvestre/
-projects/WhiteClean/
-projects/uro-oncology/
-projects/ChileChillon/
-projects/Centro Escolar El Paraiso/
-projects/GrupoGari/
-projects/Letrerama/
-projects/ni2/
-projects/DAM/
