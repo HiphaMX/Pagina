@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             cartItemsContainer.appendChild(itemEl);
         });
-        const shippingCost = total > 590 ? 0 : (total > 0 ? 180 : 0);
+        const shippingCost = total > 690 ? 0 : (total > 0 ? 180 : 0);
         const grandTotal = total + shippingCost;
-        const shippingText = total === 0 ? '$0.00 MXN' : (total > 590 ? '<span style="color:var(--color-primary-light);">¡Gratis!</span>' : '$180.00 MXN');
+        const shippingText = total === 0 ? '$0.00 MXN' : (total > 690 ? '<span style="color:var(--color-primary-light);">¡Gratis!</span>' : '$180.00 MXN');
 
         const cartFooterTotal = cartSidebar.querySelector('.cart-total');
         if (cartFooterTotal) {
@@ -229,7 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="tel" id="checkout-phone" placeholder="Teléfono / WhatsApp *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="email" id="checkout-email" placeholder="Email *" required style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         
-        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--color-primary); font-weight: 500;">Dirección de Envío</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+            <p style="font-size: 0.9rem; color: var(--color-primary); font-weight: 500; margin:0;">Dirección de Envío</p>
+            <span style="font-size: 0.75rem; color: #c0392b; font-weight: 500; background: #fdf2f2; padding: 2px 6px; border-radius: 3px; border: 1px solid rgba(192, 57, 43, 0.1);">Solo México 🇲🇽</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.3;">⚠️ Actualmente solo realizamos envíos nacionales dentro de la República Mexicana.</p>
         <input type="text" id="checkout-street" placeholder="Calle y Número *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="text" id="checkout-neighborhood" placeholder="Colonia *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
         <input type="text" id="checkout-city" placeholder="Ciudad *" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid rgba(64, 83, 76, 0.2); border-radius: 4px; font-family: inherit; font-size: 0.9rem;">
