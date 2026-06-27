@@ -470,7 +470,7 @@ async def send_healthyice_order_team(form_data):
     message = EmailMessage()
     message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
     message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["To"] = "hola@healthyice.mx"
+    message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
     message["Subject"] = f"NUEVO PROSPECTO WEB: {form_data.nombre}"
     
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>')
@@ -958,7 +958,7 @@ async def send_healthyice_contract_team(form_data):
     message = EmailMessage()
     from_header = f"HealthyIce Web <{settings.SMTP_USER}>"
     message["From"] = from_header
-    message["To"] = "hola@healthyice.mx"
+    message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
     message.add_header('Reply-To', 'hola@healthyice.mx')
     message["Subject"] = f"NUEVO SOCIO COMERCIAL FIRMADO: {form_data.razon_social}"
     message["Date"] = formatdate(localtime=True)
