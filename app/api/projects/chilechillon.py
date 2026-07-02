@@ -334,20 +334,31 @@ async def register_chilechillon_vote(form_data: QuinielaVoteForm, db: Session = 
 @router.get("/chilechillon/quiniela/results")
 async def get_quiniela_results(db: Session = Depends(get_db)):
     try:
-        # Initialize counts for matches 1 to 13
-        results = {str(i): {"A": 0, "B": 0} for i in range(1, 14)}
+        leads = db.query(ChileChillonLead).all()
+        total_votes = len(leads)
         
-        for lead in db.query(ChileChillonLead).all():
-            if lead.votos:
-                try:
-                    user_votes = json.loads(lead.votos)
-                    for match_id, opt in user_votes.items():
-                        if match_id in results and opt in ["A", "B"]:
-                            results[match_id][opt] += 1
-                except Exception:
-                    continue
-                    
-        return results
+        counts = {
+            "arb": 0,
+            "hab": 0,
+            "tat": 0,
+            "ser": 0,
+            "neg": 0
+        }
+        
+        for lead in leads:
+            fav = lead.prediccion_campeon
+            if fav in counts:
+                counts[fav] += 1
+                
+        percentages = {}
+        for key, count in counts.items():
+            percentages[key] = round((count / total_votes * 100), 1) if total_votes > 0 else 0.0
+            
+        return {
+            "total_votes": total_votes,
+            "counts": counts,
+            "percentages": percentages
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener resultados: {str(e)}")
 

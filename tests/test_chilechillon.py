@@ -203,4 +203,17 @@ def test_export_leads_authorized(client):
     assert "3399887766" in csv_data
     assert "TAT" in csv_data
 
+def test_get_quiniela_results(client):
+    response = client.get("/api/contact/chilechillon/quiniela/results")
+    assert response.status_code == 200
+    data = response.json()
+    assert "total_votes" in data
+    assert "counts" in data
+    assert "percentages" in data
+    # Since previous tests inserted some leads:
+    assert data["total_votes"] > 0
+    assert "tat" in data["counts"]
+    assert "neg" in data["counts"]
+
+
 
