@@ -1,5 +1,10 @@
 {
   "cleanUrls": true,
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "projects/**"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -20,6 +25,52 @@
     {
       "src": "/api/(.*)",
       "dest": "/api"
+    },
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?amdi\\.mx$"
+        }
+      ],
+      "dest": "/projects/AMDI/$1"
+    },
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/urologia-avanzada/$1"
+    },
+    {
+      "src": "/amdi",
+      "status": 308,
+      "headers": { "Location": "/amdi/" }
+    },
+    {
+      "src": "/amdi/",
+      "dest": "/projects/AMDI/index.html"
+    },
+    {
+      "src": "/amdi/(.*)",
+      "dest": "/projects/AMDI/$1"
+    },
+    {
+      "src": "/urologia-avanzada",
+      "status": 308,
+      "headers": { "Location": "/urologia-avanzada/" }
+    },
+    {
+      "src": "/urologia-avanzada/",
+      "dest": "/projects/urologia-avanzada/index.html"
+    },
+    {
+      "src": "/urologia-avanzada/(.*)",
+      "dest": "/projects/urologia-avanzada/$1"
     },
     {
       "src": "/index\\.html",
@@ -58,6 +109,19 @@
     {
       "src": "/Assets/(.*)",
       "dest": "/projects/ValenciaServicios/Assets/$1"
+    },
+    {
+      "src": "/ni2",
+      "status": 308,
+      "headers": { "Location": "/ni2/" }
+    },
+    {
+      "src": "/ni2/",
+      "dest": "/projects/ni2/web/index.html"
+    },
+    {
+      "src": "/ni2/(css|js)/(.*)",
+      "dest": "/projects/ni2/web/$1/$2"
     },
     {
       "handle": "filesystem"
