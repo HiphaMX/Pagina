@@ -907,7 +907,6 @@ function App() {
           </div>
           <div className="desktop-links" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
             <a href="#void-fall" onClick={(e) => { e.preventDefault(); navigateToSection('void-fall'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>¿Por qué HealthyIce?</a>
-            <a href="#lineas" onClick={(e) => { e.preventDefault(); navigateToSection('lineas'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Nuestras Opciones</a>
             <a href="#sabores" onClick={(e) => { e.preventDefault(); navigateToSection('sabores'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Sabores</a>
             <a href="#hazte-socio" onClick={(e) => { e.preventDefault(); navigateToSection('hazte-socio'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Hazte Socio</a>
             <a 
