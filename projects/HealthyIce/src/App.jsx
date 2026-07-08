@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail, TrendingUp, Megaphone, Award, Users } from 'lucide-react';
+import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail, TrendingUp, Megaphone, Award, Users, MapPin } from 'lucide-react';
 
 const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -11,7 +11,9 @@ const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
 
 const FlavorCard = ({ flavor, idx, onPedir }) => {
   const [selectedLine, setSelectedLine] = useState('ProT Fit 0');
-  const price = 45;
+  const [selectedFormat, setSelectedFormat] = useState('1 pieza');
+  const unitPrice = 50;
+  const price = selectedFormat === '1 pieza' ? unitPrice : unitPrice * 5;
 
   return (
     <motion.div 
@@ -44,10 +46,12 @@ const FlavorCard = ({ flavor, idx, onPedir }) => {
       </motion.div>
       <h3 style={{ fontSize: '1.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: '#101729', marginBottom: '1rem' }}>{flavor.name}</h3>
       
-      {/* Selector de Línea y Precio */}
+      {/* Selector de Línea, Formato y Precio */}
       <div style={{ width: '100%', background: '#f8fafc', padding: '1rem', borderRadius: '16px', marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+        {/* Selector de Línea */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
           <button 
+            type="button"
             onClick={() => setSelectedLine('ProT Fit 0')}
             style={{ 
               flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
@@ -60,6 +64,7 @@ const FlavorCard = ({ flavor, idx, onPedir }) => {
             <span style={{ color: selectedLine === 'ProT Fit 0' ? '#98BC3C' : '#64748b' }}>ProT Fit 0</span>
           </button>
           <button 
+            type="button"
             onClick={() => setSelectedLine('ProT Light')}
             style={{ 
               flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
@@ -72,15 +77,49 @@ const FlavorCard = ({ flavor, idx, onPedir }) => {
             <span style={{ color: selectedLine === 'ProT Light' ? 'var(--primary)' : '#64748b' }}>ProT Light</span>
           </button>
         </div>
+
+        {/* Selector de Formato */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <button 
+            type="button"
+            onClick={() => setSelectedFormat('1 pieza')}
+            style={{ 
+              flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
+              border: 'none',
+              background: selectedFormat === '1 pieza' ? '#98BC3C' : 'rgba(255, 255, 255, 0.4)', 
+              color: selectedFormat === '1 pieza' ? 'white' : '#64748b',
+              boxShadow: selectedFormat === '1 pieza' ? '0 4px 12px rgba(152,188,60,0.2)' : 'none',
+              cursor: 'pointer', transition: 'all 0.2s'
+            }}
+          >
+            1 Pieza
+          </button>
+          <button 
+            type="button"
+            onClick={() => setSelectedFormat('pack de 5')}
+            style={{ 
+              flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
+              border: 'none',
+              background: selectedFormat === 'pack de 5' ? '#98BC3C' : 'rgba(255, 255, 255, 0.4)', 
+              color: selectedFormat === 'pack de 5' ? 'white' : '#64748b',
+              boxShadow: selectedFormat === 'pack de 5' ? '0 4px 12px rgba(152,188,60,0.2)' : 'none',
+              cursor: 'pointer', transition: 'all 0.2s'
+            }}
+          >
+            Pack 5 pzas
+          </button>
+        </div>
+
         <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#101729' }}>${price}.00 <span style={{ fontSize: '0.875rem', color: '#64748b', fontWeight: 400 }}>MXN</span></div>
       </div>
 
       <button 
-        onClick={() => onPedir(flavor, selectedLine)}
+        type="button"
+        onClick={() => onPedir(flavor, selectedLine, selectedFormat, price)}
         className="btn btn-primary"
         style={{ width: '100%', padding: '0.875rem', borderRadius: '999px', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
       >
-        Hacer mi pedido
+        Agregar al carrito
       </button>
     </motion.div>
   );
@@ -192,6 +231,13 @@ function App() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms' or 'partners'
+  const [vivoEnZMG, setVivoEnZMG] = useState(false);
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      setVivoEnZMG(false);
+    }
+  }, [isModalOpen]);
 
   // Calculator state
   const [calcMembers, setCalcMembers] = useState(400);
@@ -397,7 +443,7 @@ function App() {
 
   const addToCart = (item) => {
     setCart(prev => {
-      const existing = prev.find(i => i.name === item.name && i.line === item.line);
+      const existing = prev.find(i => i.name === item.name && i.line === item.line && i.format === item.format);
       if (existing) {
         return prev.map(i => i === existing ? { ...i, quantity: i.quantity + 1 } : i);
       }
@@ -622,10 +668,42 @@ function App() {
     return partnerForm.fecha_inicio_anio || new Date().getFullYear();
   };
 
+  const totalPopsiclesInCart = cart.reduce((sum, item) => sum + (item.format === '1 pieza' ? item.quantity : item.quantity * 5), 0);
+  const totalAmountInCart = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
   return (
     <>
+      {/* Announcement Banner */}
+      <div 
+        className="announcement-banner"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '40px',
+          background: '#101729',
+          color: '#cbd5e1',
+          display: scrolled ? 'none' : 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '0.85rem',
+          fontFamily: "'Outfit', sans-serif",
+          fontWeight: 600,
+          zIndex: 99,
+          gap: '0.5rem',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          padding: '0 1rem',
+          textAlign: 'center'
+        }}
+      >
+        <MapPin size={16} style={{ color: '#98BC3C' }} />
+        <span>Por lanzamiento envío de pedidos únicamente en <strong>ZMG</strong>, pregunta por la zona de cobertura.</span>
+      </div>
+
       {/* Navigation */}
-      <nav className={`nav-bar ${scrolled ? 'nav-scrolled' : ''}`}>
+      <nav className={`nav-bar ${scrolled ? 'nav-scrolled' : ''}`} style={{ top: scrolled ? 0 : '40px' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', zIndex: 60 }}>
             {/* The Logo from assets folder */}
@@ -637,9 +715,50 @@ function App() {
             <a href="#sabores" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Sabores</a>
             <a href="#hazte-socio" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Hazte Socio</a>
           </div>
-          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary nav-cta-btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px', zIndex: 60 }}>
-            Hacer mi pedido
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', zIndex: 60 }}>
+            <button 
+              type="button"
+              onClick={() => setIsCartOpen(true)}
+              style={{
+                background: 'rgba(255,255,255,0.8)',
+                border: '1px solid #cbd5e1',
+                borderRadius: '50%',
+                width: '44px',
+                height: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                position: 'relative',
+                color: '#101729',
+                transition: 'all 0.2s'
+              }}
+            >
+              <ShoppingCart size={20} />
+              {cart.length > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-4px',
+                  right: '-4px',
+                  background: '#98BC3C',
+                  color: 'white',
+                  borderRadius: '50%',
+                  width: '18px',
+                  height: '18px',
+                  fontSize: '0.7rem',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {totalPopsiclesInCart}
+                </span>
+              )}
+            </button>
+            <button onClick={() => setIsModalOpen(true)} className="btn btn-primary nav-cta-btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>
+              Hacer mi pedido
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -916,7 +1035,7 @@ function App() {
 
           <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {flavors.map((flavor, idx) => (
-              <FlavorCard key={idx} flavor={flavor} idx={idx} onPedir={handleFlavorOrder} />
+              <FlavorCard key={idx} flavor={flavor} idx={idx} onPedir={(flavor, line, format, price) => addToCart({ name: flavor.name, line, format, price, color: flavor.color, image: flavor.image })} />
             ))}
           </div>
         </div>
@@ -1053,7 +1172,7 @@ function App() {
                     ${(Math.round(calcMembers * calcRate) * 30 * (calcRate === 0.05 ? 8.50 : 9.50)).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span style={{ fontSize: '1rem', fontWeight: 600, color: '#94a3b8' }}>MXN</span>
                   </h4>
                   <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>
-                    *Precio de venta sugerido por paleta: $45 MXN
+                    *Precio de venta sugerido por paleta: $50 MXN
                   </span>
                 </div>
               </div>
@@ -1214,6 +1333,265 @@ function App() {
         </div>
       </footer>
 
+      {/* Floating Shopping Cart Button */}
+      <AnimatePresence>
+        {cart.length > 0 && (
+          <motion.button
+            onClick={() => setIsCartOpen(true)}
+            style={{
+              position: 'fixed',
+              bottom: '2rem',
+              right: '2rem',
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: '#98BC3C',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 8px 32px rgba(152, 188, 60, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9998,
+              border: '2px solid white'
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+          >
+            <ShoppingCart size={28} />
+            <span style={{
+              position: 'absolute',
+              top: '-5px',
+              right: '-5px',
+              background: '#101729',
+              color: 'white',
+              borderRadius: '50%',
+              width: '24px',
+              height: '24px',
+              fontSize: '0.8rem',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '2px solid white'
+            }}>
+              {totalPopsiclesInCart}
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Cart Drawer */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <motion.div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(15, 23, 42, 0.4)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              zIndex: 9990,
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsCartOpen(false)}
+          >
+            <motion.div
+              style={{
+                background: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                borderLeft: '1px solid rgba(255, 255, 255, 0.5)',
+                width: '100%',
+                maxWidth: '450px',
+                height: '100%',
+                padding: '2rem',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: '-10px 0 30px rgba(0,0,0,0.1)'
+              }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <ShoppingCart size={24} style={{ color: '#101729' }} />
+                  <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#101729', margin: 0, fontFamily: "'Outfit', sans-serif" }}>Mi Carrito</h2>
+                </div>
+                <button 
+                  onClick={() => setIsCartOpen(false)}
+                  style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Cart Items */}
+              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingRight: '0.5rem' }}>
+                {cart.length === 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b' }}>
+                    <ShoppingCart size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+                    <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>Tu carrito está vacío</p>
+                    <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>¡Agrega deliciosas paletas para comenzar!</p>
+                  </div>
+                ) : (
+                  cart.map((item, idx) => (
+                    <div 
+                      key={`${item.name}-${item.line}-${item.format}`}
+                      style={{
+                        background: 'white',
+                        borderRadius: '16px',
+                        padding: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.03)'
+                      }}
+                    >
+                      {item.image ? (
+                        <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+                      ) : (
+                        <div style={{ width: '60px', height: '60px', background: item.color, borderRadius: '12px' }}></div>
+                      )}
+                      <div style={{ flex: 1 }}>
+                        <h4 style={{ margin: 0, fontSize: '1rem', color: '#101729', fontWeight: 700 }}>{item.name}</h4>
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                          <span style={{ fontSize: '0.75rem', background: item.line === 'ProT Fit 0' ? '#f0fdf4' : '#f8fafc', color: item.line === 'ProT Fit 0' ? '#166534' : '#475569', padding: '0.1rem 0.4rem', borderRadius: '6px', fontWeight: 700 }}>
+                            {item.line}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#475569', padding: '0.1rem 0.4rem', borderRadius: '6px', fontWeight: 700 }}>
+                            {item.format === '1 pieza' ? '1 Pza' : 'Pack 5'}
+                          </span>
+                        </div>
+                        <div style={{ marginTop: '0.5rem', fontSize: '1rem', fontWeight: 800, color: '#101729' }}>
+                          ${item.price * item.quantity} MXN
+                        </div>
+                      </div>
+
+                      {/* Quantity Controls */}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '8px', padding: '0.25rem' }}>
+                          <button 
+                            type="button"
+                            onClick={() => updateCartQuantity(idx, -1)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.25rem', color: '#475569' }}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 700, padding: '0 0.5rem', minWidth: '20px', textAlign: 'center', color: '#101729' }}>{item.quantity}</span>
+                          <button 
+                            type="button"
+                            onClick={() => updateCartQuantity(idx, 1)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.25rem', color: '#475569' }}
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                        <button 
+                          type="button"
+                          onClick={() => updateCartQuantity(idx, -item.quantity)}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', fontWeight: 600 }}
+                        >
+                          <Trash2 size={12} /> Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer / Checkout */}
+              {cart.length > 0 && (
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '1.5rem', marginTop: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.1rem' }}>
+                    <span style={{ color: '#64748b', fontWeight: 600 }}>Total de artículos:</span>
+                    <span style={{ fontWeight: 800, color: '#101729' }}>
+                      {totalPopsiclesInCart} paletas
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', fontSize: '1.25rem' }}>
+                    <span style={{ color: '#101729', fontWeight: 700 }}>Total:</span>
+                    <span style={{ fontWeight: 900, color: '#98BC3C' }}>
+                      ${totalAmountInCart}.00 MXN
+                    </span>
+                  </div>
+
+                  {totalPopsiclesInCart < 5 && (
+                    <div style={{
+                      background: 'rgba(239, 68, 68, 0.08)',
+                      border: '1px solid rgba(239, 68, 68, 0.2)',
+                      borderRadius: '16px',
+                      padding: '1rem',
+                      marginBottom: '1.25rem',
+                      fontSize: '0.9rem',
+                      color: '#ef4444',
+                      fontWeight: 600,
+                      textAlign: 'center',
+                      lineHeight: 1.4
+                    }}>
+                      ⚠️ El pedido mínimo es de 5 piezas (o 1 pack de 5). <br />
+                      Te faltan <strong>{5 - totalPopsiclesInCart}</strong> paleta{5 - totalPopsiclesInCart > 1 ? 's' : ''} para completar tu pedido.
+                    </div>
+                  )}
+
+                  <button 
+                    disabled={totalPopsiclesInCart < 5}
+                    onClick={() => {
+                      setIsCartOpen(false);
+                      const cartSummary = cart.map(item => `- ${item.name} (${item.line}) [${item.format}] x${item.quantity}: $${item.price * item.quantity} MXN`).join('\n');
+                      
+                      setFormData({
+                        nombre: '',
+                        email: '',
+                        telefono: '',
+                        opcionInteres: 'Pedido Personalizado',
+                        producto: `${totalPopsiclesInCart} paletas`,
+                        mensaje: `Detalle del Pedido:\n${cartSummary}\n\nTotal estimado: $${totalAmountInCart} MXN`
+                      });
+                      setIsModalOpen(true);
+                    }}
+                    className="btn btn-primary"
+                    style={{ 
+                      width: '100%', 
+                      padding: '1rem', 
+                      borderRadius: '999px', 
+                      fontSize: '1.125rem', 
+                      fontFamily: "'Quicksand', sans-serif", 
+                      fontWeight: 700, 
+                      border: 'none', 
+                      cursor: totalPopsiclesInCart < 5 ? 'not-allowed' : 'pointer', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '0.5rem',
+                      opacity: totalPopsiclesInCart < 5 ? 0.5 : 1,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Confirmar Pedido
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Pop-up Form (Modal) */}
       <AnimatePresence>
@@ -1314,19 +1692,7 @@ function App() {
                       </div>
                     )}
 
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Opción de Interés</label>
-                      <select 
-                        value={formData.opcionInteres}
-                        onChange={e => setFormData({...formData, opcionInteres: e.target.value})} 
-                        style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', background: 'white' }}
-                      >
-                        <option value="ProT Fit 0">ProT Fit 0</option>
-                        <option value="ProT Light">ProT Light</option>
-                        <option value="Ambas">Ambas</option>
-                        <option value="Distribuir en Gimnasio (B2B)">Distribuir en Gimnasio (B2B)</option>
-                      </select>
-                    </div>
+
                     <div>
                       <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Mensaje Personalizado</label>
                       <textarea 
@@ -1337,7 +1703,57 @@ function App() {
                         placeholder="Escribe aquí tus dudas, comentarios o detalles del pedido..."
                       />
                     </div>
-                    <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: '100%', padding: '1.25rem', marginTop: '0.5rem', fontSize: '1.125rem', borderRadius: '9999px', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, opacity: isSubmitting ? 0.7 : 1 }}>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 700, color: '#101729', cursor: 'pointer' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={vivoEnZMG} 
+                          onChange={e => setVivoEnZMG(e.target.checked)} 
+                          style={{ 
+                            width: '18px', 
+                            height: '18px', 
+                            accentColor: '#98BC3C',
+                            cursor: 'pointer' 
+                          }} 
+                        />
+                        <span>Vivo en la ZMG (Zona Metropolitana de Guadalajara)</span>
+                      </label>
+                      
+                      {!vivoEnZMG && (
+                        <p style={{ 
+                          fontSize: '0.825rem', 
+                          color: '#ef4444', 
+                          margin: '0.25rem 0 0 0', 
+                          fontWeight: 600,
+                          lineHeight: 1.4,
+                          background: 'rgba(239, 68, 68, 0.08)',
+                          border: '1px solid rgba(239, 68, 68, 0.2)',
+                          padding: '0.75rem 1rem',
+                          borderRadius: '12px'
+                        }}>
+                          ⚠️ Por lanzamiento envío de pedidos únicamente en ZMG, pregunta por la zona de cobertura.
+                        </p>
+                      )}
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      disabled={!vivoEnZMG || isSubmitting} 
+                      className="btn btn-primary" 
+                      style={{ 
+                        width: '100%', 
+                        padding: '1.25rem', 
+                        marginTop: '0.5rem', 
+                        fontSize: '1.125rem', 
+                        borderRadius: '9999px', 
+                        fontFamily: "'Quicksand', sans-serif", 
+                        fontWeight: 700, 
+                        opacity: (!vivoEnZMG || isSubmitting) ? 0.5 : 1,
+                        cursor: (!vivoEnZMG || isSubmitting) ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
                       {isSubmitting ? 'Enviando...' : 'Hacer mi pedido'}
                     </button>
                   </>
