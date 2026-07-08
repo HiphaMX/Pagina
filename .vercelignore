@@ -13,7 +13,6 @@ test_contract.pdf
 .pytest_cache/
 .flake8
 *.sh
-.git/
 node_modules/
 **/node_modules/
 **/venv/
