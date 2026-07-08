@@ -1,5 +1,6 @@
 {
   "cleanUrls": true,
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^(projects/HealthyIce/|projects/BoticaSilvestre/|projects/ValenciaServicios/|projects/ChileChillon/|projects/WhiteClean/)'",
   "functions": {
     "api/index.py": {
       "excludeFiles": "projects/**"
@@ -82,10 +83,21 @@
       "dest": "/projects/HiphaMX/dashboard"
     },
     {
-      "src": "/(terminos-y-condiciones|aviso-de-privacidad|letrerama|neon-configurador-premium)\\.html",
+      "src": "/(terminos-y-condiciones|aviso-de-privacidad)\\.html",
       "status": 308,
       "headers": { "Location": "/$1" }
     },
+    {
+      "src": "/letrerama",
+      "status": 308,
+      "headers": { "Location": "/letrerama/" }
+    },
+    {
+      "src": "/letrerama\\.html",
+      "status": 308,
+      "headers": { "Location": "/letrerama/" }
+    },
+
     {
       "src": "/terminos-y-condiciones",
       "dest": "/terminos-y-condiciones.html"
@@ -95,12 +107,12 @@
       "dest": "/aviso-de-privacidad.html"
     },
     {
-      "src": "/letrerama",
-      "dest": "/letrerama.html"
+      "src": "/letrerama/",
+      "dest": "/projects/Letrerama/web/index.html"
     },
     {
-      "src": "/neon-configurador-premium",
-      "dest": "/neon-configurador-premium.html"
+      "src": "/letrerama/(.*)",
+      "dest": "/projects/Letrerama/web/$1"
     },
     {
       "src": "/valencia-servicios",
