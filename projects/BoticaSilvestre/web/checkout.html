@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra | Botica Silvestre</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css?v=12">
+    <!-- Mercado Pago SDK -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <style>
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .checkout-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .order-summary-card {
+                order: -1;
+            }
+        }
+        .checkout-card {
+            background: var(--color-white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(64, 83, 76, 0.05);
+        }
+        .checkout-title {
+            font-family: 'Rubik', sans-serif;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--color-bg-alt);
+            padding-bottom: 15px;
+        }
+        .order-summary-card {
+            background: #FAFBFB;
+            border: 1px solid rgba(64, 83, 76, 0.1);
+        }
+        .summary-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(64, 83, 76, 0.05);
+            padding-bottom: 15px;
+        }
+        .summary-item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #fff;
+            border: 1px solid rgba(64, 83, 76, 0.05);
+        }
+        .summary-item-details {
+            flex: 1;
+        }
+        .summary-item-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--color-text-main);
+            margin-bottom: 4px;
+        }
+        .summary-item-price {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 10px;
+        }
+        .summary-total {
+            border-top: 1px solid rgba(64, 83, 76, 0.1);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        .shipping-info-block {
+            background: var(--color-white);
+            border: 1px solid rgba(64, 83, 76, 0.08);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.875rem;
+        }
+        .shipping-info-title {
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #loading-payment-brick {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(64, 83, 76, 0.1);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .back-to-shop-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--color-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .back-to-shop-btn:hover {
+            transform: translateX(-4px);
+        }
+        
+        /* Payment Status Modals */
+        .status-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            box-sizing: border-box;
+        }
+        .status-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .status-icon-success {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+        .status-icon-error {
+            background: #fdf2f2;
+            color: #ef4444;
+        }
+        .status-icon-pending {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+        .status-title {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+        }
+        .status-message {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" style="position: static; margin-bottom: 0;">
+        <div class="container nav-content">
+            <a href="botica.html" class="brand-logo" style="text-decoration: none;">
+                <span class="logo-text" style="font-family: 'Outfit', sans-serif; font-weight: 300; letter-spacing: 0.25em; font-size: 1.25rem; color: var(--color-primary); text-transform: uppercase;">Botica Silvestre</span>
+            </a>
+            <div class="nav-links">
+                <a href="botica.html" class="btn btn-outline-primary" style="display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="arrow-left" style="width:16px; height:16px;"></i> Volver a la Botica
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Main Content -->
+    <div class="checkout-container">
+        <a href="botica.html" class="back-to-shop-btn"><i data-lucide="chevron-left" style="width: 18px; height: 18px;"></i> Regresar a la selección de adaptógenos</a>
+        
+        <div class="checkout-grid">
+            <!-- Left Side: Payment Form -->
+            <div class="checkout-card">
+                <h2 class="checkout-title">Método de Pago</h2>
+                
+                <!-- Loading State -->
+                <div id="loading-payment-brick">
+                    <div class="spinner"></div>
+                    <p>Cargando pasarela de pago segura...</p>
+                </div>
+                
+                <!-- Brick Container -->
+                <div id="payment-brick_container"></div>
+            </div>
+
+            <!-- Right Side: Order Summary -->
+            <div class="checkout-card order-summary-card">
+                <h2 class="checkout-title" style="border-color: rgba(64, 83, 76, 0.1);">Resumen de Orden</h2>
+                
+                <!-- Items list -->
+                <div id="summary-items-list">
+                    <!-- Dynamic Summary Items -->
+                </div>
+                
+                <!-- Cost calculation -->
+                <div style="margin-top: 20px;">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">$0.00 MXN</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Envío</span>
+                        <span id="summary-shipping">$0.00 MXN</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="summary-total">$0.00 MXN</span>
+                    </div>
+                </div>
+                
+                <!-- Shipping Details -->
+                <div class="shipping-info-block" id="summary-shipping-info">
+                    <div class="shipping-info-title">
+                        <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i> Dirección de Envío
+                    </div>
+                    <div id="shipping-details-text">
+                        <!-- Dynamic Address -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Modals -->
+    <div class="status-overlay" id="status-overlay">
+        <!-- Success Card -->
+        <div class="status-card" id="status-card-success" style="display: none;">
+            <div class="status-icon-wrapper status-icon-success">
+                <i data-lucide="check-circle-2" style="width: 36px; height: 36px;"></i>
+            </div>
+            <h3 class="status-title">¡Pedido Confirmado!</h3>
+            <p class="status-message">Tu pago ha sido aprobado con éxito. Hemos enviado un correo de confirmación con los detalles de tu ritual de adaptógenos.</p>
+            <a href="botica.html" class="btn btn-primary btn-block" id="success-btn-done">Volver al inicio</a>
+        </div>
+        
+        <!-- Pending/In Process Card -->
+        <div class="status-card" id="status-card-pending" style="display: none;">
+            <div class="status-icon-wrapper status-icon-pending">
+                <i data-lucide="alert-circle" style="width: 36px; height: 36px;"></i>
+            </div>
+            <h3 class="status-title">Pago en Proceso</h3>
+            <p class="status-message">El pago se encuentra pendiente de acreditación o en validación. Te enviaremos un correo de confirmación tan pronto sea aprobado.</p>
+            <a href="botica.html" class="btn btn-primary btn-block">Volver al inicio</a>
+        </div>
+
+        <!-- Failure Card -->
+        <div class="status-card" id="status-card-failure" style="display: none;">
+            <div class="status-icon-wrapper status-icon-error">
+                <i data-lucide="x-circle" style="width: 36px; height: 36px;"></i>
+            </div>
+            <h3 class="status-title">Fallo en el Pago</h3>
+            <p class="status-message" id="failure-card-message">Hubo un problema al procesar tu tarjeta. Por favor verifica tus datos e inténtalo de nuevo.</p>
+            <button class="btn btn-primary btn-block" onclick="closeStatusModal()">Reintentar pago</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: auto;">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <a href="#" class="brand-logo" style="text-decoration: none;">
+                    <span class="logo-text" style="font-family: 'Outfit', sans-serif; font-weight: 300; letter-spacing: 0.25em; font-size: 1.25rem; color: var(--color-white); text-transform: uppercase;">Botica Silvestre</span>
+                </a>
+            </div>
+            <div class="footer-links">
+                <a href="terminos-y-condiciones.html">Términos y Condiciones</a>
+                <a href="aviso-de-privacidad.html">Aviso de Privacidad</a>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Botica Silvestre. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/checkout.js"></script>
+    <script>
+        if (window.lucide) window.lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -163,3 +163,115 @@ async def mercadopago_webhook(request: Request):
                 print(f"Webhook error: {e}")
                 
     return {"status": "ok"}
+
+
+class PaymentPayerIdentification(BaseModel):
+    type: Optional[str] = None
+    number: Optional[str] = None
+
+
+class PaymentPayer(BaseModel):
+    email: str
+    identification: Optional[PaymentPayerIdentification] = None
+
+
+class PaymentAdditionalInfo(BaseModel):
+    payer_name: str
+    payer_phone: str
+    address: str
+    cart_html: str
+
+
+class PaymentRequest(BaseModel):
+    token: Optional[str] = None
+    issuer_id: Optional[str] = None
+    payment_method_id: str
+    transaction_amount: float
+    installments: int
+    payer: PaymentPayer
+    additional_info: Optional[PaymentAdditionalInfo] = None
+
+
+@router.get("/config")
+def get_mercadopago_config():
+    pub_key = os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
+    return {"public_key": pub_key}
+
+
+@router.post("/process_payment")
+async def process_payment(payload: PaymentRequest):
+    if not mp_access_token:
+        raise HTTPException(status_code=500, detail="Mercado Pago token is not configured")
+
+    # Split name into first and last name if possible
+    first_name = "Cliente"
+    last_name = ""
+    if payload.additional_info and payload.additional_info.payer_name:
+        parts = payload.additional_info.payer_name.split(" ", 1)
+        first_name = parts[0]
+        if len(parts) > 1:
+            last_name = parts[1]
+
+    # Build metadata block for webhook/email notification
+    cart_html = ""
+    payer_name = "Cliente"
+    payer_phone = ""
+    address_str = ""
+    if payload.additional_info:
+        cart_html = payload.additional_info.cart_html
+        payer_name = payload.additional_info.payer_name
+        payer_phone = payload.additional_info.payer_phone
+        address_str = payload.additional_info.address
+
+    payment_data = {
+        "transaction_amount": payload.transaction_amount,
+        "token": payload.token,
+        "description": "Pedido Botica Silvestre",
+        "payment_method_id": payload.payment_method_id,
+        "installments": payload.installments,
+        "payer": {
+            "email": payload.payer.email,
+            "first_name": first_name,
+            "last_name": last_name
+        },
+        "notification_url": f"{os.getenv('BACKEND_URL', 'https://hipha-mx-fastapi.vercel.app')}/api/mercadopago/webhook",
+        "metadata": {
+            "cart_html": cart_html,
+            "payer_name": payer_name,
+            "payer_email": payload.payer.email,
+            "payer_phone": payer_phone,
+            "address": address_str,
+            "total": str(payload.transaction_amount)
+        }
+    }
+
+    if payload.payer.identification and payload.payer.identification.type:
+        payment_data["payer"]["identification"] = {
+            "type": payload.payer.identification.type,
+            "number": payload.payer.identification.number
+        }
+
+    if payload.issuer_id:
+        payment_data["issuer_id"] = payload.issuer_id
+
+    try:
+        payment_response = sdk.payment().create(payment_data)
+        payment = payment_response.get("response", {})
+        status = payment.get("status")
+        status_detail = payment.get("status_detail")
+
+        # If payment is approved immediately, send emails right away
+        if status == "approved":
+            from app.core.mailer import send_botica_order_customer, send_botica_order_team
+            import asyncio
+            asyncio.create_task(send_botica_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
+            asyncio.create_task(send_botica_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+
+        return {
+            "id": payment.get("id"),
+            "status": status,
+            "status_detail": status_detail
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

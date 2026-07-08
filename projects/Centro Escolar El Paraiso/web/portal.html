@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Comunidad y Asistente Virtual — Centro Escolar El Paraíso</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Portal de orientación y Asistente Virtual inteligente del Centro Escolar El Paraíso. Resuelva sus dudas sobre nuestro modelo constructivista, CIME, robótica y admisiones.">
+  <meta name="author" content="HiphaMX">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- --- HEADER & NAVIGATION --- -->
+  <header class="header" id="main-header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo" id="header-logo">CENTRO ESCOLAR EL PARAISO<span>.</span></a>
+      <div class="header-actions">
+        <button type="button" class="menu-trigger-btn" id="menu-trigger-btn" aria-label="Abrir menú de navegación">
+          <span class="menu-trigger-text">Menú<span class="menu-dot">.</span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- --- PORTAL HERO BANNER (Cinematic Look) --- -->
+    <section class="portal-hero-section">
+      <div class="portal-hero-bg"></div>
+      <div class="portal-hero-overlay"></div>
+      <div class="container portal-hero-container">
+        <div class="portal-hero-left">
+          <span class="text-mono text-accent-green">// PORTAL PEDAGÓGICO</span>
+          <h1 class="text-massive portal-hero-title">
+            Asistente<br>Virtual
+          </h1>
+          <p class="text-body portal-hero-desc">
+            Orientación inteligente y base de conocimiento escolar para padres de familia y la comunidad de El Paraíso.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- PORTAL COMUNIDAD & CHATBOT RAG --- -->
+    <section class="py-large container" id="portal-comunidad-container" style="margin-top: 60px; margin-bottom: 80px;">
+      <div class="section-title-area" style="margin-bottom: 40px; border-bottom: 1px solid var(--color-border); padding-bottom: 24px;">
+        <span class="text-mono text-accent-green">// INTERACCIÓN INTELIGENTE</span>
+        <h2 class="text-heading" style="margin-top: 12px;">Consulte al Tutor Escolar</h2>
+      </div>
+
+      <div class="grid-12">
+        <div class="chat-container" id="tutor-rag-container">
+          <!-- Sidebar del Chat -->
+          <div class="chat-sidebar">
+            <div>
+              <span class="text-mono text-accent-green" style="display: block; margin-bottom: 16px;">// CONSULTA PEDAGÓGICA</span>
+              <h3 class="text-subheading" style="margin-bottom: 16px;">Orientación Familiar</h3>
+              <p class="text-body" style="font-size: 0.875rem;">
+                Asistente entrenado bajo la filosofía pedagógica del Centro Escolar El Paraíso, resuelva sus dudas de forma inmediata sobre el método constructivista, la oferta académica, clases vespertinas, eventos y todo lo que pasa en nuestro centro escolar.
+              </p>
+            </div>
+            <div>
+              <span class="text-mono" style="display: block; font-size: 0.7rem; color: var(--color-fg-muted); margin-bottom: 8px;">ESTADO DEL ASISTENTE:</span>
+              <span class="chat-status-badge">
+                <span class="status-dot"></span>
+                En Línea (Gemini RAG)
+              </span>
+            </div>
+          </div>
+          
+          <!-- Ventana de Chat -->
+          <div class="chat-window">
+            <div class="chat-messages" id="chat-messages-box">
+              <div class="message message-bot" id="msg-init">
+                <p>Estimado padre de familia, bienvenido al portal de orientación pedagógica. ¿En qué puedo apoyarle hoy acerca del modelo educativo activo, admisiones, clases vespertinas, eventos o la oferta académica de El Paraíso?</p>
+                <span class="message-source">[Base de Conocimiento Escolar, Sección Orientación]</span>
+              </div>
+            </div>
+            
+            <!-- Entrada del Chat -->
+            <div class="chat-input-area">
+              <input type="text" id="chat-input-field" class="chat-input" placeholder="Consulte sobre CIME, equitación, horarios o inscripciones..." aria-label="Escriba su pregunta para el Tutor">
+              <button type="button" id="chat-submit-btn" class="chat-send-btn">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- --- FOOTER --- -->
+  <footer class="footer" id="main-footer">
+    <div class="container">
+      <div class="grid-12 footer-grid">
+        <div class="footer-col">
+          <div class="footer-logo">
+            <img src="assets/logotipo/white.svg" alt="Centro Escolar El Paraíso" class="footer-logo-img">
+          </div>
+          <p class="text-body" style="color: rgba(255,255,255,0.6); max-width: 320px;">
+            Centro Escolar El Paraíso. Formando pensadores lógicos, autónomos y equilibrados en sintonía con la tecnología y el medio ambiente.
+          </p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="text-mono" style="color: rgba(255,255,255,0.8); margin-bottom: 24px;">// ENLACES RÁPIDOS</h4>
+          <ul class="footer-links">
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="index.html#modelo-educativo">Modelo Educativo</a></li>
+            <li><a href="index.html#instalaciones">Instalaciones</a></li>
+            <li><a href="index.html#proceso-admision">Proceso Admisiones</a></li>
+            <li><a href="index.html#nuestros-guias">Equipo Guías</a></li>
+            <li><a href="#portal-comunidad-container">Asistente Virtual</a></li>
+            <li><a href="index.html#blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div>© 2026 Centro Escolar El Paraíso. Todos los derechos reservados.</div>
+        <div>DISEÑO E IMPLEMENTACIÓN COMPORTAMENTAL POR HIPHAMX.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- --- FULLSCREEN NAVIGATION MENU OVERLAY (WatchHouse Style) --- -->
+  <dialog id="nav-menu" class="nav-menu_component">
+    <div class="nav-menu_wrapper">
+      
+      <div class="nav-menu_container container">
+        <div class="nav-menu_content-grid">
+          
+          <!-- Top Row: Logo & Close Button -->
+          <div class="nav-menu_top-wrapper">
+            <div class="nav-menu_logo-wrapper">
+              <span class="nav-menu_brand-logo">CENTRO ESCOLAR EL PARAISO<span class="menu-dot">.</span></span>
+            </div>
+            
+            <button type="button" class="nav-menu_close-btn" id="nav-menu-close-btn" aria-label="Cerrar menú">
+              Cerrar<span class="menu-dot">.</span>
+            </button>
+          </div>
+          
+          <!-- Middle Row: Left Accordion Categories & Right Quicklinks Column -->
+          <div class="nav-menu_links-wrapper" id="nav-menu-accordion">
+            <div class="nav-menu_links-subtitle text-mono">// NAVEGACIÓN</div>
+            
+            <!-- Category 1: Nosotros -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component" open>
+              <summary class="nav-menu_link-group-tab_title">
+                01. El Colegio<span class="menu-dot">.</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#modelo-educativo" class="nav-menu_link-anchor">Filosofía Constructivista</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#nuestros-guias" class="nav-menu_link-anchor">Nuestros Guías</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#instalaciones" class="nav-menu_link-anchor">Infraestructura y Espacios</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#anuncios-mes" class="nav-menu_link-anchor">Noticias y Eventos</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+            
+            <!-- Category 2: Aprendizaje -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component">
+              <summary class="nav-menu_link-group-tab_title">
+                02. Aprendizaje<span class="menu-dot">.</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#inicio" class="nav-menu_link-anchor">Programas Educativos</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#inicio" class="nav-menu_link-anchor">Método CIME Lógica</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#inicio" class="nav-menu_link-anchor">Maker Space & Robótica</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#inicio" class="nav-menu_link-anchor">Equitación & Deportes</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+            
+            <!-- Category 3: Admisiones -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component">
+              <summary class="nav-menu_link-group-tab_title">
+                03. Admisiones<span class="menu-dot">.</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#proceso-admision" class="nav-menu_link-anchor">Proceso de Ingreso</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#proceso-admision" class="nav-menu_link-anchor">Agenda una Visita</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#proceso-admision" class="nav-menu_link-anchor">Costos y Colegiaturas</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#proceso-admision" class="nav-menu_link-anchor">Preguntas Frecuentes</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+            
+            <!-- Category 4: Comunidad -->
+            <details name="nav-menu-page-group" class="nav-menu_link-group-tab_component">
+              <summary class="nav-menu_link-group-tab_title">
+                04. Comunidad<span class="menu-dot">.</span>
+              </summary>
+              <div class="nav-menu_link-group-tab_content-wrapper">
+                <ul class="nav-menu_link-group-tab_links">
+                  <li class="nav-menu_link-item">
+                    <a href="#portal-comunidad-container" class="nav-menu_link-anchor">Asistente Virtual</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="index.html#blog" class="nav-menu_link-anchor">Blog Educativo</a>
+                  </li>
+                  <li class="nav-menu_link-item">
+                    <a href="#portal-comunidad-container" class="nav-menu_link-anchor">Portal para Familias</a>
+                  </li>
+                </ul>
+              </div>
+            </details>
+          </div>
+          
+          <!-- Column 3: Quicklinks / Resources Column -->
+          <div class="nav-menu_quicklinks_component">
+            <div class="nav-menu_quicklinks-title text-mono">// RECURSOS</div>
+            <ul class="nav-menu_quicklinks_list">
+              <li class="nav-menu_quicklinks_item">
+                <a href="index.html#proceso-admision" class="nav-menu_quicklinks_item-link">Agenda una Cita<span class="menu-dot">.</span></a>
+              </li>
+              <li class="nav-menu_quicklinks_item">
+                <a href="index.html#contacto" class="nav-menu_quicklinks_item-link">Contacto<span class="menu-dot">.</span></a>
+              </li>
+              <li class="nav-menu_quicklinks_item">
+                <a href="aviso-de-privacidad.html" target="_blank" class="nav-menu_quicklinks_item-link">Aviso de Privacidad<span class="menu-dot">.</span></a>
+              </li>
+              <li class="nav-menu_quicklinks_item">
+                <a href="terminos-y-condiciones.html" target="_blank" class="nav-menu_quicklinks_item-link">Términos y Condiciones<span class="menu-dot">.</span></a>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- Bottom Row: Footer credentials & social -->
+          <div class="nav-menu_footer-wrapper">
+            <div class="nav-menu_footer-credits">
+              <span class="nav-menu_credits-text">© 2026 Centro Escolar El Paraíso.</span>
+              <a href="https://maps.app.goo.gl/FmoGy1AGVUeLxvWXA" target="_blank" class="nav-menu_footer-link">Zapopan, Jal.</a>
+              <span class="nav-menu_credits-separator">//</span>
+              <a href="tel:+523315679811" class="nav-menu_footer-link">+52 (33) 1567 9811.</a>
+            </div>
+            
+            <div class="nav-menu_footer-socials">
+              <a href="#" class="social-text-link">Facebook<span class="menu-dot">.</span></a>
+              <a href="#" class="social-text-link">Instagram<span class="menu-dot">.</span></a>
+              <a href="#" class="social-text-link">LinkedIn<span class="menu-dot">.</span></a>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </dialog>
+
+  <!-- --- JAVASCRIPT LOGIC --- -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -338,55 +338,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             errorText.style.display = 'none';
 
-            // Show loading state
-            const originalText = checkoutBtn.innerHTML;
-            checkoutBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Procesando...';
-            checkoutBtn.disabled = true;
-            if (window.lucide) window.lucide.createIcons();
-
-            try {
-                // Here we point to your FastAPI backend URL. 
-                // Currently set to relative /api assuming same domain, but you will likely need the absolute URL of your FastAPI server
-                // e.g. const API_URL = 'https://tu-fastapi-servidor.vercel.app/api/mercadopago/create_preference';
-                const API_URL = 'https://hipha-mx-fastapi.vercel.app/api/mercadopago/create_preference';
-                
-                const payerInfo = {
-                    name: nameInput.value.trim(),
-                    phone: phoneInput.value.trim(),
-                    email: emailInput.value.trim(),
-                    address: {
-                        street_name: streetInput.value.trim() + ', Col. ' + neighborhoodInput.value.trim() + ', ' + cityInput.value.trim() + ', ' + stateInput.value,
-                        zip_code: zipInput.value.trim()
-                    }
-                };
-
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ items: cart, payer: payerInfo })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error al conectar con la pasarela de pago');
+            // Save payer info and redirect to dedicated checkout page
+            const payerInfo = {
+                name: nameInput.value.trim(),
+                phone: phoneInput.value.trim(),
+                email: emailInput.value.trim(),
+                address: {
+                    street_name: streetInput.value.trim() + ', Col. ' + neighborhoodInput.value.trim() + ', ' + cityInput.value.trim() + ', ' + stateInput.value,
+                    zip_code: zipInput.value.trim()
                 }
-
-                const data = await response.json();
-                
-                if (data.init_point) {
-                    // Redirect to Mercado Pago checkout
-                    window.location.href = data.init_point;
-                } else {
-                    throw new Error('Respuesta inválida del servidor');
-                }
-            } catch (error) {
-                console.error('Checkout error:', error);
-                alert('Hubo un problema al iniciar el pago. Asegúrate de que el servidor FastAPI esté conectado correctamente.');
-                checkoutBtn.innerHTML = originalText;
-                checkoutBtn.disabled = false;
-                if (window.lucide) window.lucide.createIcons();
-            }
+            };
+            
+            localStorage.setItem('soulshine_payer', JSON.stringify(payerInfo));
+            window.location.href = 'checkout.html';
         });
     }
 

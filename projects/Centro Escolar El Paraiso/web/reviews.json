@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Claudia Morales",
+    "avatarText": "C",
+    "avatarBg": "#0b5d36",
+    "stars": 5,
+    "date": "Hace 3 días",
+    "text": "Excelente nivel académico. El sistema CIME de matemáticas es increíble; mi hijo comprende el razonamiento algebraico de forma natural y sin frustraciones. Muy recomendados.",
+    "verified": true,
+    "role": "Madre de familia"
+  },
+  {
+    "name": "Alejandro Valenzuela",
+    "avatarText": "A",
+    "avatarBg": "#3b82f6",
+    "stars": 5,
+    "date": "Hace 2 semanas",
+    "text": "La combinación de robótica técnica y equitación en el horario escolar es única. Desarrollan la mente y la inteligencia emocional de manera integral. Gran equipo docente.",
+    "verified": true,
+    "role": "Padre de familia"
+  },
+  {
+    "name": "Mariana Gutiérrez",
+    "avatarText": "M",
+    "avatarBg": "#ef4444",
+    "stars": 5,
+    "date": "Hace 1 mes",
+    "text": "Instalaciones de primer nivel y un ambiente muy seguro. Su enfoque constructivista realmente coloca al alumno como protagonista de su propio aprendizaje. Felices de pertenecer aquí.",
+    "verified": true,
+    "role": "Madre de familia"
+  },
+  {
+    "name": "Roberto Torres",
+    "avatarText": "R",
+    "avatarBg": "#f59e0b",
+    "stars": 5,
+    "date": "Hace 1 mes",
+    "text": "La certificación Oxford les da una ventaja competitiva de primer nivel desde la primaria. Excelente comunicación y un trato humano excepcional por parte de los directivos.",
+    "verified": true,
+    "role": "Padre de familia"
+  },
+  {
+    "name": "Beatriz Solís",
+    "avatarText": "B",
+    "avatarBg": "#8b5cf6",
+    "stars": 5,
+    "date": "Hace 2 meses",
+    "text": "Me encanta el taller de arte y creatividad. Las áreas verdes son amplias y los niños conviven mucho con la naturaleza. Es un ambiente escolar muy sano y motivador.",
+    "verified": true,
+    "role": "Madre de familia"
+  },
+  {
+    "name": "Gustavo Ruiz",
+    "avatarText": "G",
+    "avatarBg": "#06b6d4",
+    "stars": 5,
+    "date": "Hace 3 meses",
+    "text": "Un colegio que realmente se preocupa por el desarrollo integral. El aprendizaje activo no es solo teoría, los proyectos prácticos hacen que mi hija disfrute ir a la escuela todos los días.",
+    "verified": true,
+    "role": "Padre de familia"
+  }
+]
