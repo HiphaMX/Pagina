@@ -136,6 +136,32 @@
       "dest": "/projects/ni2/web/$1/$2"
     },
     {
+      "src": "/grupo-gari",
+      "status": 308,
+      "headers": { "Location": "/grupo-gari/" }
+    },
+    {
+      "src": "/grupo-gari/",
+      "dest": "/projects/GrupoGari/web/"
+    },
+    {
+      "src": "/grupo-gari/(.*)",
+      "dest": "/projects/GrupoGari/web/$1"
+    },
+    {
+      "src": "/el-paraiso",
+      "status": 308,
+      "headers": { "Location": "/el-paraiso/" }
+    },
+    {
+      "src": "/el-paraiso/",
+      "dest": "/projects/Centro Escolar El Paraiso/web/"
+    },
+    {
+      "src": "/el-paraiso/(.*)",
+      "dest": "/projects/Centro Escolar El Paraiso/web/$1"
+    },
+    {
       "handle": "filesystem"
     }
   ]
