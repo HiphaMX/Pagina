@@ -1,5 +1,9 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "ignoreCommand": "git diff HEAD^ HEAD --quiet ."
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet .",
+  "rewrites": [
+    { "source": "/puntos-de-venta", "destination": "/index.html" },
+    { "source": "/puntos-de-venta/(.*)", "destination": "/index.html" }
+  ]
 }

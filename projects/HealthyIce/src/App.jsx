@@ -1,6 +1,144 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail, TrendingUp, Megaphone, Award, Users, MapPin } from 'lucide-react';
+import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail, TrendingUp, Megaphone, Award, Users, MapPin, Search } from 'lucide-react';
+
+const POINTS_OF_SALE = [
+  {
+    id: 1,
+    name: "Pulse Fitness Gym",
+    lat: 20.62356,
+    lon: -103.2486672,
+    giro: "Gimnasio",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/hQJzKaSfgcqGhfZeA"
+  },
+  {
+    id: 2,
+    name: "Kong Gym",
+    lat: 20.6301138,
+    lon: -103.239392,
+    giro: "Gimnasio",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/fRsL7wQm6sGaYBJG6"
+  },
+  {
+    id: 3,
+    name: "La chingada fitness",
+    lat: 20.4784056,
+    lon: -103.2694154,
+    giro: "Gimnasio",
+    location: "ZMG - Tlajomulco",
+    url: "https://maps.app.goo.gl/YTDytqFfhTnzYnKG8"
+  },
+  {
+    id: 4,
+    name: "Axis transform nutrition",
+    lat: 20.6345828,
+    lon: -103.3726858,
+    giro: "Consultorio",
+    location: "ZMG - Tlaquepaque",
+    url: "https://maps.app.goo.gl/KGMgcr6n6W2duc9E6"
+  },
+  {
+    id: 5,
+    name: "Fitness Lab",
+    lat: 20.5812594,
+    lon: -103.3820933,
+    giro: "Gimnasio",
+    location: "ZMG - Tlaquepaque",
+    url: "https://maps.app.goo.gl/dxVDcBJzGCXai5sx9"
+  },
+  {
+    id: 6,
+    name: "Gym Total Sport",
+    lat: 20.6705998,
+    lon: -103.222803,
+    giro: "Gimnasio",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/9P4xtCFHv2zaCG997"
+  },
+  {
+    id: 7,
+    name: "We Fitness",
+    lat: 20.6371802,
+    lon: -103.3732717,
+    giro: "Gimnasio",
+    location: "ZMG - Tlaquepaque",
+    url: "https://maps.app.goo.gl/Axs9ncVBDDtWzr429"
+  },
+  {
+    id: 8,
+    name: "Live Gym",
+    lat: 20.6667415,
+    lon: -103.214601,
+    giro: "Gimnasio",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/XoDREWAvuFxE6jfK6"
+  },
+  {
+    id: 9,
+    name: "Max Gym",
+    lat: 20.605715,
+    lon: -103.2582835,
+    giro: "Gimnasio",
+    location: "ZMG - El Salto",
+    url: "https://maps.app.goo.gl/P1t9gjdbBhbchY2V8"
+  },
+  {
+    id: 10,
+    name: "Aesthetic fitness (Ubicación 1)",
+    lat: 20.5135085,
+    lon: -103.1839763,
+    giro: "Gimnasio",
+    location: "Jalisco - El Salto",
+    url: "https://maps.app.goo.gl/Yqa8SwZjFbFcvJKH7"
+  },
+  {
+    id: 11,
+    name: "Aesthetic fitness Arvento (Ubicación 2)",
+    lat: 20.4385524,
+    lon: -103.3100586,
+    giro: "Gimnasio",
+    location: "ZMG - Tlajomulco",
+    url: "https://maps.app.goo.gl/Gp3rpFkFT2zkKED86"
+  },
+  {
+    id: 12,
+    name: "Rush Training Centro",
+    lat: 20.682523,
+    lon: -103.3484635,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/pkSt1oavzpwmzjCD6"
+  },
+  {
+    id: 13,
+    name: "Rush Training Santa Margarita",
+    lat: 20.7307109,
+    lon: -103.4178619,
+    giro: "Gimnasio",
+    location: "ZMG - Zapopan",
+    url: "https://maps.app.goo.gl/3rZFg54vhD7Mdrad9"
+  },
+  {
+    id: 14,
+    name: "Gym Time Fit",
+    lat: 20.4197381,
+    lon: -103.3948962,
+    giro: "Gimnasio",
+    location: "ZMG - Tlajomulco",
+    url: "https://maps.app.goo.gl/eQtQ7UbAZL3RZ3dD8"
+  },
+  {
+    id: 15,
+    name: "Camarons gym",
+    lat: 20.2960293,
+    lon: -102.7025079,
+    giro: "Gimnasio",
+    location: "Jalisco - Ocotlán",
+    url: "https://maps.app.goo.gl/U8Q4BCc9TNi3d51d7"
+  }
+];
 
 const PopsicleIcon = ({ color = "currentColor", size = 24 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -215,6 +353,54 @@ const SignatureCanvas = ({ onSave }) => {
 };
 
 function App() {
+  const [currentView, setCurrentView] = useState(() => {
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    const search = window.location.search;
+    if (path.includes('puntos-de-venta') || hash.includes('puntos-de-venta') || search.includes('puntos-de-venta')) {
+      return 'puntos-de-venta';
+    }
+    return 'home';
+  });
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (path.includes('puntos-de-venta') || hash.includes('puntos-de-venta') || search.includes('puntos-de-venta')) {
+        setCurrentView('puntos-de-venta');
+        window.scrollTo(0, 0);
+      } else {
+        setCurrentView('home');
+      }
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  const navigateToSection = (sectionId) => {
+    if (currentView !== 'home') {
+      setCurrentView('home');
+      window.history.pushState(null, '', '/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   const [scrolled, setScrolled] = useState(false);
   const dragConstraintsRef = useRef(null);
   const [hoveredPopsicle, setHoveredPopsicle] = useState(null);
@@ -707,15 +893,72 @@ function App() {
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', zIndex: 60 }}>
             {/* The Logo from assets folder */}
-            <img src="/logo.svg" alt="HealthyIce Logo" className="nav-logo" style={{ height: '48px', objectFit: 'contain' }} />
+            <img 
+              src="/logo.svg" 
+              alt="HealthyIce Logo" 
+              className="nav-logo" 
+              style={{ height: '48px', objectFit: 'contain', cursor: 'pointer' }} 
+              onClick={() => {
+                setCurrentView('home');
+                window.history.pushState(null, '', '/');
+                window.scrollTo(0, 0);
+              }}
+            />
           </div>
           <div className="desktop-links" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <a href="#void-fall" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>¿Por qué HealthyIce?</a>
-            <a href="#lineas" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Nuestras Opciones</a>
-            <a href="#sabores" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Sabores</a>
-            <a href="#hazte-socio" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Hazte Socio</a>
+            <a href="#void-fall" onClick={(e) => { e.preventDefault(); navigateToSection('void-fall'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>¿Por qué HealthyIce?</a>
+            <a href="#lineas" onClick={(e) => { e.preventDefault(); navigateToSection('lineas'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Nuestras Opciones</a>
+            <a href="#sabores" onClick={(e) => { e.preventDefault(); navigateToSection('sabores'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Sabores</a>
+            <a href="#hazte-socio" onClick={(e) => { e.preventDefault(); navigateToSection('hazte-socio'); }} style={{ textDecoration: 'none', color: 'var(--text-dark)', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>Hazte Socio</a>
+            <a 
+              href="/puntos-de-venta" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                setCurrentView('puntos-de-venta'); 
+                window.history.pushState(null, '', '/puntos-de-venta'); 
+                window.scrollTo(0, 0); 
+              }} 
+              style={{ 
+                textDecoration: 'none', 
+                color: currentView === 'puntos-de-venta' ? '#98BC3C' : 'var(--text-dark)', 
+                fontFamily: "'Quicksand', sans-serif", 
+                fontWeight: 700, 
+                letterSpacing: '0.5px',
+                borderBottom: currentView === 'puntos-de-venta' ? '2px solid #98BC3C' : 'none',
+                paddingBottom: '2px'
+              }}
+            >
+              Puntos de Venta
+            </a>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', zIndex: 60 }}>
+            {/* Mobile / Floating Puntos de Venta Button */}
+            <button 
+              type="button"
+              onClick={() => {
+                setCurrentView('puntos-de-venta');
+                window.history.pushState(null, '', '/puntos-de-venta');
+                window.scrollTo(0, 0);
+              }}
+              style={{
+                background: currentView === 'puntos-de-venta' ? '#98BC3C' : 'rgba(255,255,255,0.8)',
+                border: '1px solid #cbd5e1',
+                borderRadius: '50%',
+                width: '44px',
+                height: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: currentView === 'puntos-de-venta' ? 'white' : '#101729',
+                transition: 'all 0.2s',
+                boxShadow: currentView === 'puntos-de-venta' ? '0 4px 12px rgba(152,188,60,0.3)' : 'none'
+              }}
+              title="Puntos de venta"
+            >
+              <MapPin size={20} />
+            </button>
+
             <button 
               type="button"
               onClick={() => setIsCartOpen(true)}
@@ -762,8 +1005,10 @@ function App() {
         </div>
       </nav>
 
-      {/* Scientific Hero Section */}
-      <section className="hero-scientific" ref={dragConstraintsRef} style={{ overflow: 'hidden' }}>
+      {currentView === 'home' ? (
+        <>
+          {/* Scientific Hero Section */}
+          <section className="hero-scientific" ref={dragConstraintsRef} style={{ overflow: 'hidden' }}>
         <div className="hero-grid-bg"></div>
         <div className="hero-crosshair-x"></div>
         <div className="hero-crosshair-y"></div>
@@ -1300,6 +1545,10 @@ function App() {
           </div>
         </div>
       </section>
+        </>
+      ) : (
+        <PuntosDeVenta setCurrentView={setCurrentView} />
+      )}
       
       {/* Footer */}
       <footer style={{ padding: '3rem 0', background: '#0f172a', color: 'white', textAlign: 'center' }}>
@@ -1325,6 +1574,16 @@ function App() {
             <a href="mailto:contacto@healthyice.mx" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '1.1rem', fontWeight: 600, fontFamily: "'Quicksand', sans-serif" }}>contacto@healthyice.mx</a>
           </div>
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button 
+              onClick={() => {
+                setCurrentView('puntos-de-venta');
+                window.history.pushState(null, '', '/puntos-de-venta');
+                window.scrollTo(0, 0);
+              }} 
+              style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}
+            >
+              Puntos de Venta
+            </button>
             <button onClick={() => setLegalModal('privacy')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Aviso de Privacidad</button>
             <button onClick={() => setLegalModal('terms')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Términos y Condiciones</button>
             <button onClick={() => setLegalModal('partners')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Socios comerciales</button>
@@ -2550,5 +2809,484 @@ function App() {
     </>
   );
 }
+
+// ==========================================
+// COMPONENTE: PUNTOS DE VENTA (MAPA + LISTADO)
+// ==========================================
+const PuntosDeVenta = ({ setCurrentView }) => {
+  const L = window.L;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedGiro, setSelectedGiro] = useState('Todos');
+  const [selectedPointId, setSelectedPointId] = useState(null);
+  
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
+
+  const filteredPoints = POINTS_OF_SALE.filter(pt => {
+    const matchesSearch = pt.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          pt.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesGiro = selectedGiro === 'Todos' || pt.giro === selectedGiro;
+    return matchesSearch && matchesGiro;
+  });
+
+  useEffect(() => {
+    if (!L) return;
+    
+    // Initialize map
+    if (!mapRef.current) {
+      const map = L.map('map-container', {
+        center: [20.58, -103.35],
+        zoom: 10,
+        scrollWheelZoom: false
+      });
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      mapRef.current = map;
+    }
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [L]);
+
+  useEffect(() => {
+    if (!L || !mapRef.current) return;
+    const map = mapRef.current;
+
+    // Clear old markers
+    markersRef.current.forEach(m => m.remove());
+    markersRef.current = [];
+
+    // Custom Icon (Popsicle teardrop green)
+    const normalIcon = L.divIcon({
+      className: 'custom-leaflet-marker',
+      html: `
+        <div style="
+          position: relative;
+          width: 32px;
+          height: 32px;
+          background: #98BC3C;
+          border: 2px solid white;
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg) translate(0px, 0px);
+          box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease-in-out;
+        ">
+          <div style="
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            transform: rotate(45deg);
+          "></div>
+        </div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+
+    const activeIcon = L.divIcon({
+      className: 'custom-leaflet-marker-active',
+      html: `
+        <div style="position: relative;">
+          <!-- Pulsing Background Ripple -->
+          <div style="
+            position: absolute;
+            top: -16px;
+            left: -16px;
+            width: 64px;
+            height: 64px;
+            background: rgba(152, 188, 60, 0.4);
+            border-radius: 50%;
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+          "></div>
+          
+          <div style="
+            position: relative;
+            width: 38px;
+            height: 38px;
+            background: #101729;
+            border: 2px solid #98BC3C;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg) scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+          ">
+            <div style="
+              width: 16px;
+              height: 16px;
+              background: #98BC3C;
+              border-radius: 50%;
+              transform: rotate(45deg);
+            "></div>
+          </div>
+        </div>
+      `,
+      iconSize: [38, 38],
+      iconAnchor: [19, 38],
+      popupAnchor: [0, -38]
+    });
+
+    // Add new markers
+    filteredPoints.forEach(pt => {
+      const isSelected = selectedPointId === pt.id;
+      const marker = L.marker([pt.lat, pt.lon], {
+        icon: isSelected ? activeIcon : normalIcon
+      }).addTo(map);
+
+      marker.bindPopup(`
+        <div style="font-family: 'Outfit', sans-serif; padding: 0.5rem; min-width: 180px;">
+          <h4 style="margin: 0 0 0.3rem 0; font-size: 1rem; font-weight: 700; color: #101729; font-family: 'Quicksand', sans-serif;">\${pt.name}</h4>
+          <span style="
+            display: inline-block; 
+            background: \${pt.giro === 'Gimnasio' ? '#98BC3C' : '#00e5ff'}; 
+            color: \${pt.giro === 'Gimnasio' ? 'white' : '#101729'}; 
+            font-size: 0.7rem; 
+            padding: 0.15rem 0.5rem; 
+            border-radius: 99px; 
+            margin-bottom: 0.5rem; 
+            font-weight: 800;
+          ">
+            \${pt.giro}
+          </span>
+          <div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: #64748b;">\${pt.location}</div>
+          <a href="\${pt.url}" target="_blank" rel="noopener noreferrer" style="
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #101729; 
+            color: white; 
+            text-decoration: none; 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 8px; 
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            width: 100%; 
+            box-sizing: border-box; 
+            gap: 0.3rem;
+            text-align: center;
+          ">
+            Cómo llegar →
+          </a>
+        </div>
+      `);
+
+      marker.on('click', () => {
+        setSelectedPointId(pt.id);
+        const cardEl = document.getElementById(`pos-card-\${pt.id}`);
+        if (cardEl) {
+          cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+
+      markersRef.current.push(marker);
+
+      if (isSelected) {
+        marker.openPopup();
+      }
+    });
+
+    // Fit bounds if we have points and not manually focusing a selected one
+    if (filteredPoints.length > 0 && !selectedPointId) {
+      const group = new L.featureGroup(markersRef.current);
+      map.fitBounds(group.getBounds().pad(0.15));
+    }
+  }, [filteredPoints, selectedPointId, L]);
+
+  const handleSelectCard = (pt) => {
+    setSelectedPointId(pt.id);
+    if (mapRef.current && L) {
+      mapRef.current.setView([pt.lat, pt.lon], 15);
+      // Find and open popup
+      const markerIdx = filteredPoints.findIndex(p => p.id === pt.id);
+      if (markerIdx !== -1 && markersRef.current[markerIdx]) {
+        markersRef.current[markerIdx].openPopup();
+      }
+    }
+  };
+
+  return (
+    <div style={{ paddingTop: '100px', minHeight: 'calc(100vh - 350px)', background: 'linear-gradient(to bottom, #f0fbff, #ffffff)' }}>
+      {/* CSS Animation for active marker popup ring */}
+      <style>{`
+        @keyframes pulse-ring {
+          0% { transform: scale(0.33); opacity: 1; }
+          80%, 100% { opacity: 0; }
+        }
+        .custom-leaflet-marker:hover {
+          transform: rotate(-45deg) scale(1.15) !important;
+          z-index: 1000 !important;
+        }
+      `}</style>
+      
+      <div className="container" style={{ padding: '2rem 1.5rem 4rem 1.5rem' }}>
+        {/* Header Block */}
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <motion.button
+            onClick={() => {
+              setCurrentView('home');
+              window.history.pushState(null, '', '/');
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'none',
+              border: 'none',
+              color: '#64748b',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: '0.95rem',
+              marginBottom: '1rem',
+              fontFamily: "'Outfit', sans-serif",
+              transition: 'color 0.2s'
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = '#101729'}
+            onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
+          >
+            <ArrowLeft size={16} /> Volver al Inicio
+          </motion.button>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ 
+              fontFamily: "'Quicksand', sans-serif", 
+              fontSize: '2.5rem', 
+              color: '#101729', 
+              marginBottom: '1rem',
+              fontWeight: 800
+            }}
+          >
+            Puntos de Venta
+          </motion.h1>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ 
+              maxWidth: '650px', 
+              margin: '0 auto', 
+              color: '#475569', 
+              fontSize: '1.1rem',
+              lineHeight: 1.6,
+              fontFamily: "'Outfit', sans-serif"
+            }}
+          >
+            Encuentra tus paletas HealthyIce favoritas en nuestros gimnasios y consultorios asociados autorizados en Jalisco.
+          </motion.p>
+        </div>
+
+        {/* Directory & Map Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(320px, 400px) 1fr',
+          gap: '2rem',
+          alignItems: 'stretch'
+        }} className="pos-grid">
+          
+          {/* Column 1: Directory */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            
+            {/* Search and Filter Panel */}
+            <div className="glass-card" style={{ padding: '1.5rem', borderRadius: '20px' }}>
+              <div style={{ position: 'relative', marginBottom: '1rem' }}>
+                <input
+                  type="text"
+                  placeholder="Buscar gimnasio o zona..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.85rem 1rem 0.85rem 2.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid #cbd5e1',
+                    background: 'white',
+                    fontSize: '0.95rem',
+                    fontFamily: "'Outfit', sans-serif",
+                    outline: 'none',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onFocus={e => e.currentTarget.style.borderColor = '#98BC3C'}
+                  onBlur={e => e.currentTarget.style.borderColor = '#cbd5e1'}
+                />
+                <Search size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+              </div>
+              
+              {/* Giro Filters */}
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {['Todos', 'Gimnasio', 'Consultorio'].map(g => (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => { setSelectedGiro(g); setSelectedPointId(null); }}
+                    style={{
+                      flex: 1,
+                      padding: '0.5rem 0.25rem',
+                      fontSize: '0.85rem',
+                      fontFamily: "'Outfit', sans-serif",
+                      fontWeight: 700,
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: selectedGiro === g ? '#101729' : 'rgba(255,255,255,0.6)',
+                      color: selectedGiro === g ? 'white' : '#64748b',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      boxShadow: selectedGiro === g ? '0 4px 10px rgba(16,23,41,0.15)' : 'none'
+                    }}
+                  >
+                    {g === 'Todos' ? 'Todos' : g === 'Gimnasio' ? 'Gimnasios' : 'Consultorios'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* List of points of sale */}
+            <div style={{ 
+              maxHeight: '480px', 
+              overflowY: 'auto', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '1rem',
+              paddingRight: '0.25rem'
+            }} className="pos-list">
+              {filteredPoints.length > 0 ? (
+                filteredPoints.map(pt => {
+                  const isSelected = selectedPointId === pt.id;
+                  return (
+                    <div
+                      key={pt.id}
+                      id={`pos-card-\${pt.id}`}
+                      onClick={() => handleSelectCard(pt)}
+                      className="glass-card"
+                      style={{
+                        padding: '1.25rem',
+                        borderRadius: '16px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                        border: isSelected ? '2px solid #98BC3C' : '2px solid transparent',
+                        background: isSelected ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.5)',
+                        transform: isSelected ? 'translateY(-2px)' : 'none',
+                        boxShadow: isSelected ? '0 8px 24px rgba(152,188,60,0.15)' : '0 4px 12px rgba(31,38,135,0.03)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                        <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#101729', fontFamily: "'Quicksand', sans-serif" }}>
+                          {pt.name}
+                        </h3>
+                        <span style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          background: pt.giro === 'Gimnasio' ? 'rgba(152, 188, 60, 0.15)' : 'rgba(0, 229, 255, 0.15)',
+                          color: pt.giro === 'Gimnasio' ? '#6f8b24' : '#0097a7',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '999px',
+                          fontSize: '0.7rem',
+                          fontWeight: 800
+                        }}>
+                          {pt.giro === 'Gimnasio' ? <Activity size={10} /> : <HeartPulse size={10} />}
+                          {pt.giro}
+                        </span>
+                      </div>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#64748b', fontSize: '0.85rem', marginBottom: '0.85rem', fontFamily: "'Outfit', sans-serif" }}>
+                        <MapPin size={14} style={{ color: '#cbd5e1' }} />
+                        <span>{pt.location}</span>
+                      </div>
+                      
+                      <a
+                        href={pt.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()} // prevent card selection
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          color: '#101729',
+                          textDecoration: 'none',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          background: '#cbd5e1',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '8px',
+                          fontFamily: "'Outfit', sans-serif",
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#98BC3C'; e.currentTarget.style.color = 'white'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#cbd5e1'; e.currentTarget.style.color = '#101729'; }}
+                      >
+                        Cómo llegar →
+                      </a>
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#94a3b8', fontFamily: "'Outfit', sans-serif" }}>
+                  <p style={{ margin: 0, fontSize: '0.95rem' }}>No se encontraron ubicaciones para tu búsqueda.</p>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Column 2: Leaflet Map */}
+          <div style={{ position: 'relative', display: 'flex', flex1: 1 }} className="pos-map-col">
+            <div className="glass-card" style={{ 
+              width: '100%', 
+              height: '560px', 
+              borderRadius: '24px', 
+              overflow: 'hidden',
+              padding: '0.5rem',
+              background: 'rgba(255, 255, 255, 0.4)'
+            }}>
+              <div id="map-container" style={{ 
+                width: '100%', 
+                height: '100%', 
+                borderRadius: '20px', 
+                overflow: 'hidden',
+                background: '#e0f2fe',
+                zIndex: 1
+              }}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Inline styles for responsive layout */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media (max-width: 768px) {
+          .pos-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .pos-map-col {
+            order: -1; /* Place map at the top on mobile */
+          }
+          .pos-map-col .glass-card {
+            height: 380px !important;
+          }
+          .pos-list {
+            max-height: 360px !important;
+          }
+        }
+      `}} />
+    </div>
+  );
+};
 
 export default App;
