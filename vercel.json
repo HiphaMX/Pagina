@@ -54,7 +54,7 @@
     },
     {
       "src": "/amdi/",
-      "dest": "/projects/AMDI/index.html"
+      "dest": "/projects/AMDI/"
     },
     {
       "src": "/amdi/(.*)",
@@ -67,7 +67,7 @@
     },
     {
       "src": "/urologia-avanzada/",
-      "dest": "/projects/urologia-avanzada/index.html"
+      "dest": "/projects/urologia-avanzada/"
     },
     {
       "src": "/urologia-avanzada/(.*)",
@@ -108,7 +108,7 @@
     },
     {
       "src": "/letrerama/",
-      "dest": "/projects/Letrerama/web/index.html"
+      "dest": "/projects/Letrerama/web/"
     },
     {
       "src": "/letrerama/(.*)",
@@ -116,7 +116,7 @@
     },
     {
       "src": "/valencia-servicios",
-      "dest": "/projects/ValenciaServicios/index.html"
+      "dest": "/projects/ValenciaServicios/"
     },
     {
       "src": "/Assets/(.*)",
@@ -129,7 +129,7 @@
     },
     {
       "src": "/ni2/",
-      "dest": "/projects/ni2/web/index.html"
+      "dest": "/projects/ni2/web/"
     },
     {
       "src": "/ni2/(css|js)/(.*)",
