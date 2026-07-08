@@ -367,7 +367,86 @@ function nextPhase() {
     renderPhase((currentPhaseIndex + 1) % timelineData.length);
 }
 
+// ─── CUSTOM CURSOR ────────────────────────────────────────────────────
+function initCursor() {
+    let dot = document.getElementById('cursor-dot');
+    let ring = document.getElementById('cursor-ring');
+    
+    // Ensure elements exist
+    if (!dot) {
+        dot = document.createElement('div');
+        dot.id = 'cursor-dot';
+        document.body.appendChild(dot);
+    }
+    if (!ring) {
+        ring = document.createElement('div');
+        ring.id = 'cursor-ring';
+        document.body.appendChild(ring);
+    }
 
+    // Force styles to override any aggressive CSS media queries
+    dot.style.position = 'fixed';
+    dot.style.pointerEvents = 'none';
+    dot.style.zIndex = '99999';
+    dot.style.display = 'block';
+    
+    ring.style.position = 'fixed';
+    ring.style.pointerEvents = 'none';
+    ring.style.zIndex = '99998';
+    ring.style.display = 'block';
+
+    let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    let rx = cx, ry = cy;
+
+    // Detect touch vs mouse for hybrid devices (touchscreen laptops)
+    window.addEventListener('touchstart', () => {
+        dot.style.display = 'none';
+        ring.style.display = 'none';
+    }, { passive: true });
+
+    document.addEventListener('mousemove', e => {
+        // Only re-enable if it was hidden by touch
+        if (dot.style.display === 'none') {
+            dot.style.display = 'block';
+            ring.style.display = 'block';
+        }
+        cx = e.clientX; cy = e.clientY;
+        dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
+    });
+
+    function lerp() {
+        rx += (cx - rx) * 0.12; ry += (cy - ry) * 0.12;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(lerp);
+    }
+    requestAnimationFrame(lerp);
+
+    document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+    document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+    const attachHoverEvents = () => {
+        document.querySelectorAll('a, button, [onclick], input, textarea, select').forEach(el => {
+            if(!el.dataset.cursorBound) {
+                el.dataset.cursorBound = 'true';
+                el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+            }
+        });
+    };
+    
+    attachHoverEvents();
+    
+    // Observe DOM changes to attach hover to dynamic elements
+    const observer = new MutationObserver(attachHoverEvents);
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+// Ejecutar lo antes posible
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCursor);
+} else {
+    initCursor();
+}
 
 // ─── MOBILE MENU ──────────────────────────────────────────────────────
 function toggleMobileMenu() {
