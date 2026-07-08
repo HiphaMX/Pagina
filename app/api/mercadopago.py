@@ -118,10 +118,13 @@ async def create_preference(cart: CartRequest, request: Request):
         preference_response = sdk.preference().create(preference_data)
         preference = preference_response.get("response", {})
         
-        if "init_point" not in preference:
-            raise Exception("No init_point in response")
+        is_sandbox = mp_access_token.startswith("TEST-")
+        init_point_key = "sandbox_init_point" if is_sandbox else "init_point"
+        
+        if init_point_key not in preference:
+            raise Exception(f"No {init_point_key} in response")
             
-        return {"init_point": preference["init_point"], "id": preference.get("id")}
+        return {"init_point": preference[init_point_key], "id": preference.get("id")}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
