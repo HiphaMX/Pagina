@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^(projects/HealthyIce/|projects/BoticaSilvestre/|projects/ValenciaServicios/|projects/ChileChillon/|projects/WhiteClean/)'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^(projects/HealthyIce/|projects/BoticaSilvestre/|projects/ValenciaServicios/|projects/ChileChillon/|projects/WhiteClean/|projects/AMDI/|projects/urologia-avanzada/)'",
   "functions": {
     "api/index.py": {
       "excludeFiles": "projects/**"
