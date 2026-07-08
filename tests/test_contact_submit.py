@@ -31,3 +31,27 @@ def test_format_spanish_date():
     assert format_spanish_date("") == "N/A"
     assert format_spanish_date(None) == "N/A"
 
+def test_letrerama_quote_submit():
+    payload = {
+        "nombre": "Test Cliente",
+        "telefono": "5512345678",
+        "email": "test@letrerama.com",
+        "empresa": "Letrerama Test Corp",
+        "tiene_vector": "SI",
+        "logo_base64": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=",
+        "logo_filename": "logo.svg",
+        "tecnica": "Logotipo 3D",
+        "medida_ancho": 120.5,
+        "medida_alto": 80.0,
+        "medida_canto": 5.0,
+        "iluminacion": "Retroiluminado",
+        "material": "Aluminio cepillado",
+        "altura_instalacion": 2.5,
+        "direccion_instalacion": "Av. Reforma 123, CDMX",
+        "privacidad": True
+    }
+    response = client.post("/api/contact/letrerama", json=payload)
+    assert response.status_code == 200
+    assert response.json() == {"message": "Formulario recibido correctamente"}
+
+

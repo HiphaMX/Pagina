@@ -6,7 +6,7 @@
 **Fecha de inicio:** 2026-05-19
 **Última actualización:** 2026-05-19
 **Responsable KAM:** KAM v2.0
-**Estado:** `[ ] Discovery` → `[ ] Estrategia` → `[ ] Producción` → `[ ] Revisión` → `[ ] Entregado`
+**Estado:** `[x] Discovery` → `[x] Estrategia` → `[x] Producción` → `[x] Revisión` → `[x] Entregado`
 
 ---
 
@@ -131,11 +131,11 @@
 
 | Entregable | Agente | Archivo | Estado |
 |---|---|---|---|
-| Brand Brief | BrandMind | `brand_brief.md` | Pendiente |
-| Voice Brief | BrandMind | `voice_brief.md` | Pendiente |
-| Contenido semana 1 | VIRALGEN | `contenido_s1.md` | Pendiente |
-| Prompts visuales | VIRALGEN/IMAGENOLOGO | `prompts_visuales.md` | Pendiente |
-| Calendario mensual | VIRALGEN | `calendario.md` | Pendiente |
+| Brand Brief | BrandMind | `brand_brief.md` | ✅ Completado |
+| Voice Brief | BrandMind | `voice_brief.md` | ✅ Completado |
+| Contenido semana 1 | VIRALGEN | `contenido_s1.md` | ✅ Completado |
+| Prompts visuales | VIRALGEN/IMAGENOLOGO | `prompts_visuales.md` | ✅ Completado |
+| Calendario mensual | VIRALGEN | `calendario.md` | ✅ Completado |
 
 ---
 

@@ -18,6 +18,14 @@ class Settings(BaseSettings):
     EMAILS_FROM_EMAIL: str = ""
     EMAILS_FROM_NAME: str = ""
 
+    # AMDI Specific SMTP settings
+    AMDI_SMTP_HOST: str = ""
+    AMDI_SMTP_PORT: int = 587
+    AMDI_SMTP_USER: str = ""
+    AMDI_SMTP_PASSWORD: str = ""
+    AMDI_EMAILS_FROM_EMAIL: str = ""
+    AMDI_EMAILS_FROM_NAME: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
     class Config:

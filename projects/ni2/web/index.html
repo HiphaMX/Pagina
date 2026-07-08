@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ni2 | Inmobiliaria de Respuesta y Trámite Ágil</title>
-  <meta name="description" content="Vendemos, rentamos o encontramos tu propiedad en tiempo récord. Valuamos en menos de 48 horas. Sin burocracia, sin exclusivas obligatorias y cero spam.">
+  <title>ni2 | Especialistas en Sector Inmobiliario, Remodelación y Construcción</title>
+  <meta name="description" content="Especialistas integrales en comercialización inmobiliaria, diseño, remodelación express y construcción de obras residenciales y comerciales con presupuestos cerrados.">
   
   <!-- Estilos y Fuentes -->
   <link rel="stylesheet" href="css/styles.css">
@@ -20,7 +20,8 @@
       
       <nav>
         <ul class="nav-links">
-          <li><a href="#properties-carousel" class="nav-link" onclick="scrollToElement('properties-carousel')">Ver Propiedades</a></li>
+          <li><a href="#properties-carousel" class="nav-link" onclick="scrollToElement('properties-carousel')">Sector Inmobiliario</a></li>
+          <li><a href="#mantenimiento-section" class="nav-link" onclick="scrollToElement('mantenimiento-section')">Remodelación y Construcción</a></li>
           <li><a href="#propietarios-section" class="nav-link" onclick="scrollToElement('propietarios-section')">Soy Propietario</a></li>
         </ul>
       </nav>
@@ -41,16 +42,17 @@
       <div class="hero-container">
         
         <div class="hero-info">
-          <span class="badge-tagline reveal-on-load">Respuesta y Trámite Ágil</span>
-          <h1 class="hero-title reveal-on-load delay-100">Tu propiedad vendida, rentada o encontrada. <strong>Sin burocracia.</strong></h1>
-          <p class="hero-subtitle reveal-on-load delay-200" style="margin-bottom: 0;">Evaluamos tu inmueble en menos de 48 horas o filtramos tu búsqueda de forma rápida y sin spam. Tu tiempo es nuestro activo más valioso.</p>
+          <span class="badge-tagline reveal-on-load">Bienes Raíces • Remodelación • Construcción</span>
+          <h1 class="hero-title reveal-on-load delay-100">Compra, Vende, Remodela o Construye <strong>tu propiedad.</strong></h1>
+          <p class="hero-subtitle reveal-on-load delay-200" style="margin-bottom: 0;">Especialistas integrales en el sector inmobiliario. Ofrecemos soluciones de compraventa, arrendamiento, remodelación de espacios y proyectos de construcción con presupuesto competitivo, mano de obra calificada y plazos de entrega garantizados.</p>
         </div>
 
         <!-- Caja de Conversión Principal con Pestañas -->
         <div class="conversion-box reveal-on-load delay-400">
           <div class="tab-headers">
-            <button class="tab-btn active" id="tab-search">Quiero Comprar / Rentar</button>
-            <button class="tab-btn" id="tab-sell">Quiero Vender / Rentar Inmueble</button>
+            <button class="tab-btn active" id="tab-search">Buscar Propiedades</button>
+            <button class="tab-btn" id="tab-sell">Vender o Rentar</button>
+            <button class="tab-btn" id="tab-maintenance">Remodelar o Construir</button>
           </div>
 
           <!-- Pestaña 1: Buscador Rápido -->
@@ -97,6 +99,17 @@
               </button>
             </div>
           </div>
+
+          <!-- Pestaña 3: Mantenimiento / Remodelación -->
+          <div class="tab-content" id="content-maintenance">
+            <div class="owner-quick-pitch">
+              <h3 style="font-size: 1.125rem; font-family: var(--font-sans); font-weight: 600;">¿Quieres remodelar, construir o cotizar un proyecto?</h3>
+              <p>Desarrollamos proyectos residenciales y comerciales llave en mano, remodelaciones express (Home Staging) y obra civil con garantía de presupuesto por escrito en menos de 48 horas.</p>
+              <button class="cta-button-accent" id="cta-hero-mantenimiento" onclick="scrollToElement('mantenimiento-section')">
+                Ver Servicios de Obra
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Fila Completa de Viñetas de Confianza (Pie de Grilla Suizo) -->
@@ -106,19 +119,19 @@
               <svg class="bullet-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
               </svg>
-              <span>Valuación en &lt; 48 hrs</span>
+              <span>Remodelación y Obra Llave en Mano</span>
             </div>
             <div class="bullet-item">
               <svg class="bullet-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Respuesta WhatsApp en 10 min</span>
+              <span>Presupuesto competitivo</span>
             </div>
             <div class="bullet-item">
               <svg class="bullet-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span>Trámites 100% Seguros</span>
+              <span>Tiempos de entrega sin sorpresas</span>
             </div>
           </div>
         </div>
@@ -131,9 +144,9 @@
       <div class="grid-container">
         
         <div class="section-header">
-          <span class="badge-tagline">El método ni2</span>
-          <h2 class="section-title">¿Por qué somos una inmobiliaria de trámite ágil?</h2>
-          <p>Rediseñamos la experiencia inmobiliaria tradicional eliminando la burocracia que te hace perder tiempo y dinero.</p>
+          <span class="badge-tagline">Nuestra Especialidad</span>
+          <h2 class="section-title">Especialistas integrales en sector inmobiliario, remodelación y construcción</h2>
+          <p>Conectamos todas las etapas del ciclo de vida de tu propiedad: comercialización inteligente, renovación de alto impacto y obra nueva.</p>
         </div>
 
         <div class="features-grid">
@@ -141,40 +154,109 @@
           <article class="feature-card">
             <div class="feature-icon-wrapper">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
             </div>
-            <h3>Valuación Ágil en 48 Horas</h3>
-            <p>Usamos análisis comparativo de mercado automatizado y cruzado con datos notariales para darte el precio de venta real en tiempo récord.</p>
+            <h3>Sector Inmobiliario Ágil</h3>
+            <p>Compramos, vendemos y rentamos propiedades en Guadalajara con filtros de seguridad estrictos, valuaciones en 48 horas y cero burocracia tradicional.</p>
           </article>
           
           <!-- Card 2 -->
           <article class="feature-card">
             <div class="feature-icon-wrapper">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
-            <h3>Filtrado de Compradores</h3>
-            <p>No perdemos el tiempo abriendo tu puerta a curiosos. Validamos la capacidad financiera y pre-crédito bancario de cada interesado antes de agendar.</p>
+            <h3>Remodelación e Interiorismo</h3>
+            <p>Especialistas en Home Staging y remodelaciones express para maximizar el valor comercial de tu propiedad y acelerar los tiempos de venta o renta.</p>
           </article>
 
           <!-- Card 3 -->
           <article class="feature-card">
             <div class="feature-icon-wrapper">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
-            <h3>Cero Spam. Privacidad Absoluta.</h3>
-            <p>Protegemos tus datos de forma estricta. Te contactamos únicamente a través de canales directos que autorices y nunca vendemos tu información.</p>
+            <h3>Construcción Llave en Mano</h3>
+            <p>Diseñamos y edificamos obras residenciales y comerciales desde cero. Proyectos de construcción con presupuesto competitivo y mano de obra calificada.</p>
           </article>
         </div>
 
       </div>
     </section>
 
-    <!-- 3. FORMULARIO DE CAPTACIÓN MULTIPASO PARA PROPIETARIOS -->
+    <!-- 3. MANTENIMIENTO Y REMODELACIÓN SECTION (Swiss Grid Layout) -->
+    <section class="maintenance-section reveal-on-scroll" id="mantenimiento-section">
+      <div class="grid-container">
+        
+        <div class="section-header">
+          <span class="badge-tagline">Remodelación y Construcción</span>
+          <h2 class="section-title">Especialistas en Remodelación, Construcción y Proyectos de Obra</h2>
+          <p>Tanto si quieres vender tu propiedad por más valor, remodelar un espacio adquirido o iniciar un proyecto de construcción desde cero.</p>
+        </div>
+
+        <div class="maintenance-grid">
+          <!-- Card 1 -->
+          <article class="maintenance-card">
+            <div class="maintenance-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+            </div>
+            <h3>Remodelación Residencial & Comercial</h3>
+            <p>Renovaciones integrales, diseño de interiores, locales comerciales y Home Staging estratégico para aumentar la rentabilidad de cualquier espacio.</p>
+          </article>
+          
+          <!-- Card 2 -->
+          <article class="maintenance-card">
+            <div class="maintenance-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h3>Construcción & Obra Nueva</h3>
+            <p>Desarrollo y edificación de residencias, oficinas y locales comerciales desde planos. Obras ejecutadas con presupuesto competitivo y mano de obra altamente calificada.</p>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="maintenance-card">
+            <div class="maintenance-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </div>
+            <h3>Mantenimiento Técnico Especializado</h3>
+            <p>Pintura técnica de fachadas, impermeabilización de azoteas, redes eléctricas, plomería industrial y acabados de precisión para mantenimiento preventivo.</p>
+          </article>
+        </div>
+
+        <!-- Garantía ni2 Destacada -->
+        <div class="guarantee-box">
+          <div class="guarantee-header">
+            <h4>🛡️ Compromiso y Garantía de Obra ni2</h4>
+          </div>
+          <div class="guarantee-grid">
+            <div class="guarantee-item">
+              <h5>Presupuesto competitivo</h5>
+              <p>Elaboramos una cotización formal y detallada. Firmamos un contrato con precio competitivo garantizado; no hay cargos extras imprevistos.</p>
+            </div>
+            <div class="guarantee-item">
+              <h5>Tiempos de entrega sin sorpresas</h5>
+              <p>Establecemos penalizaciones monetarias por cada día de retraso. Entregamos tu construcción o remodelación en la fecha exacta pactada.</p>
+            </div>
+            <div class="guarantee-item">
+              <h5>Atención ágil y oportuna</h5>
+              <p>Envíanos detalles y fotos de tu terreno o propiedad por WhatsApp y te contactaremos en tiempo récord para iniciar a trabajar en conjunto</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. FORMULARIO DE CAPTACIÓN MULTIPASO PARA PROPIETARIOS -->
     <section class="properties-section reveal-on-scroll" id="propietarios-section" style="background-color: var(--bg-primary);">
       <div class="grid-container" style="max-width: 680px;">
         
@@ -270,6 +352,24 @@
               <div class="form-step" data-step-name="valor_e_intencion">
                 <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">2. Rango de valor e intención de tiempo</h3>
                 
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label>¿Cuál es tu objetivo principal? *</label>
+                  <div class="options-grid" style="grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 0;">
+                    <label class="option-card selected">
+                      <input type="radio" name="objective" value="sell" checked required>
+                      <span>Vender mi propiedad rápido</span>
+                    </label>
+                    <label class="option-card">
+                      <input type="radio" name="objective" value="rent" required>
+                      <span>Rentar de forma segura</span>
+                    </label>
+                    <label class="option-card">
+                      <input type="radio" name="objective" value="maintenance" required>
+                      <span>Remodelar o dar mantenimiento (Home Staging)</span>
+                    </label>
+                  </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 1.25rem;">
                   <label for="price-range">Valor Comercial Estimado *</label>
                   <select id="price-range" name="price-range" required>
@@ -582,7 +682,7 @@
         <p style="font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">
           ni2<span style="color: var(--accent-color);">.</span>
         </p>
-        <p style="max-width: 320px; font-size: 0.8125rem;">Plataforma de intermediación inmobiliaria de alta velocidad en la ZMG (Jalisco). Cero burocracia, valuaciones precisas y absoluta seriedad.</p>
+        <p style="max-width: 320px; font-size: 0.8125rem;">Especialistas en el sector inmobiliario, remodelación de espacios y construcción de proyectos residenciales y comerciales en la ZMG (Jalisco).</p>
       </div>
       
       <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
@@ -591,7 +691,7 @@
           <span style="color: var(--border-dark)">|</span>
           <a href="#" class="footer-link">Términos y Condiciones</a>
         </div>
-        <p style="font-size: 0.75rem; color: var(--text-light);">&copy; 2026 ni2 Inmobiliaria Ágil. Todos los derechos reservados.</p>
+        <p style="font-size: 0.75rem; color: var(--text-light);">&copy; 2026 ni2 Inmobiliaria & Obras. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

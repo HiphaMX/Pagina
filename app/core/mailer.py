@@ -10,15 +10,20 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-async def _send_smtp(message):
-    use_tls = (settings.SMTP_PORT == 465)
-    start_tls = (settings.SMTP_PORT != 465)
+async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, smtp_password=None):
+    host = smtp_host or settings.SMTP_HOST
+    port = smtp_port or settings.SMTP_PORT
+    user = smtp_user or settings.SMTP_USER
+    password = smtp_password or settings.SMTP_PASSWORD
+
+    use_tls = (port == 465)
+    start_tls = (port != 465)
     await aiosmtplib.send(
         message,
-        hostname=settings.SMTP_HOST,
-        port=settings.SMTP_PORT,
-        username=settings.SMTP_USER,
-        password=settings.SMTP_PASSWORD,
+        hostname=host,
+        port=port,
+        username=user,
+        password=password,
         use_tls=use_tls,
         start_tls=start_tls
     )
@@ -1640,6 +1645,285 @@ async def send_valencia_servicios_notification_team(form_data):
     except Exception as e:
         logger.error(f"Error al enviar notificación de Valencia Servicios para el cliente {form_data.nombre_completo}: {str(e)}")
         return False
+
+
+async def send_amdi_contact_confirmation_email(form_data):
+    amdi_configured = bool(settings.AMDI_SMTP_HOST and settings.AMDI_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not amdi_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de confirmación de contacto AMDI para {form_data.email}")
+        return True
+
+    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
+    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
+    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
+    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
+
+    from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
+    from_name = settings.AMDI_EMAILS_FROM_NAME if settings.AMDI_EMAILS_FROM_NAME else "AMDI | Diseño de Interiores"
+
+    message = EmailMessage()
+    message["From"] = f"{from_name} <{from_email}>"
+    message["To"] = form_data.email
+    message["Subject"] = f"¡Hola {form_data.nombre}! Recibimos tu mensaje en AMDI"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="amdi.mx")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif; color: #1e293b; background-color: #fafafa; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            
+            <div style="background-color: #0A0E17; padding: 30px; text-align: center;">
+                <img src="https://www.amdi.mx/projects/AMDI/images/62ccb83546527a47ccda9cbf_AMDI0.svg" alt="AMDI Logo" style="height: 50px; margin: 0 auto; display: block;">
+            </div>
+            
+            <div style="padding: 40px 30px; line-height: 1.6;">
+                <h2 style="color: #0A0E17; font-size: 20px; font-weight: 700; margin-top: 0;">¡Hola, {form_data.nombre}!</h2>
+                <p>Muchas gracias por ponerte en contacto con nosotros.</p>
+                <p>Hemos recibido tus datos y tu solicitud. Uno de nuestros diseñadores creativos revisará los detalles de tu proyecto y se pondrá en contacto contigo muy pronto para platicar a profundidad.</p>
+                
+                <div style="margin: 30px 0; padding: 20px; background-color: #f8fafc; border-left: 4px solid #0A0E17; border-radius: 4px;">
+                    <h3 style="margin-top: 0; font-size: 14px; color: #0A0E17; text-transform: uppercase; letter-spacing: 0.5px;">Resumen de tu mensaje:</h3>
+                    <p style="margin: 5px 0; font-size: 14px;"><strong>Proyecto:</strong> Diseño de interiores</p>
+                    <p style="margin: 5px 0; font-size: 14px; font-style: italic; color: #475569;">"{form_data.mensaje}"</p>
+                </div>
+                
+                <p>Mientras tanto, te invitamos a seguir descubriendo nuestro portafolio de proyectos residenciales y comerciales en nuestro sitio web.</p>
+                
+                <p style="margin-bottom: 0; margin-top: 40px;">Atentamente,<br><strong>El equipo creativo de AMDI</strong></p>
+            </div>
+            
+            <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0;">
+                Este correo fue enviado de manera automática por el sistema de AMDI.<br>
+                © 2026 AMDI | Diseño de Interiores.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Correo de confirmación AMDI enviado a {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar confirmación AMDI a {form_data.email}: {str(e)}")
+        return False
+
+
+async def send_amdi_contact_notification_team(form_data):
+    amdi_configured = bool(settings.AMDI_SMTP_HOST and settings.AMDI_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not amdi_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de notificación AMDI al equipo para {form_data.email}")
+        return True
+
+    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
+    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
+    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
+    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
+
+    from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
+
+    message = EmailMessage()
+    message["From"] = f"AMDI Web <{from_email}>"
+    message["To"] = "creativo@amdi.mx"
+    message["Subject"] = f"📬 Nuevo mensaje de contacto desde AMDI: {form_data.nombre} {form_data.apellido}"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="amdi.mx")
+
+    mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin mensaje.'
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            
+            <div style="background-color: #0A0E17; padding: 25px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                    AMDI <span style="color: #80ED99;">Lead</span>
+                </h1>
+            </div>
+            
+            <div style="padding: 35px 30px;">
+                <p style="font-size: 15px; margin-top: 0; margin-bottom: 25px; color: #475569;">
+                    Se ha recibido una nueva solicitud de información en la página web de AMDI. Detalles del prospecto:
+                </p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 14px;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0E17; background-color: #f8fafc; width: 150px;">Nombre:</td>
+                        <td style="padding: 10px; color: #1e293b;">{form_data.nombre} {form_data.apellido}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0E17; background-color: #f8fafc;">Email:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="mailto:{form_data.email}" style="color: #2EC4B6; text-decoration: none; font-weight: bold;">{form_data.email}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0E17; background-color: #f8fafc;">Teléfono:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="tel:{form_data.telefono}" style="color: #1e293b; text-decoration: none; font-weight: bold;">{form_data.telefono}</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold; color: #0A0E17; background-color: #f8fafc; vertical-align: top;">Mensaje:</td>
+                        <td style="padding: 10px; color: #1e293b; line-height: 1.5; font-style: italic;">{mensaje_formatted}</td>
+                    </tr>
+                </table>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="https://wa.me/{form_data.telefono.replace(' ', '').replace('+', '').replace('-', '')}" style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                        💬 Responder por WhatsApp
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #cbd5e1;">
+                Mensaje automático de contacto enviado por el sistema de AMDI.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Notificación de contacto AMDI enviada al equipo para {form_data.nombre}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación de contacto AMDI al equipo: {str(e)}")
+        return False
+
+
+async def send_amdi_newsletter_welcome(subscriber_email: str):
+    amdi_configured = bool(settings.AMDI_SMTP_HOST and settings.AMDI_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not amdi_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de bienvenida a Newsletter AMDI para {subscriber_email}")
+        return True
+
+    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
+    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
+    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
+    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
+
+    from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
+    from_name = settings.AMDI_EMAILS_FROM_NAME if settings.AMDI_EMAILS_FROM_NAME else "AMDI | Boletín"
+
+    message = EmailMessage()
+    message["From"] = f"{from_name} <{from_email}>"
+    message["To"] = subscriber_email
+    message["Subject"] = "¡Bienvenido al Newsletter de AMDI!"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="amdi.mx")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Montserrat', Arial, sans-serif; color: #1e293b; background-color: #fafafa; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            
+            <div style="background-color: #0A0E17; padding: 30px; text-align: center;">
+                <img src="https://www.amdi.mx/projects/AMDI/images/62ccb83546527a47ccda9cbf_AMDI0.svg" alt="AMDI Logo" style="height: 50px; margin: 0 auto; display: block;">
+            </div>
+            
+            <div style="padding: 40px 30px; line-height: 1.6;">
+                <h2 style="color: #0A0E17; font-size: 18px; font-weight: 700; margin-top: 0;">¡Hola!</h2>
+                <p>Te damos la más cordial bienvenida al boletín de noticias de <strong>AMDI | Diseño de Interiores</strong>.</p>
+                <p>A partir de ahora, recibirás contenido exclusivo sobre las últimas tendencias en diseño, ideas inspiradoras para transformar tus espacios, lanzamientos de nuevos proyectos y consejos de decoración directo a tu bandeja de entrada.</p>
+                <p>¡Gracias por ser parte de nuestra comunidad!</p>
+                
+                <p style="margin-bottom: 0; margin-top: 40px;">Atentamente,<br><strong>El equipo de AMDI</strong></p>
+            </div>
+            
+            <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0;">
+                Recibes este correo porque te suscribiste a nuestro boletín en el sitio web de AMDI.<br>
+                © 2026 AMDI | Diseño de Interiores.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Correo de bienvenida a Newsletter AMDI enviado a {subscriber_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de bienvenida AMDI a {subscriber_email}: {str(e)}")
+        return False
+
+
+async def send_amdi_newsletter_notification_team(subscriber_email: str):
+    amdi_configured = bool(settings.AMDI_SMTP_HOST and settings.AMDI_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not amdi_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de notificación de boletín AMDI para {subscriber_email}")
+        return True
+
+    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
+    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
+    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
+    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
+
+    from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
+
+    message = EmailMessage()
+    message["From"] = f"AMDI Web <{from_email}>"
+    message["To"] = "creativo@amdi.mx"
+    message["Subject"] = f"📰 Nuevo suscriptor al boletín de AMDI"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="amdi.mx")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            
+            <div style="background-color: #0A0E17; padding: 25px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                    AMDI <span style="color: #80ED99;">Newsletter</span>
+                </h1>
+            </div>
+            
+            <div style="padding: 35px 30px;">
+                <p style="font-size: 15px; margin-top: 0; margin-bottom: 20px; color: #475569;">
+                    Un nuevo usuario se ha registrado en el boletín (Newsletter) de la página web de AMDI.
+                </p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 14px;">
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold; color: #0A0E17; background-color: #f8fafc; width: 150px;">Email Registrado:</td>
+                        <td style="padding: 10px; color: #1e293b;"><a href="mailto:{subscriber_email}" style="color: #2EC4B6; text-decoration: none; font-weight: bold;">{subscriber_email}</a></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #cbd5e1;">
+                Notificación automática enviada por el sistema de AMDI.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Notificación de nuevo suscriptor AMDI enviada al equipo para {subscriber_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación de nuevo suscriptor AMDI al equipo: {str(e)}")
+        return False
+
 
 
 

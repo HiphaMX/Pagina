@@ -19,39 +19,63 @@ document.addEventListener('DOMContentLoaded', () => {
 function initTabs() {
   const tabSearch = document.getElementById('tab-search');
   const tabSell = document.getElementById('tab-sell');
+  const tabMaintenance = document.getElementById('tab-maintenance');
   const contentSearch = document.getElementById('content-search');
   const contentSell = document.getElementById('content-sell');
+  const contentMaintenance = document.getElementById('content-maintenance');
 
-  if (!tabSearch || !tabSell) return;
+  if (!tabSearch || !tabSell || !tabMaintenance) return;
+
+  function deactivateAll() {
+    tabSearch.classList.remove('active');
+    tabSell.classList.remove('active');
+    tabMaintenance.classList.remove('active');
+    contentSearch.classList.remove('active');
+    contentSell.classList.remove('active');
+    contentMaintenance.classList.remove('active');
+    contentSearch.style.display = 'none';
+    contentSell.style.display = 'none';
+    contentMaintenance.style.display = 'none';
+  }
 
   tabSearch.addEventListener('click', () => {
+    deactivateAll();
     tabSearch.classList.add('active');
-    tabSell.classList.remove('active');
     contentSearch.classList.add('active');
     contentSearch.style.display = 'block';
-    contentSell.classList.remove('active');
-    contentSell.style.display = 'none';
 
     // Analytics click track
     trackGA4Event('click_cta_buscar', {
       event_category: 'engagement',
-      event_label: 'Cambio a Quiero Comprar o Rentar',
+      event_label: 'Cambio a Buscar Propiedades',
       location: 'hero_tabs'
     });
   });
 
   tabSell.addEventListener('click', () => {
+    deactivateAll();
     tabSell.classList.add('active');
-    tabSearch.classList.remove('active');
     contentSell.classList.add('active');
     contentSell.style.display = 'block';
-    contentSearch.classList.remove('active');
-    contentSearch.style.display = 'none';
 
     // Analytics click track
     trackGA4Event('click_cta_vender', {
       event_category: 'engagement',
-      event_label: 'Cambio a Quiero Vender o Rentar mi Propiedad',
+      event_label: 'Cambio a Vender o Rentar',
+      location: 'hero_tabs'
+    });
+  });
+
+  tabMaintenance.addEventListener('click', () => {
+    deactivateAll();
+    tabMaintenance.classList.add('active');
+    contentMaintenance.classList.add('active');
+    contentMaintenance.style.display = 'block';
+
+    // Analytics click track
+    trackGA4Event('click_cta_mantenimiento_tab', {
+      event_category: 'engagement',
+      event_label: 'Cambio a Remodelar o Construir',
       location: 'hero_tabs'
     });
   });
@@ -239,12 +263,14 @@ function initMultiStepForm() {
         const propType = form.querySelector('input[name="property-type"]:checked')?.value || 'house';
         const urgency = form.querySelector('input[name="urgency"]:checked')?.value || 'evaluate';
         const range = form.querySelector('select[name="price-range"]')?.value || 'not_specified';
+        const objective = form.querySelector('input[name="objective"]:checked')?.value || 'sell';
 
         trackGA4Event('lead_captured', {
           form_id: 'propietarios_form',
           property_type: propType,
           urgency_speed: urgency,
           price_range: range,
+          property_objective: objective,
           lead_quality_score: urgency === 'urgent' ? 10 : (urgency === 'medium' ? 7 : 4)
         });
 
@@ -336,10 +362,12 @@ window.scrollToElement = function(elementId) {
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' });
     
-    // Si se invoca desde el tab de propietarios, abrir la pestaña correspondiente
-    const tabSell = document.getElementById('tab-sell');
-    if (tabSell && !tabSell.classList.contains('active')) {
-      tabSell.click();
+    // Si se desplaza a la sección de propietarios, asegurar que el tab correspondiente esté activo
+    if (elementId === 'propietarios-section') {
+      const tabSell = document.getElementById('tab-sell');
+      if (tabSell && !tabSell.classList.contains('active')) {
+        tabSell.click();
+      }
     }
   }
 };
