@@ -664,7 +664,7 @@ function App() {
   const handleB2BOrder = () => {
     const calculatedDaily = Math.round(calcMembers * calcRate);
     const calculatedMonthly = calculatedDaily * 30;
-    const calculatedMargin = calcRate === 0.05 ? 8.50 : 9.50;
+    const calculatedMargin = calcRate === 0.05 ? 13.50 : 14.50;
     const calculatedProfit = calculatedMonthly * calculatedMargin;
 
     const b2bDetails = `Distribución B2B (Gimnasio):\n- Socios Activos: ${calcMembers}\n- Escenario de Compra Diaria: ${calcRate * 100}%\n- Volumen Mensual Estimado: ${calculatedMonthly} paletas\n- Ganancia Mensual Estimada: $${calculatedProfit.toLocaleString('es-MX')} MXN`;
@@ -1367,9 +1367,9 @@ function App() {
                 </label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {[
-                    { rate: 0.05, label: '5% (Conservador)', desc: 'Venta de 5 paletas por cada 100 socios activos', margin: 8.50 },
-                    { rate: 0.10, label: '10% (Moderado)', desc: 'Venta de 10 paletas por cada 100 socios activos', margin: 9.50 },
-                    { rate: 0.15, label: '15% (Optimista)', desc: 'Venta de 15 paletas por cada 100 socios activos', margin: 9.50 }
+                    { rate: 0.05, label: '5% (Conservador)', desc: 'Venta de 5 paletas por cada 100 socios activos', margin: 13.50 },
+                    { rate: 0.10, label: '10% (Moderado)', desc: 'Venta de 10 paletas por cada 100 socios activos', margin: 14.50 },
+                    { rate: 0.15, label: '15% (Optimista)', desc: 'Venta de 15 paletas por cada 100 socios activos', margin: 14.50 }
                   ].map((item) => (
                     <button
                       key={item.rate}
@@ -1413,7 +1413,7 @@ function App() {
                     GANANCIA ESTIMADA MENSUAL
                   </span>
                   <h4 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'white', letterSpacing: '-1px', margin: 0 }}>
-                    ${(Math.round(calcMembers * calcRate) * 30 * (calcRate === 0.05 ? 8.50 : 9.50)).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span style={{ fontSize: '1rem', fontWeight: 600, color: '#94a3b8' }}>MXN</span>
+                    ${(Math.round(calcMembers * calcRate) * 30 * (calcRate === 0.05 ? 13.50 : 14.50)).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <span style={{ fontSize: '1rem', fontWeight: 600, color: '#94a3b8' }}>MXN</span>
                   </h4>
                   <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>
                     *Precio de venta sugerido por paleta: $50 MXN
@@ -1432,7 +1432,7 @@ function App() {
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2.5rem' }}>
                   {[
-                    'Margen de ganancia de hasta 24% por paleta.',
+                    'Margen de ganancia de hasta 29% por paleta.',
                     'Equipo de congelación sin costo de arrendamiento.',
                     'Activación y promoción de marca en tu gimnasio.'
                   ].map((benefit, idx) => (
