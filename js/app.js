@@ -482,3 +482,20 @@ function selectSubscriptionPlan(planName) {
     }
     toggleModal('contact-modal');
 }
+
+// Lógica para colapsar y desplegar subfilas en la tabla comparativa
+function toggleTableSubrows(className, element) {
+    const rows = document.querySelectorAll('.' + className);
+    if (rows.length === 0) return;
+    const isHidden = rows[0].classList.contains('hidden');
+    rows.forEach(row => {
+        if (isHidden) {
+            row.classList.remove('hidden');
+        } else {
+            row.classList.add('hidden');
+        }
+    });
+    if (element) {
+        element.textContent = isHidden ? '(Ocultar detalles)' : '(Ver detalles)';
+    }
+}
