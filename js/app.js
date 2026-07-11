@@ -499,3 +499,29 @@ function toggleTableSubrows(className, element) {
         element.textContent = isHidden ? '(Ocultar detalles)' : '(Ver detalles)';
     }
 }
+
+// Lógica para alternar facturación mensual/anual en el Plan Web
+function setWebPlanBilling(type, buttonEl) {
+    const container = buttonEl.closest('.glass-panel');
+    const monthlyPrice = container.querySelector('#web-price-monthly');
+    const annualPrice = container.querySelector('#web-price-annual');
+    const ctaButton = container.querySelector('button[onclick^="selectSubscriptionPlan"]');
+    if (!monthlyPrice || !annualPrice || !ctaButton) return;
+
+    const buttons = buttonEl.parentNode.querySelectorAll('button');
+    buttons.forEach(btn => {
+        btn.className = "flex-1 text-[11px] font-bold text-center py-1.5 rounded-lg transition-all text-slate-400 hover:text-white";
+    });
+
+    if (type === 'monthly') {
+        buttonEl.className = "flex-1 text-[11px] font-bold text-center py-1.5 rounded-lg transition-all bg-cyan-600/20 text-cyan-400";
+        monthlyPrice.classList.remove('hidden');
+        annualPrice.classList.add('hidden');
+        ctaButton.setAttribute('onclick', "selectSubscriptionPlan('WEB')");
+    } else {
+        buttonEl.className = "flex-1 text-[11px] font-bold text-center py-1.5 rounded-lg transition-all bg-cyan-600/20 text-cyan-400 flex items-center justify-center gap-1";
+        monthlyPrice.classList.add('hidden');
+        annualPrice.classList.remove('hidden');
+        ctaButton.setAttribute('onclick', "selectSubscriptionPlan('WEB ANUAL')");
+    }
+}
