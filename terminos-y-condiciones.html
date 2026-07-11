@@ -304,7 +304,7 @@
                     </div>
                 </div>
                 <!-- Día de pago -->
-                <div>
+                <div id="payment-date-container">
                     <label class="block text-sm font-medium text-slate-300 mb-1">Día de pago <span class="text-primary-400">*</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -431,30 +431,52 @@
             const projectName = document.getElementById('project-name').value;
             const paymentMethod = document.getElementById('payment-method').value;
             const planContratado = document.getElementById('contracted-plan').value;
-            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nDía de pago comprometido: ${paymentDateVal}\nProyecto: ${projectName}\nPlan contratado: ${planContratado}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
+            const displayPaymentDate = paymentDateVal ? paymentDateVal : 'N/A (Plan Anual)';
+            document.getElementById('hidden-mensaje').value = `ACEPTACIÓN DE CONTRATO VÍA WEB.\n\nFecha de aceptación: ${dateVal}\nDía de pago comprometido: ${displayPaymentDate}\nProyecto: ${projectName}\nPlan contratado: ${planContratado}\nForma de pago elegida: ${paymentMethod}\n\nEl cliente ha marcado la casilla aceptando los términos y condiciones para iniciar a trabajar con Hipha.`;
         });
 
         // Preseleccionar plan y abrir modal si viene en los parámetros de la URL
         document.addEventListener('DOMContentLoaded', () => {
+            const planSelect = document.getElementById('contracted-plan');
+            const paymentDateContainer = document.getElementById('payment-date-container');
+            const paymentDateInput = document.getElementById('payment-date');
+
+            function handlePlanChange() {
+                if (planSelect && planSelect.value === 'WEB_ANUAL') {
+                    if (paymentDateContainer) paymentDateContainer.classList.add('hidden');
+                    if (paymentDateInput) {
+                        paymentDateInput.removeAttribute('required');
+                        paymentDateInput.value = '';
+                    }
+                } else {
+                    if (paymentDateContainer) paymentDateContainer.classList.remove('hidden');
+                    if (paymentDateInput) paymentDateInput.setAttribute('required', 'true');
+                }
+            }
+
+            if (planSelect) {
+                planSelect.addEventListener('change', handlePlanChange);
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const planParam = urlParams.get('plan');
-            if (planParam) {
-                const planSelect = document.getElementById('contracted-plan');
-                if (planSelect) {
-                    const normalizedPlan = planParam.toUpperCase();
-                    const optionExists = Array.from(planSelect.options).some(opt => opt.value === normalizedPlan);
-                    if (optionExists) {
-                        planSelect.value = normalizedPlan;
-                        const contractDateInput = document.getElementById('contract-date');
-                        if (contractDateInput && !contractDateInput.value) {
-                            contractDateInput.value = new Date().toISOString().split('T')[0];
-                        }
-                        if (typeof toggleModal === 'function') {
-                            toggleModal('contract-modal');
-                        }
+            if (planParam && planSelect) {
+                const normalizedPlan = planParam.toUpperCase();
+                const optionExists = Array.from(planSelect.options).some(opt => opt.value === normalizedPlan);
+                if (optionExists) {
+                    planSelect.value = normalizedPlan;
+                    const contractDateInput = document.getElementById('contract-date');
+                    if (contractDateInput && !contractDateInput.value) {
+                        contractDateInput.value = new Date().toISOString().split('T')[0];
+                    }
+                    if (typeof toggleModal === 'function') {
+                        toggleModal('contract-modal');
                     }
                 }
             }
+
+            // Ejecutar inicialmente para aplicar estado del plan preseleccionado
+            handlePlanChange();
         });
 
         // Limitar el día de pago del 1 al 30 en tiempo real
