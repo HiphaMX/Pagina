@@ -519,7 +519,7 @@ function setWebPlanBilling(type, buttonEl) {
         annualPrice.classList.add('hidden');
         ctaButton.setAttribute('onclick', "selectSubscriptionPlan('WEB')");
     } else {
-        buttonEl.className = "flex-1 text-[11px] font-bold text-center py-1.5 rounded-lg transition-all bg-cyan-600/20 text-cyan-400 flex items-center justify-center gap-1";
+        buttonEl.className = "flex-1 text-[11px] font-bold text-center py-1.5 rounded-lg transition-all bg-cyan-600/20 text-cyan-400";
         monthlyPrice.classList.add('hidden');
         annualPrice.classList.remove('hidden');
         ctaButton.setAttribute('onclick', "selectSubscriptionPlan('WEB ANUAL')");
