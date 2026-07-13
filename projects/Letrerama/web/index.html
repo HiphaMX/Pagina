@@ -2489,30 +2489,30 @@
         </p>
       </div>
 
-      <!-- BADGE 1: Acrílico Cast -->
+      <!-- BADGE 1: Acrílico -->
       <div class="mat-constellation-item cell-tl float-ast-1 active"
            data-img="assets/mat_acrilico.jpg" 
            data-uso="Ideal para logos 3D con luz trasera elegante."
            onmouseenter="selectMaterial(this)">
-        <span class="mat-constellation-title">Acrílico Cast</span>
+        <span class="mat-constellation-title">Acrílico</span>
         <span class="mat-constellation-desc">Óptica cristalina y retroiluminación halo.</span>
       </div>
       
-      <!-- BADGE 2: Aluminio ACM -->
+      <!-- BADGE 2: Aluminio Compuesto -->
       <div class="mat-constellation-item cell-tc float-ast-2"
            data-img="assets/mat_aluminio.jpg" 
            data-uso="Ideal para anuncios grandes en fachadas de negocios."
            onmouseenter="selectMaterial(this)">
-        <span class="mat-constellation-title">Aluminio ACM</span>
+        <span class="mat-constellation-title">Aluminio Compuesto</span>
         <span class="mat-constellation-desc">Panel sándwich de gran rigidez.</span>
       </div>
       
-      <!-- BADGE 3: Polímeros Cladding -->
+      <!-- BADGE 3: Innovadores Materiales -->
       <div class="mat-constellation-item cell-tr float-ast-3"
            data-img="assets/mat_polimero.jpg" 
            data-uso="Ideal para decorar fachadas con texturas modernas."
            onmouseenter="selectMaterial(this)">
-        <span class="mat-constellation-title">Polímeros Cladding</span>
+        <span class="mat-constellation-title">Innovadores Materiales</span>
         <span class="mat-constellation-desc">Revestimiento volumétrico texturizado.</span>
       </div>
       
@@ -2525,12 +2525,12 @@
         <span class="mat-constellation-desc">Luminosidad uniforme de bajo consumo.</span>
       </div>
       
-      <!-- BADGE 5: Vinil Calandrado -->
+      <!-- BADGE 5: Rotulación en Vinil -->
       <div class="mat-constellation-item cell-mr float-ast-5"
            data-img="assets/mat_vinil.jpg" 
            data-uso="Ideal para rotular camionetas y vidrios comerciales."
            onmouseenter="selectMaterial(this)">
-        <span class="mat-constellation-title">Vinil Calandrado</span>
+        <span class="mat-constellation-title">Rotulación en Vinil</span>
         <span class="mat-constellation-desc">Polímeros de alta adherencia exterior.</span>
       </div>
       
@@ -2763,45 +2763,7 @@
       <h2 class="slider-section-title" style="font-size: 2.2rem; margin-bottom: 1rem;">Cotiza tu Proyecto</h2>
       <p class="slider-section-desc" style="margin-bottom: 2rem;">Configura las especificaciones técnicas de tu letrero y adjunta tu logotipo. Recibirás una cotización formal y propuesta de modelado 3D de nuestro taller.</p>
       
-      <!-- Live Blueprint Summary -->
-      <div class="quote-tech-blueprint">
-        <div class="blueprint-row">
-          <span class="blueprint-label">CLIENTE:</span>
-          <span class="blueprint-val" id="bpCliente">N/A</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">EMPRESA:</span>
-          <span class="blueprint-val" id="bpEmpresa">N/A</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">LOGOTIPO VECTOR:</span>
-          <span class="blueprint-val" id="bpVector">SÍ</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">TECNICA:</span>
-          <span class="blueprint-val active-highlight" id="bpTecnica">Logotipo 3D</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">DIMENSIONES (W x H):</span>
-          <span class="blueprint-val" id="bpMedidas">0 x 0 CM</span>
-        </div>
-        <div class="blueprint-row" id="bpCantoRow">
-          <span class="blueprint-label">ESPESOR/CANTO:</span>
-          <span class="blueprint-val" id="bpCanto">5 CM</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">ILUMINACION:</span>
-          <span class="blueprint-val" id="bpIluminacion">Retroiluminado</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">MATERIAL:</span>
-          <span class="blueprint-val" id="bpMaterial">Acrílico</span>
-        </div>
-        <div class="blueprint-row">
-          <span class="blueprint-label">ALTURA INSTALACIÓN:</span>
-          <span class="blueprint-val" id="bpAltura">0 M</span>
-        </div>
-      </div>
+
     </div>
     
     <!-- RIGHT PANEL: Quote Form -->
@@ -3405,16 +3367,33 @@
 
     const altura = document.getElementById('quoteAlturaInstalacion').value || '0';
 
-    // Update blueprint UI elements
-    document.getElementById('bpCliente').textContent = nombre.toUpperCase();
-    document.getElementById('bpEmpresa').textContent = empresa.toUpperCase();
-    document.getElementById('bpVector').textContent = tieneVector === 'SI' ? 'SÍ' : 'NO';
-    document.getElementById('bpTecnica').textContent = tecnica.toUpperCase();
-    document.getElementById('bpMedidas').textContent = `${ancho} x ${alto} CM`;
-    document.getElementById('bpCanto').textContent = `${canto} CM`;
-    document.getElementById('bpIluminacion').textContent = iluminacion.toUpperCase();
-    document.getElementById('bpMaterial').textContent = material.toUpperCase();
-    document.getElementById('bpAltura').textContent = `${altura} M`;
+    // Update blueprint UI elements if they exist
+    const bpCliente = document.getElementById('bpCliente');
+    if (bpCliente) bpCliente.textContent = nombre.toUpperCase();
+
+    const bpEmpresa = document.getElementById('bpEmpresa');
+    if (bpEmpresa) bpEmpresa.textContent = empresa.toUpperCase();
+
+    const bpVector = document.getElementById('bpVector');
+    if (bpVector) bpVector.textContent = tieneVector === 'SI' ? 'SÍ' : 'NO';
+
+    const bpTecnica = document.getElementById('bpTecnica');
+    if (bpTecnica) bpTecnica.textContent = tecnica.toUpperCase();
+
+    const bpMedidas = document.getElementById('bpMedidas');
+    if (bpMedidas) bpMedidas.textContent = `${ancho} x ${alto} CM`;
+
+    const bpCanto = document.getElementById('bpCanto');
+    if (bpCanto) bpCanto.textContent = `${canto} CM`;
+
+    const bpIluminacion = document.getElementById('bpIluminacion');
+    if (bpIluminacion) bpIluminacion.textContent = iluminacion.toUpperCase();
+
+    const bpMaterial = document.getElementById('bpMaterial');
+    if (bpMaterial) bpMaterial.textContent = material.toUpperCase();
+
+    const bpAltura = document.getElementById('bpAltura');
+    if (bpAltura) bpAltura.textContent = `${altura} M`;
   }
 
   async function submitQuoteForm(event) {
