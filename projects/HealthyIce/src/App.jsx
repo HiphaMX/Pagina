@@ -1591,6 +1591,14 @@ function App() {
         </div>
       </footer>
 
+      <div style={{ backgroundColor: '#0A0F1C', paddingTop: '0.875rem', paddingBottom: '0.875rem', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '80rem', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '1.5rem', paddingRight: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <a href="https://www.hipha.mx/" style={{ opacity: 0.8, transition: 'opacity 0.2s' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}>
+            <img src="/desarrollado-por.svg" alt="Desarrollado por Hipha" style={{ height: '1.5rem', display: 'block' }} />
+          </a>
+        </div>
+      </div>
+
       {/* Floating Shopping Cart Button */}
       <AnimatePresence>
         {cart.length > 0 && (
