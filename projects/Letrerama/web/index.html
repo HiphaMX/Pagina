@@ -1673,9 +1673,11 @@
   }
 
   .quote-layout-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.25fr;
-    gap: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    max-width: 900px;
+    margin: 0 auto;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.03) 100%);
     border: none;
     border-radius: 28px;
@@ -1689,7 +1691,8 @@
   .quote-info-side {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
   }
 
   .quote-tech-blueprint {
@@ -2757,16 +2760,14 @@
 <div class="quote-section" id="cotizar">
   <div class="quote-layout-grid">
     
-    <!-- LEFT PANEL: Instructions & Live Blueprint Spec -->
+    <!-- HEADER PANEL: Instructions -->
     <div class="quote-info-side">
       <span class="section-hdr-tag" style="background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border-tech); color: var(--text-primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; padding: 0.55rem 1.35rem; border-radius: 30px; display: inline-flex; align-items: center; gap: 0.65rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 1rem;"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--neon-pink); box-shadow: 0 0 8px var(--neon-pink);"></span> [ Cotizador ]</span>
-      <h2 class="slider-section-title" style="font-size: 2.2rem; margin-bottom: 1rem;">Cotiza tu Proyecto</h2>
-      <p class="slider-section-desc" style="margin-bottom: 2rem;">Configura las especificaciones técnicas de tu letrero y adjunta tu logotipo. Recibirás una cotización formal y propuesta de modelado 3D de nuestro taller.</p>
-      
-
+      <h2 class="slider-section-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Cotiza tu Proyecto</h2>
+      <p class="slider-section-desc" style="margin-bottom: 2rem; max-width: 720px;">Configura las especificaciones técnicas de tu letrero y adjunta tu logotipo. Recibirás una cotización formal y propuesta de modelado 3D de nuestro taller.</p>
     </div>
     
-    <!-- RIGHT PANEL: Quote Form -->
+    <!-- FORM PANEL: Quote Form -->
     <form class="quote-form-side" id="letreramaQuoteForm" onsubmit="submitQuoteForm(event)">
       
       <!-- Contact details -->
