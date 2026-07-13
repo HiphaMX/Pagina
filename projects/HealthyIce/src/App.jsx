@@ -1587,7 +1587,6 @@ function App() {
             <button onClick={() => setLegalModal('terms')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Términos y Condiciones</button>
             <button onClick={() => setLegalModal('partners')} style={{ background: 'none', border: 'none', color: '#94a3b8', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.875rem' }}>Socios comerciales</button>
           </div>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>© 2026 HealthyIce. Todos los derechos reservados.</p>
         </div>
       </footer>
 
