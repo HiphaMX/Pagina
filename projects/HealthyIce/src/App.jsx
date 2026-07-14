@@ -423,6 +423,22 @@ function App() {
   const [paymentStatus, setPaymentStatus] = useState(null); // null, 'loading', 'approved', 'pending', 'rejected', 'error'
   const [paymentErrorMessage, setPaymentErrorMessage] = useState('');
   const [address, setAddress] = useState('');
+  const [addressDetails, setAddressDetails] = useState({
+    calleYNumero: '',
+    interior: '',
+    colonia: '',
+    ciudad: ''
+  });
+
+  useEffect(() => {
+    const parts = [
+      addressDetails.calleYNumero,
+      addressDetails.interior ? `Int. ${addressDetails.interior}` : '',
+      addressDetails.colonia ? `Col. ${addressDetails.colonia}` : '',
+      addressDetails.ciudad
+    ].filter(Boolean);
+    setAddress(parts.join(', '));
+  }, [addressDetails]);
 
   useEffect(() => {
     if (!isModalOpen) {
@@ -432,6 +448,7 @@ function App() {
       setPaymentStatus(null);
       setPaymentErrorMessage('');
       setAddress('');
+      setAddressDetails({ calleYNumero: '', interior: '', colonia: '', ciudad: '' });
     }
   }, [isModalOpen]);
 
@@ -2126,9 +2143,23 @@ function App() {
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
                           <input type="tel" required value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
                         </div>
-                        <div>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Dirección de Envío</label>
-                          <input type="text" required value={address} onChange={e => setAddress(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Calle, número, colonia y municipio" />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                          <div style={{ gridColumn: 'span 2' }}>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Calle y Número</label>
+                            <input type="text" required value={addressDetails.calleYNumero} onChange={e => setAddressDetails({...addressDetails, calleYNumero: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Av. Juárez 123" />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>No. Interior (opcional)</label>
+                            <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Depto 4B" />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Colonia</label>
+                            <input type="text" required value={addressDetails.colonia} onChange={e => setAddressDetails({...addressDetails, colonia: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Centro" />
+                          </div>
+                          <div style={{ gridColumn: 'span 2' }}>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Ciudad / Municipio</label>
+                            <input type="text" required value={addressDetails.ciudad} onChange={e => setAddressDetails({...addressDetails, ciudad: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Guadalajara" />
+                          </div>
                         </div>
                         
                         {formData.producto && (
