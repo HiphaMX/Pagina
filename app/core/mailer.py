@@ -477,22 +477,23 @@ async def send_healthyice_order_team(form_data):
     message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
     message.add_header('Reply-To', 'hola@healthyice.mx')
     message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
-    message["Subject"] = f"NUEVO PROSPECTO WEB: {form_data.nombre}"
+    message["Subject"] = f"NUEVO PEDIDO PENDIENTE (Efectivo/Transferencia): {form_data.nombre}"
     
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>')
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333;">
-        <h2>¡Nuevo prospecto desde la landing de HealthyIce!</h2>
+        <h2>¡Nuevo pedido recibido (Pendiente de Pago contra entrega)!</h2>
         
         <h3>Datos de Contacto:</h3>
         <ul>
             <li><strong>Nombre:</strong> {form_data.nombre}</li>
             <li><strong>Email:</strong> {form_data.email}</li>
             <li><strong>Teléfono:</strong> {form_data.telefono}</li>
+            <li><strong>Método de Pago:</strong> Pago contra entrega (Efectivo/Transferencia - PENDIENTE DE PAGO)</li>
         </ul>
         
-        <h3>Mensaje Personalizado:</h3>
+        <h3>Detalles de la Orden / Mensaje:</h3>
         <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
             {mensaje_formatted}
         </div>
@@ -557,12 +558,12 @@ async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_
     message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
     message.add_header('Reply-To', 'hola@healthyice.mx')
     message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
-    message["Subject"] = f"NUEVO PEDIDO PAGADO: {payer_name} - ${total} MXN"
+    message["Subject"] = f"NUEVO PEDIDO PAGADO (Mercado Pago): {payer_name} - ${total} MXN"
     
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333;">
-        <h2>¡Nuevo pedido pagado recibido en HealthyIce!</h2>
+        <h2>¡Nuevo pedido recibido y PAGADO!</h2>
         
         <h3>Datos del Cliente:</h3>
         <ul>
@@ -570,6 +571,7 @@ async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_
             <li><strong>Email:</strong> {payer_email}</li>
             <li><strong>Teléfono:</strong> {payer_phone}</li>
             <li><strong>Dirección/Notas:</strong> {address_str}</li>
+            <li><strong>Método de Pago:</strong> Tarjeta (PAGADO por Mercado Pago)</li>
         </ul>
         
         <h3>Detalles del Pedido:</h3>
