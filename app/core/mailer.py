@@ -25,7 +25,8 @@ async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, sm
         username=user,
         password=password,
         use_tls=use_tls,
-        start_tls=start_tls
+        start_tls=start_tls,
+        timeout=5.0
     )
 
 
