@@ -318,28 +318,4 @@ async def process_payment(payload: PaymentRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/test_email")
-async def test_email(payer_email: str = "hola@healthyice.mx"):
-    cart_html = """
-    <ul>
-        <li>2x <strong>Pack 5 Paletas - Coco</strong> - $120.00</li>
-        <li>1x <strong>Pack 5 Paletas - Kiwi</strong> - $60.00</li>
-    </ul>
-    """
-    from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
-    await send_healthyice_payment_customer(
-        payer_name="Cliente Prueba HealthyIce",
-        payer_email=payer_email,
-        order_details=cart_html,
-        total=180.0
-    )
-    await send_healthyice_payment_team(
-        payer_name="Cliente Prueba HealthyIce",
-        payer_email=payer_email,
-        payer_phone="55-1234-5678",
-        address_str="Av. Reforma 123, Col. Centro, CP 06000, CDMX",
-        order_details=cart_html,
-        total=180.0
-    )
-    return {"status": "emails sent successfully"}
 
