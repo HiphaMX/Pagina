@@ -790,7 +790,7 @@ function App() {
     const initMercadoPago = async () => {
       setPaymentStatus('loading');
       try {
-        const configResponse = await fetch('https://www.hipha.mx/api/mercadopago/config');
+        const configResponse = await fetch('https://www.hipha.mx/api/mercadopago/config?store=healthyice');
         if (!configResponse.ok) throw new Error('Error al obtener la configuración de pago');
         const configData = await configResponse.json();
         const publicKey = configData.public_key;
@@ -821,7 +821,7 @@ function App() {
         const prefResponse = await fetch('https://www.hipha.mx/api/mercadopago/create_preference', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: cartItems, payer: payerInfo })
+          body: JSON.stringify({ items: cartItems, payer: payerInfo, store: "healthyice" })
         });
         if (!prefResponse.ok) throw new Error('Error al crear la preferencia de pago');
         const prefData = await prefResponse.json();

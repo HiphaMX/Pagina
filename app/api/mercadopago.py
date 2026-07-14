@@ -6,9 +6,16 @@ from typing import List, Optional
 
 router = APIRouter()
 
-# Initialize Mercado Pago SDK
-mp_access_token = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
-sdk = mercadopago.SDK(mp_access_token)
+# Initialize Mercado Pago SDK dynamically based on store credentials
+def get_sdk_for_store(store: str = "botica"):
+    if store == "healthyice":
+        token = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+    else:
+        token = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+    
+    if not token:
+        raise HTTPException(status_code=500, detail=f"Mercado Pago token is not configured for store '{store}'")
+    return mercadopago.SDK(token)
 
 class CartItem(BaseModel):
     name: str
@@ -29,14 +36,18 @@ class PayerInfo(BaseModel):
 class CartRequest(BaseModel):
     items: List[CartItem]
     payer: Optional[PayerInfo] = None
+    store: Optional[str] = "botica"
 
 @router.post("/create_preference")
 async def create_preference(cart: CartRequest, request: Request):
-    if not mp_access_token:
-        raise HTTPException(status_code=500, detail="Mercado Pago token is not configured")
-
+    store_name = cart.store or "botica"
     if not cart.items:
         raise HTTPException(status_code=400, detail="Cart is empty")
+
+    try:
+        store_sdk = get_sdk_for_store(store_name)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     mp_items = []
     for item in cart.items:
@@ -49,10 +60,18 @@ async def create_preference(cart: CartRequest, request: Request):
         })
 
     site_domain = os.getenv("FRONTEND_URL", "https://www.botica-silvestre.com")
+    if store_name == "healthyice":
+        site_domain = "https://www.healthyice.mx"
+        
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
 
     total_price = sum(item.price * item.quantity for item in cart.items)
     shipping_cost = 0.0 if total_price > 590 else 180.0
+    if store_name == "healthyice":
+        # HealthyIce doesn't charge shipping or handles it differently
+        shipping_cost = 0.0
+
+    statement_descriptor = "HEALTHY ICE" if store_name == "healthyice" else "BOTICA SILVESTRE"
 
     preference_data = {
         "items": mp_items,
@@ -62,12 +81,12 @@ async def create_preference(cart: CartRequest, request: Request):
         },
         "back_urls": {
             "success": f"{site_domain}/index.html",
-            "failure": f"{site_domain}/botica.html",
-            "pending": f"{site_domain}/botica.html"
+            "failure": f"{site_domain}/index.html",
+            "pending": f"{site_domain}/index.html"
         },
         "auto_return": "approved",
-        "statement_descriptor": "BOTICA SILVESTRE",
-        "notification_url": f"{backend_url}/api/mercadopago/webhook"
+        "statement_descriptor": statement_descriptor,
+        "notification_url": f"{backend_url}/api/mercadopago/webhook?store={store_name}"
     }
 
     if cart.payer:
@@ -111,14 +130,16 @@ async def create_preference(cart: CartRequest, request: Request):
             "payer_email": payer_email,
             "payer_phone": payer_phone,
             "address": address_str,
-            "total": str(total_with_shipping)
+            "total": str(total_with_shipping),
+            "store": store_name
         }
 
     try:
-        preference_response = sdk.preference().create(preference_data)
+        preference_response = store_sdk.preference().create(preference_data)
         preference = preference_response.get("response", {})
         
-        is_sandbox = mp_access_token.startswith("TEST-")
+        token_for_sandbox = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "") if store_name == "healthyice" else os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+        is_sandbox = token_for_sandbox.startswith("TEST-")
         init_point_key = "sandbox_init_point" if is_sandbox else "init_point"
         
         if init_point_key not in preference:
@@ -129,7 +150,7 @@ async def create_preference(cart: CartRequest, request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/webhook")
-async def mercadopago_webhook(request: Request):
+async def mercadopago_webhook(request: Request, store: str = "botica"):
     payload = await request.json()
     action = payload.get("action") or payload.get("type") or payload.get("topic")
     
@@ -137,7 +158,8 @@ async def mercadopago_webhook(request: Request):
         payment_id = payload.get("data", {}).get("id")
         if payment_id:
             try:
-                payment_info = sdk.payment().get(payment_id)
+                store_sdk = get_sdk_for_store(store)
+                payment_info = store_sdk.payment().get(payment_id)
                 payment = payment_info.get("response", {})
                 status = payment.get("status")
                 
@@ -199,15 +221,21 @@ class PaymentRequest(BaseModel):
 
 
 @router.get("/config")
-def get_mercadopago_config():
-    pub_key = os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
+def get_mercadopago_config(store: str = "botica"):
+    if store == "healthyice":
+        pub_key = os.getenv("HEALTHYICE_MERCADOPAGO_PUBLIC_KEY", "") or os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
+    else:
+        pub_key = os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
     return {"public_key": pub_key}
 
 
 @router.post("/process_payment")
 async def process_payment(payload: PaymentRequest):
-    if not mp_access_token:
-        raise HTTPException(status_code=500, detail="Mercado Pago token is not configured")
+    store_name = payload.store or "botica"
+    try:
+        store_sdk = get_sdk_for_store(store_name)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     # Split name into first and last name if possible
     first_name = "Cliente"
@@ -229,7 +257,6 @@ async def process_payment(payload: PaymentRequest):
         payer_phone = payload.additional_info.payer_phone
         address_str = payload.additional_info.address
 
-    store_name = payload.store or "botica"
     description = "Pedido HealthyIce" if store_name == "healthyice" else "Pedido Botica Silvestre"
 
     payment_data = {
@@ -243,7 +270,7 @@ async def process_payment(payload: PaymentRequest):
             "first_name": first_name,
             "last_name": last_name
         },
-        "notification_url": f"{os.getenv('BACKEND_URL', 'https://hipha-mx-fastapi.vercel.app')}/api/mercadopago/webhook",
+        "notification_url": f"{os.getenv('BACKEND_URL', 'https://hipha-mx-fastapi.vercel.app')}/api/mercadopago/webhook?store={store_name}",
         "metadata": {
             "cart_html": cart_html,
             "payer_name": payer_name,
@@ -265,7 +292,7 @@ async def process_payment(payload: PaymentRequest):
         payment_data["issuer_id"] = payload.issuer_id
 
     try:
-        payment_response = sdk.payment().create(payment_data)
+        payment_response = store_sdk.payment().create(payment_data)
         payment = payment_response.get("response", {})
         status = payment.get("status")
         status_detail = payment.get("status_detail")
