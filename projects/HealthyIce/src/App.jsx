@@ -418,10 +418,20 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms' or 'partners'
   const [vivoEnZMG, setVivoEnZMG] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' or 'card'
+  const [checkoutStep, setCheckoutStep] = useState('details'); // 'details' or 'payment'
+  const [paymentStatus, setPaymentStatus] = useState(null); // null, 'loading', 'approved', 'pending', 'rejected', 'error'
+  const [paymentErrorMessage, setPaymentErrorMessage] = useState('');
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
     if (!isModalOpen) {
       setVivoEnZMG(false);
+      setPaymentMethod('cash');
+      setCheckoutStep('details');
+      setPaymentStatus(null);
+      setPaymentErrorMessage('');
+      setAddress('');
     }
   }, [isModalOpen]);
 
@@ -703,6 +713,7 @@ function App() {
     const fullMessage = [
       formData.opcionInteres ? `Opción de Interés: ${formData.opcionInteres}` : '',
       formData.producto ? `Producto: ${formData.producto}` : '',
+      address ? `Dirección de Envío:\n${address}` : '',
       formData.mensaje ? `Detalles / Mensaje:\n${formData.mensaje}` : ''
     ].filter(Boolean).join('\n\n');
 
@@ -738,6 +749,172 @@ function App() {
       setIsSubmitting(false);
     }
   };
+
+  const handleProceedToPayment = (e) => {
+    e.preventDefault();
+    if (!formData.nombre || !formData.email || !formData.telefono || !address) {
+      alert("Por favor completa todos los campos del formulario, incluyendo tu dirección de envío.");
+      return;
+    }
+    if (!vivoEnZMG) {
+      alert("Por lanzamiento envío de pedidos únicamente en ZMG.");
+      return;
+    }
+    setCheckoutStep('payment');
+  };
+
+  const handlePaymentResult = (result) => {
+    if (result.status === 'approved') {
+      setPaymentStatus('approved');
+      setCart([]);
+    } else if (result.status === 'in_process' || result.status === 'pending') {
+      setPaymentStatus('pending');
+      setCart([]);
+    } else {
+      setPaymentStatus('rejected');
+      if (result.status_detail === 'cc_rejected_bad_filled_other') {
+        setPaymentErrorMessage('Los datos de la tarjeta son incorrectos. Por favor verifícalos y vuelve a intentar.');
+      } else if (result.status_detail === 'cc_rejected_insufficient_amount') {
+        setPaymentErrorMessage('Tu tarjeta no cuenta con fondos suficientes para completar este pago.');
+      } else {
+        setPaymentErrorMessage('El pago fue rechazado. Por favor intenta con otra tarjeta o medio de pago.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (checkoutStep !== 'payment') return;
+
+    let controller = null;
+
+    const initMercadoPago = async () => {
+      setPaymentStatus('loading');
+      try {
+        const configResponse = await fetch('https://www.hipha.mx/api/mercadopago/config');
+        if (!configResponse.ok) throw new Error('Error al obtener la configuración de pago');
+        const configData = await configResponse.json();
+        const publicKey = configData.public_key;
+
+        if (!publicKey) {
+          throw new Error('Clave pública de Mercado Pago no configurada');
+        }
+
+        const mp = new window.MercadoPago(publicKey, { locale: 'es-MX' });
+        const bricksBuilder = mp.bricks();
+
+        const cartItems = cart.map(item => ({
+          name: `HealthyIce - ${item.name} (${item.format})`,
+          price: item.price,
+          quantity: item.quantity
+        }));
+
+        const payerInfo = {
+          name: formData.nombre,
+          email: formData.email,
+          phone: formData.telefono,
+          address: {
+            street_name: address,
+            zip_code: ""
+          }
+        };
+
+        const prefResponse = await fetch('https://www.hipha.mx/api/mercadopago/create_preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: cartItems, payer: payerInfo })
+        });
+        if (!prefResponse.ok) throw new Error('Error al crear la preferencia de pago');
+        const prefData = await prefResponse.json();
+        const preferenceId = prefData.id;
+
+        let cartHtml = '<ul>';
+        cartItems.forEach(item => {
+          cartHtml += `<li>${item.quantity}x ${item.name} - $${item.price} MXN</li>`;
+        });
+        cartHtml += '</ul>';
+
+        const settings = {
+          initialization: {
+            amount: totalAmountInCart,
+            preferenceId: preferenceId,
+          },
+          customization: {
+            paymentMethods: {
+              creditCard: 'all',
+              debitCard: 'all',
+              ticket: 'all',
+              bankTransfer: 'all',
+              mercadoPago: 'all'
+            },
+            visual: {
+              style: {
+                theme: 'default'
+              }
+            }
+          },
+          callbacks: {
+            onReady: () => {
+              setPaymentStatus('ready');
+            },
+            onSubmit: ({ selectedPaymentMethod, formData: mpFormData }) => {
+              mpFormData.additional_info = {
+                payer_name: payerInfo.name,
+                payer_phone: payerInfo.phone,
+                address: address,
+                cart_html: cartHtml
+              };
+              mpFormData.store = "healthyice";
+
+              return new Promise((resolve, reject) => {
+                fetch('https://www.hipha.mx/api/mercadopago/process_payment', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(mpFormData)
+                })
+                .then(response => {
+                  if (!response.ok) throw new Error('Payment processing failed');
+                  return response.json();
+                })
+                .then(result => {
+                  resolve();
+                  handlePaymentResult(result);
+                })
+                .catch(error => {
+                  reject();
+                  setPaymentStatus('error');
+                  setPaymentErrorMessage('Hubo un error al procesar el pago con nuestro servidor. Por favor intenta de nuevo.');
+                });
+              });
+            },
+            onError: (error) => {
+              console.error('Mercado Pago Brick error:', error);
+              setPaymentStatus('error');
+              setPaymentErrorMessage('Error en la pasarela de pagos. Por favor verifica tus datos e intenta de nuevo.');
+            }
+          }
+        };
+
+        controller = await bricksBuilder.create(
+          'payment',
+          'payment-brick_container',
+          settings
+        );
+
+      } catch (err) {
+        console.error('Mercado Pago initialization failed:', err);
+        setPaymentStatus('error');
+        setPaymentErrorMessage(`No se pudo cargar la pasarela de pagos. Detalle: ${err.message}`);
+      }
+    };
+
+    initMercadoPago();
+
+    return () => {
+      if (controller && typeof controller.unmount === 'function') {
+        controller.unmount();
+      }
+    };
+  }, [checkoutStep]);
 
   const flavors = [
     { name: "Fresa", color: "#ff4d6d", image: "/paleta_fresa.webp" },
@@ -1930,98 +2107,204 @@ function App() {
                   </div>
                 ) : (
                   <>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Nombre Completo</label>
-                      <input type="text" required value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Juan Pérez" />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Correo Electrónico</label>
-                      <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="juan@ejemplo.com" />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
-                      <input type="tel" required value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
-                    </div>
-                    
-                    {formData.producto && (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0, 229, 255, 0.08)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '0.75rem 1rem', borderRadius: '12px', marginTop: '0.25rem' }}>
-                        <span style={{ fontSize: '0.9rem', color: '#101729', fontWeight: 600 }}>
-                          Sabor seleccionado: <strong style={{ color: '#0077ff' }}>{formData.producto}</strong>
-                        </span>
+                    {checkoutStep === 'details' ? (
+                      <>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Nombre Completo</label>
+                          <input type="text" required value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Juan Pérez" />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Correo Electrónico</label>
+                          <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="juan@ejemplo.com" />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
+                          <input type="tel" required value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Dirección de Envío</label>
+                          <input type="text" required value={address} onChange={e => setAddress(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Calle, número, colonia y municipio" />
+                        </div>
+                        
+                        {formData.producto && (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0, 229, 255, 0.08)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '0.75rem 1rem', borderRadius: '12px', marginTop: '0.25rem' }}>
+                            <span style={{ fontSize: '0.9rem', color: '#101729', fontWeight: 600 }}>
+                              Sabor seleccionado: <strong style={{ color: '#0077ff' }}>{formData.producto}</strong>
+                            </span>
+                            <button 
+                              type="button" 
+                              onClick={() => setFormData(prev => ({ ...prev, producto: '' }))} 
+                              style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.95rem', fontWeight: 700 }}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        )}
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Mensaje Personalizado</label>
+                          <textarea 
+                            rows="4" 
+                            value={formData.mensaje} 
+                            onChange={e => setFormData({...formData, mensaje: e.target.value})} 
+                            style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', resize: 'none' }} 
+                            placeholder="Escribe aquí tus dudas, comentarios o detalles del pedido..."
+                          />
+                        </div>
+
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Método de Pago</label>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', background: paymentMethod === 'cash' ? 'rgba(152, 188, 60, 0.08)' : 'white', borderColor: paymentMethod === 'cash' ? '#98BC3C' : '#cbd5e1', transition: 'all 0.2s' }}>
+                              <input type="radio" name="paymentMethod" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} style={{ accentColor: '#98BC3C' }} />
+                              <div>
+                                <strong style={{ display: 'block', fontSize: '0.95rem', color: '#101729' }}>Pago contra entrega (Efectivo / Transferencia)</strong>
+                                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Paga en efectivo o transferencia bancaria al recibir tu pedido.</span>
+                              </div>
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', background: paymentMethod === 'card' ? 'rgba(152, 188, 60, 0.08)' : 'white', borderColor: paymentMethod === 'card' ? '#98BC3C' : '#cbd5e1', transition: 'all 0.2s' }}>
+                              <input type="radio" name="paymentMethod" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} style={{ accentColor: '#98BC3C' }} />
+                              <div>
+                                <strong style={{ display: 'block', fontSize: '0.95rem', color: '#101729' }}>Pagar en línea con tarjeta o Mercado Pago</strong>
+                                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Acepta tarjetas de débito/crédito, transferencias y saldo Mercado Pago.</span>
+                              </div>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 700, color: '#101729', cursor: 'pointer' }}>
+                            <input 
+                              type="checkbox" 
+                              checked={vivoEnZMG} 
+                              onChange={e => setVivoEnZMG(e.target.checked)} 
+                              style={{ 
+                                width: '18px', 
+                                height: '18px', 
+                                accentColor: '#98BC3C',
+                                cursor: 'pointer' 
+                              }} 
+                            />
+                            <span>Vivo en la ZMG (Zona Metropolitana de Guadalajara)</span>
+                          </label>
+                          
+                          {!vivoEnZMG && (
+                            <p style={{ 
+                              fontSize: '0.825rem', 
+                              color: '#ef4444', 
+                              margin: '0.25rem 0 0 0', 
+                              fontWeight: 600,
+                              lineHeight: 1.4,
+                              background: 'rgba(239, 68, 68, 0.08)',
+                              border: '1px solid rgba(239, 68, 68, 0.2)',
+                              padding: '0.75rem 1rem',
+                              borderRadius: '12px'
+                            }}>
+                              ⚠️ Por lanzamiento envío de pedidos únicamente en ZMG, pregunta por la zona de cobertura.
+                            </p>
+                          )}
+                        </div>
+
+                        {paymentMethod === 'cash' ? (
+                          <button 
+                            type="submit" 
+                            disabled={!vivoEnZMG || isSubmitting} 
+                            className="btn btn-primary" 
+                            style={{ 
+                              width: '100%', 
+                              padding: '1.25rem', 
+                              marginTop: '0.5rem', 
+                              fontSize: '1.125rem', 
+                              borderRadius: '9999px', 
+                              fontFamily: "'Quicksand', sans-serif", 
+                              fontWeight: 700, 
+                              opacity: (!vivoEnZMG || isSubmitting) ? 0.5 : 1,
+                              cursor: (!vivoEnZMG || isSubmitting) ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {isSubmitting ? 'Enviando...' : 'Hacer mi pedido'}
+                          </button>
+                        ) : (
+                          <button 
+                            type="button" 
+                            disabled={!vivoEnZMG} 
+                            onClick={handleProceedToPayment}
+                            className="btn btn-primary" 
+                            style={{ 
+                              width: '100%', 
+                              padding: '1.25rem', 
+                              marginTop: '0.5rem', 
+                              fontSize: '1.125rem', 
+                              borderRadius: '9999px', 
+                              fontFamily: "'Quicksand', sans-serif", 
+                              fontWeight: 700, 
+                              opacity: !vivoEnZMG ? 0.5 : 1,
+                              cursor: !vivoEnZMG ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            Proceder al Pago
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <>
                         <button 
                           type="button" 
-                          onClick={() => setFormData(prev => ({ ...prev, producto: '' }))} 
-                          style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.95rem', fontWeight: 700 }}
+                          onClick={() => setCheckoutStep('details')}
+                          style={{ background: 'none', border: 'none', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', marginBottom: '1rem', padding: 0 }}
                         >
-                          ✕
+                          ← Volver a mis datos
                         </button>
-                      </div>
+                        <div style={{ background: 'rgba(152, 188, 60, 0.08)', border: '1px solid rgba(152, 188, 60, 0.2)', padding: '1rem', borderRadius: '16px', marginBottom: '1.5rem', textAlign: 'center' }}>
+                          <span style={{ fontSize: '0.85rem', color: '#64748b', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Total a Pagar</span>
+                          <h4 style={{ fontSize: '2rem', fontWeight: 800, color: '#101729', margin: '0.25rem 0' }}>${totalAmountInCart}.00 MXN</h4>
+                        </div>
+
+                        {paymentStatus === 'approved' && (
+                          <div style={{ textAlign: 'center', padding: '2rem 0', color: '#98BC3C' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</div>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#101729', marginBottom: '0.5rem' }}>¡Pago Aprobado!</h3>
+                            <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Tu pago ha sido procesado con éxito. Hemos enviado una confirmación a tu correo.</p>
+                          </div>
+                        )}
+                        {paymentStatus === 'pending' && (
+                          <div style={{ textAlign: 'center', padding: '2rem 0', color: '#f59e0b' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#101729', marginBottom: '0.5rem' }}>Pago Pendiente</h3>
+                            <p style={{ color: '#64748b', fontSize: '0.95rem' }}>Tu pago se encuentra en proceso o pendiente de acreditación. Recibirás un correo cuando se apruebe.</p>
+                          </div>
+                        )}
+                        {paymentStatus === 'rejected' && (
+                          <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#ef4444' }}>✕</div>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#101729', marginBottom: '0.5rem' }}>Pago Rechazado</h3>
+                            <p style={{ color: '#ef4444', fontSize: '0.9rem', marginBottom: '1rem', fontWeight: 600 }}>{paymentErrorMessage}</p>
+                            <button type="button" onClick={() => setCheckoutStep('details')} className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', fontSize: '0.95rem', border: 'none', cursor: 'pointer' }}>Intentar de nuevo</button>
+                          </div>
+                        )}
+                        {paymentStatus === 'error' && (
+                          <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#ef4444' }}>⚠️</div>
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#101729', marginBottom: '0.5rem' }}>Error de Conexión</h3>
+                            <p style={{ color: '#ef4444', fontSize: '0.9rem', marginBottom: '1rem', fontWeight: 600 }}>{paymentErrorMessage}</p>
+                            <button type="button" onClick={() => setCheckoutStep('details')} className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', fontSize: '0.95rem', border: 'none', cursor: 'pointer' }}>Intentar de nuevo</button>
+                          </div>
+                        )}
+                        {(paymentStatus === 'loading' || paymentStatus === 'ready') && (
+                          <>
+                            {paymentStatus === 'loading' && (
+                              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                                <div style={{ border: '4px solid rgba(0,0,0,0.1)', width: '36px', height: '36px', borderRadius: '50%', borderLeftColor: '#98BC3C', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
+                                <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>Cargando pasarela de pagos...</p>
+                              </div>
+                            )}
+                            <div id="payment-brick_container" style={{ display: paymentStatus === 'loading' ? 'none' : 'block' }}></div>
+                          </>
+                        )}
+                      </>
                     )}
-
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Mensaje Personalizado</label>
-                      <textarea 
-                        rows="4" 
-                        value={formData.mensaje} 
-                        onChange={e => setFormData({...formData, mensaje: e.target.value})} 
-                        style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem', resize: 'none' }} 
-                        placeholder="Escribe aquí tus dudas, comentarios o detalles del pedido..."
-                      />
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 700, color: '#101729', cursor: 'pointer' }}>
-                        <input 
-                          type="checkbox" 
-                          checked={vivoEnZMG} 
-                          onChange={e => setVivoEnZMG(e.target.checked)} 
-                          style={{ 
-                            width: '18px', 
-                            height: '18px', 
-                            accentColor: '#98BC3C',
-                            cursor: 'pointer' 
-                          }} 
-                        />
-                        <span>Vivo en la ZMG (Zona Metropolitana de Guadalajara)</span>
-                      </label>
-                      
-                      {!vivoEnZMG && (
-                        <p style={{ 
-                          fontSize: '0.825rem', 
-                          color: '#ef4444', 
-                          margin: '0.25rem 0 0 0', 
-                          fontWeight: 600,
-                          lineHeight: 1.4,
-                          background: 'rgba(239, 68, 68, 0.08)',
-                          border: '1px solid rgba(239, 68, 68, 0.2)',
-                          padding: '0.75rem 1rem',
-                          borderRadius: '12px'
-                        }}>
-                          ⚠️ Por lanzamiento envío de pedidos únicamente en ZMG, pregunta por la zona de cobertura.
-                        </p>
-                      )}
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      disabled={!vivoEnZMG || isSubmitting} 
-                      className="btn btn-primary" 
-                      style={{ 
-                        width: '100%', 
-                        padding: '1.25rem', 
-                        marginTop: '0.5rem', 
-                        fontSize: '1.125rem', 
-                        borderRadius: '9999px', 
-                        fontFamily: "'Quicksand', sans-serif", 
-                        fontWeight: 700, 
-                        opacity: (!vivoEnZMG || isSubmitting) ? 0.5 : 1,
-                        cursor: (!vivoEnZMG || isSubmitting) ? 'not-allowed' : 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                    >
-                      {isSubmitting ? 'Enviando...' : 'Hacer mi pedido'}
-                    </button>
                   </>
                 )}
               </form>

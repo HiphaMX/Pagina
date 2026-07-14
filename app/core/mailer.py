@@ -508,6 +508,85 @@ async def send_healthyice_order_team(form_data):
         return False
 
 
+async def send_healthyice_payment_customer(payer_name: str, payer_email: str, order_details: str, total: float):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a cliente HealthyIce {payer_email}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = f"HealthyIce <{settings.SMTP_USER}>"
+    message.add_header('Reply-To', 'hola@healthyice.mx')
+    message["To"] = payer_email
+    message["Subject"] = f"¡Tu pedido de HealthyIce está en camino, {payer_name}!"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Quicksand', Arial, sans-serif; color: #101729; background-color: #f8fafc; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px;">
+            <h2 style="color: #101729; font-weight: bold;">Hola {payer_name},</h2>
+            <p>Hemos recibido el pago de tu pedido de paletas HealthyIce. Nuestro equipo comenzará a prepararlo de inmediato para su entrega.</p>
+            <h3 style="color: #101729; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Resumen de tu pedido:</h3>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
+                {order_details}
+                <p><strong>Total pagado: ${total} MXN</strong></p>
+            </div>
+            <p>Si tienes alguna duda, puedes responder directamente a este correo o contactarnos por WhatsApp.</p>
+            <br>
+            <p style="color: #98BC3C; font-weight: bold;">El equipo de HealthyIce</p>
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+    
+    try:
+        await _send_smtp(message)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de pago a cliente HealthyIce: {str(e)}")
+        return False
+
+
+async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_phone: str, address_str: str, order_details: str, total: float):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a equipo HealthyIce")
+        return True
+
+    message = EmailMessage()
+    message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
+    message.add_header('Reply-To', 'hola@healthyice.mx')
+    message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
+    message["Subject"] = f"NUEVO PEDIDO PAGADO: {payer_name} - ${total} MXN"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333;">
+        <h2>¡Nuevo pedido pagado recibido en HealthyIce!</h2>
+        
+        <h3>Datos del Cliente:</h3>
+        <ul>
+            <li><strong>Nombre:</strong> {payer_name}</li>
+            <li><strong>Email:</strong> {payer_email}</li>
+            <li><strong>Teléfono:</strong> {payer_phone}</li>
+            <li><strong>Dirección/Notas:</strong> {address_str}</li>
+        </ul>
+        
+        <h3>Detalles del Pedido:</h3>
+        {order_details}
+        <p><strong>Total: ${total} MXN</strong></p>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+    
+    try:
+        await _send_smtp(message)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo al equipo HealthyIce por pedido pagado: {str(e)}")
+        return False
+
+
 class HealthyIcePDF(FPDF):
     def header(self):
         logo_path = os.path.join("app", "assets", "logo_healthyice.svg")

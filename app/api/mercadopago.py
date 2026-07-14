@@ -146,8 +146,8 @@ async def mercadopago_webhook(request: Request):
                     # Mercado Pago might return empty metadata or we might not have email.
                     payer_email = metadata.get("payer_email")
                     if payer_email:
-                        from app.core.mailer import send_botica_order_customer, send_botica_order_team
                         import asyncio
+                        store_name = metadata.get("store") or "botica"
                         
                         payer_name = metadata.get("payer_name", "Cliente")
                         payer_phone = metadata.get("payer_phone", "")
@@ -155,9 +155,14 @@ async def mercadopago_webhook(request: Request):
                         cart_html = metadata.get("cart_html", "")
                         total = float(metadata.get("total", 0.0))
                         
-                        # Use asyncio.create_task to not block webhook response
-                        asyncio.create_task(send_botica_order_customer(payer_name, payer_email, cart_html, total))
-                        asyncio.create_task(send_botica_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                        if store_name == "healthyice":
+                            from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
+                            asyncio.create_task(send_healthyice_payment_customer(payer_name, payer_email, cart_html, total))
+                            asyncio.create_task(send_healthyice_payment_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                        else:
+                            from app.core.mailer import send_botica_order_customer, send_botica_order_team
+                            asyncio.create_task(send_botica_order_customer(payer_name, payer_email, cart_html, total))
+                            asyncio.create_task(send_botica_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
                         
             except Exception as e:
                 print(f"Webhook error: {e}")
@@ -190,6 +195,7 @@ class PaymentRequest(BaseModel):
     installments: int
     payer: PaymentPayer
     additional_info: Optional[PaymentAdditionalInfo] = None
+    store: Optional[str] = "botica"
 
 
 @router.get("/config")
@@ -223,10 +229,13 @@ async def process_payment(payload: PaymentRequest):
         payer_phone = payload.additional_info.payer_phone
         address_str = payload.additional_info.address
 
+    store_name = payload.store or "botica"
+    description = "Pedido HealthyIce" if store_name == "healthyice" else "Pedido Botica Silvestre"
+
     payment_data = {
         "transaction_amount": payload.transaction_amount,
         "token": payload.token,
-        "description": "Pedido Botica Silvestre",
+        "description": description,
         "payment_method_id": payload.payment_method_id,
         "installments": payload.installments,
         "payer": {
@@ -241,7 +250,8 @@ async def process_payment(payload: PaymentRequest):
             "payer_email": payload.payer.email,
             "payer_phone": payer_phone,
             "address": address_str,
-            "total": str(payload.transaction_amount)
+            "total": str(payload.transaction_amount),
+            "store": store_name
         }
     }
 
@@ -262,10 +272,15 @@ async def process_payment(payload: PaymentRequest):
 
         # If payment is approved immediately, send emails right away
         if status == "approved":
-            from app.core.mailer import send_botica_order_customer, send_botica_order_team
             import asyncio
-            asyncio.create_task(send_botica_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
-            asyncio.create_task(send_botica_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+            if store_name == "healthyice":
+                from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
+                asyncio.create_task(send_healthyice_payment_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
+                asyncio.create_task(send_healthyice_payment_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+            else:
+                from app.core.mailer import send_botica_order_customer, send_botica_order_team
+                asyncio.create_task(send_botica_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
+                asyncio.create_task(send_botica_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
 
         return {
             "id": payment.get("id"),
