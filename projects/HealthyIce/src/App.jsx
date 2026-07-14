@@ -570,7 +570,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('https://www.hipha.mx/api/contact/healthyice/contract', {
+      const response = await fetch('https://hipha-mx-fastapi.vercel.app/api/contact/healthyice/contract', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -725,7 +725,7 @@ function App() {
     };
 
     try {
-      const response = await fetch('https://www.hipha.mx/api/contact/healthyice', {
+      const response = await fetch('https://hipha-mx-fastapi.vercel.app/api/contact/healthyice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -790,7 +790,7 @@ function App() {
     const initMercadoPago = async () => {
       setPaymentStatus('loading');
       try {
-        const configResponse = await fetch('https://www.hipha.mx/api/mercadopago/config?store=healthyice');
+        const configResponse = await fetch('https://hipha-mx-fastapi.vercel.app/api/mercadopago/config?store=healthyice');
         if (!configResponse.ok) throw new Error('Error al obtener la configuración de pago');
         const configData = await configResponse.json();
         const publicKey = configData.public_key;
@@ -818,7 +818,7 @@ function App() {
           }
         };
 
-        const prefResponse = await fetch('https://www.hipha.mx/api/mercadopago/create_preference', {
+        const prefResponse = await fetch('https://hipha-mx-fastapi.vercel.app/api/mercadopago/create_preference', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ items: cartItems, payer: payerInfo, store: "healthyice" })
@@ -837,6 +837,11 @@ function App() {
           initialization: {
             amount: totalAmountInCart,
             preferenceId: preferenceId,
+            schema: {
+              payer: {
+                email: payerInfo.email,
+              }
+            }
           },
           customization: {
             paymentMethods: {
@@ -866,7 +871,7 @@ function App() {
               mpFormData.store = "healthyice";
 
               return new Promise((resolve, reject) => {
-                fetch('https://www.hipha.mx/api/mercadopago/process_payment', {
+                fetch('https://hipha-mx-fastapi.vercel.app/api/mercadopago/process_payment', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify(mpFormData)

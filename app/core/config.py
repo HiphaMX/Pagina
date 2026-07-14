@@ -1,4 +1,6 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
+from typing import Union, Optional
 
 
 class Settings(BaseSettings):
@@ -12,7 +14,7 @@ class Settings(BaseSettings):
     WEBFLOW_SITE_ID: str = ""
 
     SMTP_HOST: str = ""
-    SMTP_PORT: int = 587
+    SMTP_PORT: Union[int, str] = 587
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
     EMAILS_FROM_EMAIL: str = ""
@@ -20,7 +22,7 @@ class Settings(BaseSettings):
 
     # AMDI Specific SMTP settings
     AMDI_SMTP_HOST: str = ""
-    AMDI_SMTP_PORT: int = 587
+    AMDI_SMTP_PORT: Union[int, str] = 587
     AMDI_SMTP_USER: str = ""
     AMDI_SMTP_PASSWORD: str = ""
     AMDI_EMAILS_FROM_EMAIL: str = ""
@@ -28,8 +30,19 @@ class Settings(BaseSettings):
 
     GOOGLE_PLACES_API_KEY: str = ""
 
+    @field_validator("SMTP_PORT", "AMDI_SMTP_PORT", mode="before")
+    @classmethod
+    def coerce_port(cls, v):
+        if v == "" or v is None:
+            return 587
+        try:
+            return int(v)
+        except ValueError:
+            return 587
+
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 
 settings = Settings()
