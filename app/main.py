@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import os
 
-from app.api import contact, mercadopago, auth
+from app.api import contact, mercadopago, auth, sat
 from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal
 from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
 from app.models.chilechillon_match import ChileChillonMatch
+from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")
@@ -80,12 +82,18 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
 
 
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to HiphaMX API"}
+
+
+# Servir la carpeta de proyectos locales si existe
+if os.path.exists("projects"):
+    app.mount("/projects", StaticFiles(directory="projects"), name="projects")
 
 
 
