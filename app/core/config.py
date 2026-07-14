@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
+from pydantic import validator
 from typing import Union, Optional
 
 
@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     GOOGLE_PLACES_API_KEY: str = ""
 
-    @field_validator("SMTP_PORT", "AMDI_SMTP_PORT", mode="before")
+    @validator("SMTP_PORT", "AMDI_SMTP_PORT", pre=True, always=True)
     @classmethod
     def coerce_port(cls, v):
         if v == "" or v is None:
