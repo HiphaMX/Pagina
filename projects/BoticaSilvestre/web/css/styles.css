@@ -898,6 +898,35 @@ body.has-promo-banner .navbar.scrolled {
     box-shadow: 0 4px 10px rgba(64, 83, 76, 0.2);
 }
 
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-view-more {
+    background: transparent;
+    border: 1px solid rgba(64, 83, 76, 0.25);
+    color: var(--color-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-view-more:hover {
+    background: rgba(64, 83, 76, 0.08);
+    transform: translateY(-2px);
+}
+
+
 .cart-overlay {
     position: fixed;
     top: 0;
@@ -1274,6 +1303,14 @@ span.format-tag {
     }
     .btn-add-cart {
         width: 100%;
+        justify-content: center;
+    }
+    .product-actions {
+        width: 100%;
+    }
+    .product-actions .btn-view-more,
+    .product-actions .btn-add-cart {
+        flex: 1;
         justify-content: center;
     }
     .grid-3 {
