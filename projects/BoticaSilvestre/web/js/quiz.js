@@ -363,7 +363,7 @@ function getWhatsAppUrl() {
     text += "Me gustaría recibir más información para adquirir mi ritual.";
     
     // Replace with the actual Botica Silvestre WhatsApp number (including country code, e.g. 521 for MX)
-    const phone = "523336762545"; 
+    const phone = "523314199842"; 
     return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 }
 
