@@ -926,6 +926,11 @@ body.has-promo-banner .navbar.scrolled {
     transform: translateY(-2px);
 }
 
+.reviews-track::-webkit-scrollbar {
+    display: none;
+}
+
+
 
 .cart-overlay {
     position: fixed;

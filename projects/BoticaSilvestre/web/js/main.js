@@ -73,4 +73,103 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.classList.remove('active');
         }
     });
+
+    // Reviews Slider Logic
+    const track = document.getElementById('reviews-track');
+    const prevBtn = document.getElementById('prev-review');
+    const nextBtn = document.getElementById('next-review');
+    const dots = document.querySelectorAll('#review-dots .dot');
+    
+    if (track && prevBtn && nextBtn && dots.length > 0) {
+        let currentIndex = 0;
+        const totalReviews = dots.length;
+        let autoPlayTimer = null;
+        
+        function updateSlider(index) {
+            currentIndex = index;
+            const cardWidth = track.firstElementChild.getBoundingClientRect().width;
+            const gap = 32; // 2rem
+            track.scrollTo({
+                left: index * (cardWidth + gap),
+                behavior: 'smooth'
+            });
+            
+            // Update dots
+            dots.forEach((dot, idx) => {
+                if (idx === index) {
+                    dot.classList.add('active');
+                    dot.style.background = 'var(--color-primary)';
+                } else {
+                    dot.classList.remove('active');
+                    dot.style.background = 'rgba(64,83,76,0.25)';
+                }
+            });
+        }
+        
+        function nextReview() {
+            let nextIndex = (currentIndex + 1) % totalReviews;
+            updateSlider(nextIndex);
+        }
+        
+        function prevReview() {
+            let prevIndex = (currentIndex - 1 + totalReviews) % totalReviews;
+            updateSlider(prevIndex);
+        }
+        
+        nextBtn.addEventListener('click', () => {
+            nextReview();
+            resetAutoPlay();
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            prevReview();
+            resetAutoPlay();
+        });
+        
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => {
+                updateSlider(idx);
+                resetAutoPlay();
+            });
+        });
+        
+        // Auto-play
+        function startAutoPlay() {
+            autoPlayTimer = setInterval(nextReview, 6000);
+        }
+        
+        function resetAutoPlay() {
+            clearInterval(autoPlayTimer);
+            startAutoPlay();
+        }
+        
+        startAutoPlay();
+        
+        // Support manual scroll updating dots
+        let scrollTimeout;
+        track.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const cardWidth = track.firstElementChild.getBoundingClientRect().width;
+                const gap = 32;
+                const scrollIndex = Math.round(track.scrollLeft / (cardWidth + gap));
+                if (scrollIndex >= 0 && scrollIndex < totalReviews && scrollIndex !== currentIndex) {
+                    currentIndex = scrollIndex;
+                    dots.forEach((dot, idx) => {
+                        if (idx === currentIndex) {
+                            dot.classList.add('active');
+                            dot.style.background = 'var(--color-primary)';
+                        } else {
+                            dot.classList.remove('active');
+                            dot.style.background = 'rgba(64,83,76,0.25)';
+                        }
+                    });
+                }
+            }, 100);
+        });
+        
+        // Pause auto-play on hover
+        track.addEventListener('mouseenter', () => clearInterval(autoPlayTimer));
+        track.addEventListener('mouseleave', startAutoPlay);
+    }
 });
