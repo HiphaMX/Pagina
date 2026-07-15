@@ -1369,3 +1369,80 @@ span.format-tag {
 .footer-bottom {
     padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
+
+/* Tribu / Collaborators Section */
+.tribu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+}
+
+.tribu-card {
+    background: var(--color-white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(64, 83, 76, 0.05);
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+}
+
+.tribu-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px rgba(44, 53, 57, 0.15);
+    border-color: rgba(64, 83, 76, 0.12);
+}
+
+.tribu-image-wrapper {
+    position: relative;
+    height: 380px;
+    overflow: hidden;
+}
+
+.tribu-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.tribu-card:hover .tribu-img {
+    transform: scale(1.06);
+}
+
+.tribu-info {
+    padding: 2rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.tribu-role {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.tribu-name {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: var(--color-text-main);
+    margin-bottom: 1rem;
+    font-weight: normal;
+    line-height: 1.2;
+}
+
+.tribu-bio {
+    font-size: 0.95rem;
+    color: var(--color-text-main);
+    line-height: 1.6;
+    margin-bottom: 0;
+    font-weight: 300;
+}
+
