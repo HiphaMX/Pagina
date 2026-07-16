@@ -3,14 +3,6 @@
 /* --- Configuración de Fuentes --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rubik:wght@600&display=swap');
 
-@font-face {
-  font-family: 'Chubzy Funk';
-  src: url('../Assets/fonts/ChubzyFunk.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --color-light-bg: #FFFFFF;
   --color-light-cream: #FAF9F6;
@@ -37,11 +29,6 @@ h1, h2, h3, h4, h5, h6 {
 .font-rubik {
   font-family: 'Rubik', sans-serif;
   font-weight: 600;
-}
-
-.font-chubzy {
-  font-family: 'Chubzy Funk', cursive, sans-serif;
-  font-weight: normal;
 }
 
 /* Ocultar cursor en desktop para inyección de custom cursor */
