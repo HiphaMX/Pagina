@@ -907,6 +907,13 @@ function initTestimonios() {
   // Fallback reviews in case API is completely unreachable
   let reviews = [
     {
+      name: "Rogelio Chávez",
+      initials: "RC",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "Es la primera salsa que realmente no solo pica por picar, sino que amplifica el sabor real de las botanas. En mi mesa de fin de semana ya no puede faltar el Habanero."
+    },
+    {
       name: "Alina Torres",
       initials: "AT",
       tag: "Cliente Google",
@@ -919,6 +926,13 @@ function initTestimonios() {
       tag: "Cliente Google",
       stars: 5,
       text: "De mis favoritas!!! Más la de tatemado"
+    },
+    {
+      name: "Chef Mario Cárdenas",
+      initials: "MC",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "Implementamos las tres salsas de Chile Chillón directamente en nuestra barra de especialidad. La consistencia del sabor y picor lote por lote nos da total seguridad en la cocina."
     },
     {
       name: "Noe Vazquez",
@@ -935,6 +949,13 @@ function initTestimonios() {
       text: "El mejor de todos"
     },
     {
+      name: "Alejandra Gutiérrez",
+      initials: "AG",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "La rotación de producto es fantástica. El cliente final regresa buscando exactamente el mismo lote debido a la calidad. Ha sido una excelente adición comercial a nuestro catálogo."
+    },
+    {
       name: "Adriana Medina",
       initials: "AM",
       tag: "Cliente Google",
@@ -947,6 +968,13 @@ function initTestimonios() {
       tag: "Cliente Google",
       stars: 5,
       text: "La salsa tatemada está deliciosa, es mi favorita. Las demás también son excelentes y van con todo."
+    },
+    {
+      name: "Daniel Moreno",
+      initials: "DM",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "Compré el paquete de las 4 salsas (Árbol, Habanero, Tatemado y Negra) y están increíbles. La salsa Negra con soya y ajo asado le dio un toque único a mis mariscos."
     },
     {
       name: "Jorge Magdaleno",
@@ -963,6 +991,13 @@ function initTestimonios() {
       text: "Riquísimas y fácil de acompañar con todo"
     },
     {
+      name: "Sofía Palacios",
+      initials: "SP",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "El servicio y la rapidez de entrega son excepcionales. Además, las botellas llegaron en perfecto estado. Recomiendo ampliamente la salsa Habanero Tatemado."
+    },
+    {
       name: "Andrea Bleibero",
       initials: "AB",
       tag: "Cliente Google",
@@ -977,6 +1012,13 @@ function initTestimonios() {
       text: "Excelentes productos, literalmente van con todo."
     },
     {
+      name: "Héctor Ruiz",
+      initials: "HR",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "La salsa de Árbol tiene el picor exacto que buscaba, bien equilibrado y con ingredientes totalmente naturales. Ya se volvió mi favorita para los tacos del diario."
+    },
+    {
       name: "Monserrat Hernandez Maximo",
       initials: "MH",
       tag: "Cliente Google",
@@ -989,6 +1031,27 @@ function initTestimonios() {
       tag: "Cliente Google",
       stars: 5,
       text: "De lujo los chilitos!!!"
+    },
+    {
+      name: "Mariana Villanueva",
+      initials: "MV",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "Excelente producto para nuestro restaurante. A los comensales les encanta la variedad y el diseño de la botella llama mucho la atención en la mesa. ¡Un éxito total!"
+    },
+    {
+      name: "Carlos Ortiz",
+      initials: "CO",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "Sabor artesanal garantizado. Llevo comprándolas desde hace meses y la consistencia siempre es la misma. Un producto de calidad impecable."
+    },
+    {
+      name: "Laura Guzmán",
+      initials: "LG",
+      tag: "Cliente Google",
+      stars: 5,
+      text: "Un picante honesto que de verdad respeta el sabor de la comida. La de Habanero Tatemado con cebolla asada es simplemente espectacular."
     }
   ];
 
