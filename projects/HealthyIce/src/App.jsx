@@ -418,7 +418,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [legalModal, setLegalModal] = useState(null); // 'privacy' or 'terms' or 'partners'
   const [vivoEnZMG, setVivoEnZMG] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' or 'card'
+  const [paymentMethod, setPaymentMethod] = useState('card'); // always 'card'
   const [checkoutStep, setCheckoutStep] = useState('details'); // 'details' or 'payment'
   const [paymentStatus, setPaymentStatus] = useState(null); // null, 'loading', 'approved', 'pending', 'rejected', 'error'
   const [paymentErrorMessage, setPaymentErrorMessage] = useState('');
@@ -443,7 +443,7 @@ function App() {
   useEffect(() => {
     if (!isModalOpen) {
       setVivoEnZMG(false);
-      setPaymentMethod('cash');
+      setPaymentMethod('card');
       setCheckoutStep('details');
       setPaymentStatus(null);
       setPaymentErrorMessage('');
@@ -2188,26 +2188,6 @@ function App() {
                           />
                         </div>
 
-                        <div style={{ marginTop: '0.5rem' }}>
-                          <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.5rem' }}>Método de Pago</label>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', background: paymentMethod === 'cash' ? 'rgba(152, 188, 60, 0.08)' : 'white', borderColor: paymentMethod === 'cash' ? '#98BC3C' : '#cbd5e1', transition: 'all 0.2s' }}>
-                              <input type="radio" name="paymentMethod" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} style={{ accentColor: '#98BC3C' }} />
-                              <div>
-                                <strong style={{ display: 'block', fontSize: '0.95rem', color: '#101729' }}>Pago contra entrega (Efectivo / Transferencia)</strong>
-                                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Paga en efectivo o transferencia bancaria al recibir tu pedido.</span>
-                              </div>
-                            </label>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', background: paymentMethod === 'card' ? 'rgba(152, 188, 60, 0.08)' : 'white', borderColor: paymentMethod === 'card' ? '#98BC3C' : '#cbd5e1', transition: 'all 0.2s' }}>
-                              <input type="radio" name="paymentMethod" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} style={{ accentColor: '#98BC3C' }} />
-                              <div>
-                                <strong style={{ display: 'block', fontSize: '0.95rem', color: '#101729' }}>Pagar en línea con tarjeta o Mercado Pago</strong>
-                                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Acepta tarjetas de débito/crédito, transferencias y saldo Mercado Pago.</span>
-                              </div>
-                            </label>
-                          </div>
-                        </div>
-
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
                           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 700, color: '#101729', cursor: 'pointer' }}>
                             <input 
@@ -2241,48 +2221,26 @@ function App() {
                           )}
                         </div>
 
-                        {paymentMethod === 'cash' ? (
-                          <button 
-                            type="submit" 
-                            disabled={!vivoEnZMG || isSubmitting} 
-                            className="btn btn-primary" 
-                            style={{ 
-                              width: '100%', 
-                              padding: '1.25rem', 
-                              marginTop: '0.5rem', 
-                              fontSize: '1.125rem', 
-                              borderRadius: '9999px', 
-                              fontFamily: "'Quicksand', sans-serif", 
-                              fontWeight: 700, 
-                              opacity: (!vivoEnZMG || isSubmitting) ? 0.5 : 1,
-                              cursor: (!vivoEnZMG || isSubmitting) ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.2s'
-                            }}
-                          >
-                            {isSubmitting ? 'Enviando...' : 'Hacer mi pedido'}
-                          </button>
-                        ) : (
-                          <button 
-                            type="button" 
-                            disabled={!vivoEnZMG} 
-                            onClick={handleProceedToPayment}
-                            className="btn btn-primary" 
-                            style={{ 
-                              width: '100%', 
-                              padding: '1.25rem', 
-                              marginTop: '0.5rem', 
-                              fontSize: '1.125rem', 
-                              borderRadius: '9999px', 
-                              fontFamily: "'Quicksand', sans-serif", 
-                              fontWeight: 700, 
-                              opacity: !vivoEnZMG ? 0.5 : 1,
-                              cursor: !vivoEnZMG ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.2s'
-                            }}
-                          >
-                            Proceder al Pago
-                          </button>
-                        )}
+                        <button 
+                          type="button" 
+                          disabled={!vivoEnZMG} 
+                          onClick={handleProceedToPayment}
+                          className="btn btn-primary" 
+                          style={{ 
+                            width: '100%', 
+                            padding: '1.25rem', 
+                            marginTop: '0.5rem', 
+                            fontSize: '1.125rem', 
+                            borderRadius: '9999px', 
+                            fontFamily: "'Quicksand', sans-serif", 
+                            fontWeight: 700, 
+                            opacity: !vivoEnZMG ? 0.5 : 1,
+                            cursor: !vivoEnZMG ? 'not-allowed' : 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          Proceder al Pago
+                        </button>
                       </>
                     ) : (
                       <>
