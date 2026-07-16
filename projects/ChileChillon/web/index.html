@@ -940,7 +940,244 @@
     </a>
   </div>
 
+  <!-- ==================== LAUNCH GATE SCREEN ==================== -->
+  <style>
+    #launch-gate-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      background: radial-gradient(circle at center, #2e0204 0%, #0d0102 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: 'Outfit', 'Inter', sans-serif;
+      overflow: hidden;
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+    }
+    
+    #launch-gate-screen.hidden-gate {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
 
+    .fire-particle {
+      position: absolute;
+      background: radial-gradient(circle, rgba(255,90,0,0.8) 0%, rgba(211,6,17,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatUp 8s infinite linear;
+      opacity: 0.3;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) translateX(0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-5vh) translateX(50px) scale(0.5);
+        opacity: 0;
+      }
+    }
+    
+    .shake {
+      animation: shakeInput 0.4s ease-in-out;
+    }
+
+    @keyframes shakeInput {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    
+    .glass-input-container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+    }
+    
+    .glass-input-container:focus-within {
+      border-color: rgba(211, 6, 17, 0.5);
+      box-shadow: 0 0 20px rgba(211, 6, 17, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+    }
+  </style>
+
+  <div id="launch-gate-screen" style="display: none;">
+    <!-- Partículas flotantes de fuego/brasa en el fondo -->
+    <div class="fire-particle" style="width: 6px; height: 6px; left: 15%; animation-delay: 0s; animation-duration: 9s;"></div>
+    <div class="fire-particle" style="width: 8px; height: 8px; left: 35%; animation-delay: 2s; animation-duration: 7s;"></div>
+    <div class="fire-particle" style="width: 5px; height: 5px; left: 55%; animation-delay: 1s; animation-duration: 10s;"></div>
+    <div class="fire-particle" style="width: 10px; height: 10px; left: 75%; animation-delay: 3s; animation-duration: 8s;"></div>
+    <div class="fire-particle" style="width: 4px; height: 4px; left: 90%; animation-delay: 5s; animation-duration: 11s;"></div>
+    
+    <div class="max-w-xl w-full text-center relative z-10 flex flex-col items-center">
+      <!-- Logotipo oficial antiguo para el lanzamiento -->
+      <div class="mb-8 select-none transform hover:scale-105 transition-transform duration-500">
+        <img src="Assets/Incognita.svg" alt="Chile Chillón Logo" class="h-32 w-auto object-contain drop-shadow-[0_4px_20px_rgba(211,6,17,0.2)]">
+      </div>
+      
+      <span class="inline-block px-4 py-1.5 rounded-full bg-[#D30611]/15 text-[#FF5A00] border border-[#D30611]/30 text-[10px] uppercase tracking-widest font-black mb-6 font-rubik">
+        🔥 Lanzamiento Oficial
+      </span>
+      
+      <h1 class="text-2xl md:text-3xl font-black text-white mb-3 font-rubik tracking-tight leading-snug">
+        PREPARANDO ALGO MUY PICANTE
+      </h1>
+      
+      <p class="text-xs md:text-sm text-slate-400 max-w-sm mb-10 leading-relaxed font-medium">
+        Estamos afinando los últimos detalles de nuestra nueva tienda web. El acceso público se habilitará automáticamente al finalizar la cuenta regresiva.
+      </p>
+      
+      <!-- CONTADOR DE TIEMPO PREMIUM -->
+      <div class="flex gap-4 md:gap-8 justify-center mb-12 select-none">
+        <div class="flex flex-col items-center">
+          <span id="countdown-days" class="text-4xl md:text-6xl font-black text-[#FFEED3] font-rubik tracking-tight drop-shadow-[0_4px_12px_rgba(211,6,17,0.3)]">00</span>
+          <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mt-2">Días</span>
+        </div>
+        <div class="text-4xl md:text-6xl font-black text-[#D30611] font-rubik opacity-70">:</div>
+        <div class="flex flex-col items-center">
+          <span id="countdown-hours" class="text-4xl md:text-6xl font-black text-[#FFEED3] font-rubik tracking-tight drop-shadow-[0_4px_12px_rgba(211,6,17,0.3)]">00</span>
+          <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mt-2">Horas</span>
+        </div>
+        <div class="text-4xl md:text-6xl font-black text-[#D30611] font-rubik opacity-70">:</div>
+        <div class="flex flex-col items-center">
+          <span id="countdown-minutes" class="text-4xl md:text-6xl font-black text-[#FFEED3] font-rubik tracking-tight drop-shadow-[0_4px_12px_rgba(211,6,17,0.3)]">00</span>
+          <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mt-2">Minutos</span>
+        </div>
+        <div class="text-4xl md:text-6xl font-black text-[#D30611] font-rubik opacity-70">:</div>
+        <div class="flex flex-col items-center">
+          <span id="countdown-seconds" class="text-4xl md:text-6xl font-black text-[#FFEED3] font-rubik tracking-tight drop-shadow-[0_4px_12px_rgba(211,6,17,0.3)]">00</span>
+          <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mt-2">Segundos</span>
+        </div>
+      </div>
+      
+      <!-- FORMULARIO DE ACCESO CON CONTRASEÑA -->
+      <div class="w-full max-w-xs">
+        <div id="password-container" class="glass-input-container flex items-center p-1.5">
+          <input type="password" id="gate-pass-input" placeholder="Contraseña de acceso" class="bg-transparent border-none text-white text-xs px-4 py-2.5 outline-none flex-grow placeholder:text-slate-500 font-medium">
+          <button onclick="submitGatePass()" class="px-5 py-2.5 bg-[#D30611] hover:bg-[#D30611]/90 active:scale-95 text-white font-bold text-[10px] tracking-wider uppercase rounded-full transition-all shadow-md whitespace-nowrap">
+            Entrar
+          </button>
+        </div>
+        <div id="gate-error-message" class="text-[10px] text-red-500 font-bold mt-2 opacity-0 transition-opacity duration-300">
+          ❌ Contraseña incorrecta, intenta de nuevo
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Configuración de la fecha objetivo: 20 de Julio de 2026, 12:00 PM (GMT-6 / CDMX)
+      const targetTime = new Date("2026-07-20T12:00:00-06:00").getTime();
+      const gate = document.getElementById("launch-gate-screen");
+      
+      function checkGateState() {
+        const bypass = localStorage.getItem("chilechillon-bypass-pass");
+        const now = new Date().getTime();
+        
+        // Si ya pasó la fecha o si tienen la contraseña guardada, quitamos el gate
+        if (now >= targetTime || bypass === "2026") {
+          if (gate) {
+            gate.classList.add("hidden-gate");
+            document.body.style.overflow = "";
+            setTimeout(() => {
+              if (gate.parentNode) gate.parentNode.removeChild(gate);
+            }, 600);
+          }
+          return true; // Ya no hay bloqueo
+        } else {
+          if (gate) {
+            gate.style.display = "flex";
+            document.body.style.overflow = "hidden";
+          }
+          return false; // Sigue bloqueado
+        }
+      }
+
+      // Si no está bloqueada, terminamos inmediatamente
+      if (checkGateState()) return;
+
+      // Actualización de la cuenta regresiva
+      const interval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = targetTime - now;
+
+        if (distance < 0) {
+          clearInterval(interval);
+          checkGateState();
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        const daysEl = document.getElementById("countdown-days");
+        const hoursEl = document.getElementById("countdown-hours");
+        const minutesEl = document.getElementById("countdown-minutes");
+        const secondsEl = document.getElementById("countdown-seconds");
+
+        if (daysEl) daysEl.innerText = days.toString().padStart(2, '0');
+        if (hoursEl) hoursEl.innerText = hours.toString().padStart(2, '0');
+        if (minutesEl) minutesEl.innerText = minutes.toString().padStart(2, '0');
+        if (secondsEl) secondsEl.innerText = seconds.toString().padStart(2, '0');
+      }, 1000);
+
+      // Función para validar la contraseña de acceso
+      window.submitGatePass = function() {
+        const input = document.getElementById("gate-pass-input");
+        const container = document.getElementById("password-container");
+        const errorMsg = document.getElementById("gate-error-message");
+        const password = input ? input.value.trim() : "";
+
+        if (password === "2026") {
+          localStorage.setItem("chilechillon-bypass-pass", "2026");
+          if (errorMsg) errorMsg.style.opacity = "0";
+          checkGateState();
+        } else {
+          // Animación de error (shake) y mensaje
+          if (container) {
+            container.classList.remove("shake");
+            void container.offsetWidth; // Trigger reflow to restart animation
+            container.classList.add("shake");
+          }
+          if (errorMsg) {
+            errorMsg.style.opacity = "1";
+          }
+          if (input) {
+            input.value = "";
+            input.focus();
+          }
+        }
+      };
+
+      // Permitir enviar con Enter
+      const inputEl = document.getElementById("gate-pass-input");
+      if (inputEl) {
+        inputEl.addEventListener("keypress", function(e) {
+          if (e.key === "Enter") {
+            submitGatePass();
+          }
+        });
+      }
+    })();
+  </script>
 
   <!-- Scripts Globales -->
   <script src="js/app.js?v=3"></script>
