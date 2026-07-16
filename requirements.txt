@@ -17,3 +17,6 @@ email-validator
 httpx
 passlib
 bcrypt
+cfdiclient
+xmltodict
+openpyxl
