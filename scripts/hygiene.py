@@ -135,6 +135,29 @@ def run_hygiene_check():
     else:
         print(f"  {GREEN}✓ Limpio: No hay archivos basura de sistema en el directorio.{RESET}")
         
+    # 5. Detectar archivos de código sin rastrear (untracked) en Git
+    print(f"\n{BOLD}5. Archivos de Código sin Rastrear (untracked) en Git bajo app/ y projects/:{RESET}")
+    import subprocess
+    try:
+        res = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
+        untracked_code_files = []
+        for line in res.stdout.splitlines():
+            if line.startswith("??"):
+                file_path = line[3:].strip()
+                if file_path.startswith("app/") or file_path.startswith("projects/"):
+                    if file_path.endswith((".py", ".js", ".html", ".css", ".json")):
+                        untracked_code_files.append(file_path)
+        
+        if untracked_code_files:
+            print(f"  {RED}{BOLD}⚠️ ¡Alerta! Se encontraron archivos de código nuevos sin rastrear (untracked) en Git:{RESET}")
+            for f in untracked_code_files:
+                print(f"    - {f}")
+            print(f"  {YELLOW}Recomendación: Agrégalos a Git (`git add <archivo>`) antes de desplegar en Vercel, o de lo contrario no se incluirán.{RESET}")
+        else:
+            print(f"  {GREEN}✓ Excelente: No hay archivos de código sin rastrear (untracked) en zonas de producción.{RESET}")
+    except Exception as e:
+        print(f"  {YELLOW}No se pudo verificar el estado de Git: {e}{RESET}")
+
     print(f"\n{BLUE}{BOLD}=== EXAMEN DE HIGIENE CONCLUIDO ==={RESET}\n")
 
 if __name__ == "__main__":
