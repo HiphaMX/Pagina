@@ -309,7 +309,7 @@ async def send_botica_order_customer(payer_name: str, payer_email: str, order_de
             <p>Hemos recibido la solicitud de tu pedido. Si tu pago ya fue procesado, nuestro equipo comenzará a preparar tus adaptógenos de inmediato.</p>
             <h3 style="color: #40534C; border-bottom: 1px solid #E8F0EA; padding-bottom: 10px;">Resumen de tu pedido:</h3>
             <div style="background: #FCFDFD; padding: 15px; border-radius: 8px;">
-                {{order_details}}
+                {order_details}
                 <p><strong>Total (con envío si aplica): ${total} MXN</strong></p>
             </div>
             <p>Si tienes alguna duda o quieres enviarnos tu comprobante de pago, puedes responder a este correo (hola@botica-silvestre.com).</p>
@@ -353,7 +353,7 @@ async def send_botica_order_team(payer_name: str, payer_email: str, payer_phone:
         </ul>
         
         <h3>Detalles del Pedido:</h3>
-        {{order_details}}
+        {order_details}
         <p><strong>Total: ${total} MXN</strong></p>
     </body>
     </html>
@@ -2005,6 +2005,110 @@ async def send_amdi_newsletter_notification_team(subscriber_email: str):
     except Exception as e:
         logger.error(f"Fallo al enviar notificación de nuevo suscriptor AMDI al equipo: {str(e)}")
         return False
+
+
+async def send_chilechillon_order_customer(payer_name: str, payer_email: str, order_details: str, total: float):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a cliente Chile Chillón {payer_email}")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Chile Chillón <hola@elchilechillon.com.mx>"
+    message["To"] = payer_email
+    message.add_header('Reply-To', 'hola@elchilechillon.com.mx')
+    message["Subject"] = f"¡Tu sazón está en camino, {payer_name}! 🌶️🔥"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f1f5f9; background-color: #080505; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #0d0707; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(229, 9, 20, 0.1); border: 1px solid rgba(229, 9, 20, 0.2);">
+            
+            <div style="background-color: #080505; padding: 35px 20px; text-align: center; border-bottom: 4px solid #E50914;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 28px; letter-spacing: 2px; font-weight: 900;">CHILE <span style="color: #E50914;">CHILLÓN</span></h1>
+                <p style="color: #FF6A00; margin: 5px 0 0 0; font-size: 10px; text-transform: uppercase; tracking-widest: 2px; font-weight: bold;">Tu sazón en su máxima potencia</p>
+            </div>
+
+            <div style="padding: 40px 30px; background-color: #0d0707;">
+                <h2 style="color: #ffffff; font-size: 20px; margin-top: 0; margin-bottom: 20px; font-weight: 700; border-left: 4px solid #E50914; padding-left: 12px;">¡Pedido Recibido, {payer_name}!</h2>
+                <p style="line-height: 1.6; font-size: 14px; color: #cbd5e1; margin-bottom: 25px;">
+                    Hemos procesado tu pago correctamente. Nuestro equipo ya está empaquetando tus salsas picantes premium para enviarlas lo antes posible.
+                </p>
+
+                <h3 style="color: #ffffff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">Detalles de tu compra</h3>
+                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 16px; margin-bottom: 30px; font-size: 14px; color: #e2e8f0; line-height: 1.6;">
+                    {order_details}
+                    <p style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; font-size: 16px; font-weight: bold; color: #FF6A00; text-align: right;">Total pagado: ${total} MXN</p>
+                </div>
+
+                <p style="line-height: 1.6; font-size: 13px; color: #94a3b8; text-align: center; margin-top: 30px;">
+                    ¿Tienes dudas? Escríbenos directamente a <a href="mailto:hola@elchilechillon.com.mx" style="color: #FF6A00; text-decoration: none; font-weight: bold;">hola@elchilechillon.com.mx</a>.
+                </p>
+            </div>
+            
+            <div style="background-color: #080505; padding: 25px 20px; text-align: center; font-size: 11px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.05);">
+                <p style="margin: 0 0 10px 0;">&copy; 2026 Chile Chillón. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de orden a cliente Chile Chillón: {str(e)}")
+        return False
+
+
+async def send_chilechillon_order_team(payer_name: str, payer_email: str, payer_phone: str, address_str: str, order_details: str, total: float):
+    if not settings.SMTP_HOST or not settings.SMTP_USER:
+        logger.warning(f"SMTP no configurado. Simulando envío a equipo Chile Chillón")
+        return True
+
+    message = EmailMessage()
+    message["From"] = "Chile Chillón Web <hola@elchilechillon.com.mx>"
+    message["To"] = "hola@elchilechillon.com.mx"
+    message["Subject"] = f"🔥 NUEVA COMPRA WEB: {payer_name} - ${total} MXN"
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333; background-color: #f7f7f7; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;">
+            <h2 style="color: #E50914; margin-top: 0;">¡Nuevo Pedido Pagado en la Web!</h2>
+            <p>Se ha recibido y aprobado el pago de una compra en la tienda de Chile Chillón.</p>
+            
+            <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 5px;">Datos del Comprador</h3>
+            <ul style="list-style: none; padding: 0; line-height: 1.6;">
+                <li><strong>Nombre:</strong> {payer_name}</li>
+                <li><strong>Email:</strong> {payer_email}</li>
+                <li><strong>Teléfono:</strong> {payer_phone}</li>
+                <li><strong>Dirección de Envío:</strong> {address_str}</li>
+            </ul>
+            
+            <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 5px; margin-top: 25px;">Detalles de los Productos</h3>
+            <div style="background-color: #fafafa; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
+                {order_details}
+                <p style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; font-size: 16px; font-weight: bold; color: #E50914;">Total: ${total} MXN</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    message.set_content(html_content, subtype="html")
+
+    try:
+        await _send_smtp(message)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de orden al equipo Chile Chillón: {str(e)}")
+        return False
+
 
 
 

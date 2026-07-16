@@ -10,6 +10,8 @@ router = APIRouter()
 def get_sdk_for_store(store: str = "botica"):
     if store == "healthyice":
         token = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+    elif store == "chilechillon":
+        token = os.getenv("CHILECHILLON_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
     else:
         token = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
     
@@ -62,16 +64,23 @@ async def create_preference(cart: CartRequest, request: Request):
     site_domain = os.getenv("FRONTEND_URL", "https://www.botica-silvestre.com")
     if store_name == "healthyice":
         site_domain = "https://www.healthyice.mx"
+    elif store_name == "chilechillon":
+        site_domain = "https://elchilechillon.mx"
         
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
-
+ 
     total_price = sum(item.price * item.quantity for item in cart.items)
     shipping_cost = 0.0 if total_price > 590 else 180.0
     if store_name == "healthyice":
         # HealthyIce doesn't charge shipping or handles it differently
         shipping_cost = 0.0
-
-    statement_descriptor = "HEALTHY ICE" if store_name == "healthyice" else "BOTICA SILVESTRE"
+ 
+    if store_name == "healthyice":
+        statement_descriptor = "HEALTHY ICE"
+    elif store_name == "chilechillon":
+        statement_descriptor = "CHILE CHILLON"
+    else:
+        statement_descriptor = "BOTICA SILVESTRE"
 
     preference_data = {
         "items": mp_items,
@@ -138,7 +147,12 @@ async def create_preference(cart: CartRequest, request: Request):
         preference_response = store_sdk.preference().create(preference_data)
         preference = preference_response.get("response", {})
         
-        token_for_sandbox = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "") if store_name == "healthyice" else os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+        if store_name == "healthyice":
+            token_for_sandbox = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+        elif store_name == "chilechillon":
+            token_for_sandbox = os.getenv("CHILECHILLON_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+        else:
+            token_for_sandbox = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
         is_sandbox = token_for_sandbox.startswith("TEST-")
         init_point_key = "sandbox_init_point" if is_sandbox else "init_point"
         
@@ -181,6 +195,10 @@ async def mercadopago_webhook(request: Request, store: str = "botica"):
                             from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
                             asyncio.create_task(send_healthyice_payment_customer(payer_name, payer_email, cart_html, total))
                             asyncio.create_task(send_healthyice_payment_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                        elif store_name == "chilechillon":
+                            from app.core.mailer import send_chilechillon_order_customer, send_chilechillon_order_team
+                            asyncio.create_task(send_chilechillon_order_customer(payer_name, payer_email, cart_html, total))
+                            asyncio.create_task(send_chilechillon_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
                         else:
                             from app.core.mailer import send_botica_order_customer, send_botica_order_team
                             asyncio.create_task(send_botica_order_customer(payer_name, payer_email, cart_html, total))
@@ -224,6 +242,8 @@ class PaymentRequest(BaseModel):
 def get_mercadopago_config(store: str = "botica"):
     if store == "healthyice":
         pub_key = os.getenv("HEALTHYICE_MERCADOPAGO_PUBLIC_KEY", "") or os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
+    elif store == "chilechillon":
+        pub_key = os.getenv("CHILECHILLON_MERCADOPAGO_PUBLIC_KEY", "") or os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
     else:
         pub_key = os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
     return {"public_key": pub_key}
@@ -257,7 +277,12 @@ async def process_payment(payload: PaymentRequest):
         payer_phone = payload.additional_info.payer_phone
         address_str = payload.additional_info.address
 
-    description = "Pedido HealthyIce" if store_name == "healthyice" else "Pedido Botica Silvestre"
+    if store_name == "healthyice":
+        description = "Pedido HealthyIce"
+    elif store_name == "chilechillon":
+        description = "Pedido Chile Chillón"
+    else:
+        description = "Pedido Botica Silvestre"
 
     payment_data = {
         "transaction_amount": payload.transaction_amount,
@@ -304,6 +329,10 @@ async def process_payment(payload: PaymentRequest):
                 from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
                 asyncio.create_task(send_healthyice_payment_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
                 asyncio.create_task(send_healthyice_payment_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+            elif store_name == "chilechillon":
+                from app.core.mailer import send_chilechillon_order_customer, send_chilechillon_order_team
+                asyncio.create_task(send_chilechillon_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
+                asyncio.create_task(send_chilechillon_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
             else:
                 from app.core.mailer import send_botica_order_customer, send_botica_order_team
                 asyncio.create_task(send_botica_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
