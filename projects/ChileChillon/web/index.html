@@ -50,33 +50,9 @@
   <div id="preloader" class="fixed inset-0 bg-[#D30611] flex flex-col justify-center items-center z-[999999] transition-all duration-700">
     <div class="relative flex flex-col items-center max-w-sm px-6 text-center select-none">
       
-      <!-- Vector SVG del Chile Chillón Llorando -->
-      <div class="relative w-40 h-40 mb-6">
-        <svg viewBox="0 0 200 200" class="w-full h-full animate-[wobble-spicy_1.5s_infinite_ease-in-out]">
-          <!-- Tallo Verde del Chile -->
-          <path d="M95 35 C98 20, 115 15, 125 25 C115 30, 105 35, 98 45 Z" fill="#2E7D32" stroke="#1B5E20" stroke-width="2"/>
-          <path d="M98 43 C99 35, 102 30, 105 28" fill="none" stroke="#81C784" stroke-width="2" stroke-linecap="round"/>
-          
-          <!-- Cuerpo del Chile (Rojo) -->
-          <path d="M100 45 C150 45, 160 120, 130 160 C110 185, 80 190, 75 190 C75 190, 80 160, 80 130 C80 90, 70 45, 100 45 Z" fill="#FF1744" stroke="#D50000" stroke-width="3"/>
-          <path d="M102 52 C135 52, 142 100, 122 135 C112 152, 92 165, 83 175" fill="none" stroke="#FF5252" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
-          
-          <!-- Ojos Cerrados Llorando (>_<) -->
-          <!-- Ojo Izquierdo -->
-          <path d="M85 95 L95 100 L85 105" fill="none" stroke="#1A0D0D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Ojo Derecho -->
-          <path d="M125 95 L115 100 L125 105" fill="none" stroke="#1A0D0D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          
-          <!-- Boca Abierta Gritando/Llorando -->
-          <path d="M97 115 Q105 130 113 115 Z" fill="#1A0D0D"/>
-          <path d="M100 120 Q105 125 110 120" fill="none" stroke="#FF8A80" stroke-width="2" stroke-linecap="round"/>
-          
-          <!-- Lágrimas cayendo (Animadas) -->
-          <!-- Lágrima Izquierda -->
-          <path d="M88 102 C85 102, 82 110, 82 115 C82 118, 85 121, 88 121 C91 121, 94 118, 94 115 C94 110, 91 102, 88 102 Z" fill="#00E5FF" opacity="0.9" class="animate-tear-left"/>
-          <!-- Lágrima Derecha -->
-          <path d="M122 102 C119 102, 116 110, 116 115 C116 118, 119 121, 122 121 C125 121, 128 118, 128 115 C128 110, 125 102, 122 102 Z" fill="#00E5FF" opacity="0.9" class="animate-tear-right"/>
-        </svg>
+      <!-- Logotipo Crying Animation Loop -->
+      <div class="relative w-48 h-48 mb-6 flex justify-center items-center">
+        <img id="preloader-chile" src="Assets/Chillando/enchilado1.svg" alt="Chile Chillón Llorando" class="w-full h-full object-contain animate-[wobble-spicy_1.5s_infinite_ease-in-out]">
       </div>
       
       <!-- Título de Carga -->
@@ -97,21 +73,6 @@
     @keyframes wobble-spicy {
       0%, 100% { transform: rotate(-3deg) scale(1); }
       50% { transform: rotate(3deg) scale(1.03); }
-    }
-    @keyframes tear-fall {
-      0% { transform: translateY(0) scale(0.6); opacity: 0; }
-      15% { opacity: 1; }
-      70% { opacity: 0.9; }
-      100% { transform: translateY(50px) scale(1.1); opacity: 0; }
-    }
-    .animate-tear-left {
-      animation: tear-fall 1.2s infinite ease-in;
-      transform-origin: center;
-    }
-    .animate-tear-right {
-      animation: tear-fall 1.2s infinite ease-in;
-      animation-delay: 0.6s;
-      transform-origin: center;
     }
   </style>
 
@@ -167,9 +128,12 @@
         </h1>
 
         <!-- Botones de Acción -->
-        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-end w-full">
-          <a href="#tienda" class="px-8 py-4 rounded-full bg-[#D30611] text-sm font-bold uppercase tracking-wider text-white text-center hover:bg-[#D30611]/90 btn-glow transition-all duration-300">
+        <div class="mt-10 flex flex-col sm:flex-row-reverse gap-4 justify-end w-full items-stretch sm:items-center">
+          <a href="#tienda" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#D30611] border-2 border-[#D30611] text-sm font-bold uppercase tracking-wider text-white text-center hover:bg-[#D30611]/90 btn-glow transition-all duration-300">
             CONOCE LOS PRODUCTOS
+          </a>
+          <a href="puntos-de-venta.html" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#FFEED3] border-2 border-[#FFEED3] text-sm font-bold uppercase tracking-wider text-[#D30611] text-center hover:bg-[#FFEED3]/90 transition-all duration-300 flex items-center justify-center gap-2">
+            <i class="ph-bold ph-map-pin text-base"></i> Puntos de Venta
           </a>
         </div>
 
@@ -901,7 +865,7 @@
   </div>
 
   <!-- ==================== WIDGET FLOTANTE DE RESEÑAS DE GOOGLE ==================== -->
-  <div id="google-reviews-widget" class="fixed bottom-6 left-6 z-[100] max-w-sm bg-white/95 backdrop-blur-md border border-slate-100 p-4 rounded-3xl shadow-xl flex items-center gap-4 transition-all duration-500 transform translate-y-20 opacity-0">
+  <div id="google-reviews-widget" class="hidden md:flex fixed bottom-6 left-6 z-[100] max-w-sm bg-white/95 backdrop-blur-md border border-slate-100 p-4 rounded-3xl shadow-xl flex items-center gap-4 transition-all duration-500 transform translate-y-20 opacity-0">
     <button id="close-reviews-widget-btn" class="absolute -top-2 -right-2 w-6 h-6 bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 rounded-full flex justify-center items-center text-xs shadow-sm transition-colors" title="Cerrar">
       <i class="ph ph-x"></i>
     </button>

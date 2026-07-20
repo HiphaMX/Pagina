@@ -98,6 +98,16 @@ function initPreloader() {
   const bar = document.getElementById("preloader-bar");
   const percentText = document.getElementById("preloader-percentage");
   const msgText = document.getElementById("preloader-message");
+  const preloaderChile = document.getElementById("preloader-chile");
+
+  // Loop de animación para las lágrimas del chile chillón (usando los SVG de la carpeta Chillando)
+  let frame = 1;
+  const frameInterval = setInterval(() => {
+    frame = (frame % 6) + 1;
+    if (preloaderChile) {
+      preloaderChile.src = `Assets/Chillando/enchilado${frame}.svg`;
+    }
+  }, 120);
 
   let progress = 0;
   const duration = 2200; // 2.2 seconds loading time
@@ -110,6 +120,7 @@ function initPreloader() {
     if (progress >= 100) {
       progress = 100;
       clearInterval(timer);
+      clearInterval(frameInterval); // Limpiar bucle de animación
       
       if (bar) bar.style.width = "100%";
       if (percentText) percentText.textContent = "100%";
