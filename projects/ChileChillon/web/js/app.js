@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 9. Inicializar Opiniones de Google y Aleatorización
   initTestimonios();
+
+  // 10. Menú Hamburguesa Móvil
+  initMobileMenu();
 });
 
 // --- Preloader ---
@@ -137,6 +140,32 @@ function initPreloader() {
       }
     }
   }, intervalTime);
+}
+
+// --- Menú Hamburguesa Móvil ---
+function initMobileMenu() {
+  const drawer = document.getElementById("mobile-menu-drawer");
+  const openBtn = document.getElementById("mobile-menu-toggle");
+  const closeBtn = document.getElementById("mobile-menu-close");
+  const links = document.querySelectorAll(".mobile-nav-link");
+
+  if (openBtn && drawer) {
+    openBtn.addEventListener("click", () => {
+      drawer.classList.remove("translate-x-full");
+    });
+  }
+
+  if (closeBtn && drawer) {
+    closeBtn.addEventListener("click", () => {
+      drawer.classList.add("translate-x-full");
+    });
+  }
+
+  links.forEach(link => {
+    link.addEventListener("click", () => {
+      if (drawer) drawer.classList.add("translate-x-full");
+    });
+  });
 }
 
 // --- Custom Cursor ---

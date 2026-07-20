@@ -91,9 +91,11 @@
       </a>
 
       <div class="flex items-center gap-4">
-
-        <!-- Puntos de Venta Link -->
-        <a href="puntos-de-venta.html" class="text-white hover:text-[#FFEED3] font-bold text-xs uppercase tracking-wider transition-colors mr-2 hidden md:inline-block">Puntos de Venta</a>
+        <!-- Enlaces Desktop (Ocultos en Móvil) -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="puntos-de-venta.html" class="text-white hover:text-[#FFEED3] font-bold text-xs uppercase tracking-wider transition-colors">Puntos de Venta</a>
+          <a href="#club" class="text-white hover:text-[#FFEED3] font-bold text-xs uppercase tracking-wider transition-colors">Contáctanos</a>
+        </nav>
 
         <!-- Botón Carrito Flotante -->
         <button id="cart-toggle-btn" class="relative w-10 h-10 rounded-full bg-[#FFEED3]/10 hover:bg-[#FFEED3]/20 flex justify-center items-center text-[#FFEED3] transition-all duration-300">
@@ -102,13 +104,41 @@
           <span id="cart-badge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#FFEED3] text-[#D30611] text-[10px] font-black flex justify-center items-center scale-0 transition-transform duration-300 shadow-sm">0</span>
         </button>
 
-        <!-- Botón CTA (Simplificado y Premium) -->
-        <a href="#club" class="px-5 py-2.5 rounded-full bg-[#FFEED3] hover:bg-[#FFEED3]/90 text-xs font-bold uppercase tracking-wider text-[#D30611] transition-all duration-300 shadow-md">
-          Contáctanos
-        </a>
+        <!-- Botón Hamburguesa (Visible solo en móvil) -->
+        <button id="mobile-menu-toggle" class="md:hidden w-10 h-10 rounded-full bg-[#FFEED3]/10 hover:bg-[#FFEED3]/20 flex justify-center items-center text-[#FFEED3] transition-all duration-300" aria-label="Abrir menú">
+          <i class="ph-bold ph-list text-2xl"></i>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- ==================== MENU MÓVIL DRAWER ==================== -->
+  <div id="mobile-menu-drawer" class="fixed inset-0 z-[1000] bg-[#D30611] transform translate-x-full transition-transform duration-500 flex flex-col justify-between p-8">
+    <!-- Header del Menú -->
+    <div class="flex justify-between items-center">
+      <img src="Assets/Logo texto2.svg" alt="Chile Chillón Logo" class="h-12 w-auto">
+      <button id="mobile-menu-close" class="w-10 h-10 rounded-full bg-white/10 flex justify-center items-center text-white" aria-label="Cerrar menú">
+        <i class="ph-bold ph-x text-2xl"></i>
+      </button>
+    </div>
+
+    <!-- Enlaces de Navegación -->
+    <nav class="flex flex-col gap-8 text-left mt-16">
+      <a href="index.html" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Inicio</a>
+      <a href="puntos-de-venta.html" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Puntos de Venta</a>
+      <a href="#club" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Contáctanos</a>
+    </nav>
+
+    <!-- Footer del Menú -->
+    <div class="border-t border-white/10 pt-6">
+      <p class="text-xs text-[#FFEED3]/60 uppercase tracking-widest mb-4">Síguenos</p>
+      <div class="flex gap-6 text-2xl text-[#FFEED3]">
+        <a href="https://www.instagram.com/elchilechillon/" target="_blank" rel="noopener"><i class="ph-bold ph-instagram-logo"></i></a>
+        <a href="https://www.facebook.com/elchilechillon/" target="_blank" rel="noopener"><i class="ph-bold ph-facebook-logo"></i></a>
+        <a href="https://wa.me/523921097809" target="_blank" rel="noopener"><i class="ph-bold ph-whatsapp-logo"></i></a>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== HERO SECTION ==================== -->
   <section class="min-h-screen flex items-center relative z-10 pt-20 px-6 overflow-hidden bg-cover bg-center bg-no-repeat" style="background-image: url('Assets/Salsa.jpeg');">
