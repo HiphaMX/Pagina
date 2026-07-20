@@ -42,28 +42,30 @@
   <link rel="shortcut icon" href="https://www.elchilechillon.com.mx/favicon.ico" type="image/x-icon">
   
   <style>
-    /* Estilos del Mapa Oscuro de Leaflet */
+    /* Estilos del Mapa Claro de Leaflet */
     #map {
       height: 100%;
       width: 100%;
-      background-color: #0D0B0B;
+      background-color: #FAF9F6;
     }
     
-    /* Personalización de los popups del mapa */
+    /* Personalización de los popups del mapa (Acentos en Rojo y Negro) */
     .leaflet-popup-content-wrapper {
-      background-color: #161515 !important;
-      color: #FFFFFF !important;
-      border: 1px solid #2B2A2A !important;
+      background-color: #FFFFFF !important;
+      color: #0D0B0B !important;
+      border: 2px solid #0D0B0B !important;
+      border-top: 4px solid #D30611 !important;
       border-radius: 16px !important;
       padding: 4px !important;
       font-family: 'Rubik', sans-serif !important;
     }
     .leaflet-popup-tip {
-      background-color: #161515 !important;
-      border: 1px solid #2B2A2A !important;
+      background-color: #FFFFFF !important;
+      border-left: 2px solid #0D0B0B !important;
+      border-bottom: 2px solid #0D0B0B !important;
     }
     .leaflet-popup-close-button {
-      color: #94A3B8 !important;
+      color: #0D0B0B !important;
       padding: 8px !important;
     }
     
@@ -387,8 +389,8 @@
       // Control de zoom en la esquina superior derecha
       L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // TileLayer oscuro de CartoDB
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      // TileLayer claro de CartoDB (Positron)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
@@ -436,11 +438,11 @@
 
         const popupContent = `
           <div class="p-1">
-            <h4 class="font-bold text-sm text-slate-100 font-rubik leading-tight mb-1">${store.name}</h4>
-            <span class="inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded bg-zinc-800 text-[#FFEED3] mb-2">${store.giro}</span>
-            <p class="text-xs text-slate-400 mb-3 flex items-center gap-1"><i class="ph ph-map-pin"></i> ${store.ciudad}, Jal.</p>
-            ${store.distance ? `<p class="text-[10px] text-emerald-400 font-bold mb-3">📍 A ${store.distance.toFixed(1)} km de ti</p>` : ''}
-            <a href="${store.mapsUrl}" target="_blank" class="block w-full py-1.5 bg-[#D30611] hover:bg-[#D30611]/90 text-center font-bold text-[10px] uppercase text-white rounded-lg transition-all">
+            <h4 class="font-bold text-sm text-slate-900 font-rubik leading-tight mb-1">${store.name}</h4>
+            <span class="inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded bg-[#0D0B0B] text-white mb-2">${store.giro}</span>
+            <p class="text-xs text-slate-600 mb-3 flex items-center gap-1"><i class="ph ph-map-pin"></i> ${store.ciudad}, Jal.</p>
+            ${store.distance ? `<p class="text-[10px] text-[#D30611] font-bold mb-3">📍 A ${store.distance.toFixed(1)} km de ti</p>` : ''}
+            <a href="${store.mapsUrl}" target="_blank" class="block w-full py-1.5 bg-[#0D0B0B] hover:bg-[#D30611] text-center font-bold text-[10px] uppercase text-white rounded-lg transition-all">
               Abrir en Google Maps
             </a>
           </div>
