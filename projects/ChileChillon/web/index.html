@@ -116,39 +116,46 @@
     <div class="max-w-7xl mx-auto w-full relative z-10 flex justify-end">
       
       <!-- Contenido de Texto Justificado a la Derecha -->
-      <div class="max-w-2xl w-full flex flex-col justify-center text-right items-end">
-        <!-- Badge -->
-        <div class="self-end px-3 py-1 mb-6 border border-[#FF5A00]/20 bg-[#FF5A00]/5 text-xs font-semibold uppercase tracking-widest text-[#FF5A00] rounded-full">
-          🔥 SALSAS PICANTES 100% NATURALES
-        </div>
+      <div class="max-w-2xl w-full flex flex-col justify-between md:justify-center min-h-[75vh] md:min-h-0 text-right items-end py-6 md:py-0">
         
-        <!-- H1 Principal (SVG Imagen) -->
-        <h1 class="h-28 md:h-40 w-auto select-none mb-6">
-          <img src="Assets/toque.svg" alt="Lo preparas, Chile Chillón le da el toque" class="h-full w-auto object-contain ml-auto">
-        </h1>
-
-        <!-- Botones de Acción -->
-        <div class="mt-10 flex flex-col sm:flex-row-reverse gap-4 justify-end w-full items-stretch sm:items-center">
-          <a href="#tienda" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#D30611] border-2 border-[#D30611] text-sm font-bold uppercase tracking-wider text-white text-center hover:bg-[#D30611]/90 btn-glow transition-all duration-300">
-            CONOCE LOS PRODUCTOS
-          </a>
-          <a href="puntos-de-venta.html" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#FFEED3] border-2 border-[#FFEED3] text-sm font-bold uppercase tracking-wider text-[#D30611] text-center hover:bg-[#FFEED3]/90 transition-all duration-300 flex items-center justify-center gap-2">
-            <i class="ph-bold ph-map-pin text-base"></i> Puntos de Venta
-          </a>
+        <!-- Bloque Superior: Badge y H1 -->
+        <div class="flex flex-col items-end w-full">
+          <!-- Badge -->
+          <div class="self-end px-3 py-1 mb-4 md:mb-6 border border-[#FF5A00]/20 bg-[#FF5A00]/5 text-xs font-semibold uppercase tracking-widest text-[#FF5A00] rounded-full">
+            🔥 SALSAS PICANTES 100% NATURALES
+          </div>
+          
+          <!-- H1 Principal (SVG Imagen) -->
+          <h1 class="h-20 sm:h-28 md:h-40 w-auto select-none">
+            <img src="Assets/toque.svg" alt="Lo preparas, Chile Chillón le da el toque" class="h-full w-auto object-contain ml-auto">
+          </h1>
         </div>
 
-        <!-- Mini RTB de Confianza Sin Línea Divisoria -->
-        <div class="mt-12 pt-4 grid grid-cols-3 gap-6 text-right w-full">
-          <div>
-            <div class="text-2xl font-semibold text-slate-900 font-rubik">10 Años</div>
-            <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Trayectoria</div>
+        <!-- Bloque Inferior: Botones y Stats -->
+        <div class="flex flex-col items-end w-full mt-10 md:mt-10">
+          <!-- Botones de Acción -->
+          <div class="flex flex-col sm:flex-row-reverse gap-4 justify-end w-full items-stretch sm:items-center">
+            <a href="#tienda" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#D30611] border-2 border-[#D30611] text-sm font-bold uppercase tracking-wider text-white text-center hover:bg-[#D30611]/90 btn-glow transition-all duration-300">
+              CONOCE LOS PRODUCTOS
+            </a>
+            <a href="puntos-de-venta.html" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#FFEED3] border-2 border-[#FFEED3] text-sm font-bold uppercase tracking-wider text-[#D30611] text-center hover:bg-[#FFEED3]/90 transition-all duration-300 flex items-center justify-center gap-2">
+              <i class="ph-bold ph-map-pin text-base"></i> Puntos de Venta
+            </a>
           </div>
-          <div>
-            <div class="text-2xl font-semibold text-slate-900 font-rubik">100%</div>
-            <div class="text-xs text-slate-500 uppercase tracking-wider mt-1">Natural</div>
-          </div>
-          <div class="flex flex-col justify-start items-end">
-            <div class="text-2xl font-semibold text-slate-900 font-rubik">¡Va con todo!</div>
+
+          <!-- Mini RTB de Confianza Sin Línea Divisoria -->
+          <div class="mt-8 md:mt-12 pt-4 grid grid-cols-3 gap-6 text-right w-full">
+            <div>
+              <div class="text-xl md:text-2xl font-semibold text-slate-900 font-rubik">10 Años</div>
+              <div class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider mt-1">Trayectoria</div>
+            </div>
+            <div>
+              <div class="text-xl md:text-2xl font-semibold text-slate-900 font-rubik">100%</div>
+              <div class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider mt-1">Natural</div>
+            </div>
+            <div class="flex flex-col justify-start items-end">
+              <div class="text-xl md:text-2xl font-semibold text-slate-900 font-rubik">¡Va con todo!</div>
+            </div>
           </div>
         </div>
       </div>
