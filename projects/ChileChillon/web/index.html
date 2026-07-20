@@ -47,21 +47,71 @@
 <body class="bg-white text-slate-800 min-h-screen relative antialiased overflow-x-hidden selection:bg-[#D30611] selection:text-white">
 
   <!-- ==================== PRELOADER ==================== -->
-  <div id="preloader">
-    <div class="relative flex flex-col items-center">
-      <!-- Logotipo en texto oficial -->
-      <h1 class="font-rubik font-black text-3xl md:text-4xl text-[#D30611] tracking-tight mb-4 select-none">CHILE CHILLÓN</h1>
-      <div class="mt-3 w-32 h-[2px] bg-slate-200 rounded-full overflow-hidden">
-        <div class="w-full h-full bg-[#D30611] origin-left animate-[loading_1.8s_ease-in-out_infinite]"></div>
+  <div id="preloader" class="fixed inset-0 bg-[#D30611] flex flex-col justify-center items-center z-[999999] transition-all duration-700">
+    <div class="relative flex flex-col items-center max-w-sm px-6 text-center select-none">
+      
+      <!-- Vector SVG del Chile Chillón Llorando -->
+      <div class="relative w-40 h-40 mb-6">
+        <svg viewBox="0 0 200 200" class="w-full h-full animate-[wobble-spicy_1.5s_infinite_ease-in-out]">
+          <!-- Tallo Verde del Chile -->
+          <path d="M95 35 C98 20, 115 15, 125 25 C115 30, 105 35, 98 45 Z" fill="#2E7D32" stroke="#1B5E20" stroke-width="2"/>
+          <path d="M98 43 C99 35, 102 30, 105 28" fill="none" stroke="#81C784" stroke-width="2" stroke-linecap="round"/>
+          
+          <!-- Cuerpo del Chile (Rojo) -->
+          <path d="M100 45 C150 45, 160 120, 130 160 C110 185, 80 190, 75 190 C75 190, 80 160, 80 130 C80 90, 70 45, 100 45 Z" fill="#FF1744" stroke="#D50000" stroke-width="3"/>
+          <path d="M102 52 C135 52, 142 100, 122 135 C112 152, 92 165, 83 175" fill="none" stroke="#FF5252" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+          
+          <!-- Ojos Cerrados Llorando (>_<) -->
+          <!-- Ojo Izquierdo -->
+          <path d="M85 95 L95 100 L85 105" fill="none" stroke="#1A0D0D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Ojo Derecho -->
+          <path d="M125 95 L115 100 L125 105" fill="none" stroke="#1A0D0D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          
+          <!-- Boca Abierta Gritando/Llorando -->
+          <path d="M97 115 Q105 130 113 115 Z" fill="#1A0D0D"/>
+          <path d="M100 120 Q105 125 110 120" fill="none" stroke="#FF8A80" stroke-width="2" stroke-linecap="round"/>
+          
+          <!-- Lágrimas cayendo (Animadas) -->
+          <!-- Lágrima Izquierda -->
+          <path d="M88 102 C85 102, 82 110, 82 115 C82 118, 85 121, 88 121 C91 121, 94 118, 94 115 C94 110, 91 102, 88 102 Z" fill="#00E5FF" opacity="0.9" class="animate-tear-left"/>
+          <!-- Lágrima Derecha -->
+          <path d="M122 102 C119 102, 116 110, 116 115 C116 118, 119 121, 122 121 C125 121, 128 118, 128 115 C128 110, 125 102, 122 102 Z" fill="#00E5FF" opacity="0.9" class="animate-tear-right"/>
+        </svg>
       </div>
+      
+      <!-- Título de Carga -->
+      <h2 class="font-rubik font-black text-2xl text-white tracking-wider mb-2">CHILE CHILLÓN</h2>
+      <p id="preloader-message" class="text-xs font-bold tracking-widest text-[#FFEED3]/70 uppercase mb-4">Cargando el picor...</p>
+      
+      <!-- Contenedor de Barra de Carga -->
+      <div class="relative w-48 h-[6px] bg-white/10 rounded-full overflow-hidden border border-white/5 mb-2">
+        <div id="preloader-bar" class="w-0 h-full bg-[#FFEED3] rounded-full transition-all duration-100 ease-out"></div>
+      </div>
+      <!-- Porcentaje -->
+      <span id="preloader-percentage" class="text-[11px] font-black text-[#FFEED3] tracking-widest">0%</span>
+      
     </div>
   </div>
 
   <style>
-    @keyframes loading {
-      0% { transform: scaleX(0); }
-      50% { transform: scaleX(1); }
-      100% { transform: scaleX(0); }
+    @keyframes wobble-spicy {
+      0%, 100% { transform: rotate(-3deg) scale(1); }
+      50% { transform: rotate(3deg) scale(1.03); }
+    }
+    @keyframes tear-fall {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      15% { opacity: 1; }
+      70% { opacity: 0.9; }
+      100% { transform: translateY(50px) scale(1.1); opacity: 0; }
+    }
+    .animate-tear-left {
+      animation: tear-fall 1.2s infinite ease-in;
+      transform-origin: center;
+    }
+    .animate-tear-right {
+      animation: tear-fall 1.2s infinite ease-in;
+      animation-delay: 0.6s;
+      transform-origin: center;
     }
   </style>
 
@@ -523,7 +573,7 @@
 
 
   <!-- ==================== EL RECETARIO DE LA FLAMA ==================== -->
-  <section id="recetario" class="py-32 relative z-10 px-6 bg-white border-t border-slate-100">
+  <section id="recetario" class="hidden py-32 relative z-10 px-6 bg-white border-t border-slate-100">
     <div class="max-w-7xl mx-auto">
       
       <!-- Título de Sección -->
@@ -764,7 +814,7 @@
           <li><a href="puntos-de-venta.html" class="hover:text-white transition-colors duration-300">Puntos de Venta</a></li>
           <li><a href="#secreto" class="hover:text-white transition-colors duration-300">Nuestros Secretos</a></li>
           <li><a href="#testimonios" class="hover:text-white transition-colors duration-300">Reseñas</a></li>
-          <li><a href="#recetario" class="hover:text-white transition-colors duration-300">Recetario</a></li>
+          <li class="hidden"><a href="#recetario" class="hover:text-white transition-colors duration-300">Recetario</a></li>
         </ul>
       </div>
 

@@ -92,15 +92,54 @@ function initPreloader() {
 
   if (seen) {
     preloader.remove();
-  } else {
-    setTimeout(() => {
-      preloader.classList.add("fade-out");
-      try {
-        sessionStorage.setItem("chilechillon-preloader-seen", "true");
-      } catch (e) {}
-      setTimeout(() => preloader.remove(), 600);
-    }, 1800);
+    return;
   }
+
+  const bar = document.getElementById("preloader-bar");
+  const percentText = document.getElementById("preloader-percentage");
+  const msgText = document.getElementById("preloader-message");
+
+  let progress = 0;
+  const duration = 2200; // 2.2 seconds loading time
+  const intervalTime = 20; // 20ms steps
+  const totalSteps = duration / intervalTime;
+  const stepIncrement = 100 / totalSteps;
+
+  const timer = setInterval(() => {
+    progress += stepIncrement;
+    if (progress >= 100) {
+      progress = 100;
+      clearInterval(timer);
+      
+      if (bar) bar.style.width = "100%";
+      if (percentText) percentText.textContent = "100%";
+      if (msgText) msgText.textContent = "¡Listo para chillar! 🌶️";
+
+      setTimeout(() => {
+        preloader.classList.add("fade-out");
+        try {
+          sessionStorage.setItem("chilechillon-preloader-seen", "true");
+        } catch (e) {}
+        setTimeout(() => preloader.remove(), 700);
+      }, 450);
+    } else {
+      const displayVal = Math.floor(progress);
+      if (bar) bar.style.width = displayVal + "%";
+      if (percentText) percentText.textContent = displayVal + "%";
+      
+      if (msgText) {
+        if (displayVal < 25) {
+          msgText.textContent = "Encendiendo el fuego... 🔥";
+        } else if (displayVal < 55) {
+          msgText.textContent = "Moliendo chiles frescos... 🌶️";
+        } else if (displayVal < 85) {
+          msgText.textContent = "Ajustando el picor... 🧪";
+        } else {
+          msgText.textContent = "Embotellando locura... 🍯";
+        }
+      }
+    }
+  }, intervalTime);
 }
 
 // --- Custom Cursor ---
