@@ -126,6 +126,11 @@
         <p class="mt-4 text-sm text-slate-400 max-w-xs leading-relaxed">
           Salsas picantes hechas con ingredientes 100% naturales, Tu sazón en su máxima potencia.
         </p>
+        <div class="mt-4 text-xs text-slate-500 font-rubik leading-relaxed">
+          <span class="block font-bold text-slate-300 uppercase tracking-wider mb-1">Horario de Atención:</span>
+          <span>Lunes a Viernes: 9:00 am a 2:00 pm y 4:00 pm a 6:00 pm</span><br>
+          <span>Sábado: 9:00 am a 2:00 pm</span>
+        </div>
         <!-- Iconos Sociales -->
         <div class="mt-6 flex gap-4 text-xl text-slate-400">
           <a href="https://www.instagram.com/elchilechillon/" target="_blank" rel="noopener" class="hover:text-[#FF5A00] transition-colors duration-300"><i class="ph-bold ph-instagram-logo"></i></a>
@@ -173,17 +178,17 @@
   </footer>
 
   <!-- ==================== BOTÓN FLOTANTE WHATSAPP (PICANTE) ==================== -->
-  <a href="https://wa.me/523921097809" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" class="fixed bottom-6 right-6 z-[9999] flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-2xl hover:bg-[#20BA56] transition-all duration-300 group border-2 border-white hover:scale-110 active:scale-95 btn-whatsapp-picante">
+  <a href="https://wa.me/523921097809" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" class="fixed bottom-6 right-6 z-[9999] flex items-center justify-center w-14 h-14 rounded-full bg-[#D30611] text-white shadow-2xl hover:bg-[#b0050e] transition-all duration-300 group border-2 border-white hover:scale-110 active:scale-95 btn-whatsapp-picante">
     <!-- Icono principal de WhatsApp -->
     <i class="ph-fill ph-whatsapp-logo text-3xl group-hover:hidden"></i>
     <!-- Chile Picante en Hover -->
     <i class="ph-fill ph-pepper text-3xl hidden group-hover:inline-block text-[#FFEED3] animate-bounce"></i>
     
     <!-- Efecto de calor/onda pulsante picante -->
-    <span class="absolute inset-0 rounded-full border-2 border-[#25D366] opacity-75 animate-ping-slow pointer-events-none"></span>
+    <span class="absolute inset-0 rounded-full border-2 border-[#D30611] opacity-75 animate-ping-slow pointer-events-none"></span>
     <span class="absolute -top-1 -right-1 flex h-3 w-3">
-      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D30611] opacity-75"></span>
-      <span class="relative inline-flex rounded-full h-3 w-3 bg-[#D30611]"></span>
+      <span id="wa-status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D30611] opacity-75"></span>
+      <span id="wa-status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-[#D30611]"></span>
     </span>
   </a>
 
@@ -196,7 +201,7 @@
       animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
     .btn-whatsapp-picante:hover {
-      box-shadow: 0 0 20px rgba(37, 211, 102, 0.6), 0 0 30px rgba(211, 6, 17, 0.4);
+      box-shadow: 0 0 20px rgba(211, 6, 17, 0.6), 0 0 30px rgba(211, 6, 17, 0.4);
       animation: shake-spicy 0.5s infinite;
     }
     @keyframes shake-spicy {
@@ -213,6 +218,43 @@
       100% { transform: translate(0px, 0px) rotate(0deg); }
     }
   </style>
+
+  <script>
+    (function() {
+      function updateStatus() {
+        const dot = document.getElementById("wa-status-dot");
+        const ping = document.getElementById("wa-status-ping");
+        if (!dot) return;
+        const now = new Date();
+        const day = now.getDay();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const timeVal = hours * 100 + minutes;
+        
+        let isOpen = false;
+        if (day >= 1 && day <= 5) {
+          if ((timeVal >= 900 && timeVal < 1400) || (timeVal >= 1600 && timeVal < 1800)) {
+            isOpen = true;
+          }
+        } else if (day === 6) {
+          if (timeVal >= 900 && timeVal < 1400) {
+            isOpen = true;
+          }
+        }
+        
+        if (isOpen) {
+          dot.style.backgroundColor = "#25D366";
+          if (ping) ping.style.backgroundColor = "#25D366";
+        } else {
+          dot.style.backgroundColor = "#D30611";
+          if (ping) ping.style.backgroundColor = "#D30611";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", updateStatus);
+      updateStatus();
+      setInterval(updateStatus, 30000);
+    })();
+  </script>
 
   <!-- Scripts Globales -->
   <script src="js/app.js?v=4"></script>
