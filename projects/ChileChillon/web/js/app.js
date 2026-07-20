@@ -86,6 +86,14 @@ function initPreloader() {
   const preloader = document.getElementById("preloader");
   if (!preloader) return;
 
+  // Solo mostrar la animación en la primera visita
+  const preloaderSeen = localStorage.getItem("preloader_seen");
+  if (preloaderSeen) {
+    preloader.style.display = "none";
+    preloader.remove();
+    return;
+  }
+
   const bar = document.getElementById("preloader-bar");
   const percentText = document.getElementById("preloader-percentage");
   const msgText = document.getElementById("preloader-message");
@@ -120,6 +128,7 @@ function initPreloader() {
 
       setTimeout(() => {
         preloader.classList.add("fade-out");
+        localStorage.setItem("preloader_seen", "true");
         setTimeout(() => preloader.remove(), 700);
       }, 450);
     } else {
