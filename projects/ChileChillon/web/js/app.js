@@ -83,18 +83,6 @@ function initPreloader() {
   const preloader = document.getElementById("preloader");
   if (!preloader) return;
 
-  let seen = false;
-  try {
-    seen = sessionStorage.getItem("chilechillon-preloader-seen") === "true";
-  } catch (e) {
-    seen = false;
-  }
-
-  if (seen) {
-    preloader.remove();
-    return;
-  }
-
   const bar = document.getElementById("preloader-bar");
   const percentText = document.getElementById("preloader-percentage");
   const msgText = document.getElementById("preloader-message");
@@ -111,7 +99,7 @@ function initPreloader() {
   }, 120);
 
   let progress = 0;
-  const duration = 2200; // 2.2 seconds loading time
+  const duration = 3500; // 3.5 seconds loading time
   const intervalTime = 20; // 20ms steps
   const totalSteps = duration / intervalTime;
   const stepIncrement = 100 / totalSteps;
@@ -129,9 +117,6 @@ function initPreloader() {
 
       setTimeout(() => {
         preloader.classList.add("fade-out");
-        try {
-          sessionStorage.setItem("chilechillon-preloader-seen", "true");
-        } catch (e) {}
         setTimeout(() => preloader.remove(), 700);
       }, 450);
     } else {
