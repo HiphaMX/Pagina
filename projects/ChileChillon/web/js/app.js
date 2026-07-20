@@ -632,35 +632,35 @@ function initCart() {
       name: "Chile Chillón de Árbol",
       price: 35,
       spicy: "🌶️🌶️🌶️🌶️",
-      image: "Assets/Salsas/de_arbol.webp",
+      image: "Assets/Salsas/de_arbol.jpg",
       filterClass: ""
     },
     habanero: {
       name: "Chile Chillón Habanero",
       price: 35,
       spicy: "🌶️🌶️🌶️",
-      image: "Assets/Salsas/habanero.webp",
+      image: "Assets/Salsas/habanero.jpg",
       filterClass: ""
     },
     habanero_tatemado: {
       name: "Habanero Tatemado",
       price: 35,
       spicy: "🌶️🌶️🌶️",
-      image: "Assets/Salsas/tatemado.webp",
+      image: "Assets/Salsas/tatemado.jpg",
       filterClass: ""
     },
     negra: {
       name: "Chile Chillón Negra",
       price: 35,
       spicy: "🌶️🌶️",
-      image: "Assets/Salsas/negra.webp",
+      image: "Assets/Salsas/negra.jpg",
       filterClass: ""
     },
     serrano: {
       name: "Chile Chillón Serrano",
       price: 35,
       spicy: "🌶️🌶️",
-      image: "Assets/Salsas/serrano.webp",
+      image: "Assets/Salsas/serrano.jpg",
       filterClass: ""
     }
   };
