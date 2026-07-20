@@ -442,7 +442,7 @@
             <span class="inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded bg-[#0D0B0B] text-white mb-2">${store.giro}</span>
             <p class="text-xs text-slate-600 mb-3 flex items-center gap-1"><i class="ph ph-map-pin"></i> ${store.ciudad}, Jal.</p>
             ${store.distance ? `<p class="text-[10px] text-[#D30611] font-bold mb-3">📍 A ${store.distance.toFixed(1)} km de ti</p>` : ''}
-            <a href="${store.mapsUrl}" target="_blank" class="block w-full py-1.5 bg-[#0D0B0B] hover:bg-[#D30611] text-center font-bold text-[10px] uppercase text-white rounded-lg transition-all">
+            <a href="${store.mapsUrl}" target="_blank" class="block w-full py-1.5 bg-[#0D0B0B] hover:bg-[#D30611] text-center font-bold text-[10px] uppercase !text-white rounded-lg transition-all" style="color: #ffffff !important;">
               Abrir en Google Maps
             </a>
           </div>
