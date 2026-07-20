@@ -865,7 +865,7 @@ function initCart() {
 
         const encodedMessage = encodeURIComponent(messageText);
         // Teléfono placeholder de la marca: 52 33 1234 5678 o similar
-        const waUrl = `https://wa.me/523329693456?text=${encodedMessage}`;
+        const waUrl = `https://wa.me/523921097809?text=${encodedMessage}`;
 
         // Vaciar Carrito
         cart = [];
