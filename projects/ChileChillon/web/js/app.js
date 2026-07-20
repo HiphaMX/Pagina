@@ -100,10 +100,11 @@ function initPreloader() {
   const msgText = document.getElementById("preloader-message");
   const preloaderChile = document.getElementById("preloader-chile");
 
-  // Loop de animación para las lágrimas del chile chillón (usando los SVG de la carpeta Chillando)
-  let frame = 1;
+  // Loop de animación para las lágrimas del chile chillón (en sentido inverso para que las lágrimas fluyan hacia afuera)
+  let frame = 6;
   const frameInterval = setInterval(() => {
-    frame = (frame % 6) + 1;
+    frame = frame - 1;
+    if (frame < 1) frame = 6;
     if (preloaderChile) {
       preloaderChile.src = `Assets/Chillando/enchilado${frame}.svg`;
     }
