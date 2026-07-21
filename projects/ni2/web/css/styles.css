@@ -1461,15 +1461,9 @@ footer {
   margin-top: 2rem;
 }
 
-@media (min-width: 640px) and (max-width: 991px) {
+@media (min-width: 768px) {
   .ecosystem-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 992px) {
-  .ecosystem-grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1490,7 +1484,7 @@ footer {
   border-bottom: 1px solid var(--border-color);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .ecosystem-grid > article {
     border-bottom: none;
   }
