@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vende tu propiedad en CDMX en menos de 30 días | ni2 Inmobiliaria Ágil</title>
+  <meta name="description" content="Evaluamos tu propiedad en menos de 48 horas sin costo. Sin contratos de exclusividad forzosa ni comisiones abusivas. Venta rápida de casas y departamentos con el Método ni2.">
+  
+  <!-- Estilos y Fuentes -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <style>
+    /* Custom comparison grid layout style (Swiss Grid) */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      border: 1px solid var(--border-color);
+      background-color: var(--border-color);
+      margin-top: 2rem;
+    }
+    .comparison-card {
+      background-color: var(--bg-primary);
+      transition: background-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (min-width: 768px) {
+      .comparison-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .comparison-card:not(:last-child) {
+        border-right: 1px solid var(--border-color);
+      }
+    }
+    
+    /* Custom process step card layouts (Swiss Grid) */
+    .process-steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      border: 1px solid var(--border-color);
+      background-color: var(--border-color);
+      margin-top: 2rem;
+    }
+    .process-step-card {
+      background-color: var(--bg-primary);
+      transition: background-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (min-width: 768px) {
+      .process-steps-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .process-step-card:not(:last-child) {
+        border-right: 1px solid var(--border-color);
+      }
+    }
+    
+    /* Interactive Hover effects styling in swiss style */
+    .comparison-card:hover, .process-step-card:hover {
+      background-color: var(--bg-secondary) !important;
+    }
+    
+    /* Micro-interactions */
+    .hero-quick-features div {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hero-quick-features div:hover {
+      transform: translateX(6px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabecera / Header Minimalista (Fuga Cero de Tráfico) -->
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo-link" id="logo-header">
+        ni2<span class="logo-dot">.</span>
+      </a>
+      
+      <!-- Único botón de llamada interactivo y visible -->
+      <a href="tel:5512345678" class="phone-cta-link" id="header-phone-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#10b981" style="width: 1.25rem; height: 1.25rem;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+        </svg>
+        <span class="phone-text" style="color: var(--text-primary);">¿Urgencia? Llama al 55-1234-5678</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. HERO SECTION & CONVERSION BOX (Asymmetric Swiss Grid) -->
+    <section class="hero-section" style="border-bottom: 1px solid var(--border-color);">
+      <div class="hero-container">
+        
+        <div class="hero-info">
+          <span class="badge-tagline reveal-on-load">Respuesta y Trámite Inmobiliario Ágil</span>
+          <h1 class="hero-title reveal-on-load delay-100">Vendemos tu casa en CDMX en menos de 30 días. <strong>Valuación gratuita.</strong></h1>
+          <p class="hero-subtitle reveal-on-load delay-200" style="margin-bottom: 1.5rem; max-width: 100%;">Olvídate de comisiones abusivas, exclusivas forzosas de por vida y papeleos interminables. Evaluamos tu propiedad en menos de 48 horas sin costo y la promovemos ante compradores con crédito aprobado.</p>
+          
+          <!-- Beneficios rápidos táctiles -->
+          <div class="hero-quick-features" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="color: #10b981; font-weight: bold; font-size: 1.1rem;">✓</span>
+              <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);">Comisión justa del 4% (sin cargos sorpresa)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="color: #10b981; font-weight: bold; font-size: 1.1rem;">✓</span>
+              <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);">Sin contratos de exclusividad obligatorios</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="color: #10b981; font-weight: bold; font-size: 1.1rem;">✓</span>
+              <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);">Trámites digitales y atención ágil vía WhatsApp</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caja de Conversión Multipaso -->
+        <div class="conversion-box reveal-on-load delay-400">
+          <div class="form-multistep" style="border: none; padding: 1.5rem; box-shadow: none;">
+            <div class="form-multistep-header">
+              <div class="step-indicator">
+                <span>Registra tu inmueble</span>
+                <span id="current-step-label">Paso 1 de 3</span>
+              </div>
+              <div class="progress-bar-container" style="margin-top: 0.5rem;">
+                <div class="progress-bar-fill" id="form-progress-fill"></div>
+              </div>
+            </div>
+
+            <!-- Mensaje de Éxito Embebido -->
+            <div id="form-success-message" style="display: none; text-align: center; padding: 2rem 0;">
+              <div style="background-color: var(--accent-light); color: var(--accent-color); width: 4rem; height: 4rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 2.25rem; height: 2.25rem;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">¡Valuación Iniciada con Éxito!</h3>
+              <p style="margin-bottom: 1.5rem;">Hemos recibido los datos de tu inmueble. Nuestro analista experto está procesando la información y te contactará por WhatsApp en menos de 10 minutos para coordinar tu reporte comercial gratuito de 48 horas.</p>
+              <button class="cta-button-secondary" onclick="location.reload()" style="max-width: 240px;">Registrar otra propiedad</button>
+            </div>
+
+            <form id="propietarios-form">
+              <div id="form-multistep-inner">
+                
+                <!-- PASO 1: Datos Básicos del Inmueble -->
+                <div class="form-step active" data-step-name="datos_basicos">
+                  <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">1. Tipo de inmueble y ubicación</h3>
+                  
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label>Tipo de Propiedad *</label>
+                    <div class="options-grid">
+                      <label class="option-card selected">
+                        <input type="radio" name="property-type" value="house" checked required>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <span>Casa</span>
+                      </label>
+                      <label class="option-card">
+                        <input type="radio" name="property-type" value="apartment" required>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <span>Departamento</span>
+                      </label>
+                      <label class="option-card">
+                        <input type="radio" name="property-type" value="land" required>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Terreno</span>
+                      </label>
+                      <label class="option-card">
+                        <input type="radio" name="property-type" value="office" required>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Oficina</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="owner-location">Ubicación / Alcaldía (CDMX) *</label>
+                    <select id="owner-location" name="owner-location" required>
+                      <option value="">Selecciona la alcaldía...</option>
+                      <option value="benito-juarez">Benito Juárez (Del Valle, Narvarte, Nápoles)</option>
+                      <option value="coyoacan">Coyoacán (Centro, Del Carmen, Coyoacán)</option>
+                      <option value="miguel-hidalgo">Miguel Hidalgo (Polanco, Lomas, Anzures)</option>
+                      <option value="alvaro-obregon">Álvaro Obregón (San Ángel, Pedregal, Santa Fe)</option>
+                      <option value="cuauhtemoc">Cuauhtémoc (Roma, Condesa, Cuauhtémoc)</option>
+                    </select>
+                    <span class="form-error-msg" data-error-for="owner-location">Selecciona la ubicación de tu propiedad.</span>
+                  </div>
+
+                  <div class="form-navigation">
+                    <button type="button" class="cta-button-accent btn-next">Continuar</button>
+                  </div>
+                </div>
+
+                <!-- PASO 2: Rango e Intención -->
+                <div class="form-step" data-step-name="valor_e_intencion">
+                  <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">2. Rango de valor e intención de tiempo</h3>
+                  
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label>¿Cuál es tu objetivo principal? *</label>
+                    <div class="options-grid" style="grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 0;">
+                      <label class="option-card selected">
+                        <input type="radio" name="objective" value="sell" checked required>
+                        <span>Vender mi propiedad rápido</span>
+                      </label>
+                      <label class="option-card">
+                        <input type="radio" name="objective" value="rent" required>
+                        <span>Rentar de forma segura</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="price-range">Valor Comercial Estimado *</label>
+                    <select id="price-range" name="price-range" required>
+                      <option value="">Selecciona un rango estimado...</option>
+                      <option value="under-2m">Menos de $2,000,000 MXN</option>
+                      <option value="2m-4m">$2,000,000 - $4,000,000 MXN</option>
+                      <option value="4m-8m">$4,000,000 - $8,000,000 MXN</option>
+                      <option value="above-8m">Más de $8,000,000 MXN</option>
+                    </select>
+                    <span class="form-error-msg" data-error-for="price-range">Selecciona un rango comercial aproximado.</span>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label>¿Qué tanta prisa tienes por cerrar? *</label>
+                    <div class="options-grid" style="grid-template-columns: 1fr;">
+                      <label class="option-card" style="flex-direction: row; justify-content: flex-start; text-align: left; padding: 0.75rem 1rem;">
+                        <input type="radio" name="urgency" value="urgent" required>
+                        <div style="background: rgba(220, 38, 38, 0.1); color: var(--error-color); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">⚡</div>
+                        <div>
+                          <strong>Urgente</strong>
+                          <div style="font-size: 11px; color: var(--text-secondary);">Quiero vender/rentar en menos de 30 días.</div>
+                        </div>
+                      </label>
+                      <label class="option-card" style="flex-direction: row; justify-content: flex-start; text-align: left; padding: 0.75rem 1rem;">
+                        <input type="radio" name="urgency" value="medium" required checked>
+                        <div style="background: rgba(5, 150, 105, 0.1); color: var(--accent-color); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">📅</div>
+                        <div>
+                          <strong>Intermedio</strong>
+                          <div style="font-size: 11px; color: var(--text-secondary);">Tengo un margen de 1 a 3 meses.</div>
+                        </div>
+                      </label>
+                      <label class="option-card" style="flex-direction: row; justify-content: flex-start; text-align: left; padding: 0.75rem 1rem;">
+                        <input type="radio" name="urgency" value="evaluate" required>
+                        <div style="background: var(--bg-tertiary); color: var(--text-secondary); width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">🔍</div>
+                        <div>
+                          <strong>Solo evaluar</strong>
+                          <div style="font-size: 11px; color: var(--text-secondary);">Solo quiero conocer el valor comercial actual.</div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-navigation">
+                    <button type="button" class="cta-button-secondary btn-prev">Atrás</button>
+                    <button type="button" class="cta-button-accent btn-next">Continuar</button>
+                  </div>
+                </div>
+
+                <!-- PASO 3: Datos de Contacto Directo -->
+                <div class="form-step" data-step-name="contacto_directo">
+                  <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem;">3. Datos de contacto ágil</h3>
+                  
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="owner-name">Nombre Completo *</label>
+                    <input type="text" id="owner-name" name="owner-name" placeholder="Escribe tu nombre y apellido" required autocomplete="name">
+                    <span class="form-error-msg" data-error-for="owner-name">Ingresa tu nombre completo.</span>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="owner-phone">WhatsApp / Celular de contacto *</label>
+                    <input type="tel" id="owner-phone" name="owner-phone" placeholder="10 dígitos ej. 5512345678" required autocomplete="tel">
+                    <span class="form-error-msg" data-error-for="owner-phone">Ingresa un número telefónico de 10 dígitos.</span>
+                    <span class="form-helper-text">Te contactaremos exclusivamente por este medio para coordinar la valuación en menos de 10 minutos. Cero llamadas molestas de publicidad.</span>
+                  </div>
+
+                  <div class="form-navigation">
+                    <button type="button" class="cta-button-secondary btn-prev">Atrás</button>
+                    <button type="submit" class="cta-button-accent">Quiero Valuación en 48 hrs</button>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. SECCIÓN DE COMPARATIVA COMPETITIVA (Swiss Grid Style) -->
+    <section class="comparison-section reveal-on-scroll" style="padding: 5rem 0; border-bottom: 1px solid var(--border-color); background-color: var(--bg-secondary);">
+      <div class="grid-container">
+        
+        <div class="section-header" style="max-width: 700px;">
+          <span class="badge-tagline">El Cambio</span>
+          <h2 class="section-title">El Método ni2 vs. Inmobiliarias Tradicionales</h2>
+          <p>Compara por qué nuestro modelo centrado en agilidad, tecnología y respeto a tu tiempo ofrece mejores resultados con menos dolores de cabeza.</p>
+        </div>
+
+        <div class="comparison-grid">
+          
+          <!-- Inmobiliarias Tradicionales (Dolor) -->
+          <div class="comparison-card traditional" style="padding: 3rem 2.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="background: rgba(220, 38, 38, 0.1); color: var(--error-color); width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.25rem;">✕</div>
+              <h3 style="font-size: 1.35rem; font-family: var(--font-display); font-weight: 700;">Inmobiliarias Tradicionales</h3>
+            </div>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem; padding: 0; margin: 0;">
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: var(--error-color); font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Contrato de exclusividad forzosa</strong> por 6 a 12 meses. Estás atrapado aunque la inmobiliaria no se esfuerce.</span>
+              </li>
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: var(--error-color); font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Valuaciones tardadas:</strong> Toman semanas en entregarte un precio estimado de tu vivienda o inflan el valor ficticiamente.</span>
+              </li>
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: var(--error-color); font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Pérdida de tiempo:</strong> Decenas de visitas de curiosos e interesados que no cuentan con crédito bancario aprobado.</span>
+              </li>
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: var(--error-color); font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Comisiones elevadas:</strong> Cobros tradicionales del 5% al 6% más IVA, sin valor agregado tecnológico.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- El Método ni2 (Solución) -->
+          <div class="comparison-card ni2-method" style="padding: 3rem 2.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="background: rgba(5, 150, 105, 0.1); color: #10b981; width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.25rem;">✓</div>
+              <h3 style="font-size: 1.35rem; font-family: var(--font-display); font-weight: 700;">El Método Ágil ni2</h3>
+            </div>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem; padding: 0; margin: 0;">
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: #10b981; font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Cero exclusividad obligatoria:</strong> Eres libre de vender por tu cuenta. Confiamos en nuestro servicio y resultados rápidos.</span>
+              </li>
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: #10b981; font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Valuación comercial en 48 horas:</strong> Análisis rápido basado en datos de mercado reales para fijar el precio óptimo.</span>
+              </li>
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: #10b981; font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Visitas filtradas y seguras:</strong> Solo agendamos citas con compradores que tienen crédito pre-aprobado verificado.</span>
+              </li>
+              <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--text-secondary);">
+                <span style="color: #10b981; font-weight: bold; margin-top: 2px;">•</span>
+                <span><strong>Comisión justa del 4%:</strong> Un cobro más competitivo, totalmente transparente y con trámites 100% digitales.</span>
+              </li>
+            </ul>
+          </div>
+          
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. SECCIÓN DEL PROCESO EN 3 PASOS -->
+    <section class="process-section reveal-on-scroll" style="padding: 5rem 0; border-bottom: 1px solid var(--border-color); background-color: var(--bg-primary);">
+      <div class="grid-container">
+        
+        <div class="section-header" style="max-width: 600px;">
+          <span class="badge-tagline">El Camino</span>
+          <h2 class="section-title">Vende tu propiedad en 3 pasos simples</h2>
+          <p>Diseñamos un flujo transparente y digital para vender tu inmueble en tiempo récord y sin burocracia.</p>
+        </div>
+
+        <div class="process-steps-grid">
+          <!-- Paso 1 -->
+          <div class="process-step-card" style="padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 800; color: var(--border-dark); line-height: 1;">01</div>
+            <h3 style="font-size: 1.25rem; font-family: var(--font-display); font-weight: 600;">Registra tus datos</h3>
+            <p style="font-size: 0.9375rem; color: var(--text-secondary);">Toma solo 2 minutos. Llena el formulario rápido con los datos y ubicación básica de tu propiedad.</p>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="process-step-card" style="padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 800; color: var(--border-dark); line-height: 1;">02</div>
+            <h3 style="font-size: 1.25rem; font-family: var(--font-display); font-weight: 600;">Recibe la valuación</h3>
+            <p style="font-size: 0.9375rem; color: var(--text-secondary);">En menos de 48 horas te entregamos un reporte comercial del mercado real y nuestra propuesta de comercialización ágil.</p>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="process-step-card" style="padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 800; color: var(--border-dark); line-height: 1;">03</div>
+            <h3 style="font-size: 1.25rem; font-family: var(--font-display); font-weight: 600;">Comercialización rápida</h3>
+            <p style="font-size: 0.9375rem; color: var(--text-secondary);">Promovemos tu propiedad en canales digitales segmentados y cerramos el trámite de venta sin pérdidas de tiempo.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. SECCIÓN DE TESTIMONIOS Y PRUEBA SOCIAL -->
+    <section class="testimonials-section reveal-on-scroll">
+      <div class="grid-container">
+        
+        <div class="section-header" style="max-width: 600px;">
+          <span class="badge-tagline">Casos de Éxito</span>
+          <h2 class="section-title">Resultados de Propietarios en CDMX</h2>
+          <p>Conoce las opiniones reales de personas que vendieron o rentaron sus casas rápidamente con nuestro método ágil.</p>
+        </div>
+
+        <div class="testimonials-grid">
+          <!-- Testimonio 1 -->
+          <div class="testimonial-card">
+            <p class="testimonial-text">"Tenía miedo de quedar atrapado en una exclusividad de 6 meses con una inmobiliaria tradicional. Con ni2, valuaron mi departamento en la Col. Del Valle gratis en 2 días y lo vendimos en 24 días. El trámite digital fue facilísimo."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar" style="background-color: var(--accent-color);">CM</div>
+              <div class="testimonial-meta">
+                <span class="testimonial-name">Carlos M.</span>
+                <span class="testimonial-days">Vendido en 24 días (Col. Del Valle)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonio 2 -->
+          <div class="testimonial-card">
+            <p class="testimonial-text">"La atención de ni2 por WhatsApp es excelente, siempre responden en menos de 10 minutos. Evaluaron mi casa en Coyoacán muy rápido y trajeron solo visitas calificadas. Excelente servicio sin spam."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar" style="background-color: var(--accent-color);">SG</div>
+              <div class="testimonial-meta">
+                <span class="testimonial-name">Sofía G.</span>
+                <span class="testimonial-days">Vendido en 29 días (Coyoacán)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonio 3 -->
+          <div class="testimonial-card">
+            <p class="testimonial-text">"Excelente opción para vender rápido. No querían cobrarme exclusivas abusivas ni comisiones extras sorpresa. Todo el papeleo de la venta de mi casa en San Ángel se resolvió de forma digital."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar" style="background-color: var(--accent-color);">RA</div>
+              <div class="testimonial-meta">
+                <span class="testimonial-name">Ricardo A.</span>
+                <span class="testimonial-days">Vendido en 31 días (Álvaro Obregón)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Simple -->
+  <footer>
+    <div class="grid-container footer-container">
+      <div>
+        <p style="font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+          ni2<span style="color: var(--accent-color);">.</span>
+        </p>
+        <p style="max-width: 320px; font-size: 0.8125rem;">Inmobiliaria de respuesta ágil y trámites 100% digitales en la Ciudad de México.</p>
+      </div>
+      
+      <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+        <div class="footer-links">
+          <a href="#" class="footer-link">Aviso de Privacidad</a>
+          <span style="color: var(--border-dark)">|</span>
+          <a href="#" class="footer-link">Términos y Condiciones</a>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-light);">&copy; 2026 ni2 Inmobiliaria Ágil. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>

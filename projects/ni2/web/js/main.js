@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNativeCallClickTracking();
   initScrollReveal();
   initSearchFilter();
+  initEcosystemWhatsAppLinks();
 });
 
 // ==========================================
@@ -510,6 +511,39 @@ function resetSearchFilters() {
   // Registrar evento GA4 de reinicio
   trackGA4Event('property_search_reset', {
     action: 'reset_all_filters'
+  });
+}
+
+// ==========================================
+// 8. ENLACES DE WHATSAPP DEL ECOSISTEMA (JESSY, GUS, ADY, VÍCTOR, JAVI)
+// ==========================================
+function initEcosystemWhatsAppLinks() {
+  const links = document.querySelectorAll('.wa-link');
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const specialist = link.getAttribute('data-specialist') || 'ni2';
+      const service = link.getAttribute('data-service') || 'Información General';
+      
+      // Número principal de WhatsApp de ni2
+      const phone = '525512345678';
+      
+      const message = `Hola, me interesa recibir información o cotizar el servicio de ${service} con ni2.`;
+      
+      const encodedMsg = encodeURIComponent(message);
+      const waUrl = `https://wa.me/${phone}?text=${encodedMsg}`;
+      
+      // Tracking de GA4
+      trackGA4Event('click_specialist_whatsapp', {
+        specialist_name: specialist,
+        service_requested: service,
+        link_url: waUrl
+      });
+      
+      // Abrir en nueva ventana
+      window.open(waUrl, '_blank');
+    });
   });
 }
 

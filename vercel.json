@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa)/'",
   "functions": {
     "api/index.py": {
       "excludeFiles": "projects/**"
@@ -123,6 +123,32 @@
       "dest": "/projects/ValenciaServicios/Assets/$1"
     },
     {
+      "src": "/pumpapa",
+      "status": 308,
+      "headers": { "Location": "/pumpapa/" }
+    },
+    {
+      "src": "/pumpapa/",
+      "dest": "/projects/Pumpapa/"
+    },
+    {
+      "src": "/pumpapa/(.*)",
+      "dest": "/projects/Pumpapa/$1"
+    },
+    {
+      "src": "/ieer",
+      "status": 308,
+      "headers": { "Location": "/ieer/" }
+    },
+    {
+      "src": "/ieer/",
+      "dest": "/projects/IEER/"
+    },
+    {
+      "src": "/ieer/(.*)",
+      "dest": "/projects/IEER/$1"
+    },
+    {
       "src": "/ni2",
       "status": 308,
       "headers": { "Location": "/ni2/" }
@@ -132,8 +158,8 @@
       "dest": "/projects/ni2/web/"
     },
     {
-      "src": "/ni2/(css|js)/(.*)",
-      "dest": "/projects/ni2/web/$1/$2"
+      "src": "/ni2/(.*)",
+      "dest": "/projects/ni2/web/$1"
     },
     {
       "src": "/grupo-gari",
