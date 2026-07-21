@@ -159,18 +159,21 @@
     <!-- TARJETA PRINCIPAL DEL PRODUCTO -->
     <div class="glass-panel rounded-[40px] p-6 sm:p-10 md:p-12 bg-white shadow-xl border border-slate-100 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
       
-      <!-- CONTENEDOR DE IMAGEN BOTELLA -->
-      <div class="lg:col-span-5 relative bg-[#FAF9F6] rounded-3xl p-8 flex justify-center items-center border border-slate-100 h-80 sm:h-96">
-        <span class="absolute top-4 left-4 px-3.5 py-1.5 bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-black tracking-widest uppercase rounded-full font-rubik">
-          FRESCO DE CAMPO 🌱
-        </span>
-        <img src="Assets/Salsas/serrano.jpg" alt="Chile Chillón Serrano" class="h-full w-auto object-contain mix-blend-multiply drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+      <!-- CONTENEDOR DE IMAGEN BOTELLA (BLANCO IMPECABLE Y SIN BORDES) -->
+      <div class="lg:col-span-5 relative bg-white rounded-3xl p-6 flex justify-center items-center border border-slate-100 h-80 sm:h-[420px] shadow-sm overflow-hidden group">
+        <!-- Luz de fondo suave -->
+        <div class="absolute w-56 h-56 rounded-full bg-gradient-to-tr from-emerald-500/10 via-green-500/5 to-transparent blur-2xl pointer-events-none"></div>
+        
+        <img src="Assets/Salsas/serrano.jpg" alt="Chile Chillón Serrano" class="h-full w-auto object-contain relative z-10 mix-blend-multiply drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
       </div>
 
       <!-- DETALLES Y ACCIONES -->
       <div class="lg:col-span-7 space-y-6">
         <div>
-          <div class="flex items-center gap-3 mb-2">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="px-3.5 py-1 bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-black tracking-widest uppercase rounded-full font-rubik">
+              FRESCO DE CAMPO 🌱
+            </span>
             <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full uppercase tracking-wider font-rubik">
               🌶️🌶️🌶️ (Frescura Herbal)
             </span>
@@ -238,7 +241,7 @@
         
         <!-- SALSA ARBOL -->
         <a href="salsa-de-arbol.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
-          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+          <div class="bg-white rounded-2xl p-4 mb-4 flex justify-center items-center h-44 border border-slate-100">
             <img src="Assets/Salsas/de_arbol.jpg" alt="Salsa Chile de Árbol" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
@@ -250,7 +253,7 @@
 
         <!-- SALSA HABANERO -->
         <a href="salsa-habanero.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
-          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+          <div class="bg-white rounded-2xl p-4 mb-4 flex justify-center items-center h-44 border border-slate-100">
             <img src="Assets/Salsas/habanero.jpg" alt="Salsa Habanero" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
@@ -262,7 +265,7 @@
 
         <!-- SALSA HABANERO TATEMADO -->
         <a href="salsa-habanero-tatemado.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
-          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+          <div class="bg-white rounded-2xl p-4 mb-4 flex justify-center items-center h-44 border border-slate-100">
             <img src="Assets/Salsas/tatemado.jpg" alt="Habanero Tatemado" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
@@ -274,7 +277,7 @@
 
         <!-- SALSA NEGRA -->
         <a href="salsa-negra.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
-          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+          <div class="bg-white rounded-2xl p-4 mb-4 flex justify-center items-center h-44 border border-slate-100">
             <img src="Assets/Salsas/negra.jpg" alt="Salsa Negra" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
@@ -352,7 +355,7 @@
   </footer>
 
   <!-- ==================== BOTÓN FLOTANTE WHATSAPP ==================== -->
-  <a href="https://wa.me/523921097809" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" class="fixed bottom-6 right-6 z-[9999] flex items-center justify-center w-14 h-14 rounded-full bg-[#D30611] text-white shadow-2xl hover:bg-[#b0050e] transition-all duration-300 group border-2 border-white hover:scale-110 active:scale-95 btn-whatsapp-picante">
+  <a href="https://wa.me/523921097809" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" class="fixed bottom-6 right-6 z-[9999] flex items-center justify-center w-14 h-14 rounded-full bg-[#D30611] text-[#D30611] shadow-2xl hover:bg-[#b0050e] transition-all duration-300 group border-2 border-white hover:scale-110 active:scale-95 btn-whatsapp-picante">
     <span class="wa-default flex items-center justify-center">
       <svg viewBox="0 0 393.82 393.96" class="w-8 h-8">
         <path d="M15.58,381.02l73.19-18.7c111.94,72.07,262.5,15.34,297.75-112.81C428.11,98.3,284.92-38.23,135.81,9.78,10.71,50.06-39.5,201.17,34.5,309.72l-18.92,71.3Z" fill="white"/>
