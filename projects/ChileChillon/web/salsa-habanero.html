@@ -179,7 +179,7 @@
               HABANERO FRESCO TROPICAL 🔥
             </span>
             <span class="px-3 py-1 bg-orange-100 text-[#FF5A00] text-xs font-black rounded-full uppercase tracking-wider font-rubik">
-              🌶️🌶️🌶️🌶️ (4 Chilitos - Picor Intenso)
+              🌶️🌶️🌶️🌶️
             </span>
           </div>
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 font-rubik tracking-tight leading-tight">
@@ -249,7 +249,7 @@
             <img src="Assets/Salsas/de_arbol.jpg" alt="Salsa Chile de Árbol" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#D30611] block mb-1">Picor Intenso 🌶️🌶️🌶️🌶️</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#D30611] block mb-1">🌶️🌶️🌶️🌶️</span>
             <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Chile Chillón de Árbol</h4>
             <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
@@ -261,7 +261,7 @@
             <img src="Assets/Salsas/tatemado.jpg" alt="Habanero Tatemado" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF5A00] block mb-1">Sabor Ahumado 🌶️🌶️🌶️🌶️</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF5A00] block mb-1">🌶️🌶️🌶️🌶️</span>
             <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Habanero Tatemado</h4>
             <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
@@ -273,7 +273,7 @@
             <img src="Assets/Salsas/negra.jpg" alt="Salsa Negra" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 block mb-1">Sazonador Especial 🌶️🌶️🌶️</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 block mb-1">🌶️🌶️🌶️</span>
             <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Chile Chillón Negra</h4>
             <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
@@ -285,7 +285,7 @@
             <img src="Assets/Salsas/serrano.jpg" alt="Salsa Serrano" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">Fresco de Campo 🌶️🌶️</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">🌶️🌶️</span>
             <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Chile Chillón Serrano</h4>
             <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
@@ -426,8 +426,86 @@
     </span>
   </a>
 
+  <style>
+    @keyframes ping-slow {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    .animate-ping-slow {
+      animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .btn-whatsapp-picante .chile-hover {
+      display: none;
+    }
+    .btn-whatsapp-picante .wa-default {
+      display: flex;
+    }
+    @media (hover: hover) {
+      .btn-whatsapp-picante:hover {
+        box-shadow: 0 0 20px rgba(211, 6, 17, 0.6), 0 0 30px rgba(211, 6, 17, 0.4);
+        animation: shake-spicy 0.5s infinite;
+      }
+      .btn-whatsapp-picante:hover .wa-default {
+        display: none;
+      }
+      .btn-whatsapp-picante:hover .chile-hover {
+        display: inline-block;
+      }
+    }
+    @keyframes shake-spicy {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      10% { transform: translate(-1px, -1px) rotate(-1deg); }
+      20% { transform: translate(-2px, 0px) rotate(1deg); }
+      30% { transform: translate(1px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 1px) rotate(-1deg); }
+      60% { transform: translate(-2px, -1px) rotate(0deg); }
+      70% { transform: translate(1px, 1px) rotate(1deg); }
+      80% { transform: translate(-1px, -1px) rotate(-1deg); }
+      90% { transform: translate(2px, 1px) rotate(0deg); }
+      100% { transform: translate(0px, 0px) rotate(0deg); }
+    }
+  </style>
+
+  <script>
+    (function() {
+      function updateStatus() {
+        const dot = document.getElementById("wa-status-dot");
+        const ping = document.getElementById("wa-status-ping");
+        if (!dot) return;
+        const now = new Date();
+        const day = now.getDay();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const timeVal = hours * 100 + minutes;
+        
+        let isOpen = false;
+        if (day >= 1 && day <= 5) {
+          if ((timeVal >= 900 && timeVal < 1400) || (timeVal >= 1600 && timeVal < 1800)) {
+            isOpen = true;
+          }
+        } else if (day === 6) {
+          if (timeVal >= 900 && timeVal < 1400) {
+            isOpen = true;
+          }
+        }
+        
+        if (isOpen) {
+          dot.style.backgroundColor = "#25D366";
+          if (ping) ping.style.backgroundColor = "#25D366";
+        } else {
+          dot.style.backgroundColor = "#D30611";
+          if (ping) ping.style.backgroundColor = "#D30611";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", updateStatus);
+      updateStatus();
+      setInterval(updateStatus, 30000);
+    })();
+  </script>
+
   <!-- SCRIPT TIENDA & CARRITO APP.JS -->
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=4"></script>
 
 </body>
 </html>
