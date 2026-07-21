@@ -61,8 +61,8 @@
               <div class="form-group">
                 <label for="search-intent">¿Qué buscas?</label>
                 <select id="search-intent" name="intent">
-                  <option value="buy">Comprar Propiedad</option>
-                  <option value="rent">Rentar Propiedad</option>
+                  <option value="buy">Comprar</option>
+                  <option value="rent">Rentar</option>
                 </select>
               </div>
               <div class="form-group">
@@ -74,14 +74,21 @@
                   <option value="office">Oficina</option>
                 </select>
               </div>
-              <div class="form-group" style="grid-column: span 2;">
+              <div class="form-group">
                 <label for="search-location">Ubicación de interés</label>
                 <select id="search-location" name="location">
-                  <option value="zmg-providencia">Guadalajara - Providencia / Americana</option>
-                  <option value="zmg-zapopan">Zapopan - Puerta de Hierro / Valle Real</option>
-                  <option value="zmg-tlaquepaque">Tlaquepaque - Centro / Chapalita</option>
-                  <option value="zmg-tlajomulco">Tlajomulco - López Mateos / Bugambilias</option>
+                  <option value="zmg-guadalajara">Guadalajara</option>
+                  <option value="zmg-zapopan">Zapopan</option>
+                  <option value="zmg-tlaquepaque">Tlaquepaque</option>
+                  <option value="zmg-tlajomulco">Tlajomulco</option>
                 </select>
+              </div>
+              <div class="form-group" id="price-slider-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label for="search-price" id="price-slider-label">Presupuesto Máximo</label>
+                  <span id="price-slider-value" style="font-size: 0.8125rem; font-weight: 700; color: var(--accent-color);">$15M MXN</span>
+                </div>
+                <input type="range" id="search-price" name="price" min="1000000" max="25000000" step="500000" value="15000000" style="width: 100%; margin-top: 0.5rem; accent-color: var(--accent-color);">
               </div>
               <div style="grid-column: span 2; margin-top: 0.5rem;">
                 <button type="submit" class="cta-button-accent" id="cta-hero-buscar">Buscar Propiedades</button>
@@ -518,7 +525,7 @@
           </div>
 
           <!-- Propiedad 1: Departamento en Providencia -->
-          <article class="property-card" data-intent="buy" data-type="apartment" data-location="zmg-providencia">
+          <article class="property-card" data-intent="buy" data-type="apartment" data-location="zmg-guadalajara" data-price="4850000">
             <div class="property-img-wrapper">
               <div style="width:100%; height:100%; background: linear-gradient(135deg, #344152 0%, #0F172A 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
@@ -549,7 +556,7 @@
           </article>
 
           <!-- Propiedad 2: Loft Moderno Colonia Americana -->
-          <article class="property-card" data-intent="rent" data-type="apartment" data-location="zmg-providencia">
+          <article class="property-card" data-intent="rent" data-type="apartment" data-location="zmg-guadalajara" data-price="26500">
             <div class="property-img-wrapper">
               <div style="width:100%; height:100%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
@@ -580,7 +587,7 @@
           </article>
 
           <!-- Propiedad 3: Casa Vista Hermosa Bugambilias -->
-          <article class="property-card" data-intent="buy" data-type="house" data-location="zmg-tlajomulco">
+          <article class="property-card" data-intent="buy" data-type="house" data-location="zmg-tlajomulco" data-price="12900000">
             <div class="property-img-wrapper">
               <div style="width:100%; height:100%; background: linear-gradient(135deg, #0d9488 0%, #115e59 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
@@ -611,7 +618,7 @@
           </article>
 
           <!-- Propiedad 4: Terreno en Valle Real -->
-          <article class="property-card" data-intent="buy" data-type="land" data-location="zmg-zapopan">
+          <article class="property-card" data-intent="buy" data-type="land" data-location="zmg-zapopan" data-price="24500000">
             <div class="property-img-wrapper">
               <div style="width:100%; height:100%; background: linear-gradient(135deg, #64748b 0%, #334155 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
@@ -643,7 +650,7 @@
           </article>
 
           <!-- Propiedad 5: Oficina Corporativa Puerta de Hierro -->
-          <article class="property-card" data-intent="rent" data-type="office" data-location="zmg-zapopan">
+          <article class="property-card" data-intent="rent" data-type="office" data-location="zmg-zapopan" data-price="85000">
             <div class="property-img-wrapper">
               <div style="width:100%; height:100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
@@ -674,7 +681,7 @@
           </article>
 
           <!-- Propiedad 6: Penthouse en Chapalita -->
-          <article class="property-card" data-intent="buy" data-type="apartment" data-location="zmg-tlaquepaque">
+          <article class="property-card" data-intent="buy" data-type="apartment" data-location="zmg-tlaquepaque" data-price="9200000">
             <div class="property-img-wrapper">
               <div style="width:100%; height:100%; background: linear-gradient(135deg, #344152 0%, #1e293b 100%); display:flex; align-items:center; justify-content:center; color:#ffffff; font-family:var(--font-display); font-weight:600; font-size:1.125rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 3.5rem; height: 3.5rem; opacity: 0.7;">
@@ -692,7 +699,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>Guadalajara, Jalisco</span>
+                <span>Tlaquepaque, Jalisco</span>
               </div>
               
               <div class="property-specs">

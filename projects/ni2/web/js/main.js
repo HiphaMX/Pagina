@@ -417,6 +417,59 @@ function initSearchFilter() {
   const searchForm = document.getElementById('content-search');
   if (!searchForm) return;
 
+  const intentSelect = document.getElementById('search-intent');
+  const priceInput = document.getElementById('search-price');
+  const priceValueLabel = document.getElementById('price-slider-value');
+  const priceSliderLabel = document.getElementById('price-slider-label');
+
+  function formatMoney(amount, isRent) {
+    if (isRent) {
+      return `$${Number(amount).toLocaleString('es-MX')} MXN/mes`;
+    } else {
+      if (amount >= 1000000) {
+        const millions = (amount / 1000000).toFixed(1);
+        const formatted = millions.endsWith('.0') ? millions.slice(0, -2) : millions;
+        return `$${formatted}M MXN`;
+      }
+      return `$${Number(amount).toLocaleString('es-MX')} MXN`;
+    }
+  }
+
+  function updateSliderParams() {
+    if (!intentSelect || !priceInput || !priceValueLabel) return;
+    const isRent = intentSelect.value === 'rent';
+    
+    if (isRent) {
+      priceInput.min = '5000';
+      priceInput.max = '100000';
+      priceInput.step = '1000';
+      priceInput.value = '30000';
+      if (priceSliderLabel) priceSliderLabel.textContent = 'Renta Máxima';
+    } else {
+      priceInput.min = '1000000';
+      priceInput.max = '25000000';
+      priceInput.step = '500000';
+      priceInput.value = '15000000';
+      if (priceSliderLabel) priceSliderLabel.textContent = 'Presupuesto Máximo';
+    }
+    
+    priceValueLabel.textContent = formatMoney(priceInput.value, isRent);
+  }
+
+  if (intentSelect) {
+    intentSelect.addEventListener('change', updateSliderParams);
+  }
+
+  if (priceInput && priceValueLabel) {
+    priceInput.addEventListener('input', (e) => {
+      const isRent = intentSelect ? intentSelect.value === 'rent' : false;
+      priceValueLabel.textContent = formatMoney(e.target.value, isRent);
+    });
+  }
+
+  // Inicializar al cargar la página
+  updateSliderParams();
+
   // Escuchar el envío del formulario de búsqueda
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -442,12 +495,14 @@ function executeFilter() {
   const intentSelect = document.getElementById('search-intent');
   const typeSelect = document.getElementById('search-property-type');
   const locationSelect = document.getElementById('search-location');
+  const priceInput = document.getElementById('search-price');
 
   if (!intentSelect || !typeSelect || !locationSelect) return;
 
   const intentVal = intentSelect.value;
   const typeVal = typeSelect.value;
   const locationVal = locationSelect.value;
+  const priceVal = priceInput ? parseInt(priceInput.value) : null;
 
   const cards = document.querySelectorAll('#properties-carousel .property-card');
   const noPropertiesMsg = document.getElementById('no-properties-message');
@@ -457,13 +512,15 @@ function executeFilter() {
     const cardIntent = card.getAttribute('data-intent');
     const cardType = card.getAttribute('data-type');
     const cardLocation = card.getAttribute('data-location');
+    const cardPrice = parseInt(card.getAttribute('data-price') || '0');
 
     // Filtros lógicos
     const matchIntent = !intentVal || cardIntent === intentVal;
     const matchType = !typeVal || cardType === typeVal;
     const matchLocation = !locationVal || cardLocation === locationVal;
+    const matchPrice = !priceVal || cardPrice <= priceVal;
 
-    if (matchIntent && matchType && matchLocation) {
+    if (matchIntent && matchType && matchLocation && matchPrice) {
       card.style.display = 'flex';
       visibleCount++;
     } else {
@@ -485,6 +542,7 @@ function executeFilter() {
     search_intent: intentVal,
     property_type: typeVal,
     search_location: locationVal,
+    max_price: priceVal,
     results_count: visibleCount
   });
 }
@@ -493,10 +551,22 @@ function resetSearchFilters() {
   const intentSelect = document.getElementById('search-intent');
   const typeSelect = document.getElementById('search-property-type');
   const locationSelect = document.getElementById('search-location');
+  const priceInput = document.getElementById('search-price');
+  const priceValueLabel = document.getElementById('price-slider-value');
+  const priceSliderLabel = document.getElementById('price-slider-label');
 
   if (intentSelect) intentSelect.selectedIndex = 0;
   if (typeSelect) typeSelect.selectedIndex = 0;
   if (locationSelect) locationSelect.selectedIndex = 0;
+
+  if (priceInput && priceValueLabel) {
+    priceInput.min = '1000000';
+    priceInput.max = '25000000';
+    priceInput.step = '500000';
+    priceInput.value = '15000000';
+    if (priceSliderLabel) priceSliderLabel.textContent = 'Presupuesto Máximo';
+    priceValueLabel.textContent = '$15M MXN';
+  }
 
   const cards = document.querySelectorAll('#properties-carousel .property-card');
   cards.forEach(card => {
