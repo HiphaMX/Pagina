@@ -79,214 +79,208 @@
   </script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   
-  <!-- Estilos Customizados -->
+  <!-- Estilos Customizados de la Marca -->
   <link rel="stylesheet" href="css/style.css?v=3">
   <link rel="shortcut icon" href="https://www.elchilechillon.com.mx/favicon.ico" type="image/x-icon">
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen relative antialiased flex flex-col selection:bg-[#D30611] selection:text-white">
+<body class="bg-[#FAF9F6] text-slate-800 min-h-screen relative antialiased flex flex-col overflow-x-hidden selection:bg-[#D30611] selection:text-white">
 
-  <!-- ==================== NAVBAR PRINCIPAL ==================== -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      
-      <!-- LOGO -->
-      <a href="/" class="flex items-center gap-3 group">
-        <img src="Assets/Logo Navbar.svg" alt="Chile Chillón Logo" class="h-10 w-auto group-hover:scale-105 transition-transform duration-300">
+  <!-- ==================== BLOBS DE CALOR (BACKGROUND) ==================== -->
+  <div class="blob-container">
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+  </div>
+
+  <!-- ==================== HEADER (NAVBAR ORIGINAL DEL HOME) ==================== -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-[#D30611] shadow-md">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+        <img src="Assets/Logo texto2.svg" alt="Chile Chillón Logo" class="h-12 w-auto">
       </a>
 
-      <!-- NAV DESKTOP -->
-      <nav class="hidden md:flex items-center gap-8 font-rubik font-medium text-sm text-slate-700">
-        <a href="/" class="hover:text-[#D30611] transition-colors">Inicio</a>
-        <a href="/#tienda" class="text-[#D30611] font-bold">Colección de Salsas</a>
-        <a href="/puntos-de-venta" class="hover:text-[#D30611] transition-colors">Puntos de Venta</a>
-        <a href="https://wa.me/523921097809?text=Hola,%20quisiera%20pedir%20la%20Salsa%20Chile%20de%20%C3%81rbol" target="_blank" rel="noopener" class="bg-[#D30611] text-white px-5 py-2.5 rounded-full font-bold shadow-md hover:bg-[#b0050e] transition-all flex items-center gap-2">
-          <i class="ph-bold ph-whatsapp-logo text-lg">="sr-only">WhatsApp</span>
-          Pedir por WhatsApp
+      <div class="flex items-center gap-4">
+        <!-- Enlaces Desktop -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="index.html#tienda" class="text-white hover:text-[#FFEED3] font-bold text-xs uppercase tracking-wider transition-colors">Colección de Salsas</a>
+          <a href="puntos-de-venta.html" class="text-white hover:text-[#FFEED3] font-bold text-xs uppercase tracking-wider transition-colors">Puntos de Venta</a>
+          <a href="index.html#club" class="text-white hover:text-[#FFEED3] font-bold text-xs uppercase tracking-wider transition-colors">Contáctanos</a>
+        </nav>
+
+        <a href="index.html" class="hidden md:inline-block px-5 py-2.5 rounded-full bg-[#FFEED3] hover:bg-[#FFEED3]/90 text-xs font-bold uppercase tracking-wider text-[#D30611] transition-all duration-300 shadow-md">
+          Volver al Inicio
         </a>
-      </nav>
 
-      <!-- BOTÓN MENÚ MÓVIL HAMBURGUESA -->
-      <button id="mobile-menu-btn" aria-label="Abrir menú" class="md:hidden p-2 rounded-lg text-slate-700 hover:text-[#D30611] hover:bg-slate-100 transition-colors focus:outline-none">
-        <i class="ph-bold ph-list text-3xl" id="menu-icon-open"></i>
-        <i class="ph-bold ph-x text-3xl hidden" id="menu-icon-close"></i>
-      </button>
-
-    </div>
-
-    <!-- MENÚ MÓVIL DESPLEGABLE -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-xl">
-      <a href="/" class="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#D30611]">Inicio</a>
-      <a href="/#tienda" class="block px-3 py-2 rounded-lg text-base font-semibold text-[#D30611] bg-red-50">Colección de Salsas</a>
-      <a href="/puntos-de-venta" class="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#D30611]">Puntos de Venta</a>
-      <a href="https://wa.me/523921097809?text=Hola,%20quisiera%20pedir%20la%20Salsa%20Chile%20de%20%C3%81rbol" target="_blank" rel="noopener" class="w-full text-center bg-[#D30611] text-white py-3 rounded-xl font-bold shadow-md hover:bg-[#b0050e] transition-all flex items-center justify-center gap-2">
-        <i class="ph-bold ph-whatsapp-logo text-xl"></i>
-        Pedir por WhatsApp
-      </a>
+        <!-- Botón Hamburguesa Móvil -->
+        <button id="mobile-menu-toggle" class="md:hidden w-10 h-10 rounded-full bg-[#FFEED3]/10 hover:bg-[#FFEED3]/20 flex justify-center items-center text-[#FFEED3] transition-all duration-300" aria-label="Abrir menú">
+          <i class="ph-bold ph-list text-2xl"></i>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- ==================== DETALLE DE PRODUCTO ==================== -->
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-    
-    <!-- BREADCRUMBS -->
-    <nav class="flex items-center gap-2 text-xs md:text-sm text-slate-500 mb-8 font-medium">
-      <a href="/" class="hover:text-[#D30611] transition-colors">Inicio</a>
-      <i class="ph-bold ph-caret-right text-xs"></i>
-      <a href="/#tienda" class="hover:text-[#D30611] transition-colors">Salsas</a>
-      <i class="ph-bold ph-caret-right text-xs"></i>
-      <span class="text-slate-800 font-bold">Salsa Chile de Árbol</span>
+  <!-- ==================== MENU MÓVIL DRAWER (ORIGINAL DEL HOME) ==================== -->
+  <div id="mobile-menu-drawer" class="fixed inset-0 z-[10000] bg-[#D30611] transform translate-x-full transition-transform duration-500 flex flex-col justify-between p-8">
+    <div class="flex justify-between items-center">
+      <img src="Assets/Logo texto2.svg" alt="Chile Chillón Logo" class="h-12 w-auto">
+      <button id="mobile-menu-close" class="w-10 h-10 rounded-full bg-white/10 flex justify-center items-center text-white" aria-label="Cerrar menú">
+        <i class="ph-bold ph-x text-2xl"></i>
+      </button>
+    </div>
+
+    <nav class="flex flex-col gap-8 text-left mt-16">
+      <a href="index.html" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Inicio</a>
+      <a href="index.html#tienda" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Colección de Salsas</a>
+      <a href="puntos-de-venta.html" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Puntos de Venta</a>
+      <a href="index.html#club" class="mobile-nav-link text-3xl font-rubik font-black text-white tracking-wide hover:text-[#FFEED3] transition-colors">Contáctanos</a>
     </nav>
 
-    <!-- PRODUCT CONTAINER -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-100">
+    <div class="border-t border-white/10 pt-6">
+      <p class="text-xs text-[#FFEED3]/60 uppercase tracking-widest mb-4">Síguenos</p>
+      <div class="flex gap-6 text-2xl text-[#FFEED3]">
+        <a href="https://www.instagram.com/elchilechillon/" target="_blank" rel="noopener"><i class="ph-bold ph-instagram-logo"></i></a>
+        <a href="https://www.facebook.com/elchilechillon/" target="_blank" rel="noopener"><i class="ph-bold ph-facebook-logo"></i></a>
+        <a href="https://wa.me/523921097809" target="_blank" rel="noopener"><i class="ph-bold ph-whatsapp-logo"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="relative z-10 pt-28 pb-20 px-6 max-w-7xl mx-auto flex-grow w-full">
+    
+    <!-- BREADCRUMBS -->
+    <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 mb-8 font-rubik">
+      <a href="index.html" class="hover:text-[#D30611] transition-colors">Inicio</a>
+      <i class="ph-bold ph-caret-right text-xs text-[#D30611]"></i>
+      <a href="index.html#tienda" class="hover:text-[#D30611] transition-colors">Salsas</a>
+      <i class="ph-bold ph-caret-right text-xs text-[#D30611]"></i>
+      <span class="text-slate-900 font-black">Chile Chillón de Árbol</span>
+    </nav>
+
+    <!-- TARJETA PRINCIPAL DEL PRODUCTO -->
+    <div class="glass-panel rounded-[40px] p-6 sm:p-10 md:p-12 bg-white shadow-xl border border-slate-100 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
       
-      <!-- IMAGEN DEL PRODUCTO -->
-      <div class="lg:col-span-6 flex justify-center items-center relative bg-slate-50 rounded-2xl p-8 border border-slate-100">
-        <span class="absolute top-4 left-4 bg-red-100 text-[#D30611] font-bold text-xs px-3 py-1.5 rounded-full uppercase tracking-wider">
-          100% Artesanal
+      <!-- CONTENEDOR DE IMAGEN BOTELLA -->
+      <div class="lg:col-span-5 relative bg-[#FAF9F6] rounded-3xl p-8 flex justify-center items-center border border-slate-100 h-80 sm:h-96">
+        <span class="absolute top-4 left-4 px-3.5 py-1.5 bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/20 text-xs font-black tracking-widest uppercase rounded-full font-rubik">
+          100% ARTESANAL Y NATURAL
         </span>
-        <img src="Assets/Salsas/de_arbol.jpg" alt="Salsa Chile de Árbol Chile Chillón" class="w-full max-w-md h-auto object-contain mix-blend-multiply drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+        <img src="Assets/Salsas/de_arbol.jpg" alt="Chile Chillón de Árbol" class="h-full w-auto object-contain mix-blend-multiply drop-shadow-2xl hover:scale-105 transition-transform duration-500">
       </div>
 
-      <!-- INFORMACIÓN DEL PRODUCTO -->
-      <div class="lg:col-span-6 space-y-6">
-        
+      <!-- DETALLES Y ACCIONES -->
+      <div class="lg:col-span-7 space-y-6">
         <div>
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-rubik font-black text-slate-900 leading-tight">
-            Salsa Chile de Árbol
+          <div class="flex items-center gap-3 mb-2">
+            <span class="px-3 py-1 bg-red-100 text-[#D30611] text-xs font-black rounded-full uppercase tracking-wider font-rubik">
+              🌶️🌶️🌶️🌶️ (Alto)
+            </span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 font-rubik tracking-tight leading-tight">
+            Chile Chillón de Árbol
           </h1>
-          <p class="text-sm font-semibold text-[#D30611] uppercase tracking-widest mt-2">
-            Maximiza Tu Sazón Tradicional
+          <p class="text-xs sm:text-sm font-bold text-[#D30611] uppercase tracking-widest mt-2 font-rubik">
+            MAXIMIZA TU SAZÓN TRADICIONAL
           </p>
         </div>
 
-        <!-- PRECIO Y DISPONIBILIDAD -->
-        <div class="flex items-baseline gap-4 border-y border-slate-100 py-4">
-          <span class="text-4xl font-black text-slate-900 font-rubik">$35.00 <span class="text-sm font-bold text-slate-500">MXN</span></span>
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Disponible en Tienda y Puntos de Venta
+        <!-- PRECIO -->
+        <div class="flex items-baseline gap-3 border-y border-slate-100 py-4">
+          <span class="text-4xl font-black text-slate-900 font-rubik">$35.00 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+          <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+            ✓ Disponible en tienda y puntos de venta
           </span>
         </div>
 
-        <!-- NIVEL DE PICOR -->
-        <div class="space-y-2">
-          <div class="flex justify-between items-center text-sm font-bold">
-            <span class="text-slate-700">Nivel de Picor:</span>
-            <span class="text-[#D30611]">Alto (4/5)</span>
-          </div>
-          <div class="flex gap-1.5 text-2xl text-[#D30611]">
-            <i class="ph-fill ph-pepper"></i>
-            <i class="ph-fill ph-pepper"></i>
-            <i class="ph-fill ph-pepper"></i>
-            <i class="ph-fill ph-pepper"></i>
-            <i class="ph-bold ph-pepper opacity-20"></i>
-          </div>
-        </div>
-
-        <!-- DESCRIPCIÓN DETALLADA -->
-        <div class="prose prose-slate text-sm sm:text-base text-slate-600 leading-relaxed space-y-3">
-          <p>
-            Nuestra <strong>Salsa Chile de Árbol</strong> está elaborada con la receta tradicional de la casa que ha cautivado a nuestros clientes por más de 10 años. Un picor vibrante, equilibrado con el toque justo de especias naturales y textura casera.
-          </p>
-          <p>
-            Ideal para quienes buscan potenciar el sabor de sus platillos cotidianos con un picante auténtico y sin conservadores artificiales.
-          </p>
-        </div>
+        <!-- DESCRIPCIÓN -->
+        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+          Nuestra <strong>Salsa Chile de Árbol</strong> está elaborada con chiles de campo seleccionados y la receta tradicional de la casa que ha maximizado la sazón de nuestros clientes por más de 10 años. Ofrece un picor vibrante y equilibrado sin conservadores ni saborizantes artificiales.
+        </p>
 
         <!-- MARIDAJE RECOMENDADO -->
-        <div class="bg-red-50/60 rounded-2xl p-5 border border-red-100 space-y-3">
-          <h3 class="font-rubik font-bold text-sm text-[#D30611] uppercase tracking-wider flex items-center gap-2">
-            <i class="ph-bold ph-cooking-pot text-lg"></i>
+        <div class="bg-[#D30611]/5 rounded-2xl p-5 border border-[#D30611]/15 space-y-3">
+          <h3 class="font-rubik font-black text-xs text-[#D30611] uppercase tracking-widest flex items-center gap-2">
+            <i class="ph-bold ph-cooking-pot text-base"></i>
             Maridaje Perfecto Recomendado:
           </h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-bold text-slate-700">
-            <span class="bg-white px-3 py-2 rounded-xl shadow-xs border border-red-100 text-center">🌮 Tacos al Pastor y Birria</span>
-            <span class="bg-white px-3 py-2 rounded-xl shadow-xs border border-red-100 text-center">🥩 Carnes Asadas</span>
-            <span class="bg-white px-3 py-2 rounded-xl shadow-xs border border-red-100 text-center">🍲 Pozole y Menudo</span>
-            <span class="bg-white px-3 py-2 rounded-xl shadow-xs border border-red-100 text-center">🍿 Botanas y Papas</span>
-            <span class="bg-white px-3 py-2 rounded-xl shadow-xs border border-red-100 text-center">🍳 Huevos Rancheros</span>
-            <span class="bg-white px-3 py-2 rounded-xl shadow-xs border border-red-100 text-center">🍕 Pizzas y Empanadas</span>
+          <div class="flex flex-wrap gap-2 text-xs font-bold text-slate-700">
+            <span class="bg-white px-3 py-1.5 rounded-xl shadow-xs border border-slate-200">🌮 Tacos al Pastor y Birria</span>
+            <span class="bg-white px-3 py-1.5 rounded-xl shadow-xs border border-slate-200">🥩 Carnes Asadas</span>
+            <span class="bg-white px-3 py-1.5 rounded-xl shadow-xs border border-slate-200">🍲 Pozole y Menudo</span>
+            <span class="bg-white px-3 py-1.5 rounded-xl shadow-xs border border-slate-200">🍿 Botanas y Papas</span>
+            <span class="bg-white px-3 py-1.5 rounded-xl shadow-xs border border-slate-200">🍳 Huevos Rancheros</span>
           </div>
         </div>
 
-        <!-- ACCIONES DE COMPRA -->
-        <div class="pt-4 space-y-3">
-          <a href="https://wa.me/523921097809?text=Hola!%20Me%20interesa%20pedir%20la%20Salsa%20Chile%20de%20%C3%81rbol%20($35%20MXN)" target="_blank" rel="noopener" class="w-full bg-[#D30611] text-white py-4 px-6 rounded-2xl font-bold font-rubik text-base shadow-xl hover:bg-[#b0050e] hover:shadow-red-900/20 active:scale-98 transition-all flex items-center justify-center gap-3">
-            <i class="ph-bold ph-whatsapp-logo text-2xl"></i>
-            Pedir esta Salsa por WhatsApp ($35 MXN)
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="pt-2 flex flex-col sm:flex-row gap-4">
+          <a href="https://wa.me/523921097809?text=Hola!%20Me%20interesa%20pedir%20la%20Salsa%20Chile%20de%20%C3%81rbol%20($35%20MXN)" target="_blank" rel="noopener" class="flex-1 bg-[#D30611] hover:bg-[#b0050e] text-white py-4 px-6 rounded-2xl font-bold font-rubik text-sm uppercase tracking-wider shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-3">
+            <i class="ph-bold ph-whatsapp-logo text-xl"></i>
+            Pedir por WhatsApp ($35 MXN)
           </a>
-          
-          <a href="/puntos-de-venta" class="w-full bg-slate-100 text-slate-700 py-3.5 px-6 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+          <a href="puntos-de-venta.html" class="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-bold text-sm text-center transition-colors flex items-center justify-center gap-2">
             <i class="ph-bold ph-map-pin text-lg text-[#D30611]"></i>
-            Encontrar Punto de Venta Cercano
+            Puntos de Venta
           </a>
         </div>
 
       </div>
+
     </div>
 
-    <!-- SECCIÓN OTRAS SALSAS COLECCIÓN -->
+    <!-- OTRAS SALSAS DE LA COLECCIÓN -->
     <section class="mt-20">
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-rubik font-bold text-slate-900">
-            Descubre Toda la Colección
-          </h2>
-          <p class="text-sm text-slate-500 mt-1">Explora nuestras otras salsas originales</p>
-        </div>
-        <a href="/#tienda" class="text-xs sm:text-sm font-bold text-[#D30611] hover:underline flex items-center gap-1">
-          Ver todas <i class="ph-bold ph-arrow-right"></i>
-        </a>
+      <div class="text-center mb-12">
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-[#D30611] mb-2 font-rubik">EXPLORA MÁS</h2>
+        <h3 class="text-3xl font-black font-rubik text-slate-900">Toda la Colección de Salsas</h3>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- SALSA HABANERO -->
-        <a href="/salsa-habanero" class="bg-white rounded-2xl p-4 border border-slate-200 hover:border-[#D30611] hover:shadow-lg transition-all group flex flex-col justify-between">
-          <div class="bg-slate-50 rounded-xl p-4 mb-3 flex justify-center">
-            <img src="Assets/Salsas/habanero.jpg" alt="Salsa Habanero" class="h-36 object-contain mix-blend-multiply group-hover:scale-105 transition-transform">
+        <a href="salsa-habanero.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+            <img src="Assets/Salsas/habanero.jpg" alt="Salsa Habanero" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-[#D30611] transition-colors">Salsa Habanero</h3>
-            <p class="text-xs text-slate-500 mt-1">Picor Máximo 🌶️🌶️🌶️🌶️🌶️</p>
-            <p class="font-black text-[#D30611] text-base mt-2">$35.00 MXN</p>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF5A00] block mb-1">Picor Máximo 🌶️🌶️🌶️🌶️🌶️</span>
+            <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Chile Chillón Habanero</h4>
+            <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
         </a>
 
         <!-- SALSA HABANERO TATEMADO -->
-        <a href="/salsa-habanero-tatemado" class="bg-white rounded-2xl p-4 border border-slate-200 hover:border-[#D30611] hover:shadow-lg transition-all group flex flex-col justify-between">
-          <div class="bg-slate-50 rounded-xl p-4 mb-3 flex justify-center">
-            <img src="Assets/Salsas/tatemado.jpg" alt="Salsa Habanero Tatemado" class="h-36 object-contain mix-blend-multiply group-hover:scale-105 transition-transform">
+        <a href="salsa-habanero-tatemado.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+            <img src="Assets/Salsas/tatemado.jpg" alt="Habanero Tatemado" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-[#D30611] transition-colors">Habanero Tatemado</h3>
-            <p class="text-xs text-slate-500 mt-1">Sabor Ahumado 🌶️🌶️🌶️🌶️</p>
-            <p class="font-black text-[#D30611] text-base mt-2">$35.00 MXN</p>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF5A00] block mb-1">Sabor Ahumado 🌶️🌶️🌶️🌶️</span>
+            <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Habanero Tatemado</h4>
+            <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
         </a>
 
         <!-- SALSA NEGRA -->
-        <a href="/salsa-negra" class="bg-white rounded-2xl p-4 border border-slate-200 hover:border-[#D30611] hover:shadow-lg transition-all group flex flex-col justify-between">
-          <div class="bg-slate-50 rounded-xl p-4 mb-3 flex justify-center">
-            <img src="Assets/Salsas/negra.jpg" alt="Salsa Negra" class="h-36 object-contain mix-blend-multiply group-hover:scale-105 transition-transform">
+        <a href="salsa-negra.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+            <img src="Assets/Salsas/negra.jpg" alt="Salsa Negra" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-[#D30611] transition-colors">Salsa Negra</h3>
-            <p class="text-xs text-slate-500 mt-1">Sazonador Especial 🌶️🌶️🌶️</p>
-            <p class="font-black text-[#D30611] text-base mt-2">$35.00 MXN</p>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 block mb-1">Sazonador Especial 🌶️🌶️🌶️</span>
+            <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Chile Chillón Negra</h4>
+            <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
         </a>
 
         <!-- SALSA SERRANO -->
-        <a href="/salsa-serrano" class="bg-white rounded-2xl p-4 border border-slate-200 hover:border-[#D30611] hover:shadow-lg transition-all group flex flex-col justify-between">
-          <div class="bg-slate-50 rounded-xl p-4 mb-3 flex justify-center">
-            <img src="Assets/Salsas/serrano.jpg" alt="Salsa Serrano" class="h-36 object-contain mix-blend-multiply group-hover:scale-105 transition-transform">
+        <a href="salsa-serrano.html" class="glass-panel rounded-3xl p-5 bg-white border border-slate-100 hover:border-[#D30611] hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+          <div class="bg-[#FAF9F6] rounded-2xl p-4 mb-4 flex justify-center items-center h-44">
+            <img src="Assets/Salsas/serrano.jpg" alt="Salsa Serrano" class="h-36 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 text-sm sm:text-base group-hover:text-[#D30611] transition-colors">Salsa Serrano</h3>
-            <p class="text-xs text-slate-500 mt-1">Fresco de Campo 🌶️🌶️🌶️</p>
-            <p class="font-black text-[#D30611] text-base mt-2">$35.00 MXN</p>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">Fresco de Campo 🌶️🌶️🌶️</span>
+            <h4 class="font-bold text-base text-slate-900 font-rubik group-hover:text-[#D30611] transition-colors">Chile Chillón Serrano</h4>
+            <p class="font-black text-[#D30611] text-base mt-2 font-rubik">$35.00 MXN</p>
           </div>
         </a>
 
@@ -295,25 +289,60 @@
 
   </main>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="bg-slate-900 text-white pt-12 pb-8 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-800 pb-8">
-        <a href="/" class="flex items-center gap-3">
-          <img src="Assets/Logo Navbar.svg" alt="Chile Chillón Logo" class="h-10 w-auto brightness-0 invert">
+  <!-- ==================== FOOTER (ORIGINAL DEL HOME) ==================== -->
+  <footer class="border-t border-zinc-800 bg-[#0D0B0B] py-16 relative z-10 mt-auto">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+      
+      <!-- Columna 1: Marca -->
+      <div class="md:col-span-2">
+        <a href="index.html" class="flex items-center gap-3 font-bold text-xl tracking-wider text-white font-rubik hover:opacity-90 transition-opacity">
+          <img src="Assets/Logo texto2.svg" alt="Chile Chillón Logo" class="h-16 w-auto">
         </a>
-        <div class="flex flex-wrap justify-center gap-6 text-sm text-slate-400">
-          <a href="/" class="hover:text-white transition-colors">Inicio</a>
-          <a href="/#tienda" class="hover:text-white transition-colors">Colección de Salsas</a>
-          <a href="/puntos-de-venta" class="hover:text-white transition-colors">Puntos de Venta</a>
-          <a href="/aviso-de-privacidad" class="hover:text-white transition-colors">Aviso de Privacidad</a>
-          <a href="/terminos-y-condiciones" class="hover:text-white transition-colors">Términos y Condiciones</a>
+        <p class="mt-4 text-sm text-slate-400 max-w-xs leading-relaxed">
+          Salsas picantes hechas con ingredientes 100% naturales, Tu sazón en su máxima potencia.
+        </p>
+        <div class="mt-4 text-xs text-slate-400 leading-relaxed">
+          <span class="block font-bold text-slate-300 uppercase tracking-wider mb-1">Horario de Atención:</span>
+          <span>Lunes a Viernes: 9:00 am a 2:00 pm y 4:00 pm a 6:00 pm</span><br>
+          <span>Sábado: 9:00 am a 2:00 pm</span>
+        </div>
+        <!-- Iconos Sociales -->
+        <div class="mt-6 flex gap-4 text-xl text-slate-400">
+          <a href="https://www.instagram.com/elchilechillon/" target="_blank" rel="noopener" class="hover:text-[#FF5A00] transition-colors duration-300"><i class="ph-bold ph-instagram-logo"></i></a>
+          <a href="https://www.facebook.com/elchilechillon/" target="_blank" rel="noopener" class="hover:text-[#D30611] transition-colors duration-300"><i class="ph-bold ph-facebook-logo"></i></a>
+          <a href="https://wa.me/523921097809" target="_blank" rel="noopener" class="hover:text-[#D30611] transition-colors duration-300"><i class="ph-bold ph-whatsapp-logo"></i></a>
         </div>
       </div>
-      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-        <p>&copy; 2026 Chile Chillón. Todos los derechos reservados.</p>
+
+      <!-- Columna 2: Navegación -->
+      <div>
+        <span class="text-xs uppercase font-black tracking-widest text-slate-300 block mb-4 font-rubik">Navegar</span>
+        <ul class="space-y-3 text-sm text-slate-400">
+          <li><a href="index.html#tienda" class="hover:text-white transition-colors duration-300">Nuestra Tienda</a></li>
+          <li><a href="puntos-de-venta.html" class="hover:text-white transition-colors duration-300">Puntos de Venta</a></li>
+          <li><a href="index.html#secreto" class="hover:text-white transition-colors duration-300">Nuestros Secretos</a></li>
+          <li><a href="index.html#testimonios" class="hover:text-white transition-colors duration-300">Reseñas</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Legal -->
+      <div>
+        <span class="text-xs uppercase font-black tracking-widest text-slate-300 block mb-4 font-rubik">Legal</span>
+        <ul class="space-y-3 text-sm text-slate-400">
+          <li><a href="aviso-de-privacidad.html" class="hover:text-white transition-colors duration-300">Aviso de Privacidad</a></li>
+          <li><a href="terminos-y-condiciones.html" class="hover:text-white transition-colors duration-300">Términos y Condiciones</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Sub-footer -->
+    <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-zinc-800 flex justify-center items-center text-sm text-slate-400">
+      <div class="flex flex-wrap items-center justify-center gap-1.5 font-rubik text-center">
+        <span>Copyright 2026 © Chile Chillón</span>
+        <span class="mx-2 text-zinc-700">|</span>
         <span class="flex items-center gap-1.5">
-          Diseño por 
+          Diseño by 
           <a href="https://www.hipha.mx/" target="_blank" rel="noopener" class="inline-flex items-center hover:opacity-90 transition-opacity">
             <img src="Assets/LogoSubfooter/LogoSubfooter.svg" alt="HiphaMX Logo" class="h-[25px] w-auto opacity-60 hover:opacity-90 transition-opacity">
           </a>
@@ -323,7 +352,7 @@
   </footer>
 
   <!-- ==================== BOTÓN FLOTANTE WHATSAPP ==================== -->
-  <a href="https://wa.me/523921097809?text=Hola!%20Me%20interesa%20pedir%20la%20Salsa%20Chile%20de%20%C3%81rbol%20($35%20MXN)" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" class="fixed bottom-6 right-6 z-[9999] flex items-center justify-center w-14 h-14 rounded-full bg-[#D30611] text-white shadow-2xl hover:bg-[#b0050e] transition-all duration-300 group border-2 border-white hover:scale-110 active:scale-95 btn-whatsapp-picante">
+  <a href="https://wa.me/523921097809" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" class="fixed bottom-6 right-6 z-[9999] flex items-center justify-center w-14 h-14 rounded-full bg-[#D30611] text-white shadow-2xl hover:bg-[#b0050e] transition-all duration-300 group border-2 border-white hover:scale-110 active:scale-95 btn-whatsapp-picante">
     <span class="wa-default flex items-center justify-center">
       <svg viewBox="0 0 393.82 393.96" class="w-8 h-8">
         <path d="M15.58,381.02l73.19-18.7c111.94,72.07,262.5,15.34,297.75-112.81C428.11,98.3,284.92-38.23,135.81,9.78,10.71,50.06-39.5,201.17,34.5,309.72l-18.92,71.3Z" fill="white"/>
@@ -333,25 +362,35 @@
     <i class="ph-fill ph-pepper text-3xl chile-hover text-[#FFEED3] animate-bounce"></i>
     <span class="absolute inset-0 rounded-full border-2 border-[#D30611] opacity-75 animate-ping-slow pointer-events-none"></span>
     <span class="absolute -top-1 -right-1 flex h-3 w-3">
-      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D30611] opacity-75"></span>
-      <span class="relative inline-flex rounded-full h-3 w-3 bg-[#D30611]"></span>
+      <span id="wa-status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D30611] opacity-75"></span>
+      <span id="wa-status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-[#D30611]"></span>
     </span>
   </a>
 
-  <!-- SCRIPT MENÚ MÓVIL -->
+  <!-- SCRIPT MENÚ MÓVIL DRAWER -->
   <script>
-    const mobileBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const openIcon = document.getElementById('menu-icon-open');
-    const closeIcon = document.getElementById('menu-icon-close');
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobileClose = document.getElementById('mobile-menu-close');
+    const mobileDrawer = document.getElementById('mobile-menu-drawer');
+    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
-    if (mobileBtn && mobileMenu) {
-      mobileBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-        openIcon.classList.toggle('hidden');
-        closeIcon.classList.toggle('hidden');
+    if (mobileToggle && mobileDrawer) {
+      mobileToggle.addEventListener('click', () => {
+        mobileDrawer.classList.remove('translate-x-full');
       });
     }
+
+    if (mobileClose && mobileDrawer) {
+      mobileClose.addEventListener('click', () => {
+        mobileDrawer.classList.add('translate-x-full');
+      });
+    }
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (mobileDrawer) mobileDrawer.classList.add('translate-x-full');
+      });
+    });
   </script>
 
 </body>
