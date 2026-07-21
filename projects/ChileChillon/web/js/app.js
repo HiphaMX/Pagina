@@ -638,21 +638,21 @@ function initCart() {
     habanero: {
       name: "Chile Chillón Habanero",
       price: 35,
-      spicy: "🌶️🌶️🌶️",
+      spicy: "🌶️🌶️🌶️🌶️",
       image: "Assets/Salsas/habanero.jpg",
       filterClass: ""
     },
     habanero_tatemado: {
       name: "Habanero Tatemado",
       price: 35,
-      spicy: "🌶️🌶️🌶️",
+      spicy: "🌶️🌶️🌶️🌶️",
       image: "Assets/Salsas/tatemado.jpg",
       filterClass: ""
     },
     negra: {
       name: "Chile Chillón Negra",
       price: 35,
-      spicy: "🌶️🌶️",
+      spicy: "🌶️🌶️🌶️",
       image: "Assets/Salsas/negra.jpg",
       filterClass: ""
     },
