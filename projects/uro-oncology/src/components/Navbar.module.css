@@ -145,13 +145,14 @@
 }
 
 @media (max-width: 768px) {
-  .header {
+  .navbar {
     position: relative;
   }
   
   .navContainer {
-    flex-direction: row;
-    justify-content: space-between;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 0 1rem;
   }
 
@@ -162,6 +163,11 @@
 
   .mobileMenuBtn {
     display: flex;
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 101;
   }
   
   .navLinks {
