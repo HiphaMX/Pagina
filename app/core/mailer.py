@@ -1729,6 +1729,53 @@ async def send_valencia_servicios_notification_team(form_data):
         return False
 
 
+def _prepare_project_email(
+    project_prefix: str,
+    from_name: str,
+    from_email: str,
+    to_email: str,
+    subject: str,
+    html_content: str,
+    domain: str
+) -> tuple[EmailMessage, str, int, str, str]:
+    prefix = project_prefix.upper()
+    
+    # Check if specific SMTP is configured
+    specific_host = getattr(settings, f"{prefix}_SMTP_HOST", "")
+    specific_user = getattr(settings, f"{prefix}_SMTP_USER", "")
+    
+    project_configured = bool(specific_host and specific_user)
+    
+    # Resolve SMTP details
+    smtp_host = specific_host if project_configured else settings.SMTP_HOST
+    smtp_port = getattr(settings, f"{prefix}_SMTP_PORT", 587) if project_configured else settings.SMTP_PORT
+    smtp_user = specific_user if project_configured else settings.SMTP_USER
+    smtp_password = getattr(settings, f"{prefix}_SMTP_PASSWORD", "") if project_configured else settings.SMTP_PASSWORD
+    
+    # Coerce port
+    if smtp_port == "" or smtp_port is None:
+        smtp_port = 587
+    else:
+        try:
+            smtp_port = int(smtp_port)
+        except ValueError:
+            smtp_port = 587
+
+    # Real From calculation to avoid SPF failure
+    actual_from = from_email if project_configured else smtp_user
+
+    message = EmailMessage()
+    message["From"] = f"{from_name} <{actual_from}>"
+    message.add_header('Reply-To', from_email)
+    message["To"] = to_email
+    message["Subject"] = subject
+    message["Date"] = formatdate(localtime=True)
+    message["Message-ID"] = make_msgid(domain=domain)
+    message.set_content(html_content, subtype="html")
+    
+    return message, smtp_host, smtp_port, smtp_user, smtp_password
+
+
 async def send_amdi_contact_confirmation_email(form_data):
     amdi_configured = bool(settings.AMDI_SMTP_HOST and settings.AMDI_SMTP_USER)
     global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
@@ -1737,20 +1784,8 @@ async def send_amdi_contact_confirmation_email(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío de confirmación de contacto AMDI para {form_data.email}")
         return True
 
-    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
-    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
-    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
-    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
-
     from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
     from_name = settings.AMDI_EMAILS_FROM_NAME if settings.AMDI_EMAILS_FROM_NAME else "AMDI | Diseño de Interiores"
-
-    message = EmailMessage()
-    message["From"] = f"{from_name} <{from_email}>"
-    message["To"] = form_data.email
-    message["Subject"] = f"¡Hola {form_data.nombre}! Recibimos tu mensaje en AMDI"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="amdi.mx")
 
     html_content = f"""
     <html>
@@ -1786,7 +1821,16 @@ async def send_amdi_contact_confirmation_email(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="AMDI",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject=f"¡Hola {form_data.nombre}! Recibimos tu mensaje en AMDI",
+        html_content=html_content,
+        domain="amdi.mx"
+    )
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
@@ -1805,19 +1849,7 @@ async def send_amdi_contact_notification_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío de notificación AMDI al equipo para {form_data.email}")
         return True
 
-    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
-    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
-    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
-    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
-
     from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
-
-    message = EmailMessage()
-    message["From"] = f"AMDI Web <{from_email}>"
-    message["To"] = "creativo@amdi.mx"
-    message["Subject"] = f"📬 Nuevo mensaje de contacto desde AMDI: {form_data.nombre} {form_data.apellido}"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="amdi.mx")
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin mensaje.'
     html_content = f"""
@@ -1870,7 +1902,16 @@ async def send_amdi_contact_notification_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="AMDI",
+        from_name="AMDI Web",
+        from_email=from_email,
+        to_email="creativo@amdi.mx",
+        subject=f"📬 Nuevo mensaje de contacto desde AMDI: {form_data.nombre} {form_data.apellido}",
+        html_content=html_content,
+        domain="amdi.mx"
+    )
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
@@ -1889,20 +1930,8 @@ async def send_amdi_newsletter_welcome(subscriber_email: str):
         logger.warning(f"SMTP no configurado. Simulando envío de bienvenida a Newsletter AMDI para {subscriber_email}")
         return True
 
-    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
-    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
-    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
-    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
-
     from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
     from_name = settings.AMDI_EMAILS_FROM_NAME if settings.AMDI_EMAILS_FROM_NAME else "AMDI | Boletín"
-
-    message = EmailMessage()
-    message["From"] = f"{from_name} <{from_email}>"
-    message["To"] = subscriber_email
-    message["Subject"] = "¡Bienvenido al Newsletter de AMDI!"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="amdi.mx")
 
     html_content = f"""
     <html>
@@ -1931,7 +1960,16 @@ async def send_amdi_newsletter_welcome(subscriber_email: str):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="AMDI",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=subscriber_email,
+        subject="¡Bienvenido al Newsletter de AMDI!",
+        html_content=html_content,
+        domain="amdi.mx"
+    )
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
@@ -1950,19 +1988,7 @@ async def send_amdi_newsletter_notification_team(subscriber_email: str):
         logger.warning(f"SMTP no configurado. Simulando envío de notificación de boletín AMDI para {subscriber_email}")
         return True
 
-    smtp_host = settings.AMDI_SMTP_HOST if amdi_configured else settings.SMTP_HOST
-    smtp_port = settings.AMDI_SMTP_PORT if amdi_configured else settings.SMTP_PORT
-    smtp_user = settings.AMDI_SMTP_USER if amdi_configured else settings.SMTP_USER
-    smtp_password = settings.AMDI_SMTP_PASSWORD if amdi_configured else settings.SMTP_PASSWORD
-
     from_email = settings.AMDI_EMAILS_FROM_EMAIL if settings.AMDI_EMAILS_FROM_EMAIL else "contacto@amdi.mx"
-
-    message = EmailMessage()
-    message["From"] = f"AMDI Web <{from_email}>"
-    message["To"] = "creativo@amdi.mx"
-    message["Subject"] = f"📰 Nuevo suscriptor al boletín de AMDI"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="amdi.mx")
 
     html_content = f"""
     <html>
@@ -1996,7 +2022,16 @@ async def send_amdi_newsletter_notification_team(subscriber_email: str):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="AMDI",
+        from_name="AMDI Web",
+        from_email=from_email,
+        to_email="creativo@amdi.mx",
+        subject=f"📰 Nuevo suscriptor al boletín de AMDI",
+        html_content=html_content,
+        domain="amdi.mx"
+    )
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
