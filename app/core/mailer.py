@@ -1761,8 +1761,8 @@ def _prepare_project_email(
         except ValueError:
             smtp_port = 587
 
-    # Real From calculation to avoid SPF failure
-    actual_from = from_email if project_configured else smtp_user
+    # Real From calculation to avoid SPF / Sender mismatch failure
+    actual_from = smtp_user
 
     message = EmailMessage()
     message["From"] = f"{from_name} <{actual_from}>"

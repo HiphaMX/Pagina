@@ -12,18 +12,4 @@ router.include_router(valencia_servicios.router)
 router.include_router(amdi.router)
 router.include_router(letrerama.router)
 
-@router.get("/debug-smtp")
-def debug_smtp():
-    from app.core.config import settings
-    return {
-        "AMDI_SMTP_HOST": settings.AMDI_SMTP_HOST,
-        "AMDI_SMTP_PORT": settings.AMDI_SMTP_PORT,
-        "AMDI_SMTP_USER": settings.AMDI_SMTP_USER,
-        "AMDI_SMTP_PASSWORD_LEN": len(settings.AMDI_SMTP_PASSWORD),
-        "SMTP_HOST": settings.SMTP_HOST,
-        "SMTP_PORT": settings.SMTP_PORT,
-        "SMTP_USER": settings.SMTP_USER,
-        "SMTP_PASSWORD_LEN": len(settings.SMTP_PASSWORD),
-    }
-
 
