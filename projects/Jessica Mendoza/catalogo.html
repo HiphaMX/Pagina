@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo | Jessica Mendoza Real Estate</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg-stone-50: #faf9f6;
+            --bg-stone-100: #f5f5f4;
+            --bg-stone-200: #e7e5e4;
+            --bg-stone-900: #1c1917;
+            
+            --color-text-dark: #1c1917;
+            --color-text-muted: #78716c;
+            --color-acento-primary: #71201c;
+            --color-acento-light: #f5eae9;
+            
+            --font-sans: 'DM Sans', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+            
+            --transition-fast: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-premium: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-stone-50);
+            color: var(--color-text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+        }
+
+        /* Header / Navegación */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.25rem 0;
+            background-color: var(--bg-stone-50);
+            border-bottom: 1px solid rgba(28, 25, 23, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-wrapper {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+
+        .logo-wrap {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .logo-svg {
+            height: 45px;
+            width: auto;
+        }
+
+        .logo-svg .cls-1 { fill: #71201c !important; }
+        .logo-svg .cls-2 { fill: #1e1f1c !important; }
+        .logo-svg .cls-3 { fill: #8c271f !important; }
+        .logo-svg .cls-4 { fill: #4a1615 !important; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.25rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-acento-primary);
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-contact-link {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            border-bottom: 1.5px solid rgba(28, 25, 23, 0.3);
+            padding-bottom: 2px;
+            transition: var(--transition-fast);
+        }
+
+        .nav-contact-link:hover {
+            color: var(--color-acento-primary);
+            border-bottom-color: var(--color-acento-primary);
+        }
+
+        /* Mobile Toggle */
+        .menu-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text-dark);
+        }
+
+        /* Overlay de Navegación Móvil */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-stone-50);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-premium);
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text-dark);
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .mobile-menu-links a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: var(--transition-fast);
+        }
+
+        .mobile-menu-links a:hover {
+            color: var(--color-acento-primary);
+        }
+
+        /* Seccion Principal */
+        main {
+            flex-grow: 1;
+            padding-top: 11rem; /* Espacio limpio y holgado por debajo de la cabecera fija */
+            padding-bottom: 8rem;
+        }
+
+        .catalog-header {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(28, 25, 23, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        .catalog-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .catalog-subtitle {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--color-text-muted);
+            font-weight: 700;
+        }
+
+        .catalog-title {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 2.25rem;
+            color: var(--color-text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .catalog-title span {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            text-transform: none;
+            font-size: 1.12em;
+        }
+
+        /* Buscador Avanzado en Catálogo */
+        .catalog-search-wrap {
+            width: 100%;
+            margin-bottom: 4rem;
+        }
+
+        .search-bar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(28, 25, 23, 0.06);
+            padding: 1.25rem 2rem;
+            display: grid;
+            grid-template-columns: 1.5fr repeat(3, 1fr) auto;
+            gap: 1.25rem;
+            align-items: center;
+        }
+
+        @media (max-width: 968px) {
+            .search-bar {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+        }
+
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .search-group label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-muted);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            border: 1px solid rgba(28, 25, 23, 0.15);
+            border-radius: 6px;
+            padding: 0.65rem 1rem 0.65rem 2.25rem;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-dark);
+            transition: var(--transition-fast);
+        }
+
+        .search-input-wrapper input:focus {
+            border-color: var(--color-acento-primary);
+            box-shadow: 0 0 0 3px rgba(140, 39, 31, 0.08);
+        }
+
+        .search-select {
+            width: 100%;
+            border: 1px solid rgba(28, 25, 23, 0.15);
+            border-radius: 6px;
+            padding: 0.65rem 1rem;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-dark);
+            background-color: #ffffff;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='24' stroke='%2378716c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='m6 9 6 6 6-6'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+        }
+
+        .search-select:focus {
+            border-color: var(--color-acento-primary);
+            box-shadow: 0 0 0 3px rgba(140, 39, 31, 0.08);
+        }
+
+        .search-btn {
+            background-color: #2d3748; /* Gris Oxford */
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition-fast);
+            align-self: flex-end;
+            height: 38px;
+        }
+
+        @media (max-width: 968px) {
+            .search-btn {
+                align-self: stretch;
+                height: 42px;
+            }
+        }
+
+        .search-btn:hover {
+            background-color: #1a202c;
+            box-shadow: 0 4px 15px rgba(45, 55, 72, 0.2);
+        }
+
+        /* Estilos del Double Range Slider */
+        .search-group-slider {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .search-group-slider label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-muted);
+        }
+
+        .range-slider-container {
+            position: relative;
+            width: 100%;
+            height: 24px;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-track {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: rgba(28, 25, 23, 0.1);
+            border-radius: 9999px;
+            z-index: 1;
+        }
+
+        .range-slider {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            pointer-events: none;
+            -webkit-appearance: none;
+            appearance: none;
+            z-index: 2;
+        }
+
+        .range-slider::-webkit-slider-runnable-track {
+            background: transparent;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-moz-range-track {
+            background: transparent;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #1c1917;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: var(--transition-fast);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            margin-top: -7.5px;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #faf9f6;
+        }
+
+        .range-slider::-moz-range-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #1c1917;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: var(--transition-fast);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .range-slider::-moz-range-thumb:hover {
+            transform: scale(1.15);
+            background: #faf9f6;
+        }
+
+        #price-slider-min { z-index: 3; }
+        #price-slider-max { z-index: 4; }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+            padding: 0 0.1rem;
+        }
+
+        .range-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .range-input-box {
+            flex: 1;
+            width: 100%;
+            border: 1px solid rgba(28, 25, 23, 0.15);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-dark);
+            text-align: center;
+            transition: var(--transition-fast);
+            background-color: #ffffff;
+        }
+
+        .range-input-box:focus {
+            border-color: var(--color-acento-primary);
+            box-shadow: 0 0 0 3px rgba(140, 39, 31, 0.08);
+        }
+
+        .range-sep {
+            color: var(--color-text-muted);
+            font-weight: 700;
+        }
+
+        @media (max-width: 968px) {
+            .search-group-slider {
+                grid-column: span 1;
+            }
+        }
+
+        /* Campos condicionales avanzados */
+        .search-conditional-fields {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out, margin 0.4s ease-out, padding 0.4s ease-out;
+        }
+
+        .search-conditional-fields.show {
+            max-height: 200px;
+            opacity: 1;
+            visibility: visible;
+            margin-top: 1.25rem;
+            border-top: 1px solid rgba(28, 25, 23, 0.08);
+            padding-top: 1.25rem;
+            padding-bottom: 0.5rem;
+        }
+
+        @media (max-width: 968px) {
+            .search-conditional-fields {
+                grid-template-columns: 1fr;
+            }
+            .search-conditional-fields.show {
+                max-height: 420px;
+            }
+        }
+
+        /* Grid de Resultados */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem 3rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .results-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Tarjeta de Propiedad */
+        .collection-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .collection-image-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            background-color: var(--bg-stone-100);
+            border-radius: 12px; /* Redondeado de esquinas premium */
+        }
+
+        .collection-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .collection-card:hover .collection-image-wrapper img {
+            transform: scale(1.06);
+        }
+
+        .collection-card-strip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            display: flex;
+            transform: translateY(4px);
+            transition: var(--transition-fast);
+        }
+
+        .collection-card-strip span {
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        .collection-card-strip span:nth-child(1) { background-color: var(--color-acento-light); }
+        .collection-card-strip span:nth-child(2) { background-color: #ffffff; }
+        .collection-card-strip span:nth-child(3) { background-color: var(--color-acento-primary); }
+
+        .collection-card:hover .collection-card-strip {
+            transform: translateY(0);
+        }
+
+        .collection-card-tag {
+            position: absolute;
+            top: 1.25rem;
+            left: 1.25rem;
+            background-color: var(--bg-stone-50);
+            color: var(--color-text-dark);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(28, 25, 23, 0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            z-index: 5;
+        }
+
+        .collection-card-tag-type {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background-color: var(--bg-stone-900);
+            color: var(--bg-stone-50);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 5;
+            transition: var(--transition-fast);
+        }
+
+        .collection-hover-view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(28, 25, 23, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: var(--transition-fast);
+            backdrop-filter: blur(4px);
+        }
+
+        .collection-card:hover .collection-hover-view {
+            opacity: 1;
+        }
+
+        .collection-view-btn {
+            background-color: #ffffff;
+            color: var(--color-text-dark);
+            border: none;
+            padding: 0.85rem 1.75rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transform: translateY(10px);
+            transition: var(--transition-fast);
+        }
+
+        .collection-card:hover .collection-view-btn {
+            transform: translateY(0);
+        }
+
+        .collection-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .collection-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+        }
+
+        .collection-card-title {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--color-text-dark);
+            letter-spacing: -0.01em;
+            transition: var(--transition-fast);
+        }
+
+        .collection-card:hover .collection-card-title {
+            color: var(--color-acento-primary);
+        }
+
+        .collection-card-price {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--color-text-dark);
+        }
+
+        .collection-card-meta {
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .collection-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .collection-info-divider {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(28, 25, 23, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .collection-info-divider-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-acento-primary);
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .collection-card:hover .collection-info-divider-fill {
+            transform: translateX(0);
+        }
+
+        .collection-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collection-card-location {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .collection-arrow {
+            color: var(--color-text-muted);
+            transition: var(--transition-fast);
+        }
+
+        .collection-card:hover .collection-arrow {
+            color: var(--color-acento-primary);
+            transform: translate(2px, -2px);
+        }
+
+        /* Estado Vacio */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 8rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-sans);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .btn-clear-filters {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--color-text-dark);
+            background: transparent;
+            color: var(--color-text-dark);
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 9999px;
+            transition: var(--transition-fast);
+        }
+
+        .btn-clear-filters:hover {
+            background-color: var(--bg-stone-900);
+            color: #ffffff;
+        }
+
+        /* Footer Section (Homologado Oscuro) */
+        footer {
+            background-color: var(--bg-stone-900); /* Fondo oscuro */
+            color: #ffffff;
+            padding: 6rem 0 3.5rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1fr;
+            gap: 4rem;
+            margin-bottom: 5.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        .footer-logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-svg {
+            height: 50px;
+            width: auto;
+            margin-right: auto;
+        }
+
+        .footer-logo-area p {
+            font-size: 0.9rem;
+            color: #a8a29e; /* Letras atenuadas claras */
+            font-weight: 300;
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        /* Logotipo escala de grises en el Footer Oscuro */
+        .footer-logo-svg .cls-1 { fill: #78716c !important; }
+        .footer-logo-svg .cls-2 { fill: #ffffff !important; } /* Letras blancas para contraste en fondo oscuro */
+        .footer-logo-svg .cls-3 { fill: #a8a29e !important; }
+        .footer-logo-svg .cls-4 { fill: #57524d !important; }
+
+        .footer-links-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: #ffffff; /* Letras blancas */
+            font-weight: 700;
+            margin-bottom: 1.75rem;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-links-list a {
+            color: #a8a29e; /* Letras claras */
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links-list a:hover {
+            color: #ffffff;
+            padding-left: 2px;
+        }
+
+        .footer-newsletter-text {
+            font-size: 0.9rem;
+            color: #a8a29e; /* Letras claras */
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .footer-form {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.5rem;
+            transition: border-bottom-color var(--transition-fast);
+        }
+
+        .footer-form:focus-within {
+            border-bottom-color: #ffffff;
+        }
+
+        .footer-form input {
+            border: none;
+            background: transparent;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: #ffffff;
+            flex-grow: 1;
+            padding: 0.25rem 0;
+        }
+
+        .footer-form input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer-form button {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+
+        .footer-form button:hover {
+            color: var(--color-acento-primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 580px) {
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        .footer-copyright {
+            font-size: 0.75rem;
+            color: #78716c;
+            font-weight: 300;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-legal a {
+            color: #78716c;
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: var(--transition-fast);
+        }
+
+        .footer-legal a:hover {
+            color: #ffffff;
+        }
+        }
+
+        /* Responsividad Móvil */
+        @media (max-width: 968px) {
+            .nav-links, .nav-right {
+                display: none;
+            }
+            .nav-wrapper {
+                grid-template-columns: 1fr auto;
+            }
+            .menu-toggle-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+            }
+            main {
+                padding-top: 8.5rem; /* Ajuste responsivo de espaciado en móviles */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navegación -->
+    <header>
+        <div class="container nav-wrapper">
+            <div class="logo-wrap">
+                <a href="index.html" aria-label="Jessica Mendoza Real Estate">
+                    <svg class="logo-svg" viewBox="0 0 768.77 297.18">
+                        <g>
+                            <g>
+                                <polygon class="cls-1" points="146.12 297.18 94.98 259.74 94.98 189.42 52.97 158.37 52.97 227.77 0 185.77 0 47.48 146.12 151.72 146.12 297.18"/>
+                                <polygon class="cls-4" points="146.1 297.18 197.25 259.74 197.25 189.42 239.25 158.37 239.25 227.77 292.22 185.77 292.22 47.48 146.1 151.72 146.1 297.18"/>
+                                <polygon class="cls-3" points="0 47.48 146.1 151.72 292.22 47.48 252.81 19.84 146.41 95.66 81.42 49.16 105.32 30.36 64.96 0 0 47.48"/>
+                            </g>
+                            <g>
+                                <path class="cls-2" d="M529.08,108.35c.4.28.18.79.29,1.21,1.81,7.19,13.78,7.81,19.11,4.74,3.22-1.86,3.67-5.94.57-8.14-3.54-2.51-13.12-2.67-17.76-3.66-13.89-2.95-22.74-11.93-20.18-26.89,4.48-26.19,56.15-27.33,57.91,3.44.03.54.2,2.25-.42,2.25h-18.43c-.41,0-.56-2.01-.77-2.55-2.31-6-15.5-6.06-18.06-.83-4.03,8.26,13.17,8.49,17.64,9.21,14.73,2.38,24.95,10.93,22.15,27.09-4.17,24.04-44.96,26.1-57.05,8.48-2.95-4.29-4.25-9.12-4.18-14.33h19.18Z"/>
+                                <path class="cls-2" d="M460.76,108.35c.47,5.47,5.58,7.34,10.38,7.64,4.38.27,12.15-.92,11.36-6.88-.65-4.86-10.49-5.03-14.16-5.6-15.14-2.37-27.52-8.26-26.01-25.96,2.36-27.56,54-29.53,57.93-.81.09.64.35,4.06.16,4.36-.04.06-.21.07-.3.11l-18.66.05c-.57-.19-.39-1.31-.52-1.81-1.68-6.77-15.9-6.91-18.17-1.38-3.22,7.86,10.37,8.02,14.82,8.72,10.87,1.7,21.62,4.41,24.63,16.55,3.33,13.44-3.83,24.99-16.76,28.97-16.5,5.08-40.44.6-43.78-19.25-.25-1.51-.51-3.23-.35-4.71h19.43Z"/>
+                                <path class="cls-2" d="M686.82,103.37c.11.03.27.26.24.4-.39,1.69-.61,3.43-1.04,5.11-8.49,33.81-59.77,32.87-70.73,1.09-5.55-16.09-1.67-36.07,12.61-46.26,20.14-14.37,51.62-7.67,58.12,17.87.14.54.79,3.46.7,3.75s-.32.25-.56.28c-.8.09-1.98,0-2.84,0-1.25,0-2.72-.17-3.97-.18-4.14-.04-8.29.07-12.43-.02-.56-.78-.84-1.73-1.37-2.62-5.56-9.35-20.18-9.65-27.05-1.68-6.19,7.19-6.28,20.86.09,27.98s19.88,7.67,25.9-.16c1.34-1.75,2-3.59,2.91-5.56h19.43Z"/>
+                                <path class="cls-2" d="M686.91,132.93l34.85-76.11,8.91-.19.42.2c11.51,24.6,22.71,49.35,34,74.05.22.47.96,1.55.85,1.95l-21.47.07-4.54-9.61-27.12.09-4.03,9.09-.37.46h-21.5ZM733.07,105.86l-6.48-17.1-6.64,17.1h13.12Z"/>
+                                <path class="cls-2" d="M405.13,85.77h24.33s.25.23.25.25v17.52h-24.57v11.12l27.73.08v18.18h-47.74s-.25-.23-.25-.25V57.63l46.72-.23c.29.09.25.32.28.55.49,4.25-.13,9.85-.02,14.3.01.46.49,3.4-.08,3.4h-26.57c-.37,0-.08.39-.08.42v9.71Z"/>
+                                <path class="cls-2" d="M319.29,142.97c.03-.1.36-.3.49-.34.6-.19,5.25-.18,6.07-.08.28.03.52.07.74.26,6.37,6.97,12.91,13.77,19.35,20.66.76.81,5.54,6.38,6,6.46.19.03.81-.48.98-.64,2.32-2.3,4.4-4.92,6.63-7.31,6.01-6.44,12.03-12.89,18.1-19.26h6.97l.25,64.92h-17.02s-.25-.23-.25-.25v-30.8c-4.65,4.9-9.36,9.74-14.03,14.61-.22.23-.41.69-.65.85-.3.19-1.56.36-1.84.17l-14.69-15.62-.08,31.05h-16.77s-.25-.23-.25-.25v-64.43Z"/>
+                                <path class="cls-2" d="M611.16,141.94c23.8-1.16,39.55,18.82,34.36,41.83-7.74,34.32-59.2,33.11-65.32-1.66-3.67-20.85,9.51-39.12,30.97-40.17ZM610.66,158.71c-17.7,1.76-18,32.27,1.78,33.16,12.83.58,18.75-12.07,15.07-23.21-2.44-7.4-9.35-10.7-16.86-9.95Z"/>
+                                <path class="cls-2" d="M516.07,207.63l-.02-64.73h27.49c16.84.94,28.82,12.08,30.29,28.98,1.73,19.82-11.43,35.39-31.46,35.79l-26.3-.03ZM533.48,191.54h10.21c.75,0,3.12-.76,3.9-1.08,11.05-4.6,11.29-25.25.61-30.33-4.04-1.92-9.4-1.22-13.82-1.29-.28,0-.71-.19-.82-.17-.39.05-.09.39-.09.41v32.46Z"/>
+                                <path class="cls-2" d="M486.49,173.78v-30.88h17.1l-.25,65.09h-5.98c-.12,0-.61-.3-.75-.41-10.55-9.97-20.15-21.35-30.81-31.13-.24-.22-.14-.6-.48-.51-.23.03.08.21.08.25v31.22s-.23.25-.25.25h-16.77l-.02-64.94c.15-.13.32-.14.51-.16,1.23-.15,4.41-.13,5.66,0,.23.02.47-.02.66.17,10.58,10.19,20.76,20.81,31.29,31.06Z"/>
+                                <path class="cls-2" d="M333.81,98.23c.22.07.23.38.26.57.43,3.69-.85,9.2,1.29,12.49,3.07,4.73,12.23,4.4,14.44-1.07,1.06-2.62.83-8.35.88-11.41.22-13.66-.25-27.33-.14-40.99.35-.8,1.07-.29,1.7-.28,5.37.11,11.1.15,16.45,0,.7-.02,2.06-.62,2.08.4v48.17c-.35,19.31-15.62,30.72-34.41,27.26-16.31-3.01-21.27-15.07-21.73-30.24-.04-1.23-.14-3.17,0-4.33.02-.17.08-.57.26-.57h18.93Z"/>
+                                <path class="cls-2" d="M437.51,158.67l-22.81.02-.02,8.44h20.59s.25.23.25.25v15.19h-21.09v8.88l23.91.25v15.94h-40.93s-.25-.23-.25-.25v-64.26s.23-.25.25-.25h39.85s.25.23.25.25v15.53Z"/>
+                                <path class="cls-2" d="M701.69,207.65l.04-.88c8.19-17.93,16.61-35.76,24.9-53.64,1.6-3.46,3.2-6.94,4.6-10.47l.26-.11,7.65.18,29.64,64.5c-.03.3-.28.56-.57.57l-17.58-.18-3.72-8.11h-23.38s-3.65,8.14-3.65,8.14h-18.18ZM740.71,184.23l-5.64-14.61-5.48,14.61h11.12Z"/>
+                                <path class="cls-2" d="M699.69,148.29c-.07.31-1.25,1.97-1.52,2.46-7.54,13.67-15.23,27.27-22.89,40.87l24.91.17v15.86h-50.23s-.25-.23-.25-.25v-5.65c0-.26,2.45-3.81,2.69-4.45l21.73-38.38-21.92-.25v-15.77h47.24s.25.23.25.25c0,1.26.23,4.12,0,5.15Z"/>
+                                <path class="cls-2" d="M602.22,132.93h-20.01s-.25-.23-.25-.25V57.63c0-.51,1.59-.09,1.9-.08,5.33.17,11.13.12,16.45,0,.7-.02,1.63-.57,2.04.28l-.13,75.1Z"/>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html#experiencia">Servicios</a></li>
+                <li><a href="catalogo.html" class="active">Catálogo</a></li>
+                <li><a href="index.html#vende">Vende</a></li>
+                <li><a href="index.html#firma">Experiencia</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+            </ul>
+            
+            <div class="nav-right">
+                <a href="index.html#contacto" class="nav-contact-link">Asesoría Privada</a>
+            </div>
+            
+            <button class="menu-toggle-btn" id="menu-toggle" aria-label="Abrir Menú">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Menú de Navegación Móvil -->
+    <nav class="mobile-menu-overlay" id="mobile-menu">
+        <button class="mobile-menu-close-btn" id="menu-close" aria-label="Cerrar Menú">
+            <i data-lucide="x" style="width: 28px; height: 28px;"></i>
+        </button>
+        <ul class="mobile-menu-links">
+            <li><a href="index.html#experiencia" onclick="toggleMenu()">Servicios</a></li>
+            <li><a href="catalogo.html" class="active" onclick="toggleMenu()">Catálogo</a></li>
+            <li><a href="index.html#vende" onclick="toggleMenu()">Vende</a></li>
+            <li><a href="index.html#firma" onclick="toggleMenu()">Experiencia</a></li>
+            <li><a href="index.html#contacto" onclick="toggleMenu()">Contacto</a></li>
+        </ul>
+        <div style="margin-top: 3rem;">
+            <a href="index.html#contacto" onclick="toggleMenu()" class="btn-stone" style="border: 1.5px solid #1c1917; padding: 0.75rem 2rem; text-decoration: none; color: #1c1917; text-transform: uppercase; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; transition: var(--transition-fast);">Asesoría Privada</a>
+        </div>
+    </nav>
+
+    <!-- Catálogo Principal -->
+    <main>
+        <div class="container">
+        <div class="catalog-header">
+            <div class="catalog-meta">
+                <span class="catalog-subtitle">Jessica Mendoza</span>
+                <h1 class="catalog-title">Catálogo <span>Inmobiliario</span></h1>
+            </div>
+        </div>
+
+        <!-- Potente Buscador Avanzado del Catálogo (Reubicado de Home) -->
+        <div class="catalog-search-wrap">
+            <form class="search-bar" id="catalog-search-form" onsubmit="event.preventDefault();">
+                <div class="search-group">
+                    <label for="search-text">Buscar</label>
+                    <div class="search-input-wrapper">
+                        <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                        <input type="text" id="search-text" placeholder="Colonia, dirección, palabra clave...">
+                    </div>
+                </div>
+                <div class="search-group">
+                    <label for="search-zone">Zona (ZMG / Ribera)</label>
+                    <select id="search-zone" class="search-select">
+                        <option value="all">Todas</option>
+                        <option value="Ajijic">Ajijic</option>
+                        <option value="Chapala">Chapala</option>
+                        <option value="Guadalajara">Guadalajara</option>
+                        <option value="Jocotepec">Jocotepec</option>
+                        <option value="Tlajomulco">Tlajomulco de Zúñiga</option>
+                        <option value="Tlaquepaque">Tlaquepaque</option>
+                        <option value="Tonalá">Tonalá</option>
+                        <option value="Zapopan">Zapopan</option>
+                    </select>
+                </div>
+                <div class="search-group">
+                    <label for="search-operation">Operación</label>
+                    <select id="search-operation" class="search-select">
+                        <option value="all">Todas</option>
+                        <option value="Compra">Compra</option>
+                        <option value="Renta">Renta</option>
+                    </select>
+                </div>
+                <div class="search-group">
+                    <label for="search-type">Tipo</label>
+                    <select id="search-type" class="search-select" onchange="toggleAdvancedFields(this.value);">
+                        <option value="all">Todos</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Departamento">Departamento</option>
+                        <option value="Terreno">Terreno</option>
+                    </select>
+                </div>
+                <button type="button" class="search-btn" id="btn-search-trigger">
+                    Buscar <i data-lucide="search" style="width: 14px; height: 14px;"></i>
+                </button>
+
+                <!-- Campos condicionales avanzados (Casa/Departamento/Terreno) -->
+                <div class="search-conditional-fields" id="advanced-search-fields">
+                    <div class="search-group" id="search-beds-group">
+                        <label for="search-beds">Habitaciones</label>
+                        <select id="search-beds" class="search-select">
+                            <option value="all">Cualquiera</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4 o más</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Slider de rango de precios (ocupa 2 columnas) -->
+                    <div class="search-group-slider" id="search-price-slider-group">
+                        <label>Presupuesto (MXN)</label>
+                        <div class="range-slider-container">
+                            <div class="slider-track" id="slider-track-bar"></div>
+                            <input type="range" id="price-slider-min" class="range-slider" min="1000000" max="50000000" step="250000" value="1000000">
+                            <input type="range" id="price-slider-max" class="range-slider" min="1000000" max="50000000" step="250000" value="50000000">
+                        </div>
+                        <div class="range-labels">
+                            <span id="label-min-val">$1,000,000</span>
+                            <span id="label-max-val">$50,000,000</span>
+                        </div>
+                        <div class="range-inputs">
+                            <input type="text" id="search-price-min" class="range-input-box" placeholder="Mínimo" value="$1,000,000">
+                            <span class="range-sep">&ndash;</span>
+                            <input type="text" id="search-price-max" class="range-input-box" placeholder="Máximo" value="$50,000,000">
+                        </div>
+                    </div>
+
+                    <div class="search-group" id="search-condition-group">
+                        <label for="search-condition">Condición</label>
+                        <select id="search-condition" class="search-select">
+                            <option value="all">Cualquiera</option>
+                            <option value="A estrenar">A estrenar (Nuevo)</option>
+                            <option value="Pre-propiedad">Pre-propiedad (Habitada)</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Grid de Tarjetas -->
+        <div id="catalog-grid" class="results-grid">
+            <!-- Cargado dinámicamente por JS -->
+        </div>
+    </div>
+</main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-logo-area">
+                    <svg class="footer-logo-svg" viewBox="0 0 768.77 297.18">
+                        <g>
+                            <g>
+                                <polygon class="cls-1" points="146.12 297.18 94.98 259.74 94.98 189.42 52.97 158.37 52.97 227.77 0 185.77 0 47.48 146.12 151.72 146.12 297.18"/>
+                                <polygon class="cls-4" points="146.1 297.18 197.25 259.74 197.25 189.42 239.25 158.37 239.25 227.77 292.22 185.77 292.22 47.48 146.1 151.72 146.1 297.18"/>
+                                <polygon class="cls-3" points="0 47.48 146.1 151.72 292.22 47.48 252.81 19.84 146.41 95.66 81.42 49.16 105.32 30.36 64.96 0 0 47.48"/>
+                            </g>
+                            <g>
+                                <path class="cls-2" d="M529.08,108.35c.4.28.18.79.29,1.21,1.81,7.19,13.78,7.81,19.11,4.74,3.22-1.86,3.67-5.94.57-8.14-3.54-2.51-13.12-2.67-17.76-3.66-13.89-2.95-22.74-11.93-20.18-26.89,4.48-26.19,56.15-27.33,57.91,3.44.03.54.2,2.25-.42,2.25h-18.43c-.41,0-.56-2.01-.77-2.55-2.31-6-15.5-6.06-18.06-.83-4.03,8.26,13.17,8.49,17.64,9.21,14.73,2.38,24.95,10.93,22.15,27.09-4.17,24.04-44.96,26.1-57.05,8.48-2.95-4.29-4.25-9.12-4.18-14.33h19.18Z"/>
+                                <path class="cls-2" d="M460.76,108.35c.47,5.47,5.58,7.34,10.38,7.64,4.38.27,12.15-.92,11.36-6.88-.65-4.86-10.49-5.03-14.16-5.6-15.14-2.37-27.52-8.26-26.01-25.96,2.36-27.56,54-29.53,57.93-.81.09.64.35,4.06.16,4.36-.04.06-.21.07-.3.11l-18.66.05c-.57-.19-.39-1.31-.52-1.81-1.68-6.77-15.9-6.91-18.17-1.38-3.22,7.86,10.37,8.02,14.82,8.72,10.87,1.7,21.62,4.41,24.63,16.55,3.33,13.44-3.83,24.99-16.76,28.97-16.5,5.08-40.44.6-43.78-19.25-.25-1.51-.51-3.23-.35-4.71h19.43Z"/>
+                                <path class="cls-2" d="M686.82,103.37c.11.03.27.26.24.4-.39,1.69-.61,3.43-1.04,5.11-8.49,33.81-59.77,32.87-70.73,1.09-5.55-16.09-1.67-36.07,12.61-46.26,20.14-14.37,51.62-7.67,58.12,17.87.14.54.79,3.46.7,3.75s-.32.25-.56.28c-.8.09-1.98,0-2.84,0-1.25,0-2.72-.17-3.97-.18-4.14-.04-8.29.07-12.43-.02-.56-.78-.84-1.73-1.37-2.62-5.56-9.35-20.18-9.65-27.05-1.68-6.19,7.19-6.28,20.86.09,27.98s19.88,7.67,25.9-.16c1.34-1.75,2-3.59,2.91-5.56h19.43Z"/>
+                                <path class="cls-2" d="M686.91,132.93l34.85-76.11,8.91-.19.42.2c11.51,24.6,22.71,49.35,34,74.05.22.47.96,1.55.85,1.95l-21.47.07-4.54-9.61-27.12.09-4.03,9.09-.37.46h-21.5ZM733.07,105.86l-6.48-17.1-6.64,17.1h13.12Z"/>
+                                <path class="cls-2" d="M405.13,85.77h24.33s.25.23.25.25v17.52h-24.57v11.12l27.73.08v18.18h-47.74s-.25-.23-.25-.25V57.63l46.72-.23c.29.09.25.32.28.55.49,4.25-.13,9.85-.02,14.3.01.46.49,3.4-.08,3.4h-26.57c-.37,0-.08.39-.08.42v9.71Z"/>
+                                <path class="cls-2" d="M319.29,142.97c.03-.1.36-.3.49-.34.6-.19,5.25-.18,6.07-.08.28.03.52.07.74.26,6.37,6.97,12.91,13.77,19.35,20.66.76.81,5.54,6.38,6,6.46.19.03.81-.48.98-.64,2.32-2.3,4.4-4.92,6.63-7.31,6.01-6.44,12.03-12.89,18.1-19.26h6.97l.25,64.92h-17.02s-.25-.23-.25-.25v-30.8c-4.65,4.9-9.36,9.74-14.03,14.61-.22.23-.41.69-.65.85-.3.19-1.56.36-1.84.17l-14.69-15.62-.08,31.05h-16.77s-.25-.23-.25-.25v-64.43Z"/>
+                                <path class="cls-2" d="M611.16,141.94c23.8-1.16,39.55,18.82,34.36,41.83-7.74,34.32-59.2,33.11-65.32-1.66-3.67-20.85,9.51-39.12,30.97-40.17ZM610.66,158.71c-17.7,1.76-18,32.27,1.78,33.16,12.83.58,18.75-12.07,15.07-23.21-2.44-7.4-9.35-10.7-16.86-9.95Z"/>
+                                <path class="cls-2" d="M516.07,207.63l-.02-64.73h27.49c16.84.94,28.82,12.08,30.29,28.98,1.73,19.82-11.43,35.39-31.46,35.79l-26.3-.03ZM533.48,191.54h10.21c.75,0,3.12-.76,3.9-1.08,11.05-4.6,11.29-25.25.61-30.33-4.04-1.92-9.4-1.22-13.82-1.29-.28,0-.71-.19-.82-.17-.39.05-.09.39-.09.41v32.46Z"/>
+                                <path class="cls-2" d="M486.49,173.78v-30.88h17.1l-.25,65.09h-5.98c-.12,0-.61-.3-.75-.41-10.55-9.97-20.15-21.35-30.81-31.13-.24-.22-.14-.6-.48-.51-.23.03.08.21.08.25v31.22s-.23.25-.25.25h-16.77l-.02-64.94c.15-.13.32-.14.51-.16,1.23-.15,4.41-.13,5.66,0,.23.02.47-.02.66.17,10.58,10.19,20.76,20.81,31.29,31.06Z"/>
+                                <path class="cls-2" d="M333.81,98.23c.22.07.23.38.26.57.43,3.69-.85,9.2,1.29,12.49,3.07,4.73,12.23,4.4,14.44-1.07,1.06-2.62.83-8.35.88-11.41.22-13.66-.25-27.33-.14-40.99.35-.8,1.07-.29,1.7-.28,5.37.11,11.1.15,16.45,0,.7-.02,2.06-.62,2.08.4v48.17c-.35,19.31-15.62,30.72-34.41,27.26-16.31-3.01-21.27-15.07-21.73-30.24-.04-1.23-.14-3.17,0-4.33.02-.17.08-.57.26-.57h18.93Z"/>
+                                <path class="cls-2" d="M437.51,158.67l-22.81.02-.02,8.44h20.59s.25.23.25.25v15.19h-21.09v8.88l23.91.25v15.94h-40.93s-.25-.23-.25-.25v-64.26s.23-.25.25-.25h39.85s.25.23.25.25v15.53Z"/>
+                                <path class="cls-2" d="M701.69,207.65l.04-.88c8.19-17.93,16.61-35.76,24.9-53.64,1.6-3.46,3.2-6.94,4.6-10.47l.26-.11,7.65.18,29.64,64.5c-.03.3-.28.56-.57.57l-17.58-.18-3.72-8.11h-23.38s-3.65,8.14-3.65,8.14h-18.18ZM740.71,184.23l-5.64-14.61-5.48,14.61h11.12Z"/>
+                                <path class="cls-2" d="M699.69,148.29c-.07.31-1.25,1.97-1.52,2.46-7.54,13.67-15.23,27.27-22.89,40.87l24.91.17v15.86h-50.23s-.25-.23-.25-.25v-5.65c0-.26,2.45-3.81,2.69-4.45l21.73-38.38-21.92-.25v-15.77h47.24s.25.23.25.25c0,1.26.23,4.12,0,5.15Z"/>
+                                <path class="cls-2" d="M602.22,132.93h-20.01s-.25-.23-.25-.25V57.63c0-.51,1.59-.09,1.9-.08,5.33.17,11.13.12,16.45,0,.7-.02,1.63-.57,2.04.28l-.13,75.1Z"/>
+                            </g>
+                        </g>
+                    </svg>
+                    <p class="footer-logo-desc">Consultoría e Intermediación Inmobiliaria Premium en Guadalajara y zonas de alta plusvalía.</p>
+                </div>
+                
+                <div class="footer-links-col">
+                    <h4 class="footer-links-title">Enlaces</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="index.html#experiencia">Servicios</a></li>
+                        <li><a href="catalogo.html">Catálogo</a></li>
+                        <li><a href="index.html#vende">Vende</a></li>
+                        <li><a href="index.html#firma">Experiencia</a></li>
+                        <li><a href="index.html#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4 class="footer-links-title">Novedades</h4>
+                    <p class="footer-newsletter-text">Suscríbete para recibir información sobre preventas exclusivas y análisis del mercado en la ZMG.</p>
+                    <form class="footer-form" id="newsletter-form" onsubmit="event.preventDefault(); alert('Gracias por suscribirte.'); this.reset();">
+                        <input type="email" required placeholder="Tu correo electrónico" aria-label="Correo electrónico">
+                        <button type="submit" aria-label="Suscribirse">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">&copy; 2026 Jessica Mendoza Real Estate. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="/aviso-de-privacidad">Aviso de Privacidad</a>
+                    <a href="/terminos-y-condiciones">Términos y Condiciones</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/db.js"></script>
+    <script>
+        // Inicializar Iconos
+        lucide.createIcons();
+
+        // Filtrar base de datos centralizada para mostrar solo propiedades de ZMG
+        const PROPERTIES_DB = window.PROPERTIES_DB.filter(item => !item.isPlaya);
+
+        // Referencias del DOM
+        const catalogGrid = document.getElementById('catalog-grid');
+        const searchText = document.getElementById('search-text');
+        const searchZone = document.getElementById('search-zone');
+        const searchOperation = document.getElementById('search-operation');
+        const searchType = document.getElementById('search-type');
+        const searchBeds = document.getElementById('search-beds');
+        const searchCondition = document.getElementById('search-condition');
+        const btnSearchTrigger = document.getElementById('btn-search-trigger');
+
+        // Sliders de Precios
+        const sliderMin = document.getElementById('price-slider-min');
+        const sliderMax = document.getElementById('price-slider-max');
+        const inputMin = document.getElementById('search-price-min');
+        const inputMax = document.getElementById('search-price-max');
+        const labelMin = document.getElementById('label-min-val');
+        const labelMax = document.getElementById('label-max-val');
+        const track = document.getElementById('slider-track-bar');
+
+        // Configuración de Precios por defecto (Compra)
+        let priceConfig = {
+            min: 1000000,
+            max: 50000000,
+            step: 250000,
+            defaultMin: 1000000,
+            defaultMax: 50000000
+        };
+
+        // Formateador para las etiquetas de los thumbs
+        function formatLabelValue(val) {
+            val = parseFloat(val);
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                minimumFractionDigits: 0
+            }).format(val);
+        }
+
+        // Formateador general para las tarjetas
+        const formatter = new Intl.NumberFormat('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
+        // Actualizar la pista (track) del slider
+        function updateTrack() {
+            const minVal = parseFloat(sliderMin.value);
+            const maxVal = parseFloat(sliderMax.value);
+            const minRange = parseFloat(sliderMin.min);
+            const maxRange = parseFloat(sliderMin.max);
+
+            const percentMin = ((minVal - minRange) / (maxRange - minRange)) * 100;
+            const percentMax = ((maxVal - minRange) / (maxRange - minRange)) * 100;
+
+            track.style.background = `linear-gradient(to right, rgba(28,25,23,0.1) ${percentMin}%, #1c1917 ${percentMin}%, #1c1917 ${percentMax}%, rgba(28,25,23,0.1) ${percentMax}%)`;
+        }
+
+        function cleanNumber(str) {
+            if (typeof str !== 'string') str = String(str);
+            return parseFloat(str.replace(/[^0-9.-]/g, '')) || 0;
+        }
+
+        function formatNumberInput(val) {
+            val = parseFloat(val) || 0;
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(val);
+        }
+
+        // Sincronizar sliders
+        function updateSliderValues() {
+            if (parseFloat(sliderMin.value) > parseFloat(sliderMax.value) - priceConfig.step) {
+                sliderMin.value = parseFloat(sliderMax.value) - priceConfig.step;
+            }
+            
+            inputMin.value = formatNumberInput(sliderMin.value);
+            inputMax.value = formatNumberInput(sliderMax.value);
+            labelMin.innerText = formatLabelValue(sliderMin.value);
+            labelMax.innerText = formatLabelValue(sliderMax.value);
+            
+            updateTrack();
+            renderCatalog(); // Filtrar dinámicamente en tiempo real
+        }
+
+        // Sincronizar desde los inputs manuales
+        function updateSliderValuesFromInputs() {
+            let valMin = cleanNumber(inputMin.value) || priceConfig.min;
+            let valMax = cleanNumber(inputMax.value) || priceConfig.max;
+
+            if (valMin < priceConfig.min) valMin = priceConfig.min;
+            if (valMax > priceConfig.max) valMax = priceConfig.max;
+            if (valMin > valMax - priceConfig.step) valMin = valMax - priceConfig.step;
+
+            sliderMin.value = valMin;
+            sliderMax.value = valMax;
+            inputMin.value = formatNumberInput(valMin);
+            inputMax.value = formatNumberInput(valMax);
+            
+            labelMin.innerText = formatLabelValue(valMin);
+            labelMax.innerText = formatLabelValue(valMax);
+            
+            updateTrack();
+            renderCatalog();
+        }
+
+        // Calibrar sliders por Operación (Compra vs Renta)
+        function calibratePriceRange() {
+            const op = searchOperation.value;
+            if (op === 'Renta') {
+                priceConfig = {
+                    min: 10000,
+                    max: 150000,
+                    step: 2500,
+                    defaultMin: 10000,
+                    defaultMax: 150000
+                };
+            } else {
+                priceConfig = {
+                    min: 1000000,
+                    max: 50000000,
+                    step: 250000,
+                    defaultMin: 1000000,
+                    defaultMax: 50000000
+                };
+            }
+
+            sliderMin.min = priceConfig.min;
+            sliderMin.max = priceConfig.max;
+            sliderMin.step = priceConfig.step;
+            sliderMin.value = priceConfig.defaultMin;
+
+            sliderMax.min = priceConfig.min;
+            sliderMax.max = priceConfig.max;
+            sliderMax.step = priceConfig.step;
+            sliderMax.value = priceConfig.defaultMax;
+
+            inputMin.value = formatNumberInput(priceConfig.defaultMin);
+            inputMax.value = formatNumberInput(priceConfig.defaultMax);
+
+            updateSliderValues();
+        }
+
+        // Lógica condicional del buscador
+        window.toggleAdvancedFields = function(type) {
+            const advancedFields = document.getElementById('advanced-search-fields');
+            const bedsGroup = document.getElementById('search-beds-group');
+            const conditionGroup = document.getElementById('search-condition-group');
+            const priceGroup = document.getElementById('search-price-slider-group');
+
+            if (type === 'Casa' || type === 'Departamento') {
+                advancedFields.classList.add('show');
+                advancedFields.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                bedsGroup.style.display = 'flex';
+                conditionGroup.style.display = 'flex';
+                priceGroup.style.gridColumn = 'span 2';
+            } else if (type === 'Terreno') {
+                advancedFields.classList.add('show');
+                advancedFields.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                bedsGroup.style.display = 'none';
+                conditionGroup.style.display = 'none';
+                priceGroup.style.gridColumn = 'span 2';
+                // Resetear campos no aplicables a Terrenos
+                searchBeds.value = 'all';
+                searchCondition.value = 'all';
+            } else {
+                advancedFields.classList.remove('show');
+                // Limpiar campos condicionales
+                searchBeds.value = 'all';
+                searchCondition.value = 'all';
+            }
+            renderCatalog();
+        };
+
+        // Renderizado y filtrado dinámico del catálogo
+        function renderCatalog() {
+            const textValue = searchText.value.toLowerCase().trim();
+            const zoneValue = searchZone.value;
+            const opValue = searchOperation.value;
+            const tipoValue = searchType.value;
+            const bedsValue = searchBeds.value;
+            const conditionValue = searchCondition.value;
+            const priceMinVal = parseFloat(sliderMin.value);
+            const priceMaxVal = parseFloat(sliderMax.value);
+
+            // Filtrar Base de Datos
+            const filtered = PROPERTIES_DB.filter(item => {
+                // Filtro por Texto libre (título, zona, municipio)
+                const matchesText = !textValue || 
+                    item.title.toLowerCase().includes(textValue) || 
+                    item.zona.toLowerCase().includes(textValue) || 
+                    item.municipio.toLowerCase().includes(textValue);
+                
+                // Filtro por Municipio
+                const matchesZone = zoneValue === 'all' || item.municipio === zoneValue;
+                
+                // Filtro por Operación
+                const matchesOp = opValue === 'all' || item.operacion === opValue;
+                
+                // Filtro por Tipo de Propiedad
+                const matchesTipo = tipoValue === 'all' || item.tipo === tipoValue;
+                
+                // Filtro por Habitaciones (solo Casa y Departamento)
+                let matchesBeds = true;
+                if (bedsValue !== 'all' && (item.tipo === 'Casa' || item.tipo === 'Departamento')) {
+                    if (bedsValue === '4') {
+                        matchesBeds = item.habitaciones >= 4;
+                    } else {
+                        matchesBeds = item.habitaciones === parseInt(bedsValue);
+                    }
+                }
+
+                // Filtro por Condición (Nuevo - Habitado)
+                let matchesCondition = true;
+                if (conditionValue !== 'all' && (item.tipo === 'Casa' || item.tipo === 'Departamento')) {
+                    matchesCondition = item.condicion === conditionValue;
+                }
+
+                // Filtro por Rango de Precios (Si es Renta en modo "Todas", se muestra siempre por la escala de precios)
+                let matchesPrice = false;
+                if (opValue === 'all' && item.operacion === 'Renta') {
+                    matchesPrice = true;
+                } else {
+                    matchesPrice = item.precio >= priceMinVal && item.precio <= priceMaxVal;
+                }
+
+                return matchesText && matchesZone && matchesOp && matchesTipo && matchesBeds && matchesCondition && matchesPrice;
+            });
+
+            // Limpiar Grid
+            catalogGrid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                catalogGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="compass" style="width: 64px; height: 64px; stroke-width: 1; color: var(--color-text-muted);"></i>
+                        <h3>Sin resultados</h3>
+                        <p>No encontramos propiedades que coincidan con la combinación de filtros seleccionada. Intenta con otros parámetros.</p>
+                        <button class="btn-clear-filters" onclick="clearFilters()">Restablecer Filtros</button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            // Renderizar Tarjetas
+            filtered.forEach(item => {
+                const card = document.createElement('a');
+                card.href = `propiedad.html?id=${item.id}`;
+                card.className = "collection-card";
+
+                // Guardar filtros y scroll al hacer clic
+                card.addEventListener('click', () => {
+                    const searchState = {
+                        text: searchText.value,
+                        zone: searchZone.value,
+                        operation: searchOperation.value,
+                        type: searchType.value,
+                        beds: searchBeds.value,
+                        condition: searchCondition.value,
+                        priceMin: sliderMin.value,
+                        priceMax: sliderMax.value,
+                        scrollY: window.scrollY
+                    };
+                    sessionStorage.setItem('jessica_mendoza_search_state', JSON.stringify(searchState));
+                });
+
+                card.innerHTML = `
+                    <div class="collection-image-wrapper">
+                        <img src="${item.image}" alt="${item.title}" loading="lazy">
+                        <span class="collection-card-tag">${item.operacion}</span>
+                        <span class="collection-card-tag-type">${item.tipo}</span>
+                        <div class="collection-hover-view">
+                            <span class="collection-view-btn">Solicitar Info</span>
+                        </div>
+                        <div class="collection-card-strip">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="collection-info">
+                        <div class="collection-info-header">
+                            <h3 class="collection-card-title">${item.title}</h3>
+                            <span class="collection-card-price">${formatter.format(item.precio)}</span>
+                        </div>
+                        <div class="collection-card-meta">
+                            <span><i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> ${item.zona}</span>
+                        </div>
+                        <div class="collection-info-divider">
+                            <div class="collection-info-divider-fill"></div>
+                        </div>
+                        <div class="collection-card-footer">
+                            <span class="collection-card-location">${item.municipio}</span>
+                            <i data-lucide="arrow-up-right" class="collection-arrow" style="width: 18px; height: 18px;"></i>
+                        </div>
+                    </div>
+                `;
+                catalogGrid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Restablecer filtros
+        window.clearFilters = function() {
+            searchText.value = '';
+            searchZone.value = 'all';
+            searchOperation.value = 'all';
+            searchType.value = 'all';
+            searchBeds.value = 'all';
+            searchCondition.value = 'all';
+            
+            toggleAdvancedFields('all');
+            calibratePriceRange();
+        };
+
+        // Listeners de los Sliders
+        sliderMin.addEventListener('input', updateSliderValues);
+        sliderMax.addEventListener('input', updateSliderValues);
+
+        // Listeners de los Inputs Manuales
+        inputMin.addEventListener('change', updateSliderValuesFromInputs);
+        inputMax.addEventListener('change', updateSliderValuesFromInputs);
+
+        // Listeners del Formulario
+        searchText.addEventListener('input', renderCatalog);
+        searchZone.addEventListener('change', renderCatalog);
+        searchOperation.addEventListener('change', () => {
+            calibratePriceRange();
+        });
+        searchBeds.addEventListener('change', renderCatalog);
+        searchCondition.addEventListener('change', renderCatalog);
+        btnSearchTrigger.addEventListener('click', renderCatalog);
+
+        // Menú Móvil
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        window.toggleMenu = function() {
+            mobileMenu.classList.toggle('active');
+            if (mobileMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        };
+
+        if (menuToggle && menuClose) {
+            menuToggle.addEventListener('click', toggleMenu);
+            menuClose.addEventListener('click', toggleMenu);
+        }
+
+        // Inicialización y restauración de estado o pre-filtrado por URL
+        const savedStateStr = sessionStorage.getItem('jessica_mendoza_search_state');
+        let initialized = false;
+
+        if (savedStateStr) {
+            try {
+                const state = JSON.parse(savedStateStr);
+                searchText.value = state.text || '';
+                searchZone.value = state.zone || 'all';
+                searchOperation.value = state.operation || 'all';
+                searchType.value = state.type || 'all';
+                searchBeds.value = state.beds || 'all';
+                searchCondition.value = state.condition || 'all';
+                
+                // Primero calibramos el rango de precios correspondiente
+                calibratePriceRange();
+                
+                // Asignamos los valores específicos del slider guardado
+                sliderMin.value = state.priceMin || priceConfig.min;
+                sliderMax.value = state.priceMax || priceConfig.max;
+                inputMin.value = formatNumberInput(sliderMin.value);
+                inputMax.value = formatNumberInput(sliderMax.value);
+                labelMin.innerText = formatLabelValue(sliderMin.value);
+                labelMax.innerText = formatLabelValue(sliderMax.value);
+                
+                updateTrack();
+                toggleAdvancedFields(searchType.value); // Esto internamente llama a renderCatalog()
+                
+                // Realizar scroll de forma diferida tras renderizar la UI
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: state.scrollY || 0,
+                        behavior: 'instant'
+                    });
+                }, 100);
+
+                sessionStorage.removeItem('jessica_mendoza_search_state'); // Limpiar para cargas subsecuentes
+                initialized = true;
+            } catch (e) {
+                console.error("Error restaurando estado de búsqueda:", e);
+            }
+        }
+
+        if (!initialized) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlTipo = urlParams.get('tipo');
+            const urlOperacion = urlParams.get('operacion');
+            const urlCondicion = urlParams.get('condicion');
+
+            let hasPreFilters = false;
+
+            if (urlTipo) {
+                searchType.value = urlTipo;
+                hasPreFilters = true;
+            }
+            if (urlOperacion) {
+                searchOperation.value = urlOperacion;
+                hasPreFilters = true;
+            }
+            if (urlCondicion) {
+                searchCondition.value = urlCondicion;
+                hasPreFilters = true;
+            }
+
+            if (hasPreFilters) {
+                calibratePriceRange(); // Recalibrar límites de precios según la operación
+                toggleAdvancedFields(searchType.value); // Autogestionar campos de slider y renderizar catálogo
+            } else {
+                calibratePriceRange();
+                renderCatalog();
+            }
+        }
+    </script>
+</body>
+</html>

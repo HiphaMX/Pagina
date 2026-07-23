@@ -1656,3 +1656,590 @@ footer {
   color: #ffffff;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Carousel / Hero Slider Custom Styles
+   ───────────────────────────────────────────────────────────── */
+.hero-slider-section {
+  position: relative;
+  height: 80vh;
+  min-height: 520px;
+  width: 100%;
+  overflow: hidden;
+  background-color: #0f172a;
+}
+
+.hero-slider {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+/* Slide Backgrounds with Ken Burns Cinematic Animation */
+.hero-slide-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 7.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+  transform: scale(1.04);
+}
+
+#slide-construccion .hero-slide-bg {
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.55) 100%), url('../img/hero_construccion.jpg');
+}
+#slide-inmobiliaria .hero-slide-bg {
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.55) 100%), url('../img/hero_inmobiliaria.jpg');
+}
+#slide-mantenimiento .hero-slide-bg {
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.55) 100%), url('../img/hero_mantenimiento.jpg');
+}
+
+/* Active State: Ken Burns zoom and drift */
+.hero-slide.active .hero-slide-bg {
+  transform: scale(1.12) translate(8px, -4px);
+}
+
+.hero-slide-content {
+  position: relative;
+  z-index: 3;
+  max-width: 820px;
+  padding: 2rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Motion graphics / Micro-animations inside slide text with elegant blur-in */
+.hero-slide-content h1,
+.hero-slide-content p,
+.hero-slide-content a,
+.hero-slide-content .badge-tagline {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(8px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-slide.active .hero-slide-content .badge-tagline {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.15s;
+}
+
+.hero-slide.active .hero-slide-content h1 {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.3s;
+}
+
+.hero-slide.active .hero-slide-content p {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.45s;
+}
+
+.hero-slide.active .hero-slide-content a {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.6s;
+}
+
+/* Slider Controls with frosted glass effect */
+.slider-control-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
+}
+
+.slider-control-btn:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.slider-control-btn.prev {
+  left: 2rem;
+}
+
+.slider-control-btn.next {
+  right: 2rem;
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  z-index: 10;
+  align-items: center;
+}
+
+/* Progress-line Indicators */
+.slider-dot {
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+.slider-dot.active {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.slider-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--accent-color);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.slider-dot.active::after {
+  animation: slideProgress 5s linear forwards;
+}
+
+@keyframes slideProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Ecosystem Teaser Card Elements (Swiss Style Grid)
+   ───────────────────────────────────────────────────────────── */
+.ecosystem-teaser-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .ecosystem-teaser-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ecosystem-teaser-card {
+  padding: 3rem 2rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-color 0.4s;
+  position: relative;
+}
+
+.ecosystem-teaser-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.04);
+  border-color: var(--accent-color);
+}
+
+.teaser-icon-wrapper {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.teaser-link {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.ecosystem-teaser-card:hover .teaser-link {
+  transform: translateX(4px);
+}
+
+/* Subpage Hero */
+.subpage-hero {
+  padding: 9rem 0 5rem 0;
+  background: linear-gradient(135deg, #182232 0%, #0c121c 100%);
+  color: #ffffff;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Popup Lightbox Gallery (Universal styles)
+   ───────────────────────────────────────────────────────────── */
+.lightbox-modal {
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.3s;
+  z-index: 10002;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close:hover {
+  color: var(--accent-color);
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 900px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  z-index: 10001;
+}
+
+.lightbox-slides-container {
+  width: 100%;
+  aspect-ratio: 3/2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0c121c;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+}
+
+.lightbox-slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lightbox-slide.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+.lightbox-prev, .lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  z-index: 10003;
+}
+
+.lightbox-prev:hover, .lightbox-next:hover {
+  background: var(--accent-color);
+  color: #ffffff;
+  border-color: var(--accent-color);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.lightbox-prev {
+  left: -5rem;
+}
+
+.lightbox-next {
+  right: -5rem;
+}
+
+@media (max-width: 1100px) {
+  .lightbox-prev {
+    left: 1rem;
+  }
+  .lightbox-next {
+    right: 1rem;
+  }
+}
+
+.lightbox-caption-container {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.lightbox-dots-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.lightbox-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.lightbox-dot.active {
+  background: var(--accent-color);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Catalog specific property grid */
+.properties-catalog-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.25rem;
+}
+
+@media (min-width: 640px) {
+  .properties-catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .properties-catalog-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.property-photo-main {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.property-img-wrapper:hover .property-photo-main {
+  transform: scale(1.05);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Alineación de Accesibilidad y Alto Contraste para Textos Hero
+   ───────────────────────────────────────────────────────────── */
+.hero-slider-section .hero-title,
+.subpage-hero .hero-title {
+  color: #ffffff !important;
+}
+
+.hero-slider-section .hero-subtitle,
+.subpage-hero .hero-subtitle {
+  color: #e2e8f0 !important; /* Gris claro/blanco azulado */
+}
+
+.hero-slider-section .hero-title strong,
+.subpage-hero .hero-title strong {
+  color: #ffffff !important;
+}
+
+/* Asegurar que la decoración decorativa inferior del strong no interfiera con el contraste */
+.hero-slider-section .hero-title strong::after,
+.subpage-hero .hero-title strong::after {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Airbnb Style Details Page & Photo Grid Layout
+   ───────────────────────────────────────────────────────────── */
+.prop-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.airbnb-gallery-grid {
+  display: grid;
+  grid-template-areas:
+    "large large small1 small2"
+    "large large small3 small4";
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  height: 480px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background-color: #0c121c;
+}
+
+@media (max-width: 767px) {
+  .airbnb-gallery-grid {
+    grid-template-areas: "large";
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    height: 320px;
+  }
+  .gallery-col-small-top-left,
+  .gallery-col-small-top-right,
+  .gallery-col-small-bottom-left,
+  .gallery-col-small-bottom-right {
+    display: none !important;
+  }
+}
+
+.airbnb-gallery-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s;
+}
+
+.airbnb-gallery-grid img:hover {
+  transform: scale(1.03);
+  filter: brightness(0.9);
+}
+
+/* Two Column Details Container */
+.prop-details-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+}
+
+@media (min-width: 992px) {
+  .prop-details-container {
+    grid-template-columns: 2.1fr 0.9fr;
+  }
+}
+
+/* Sticky Booking Card */
+.booking-card-sticky {
+  position: sticky;
+  top: 7.5rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.05);
+}
+
+.booking-card-price {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.875rem 0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Amenities Grid item */
+.amenity-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.amenity-icon {
+  font-size: 1.25rem;
+}
+
+/* Leaflet maps styling patches */
+.leaflet-container {
+  font-family: var(--font-sans) !important;
+}
+
+
+
+

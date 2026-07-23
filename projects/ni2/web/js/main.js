@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initSearchFilter();
   initEcosystemWhatsAppLinks();
+  initHomeSlider();
+  initLightboxGallery();
+  initPropertyDetailPage();
 });
 
 // ==========================================
@@ -615,5 +618,557 @@ function initEcosystemWhatsAppLinks() {
       window.open(waUrl, '_blank');
     });
   });
+}
+
+// ==========================================
+// 9. DYNAMIC HERO SLIDER (HOMEPAGE)
+// ==========================================
+function initHomeSlider() {
+  const slides = document.querySelectorAll('.hero-slide');
+  if (slides.length === 0) return;
+
+  const prevBtn = document.getElementById('slider-btn-prev');
+  const nextBtn = document.getElementById('slider-btn-next');
+  const dots = document.querySelectorAll('.slider-dot');
+  
+  let currentSlideIndex = 0;
+  let autoplayTimer = null;
+
+  function showSlide(index) {
+    // Reset index bounds
+    if (index >= slides.length) currentSlideIndex = 0;
+    else if (index < 0) currentSlideIndex = slides.length - 1;
+    else currentSlideIndex = index;
+
+    // Toggle active slide
+    slides.forEach((slide, i) => {
+      if (i === currentSlideIndex) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.remove('active');
+      }
+    });
+
+    // Toggle active dot
+    dots.forEach((dot, i) => {
+      if (i === currentSlideIndex) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+
+    // Track slide view
+    trackGA4Event('hero_slide_view', {
+      slide_index: currentSlideIndex,
+      slide_id: slides[currentSlideIndex].id
+    });
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    autoplayTimer = setInterval(() => {
+      showSlide(currentSlideIndex + 1);
+    }, 5000);
+  }
+
+  function stopAutoplay() {
+    if (autoplayTimer) {
+      clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+  }
+
+  // Click handlers
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      stopAutoplay();
+      showSlide(currentSlideIndex - 1);
+      startAutoplay();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      stopAutoplay();
+      showSlide(currentSlideIndex + 1);
+      startAutoplay();
+    });
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      stopAutoplay();
+      const index = parseInt(dot.getAttribute('data-slide') || '0');
+      showSlide(index);
+      startAutoplay();
+    });
+  });
+
+  // Start slideshow
+  showSlide(0);
+  startAutoplay();
+}
+
+// ==========================================
+// 10. BASE DE DATOS DE PROPIEDADES (ZMG)
+// ==========================================
+const PROPERTIES_DATABASE = {
+  prop1: {
+    title: "Departamento de Lujo en Providencia",
+    intent: "Venta",
+    intentCode: "buy",
+    price: 4850000,
+    priceStr: "$4,850,000 MXN",
+    type: "Departamento",
+    typeSummary: "Departamento entero en Guadalajara",
+    location: "Guadalajara, Jalisco",
+    address: "Av. Providencia 2340, Providencia, Guadalajara, Jal.",
+    coords: [20.6923, -103.3812],
+    specs: "3 Rec. • 2 Baños • 110 m²",
+    description: "Espectacular departamento completamente remodelado ubicado en la zona más exclusiva de Providencia. Cuenta con acabados de granito en cocina, pisos de porcelanato, iluminación LED inteligente y amplios ventanales que ofrecen una iluminación natural envidiable. Ideal para ejecutivos o familias que buscan seguridad, confort y una excelente conectividad vial en Guadalajara.",
+    amenities: [
+      { name: "Vista a la ciudad", icon: "🏙️" },
+      { name: "Cocina equipada", icon: "🍳" },
+      { name: "Estacionamiento (2 autos)", icon: "🚗" },
+      { name: "Elevador", icon: "🛗" },
+      { name: "Seguridad 24/7", icon: "🛡️" },
+      { name: "Conexión Wifi de alta velocidad", icon: "📶" }
+    ],
+    gallery: [
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Fachada Exterior del Edificio' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Sala de Estar / Interior' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Recámara Principal / Acabados' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Cocina Integral' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Área Común / Lobby' }
+    ]
+  },
+  prop2: {
+    title: "Loft Industrial en Colonia Americana",
+    intent: "Renta",
+    intentCode: "rent",
+    price: 26500,
+    priceStr: "$26,500 MXN / mes",
+    type: "Loft",
+    typeSummary: "Loft entero en Colonia Americana",
+    location: "Guadalajara, Jalisco",
+    address: "Calle Libertad 1420, Colonia Americana, Guadalajara, Jal.",
+    coords: [20.6725, -103.3644],
+    specs: "1 Rec. • 1.5 Baños • 75 m²",
+    description: "Hermoso loft de diseño industrial con techos de doble altura, muros de ladrillo aparente y ventanas de herrería negra de piso a techo. Cuenta con un diseño abierto que integra cocina, comedor y estancia en el primer nivel, y una amplia recámara en mezanina con baño completo. Se ubica en el corazón de la Colonia Americana, rodeado de cafés y restaurantes.",
+    amenities: [
+      { name: "Diseño industrial", icon: "🧱" },
+      { name: "Cocina abierta", icon: "🍳" },
+      { name: "Cochera techada", icon: "🚗" },
+      { name: "Acepta mascotas", icon: "🐾" },
+      { name: "Aire acondicionado", icon: "❄️" },
+      { name: "Conexión Wifi de alta velocidad", icon: "📶" }
+    ],
+    gallery: [
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Doble Altura y Ventanales' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Fachada y Accesos del Complejo' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Detalle de Escaleras y Mezzanine' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Sala de Estar y Estancia' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Baño de Visitas' }
+    ]
+  },
+  prop3: {
+    title: "Casa Vista Hermosa Bugambilias",
+    intent: "Venta",
+    intentCode: "buy",
+    price: 12900000,
+    priceStr: "$12,900,000 MXN",
+    type: "Casa",
+    typeSummary: "Casa entera en Bugambilias",
+    location: "Tlajomulco de Zúñiga, Jalisco",
+    address: "Paseo de los Cedros 452, Bugambilias Segunda Sección, Tlajomulco, Jal.",
+    coords: [20.6128, -103.4358],
+    specs: "4 Rec. • 4.5 Baños • 320 m²",
+    description: "Espectacular residencia con vistas panorámicas únicas de la ciudad. Cuenta con cochera subterránea para 4 autos, alberca templada con deck de madera, amplio jardín arbolado, cocina equipada con isla de cuarzo y acabados de mármol en todos los baños. La recámara principal cuenta con vestidor doble y jacuzzi. Fraccionamiento con vigilancia 24/7.",
+    amenities: [
+      { name: "Alberca templada", icon: "🏊" },
+      { name: "Jardín privado", icon: "🌳" },
+      { name: "Cochera para 4 autos", icon: "🚗" },
+      { name: "Seguridad 24/7", icon: "🛡️" },
+      { name: "Vista Panorámica", icon: "🌄" },
+      { name: "Cocina con isla", icon: "🍳" }
+    ],
+    gallery: [
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Fachada con alberca en Bugambilias' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Cocina y Acabados de Isla' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Detalle de Recámara Principal' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Jardín y Vista Exterior' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Estancia Familiar / Family Room' }
+    ]
+  },
+  prop4: {
+    title: "Terreno Habitacional en Valle Real",
+    intent: "Venta",
+    intentCode: "buy",
+    price: 24500000,
+    priceStr: "$24,500,000 MXN",
+    type: "Terreno",
+    typeSummary: "Lote habitacional en Valle Real",
+    location: "Zapopan, Jalisco",
+    address: "Av. de las Flores Lot 12, Valle Real, Zapopan, Jal.",
+    coords: [20.7208, -103.4294],
+    specs: "Zona Residencial Premium • Todos los servicios • 550 m²",
+    description: "Excelente lote completamente plano ubicado en una de las cerradas más tranquilas del Fraccionamiento Valle Real. Listo para escriturar e iniciar obra. Cuenta con todos los servicios ocultos (agua, luz, telefonía, drenaje), seguridad privada y acceso controlado. Una oportunidad única de inversión patrimonial en la zona de mayor plusvalía.",
+    amenities: [
+      { name: "Acceso controlado", icon: "🚪" },
+      { name: "Servicios ocultos", icon: "⚡" },
+      { name: "Lote plano", icon: "📐" },
+      { name: "Seguridad 24/7", icon: "🛡️" },
+      { name: "Áreas verdes comunes", icon: "🌳" },
+      { name: "Casa Club", icon: "🏡" }
+    ],
+    gallery: [
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Entorno de la Privada' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Vista Aérea del Terreno' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Accesos y Vigilancia Valle Real' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Casa Club y Amenidades Comunes' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Vistas del Fraccionamiento' }
+    ]
+  },
+  prop5: {
+    title: "Oficina Corporativa en Puerta de Hierro",
+    intent: "Renta",
+    intentCode: "rent",
+    price: 85000,
+    priceStr: "$85,000 MXN / mes",
+    type: "Oficina",
+    typeSummary: "Oficina Corporativa en Puerta de Hierro",
+    location: "Zapopan, Jalisco",
+    address: "Paseo de los Virreyes 45, Puerta de Hierro, Zapopan, Jal.",
+    coords: [20.7103, -103.4125],
+    specs: "Completamente equipada • 2 Baños privados • 180 m²",
+    description: "Oficina corporativa AAA en el corazón del distrito financiero de Puerta de Hierro. Cuenta con recepción amueblada, sala de juntas ejecutiva, 4 despachos privados y una amplia área abierta para estaciones de trabajo. Incluye 5 cajones de estacionamiento techados y seguridad integral con CCTV y control de acceso biométrico.",
+    amenities: [
+      { name: "Acceso biométrico", icon: "🔑" },
+      { name: "Sala de juntas", icon: "💼" },
+      { name: "Estacionamiento (5 autos)", icon: "🚗" },
+      { name: "Seguridad 24/7", icon: "🛡️" },
+      { name: "CCTV integrado", icon: "📹" },
+      { name: "Aire acondicionado", icon: "❄️" }
+    ],
+    gallery: [
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Lobby Principal del Edificio' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Sala de Juntas Ejecutiva' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Área Abierta de Trabajo' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Recepción y Control' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Vistas al Distrito Financiero' }
+    ]
+  },
+  prop6: {
+    title: "Penthouse de Lujo en Chapalita",
+    intent: "Venta",
+    intentCode: "buy",
+    price: 9200000,
+    priceStr: "$9,200,000 MXN",
+    type: "Penthouse",
+    typeSummary: "Penthouse entero en Chapalita",
+    location: "San Pedro Tlaquepaque, Jalisco",
+    address: "Av. de las Rosas 120, Chapalita, Tlaquepaque, Jal.",
+    coords: [20.6653, -103.3986],
+    specs: "3 Rec. • 3.5 Baños • 210 m²",
+    description: "Extraordinario penthouse de dos niveles con amplia terraza privada que ofrece una espectacular vista a la arboleda de Chapalita. Planta baja con sala, comedor, cocina integral equipada con barra desayunadora y recámara de visitas. Planta alta con recámara principal tipo suite, estudio de TV y acceso directo a la terraza social semi-techada.",
+    amenities: [
+      { name: "Terraza privada", icon: "🍹" },
+      { name: "Cocina integral", icon: "🍳" },
+      { name: "Estacionamiento (3 autos)", icon: "🚗" },
+      { name: "Elevador directo", icon: "🛗" },
+      { name: "Seguridad 24/7", icon: "🛡️" },
+      { name: "Estudio de TV", icon: "📺" }
+    ],
+    gallery: [
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Terraza Privada del Penthouse' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Sala y Comedor con vista' },
+      { src: '/ni2/img/loft_americana.jpg', caption: 'Cocina Integral de Cuarzo' },
+      { src: '/ni2/img/depto_providencia.jpg', caption: 'Recámara Principal / Suite' },
+      { src: '/ni2/img/casa_bugambilias.jpg', caption: 'Baño Principal con Tina' }
+    ]
+  }
+};
+
+// ==========================================
+// 11. POPUP LIGHTBOX GALLERY (REAL ESTATE)
+// ==========================================
+function initLightboxGallery() {
+  const modal = document.getElementById('lightbox-modal');
+  if (!modal) return;
+
+  const slidesContainer = document.getElementById('lightbox-slides');
+  const captionText = document.getElementById('lightbox-caption');
+  const dotsContainer = document.getElementById('lightbox-dots');
+  const prevBtn = document.getElementById('lightbox-btn-prev');
+  const nextBtn = document.getElementById('lightbox-btn-next');
+  const closeBtn = document.querySelector('.lightbox-close');
+
+  let currentGallery = [];
+  let currentImageIndex = 0;
+
+  // Extraer las galerías de la base de datos central
+  const propertyGalleries = {};
+  for (const id in PROPERTIES_DATABASE) {
+    propertyGalleries[id] = PROPERTIES_DATABASE[id].gallery;
+  }
+
+  function renderGallery() {
+    if (!slidesContainer || !dotsContainer) return;
+    slidesContainer.innerHTML = '';
+    dotsContainer.innerHTML = '';
+
+    currentGallery.forEach((item, index) => {
+      // Crear Slide
+      const slide = document.createElement('div');
+      slide.className = `lightbox-slide ${index === currentImageIndex ? 'active' : ''}`;
+      
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = item.caption;
+      
+      slide.appendChild(img);
+      slidesContainer.appendChild(slide);
+
+      // Crear Dot
+      const dot = document.createElement('span');
+      dot.className = `lightbox-dot ${index === currentImageIndex ? 'active' : ''}`;
+      dot.addEventListener('click', () => {
+        showLightboxSlide(index);
+      });
+      dotsContainer.appendChild(dot);
+    });
+
+    updateCaption();
+  }
+
+  function updateCaption() {
+    if (captionText && currentGallery[currentImageIndex]) {
+      captionText.textContent = `${currentImageIndex + 1} de ${currentGallery.length}: ${currentGallery[currentImageIndex].caption}`;
+    }
+  }
+
+  function showLightboxSlide(index) {
+    if (index >= currentGallery.length) currentImageIndex = 0;
+    else if (index < 0) currentImageIndex = currentGallery.length - 1;
+    else currentImageIndex = index;
+
+    // Toggle active slide
+    const slides = document.querySelectorAll('.lightbox-slide');
+    slides.forEach((slide, i) => {
+      if (i === currentImageIndex) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.remove('active');
+      }
+    });
+
+    // Toggle active dot
+    const dots = document.querySelectorAll('.lightbox-dot');
+    dots.forEach((dot, i) => {
+      if (i === currentImageIndex) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+
+    updateCaption();
+  }
+
+  function nextLightboxSlide() {
+    showLightboxSlide(currentImageIndex + 1);
+  }
+
+  function prevLightboxSlide() {
+    showLightboxSlide(currentImageIndex - 1);
+  }
+
+  function openLightbox(propertyId) {
+    currentGallery = propertyGalleries[propertyId] || [];
+    if (currentGallery.length === 0) return;
+
+    currentImageIndex = 0;
+    renderGallery();
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    trackGA4Event('view_property_gallery', {
+      property_id: propertyId,
+      images_count: currentGallery.length
+    });
+  }
+
+  function closeLightbox() {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // Bind click events on cards
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target && (target.classList.contains('open-gallery-btn') || target.hasAttribute('data-property-id'))) {
+      const propId = target.getAttribute('data-property-id');
+      if (propId) {
+        e.preventDefault();
+        openLightbox(propId);
+      }
+    }
+  });
+
+  // Bind modal controls
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  if (prevBtn) prevBtn.addEventListener('click', prevLightboxSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextLightboxSlide);
+
+  // Close modal clicking outside content
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeLightbox();
+    }
+  });
+
+  // Teclado para navegar y salir
+  document.addEventListener('keydown', (e) => {
+    if (modal.style.display === 'flex') {
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowRight') nextLightboxSlide();
+      else if (e.key === 'ArrowLeft') prevLightboxSlide();
+    }
+  });
+}
+
+// ==========================================
+// 12. DYNAMIC PROPERTY DETAILS (AIRBNB STYLE)
+// ==========================================
+function initPropertyDetailPage() {
+  const mapContainer = document.getElementById('map-container');
+  if (!mapContainer) return;
+
+  // 1. Obtener ID de propiedad de la URL (?id=prop1)
+  const urlParams = new URLSearchParams(window.location.search);
+  const propertyId = urlParams.get('id') || 'prop1';
+
+  // 2. Buscar datos en la base de datos
+  const prop = PROPERTIES_DATABASE[propertyId];
+  if (!prop) {
+    document.getElementById('prop-title').textContent = 'Propiedad no encontrada';
+    return;
+  }
+
+  // 3. Poblar textos básicos
+  document.title = `ni2 | ${prop.title}`;
+  document.getElementById('prop-title').textContent = prop.title;
+  document.getElementById('prop-location-summary').textContent = prop.location;
+  document.getElementById('prop-intent-badge').textContent = prop.intent;
+  
+  if (prop.intentCode === 'rent') {
+    document.getElementById('prop-intent-badge').style.backgroundColor = 'var(--accent-color)';
+  }
+
+  document.getElementById('prop-type-summary').textContent = prop.typeSummary;
+  document.getElementById('prop-specs-summary').textContent = prop.specs;
+  document.getElementById('prop-description-text').textContent = prop.description;
+  document.getElementById('prop-location-address').textContent = prop.address;
+  document.getElementById('prop-price-card').textContent = prop.priceStr;
+
+  // 4. Poblar las imágenes de la cuadrícula de Airbnb (requiere 5 imágenes)
+  const imgLarge = document.getElementById('img-large');
+  const imgSmall1 = document.getElementById('img-small-1');
+  const imgSmall2 = document.getElementById('img-small-2');
+  const imgSmall3 = document.getElementById('img-small-3');
+  const imgSmall4 = document.getElementById('img-small-4');
+
+  if (imgLarge) {
+    imgLarge.src = prop.gallery[0] ? prop.gallery[0].src : '/ni2/img/depto_providencia.jpg';
+    imgLarge.alt = prop.gallery[0] ? prop.gallery[0].caption : '';
+    imgLarge.setAttribute('data-property-id', propertyId);
+  }
+  if (imgSmall1 && prop.gallery[1]) {
+    imgSmall1.src = prop.gallery[1].src;
+    imgSmall1.alt = prop.gallery[1].caption;
+    imgSmall1.setAttribute('data-property-id', propertyId);
+  }
+  if (imgSmall2 && prop.gallery[2]) {
+    imgSmall2.src = prop.gallery[2].src;
+    imgSmall2.alt = prop.gallery[2].caption;
+    imgSmall2.setAttribute('data-property-id', propertyId);
+  }
+  if (imgSmall3 && prop.gallery[3]) {
+    imgSmall3.src = prop.gallery[3].src;
+    imgSmall3.alt = prop.gallery[3].caption;
+    imgSmall3.setAttribute('data-property-id', propertyId);
+  }
+  if (imgSmall4 && prop.gallery[4]) {
+    imgSmall4.src = prop.gallery[4].src;
+    imgSmall4.alt = prop.gallery[4].caption;
+    imgSmall4.setAttribute('data-property-id', propertyId);
+  }
+
+  // Botón "Mostrar todas las fotos"
+  const btnShowAll = document.getElementById('btn-show-all');
+  if (btnShowAll) {
+    btnShowAll.setAttribute('data-property-id', propertyId);
+  }
+
+  // 5. Poblar lista de amenidades
+  const amenitiesList = document.getElementById('prop-amenities-list');
+  if (amenitiesList) {
+    amenitiesList.innerHTML = '';
+    prop.amenities.forEach(item => {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'amenity-item-wrapper';
+      
+      const iconEl = document.createElement('span');
+      iconEl.className = 'amenity-icon';
+      iconEl.textContent = item.icon;
+      
+      const textEl = document.createElement('span');
+      textEl.textContent = item.name;
+      
+      itemEl.appendChild(iconEl);
+      itemEl.appendChild(textEl);
+      amenitiesList.appendChild(itemEl);
+    });
+  }
+
+  // 6. Inicializar Mapa Interactivo de Leaflet.js
+  try {
+    const map = L.map('map-container', {
+      center: prop.coords,
+      zoom: 15,
+      scrollWheelZoom: false
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Pin personalizado de ni2
+    const marker = L.marker(prop.coords).addTo(map);
+    marker.bindPopup(`<b>ni2: ${prop.title}</b><br>${prop.location}`).openPopup();
+  } catch (err) {
+    console.error('Error al inicializar el mapa Leaflet:', err);
+  }
+
+  // 7. Botón de WhatsApp dinámico y centralizado
+  const btnWA = document.getElementById('btn-booking-wa');
+  if (btnWA) {
+    btnWA.addEventListener('click', () => {
+      const phone = '525512345678';
+      const message = `Hola, me interesa agendar una visita o recibir más información de la propiedad: "${prop.title}" (${prop.intent}) que vi en el portal ni2.`;
+      const encodedMsg = encodeURIComponent(message);
+      const waUrl = `https://wa.me/${phone}?text=${encodedMsg}`;
+      
+      // GA4 track
+      trackGA4Event('click_booking_whatsapp', {
+        property_id: propertyId,
+        property_title: prop.title,
+        link_url: waUrl
+      });
+      
+      window.open(waUrl, '_blank');
+    });
+  }
 }
 

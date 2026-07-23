@@ -37,6 +37,7 @@ class C:
 CYAN    = C.fg(6, 182, 212)
 MAGENTA = C.fg(192, 38, 211)
 BLUE    = C.fg(59, 130, 246)
+ORANGE  = C.fg(249, 115, 22)
 MUTED   = C.fg(100, 116, 139)
 WHITE   = C.fg(241, 245, 249)
 BG_DARK = C.bg(5, 8, 16)
@@ -306,6 +307,41 @@ Objetivo: [Qué decisiones queremos tomar con esta información]
 
 [Adjuntar datos, enlaces o instrucciones específicas aquí]""",
     },
+    {
+        "id": 10,
+        "key": "sitesentinel",
+        "name": "SiteSentinel",
+        "icon": "🕵️",
+        "color": ORANGE,                  # Orange
+        "role": "QA Specialist & Web Integrity Tester",
+        "file": "AGENT_SITESENTINEL.md",
+        "badge": "El Guardián del Funcionamiento",
+        "tags": ["testing", "qa", "monitoreo", "email", "pagos", "formularios", "pdf", "ux", "correo", "stripe"],
+        "when_to_use": [
+            "Validar el correcto funcionamiento de formularios de contacto y notificaciones",
+            "Verificar que la configuración de correo y SMTP (SPF/DMARC) no cause rebotes (554)",
+            "Probar pasarelas de pago (Stripe, PayPal, etc.) en modo test o producción",
+            "Confirmar la correcta generación de contratos en PDF y documentos automatizados",
+            "Auditar la UX (usabilidad, responsividad, enlaces rotos, carga) en todos los dispositivos",
+        ],
+        "activation": """Actúa como SiteSentinel, el tester maniático del equipo de HiphaMX, especializado en QA, integración de servicios y blindaje de la experiencia de usuario (UX).
+
+Proyecto / Cliente: [nombre]
+URL del sitio o entorno: [URL o local]
+
+Misión de pruebas:
+- Formularios y Notificaciones: [ ] Sí / [ ] No
+- Configuración de Correo / SMTP: [ ] Sí / [ ] No
+- Pasarelas de Pago: [ ] Sí / [ ] No
+- Generación de Documentos/PDF: [ ] Sí / [ ] No
+- Auditoría de UX y Responsividad: [ ] Sí / [ ] No
+
+Tu tarea:
+1. Diseñar el plan de pruebas exhaustivo (Edge Cases, flujos críticos).
+2. Ejecutar las comprobaciones y documentar los fallos encontrados.
+3. Proporcionar un reporte de hallazgos ordenado por criticidad (Bloqueante, Alto, Medio, Bajo).
+4. Retroalimentar a KAM con las áreas de oportunidad de inmediato.""",
+    },
 ]
 
 # ─── Helper functions ────────────────────────────────────────────────────────
@@ -359,7 +395,7 @@ def print_agent_list():
 
     hr()
     print()
-    print(f"  {CYAN}[10]{C.RESET} {WHITE}🔍  Ayúdame a elegir un agente{C.RESET}  {MUTED}(responde unas preguntas){C.RESET}")
+    print(f"  {CYAN}[11]{C.RESET} {WHITE}🔍  Ayúdame a elegir un agente{C.RESET}  {MUTED}(responde unas preguntas){C.RESET}")
     print(f"  {MUTED}[0]  Salir{C.RESET}")
     print()
 
@@ -425,6 +461,8 @@ def wizard():
         ("Necesito super-prompts 8K para fotografía publicitaria Gemini.",    ["imagenologo"]),
         ("Necesito documentar endpoints, README o el proyecto.",              ["docagent"]),
         ("Tengo un problema de seguridad o quiero auditar el código.",        ["codeguardian"]),
+        ("Necesito analizar datos (CSV/Excel) o investigar tendencias.",      ["datos"]),
+        ("Necesito probar formularios, pagos, correos SMTP, PDFs o UX.",      ["sitesentinel"]),
         ("No sé bien, muéstrame todos los agentes.",                          None),
     ]
 
@@ -506,7 +544,7 @@ def main():
     while True:
         print_agent_list()
 
-        choice = input(f"  {CYAN}Selecciona un agente {MUTED}[1-9, 10, 0]{CYAN}: {C.RESET}").strip()
+        choice = input(f"  {CYAN}Selecciona un agente {MUTED}[1-10, 11, 0]{CYAN}: {C.RESET}").strip()
 
         if choice == "0":
             clear()
@@ -516,7 +554,7 @@ def main():
             print()
             break
 
-        elif choice == "10":
+        elif choice == "11":
             result = wizard()
             if result:
                 print_agent_detail(result)

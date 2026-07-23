@@ -55,13 +55,17 @@
             </div>
             
             <nav class="nav-menu">
-                <a href="#" class="nav-link active">
+                <a href="#" class="nav-link active" id="navLinkTraffic">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                     Resumen Tráfico
                 </a>
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" id="navLinkSocial">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     Redes Sociales
+                </a>
+                <a href="#" class="nav-link" id="navLinkSat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="16" y1="2" x2="16" y2="4"/><line x1="8" y1="2" x2="8" y2="4"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M12 14v4"/><path d="M9 16h6"/></svg>
+                    Facturación SAT
                 </a>
             </nav>
         </aside>
@@ -71,11 +75,11 @@
             
             <header class="top-header">
                 <div>
-                    <h1>Centro de Control de Tráfico</h1>
-                    <p class="subtitle">Clasificación de cuentas por volumen de usuarios nuevos</p>
+                    <h1 id="headerTitle">Centro de Control de Tráfico</h1>
+                    <p class="subtitle" id="headerSubtitle">Clasificación de cuentas por volumen de usuarios nuevos</p>
                 </div>
                 
-                <div class="date-selector">
+                <div class="date-selector" id="trafficDateSelector">
                     <select id="dateRangeSelect">
                         <option value="7daysAgo">Últimos 7 días</option>
                         <option value="30daysAgo" selected>Últimos 30 días</option>
@@ -84,8 +88,8 @@
                 </div>
             </header>
 
-            <!-- Grid Layout para el Dashboard -->
-            <div class="dashboard-grid">
+            <!-- Grid Layout para el Dashboard de Tráfico -->
+            <div class="dashboard-grid" id="trafficSection">
                 
                 <!-- Panel Izquierdo: Lista de Clientes -->
                 <div class="glass-panel client-list-panel">
@@ -155,8 +159,132 @@
                 </div>
                 
             </div>
+
+            <!-- Grid Layout para Facturación SAT -->
+            <div class="dashboard-grid hidden" id="satSection">
+                
+                <!-- Panel Izquierdo: Lista de Cuentas SAT -->
+                <div class="glass-panel client-list-panel">
+                    <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2>Cuentas SAT</h2>
+                        <button id="btnAddAccount" class="btn-primary-mini" style="background:rgba(0, 229, 255, 0.1); border:1px solid var(--accent-cyan); color:var(--accent-cyan); padding:0.25rem 0.5rem; border-radius:6px; cursor:pointer; font-size:0.75rem;">+ Agregar</button>
+                    </div>
+                    
+                    <div class="client-list" id="satAccountListContainer">
+                        <!-- Se inyecta por JS -->
+                    </div>
+                </div>
+
+                <!-- Panel Derecho: Detalle de Facturas -->
+                <div class="glass-panel client-details-panel">
+                    <div id="satEmptyState" class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        <p>Selecciona una cuenta fiscal para consultar y actualizar sus facturas.</p>
+                    </div>
+                    
+                    <div id="satContent" class="details-content hidden">
+                        <div class="details-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                            <div>
+                                <h2 id="satClientName">Nombre Cuenta</h2>
+                                <p id="satClientRfc" style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem; font-family:monospace;"></p>
+                            </div>
+                            <span class="status-badge pulse-green" id="satConnectionBadge">Conexión Lista</span>
+                        </div>
+                        
+                        <!-- Actions Row -->
+                        <div class="sat-actions-row" style="display:flex; gap:1rem; align-items:center; background:rgba(255,255,255,0.02); padding:1.5rem; border-radius:12px; border:1px solid var(--border-color); margin-bottom:1.5rem; flex-wrap:wrap;">
+                            <div style="display:flex; flex-direction:column; gap:0.25rem;">
+                                <label style="font-size:0.75rem; color:var(--text-muted);">Mes a Consultar</label>
+                                <input type="month" id="satMonthSelect" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.5rem; border-radius:8px; outline:none;">
+                            </div>
+                            
+                            <button id="btnSyncSat" class="btn-sync" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:0.5rem; transition:opacity 0.2s; margin-top:1.1rem; outline:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                <span>Actualizar Facturas</span>
+                            </button>
+
+                            <button id="btnDownloadReport" class="btn-download" style="background:rgba(255,255,255,0.08); color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:0.5rem; transition:background-color 0.2s; margin-top:1.1rem; outline:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Descargar Excel
+                            </button>
+                        </div>
+                        
+                        <!-- Contenedor para mensajes de estado inline -->
+                        <div id="satSyncStatus" style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem; display:none; padding:0.5rem 0.75rem; border-radius:6px; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); width:fit-content; max-width:450px; line-height:1.4;"></div>
+                        
+                        <!-- Summary Cards -->
+                        <div class="kpi-cards" style="margin-bottom:1.5rem;">
+                            <div class="kpi-card" style="border-left:4px solid var(--accent-cyan); border-radius:8px; background:rgba(0, 229, 255, 0.03);">
+                                <h3>Ingresos (Emitidas)</h3>
+                                <div class="kpi-value" id="satKpiEmitidas">$0.00</div>
+                                <span id="satCountEmitidas" style="font-size:0.75rem; color:var(--text-muted)">0 facturas</span>
+                            </div>
+                            <div class="kpi-card" style="border-left:4px solid var(--accent-purple); border-radius:8px; background:rgba(179, 136, 255, 0.03);">
+                                <h3>Egresos (Recibidas)</h3>
+                                <div class="kpi-value" id="satKpiRecibidas">$0.00</div>
+                                <span id="satCountRecibidas" style="font-size:0.75rem; color:var(--text-muted)">0 facturas</span>
+                            </div>
+                            <div class="kpi-card" style="border-left:4px solid var(--accent-blue); border-radius:8px; background:rgba(59, 130, 246, 0.03);">
+                                <h3>Resultado / Neto</h3>
+                                <div class="kpi-value" id="satKpiNeto">$0.00</div>
+                                <span style="font-size:0.75rem; color:var(--text-muted)">Diferencia</span>
+                            </div>
+                        </div>
+
+                        <!-- Invoices list -->
+                        <div class="top-sections-container" style="display:flex; flex-direction:column; height:calc(100vh - 460px); overflow:none; margin-bottom: 0;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <h3>Detalle de Comprobantes</h3>
+                                <input type="text" id="satInvoiceSearch" placeholder="Buscar emisor, receptor, UUID..." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.4rem 0.8rem; border-radius:6px; font-size:0.8rem; width:250px; outline:none;">
+                            </div>
+                            <div style="flex:1; overflow-y:auto; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,0.15);">
+                                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem;">
+                                    <thead>
+                                        <tr style="border-bottom:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-muted);">
+                                            <th style="padding:0.75rem 0.5rem; text-align:center; width: 80px;">Tipo</th>
+                                            <th style="padding:0.75rem 0.5rem; width: 120px;">UUID (Folio)</th>
+                                            <th style="padding:0.75rem 0.5rem;">Emisor/Receptor</th>
+                                            <th style="padding:0.75rem 0.5rem; text-align:right; width: 100px;">Monto</th>
+                                            <th style="padding:0.75rem 0.5rem; width: 120px;">Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="satInvoiceTableBody">
+                                        <!-- Inyectado por JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
             
         </main>
+    </div>
+
+    <!-- Modal para Agregar Cuenta SAT -->
+    <div id="satAccountModal" class="modal-overlay hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <div class="login-box glass-panel" style="width:400px; padding:2rem; border:1px solid var(--border-color); border-radius:16px;">
+            <div class="login-header" style="margin-bottom:1.5rem; text-align:center;">
+                <h2 style="font-size:1.5rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">Agregar Cuenta Fiscal</h2>
+                <p style="font-size:0.85rem; color:var(--text-muted);">Configura un RFC para descargar facturas</p>
+            </div>
+            <form id="satAccountForm" style="display:flex; flex-direction:column; gap:1.2rem;">
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <label for="satInputRfc" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">RFC (12 o 13 caracteres)</label>
+                    <input type="text" id="satInputRfc" required placeholder="XAXX010101000" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem; border-radius:8px; outline:none; text-transform:uppercase; font-family:monospace; font-size:0.9rem;">
+                </div>
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <label for="satInputName" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Nombre o Razón Social</label>
+                    <input type="text" id="satInputName" required placeholder="Mi Empresa S.A. de C.V." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                </div>
+                <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1rem;">
+                    <button type="button" id="btnCancelSatAccount" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Cancelar</button>
+                    <button type="submit" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Guardar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Script de Lógica -->

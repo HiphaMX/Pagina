@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando Propiedad | Jessica Mendoza Real Estate</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg-stone-50: #faf9f6;
+            --bg-stone-100: #f5f5f4;
+            --bg-stone-200: #e7e5e4;
+            --bg-stone-900: #1c1917;
+            
+            --color-text-dark: #1c1917;
+            --color-text-muted: #78716c;
+            --color-acento-primary: #71201c;
+            --color-acento-light: #f5eae9;
+            
+            --font-sans: 'DM Sans', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+            
+            --transition-fast: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-premium: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-stone-50);
+            color: var(--color-text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+        }
+
+        /* Header / Navegación */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.25rem 0;
+            background-color: var(--bg-stone-50);
+            border-bottom: 1px solid rgba(28, 25, 23, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-wrapper {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+
+        .logo-wrap {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .logo-svg {
+            height: 45px;
+            width: auto;
+        }
+
+        .logo-svg .cls-1 { fill: #71201c !important; }
+        .logo-svg .cls-2 { fill: #1e1f1c !important; }
+        .logo-svg .cls-3 { fill: #8c271f !important; }
+        .logo-svg .cls-4 { fill: #4a1615 !important; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.25rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-acento-primary);
+        }
+
+        .nav-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-contact-link {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            border-bottom: 1.5px solid rgba(28, 25, 23, 0.3);
+            padding-bottom: 2px;
+            transition: var(--transition-fast);
+        }
+
+        .nav-contact-link:hover {
+            color: var(--color-acento-primary);
+            border-bottom-color: var(--color-acento-primary);
+        }
+
+        /* Mobile Toggle */
+        .menu-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text-dark);
+        }
+
+        @media (max-width: 968px) {
+            .nav-links, .nav-right {
+                display: none;
+            }
+            .nav-wrapper {
+                display: flex;
+                justify-content: space-between;
+            }
+            .menu-toggle-btn {
+                display: block;
+            }
+        }
+
+        /* Overlay de Navegación Móvil */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-stone-50);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-premium);
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-close-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-text-dark);
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .mobile-menu-links a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: var(--transition-fast);
+        }
+
+        .mobile-menu-links a:hover {
+            color: var(--color-acento-primary);
+        }
+
+        /* Main Section */
+        main {
+            flex: 1;
+            padding-top: 9rem;
+            padding-bottom: 5rem;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-top: 7rem;
+            }
+        }
+
+        /* Botón de regreso */
+        .back-nav {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            transition: var(--transition-fast);
+        }
+
+        .btn-back:hover {
+            color: var(--color-acento-primary);
+            transform: translateX(-4px);
+        }
+
+        /* Cabecera de Propiedad */
+        .prop-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .prop-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        .prop-title-wrap h1 {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 2.25rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: var(--color-text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .prop-meta-top {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .meta-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--bg-stone-200);
+        }
+
+        .prop-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: 1px solid var(--bg-stone-200);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            background-color: var(--bg-stone-100);
+            border-color: var(--color-text-dark);
+        }
+
+        /* Galería de Fotos Estilo Airbnb */
+        .airbnb-gallery {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: 200px 200px;
+            gap: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.04);
+        }
+
+        .gallery-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            height: 408px;
+        }
+
+        .btn-all-photos {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: #ffffff;
+            border: 1px solid var(--color-text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            transition: var(--transition-fast);
+            z-index: 10;
+        }
+
+        .btn-all-photos:hover {
+            transform: scale(1.02);
+            background-color: var(--bg-stone-50);
+        }
+
+        @media (max-width: 968px) {
+            .airbnb-gallery {
+                grid-template-columns: 1fr;
+                grid-template-rows: 280px;
+            }
+            .gallery-item:not(.large) {
+                display: none;
+            }
+            .gallery-item.large {
+                grid-column: span 1;
+                grid-row: span 1;
+                height: 280px;
+            }
+        }
+
+        /* Layout de Detalles */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 3.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 968px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        /* Columna Izquierda */
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .specs-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(28,25,23,0.08);
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--color-text-dark);
+        }
+
+        .specs-bar span {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        @media (max-width: 480px) {
+            .specs-bar {
+                flex-wrap: wrap;
+                gap: 1rem 1.5rem;
+            }
+        }
+
+        .desc-section {
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(28,25,23,0.08);
+        }
+
+        .section-title {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 1.35rem;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.25rem;
+            color: var(--color-text-dark);
+        }
+
+        .desc-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--color-text-muted);
+            font-weight: 300;
+        }
+
+        /* Amenidades (Lo que ofrece este lugar) */
+        .amenities-section {
+            padding-bottom: 1rem;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem 2rem;
+        }
+
+        @media (max-width: 580px) {
+            .amenities-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.95rem;
+            color: var(--color-text-dark);
+        }
+
+        .amenity-item i {
+            color: var(--color-text-muted);
+        }
+
+        /* Columna Derecha (Tarjeta Sticky de Contacto) */
+        .sticky-card-wrap {
+            position: sticky;
+            top: 7rem;
+        }
+
+        .contact-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(28, 25, 23, 0.08);
+            border-radius: 12px;
+            padding: 2.25rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-price {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .card-price-type {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            font-weight: 400;
+        }
+
+        .card-tag {
+            background-color: var(--bg-stone-100);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-dark);
+        }
+
+        .card-tag.renta {
+            background-color: var(--color-acento-light);
+            color: var(--color-acento-primary);
+        }
+
+        .btn-whatsapp-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            background-color: var(--bg-stone-900);
+            color: #ffffff;
+            border: none;
+            padding: 1.1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .btn-whatsapp-primary:hover {
+            background-color: var(--color-acento-primary);
+            box-shadow: 0 8px 25px rgba(113, 32, 28, 0.15);
+        }
+
+        .card-disclaimer {
+            margin-top: 1.25rem;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            color: var(--color-text-muted);
+            text-align: center;
+            font-weight: 300;
+        }
+
+        /* Sección de Alternativas (Recomendadas) */
+        .alternatives-section {
+            margin-top: 5rem;
+            padding-top: 4rem;
+            border-top: 1px solid rgba(28,25,23,0.08);
+        }
+
+        .alternatives-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.25rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .alternatives-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .alternatives-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tarjeta de Catálogo Homologada */
+        .collection-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(28, 25, 23, 0.06);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-premium);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .collection-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(28, 25, 23, 0.04);
+            border-color: rgba(28, 25, 23, 0.15);
+        }
+
+        .collection-card-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            background-color: var(--bg-stone-200);
+            border-radius: 12px;
+        }
+
+        .collection-card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .collection-card:hover .collection-card-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .collection-card-tag {
+            position: absolute;
+            top: 1.25rem;
+            left: 1.25rem;
+            background-color: #ffffff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-dark);
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .collection-card-tag-type {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background-color: var(--bg-stone-900);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--bg-stone-50);
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .collection-card-info {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .collection-card-zone {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .collection-card-title {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 1.15rem;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            color: var(--color-text-dark);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.9rem;
+        }
+
+        .collection-card-bottom {
+            margin-top: auto;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(28, 25, 23, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collection-card-price {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+        }
+
+        .collection-card-specs {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Galería Modal Pantalla Completa */
+        .photo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #ffffff;
+            z-index: 1200;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-premium);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(28,25,23,0.06);
+        }
+
+        .modal-top h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-close-modal {
+            background: none;
+            border: 1px solid var(--color-text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-fast);
+        }
+
+        .btn-close-modal:hover {
+            background-color: var(--bg-stone-100);
+        }
+
+        .modal-body-gallery {
+            flex: 1;
+            overflow-y: auto;
+            padding: 3rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .modal-img-container {
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .modal-img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Notificación Copiar enlace */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--bg-stone-900);
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1300;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Footer Section (Homologado Oscuro) */
+        footer {
+            background-color: var(--bg-stone-900); /* Fondo oscuro */
+            color: #ffffff;
+            padding: 6rem 0 3.5rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1fr;
+            gap: 4rem;
+            margin-bottom: 5.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        .footer-logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-svg {
+            height: 50px;
+            width: auto;
+            margin-right: auto;
+        }
+
+        .footer-logo-area p {
+            font-size: 0.9rem;
+            color: #a8a29e; /* Letras atenuadas claras */
+            font-weight: 300;
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        /* Logotipo escala de grises en el Footer Oscuro */
+        .footer-logo-svg .cls-1 { fill: #78716c !important; }
+        .footer-logo-svg .cls-2 { fill: #ffffff !important; } /* Letras blancas para contraste en fondo oscuro */
+        .footer-logo-svg .cls-3 { fill: #a8a29e !important; }
+        .footer-logo-svg .cls-4 { fill: #57524d !important; }
+
+        .footer-links-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: #ffffff; /* Letras blancas */
+            font-weight: 700;
+            margin-bottom: 1.75rem;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-links-list a {
+            color: #a8a29e; /* Letras claras */
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links-list a:hover {
+            color: #ffffff;
+            padding-left: 2px;
+        }
+
+        .footer-newsletter-text {
+            font-size: 0.9rem;
+            color: #a8a29e; /* Letras claras */
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .footer-form {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.5rem;
+            transition: border-bottom-color var(--transition-fast);
+        }
+
+        .footer-form:focus-within {
+            border-bottom-color: #ffffff;
+        }
+
+        .footer-form input {
+            border: none;
+            background: transparent;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: #ffffff;
+            flex-grow: 1;
+            padding: 0.25rem 0;
+        }
+
+        .footer-form input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer-form button {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+
+        .footer-form button:hover {
+            color: var(--color-acento-primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 580px) {
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        .footer-copyright {
+            font-size: 0.75rem;
+            color: #78716c;
+            font-weight: 300;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-legal a {
+            color: #78716c;
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: var(--transition-fast);
+        }
+
+        .footer-legal a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Barra de Navegación -->
+    <header>
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo-wrap">
+                    <a href="index.html" aria-label="Jessica Mendoza Real Estate">
+                        <svg class="logo-svg" viewBox="0 0 768.77 297.18">
+                            <g>
+                                <g>
+                                    <polygon class="cls-1" points="146.12 297.18 94.98 259.74 94.98 189.42 52.97 158.37 52.97 227.77 0 185.77 0 47.48 146.12 151.72 146.12 297.18"/>
+                                    <polygon class="cls-4" points="146.1 297.18 197.25 259.74 197.25 189.42 239.25 158.37 239.25 227.77 292.22 185.77 292.22 47.48 146.1 151.72 146.1 297.18"/>
+                                    <polygon class="cls-3" points="0 47.48 146.1 151.72 292.22 47.48 252.81 19.84 146.41 95.66 81.42 49.16 105.32 30.36 64.96 0 0 47.48"/>
+                                </g>
+                                <g>
+                                    <path class="cls-2" d="M529.08,108.35c.4.28.18.79.29,1.21,1.81,7.19,13.78,7.81,19.11,4.74,3.22-1.86,3.67-5.94.57-8.14-3.54-2.51-13.12-2.67-17.76-3.66-13.89-2.95-22.74-11.93-20.18-26.89,4.48-26.19,56.15-27.33,57.91,3.44.03.54.2,2.25-.42,2.25h-18.43c-.41,0-.56-2.01-.77-2.55-2.31-6-15.5-6.06-18.06-.83-4.03,8.26,13.17,8.49,17.64,9.21,14.73,2.38,24.95,10.93,22.15,27.09-4.17,24.04-44.96,26.1-57.05,8.48-2.95-4.29-4.25-9.12-4.18-14.33h19.18Z"/>
+                                    <path class="cls-2" d="M460.76,108.35c.47,5.47,5.58,7.34,10.38,7.64,4.38.27,12.15-.92,11.36-6.88-.65-4.86-10.49-5.03-14.16-5.6-15.14-2.37-27.52-8.26-26.01-25.96,2.36-27.56,54-29.53,57.93-.81.09.64.35,4.06.16,4.36-.04.06-.21.07-.3.11l-18.66.05c-.57-.19-.39-1.31-.52-1.81-1.68-6.77-15.9-6.91-18.17-1.38-3.22,7.86,10.37,8.02,14.82,8.72,10.87,1.7,21.62,4.41,24.63,16.55,3.33,13.44-3.83,24.99-16.76,28.97-16.5,5.08-40.44.6-43.78-19.25-.25-1.51-.51-3.23-.35-4.71h19.43Z"/>
+                                    <path class="cls-2" d="M686.82,103.37c.11.03.27.26.24.4-.39,1.69-.61,3.43-1.04,5.11-8.49,33.81-59.77,32.87-70.73,1.09-5.55-16.09-1.67-36.07,12.61-46.26,20.14-14.37,51.62-7.67,58.12,17.87.14.54.79,3.46.7,3.75s-.32.25-.56.28c-.8.09-1.98,0-2.84,0-1.25,0-2.72-.17-3.97-.18-4.14-.04-8.29.07-12.43-.02-.56-.78-.84-1.73-1.37-2.62-5.56-9.35-20.18-9.65-27.05-1.68-6.19,7.19-6.28,20.86.09,27.98s19.88,7.67,25.9-.16c1.34-1.75,2-3.59,2.91-5.56h19.43Z"/>
+                                    <path class="cls-2" d="M686.91,132.93l34.85-76.11,8.91-.19.42.2c11.51,24.6,22.71,49.35,34,74.05.22.47.96,1.55.85,1.95l-21.47.07-4.54-9.61-27.12.09-4.03,9.09-.37.46h-21.5ZM733.07,105.86l-6.48-17.1-6.64,17.1h13.12Z"/>
+                                    <path class="cls-2" d="M405.13,85.77h24.33s.25.23.25.25v17.52h-24.57v11.12l27.73.08v18.18h-47.74s-.25-.23-.25-.25V57.63l46.72-.23c.29.09.25.32.28.55.49,4.25-.13,9.85-.02,14.3.01.46.49,3.4-.08,3.4h-26.57c-.37,0-.08.39-.08.42v9.71Z"/>
+                                    <path class="cls-2" d="M319.29,142.97c.03-.1.36-.3.49-.34.6-.19,5.25-.18,6.07-.08.28.03.52.07.74.26,6.37,6.97,12.91,13.77,19.35,20.66.76.81,5.54,6.38,6,6.46.19.03.81-.48.98-.64,2.32-2.3,4.4-4.92,6.63-7.31,6.01-6.44,12.03-12.89,18.1-19.26h6.97l.25,64.92h-17.02s-.25-.23-.25-.25v-30.8c-4.65,4.9-9.36,9.74-14.03,14.61-.22.23-.41.69-.65.85-.3.19-1.56.36-1.84.17l-14.69-15.62-.08,31.05h-16.77s-.25-.23-.25-.25v-64.43Z"/>
+                                    <path class="cls-2" d="M611.16,141.94c23.8-1.16,39.55,18.82,34.36,41.83-7.74,34.32-59.2,33.11-65.32-1.66-3.67-20.85,9.51-39.12,30.97-40.17ZM610.66,158.71c-17.7,1.76-18,32.27,1.78,33.16,12.83.58,18.75-12.07,15.07-23.21-2.44-7.4-9.35-10.7-16.86-9.95Z"/>
+                                    <path class="cls-2" d="M516.07,207.63l-.02-64.73h27.49c16.84.94,28.82,12.08,30.29,28.98,1.73,19.82-11.43,35.39-31.46,35.79l-26.3-.03ZM533.48,191.54h10.21c.75,0,3.12-.76,3.9-1.08,11.05-4.6,11.29-25.25.61-30.33-4.04-1.92-9.4-1.22-13.82-1.29-.28,0-.71-.19-.82-.17-.39.05-.09.39-.09.41v32.46Z"/>
+                                    <path class="cls-2" d="M486.49,173.78v-30.88h17.1l-.25,65.09h-5.98c-.12,0-.61-.3-.75-.41-10.55-9.97-20.15-21.35-30.81-31.13-.24-.22-.14-.6-.48-.51-.23.03.08.21.08.25v31.22s-.23.25-.25.25h-16.77l-.02-64.94c.15-.13.32-.14.51-.16,1.23-.15,4.41-.13,5.66,0,.23.02.47-.02.66.17,10.58,10.19,20.76,20.81,31.29,31.06Z"/>
+                                    <path class="cls-2" d="M333.81,98.23c.22.07.23.38.26.57.43,3.69-.85,9.2,1.29,12.49,3.07,4.73,12.23,4.4,14.44-1.07,1.06-2.62.83-8.35.88-11.41.22-13.66-.25-27.33-.14-40.99.35-.8,1.07-.29,1.7-.28,5.37.11,11.1.15,16.45,0,.7-.02,2.06-.62,2.08.4v48.17c-.35,19.31-15.62,30.72-34.41,27.26-16.31-3.01-21.27-15.07-21.73-30.24-.04-1.23-.14-3.17,0-4.33.02-.17.08-.57.26-.57h18.93Z"/>
+                                    <path class="cls-2" d="M437.51,158.67l-22.81.02-.02,8.44h20.59s.25.23.25.25v15.19h-21.09v8.88l23.91.25v15.94h-40.93s-.25-.23-.25-.25v-64.26s.23-.25.25-.25h39.85s.25.23.25.25v15.53Z"/>
+                                    <path class="cls-2" d="M701.69,207.65l.04-.88c8.19-17.93,16.61-35.76,24.9-53.64,1.6-3.46,3.2-6.94,4.6-10.47l.26-.11,7.65.18,29.64,64.5c-.03.3-.28.56-.57.57l-17.58-.18-3.72-8.11h-23.38s-3.65,8.14-3.65,8.14h-18.18ZM740.71,184.23l-5.64-14.61-5.48,14.61h11.12Z"/>
+                                    <path class="cls-2" d="M699.69,148.29c-.07.31-1.25,1.97-1.52,2.46-7.54,13.67-15.23,27.27-22.89,40.87l24.91.17v15.86h-50.23s-.25-.23-.25-.25v-5.65c0-.26,2.45-3.81,2.69-4.45l21.73-38.38-21.92-.25v-15.77h47.24s-.25-.23-.25-.25c0,1.26.23,4.12,0,5.15Z"/>
+                                    <path class="cls-2" d="M602.22,132.93h-20.01s-.25-.23-.25-.25V57.63c0-.51,1.59-.09,1.9-.08,5.33.17,11.13.12,16.45,0,.7-.02,1.63-.57,2.04.28l-.13,75.1Z"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </a>
+                </div>
+                
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="index.html#experiencia">Servicios</a></li>
+                        <li><a href="catalogo.html" class="active">Catálogo</a></li>
+                        <li><a href="index.html#vende">Vende</a></li>
+                        <li><a href="index.html#firma">Experiencia</a></li>
+                        <li><a href="index.html#contacto">Contacto</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="nav-right">
+                    <a href="index.html#contacto" class="nav-contact-link">Asesoría Privada</a>
+                </div>
+                
+                <button class="menu-toggle-btn" id="menu-toggle" aria-label="Abrir Menú">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menú Móvil -->
+    <nav class="mobile-menu-overlay" id="mobile-menu">
+        <button class="mobile-menu-close-btn" id="menu-close" aria-label="Cerrar Menú">
+            <i data-lucide="x" style="width: 28px; height: 28px;"></i>
+        </button>
+        <ul class="mobile-menu-links">
+            <li><a href="index.html#experiencia">Servicios</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="index.html#vende">Vende</a></li>
+            <li><a href="index.html#firma">Experiencia</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main>
+        <div class="container">
+            <!-- Navegación y botón de regreso -->
+            <div class="back-nav">
+                <a href="catalogo.html" class="btn-back" id="link-back-catalog">
+                    <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                    Volver al catálogo
+                </a>
+            </div>
+
+            <!-- Ficha de Propiedad Dinámica -->
+            <div id="property-detail-content">
+                <!-- Se inyecta dinámicamente mediante JS -->
+                <div style="text-align: center; padding: 5rem 0;">
+                    <i data-lucide="loader" class="animate-spin" style="width: 48px; height: 48px; color: var(--color-acento-primary); margin: 0 auto 1.5rem auto;"></i>
+                    <p style="color: var(--color-text-muted);">Cargando la información de la propiedad...</p>
+                </div>
+            </div>
+
+            <!-- Sección de Alternativas (Recomendadas) -->
+            <section class="alternatives-section">
+                <h3 class="section-title">Propiedades similares que podrían interesarte</h3>
+                <div class="alternatives-grid" id="alternatives-grid">
+                    <!-- Inyectado dinámicamente por JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Galería Modal Pantalla Completa -->
+    <div class="photo-modal" id="photo-modal">
+        <div class="modal-top">
+            <h2 id="modal-property-title">Galería de Fotos</h2>
+            <button class="btn-close-modal" id="btn-close-modal">
+                <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                Cerrar galería
+            </button>
+        </div>
+        <div class="modal-body-gallery" id="modal-gallery-images">
+            <!-- Imágenes inyectadas por JS -->
+        </div>
+    </div>
+
+    <!-- Toast de Notificaciones -->
+    <div class="toast" id="toast-message">
+        <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: #4ade80;"></i>
+        <span id="toast-text">Enlace copiado al portapapeles</span>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-logo-area reveal">
+                    <svg class="footer-logo-svg" viewBox="0 0 768.77 297.18">
+                        <g>
+                            <g>
+                                <polygon class="cls-1" points="146.12 297.18 94.98 259.74 94.98 189.42 52.97 158.37 52.97 227.77 0 185.77 0 47.48 146.12 151.72 146.12 297.18"/>
+                                <polygon class="cls-4" points="146.1 297.18 197.25 259.74 197.25 189.42 239.25 158.37 239.25 227.77 292.22 185.77 292.22 47.48 146.1 151.72 146.1 297.18"/>
+                                <polygon class="cls-3" points="0 47.48 146.1 151.72 292.22 47.48 252.81 19.84 146.41 95.66 81.42 49.16 105.32 30.36 64.96 0 0 47.48"/>
+                            </g>
+                            <g>
+                                <path class="cls-2" d="M529.08,108.35c.4.28.18.79.29,1.21,1.81,7.19,13.78,7.81,19.11,4.74,3.22-1.86,3.67-5.94.57-8.14-3.54-2.51-13.12-2.67-17.76-3.66-13.89-2.95-22.74-11.93-20.18-26.89,4.48-26.19,56.15-27.33,57.91,3.44.03.54.2,2.25-.42,2.25h-18.43c-.41,0-.56-2.01-.77-2.55-2.31-6-15.5-6.06-18.06-.83-4.03,8.26,13.17,8.49,17.64,9.21,14.73,2.38,24.95,10.93,22.15,27.09-4.17,24.04-44.96,26.1-57.05,8.48-2.95-4.29-4.25-9.12-4.18-14.33h19.18Z"/>
+                                <path class="cls-2" d="M460.76,108.35c.47,5.47,5.58,7.34,10.38,7.64,4.38.27,12.15-.92,11.36-6.88-.65-4.86-10.49-5.03-14.16-5.6-15.14-2.37-27.52-8.26-26.01-25.96,2.36-27.56,54-29.53,57.93-.81.09.64.35,4.06.16,4.36-.04.06-.21.07-.3.11l-18.66.05c-.57-.19-.39-1.31-.52-1.81-1.68-6.77-15.9-6.91-18.17-1.38-3.22,7.86,10.37,8.02,14.82,8.72,10.87,1.7,21.62,4.41,24.63,16.55,3.33,13.44-3.83,24.99-16.76,28.97-16.5,5.08-40.44.6-43.78-19.25-.25-1.51-.51-3.23-.35-4.71h19.43Z"/>
+                                <path class="cls-2" d="M686.82,103.37c.11.03.27.26.24.4-.39,1.69-.61,3.43-1.04,5.11-8.49,33.81-59.77,32.87-70.73,1.09-5.55-16.09-1.67-36.07,12.61-46.26,20.14-14.37,51.62-7.67,58.12,17.87.14.54.79,3.46.7,3.75s-.32.25-.56.28c-.8.09-1.98,0-2.84,0-1.25,0-2.72-.17-3.97-.18-4.14-.04-8.29.07-12.43-.02-.56-.78-.84-1.73-1.37-2.62-5.56-9.35-20.18-9.65-27.05-1.68-6.19,7.19-6.28,20.86.09,27.98s19.88,7.67,25.9-.16c1.34-1.75,2-3.59,2.91-5.56h19.43Z"/>
+                                <path class="cls-2" d="M686.91,132.93l34.85-76.11,8.91-.19.42.2c11.51,24.6,22.71,49.35,34,74.05.22.47.96,1.55.85,1.95l-21.47.07-4.54-9.61-27.12.09-4.03,9.09-.37.46h-21.5ZM733.07,105.86l-6.48-17.1-6.64,17.1h13.12Z"/>
+                                <path class="cls-2" d="M405.13,85.77h24.33s.25.23.25.25v17.52h-24.57v11.12l27.73.08v18.18h-47.74s-.25-.23-.25-.25V57.63l46.72-.23c.29.09.25.32.28.55.49,4.25-.13,9.85-.02,14.3.01.46.49,3.4-.08,3.4h-26.57c-.37,0-.08.39-.08.42v9.71Z"/>
+                                <path class="cls-2" d="M319.29,142.97c.03-.1.36-.3.49-.34.6-.19,5.25-.18,6.07-.08.28.03.52.07.74.26,6.37,6.97,12.91,13.77,19.35,20.66.76.81,5.54,6.38,6,6.46.19.03.81-.48.98-.64,2.32-2.3,4.4-4.92,6.63-7.31,6.01-6.44,12.03-12.89,18.1-19.26h6.97l.25,64.92h-17.02s-.25-.23-.25-.25v-30.8c-4.65,4.9-9.36,9.74-14.03,14.61-.22.23-.41.69-.65.85-.3.19-1.56.36-1.84.17l-14.69-15.62-.08,31.05h-16.77s-.25-.23-.25-.25v-64.43Z"/>
+                                <path class="cls-2" d="M611.16,141.94c23.8-1.16,39.55,18.82,34.36,41.83-7.74,34.32-59.2,33.11-65.32-1.66-3.67-20.85,9.51-39.12,30.97-40.17ZM610.66,158.71c-17.7,1.76-18,32.27,1.78,33.16,12.83.58,18.75-12.07,15.07-23.21-2.44-7.4-9.35-10.7-16.86-9.95Z"/>
+                                <path class="cls-2" d="M516.07,207.63l-.02-64.73h27.49c16.84.94,28.82,12.08,30.29,28.98,1.73,19.82-11.43,35.39-31.46,35.79l-26.3-.03ZM533.48,191.54h10.21c.75,0,3.12-.76,3.9-1.08,11.05-4.6,11.29-25.25.61-30.33-4.04-1.92-9.4-1.22-13.82-1.29-.28,0-.71-.19-.82-.17-.39.05-.09.39-.09.41v32.46Z"/>
+                                <path class="cls-2" d="M486.49,173.78v-30.88h17.1l-.25,65.09h-5.98c-.12,0-.61-.3-.75-.41-10.55-9.97-20.15-21.35-30.81-31.13-.24-.22-.14-.6-.48-.51-.23.03.08.21.08.25v31.22s-.23.25-.25.25h-16.77l-.02-64.94c.15-.13.32-.14.51-.16,1.23-.15,4.41-.13,5.66,0,.23.02.47-.02.66.17,10.58,10.19,20.76,20.81,31.29,31.06Z"/>
+                                <path class="cls-2" d="M333.81,98.23c.22.07.23.38.26.57.43,3.69-.85,9.2,1.29,12.49,3.07,4.73,12.23,4.4,14.44-1.07,1.06-2.62.83-8.35.88-11.41.22-13.66-.25-27.33-.14-40.99.35-.8,1.07-.29,1.7-.28,5.37.11,11.1.15,16.45,0,.7-.02,2.06-.62,2.08.4v48.17c-.35,19.31-15.62,30.72-34.41,27.26-16.31-3.01-21.27-15.07-21.73-30.24-.04-1.23-.14-3.17,0-4.33.02-.17.08-.57.26-.57h18.93Z"/>
+                                <path class="cls-2" d="M437.51,158.67l-22.81.02-.02,8.44h20.59s.25.23.25.25v15.19h-21.09v8.88l23.91.25v15.94h-40.93s-.25-.23-.25-.25v-64.26s.23-.25.25-.25h39.85s.25.23.25.25v15.53Z"/>
+                                <polygon class="cls-2" points="701.69,207.65 701.73,206.77 726.63,153.13 728.23,149.67 728.49,149.56 736.14,149.74 765.78,214.24 765.75,214.54 748.17,214.36 744.45,206.25 721.07,206.34 717.04,215.43 716.67,215.89 699.69,207.65"/>
+                                <path class="cls-2" d="M699.69,148.29c-.07.31-1.25,1.97-1.52,2.46-7.54,13.67-15.23,27.27-22.89,40.87l24.91.17v15.86h-50.23s-.25-.23-.25-.25v-5.65c0-.26,2.45-3.81,2.69-4.45l21.73-38.38-21.92-.25v-15.77h47.24s-.25-.23-.25-.25c0,1.26.23,4.12,0,5.15Z"/>
+                                <path class="cls-2" d="M602.22,132.93h-20.01s-.25-.23-.25-.25V57.63c0-.51,1.59-.09,1.9-.08,5.33.17,11.13.12,16.45,0,.7-.02,1.63-.57,2.04.28l-.13,75.1Z"/>
+                            </g>
+                        </g>
+                    </svg>
+                    <p class="footer-logo-desc">Consultoría e Intermediación Inmobiliaria Premium en Guadalajara y zonas de alta plusvalía.</p>
+                </div>
+                
+                <div class="footer-links-col reveal" style="transition-delay: 0.1s;">
+                    <h4 class="footer-links-title">Enlaces</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="index.html#experiencia">Servicios</a></li>
+                        <li><a href="catalogo.html">Catálogo</a></li>
+                        <li><a href="index.html#vende">Vende</a></li>
+                        <li><a href="index.html#firma">Experiencia</a></li>
+                        <li><a href="index.html#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter reveal" style="transition-delay: 0.2s;">
+                    <h4 class="footer-links-title">Novedades</h4>
+                    <p class="footer-newsletter-text">Suscríbete para recibir información sobre preventas exclusivas y análisis del mercado en la ZMG.</p>
+                    <form class="footer-form" id="newsletter-form">
+                        <input type="email" required placeholder="Tu correo electrónico" aria-label="Correo electrónico">
+                        <button type="submit" aria-label="Suscribirse">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">&copy; 2026 Jessica Mendoza Real Estate. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="/aviso-de-privacidad">Aviso de Privacidad</a>
+                    <a href="/terminos-y-condiciones">Términos y Condiciones</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Importar Base de Datos Central -->
+    <script src="js/db.js"></script>
+
+    <script>
+        // Cargar los iconos de Lucide
+        lucide.createIcons();
+
+        // Variables de navegación móvil
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        const toggleMenu = () => {
+            mobileMenu.classList.toggle('active');
+            if (mobileMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        };
+
+        if (menuToggle && menuClose) {
+            menuToggle.addEventListener('click', toggleMenu);
+            menuClose.addEventListener('click', toggleMenu);
+        }
+
+        // Obtener el ID de la propiedad desde los parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const propertyId = parseInt(urlParams.get('id'));
+
+        // Elementos de la UI
+        const propertyContent = document.getElementById('property-detail-content');
+        const alternativesGrid = document.getElementById('alternatives-grid');
+        const photoModal = document.getElementById('photo-modal');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const modalGalleryImages = document.getElementById('modal-gallery-images');
+        const modalPropertyTitle = document.getElementById('modal-property-title');
+        const toast = document.getElementById('toast-message');
+        const linkBackCatalog = document.getElementById('link-back-catalog');
+
+        // Formateador de Precios
+        const formatter = new Intl.NumberFormat('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
+        // Buscar la propiedad en la base de datos centralizada
+        const currentProperty = window.PROPERTIES_DB.find(item => item.id === propertyId);
+
+        if (currentProperty) {
+            // Ajustar el enlace del botón de regreso según si es un terreno de playa o propiedad ZMG
+            if (currentProperty.isPlaya) {
+                linkBackCatalog.href = "terrenos-playa.html";
+                linkBackCatalog.innerHTML = '<i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Volver a Terrenos de Playa';
+            } else {
+                linkBackCatalog.href = "catalogo.html";
+                linkBackCatalog.innerHTML = '<i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Volver al catálogo';
+            }
+
+            // Actualizar título de la página
+            document.title = `${currentProperty.title} | Jessica Mendoza Real Estate`;
+
+            // Construir galería de imágenes al estilo Airbnb (Máximo 5 para el grid)
+            let galleryHTML = '';
+            const imgs = currentProperty.imagenes || [currentProperty.image];
+            
+            // Limitamos a un máximo de 10 imágenes para todo el detalle (las cuales se verán completas en el modal)
+            const activeImages = imgs.slice(0, 10);
+
+            if (activeImages.length >= 5) {
+                galleryHTML = `
+                    <div class="airbnb-gallery">
+                        <div class="gallery-item large" onclick="openPhotoGallery(0)">
+                            <img src="${activeImages[0]}" alt="${currentProperty.title}">
+                        </div>
+                        <div class="gallery-item" onclick="openPhotoGallery(1)">
+                            <img src="${activeImages[1]}" alt="Interior 1">
+                        </div>
+                        <div class="gallery-item" onclick="openPhotoGallery(2)">
+                            <img src="${activeImages[2]}" alt="Interior 2">
+                        </div>
+                        <div class="gallery-item" onclick="openPhotoGallery(3)">
+                            <img src="${activeImages[3]}" alt="Interior 3">
+                        </div>
+                        <div class="gallery-item" onclick="openPhotoGallery(4)">
+                            <img src="${activeImages[4]}" alt="Interior 4">
+                        </div>
+                        <button class="btn-all-photos" onclick="openPhotoGallery(0)">
+                            <i data-lucide="grid" style="width: 16px; height: 16px;"></i>
+                            Mostrar todas las fotos (${activeImages.length})
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Si la propiedad tiene menos de 5 fotos (como los terrenos) mostramos una galería simplificada
+                galleryHTML = `
+                    <div class="airbnb-gallery" style="grid-template-columns: 1fr; grid-template-rows: 408px;">
+                        <div class="gallery-item large" style="height: 408px;" onclick="openPhotoGallery(0)">
+                            <img src="${activeImages[0]}" alt="${currentProperty.title}">
+                        </div>
+                        ${activeImages.length > 1 ? `
+                        <button class="btn-all-photos" onclick="openPhotoGallery(0)">
+                            <i data-lucide="grid" style="width: 16px; height: 16px;"></i>
+                            Mostrar fotos (${activeImages.length})
+                        </button>` : ''}
+                    </div>
+                `;
+            }
+
+            // Construir lista de amenidades (con iconos asociados semánticamente)
+            const getAmenityIcon = (name) => {
+                const lower = name.toLowerCase();
+                if (lower.includes('alberca') || lower.includes('pool')) return 'droplets';
+                if (lower.includes('seguridad') || lower.includes('vigilancia')) return 'shield';
+                if (lower.includes('gimnasio') || lower.includes('gym')) return 'dumbbell';
+                if (lower.includes('jardín') || lower.includes('areas verdes')) return 'flower2';
+                if (lower.includes('estacionamiento') || lower.includes('cochera')) return 'car';
+                if (lower.includes('aire') || lower.includes('clima')) return 'wind';
+                if (lower.includes('vista') || lower.includes('panorámica')) return 'eye';
+                if (lower.includes('elevador')) return 'arrow-up-down';
+                if (lower.includes('cine')) return 'clapperboard';
+                if (lower.includes('juegos') || lower.includes('club')) return 'smile';
+                if (lower.includes('golf')) return 'flag';
+                if (lower.includes('terraza')) return 'sun';
+                if (lower.includes('mascotas') || lower.includes('pet')) return 'dog';
+                if (lower.includes('marina') || lower.includes('mar') || lower.includes('lago')) return 'waves';
+                if (lower.includes('cocina')) return 'utensils';
+                return 'check';
+            };
+
+            let amenitiesHTML = '';
+            const ams = currentProperty.amenidades || [];
+            if (ams.length > 0) {
+                amenitiesHTML = `
+                    <div class="amenities-section">
+                        <h3 class="section-title">Lo que ofrece este lugar</h3>
+                        <div class="amenities-grid">
+                            ${ams.map(am => `
+                                <div class="amenity-item">
+                                    <i data-lucide="${getAmenityIcon(am)}" style="width: 22px; height: 22px;"></i>
+                                    <span>${am}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Metadatos de especificaciones (Metros, cuartos, baños)
+            // Ya que en la base de datos algunos campos son opcionales, los manejamos dinámicamente
+            let specsHTML = '';
+            if (currentProperty.tipo !== 'Terreno') {
+                specsHTML = `
+                    <div class="specs-bar">
+                        <span><i data-lucide="bed" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.habitaciones} Habitaciones</span>
+                        <span><i data-lucide="bath" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.habitaciones - 1 || 2} Baños</span>
+                        <span><i data-lucide="maximize-2" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.tipo === 'Casa' ? '280' : '140'} m²</span>
+                    </div>
+                `;
+            } else {
+                specsHTML = `
+                    <div class="specs-bar">
+                        <span><i data-lucide="maximize-2" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> Terreno Regular</span>
+                        <span><i data-lucide="map-pin" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.zona}</span>
+                    </div>
+                `;
+            }
+
+            // Inyectar el detalle en el contenedor principal
+            propertyContent.innerHTML = `
+                <!-- Ficha Cabecera -->
+                <div class="prop-header reveal">
+                    <div class="prop-title-wrap">
+                        <h1>${currentProperty.title}</h1>
+                        <div class="prop-meta-top">
+                            <span>${currentProperty.tipo}</span>
+                            <span class="meta-dot"></span>
+                            <span>${currentProperty.zona}, ${currentProperty.municipio}</span>
+                            <span class="meta-dot"></span>
+                            <span style="font-weight: 700; color: var(--color-acento-primary);">${currentProperty.condicion === 'N/A' ? 'Frente a Playa' : currentProperty.condicion}</span>
+                        </div>
+                    </div>
+                    <div class="prop-actions">
+                        <button class="action-btn" onclick="copyLink()">
+                            <i data-lucide="share" style="width: 16px; height: 16px;"></i>
+                            Compartir
+                        </button>
+                        <button class="action-btn" onclick="toggleSave()">
+                            <i data-lucide="heart" id="icon-heart-save" style="width: 16px; height: 16px;"></i>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Galería Estilo Airbnb -->
+                ${galleryHTML}
+
+                <!-- Detalles Grid de 2 Columnas -->
+                <div class="details-grid">
+                    <!-- Columna Izquierda (Información) -->
+                    <div class="info-panel reveal">
+                        ${specsHTML}
+                        
+                        <div class="desc-section">
+                            <h3 class="section-title">Descripción</h3>
+                            <p class="desc-text">${currentProperty.descripcion}</p>
+                        </div>
+
+                        ${amenitiesHTML}
+                    </div>
+
+                    <!-- Columna Derecha (Tarjeta Sticky) -->
+                    <div class="sticky-card-wrap reveal" style="transition-delay: 0.15s;">
+                        <div class="contact-card">
+                            <div class="card-price-row" style="margin-bottom: 0;">
+                                <div>
+                                    <span class="card-price">${formatter.format(currentProperty.precio)}</span>
+                                    <span class="card-price-type">${currentProperty.operacion === 'Renta' ? '/ mes' : ''}</span>
+                                </div>
+                                <span class="card-tag ${currentProperty.operacion.toLowerCase()}">${currentProperty.operacion}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Cargar las imágenes en la galería modal completa
+            modalPropertyTitle.innerText = currentProperty.title;
+            modalGalleryImages.innerHTML = activeImages.map((img, index) => `
+                <div class="modal-img-container">
+                    <img src="${img}" alt="Fotografía ${index + 1} de ${currentProperty.title}">
+                </div>
+            `).join('');
+
+            // Renderizar las propiedades alternativas en base a rango de precios
+            renderRecomendados();
+            
+            // Re-renderizar iconos Lucide dinámicos
+            lucide.createIcons();
+
+        } else {
+            // Propiedad no encontrada
+            propertyContent.innerHTML = `
+                <div class="empty-state" style="text-align: center; padding: 8rem 0;">
+                    <i data-lucide="search-code" style="width: 64px; height: 64px; color: var(--color-text-muted); margin: 0 auto 1.5rem auto;"></i>
+                    <h2 style="font-family: var(--font-sans); font-size: 1.75rem; margin-bottom: 0.5rem;">Propiedad no encontrada</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 2rem;">El inmueble solicitado no se encuentra en nuestro inventario o no está disponible en este momento.</p>
+                    <a href="catalogo.html" class="btn-whatsapp-primary" style="display: inline-flex; width: auto; padding: 0.8rem 1.5rem;">Ir al Catálogo Principal</a>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Lógica de Galería Modal
+        window.openPhotoGallery = function(startIndex) {
+            photoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        btnCloseModal.addEventListener('click', () => {
+            photoModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Lógica de Guardado (Favoritos visuales con localStorage)
+        window.toggleSave = function() {
+            const heartIcon = document.getElementById('icon-heart-save');
+            let saved = JSON.parse(localStorage.getItem('jessica_mendoza_saved') || '[]');
+            
+            if (saved.includes(propertyId)) {
+                saved = saved.filter(id => id !== propertyId);
+                heartIcon.style.fill = 'none';
+                heartIcon.style.color = 'currentColor';
+                showToast("Propiedad eliminada de tus favoritos");
+            } else {
+                saved.push(propertyId);
+                heartIcon.style.fill = 'var(--color-acento-primary)';
+                heartIcon.style.color = 'var(--color-acento-primary)';
+                showToast("Propiedad guardada en tus favoritos");
+            }
+            localStorage.setItem('jessica_mendoza_saved', JSON.stringify(saved));
+        };
+
+        // Inicializar estado del corazón de favorito
+        const savedList = JSON.parse(localStorage.getItem('jessica_mendoza_saved') || '[]');
+        const heartIcon = document.getElementById('icon-heart-save');
+        if (heartIcon && savedList.includes(propertyId)) {
+            heartIcon.style.fill = 'var(--color-acento-primary)';
+            heartIcon.style.color = 'var(--color-acento-primary)';
+        }
+
+        // Lógica de Copiar Link (Compartir)
+        window.copyLink = function() {
+            const tempInput = document.createElement('input');
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Enlace de la propiedad copiado al portapapeles");
+        };
+
+        // Mostrar Toast
+        function showToast(message) {
+            document.getElementById('toast-text').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Renderizar propiedades recomendadas
+        function renderRecomendados() {
+            if (!currentProperty) return;
+
+            // Filtrar alternativas: misma operación, mismo tipo, excluir la propiedad actual y que pertenezcan a la misma categoría (playa vs ZMG)
+            let filtered = window.PROPERTIES_DB.filter(item => 
+                item.id !== currentProperty.id && 
+                item.isPlaya === currentProperty.isPlaya
+            );
+
+            // Ordenar por afinidad (mismo tipo de propiedad y operación primero)
+            filtered.sort((a, b) => {
+                let scoreA = 0;
+                let scoreB = 0;
+                
+                if (a.tipo === currentProperty.tipo) scoreA += 2;
+                if (a.operacion === currentProperty.operacion) scoreA += 2;
+                // Similitud de precio
+                scoreA -= Math.abs(a.precio - currentProperty.precio) / currentProperty.precio;
+
+                if (b.tipo === currentProperty.tipo) scoreB += 2;
+                if (b.operacion === currentProperty.operacion) scoreB += 2;
+                scoreB -= Math.abs(b.precio - currentProperty.precio) / currentProperty.precio;
+
+                return scoreB - scoreA;
+            });
+
+            // Tomar las 3 mejores alternativas
+            const itemsToShow = filtered.slice(0, 3);
+
+            if (itemsToShow.length === 0) {
+                alternativesGrid.innerHTML = '<p style="color: var(--color-text-muted); font-size: 0.9rem;">No hay propiedades recomendadas similares en este momento.</p>';
+                return;
+            }
+
+            alternativesGrid.innerHTML = itemsToShow.map(item => `
+                <a href="propiedad.html?id=${item.id}" class="collection-card">
+                    <div class="collection-card-img-wrap">
+                        <span class="collection-card-tag">${item.operacion}</span>
+                        <span class="collection-card-tag-type">${item.tipo}</span>
+                        <img src="${item.image}" alt="${item.title}">
+                    </div>
+                    <div class="collection-card-info">
+                        <span class="collection-card-zone">${item.zona}, ${item.municipio}</span>
+                        <h4 class="collection-card-title">${item.title}</h4>
+                        <div class="collection-card-bottom">
+                            <span class="collection-card-price">${formatter.format(item.precio)}${item.operacion === 'Renta' ? '/mes' : ''}</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

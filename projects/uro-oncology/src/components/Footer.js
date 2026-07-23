@@ -58,7 +58,6 @@ export default function Footer() {
                 <Image src="/assets/iconos/ubicacion.svg" alt="Ubicación" width={30} height={30} />
               </a>
             </div>
-            <p className={styles.copyright}>Todos los derechos reservados para Uro-Oncology 2026</p>
           </div>
           
           <div className={styles.bottomLinks}>
@@ -75,11 +74,11 @@ export default function Footer() {
         </div>
       </footer>
 
-      <div style={{ backgroundColor: '#0A0F1C', paddingTop: '0.875rem', paddingBottom: '0.875rem', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 10 }}>
-        <div style={{ maxWidth: '80rem', marginLeft: 'auto', marginRight: 'auto', paddingLeft: '1.5rem', paddingRight: '1.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', color: '#94a3b8', fontSize: '0.875rem', fontFamily: 'system-ui, -apple-system, sans-serif', flexWrap: 'wrap', textAlign: 'center' }}>
+      <div className={styles.subfooter}>
+        <div className={styles.subfooterContainer}>
           <span>Copyright 2026 © Uro Oncology | Diseño by</span>
-          <a href="https://www.hipha.mx/" style={{ opacity: 0.8, transition: 'opacity 0.2s', display: 'inline-flex', alignItems: 'center' }} onMouseOver={(e) => e.currentTarget.style.opacity = '1'} onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}>
-            <img src="/assets/logotipo/desarrollado-por.svg" alt="Hipha" style={{ height: '1.5rem', display: 'block' }} />
+          <a href="https://www.hipha.mx/" className={styles.subfooterLink}>
+            <Image src="/assets/logotipo/LogoSubfooter.svg" alt="Hipha" width={60} height={24} className={styles.subfooterLogo} style={{ objectFit: 'contain' }} />
           </a>
         </div>
       </div>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ni2 | Detalle de Propiedad</title>
+  <meta name="description" content="Detalle de propiedad en venta o renta con ni2. Consulta fotografías, características destacables y ubicación interactiva.">
+  
+  <!-- Estilos del sitio -->
+  <link rel="stylesheet" href="/ni2/css/styles.css">
+  
+  <!-- Leaflet.js para Mapas (Gratuito y Responsivo) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+
+  <!-- Cabecera / Header -->
+  <header>
+    <div class="header-container">
+      <a href="/ni2/" class="logo-link" id="logo-header">
+        ni2<span class="logo-dot">.</span>
+      </a>
+      
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/ni2/inmobiliaria" class="nav-link">Inmobiliaria</a></li>
+          <li><a href="/ni2/construccion" class="nav-link">Construcción</a></li>
+          <li><a href="/ni2/mantenimiento" class="nav-link">Mantenimiento</a></li>
+        </ul>
+      </nav>
+
+      <!-- Click de llamada directo -->
+      <a href="tel:5512345678" class="phone-cta-link" id="header-phone-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+        </svg>
+        <span class="phone-text">55-1234-5678</span>
+      </a>
+    </div>
+  </header>
+
+  <main style="padding-top: 5rem;">
+    <!-- Sección de Título e Imagen Principal (Airbnb Style) -->
+    <section class="prop-gallery-section" style="padding: 2.5rem 0 1.5rem 0;">
+      <div class="grid-container">
+        
+        <div class="prop-title-container">
+          <div>
+            <h1 id="prop-title" style="font-size: 1.625rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Cargando propiedad...</h1>
+            <div id="prop-sub-bar" style="font-size: 0.875rem; color: var(--text-secondary); display: flex; gap: 0.75rem; align-items: center;">
+              <span id="prop-intent-badge" style="font-weight: 700;">Venta</span>
+              <span>•</span>
+              <span id="prop-location-summary" style="text-decoration: underline; cursor: pointer;">Guadalajara, Jalisco</span>
+            </div>
+          </div>
+          <div class="prop-actions" style="display: flex; gap: 1rem; align-items: center;">
+            <button class="action-btn-share" onclick="alert('Enlace copiado al portapapeles!')" style="background: none; border: none; font-size: 0.875rem; font-weight: 600; text-decoration: underline; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem;">
+              📤 Compartir
+            </button>
+            <button class="action-btn-save" onclick="this.textContent = '❤️ Guardado'" style="background: none; border: none; font-size: 0.875rem; font-weight: 600; text-decoration: underline; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem;">
+              🤍 Guardar
+            </button>
+          </div>
+        </div>
+
+        <!-- Airbnb Grid Gallery -->
+        <div class="airbnb-gallery-grid" id="airbnb-gallery" style="margin-top: 1.5rem; position: relative;">
+          <div class="gallery-col-large" style="grid-area: large; overflow: hidden; border-radius: 0.5rem 0 0 0.5rem; aspect-ratio: 3/2; cursor: pointer;">
+            <img id="img-large" src="" alt="Foto principal" class="open-gallery-btn" data-property-id="" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+          </div>
+          <div class="gallery-col-small-top-left" style="grid-area: small1; overflow: hidden; aspect-ratio: 3/2; cursor: pointer;">
+            <img id="img-small-1" src="" alt="Foto detalle 1" class="open-gallery-btn" data-property-id="" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+          </div>
+          <div class="gallery-col-small-top-right" style="grid-area: small2; overflow: hidden; border-radius: 0 0.5rem 0 0; aspect-ratio: 3/2; cursor: pointer;">
+            <img id="img-small-2" src="" alt="Foto detalle 2" class="open-gallery-btn" data-property-id="" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+          </div>
+          <div class="gallery-col-small-bottom-left" style="grid-area: small3; overflow: hidden; aspect-ratio: 3/2; cursor: pointer;">
+            <img id="img-small-3" src="" alt="Foto detalle 3" class="open-gallery-btn" data-property-id="" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+          </div>
+          <div class="gallery-col-small-bottom-right" style="grid-area: small4; overflow: hidden; border-radius: 0 0 0.5rem 0; aspect-ratio: 3/2; cursor: pointer;">
+            <img id="img-small-4" src="" alt="Foto detalle 4" class="open-gallery-btn" data-property-id="" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+          </div>
+
+          <!-- Botón de ver fotos flotante -->
+          <button class="show-all-photos-btn" id="btn-show-all" style="position: absolute; bottom: 1.25rem; right: 1.25rem; background-color: #ffffff; border: 1px solid #0f172a; border-radius: 0.375rem; padding: 0.5rem 0.875rem; font-size: 0.8125rem; font-weight: 700; color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 5;">
+            Mostrar todas las fotos
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Cuerpo de Detalles en Dos Columnas -->
+    <section class="prop-details-section" style="padding: 2.5rem 0 5rem 0;">
+      <div class="grid-container prop-details-container">
+        
+        <!-- Columna Izquierda: Información -->
+        <div class="prop-details-main">
+          
+          <div class="prop-host-summary" style="border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+            <h2 id="prop-type-summary" style="font-size: 1.375rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Propiedad Completa</h2>
+            <p id="prop-specs-summary" style="font-size: 0.9375rem; color: var(--text-secondary);">Recámaras • Baños • m²</p>
+          </div>
+
+          <!-- Atributos Destacables (Airbnb Style) -->
+          <div class="prop-highlights-list" id="prop-highlights" style="display: flex; flex-direction: column; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; margin-bottom: 2rem;">
+            <div style="display: flex; gap: 1.25rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem; line-height: 1;">📍</span>
+              <div>
+                <h4 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.15rem;">Ubicación Inmejorable</h4>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">Esta propiedad cuenta con excelente conectividad, plazas comerciales y parques a pocos minutos caminando.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1.25rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem; line-height: 1;">🛡️</span>
+              <div>
+                <h4 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.15rem;">Ecosistema y Seguridad ni2</h4>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">Evaluado físicamente y respaldado por nuestro equipo de ingenieros. Trámite transparente y sin burocracia.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1.25rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem; line-height: 1;">✨</span>
+              <div>
+                <h4 style="font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.15rem;">Listo para Habitar</h4>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">Instalaciones de fontanería, electricidad e impermeabilización verificadas bajo los estándares técnicos de ni2.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Descripción comercial -->
+          <div class="prop-description" style="border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; margin-bottom: 2rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">Sobre esta propiedad</h3>
+            <p id="prop-description-text" style="font-size: 0.9375rem; line-height: 1.6; color: var(--text-secondary);">Cargando descripción...</p>
+          </div>
+
+          <!-- Amenidades (Lo que ofrece este lugar) -->
+          <div class="prop-amenities" style="border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; margin-bottom: 2rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1.25rem;">Lo que ofrece este lugar</h3>
+            <div class="amenities-grid" id="prop-amenities-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+              <!-- Cargados dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Ubicación e Interactive Map Box -->
+          <div class="prop-location-map">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Dónde vas a estar</h3>
+            <p id="prop-location-address" style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.25rem;">Cargando dirección...</p>
+            <div id="map-container" style="height: 380px; width: 100%; border-radius: 0.5rem; border: 1px solid var(--border-color); overflow: hidden; position: relative; z-index: 1;">
+              <!-- Leaflet Map rendered here -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Columna Derecha: Tarjeta de Booking/Contacto Sticky -->
+        <div class="prop-details-sidebar">
+          <div class="booking-card-sticky">
+            <div class="booking-card-price" id="prop-price-card">$0 MXN</div>
+            
+            <div class="booking-card-info" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.875rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+              <div class="info-row" style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                <span style="color: var(--text-secondary);">Comisión del comprador</span>
+                <strong style="color: var(--text-primary);">0% (Gratuito)</strong>
+              </div>
+              <div class="info-row" style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                <span style="color: var(--text-secondary);">Asesoría legal y contratos</span>
+                <strong style="color: var(--text-primary);">Incluido</strong>
+              </div>
+              <div class="info-row" style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                <span style="color: var(--text-secondary);">Garantía técnica de instalaciones</span>
+                <strong style="color: var(--accent-color);">30 días ni2</strong>
+              </div>
+            </div>
+
+            <!-- Botón CTA WhatsApp centralizado -->
+            <button class="cta-button-accent" id="btn-booking-wa" style="width: 100%; margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.93a7.904 7.904 0 0 0 1.082 3.971L0 16l4.202-1.102a7.947 7.947 0 0 0 3.79.907h.003a7.854 7.854 0 0 0 5.594-2.33 7.864 7.864 0 0 0 2.33-5.596 7.874 7.874 0 0 0-2.328-5.596zM9.916 10.912c-.136.376-.69.74-1.116.8-.4.058-.92.176-2.548-.485-2.086-.848-3.429-2.95-3.533-3.091-.104-.14-.858-1.144-.858-2.183a2.12 2.12 0 0 1 .632-1.621c.216-.216.47-.323.708-.323l.192.004c.217.008.436.008.625.452.203.479.69 1.684.75 1.808.06.124.1.267.017.433-.09.167-.133.275-.267.432-.133.158-.28.35-.398.47-.118.118-.242.247-.104.485.138.238.614.992 1.314 1.616.9.8 1.657 1.047 1.896 1.168.24.12.38.102.522-.063.14-.165.6-.7 1.06-1.37.172-.254.342-.212.576-.124.234.088 1.488.7 1.742.827.254.128.423.19.485.297.062.107.062.613-.075.99z"/>
+              </svg>
+              Agendar Visita por WhatsApp
+            </button>
+            
+            <p style="font-size: 0.73rem; text-align: center; color: var(--text-light); margin-top: 1rem; line-height: 1.4;">
+              🛡️ Asesoría 100% gratuita. Todo el proceso es coordinado directamente por el canal centralizado de ni2.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Popup Lightbox de Galería (Reutilizado) -->
+  <div id="lightbox-modal" class="lightbox-modal" style="display: none;">
+    <span class="lightbox-close">&times;</span>
+    <div class="lightbox-content">
+      <div class="lightbox-slides-container" id="lightbox-slides">
+        <!-- Cargadas dinámicamente -->
+      </div>
+      
+      <!-- Controles -->
+      <button class="lightbox-prev" id="lightbox-btn-prev" aria-label="Anterior">&#10094;</button>
+      <button class="lightbox-next" id="lightbox-btn-next" aria-label="Siguiente">&#10095;</button>
+      
+      <div class="lightbox-caption-container">
+        <p id="lightbox-caption"></p>
+      </div>
+      
+      <!-- Puntos indicadores -->
+      <div class="lightbox-dots-container" id="lightbox-dots">
+        <!-- Cargados dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="grid-container footer-container">
+      <div>
+        <p style="font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+          ni2<span style="color: var(--accent-color);">.</span>
+        </p>
+        <p style="max-width: 320px; font-size: 0.8125rem;">Especialistas en el sector inmobiliario, remodelación de espacios y construcción en la ZMG (Jalisco).</p>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+        <div class="footer-links">
+          <a href="#" class="footer-link">Aviso de Privacidad</a>
+          <span style="color: var(--border-dark)">|</span>
+          <a href="#" class="footer-link">Términos y Condiciones</a>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-light);">&copy; 2026 ni2 Inmobiliaria & Obras. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts (Carga de datos y mapas Leaflet) -->
+  <script src="/ni2/js/main.js"></script>
+</body>
+</html>

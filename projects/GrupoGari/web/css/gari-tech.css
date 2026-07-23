@@ -965,3 +965,185 @@ p {
         gap: 1.5rem;
     }
 }
+
+/* ==========================================================================
+   ACTUALIZACIONES ADICIONALES (BOTONES, MARQUESINA Y RESEÑAS)
+   ========================================================================== */
+
+/* --- Corrección de contraste para botón de WhatsApp de advertencia en outline (para footer) --- */
+.btn-warn.btn-outline {
+    background-color: transparent !important;
+    color: var(--acento-warn) !important;
+    border-color: var(--acento-warn) !important;
+}
+
+.btn-warn.btn-outline:hover {
+    background-color: var(--acento-warn) !important;
+    color: var(--bg-blueprint) !important;
+    border-color: var(--acento-warn) !important;
+}
+
+/* --- Marquesina Infinita de Logotipos de Clientes --- */
+.clients-marquee-section {
+    padding: 4rem 0;
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.marquee-track {
+    display: inline-flex;
+    gap: 3.5rem;
+    animation: marquee-scroll 30s linear infinite;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.marquee-logo-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    padding: 0.6rem 1.8rem;
+    border: 1px dashed var(--border-color);
+    background-color: var(--bg-primary);
+    transition: all var(--transition-fast);
+}
+
+.marquee-logo-card:hover {
+    color: var(--acento-warn);
+    border-color: var(--acento-warn);
+    transform: translateY(-2px);
+}
+
+.marquee-logo-card svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast);
+}
+
+.marquee-logo-card:hover svg {
+    opacity: 1;
+}
+
+/* --- Sección de Reviews --- */
+.reviews-section {
+    padding: 6rem 0;
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3.5rem;
+}
+
+.review-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 2.25rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform var(--transition-smooth), border-color var(--transition-fast);
+}
+
+.review-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--acento-warn);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.review-stars {
+    color: var(--acento-warn);
+    letter-spacing: 0.1em;
+    font-family: var(--font-sans);
+}
+
+.review-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+}
+
+.review-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+.review-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.25rem;
+}
+
+.review-author {
+    font-family: var(--font-tech);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.review-role {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    margin-top: 0.25rem;
+}
+
+.review-company {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--acento-warn);
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 1024px) {
+    .reviews-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

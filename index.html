@@ -520,6 +520,221 @@
         </div>
     </section>
 
+    <!-- Metodología Fila Section -->
+    <section id="metodologia-fila" aria-labelledby="metodologia-heading" class="relative z-10 py-24 border-t border-white/5 bg-[#03060f] overflow-hidden">
+        
+        <!-- Aurora and Galaxy background elements -->
+        <div class="absolute -top-20 left-10 w-[500px] h-[300px] bg-gradient-to-r from-cyan-500/8 to-transparent rounded-full blur-[120px] pointer-events-none z-0 mix-blend-screen"></div>
+        <div class="absolute -bottom-20 right-10 w-[500px] h-[300px] bg-gradient-to-l from-purple-500/8 to-transparent rounded-full blur-[120px] pointer-events-none z-0 mix-blend-screen"></div>
+        <div class="absolute top-1/4 left-1/3 w-[400px] h-[400px] bg-fuchsia-500/5 rounded-full blur-[140px] pointer-events-none z-0 mix-blend-screen"></div>
+        <div class="absolute bottom-1/3 left-10 w-[450px] h-[300px] bg-gradient-to-tr from-blue-600/8 to-transparent rounded-full blur-[130px] pointer-events-none z-0 mix-blend-screen"></div>
+        <div class="absolute top-10 right-1/4 w-[400px] h-[350px] bg-gradient-to-br from-emerald-500/6 to-transparent rounded-full blur-[120px] pointer-events-none z-0 mix-blend-screen"></div>
+        
+        <!-- Interactive cursor glow (Aurora Boreal) -->
+        <div id="aurora-cursor-glow" class="absolute w-[450px] h-[450px] bg-gradient-to-r from-cyan-500/15 via-blue-500/15 via-emerald-500/12 to-fuchsia-500/15 rounded-full blur-[110px] pointer-events-none opacity-0 transition-opacity duration-300 z-0"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-20">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest bg-cyan-500/10 px-4 py-1.5 rounded-full border border-cyan-500/20">La Fila de Solicitudes</span>
+                <h2 id="metodologia-heading" class="text-3xl md:text-5xl font-bold text-white mt-6 mb-4">¿Cómo funciona Hipha?</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-base">Un flujo continuo y secuencial que sustituye a las agencias tradicionales por un departamento creativo compartido.</p>
+            </div>
+
+            <!-- Standalone style block for organic floating shapes & loop animation -->
+            <style>
+                @keyframes float-shape-1 {
+                    0% { transform: translateY(0px) rotate(0deg); border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+                    50% { transform: translateY(-10px) rotate(3deg); border-radius: 50% 50% 60% 40% / 40% 60% 40% 60%; }
+                    100% { transform: translateY(0px) rotate(0deg); border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+                }
+                @keyframes float-shape-2 {
+                    0% { transform: translateY(0px) rotate(0deg); border-radius: 50% 50% 30% 70% / 50% 60% 40% 50%; }
+                    50% { transform: translateY(8px) rotate(-4deg); border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%; }
+                    100% { transform: translateY(0px) rotate(0deg); border-radius: 50% 50% 30% 70% / 50% 60% 40% 50%; }
+                }
+                @keyframes float-shape-3 {
+                    0% { transform: translateY(0px) rotate(0deg); border-radius: 60% 40% 60% 40% / 50% 50% 50% 50%; }
+                    50% { transform: translateY(-8px) rotate(2deg); border-radius: 50% 50% 40% 60% / 40% 60% 50% 50%; }
+                    100% { transform: translateY(0px) rotate(0deg); border-radius: 60% 40% 60% 40% / 50% 50% 50% 50%; }
+                }
+                @keyframes float-shape-4 {
+                    0% { transform: translateY(0px) rotate(0deg); border-radius: 45% 55% 40% 60% / 45% 45% 55% 55%; }
+                    50% { transform: translateY(10px) rotate(-3deg); border-radius: 58% 42% 70% 30% / 60% 40% 60% 40%; }
+                    100% { transform: translateY(0px) rotate(0deg); border-radius: 45% 55% 40% 60% / 45% 45% 55% 55%; }
+                }
+
+                .organic-bubble-1 { animation: float-shape-1 7s ease-in-out infinite; }
+                .organic-bubble-2 { animation: float-shape-2 8s ease-in-out infinite; }
+                .organic-bubble-3 { animation: float-shape-3 6.5s ease-in-out infinite; }
+                .organic-bubble-4 { animation: float-shape-4 7.5s ease-in-out infinite; }
+
+                /* Pulse line trail effect */
+                @keyframes pulse-trail {
+                    0% { stroke-dashoffset: 200; }
+                    100% { stroke-dashoffset: 0; }
+                }
+                .connection-line {
+                    stroke-dasharray: 8 8;
+                    animation: pulse-trail 8s linear infinite;
+                }
+                
+                .step-active {
+                    border-color: rgba(6, 182, 212, 0.6) !important;
+                    box-shadow: 0 0 30px rgba(6, 182, 212, 0.25) !important;
+                    background: rgba(6, 182, 212, 0.08) !important;
+                    transform: scale(1.05) !important;
+                }
+            </style>
+
+            <div class="relative w-full max-w-6xl mx-auto px-4">
+                
+                <!-- Desktop SVG Connections (Loop Curve connecting steps) -->
+                <svg class="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 300" fill="none">
+                    <!-- Base background connection path -->
+                    <path d="M 125,150 C 250,50 375,250 500,150 C 625,50 750,250 875,150" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="none" />
+                    <!-- Animated flow path -->
+                    <path class="connection-line" d="M 125,150 C 250,50 375,250 500,150 C 625,50 750,250 875,150" stroke="url(#line-grad)" stroke-width="3" fill="none" />
+                    
+                    <defs>
+                        <linearGradient id="line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#06b6d4" />
+                            <stop offset="50%" stop-color="#c026d3" />
+                            <stop offset="100%" stop-color="#10b981" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <!-- Steps Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative z-10">
+                    
+                    <!-- Step 1 -->
+                    <div id="step-card-1" onmouseenter="activateStep(1)" onclick="activateStep(1)"
+                         class="organic-bubble-1 glass-panel cursor-pointer aspect-square rounded-[42%_58%_70%_30%_/_45%_45%_55%_55%] p-8 flex flex-col items-center justify-center text-center transition-all duration-500 border border-white/10 hover:border-cyan-500/40 shadow-lg">
+                        <div class="text-4xl font-extrabold bg-gradient-to-r from-cyan-400 to-cyan-200 bg-clip-text text-transparent mb-3 filter drop-shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+                            01
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 flex items-center gap-1.5 justify-center">
+                            Crea Solicitudes
+                        </h3>
+                        <p class="text-xs text-slate-400 max-w-[200px] leading-relaxed">
+                            Registra tus requerimientos sin límites.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div id="step-card-2" onmouseenter="activateStep(2)" onclick="activateStep(2)"
+                         class="organic-bubble-2 glass-panel cursor-pointer aspect-square rounded-[50%_50%_30%_70%_/_50%_60%_40%_50%] p-8 flex flex-col items-center justify-center text-center transition-all duration-500 border border-white/10 hover:border-fuchsia-500/40 shadow-lg md:mt-8">
+                        <div class="text-4xl font-extrabold bg-gradient-to-r from-fuchsia-400 to-fuchsia-200 bg-clip-text text-transparent mb-3 filter drop-shadow-[0_0_12px_rgba(240,79,215,0.4)]">
+                            02
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 flex items-center gap-1.5 justify-center">
+                            Proceso Activo
+                        </h3>
+                        <p class="text-xs text-slate-400 max-w-[200px] leading-relaxed">
+                            Trabajamos en tu prioridad activa (una por una).
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div id="step-card-3" onmouseenter="activateStep(3)" onclick="activateStep(3)"
+                         class="organic-bubble-3 glass-panel cursor-pointer aspect-square rounded-[60%_40%_60%_40%_/_50%_50%_50%_50%] p-8 flex flex-col items-center justify-center text-center transition-all duration-500 border border-white/10 hover:border-purple-500/40 shadow-lg">
+                        <div class="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-purple-200 bg-clip-text text-transparent mb-3 filter drop-shadow-[0_0_12px_rgba(168,85,247,0.4)]">
+                            03
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 flex items-center gap-1.5 justify-center">
+                            Feedback y Ajustes
+                        </h3>
+                        <p class="text-xs text-slate-400 max-w-[200px] leading-relaxed">
+                            Iteramos el entregable hasta que quede impecable.
+                        </p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div id="step-card-4" onmouseenter="activateStep(4)" onclick="activateStep(4)"
+                         class="organic-bubble-4 glass-panel cursor-pointer aspect-square rounded-[45%_55%_40%_60%_/_45%_45%_55%_55%] p-8 flex flex-col items-center justify-center text-center transition-all duration-500 border border-white/10 hover:border-emerald-500/40 shadow-lg md:mt-8">
+                        <div class="text-4xl font-extrabold bg-gradient-to-r from-emerald-400 to-emerald-200 bg-clip-text text-transparent mb-3 filter drop-shadow-[0_0_12px_rgba(16,185,129,0.4)]">
+                            04
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 flex items-center gap-1.5 justify-center">
+                            Siguiente en Fila
+                        </h3>
+                        <p class="text-xs text-slate-400 max-w-[200px] leading-relaxed">
+                            Aprobado el cambio, inicia la siguiente solicitud.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Inline script for automatic cyclic highlight & cursor galaxy interaction -->
+        <script>
+            let activeStepNum = 1;
+            let cycleInterval = null;
+
+            function activateStep(num) {
+                activeStepNum = num;
+                // Update CSS classes
+                for (let i = 1; i <= 4; i++) {
+                    const card = document.getElementById('step-card-' + i);
+                    if (card) {
+                        if (i === num) {
+                            card.classList.add('step-active');
+                        } else {
+                            card.classList.remove('step-active');
+                        }
+                    }
+                }
+                // Reset interval when user interacts manually
+                resetCycleInterval();
+            }
+
+            function startCycle() {
+                cycleInterval = setInterval(() => {
+                    activeStepNum = (activeStepNum % 4) + 1;
+                    activateStep(activeStepNum);
+                }, 3000);
+            }
+
+            function resetCycleInterval() {
+                if (cycleInterval) {
+                    clearInterval(cycleInterval);
+                }
+                // Restart cycle after 5 seconds of inactivity
+                cycleInterval = setInterval(() => {
+                    activeStepNum = (activeStepNum % 4) + 1;
+                    activateStep(activeStepNum);
+                }, 3000);
+            }
+
+            // Initialize on DOM load
+            document.addEventListener('DOMContentLoaded', () => {
+                activateStep(1);
+                startCycle();
+
+                // Cursor Galaxy/Aurora Reaction
+                const section = document.getElementById('metodologia-fila');
+                const cursorGlow = document.getElementById('aurora-cursor-glow');
+                if (section && cursorGlow) {
+                    section.addEventListener('mousemove', (e) => {
+                        const rect = section.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        // Center the glow at cursor position
+                        cursorGlow.style.left = (x - 200) + 'px';
+                        cursorGlow.style.top = (y - 200) + 'px';
+                        cursorGlow.style.opacity = '1';
+                    });
+                    
+                    section.addEventListener('mouseleave', () => {
+                        cursorGlow.style.opacity = '0';
+                    });
+                }
+            });
+        </script>
+    </section>
+
     <!-- Suscripciones Section -->
     <section id="suscripciones" aria-labelledby="suscripciones-heading" class="relative z-10 py-24 border-t border-white/5 bg-slate-900/10">
         <div class="max-w-7xl mx-auto px-6">
@@ -557,19 +772,13 @@
                         
                         <ul class="space-y-3 mb-8">
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                <i class="ph-bold ph-check text-cyan-400"></i> Suscripción anual todo incluído
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-300 text-sm">
                                 <i class="ph-bold ph-check text-cyan-400"></i> Diseño y desarrollo web
                             </li>
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
                                 <i class="ph-bold ph-check text-cyan-400"></i> Optimización SEO y Tienda en línea
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-cyan-400"></i> Cortesía: Logotipo / ADN de marca
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-cyan-400"></i> 1 Cuenta de correo corporativo
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-cyan-400"></i> Soporte: Ticket / Email
                             </li>
                         </ul>
                     </div>
@@ -589,9 +798,6 @@
                         
                         <ul class="space-y-3 mb-8">
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-fuchsia-400"></i> Cortesía: Logotipo / ADN de marca
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
                                 <i class="ph-bold ph-check text-fuchsia-400"></i> Solicitudes ilimitadas (según Fila)
                             </li>
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
@@ -599,9 +805,6 @@
                             </li>
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
                                 <i class="ph-bold ph-check text-fuchsia-400"></i> RRSS: Solo diseño (Tú publicas)
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-fuchsia-400"></i> Soporte: Ticket / Email
                             </li>
                         </ul>
                     </div>
@@ -623,16 +826,10 @@
                                 <i class="ph-bold ph-check text-purple-400"></i> Todo el Plan Web + Plan Design
                             </li>
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-purple-400"></i> Solicitudes ilimitadas (doble Fila)
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-purple-400"></i> RRSS: Solo diseño (Tú publicas)
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-300 text-sm">
                                 <i class="ph-bold ph-check text-purple-400"></i> 3 Cuentas de correo corporativo
                             </li>
                             <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                <i class="ph-bold ph-check text-purple-400"></i> Soporte: WhatsApp / PM Asignado
+                                <i class="ph-bold ph-check text-purple-400"></i> Asesoría en área comercial
                             </li>
                         </ul>
                     </div>
@@ -643,8 +840,9 @@
             </div>
 
             <!-- Nota de IVA -->
-            <div class="text-center text-xs text-slate-500 mb-8 italic">
-                * Los precios mostrados no incluyen IVA
+            <div class="text-center text-xs text-slate-500 mb-8 italic space-y-1.5">
+                <div>* Los precios mostrados no incluyen IVA</div>
+                <div class="text-[10px] opacity-80 max-w-2xl mx-auto leading-relaxed">* Todos los planes operan bajo un esquema de suscripción (arrendamiento de servicio administrado). Al contratar, se adquiere la licencia de uso y mantenimiento del producto final hospedado en nuestra infraestructura, de conformidad con nuestros <a href="/terminos-y-condiciones" class="text-cyan-400 hover:underline">Términos y Condiciones</a>.</div>
             </div>
 
 
@@ -671,25 +869,25 @@
                                 <td colspan="4" class="py-3 px-6 text-xs uppercase tracking-wider text-slate-400">Diseño y Creatividad</td>
                             </tr>
                             <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Logotipo / ADN de marca</td>
+                                <td class="py-4 px-6 font-medium">
+                                    + Solicitudes de diseño ilimitadas
+                                    <span onclick="toggleTableSubrows('design-sub-row', this)" class="cursor-pointer text-xs text-cyan-400 hover:text-cyan-300 ml-2 select-none font-normal">(Ver detalles)</span>
+                                </td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
+                                <td class="py-4 px-6 text-center text-fuchsia-400 font-semibold text-xs">Ilimitadas (según fila de solicitudes)</td>
+                                <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">Ilimitadas (según fila de solicitudes)</td>
+                            </tr>
+                            <tr class="design-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Logotipo / ADN de marca</td>
                                 <td class="py-4 px-6 text-center text-cyan-400/90 italic font-medium">Cortesía</td>
                                 <td class="py-4 px-6 text-center text-fuchsia-400/90 italic font-medium">Cortesía</td>
                                 <td class="py-4 px-6 text-center text-purple-400/90 italic font-medium">Cortesía</td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Formatos entregables</td>
+                            <tr class="design-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Formatos entregables</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-fuchsia-400 font-semibold text-xs">JPG, PNG, SVG, PDF, EPS</td>
                                 <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">JPG, PNG, SVG, PDF, EPS</td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">
-                                    + Solicitudes de diseño
-                                    <span onclick="toggleTableSubrows('design-sub-row', this)" class="cursor-pointer text-xs text-cyan-400 hover:text-cyan-300 ml-2 select-none font-normal">(Ver detalles)</span>
-                                </td>
-                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
-                                <td class="py-4 px-6 text-center text-fuchsia-400 font-semibold text-xs">Ilimitadas (según Fila)</td>
-                                <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">Ilimitadas (con doble Fila)</td>
                             </tr>
                             <tr class="design-sub-row hover:bg-white/5 transition-colors hidden">
                                 <td class="py-4 px-6 font-medium pl-10">- Herramientas de venta</td>
@@ -721,14 +919,14 @@
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Formatos Soportados</td>
+                            <tr class="design-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Formatos Soportados</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-fuchsia-400 font-semibold text-xs">Redes, impresos, herramientas de venta</td>
                                 <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">Redes, impresos, herramientas de venta</td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Gestión de Redes Sociales</td>
+                            <tr class="design-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Gestión de Redes Sociales</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-fuchsia-400 font-semibold text-xs">Solo diseño (Tú publicas)</td>
                                 <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">Solo diseño (Tú publicas)</td>
@@ -739,43 +937,46 @@
                                 <td colspan="4" class="py-3 px-6 text-xs uppercase tracking-wider text-slate-400">Página Web</td>
                             </tr>
                             <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Diseño y programación de página web</td>
+                                <td class="py-4 px-6 font-medium">
+                                    + Diseño y programación de página web
+                                    <span onclick="toggleTableSubrows('web-sub-row', this)" class="cursor-pointer text-xs text-cyan-400 hover:text-cyan-300 ml-2 select-none font-normal">(Ver detalles)</span>
+                                </td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Administración de publicidad en Meta ADS y Google ADS</td>
+                            <tr class="web-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Administración de publicidad en Meta ADS y Google ADS</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Optimización SEO para posicionamiento</td>
+                            <tr class="web-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Optimización SEO para posicionamiento</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Registro de dominio .com, .mx, .com.mx</td>
-                                <td class="py-4 px-6 text-center text-cyan-400/90 italic font-medium">Cortesía</td>
+                            <tr class="web-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Registro de dominio .com, .mx, .com.mx</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Cuentas de correo incluidas</td>
-                                <td class="py-4 px-6 text-center text-cyan-400 font-semibold text-xs">1 cuenta</td>
+                            <tr class="web-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Cuentas de correo incluidas</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-purple-400 font-semibold text-xs">3 cuentas</td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Configuración para tienda en línea</td>
+                            <tr class="web-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Configuración de pasarelas de pago (cobro online)</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                             </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="py-4 px-6 font-medium">+ Instalación de etiquetas o píxel en código</td>
+                            <tr class="web-sub-row hover:bg-white/5 transition-colors hidden">
+                                <td class="py-4 px-6 font-medium pl-10">- Instalación de etiquetas o píxel en código</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
                                 <td class="py-4 px-6 text-center text-slate-500 font-medium">N/A</td>
                                 <td class="py-4 px-6 text-center text-green-400"><i class="ph-bold ph-check text-lg"></i></td>
