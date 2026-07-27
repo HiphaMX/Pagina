@@ -2145,8 +2145,8 @@ function App() {
                   <>
                     {checkoutStep === 'details' ? (
                       <>
-                        <div style={{ display: 'none' }} aria-hidden="true">
-                          <input type="text" value={formData.honeypot || ''} onChange={e => setFormData({...formData, honeypot: e.target.value})} tabIndex="-1" autoComplete="off" />
+                        <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }} aria-hidden="true">
+                          <input type="text" name="website_url" value={formData.honeypot || ''} onChange={e => setFormData({...formData, honeypot: e.target.value})} tabIndex="-1" autoComplete="off" />
                         </div>
                         <div>
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Nombre Completo</label>
@@ -2703,8 +2703,8 @@ function App() {
                           </div>
 
                           <div className="partner-form-grid" style={{ opacity: partnerForm.llenado_manual ? 0.6 : 1, transition: 'opacity 0.25s ease' }}>
-                            <div style={{ display: 'none' }} aria-hidden="true">
-                              <input type="text" value={partnerForm.honeypot || ''} onChange={e => setPartnerForm({...partnerForm, honeypot: e.target.value})} tabIndex="-1" autoComplete="off" />
+                            <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }} aria-hidden="true">
+                              <input type="text" name="website_url" value={partnerForm.honeypot || ''} onChange={e => setPartnerForm({...partnerForm, honeypot: e.target.value})} tabIndex="-1" autoComplete="off" />
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
                               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Razón Social / Nombre Comercial {partnerForm.llenado_manual ? '' : '*'}</label>
