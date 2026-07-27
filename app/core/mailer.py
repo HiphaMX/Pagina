@@ -1425,7 +1425,7 @@ async def send_chilechillon_confirmation_email(form_data):
             
             <!-- Header con el Logotipo Oficial de Chile Chillón -->
             <div style="background-color: #080505; padding: 30px 20px; text-align: center; border-bottom: 4px solid #E50914;">
-                <img src="https://elchilechillon.mx/Assets/Logo%20Navbar.svg" alt="Chile Chillón Logo" style="height: 65px; margin: 0 auto; display: block;">
+                <img src="https://elchilechillon.mx/Assets/Logo%20texto2.svg" alt="Chile Chillón Logo" style="height: 45px; margin: 0 auto; display: block;">
             </div>
             
             <!-- Cuerpo del Correo -->
