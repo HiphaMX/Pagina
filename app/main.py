@@ -97,7 +97,7 @@ def read_root():
 if os.path.exists("projects"):
     app.mount("/projects", StaticFiles(directory="projects"), name="projects")
 
-# trigger: force vercel rebuild for HealthyIce logo update - v11
+# trigger: force vercel rebuild for Botica Silvestre logo update - v12
 
 
 

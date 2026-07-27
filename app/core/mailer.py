@@ -326,18 +326,29 @@ async def send_botica_order_customer(payer_name: str, payer_email: str, order_de
     
     html_content = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; color: #1A3636; background-color: #F4F6F5; padding: 20px;">
-        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px;">
-            <h2 style="color: #40534C; font-weight: normal;">Hola {payer_name},</h2>
-            <p>Hemos recibido la solicitud de tu pedido. Si tu pago ya fue procesado, nuestro equipo comenzará a preparar tus adaptógenos de inmediato.</p>
-            <h3 style="color: #40534C; border-bottom: 1px solid #E8F0EA; padding-bottom: 10px;">Resumen de tu pedido:</h3>
-            <div style="background: #FCFDFD; padding: 15px; border-radius: 8px;">
-                {order_details}
-                <p><strong>Total (con envío si aplica): ${total} MXN</strong></p>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap" rel="stylesheet">
+    </head>
+    <body style="font-family: 'Outfit', Arial, sans-serif; color: #1A3636; background-color: #F4F6F5; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #E8F0EA;">
+            
+            <!-- Header con el Logotipo Tipográfico de Botica Silvestre -->
+            <div style="background-color: #F4F6F5; padding: 30px 20px; text-align: center; border-bottom: 1px solid #E8F0EA;">
+                <span style="font-family: 'Outfit', 'Helvetica Neue', Arial, sans-serif; font-weight: 300; letter-spacing: 0.25em; font-size: 1.35rem; color: #40534C; text-transform: uppercase; display: inline-block;">Botica Silvestre</span>
             </div>
-            <p>Si tienes alguna duda o quieres enviarnos tu comprobante de pago, puedes responder a este correo (hola@botica-silvestre.com).</p>
-            <br>
-            <p style="color: #677D6A;">Con cariño,<br><strong>El equipo de Botica Silvestre</strong></p>
+            
+            <div style="padding: 30px;">
+                <h2 style="color: #40534C; font-weight: normal; margin-top: 0;">Hola {payer_name},</h2>
+                <p>Hemos recibido la solicitud de tu pedido. Si tu pago ya fue procesado, nuestro equipo comenzará a preparar tus adaptógenos de inmediato.</p>
+                <h3 style="color: #40534C; border-bottom: 1px solid #E8F0EA; padding-bottom: 10px;">Resumen de tu pedido:</h3>
+                <div style="background: #FCFDFD; padding: 15px; border-radius: 8px;">
+                    {order_details}
+                    <p><strong>Total (con envío si aplica): ${total} MXN</strong></p>
+                </div>
+                <p>Si tienes alguna duda o quieres enviarnos tu comprobante de pago, puedes responder a este correo (hola@botica-silvestre.com).</p>
+                <br>
+                <p style="color: #677D6A;">Con cariño,<br><strong>El equipo de Botica Silvestre</strong></p>
+            </div>
         </div>
     </body>
     </html>
