@@ -34,6 +34,10 @@
       "dest": "https://hipha-mx-fastapi.vercel.app/api/$1"
     },
     {
+      "src": "/api/(.*)",
+      "dest": "/api"
+    },
+    {
       "src": "/.well-known/(.*)",
       "has": [
         {
