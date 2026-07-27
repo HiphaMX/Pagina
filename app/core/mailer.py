@@ -550,17 +550,16 @@ async def send_healthyice_order_team(form_data):
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333;">
-        <h2>¡Nuevo pedido recibido (Pendiente de Pago contra entrega)!</h2>
+        <h2>¡Nuevo prospecto de contacto registrado en la web!</h2>
         
         <h3>Datos de Contacto:</h3>
         <ul>
             <li><strong>Nombre:</strong> {form_data.nombre}</li>
             <li><strong>Email:</strong> {form_data.email}</li>
             <li><strong>Teléfono:</strong> {form_data.telefono}</li>
-            <li><strong>Método de Pago:</strong> Pago contra entrega (Efectivo/Transferencia - PENDIENTE DE PAGO)</li>
         </ul>
         
-        <h3>Detalles de la Orden / Mensaje:</h3>
+        <h3>Detalles de la Solicitud / Mensaje:</h3>
         <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
             {mensaje_formatted}
         </div>
@@ -572,7 +571,7 @@ async def send_healthyice_order_team(form_data):
         from_name="HealthyIce Web",
         from_email=from_email,
         to_email=to_email,
-        subject=f"NUEVO PEDIDO PENDIENTE (Efectivo/Transferencia): {form_data.nombre}",
+        subject=f"NUEVO PROSPECTO / CONTACTO WEB: {form_data.nombre}",
         html_content=html_content,
         domain="healthyice.mx"
     )
