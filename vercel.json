@@ -25,27 +25,93 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api"
+      "dest": "https://hipha-mx-fastapi.vercel.app/api/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/.well-known/(.*)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?amdi\\.mx$"
         }
       ],
-      "dest": "/projects/AMDI/$1"
+      "status": 302,
+      "headers": {
+        "Location": "http://mail.amdi.mx/.well-known/$1"
+      }
     },
     {
-      "src": "/(.*)",
+      "src": "/.well-known/(.*)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
         }
       ],
-      "dest": "/projects/urologia-avanzada/$1"
+      "status": 302,
+      "headers": {
+        "Location": "http://mail.urologia-avanzada.com.mx/.well-known/$1"
+      }
+    },
+    {
+      "src": "/(css|js|fonts|images|blog|proyectos|topic|arte-y-decoracion)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?amdi\\.mx$"
+        }
+      ],
+      "dest": "/projects/AMDI/$1/$2"
+    },
+    {
+      "src": "/(contacto|gracias|nosotros|servicios|proyectos|blog|arte-y-decoracion|merchandising|preguntas-frecuentes|terminos-y-condiciones|aviso-de-privacidad|search|residencial|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?amdi\\.mx$"
+        }
+      ],
+      "dest": "/projects/AMDI/$1$2"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?amdi\\.mx$"
+        }
+      ],
+      "dest": "/projects/AMDI/"
+    },
+    {
+      "src": "/(assets|blog)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/urologia-avanzada/$1/$2"
+    },
+    {
+      "src": "/(blog|diagnostico|equipo-medico|pacientes|tipos-de-cirugia|preguntas-frecuentes-centro-de-urologia-avanzada|aviso-de-privacidad-centro-de-urologia-avanzada|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/urologia-avanzada/$1$2"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/urologia-avanzada/"
     },
     {
       "src": "/amdi",
