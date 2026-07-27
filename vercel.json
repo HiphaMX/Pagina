@@ -25,6 +25,12 @@
   "routes": [
     {
       "src": "/api/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?hipha\\.mx$"
+        }
+      ],
       "dest": "https://hipha-mx-fastapi.vercel.app/api/$1"
     },
     {
