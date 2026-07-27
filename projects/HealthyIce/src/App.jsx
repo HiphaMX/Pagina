@@ -732,6 +732,7 @@ function App() {
     const fullMessage = [
       formData.opcionInteres ? `Opción de Interés: ${formData.opcionInteres}` : '',
       formData.producto ? `Producto: ${formData.producto}` : '',
+      formData.ciudadEstado ? `Ciudad y Estado: ${formData.ciudadEstado}` : '',
       address ? `Dirección de Envío:\n${address}` : '',
       formData.mensaje ? `Detalles / Mensaje:\n${formData.mensaje}` : ''
     ].filter(Boolean).join('\n\n');
@@ -757,7 +758,7 @@ function App() {
         setTimeout(() => {
           setIsModalOpen(false);
           setSubmitSuccess(false);
-          setFormData({ nombre: '', email: '', telefono: '', opcionInteres: 'ProT Fit 0', producto: '', mensaje: '' });
+          setFormData({ nombre: '', email: '', telefono: '', opcionInteres: 'Contacto general', producto: '', mensaje: '', ciudadEstado: '', honeypot: '' });
         }, 3000);
       } else {
         alert('Hubo un error al enviar tus datos. Por favor, intenta de nuevo.');
@@ -1203,8 +1204,11 @@ function App() {
                 </span>
               )}
             </button>
-            <button onClick={() => setIsModalOpen(true)} className="btn btn-primary nav-cta-btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>
-              Hacer mi pedido
+            <button onClick={() => {
+              setFormData({ nombre: '', email: '', telefono: '', opcionInteres: 'Contacto general', producto: '', mensaje: '', ciudadEstado: '', honeypot: '' });
+              setIsModalOpen(true);
+            }} className="btn btn-primary nav-cta-btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, letterSpacing: '0.5px' }}>
+              Contáctanos
             </button>
           </div>
         </div>
@@ -1497,12 +1501,15 @@ function App() {
         <div className="hero-crosshair-x"></div>
         <div className="hero-crosshair-y"></div>
         <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <h2 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: '#101729' }}>¿Listo para hacer tu pedido?</h2>
+           <h2 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: '#101729' }}>¿Quieres saber más?</h2>
           <p style={{ fontSize: '1.25rem', marginBottom: '2.5rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto 2.5rem auto', color: '#101729' }}>
-            Únete a la revolución de los postres saludables. Prueba la línea de paletas HealthyIce hoy mismo y sorpréndete.
+            Únete a la revolución de los postres saludables. Escríbenos y un asesor se pondrá en contacto contigo hoy mismo.
           </p>
-          <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ padding: '1.25rem 3rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, borderRadius: '9999px' }}>
-            Hacer mi pedido
+          <button onClick={() => {
+            setFormData({ nombre: '', email: '', telefono: '', opcionInteres: 'Contacto general', producto: '', mensaje: '', ciudadEstado: '', honeypot: '' });
+            setIsModalOpen(true);
+          }} className="btn btn-primary" style={{ padding: '1.25rem 3rem', fontSize: '1.125rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, borderRadius: '9999px' }}>
+            Contáctanos
           </button>
         </div>
       </section>
@@ -1679,7 +1686,7 @@ function App() {
                   e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 119, 255, 0.3)';
                 }}
               >
-                Hacer mi pedido
+                Contáctanos
               </button>
             </div>
           </div>
@@ -2153,24 +2160,31 @@ function App() {
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Teléfono</label>
                           <input type="tel" required value={formData.telefono} onChange={e => setFormData({...formData, telefono: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="55 1234 5678" />
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                          <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Calle y Número</label>
-                            <input type="text" required value={addressDetails.calleYNumero} onChange={e => setAddressDetails({...addressDetails, calleYNumero: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Av. Juárez 123" />
+                        {formData.opcionInteres === 'Pedido Personalizado' ? (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                            <div style={{ gridColumn: 'span 2' }}>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Calle y Número</label>
+                              <input type="text" required value={addressDetails.calleYNumero} onChange={e => setAddressDetails({...addressDetails, calleYNumero: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Av. Juárez 123" />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>No. Interior (opcional)</label>
+                              <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Depto 4B" />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Colonia</label>
+                              <input type="text" required value={addressDetails.colonia} onChange={e => setAddressDetails({...addressDetails, colonia: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Centro" />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Ciudad / Municipio</label>
+                              <input type="text" required value={addressDetails.ciudad} onChange={e => setAddressDetails({...addressDetails, ciudad: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Guadalajara" />
+                            </div>
                           </div>
+                        ) : (
                           <div>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>No. Interior (opcional)</label>
-                            <input type="text" value={addressDetails.interior} onChange={e => setAddressDetails({...addressDetails, interior: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Depto 4B" />
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Ciudad y Estado</label>
+                            <input type="text" required value={formData.ciudadEstado || ''} onChange={e => setFormData({...formData, ciudadEstado: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Guadalajara, Jalisco" />
                           </div>
-                          <div>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Colonia</label>
-                            <input type="text" required value={addressDetails.colonia} onChange={e => setAddressDetails({...addressDetails, colonia: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Centro" />
-                          </div>
-                          <div style={{ gridColumn: 'span 2' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Ciudad / Municipio</label>
-                            <input type="text" required value={addressDetails.ciudad} onChange={e => setAddressDetails({...addressDetails, ciudad: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Guadalajara" />
-                          </div>
-                        </div>
+                        )}
                         
                         {formData.producto && (
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0, 229, 255, 0.08)', border: '1px solid rgba(0, 229, 255, 0.2)', padding: '0.75rem 1rem', borderRadius: '12px', marginTop: '0.25rem' }}>
@@ -2198,59 +2212,82 @@ function App() {
                           />
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 700, color: '#101729', cursor: 'pointer' }}>
-                            <input 
-                              type="checkbox" 
-                              checked={vivoEnZMG} 
-                              onChange={e => setVivoEnZMG(e.target.checked)} 
-                              style={{ 
-                                width: '18px', 
-                                height: '18px', 
-                                accentColor: '#98BC3C',
-                                cursor: 'pointer' 
-                              }} 
-                            />
-                            <span>Vivo en la ZMG (Zona Metropolitana de Guadalajara)</span>
-                          </label>
-                          
-                          {!vivoEnZMG && (
-                            <p style={{ 
-                              fontSize: '0.825rem', 
-                              color: '#ef4444', 
-                              margin: '0.25rem 0 0 0', 
-                              fontWeight: 600,
-                              lineHeight: 1.4,
-                              background: 'rgba(239, 68, 68, 0.08)',
-                              border: '1px solid rgba(239, 68, 68, 0.2)',
-                              padding: '0.75rem 1rem',
-                              borderRadius: '12px'
-                            }}>
-                              ⚠️ Por lanzamiento envío de pedidos únicamente en ZMG, pregunta por la zona de cobertura.
-                            </p>
-                          )}
-                        </div>
+                        {formData.opcionInteres === 'Pedido Personalizado' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem', fontWeight: 700, color: '#101729', cursor: 'pointer' }}>
+                              <input 
+                                type="checkbox" 
+                                checked={vivoEnZMG} 
+                                onChange={e => setVivoEnZMG(e.target.checked)} 
+                                style={{ 
+                                  width: '18px', 
+                                  height: '18px', 
+                                  accentColor: '#98BC3C',
+                                  cursor: 'pointer' 
+                                }} 
+                              />
+                              <span>Vivo en la ZMG (Zona Metropolitana de Guadalajara)</span>
+                            </label>
+                            
+                            {!vivoEnZMG && (
+                              <p style={{ 
+                                fontSize: '0.825rem', 
+                                color: '#ef4444', 
+                                margin: '0.25rem 0 0 0', 
+                                fontWeight: 600,
+                                lineHeight: 1.4,
+                                background: 'rgba(239, 68, 68, 0.08)',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                padding: '0.75rem 1rem',
+                                borderRadius: '12px'
+                              }}>
+                                ⚠️ Por lanzamiento envío de pedidos únicamente en ZMG, pregunta por la zona de cobertura.
+                              </p>
+                            )}
+                          </div>
+                        )}
 
-                        <button 
-                          type="button" 
-                          disabled={!vivoEnZMG} 
-                          onClick={handleProceedToPayment}
-                          className="btn btn-primary" 
-                          style={{ 
-                            width: '100%', 
-                            padding: '1.25rem', 
-                            marginTop: '0.5rem', 
-                            fontSize: '1.125rem', 
-                            borderRadius: '9999px', 
-                            fontFamily: "'Quicksand', sans-serif", 
-                            fontWeight: 700, 
-                            opacity: !vivoEnZMG ? 0.5 : 1,
-                            cursor: !vivoEnZMG ? 'not-allowed' : 'pointer',
-                            transition: 'all 0.2s'
-                          }}
-                        >
-                          Proceder al Pago
-                        </button>
+                        {formData.opcionInteres === 'Pedido Personalizado' ? (
+                          <button 
+                            type="button" 
+                            disabled={!vivoEnZMG} 
+                            onClick={handleProceedToPayment}
+                            className="btn btn-primary" 
+                            style={{ 
+                              width: '100%', 
+                              padding: '1.25rem', 
+                              marginTop: '0.5rem', 
+                              fontSize: '1.125rem', 
+                              borderRadius: '9999px', 
+                              fontFamily: "'Quicksand', sans-serif", 
+                              fontWeight: 700, 
+                              opacity: !vivoEnZMG ? 0.5 : 1,
+                              cursor: !vivoEnZMG ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            Proceder al Pago
+                          </button>
+                        ) : (
+                          <button 
+                            type="submit" 
+                            disabled={isSubmitting}
+                            className="btn btn-primary" 
+                            style={{ 
+                              width: '100%', 
+                              padding: '1.25rem', 
+                              marginTop: '0.5rem', 
+                              fontSize: '1.125rem', 
+                              borderRadius: '9999px', 
+                              fontFamily: "'Quicksand', sans-serif", 
+                              fontWeight: 700, 
+                              cursor: 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {isSubmitting ? 'Enviando...' : 'Enviar mensaje'}
+                          </button>
+                        )}
                       </>
                     ) : (
                       <>
