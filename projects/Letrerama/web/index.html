@@ -2782,6 +2782,10 @@
           <input type="tel" id="quoteTelefono" placeholder="55 1234 5678" required>
         </div>
       </div>
+      <!-- Honeypot Field (anti-spam) -->
+      <div style="display:none !important;" aria-hidden="true">
+          <input type="text" id="quoteConfirmEmail" name="confirm_email" tabindex="-1" autocomplete="off">
+      </div>
       
       <div class="form-group-row">
         <div class="form-group">
@@ -3441,7 +3445,8 @@
       material: document.getElementById('quoteMaterial').value,
       altura_instalacion: parseFloat(document.getElementById('quoteAlturaInstalacion').value),
       direccion_instalacion: document.getElementById('quoteDireccion').value,
-      privacidad: document.getElementById('quotePrivacidad').checked
+      privacidad: document.getElementById('quotePrivacidad').checked,
+      honeypot: document.getElementById('quoteConfirmEmail') ? document.getElementById('quoteConfirmEmail').value : ''
     };
 
     try {

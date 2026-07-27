@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, HTTPException, Response
 from pydantic import BaseModel
 from typing import Optional
@@ -11,6 +12,7 @@ from app.core.mailer import (
 )
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 class HealthyIceContractForm(BaseModel):
     nombre: Optional[str] = None # Representante legal
@@ -22,6 +24,7 @@ class HealthyIceContractForm(BaseModel):
     tipo_alianza: Optional[str] = "Punto de Venta"
     firma: Optional[str] = ""
     fecha: Optional[str] = None
+    honeypot: Optional[str] = None
     
     # Nuevos campos del contrato de colaboracion comercial
     nombre_establecimiento: Optional[str] = ""
@@ -40,6 +43,10 @@ class HealthyIceContractForm(BaseModel):
 
 @router.post("/healthyice")
 async def submit_healthyice_form(form_data: ContactForm):
+    if form_data.honeypot:
+        logger.warning(f"[SPAM DETECTED] Honeypot field filled for HealthyIce contact form (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
     # Enviar correo de confirmación al cliente
     customer_email_sent = await send_healthyice_order_customer(form_data)
     
@@ -53,6 +60,11 @@ async def submit_healthyice_form(form_data: ContactForm):
 
 @router.post("/healthyice/contract")
 async def submit_healthyice_contract(form_data: HealthyIceContractForm):
+    if form_data.honeypot:
+        logger.warning(f"[SPAM DETECTED] Honeypot field filled for HealthyIce contract form (email: {form_data.email}).")
+        # Devolvemos un PDF vacío o error silencioso de tipo exitoso
+        return Response(content=b"", media_type="application/pdf")
+
     try:
         pdf_bytes = generate_healthyice_contract_pdf(form_data)
         
@@ -62,9 +74,7 @@ async def submit_healthyice_contract(form_data: HealthyIceContractForm):
                 await send_healthyice_contract_customer(form_data)
                 await send_healthyice_contract_team(form_data)
             except Exception as email_err:
-                # Log email failure but don't block the user's PDF download
-                import logging
-                logging.getLogger(__name__).error(f"Error sending contract emails: {str(email_err)}")
+                logger.error(f"Error sending contract emails: {str(email_err)}")
                 
         razon_social = form_data.razon_social or "Formato_Manual"
         safe_name = razon_social.replace(' ', '_').replace('/', '_')
@@ -80,3 +90,4 @@ async def submit_healthyice_contract(form_data: HealthyIceContractForm):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error al generar PDF: {str(e)}")
+

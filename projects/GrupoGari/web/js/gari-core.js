@@ -269,7 +269,8 @@ function initDiagnosticForm() {
             empleados: document.getElementById('field-empleados').value || '1-50',
             industria: document.getElementById('field-industria').value || 'manufactura',
             servicio: document.getElementById('field-servicio').value || 'Proteccion Civil',
-            mensaje: document.getElementById('field-mensaje').value || 'Solicitud de diagnóstico inicial normativo.'
+            mensaje: document.getElementById('field-mensaje').value || 'Solicitud de diagnóstico inicial normativo.',
+            honeypot: document.getElementById('field-confirm-email')?.value || ''
         };
 
         try {

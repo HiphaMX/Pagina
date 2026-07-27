@@ -24,13 +24,15 @@ document.addEventListener('DOMContentLoaded', function() {
             var emailVal = form.querySelector('#Email') ? form.querySelector('#Email').value : '';
             var telVal = form.querySelector('#Tel-fono') ? form.querySelector('#Tel-fono').value : '';
             var msgVal = form.querySelector('#Mensaje') ? form.querySelector('#Mensaje').value : '';
+            var honeypotVal = form.querySelector('[name="confirm_email"]') ? form.querySelector('[name="confirm_email"]').value : '';
             
             var payload = {
                 nombre: nombreVal,
                 apellido: apellidoVal,
                 email: emailVal,
                 telefono: telVal,
-                mensaje: msgVal
+                mensaje: msgVal,
+                honeypot: honeypotVal
             };
             
             fetch('/api/contact/amdi/contacto', {
@@ -88,10 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // In the newsletter form, Nombre field is #Nombre and Email is #Email-newsletter
             var nombreVal = form.querySelector('#Nombre') ? form.querySelector('#Nombre').value : '';
             var emailVal = form.querySelector('#Email-newsletter') ? form.querySelector('#Email-newsletter').value : '';
+            var honeypotVal = form.querySelector('[name="confirm_email"]') ? form.querySelector('[name="confirm_email"]').value : '';
             
             var payload = {
                 nombre: nombreVal,
-                email: emailVal
+                email: emailVal,
+                honeypot: honeypotVal
             };
             
             fetch('/api/contact/amdi/newsletter', {

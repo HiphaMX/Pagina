@@ -29,6 +29,7 @@ class ChileChillonForm(BaseModel):
     telefono: str
     perfil: str
     mensaje: Optional[str] = ""
+    honeypot: Optional[str] = None
 
 class QuinielaRegisterForm(BaseModel):
     nombre: str
@@ -253,6 +254,10 @@ def get_fallback_reviews():
 
 @router.post("/chilechillon")
 async def submit_chilechillon_form(form_data: ChileChillonForm):
+    if form_data.honeypot:
+        logger.warning(f"[SPAM DETECTED] Honeypot field filled for Chile Chillón (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
     customer_email_sent = await send_chilechillon_confirmation_email(form_data)
     team_email_sent = await send_chilechillon_notification_team(form_data)
     

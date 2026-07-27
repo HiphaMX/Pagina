@@ -476,7 +476,8 @@ function initContactForm() {
       email: form.email.value.trim(),
       telefono: form.telefono.value.trim(),
       perfil: form.perfil.value,
-      mensaje: form.mensaje ? form.mensaje.value.trim() : ""
+      mensaje: form.mensaje ? form.mensaje.value.trim() : "",
+      honeypot: form.confirm_email ? form.confirm_email.value.trim() : ""
     };
 
     try {

@@ -1223,6 +1223,10 @@
             <p class="text-slate-400 text-sm mb-8">Déjanos tus datos y nos pondremos en contacto.</p>
             
             <form id="contact-form" class="space-y-4" onsubmit="submitContactForm(event)">
+                <!-- Honeypot Field (anti-spam) -->
+                <div style="display:none !important;" aria-hidden="true">
+                    <input type="text" id="confirm_email" name="confirm_email" tabindex="-1" autocomplete="off">
+                </div>
                 <!-- Nombre -->
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">
@@ -1522,7 +1526,8 @@ async function submitContactForm(event) {
         nombre: formData.get('nombre'),
         email: formData.get('email'),
         telefono: formData.get('telefono'),
-        mensaje: formData.get('mensaje') || ''
+        mensaje: formData.get('mensaje') || '',
+        honeypot: formData.get('confirm_email')
     };
 
     try {

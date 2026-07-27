@@ -194,6 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
       }
 
+      const honeypotVal = document.getElementById('confirm_email')?.value || '';
+
       // Enviar datos al backend para disparar los correos
       fetch('/api/contact/whiteclean', {
         method: 'POST',
@@ -207,7 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
           telefono: telefonoVal,
           servicio: servicioVal,
           ubicacion: ubicacionVal,
-          mensaje: mensajeVal
+          mensaje: mensajeVal,
+          honeypot: honeypotVal
         })
       })
       .then(res => {

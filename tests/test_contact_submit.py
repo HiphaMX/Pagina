@@ -54,4 +54,48 @@ def test_letrerama_quote_submit():
     assert response.status_code == 200
     assert response.json() == {"message": "Formulario recibido correctamente"}
 
+def test_contact_submit_with_honeypot():
+    # Test submitting Hipha contact form with honeypot field filled (bot detected)
+    payload = {
+        "nombre": "Bot Spammer",
+        "email": "spammer@bot.com",
+        "telefono": "0000000000",
+        "mensaje": "I am a bot",
+        "honeypot": "iamabot"
+    }
+    response = client.post("/api/contact/submit", json=payload)
+    assert response.status_code == 200
+    assert response.json() == {"message": "Formulario recibido correctamente"}
+
+def test_letrerama_quote_submit_with_honeypot():
+    # Test Letrerama form with honeypot field filled
+    payload = {
+        "nombre": "Bot Letrerama",
+        "telefono": "0000000000",
+        "email": "spammer@bot.com",
+        "tiene_vector": "NO",
+        "tecnica": "Logotipo 3D",
+        "medida_ancho": 10,
+        "medida_alto": 10,
+        "iluminacion": "Sin luz",
+        "material": "Acrílico",
+        "altura_instalacion": 1.0,
+        "direccion_instalacion": "Internet",
+        "privacidad": True,
+        "honeypot": "botspammer"
+    }
+    response = client.post("/api/contact/letrerama", json=payload)
+    assert response.status_code == 200
+    assert response.json() == {"message": "Formulario recibido correctamente"}
+
+def test_qa_validate_smtp():
+    # Test SMTP diagnostic route
+    response = client.get("/api/qa/validate-smtp")
+    assert response.status_code == 200
+    data = response.json()
+    assert "summary" in data
+    assert "report" in data
+    assert len(data["report"]) > 0
+
+
 

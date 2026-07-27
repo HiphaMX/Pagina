@@ -55,6 +55,12 @@ async def webflow_lead_webhook(request: Request, background_tasks: BackgroundTas
         lead_name = data.get("name") or data.get("Name") or "Prospecto de HiphaMX"
         lead_email = data.get("email") or data.get("Email")
         
+        # Interceptar spam bots mediante campos trampa comunes
+        honeypot = data.get("confirm_email") or data.get("honeypot") or data.get("website") or data.get("website_url")
+        if honeypot:
+            logger.warning(f"[SPAM DETECTED] Webflow webhook honeypot filled: '{honeypot}' (email: {lead_email})")
+            return {"status": "ok", "message": "Email de seguimiento agendado en background."}
+
         if lead_email:
             background_tasks.add_task(send_lead_followup_email, lead_name, lead_email)
             return {"status": "ok", "message": "Email de seguimiento agendado en background."}

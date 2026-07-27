@@ -34,6 +34,7 @@ export default function ContactPopup({ isOpen, onClose }) {
       telefono: formData.get('telefono'),
       email: formData.get('email'),
       mensaje: formData.get('mensaje'),
+      honeypot: formData.get('confirm_email'),
     };
 
     try {
@@ -78,6 +79,9 @@ export default function ContactPopup({ isOpen, onClose }) {
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <div style={{ display: 'none' }} aria-hidden="true">
+            <input type="text" id="confirm_email" name="confirm_email" tabIndex="-1" autoComplete="off" />
+          </div>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label htmlFor="nombre">NOMBRE</label>

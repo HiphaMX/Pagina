@@ -150,13 +150,8 @@ async def send_lead_followup_email(lead_name: str, lead_email: str):
         logger.warning(f"SMTP not configurado. Simulando envío para {lead_email} (Lead: {lead_name})")
         return True
 
-    message = EmailMessage()
-    from_header = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>" if getattr(settings, 'EMAILS_FROM_NAME', '') else settings.EMAILS_FROM_EMAIL
-    message["From"] = from_header
-    message["To"] = lead_email
-    message["Subject"] = f"¡Hola {lead_name}! Recibimos tu solicitud en HiphaMX"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="hipha.mx")
+    from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
+    from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
     
     html_content = f"""
     <html>
@@ -174,10 +169,18 @@ async def send_lead_followup_email(lead_name: str, lead_email: str):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HIPHA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=lead_email,
+        subject=f"¡Hola {lead_name}! Recibimos tu solicitud en HiphaMX",
+        html_content=html_content,
+        domain="hipha.mx"
+    )
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Correo enviado exitosamente a {lead_email}")
         return True
     except Exception as e:
@@ -189,13 +192,8 @@ async def send_lead_notification_to_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío a equipo para {form_data.email}")
         return True
 
-    message = EmailMessage()
-    from_header = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>" if getattr(settings, 'EMAILS_FROM_NAME', '') else settings.EMAILS_FROM_EMAIL
-    message["From"] = from_header
-    message["To"] = settings.EMAILS_FROM_EMAIL
-    message["Subject"] = f"Nuevo Lead de HiphaMX: {form_data.nombre}"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="hipha.mx")
+    from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
+    from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
     
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else ''
     html_content = f"""
@@ -212,7 +210,17 @@ async def send_lead_notification_to_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HIPHA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=settings.EMAILS_FROM_EMAIL,
+        subject=f"Nuevo Lead de HiphaMX: {form_data.nombre}",
+        html_content=html_content,
+        domain="hipha.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
     
     # Adjuntar PDF si es contrato
     if form_data.mensaje.startswith("ACEPTACIÓN DE CONTRATO VÍA WEB") and hasattr(form_data, 'firma') and form_data.firma:
@@ -224,7 +232,7 @@ async def send_lead_notification_to_team(form_data):
             logger.error(f"Error al generar o adjuntar PDF en send_lead_notification_to_team: {e}")
     
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info("Notificación de lead enviada al equipo")
         return True
     except Exception as e:
@@ -236,10 +244,8 @@ async def send_newsletter_welcome(subscriber_email: str):
         logger.warning(f"SMTP no configurado. Simulando bienvenida de newsletter a {subscriber_email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>"
-    message["To"] = subscriber_email
-    message["Subject"] = "¡Bienvenido a los insights de HiphaMX!"
+    from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
+    from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
     
     html_content = f"""
     <html>
@@ -256,10 +262,18 @@ async def send_newsletter_welcome(subscriber_email: str):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HIPHA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=subscriber_email,
+        subject="¡Bienvenido a los insights de HiphaMX!",
+        html_content=html_content,
+        domain="hipha.mx"
+    )
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar bienvenida de newsletter: {str(e)}")
@@ -269,10 +283,8 @@ async def send_newsletter_notification_to_team(subscriber_email: str):
     if not settings.SMTP_HOST or not settings.SMTP_USER:
         return True
 
-    message = EmailMessage()
-    message["From"] = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>"
-    message["To"] = settings.EMAILS_FROM_EMAIL
-    message["Subject"] = "Nueva Suscripción al Newsletter de HiphaMX"
+    from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
+    from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
     
     html_content = f"""
     <html>
@@ -282,24 +294,35 @@ async def send_newsletter_notification_to_team(subscriber_email: str):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HIPHA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=settings.EMAILS_FROM_EMAIL,
+        subject="Nueva Suscripción al Newsletter de HiphaMX",
+        html_content=html_content,
+        domain="hipha.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = subscriber_email
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar notificación de newsletter al equipo: {str(e)}")
         return False
 
 async def send_botica_order_customer(payer_name: str, payer_email: str, order_details: str, total: float):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    botica_configured = bool(settings.BOTICA_SMTP_HOST and settings.BOTICA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not botica_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a cliente {payer_email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"Botica Silvestre <hola@botica-silvestre.com>"
-    message["To"] = payer_email
-    message["Subject"] = f"¡Tu ritual está en preparación, {payer_name}!"
+    from_email = settings.BOTICA_EMAILS_FROM_EMAIL if settings.BOTICA_EMAILS_FROM_EMAIL else "hola@botica-silvestre.com"
+    from_name = settings.BOTICA_EMAILS_FROM_NAME if settings.BOTICA_EMAILS_FROM_NAME else "Botica Silvestre"
     
     html_content = f"""
     <html>
@@ -319,24 +342,33 @@ async def send_botica_order_customer(payer_name: str, payer_email: str, order_de
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="BOTICA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=payer_email,
+        subject=f"¡Tu ritual está en preparación, {payer_name}!",
+        html_content=html_content,
+        domain="botica-silvestre.com"
+    )
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo a cliente botica: {str(e)}")
         return False
 
 async def send_botica_order_team(payer_name: str, payer_email: str, payer_phone: str, address_str: str, order_details: str, total: float):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    botica_configured = bool(settings.BOTICA_SMTP_HOST and settings.BOTICA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not botica_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo Botica")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"Botica Silvestre (Web) <hola@botica-silvestre.com>"
-    message["To"] = "hola@botica-silvestre.com"
-    message["Subject"] = f"NUEVO PEDIDO WEB: {payer_name} - ${total} MXN"
+    from_email = settings.BOTICA_EMAILS_FROM_EMAIL if settings.BOTICA_EMAILS_FROM_EMAIL else "hola@botica-silvestre.com"
+    to_email = settings.BOTICA_EMAILS_FROM_EMAIL if settings.BOTICA_EMAILS_FROM_EMAIL else "hola@botica-silvestre.com"
     
     html_content = f"""
     <html>
@@ -358,10 +390,20 @@ async def send_botica_order_team(payer_name: str, payer_email: str, payer_phone:
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="BOTICA",
+        from_name="Botica Silvestre (Web)",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"NUEVO PEDIDO WEB: {payer_name} - ${total} MXN",
+        html_content=html_content,
+        domain="botica-silvestre.com"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = payer_email
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo al equipo botica: {str(e)}")
@@ -373,14 +415,8 @@ async def send_contract_followup_email(form_data):
         logger.warning(f"SMTP not configurado. Simulando envío para {form_data.email} (Contrato: {form_data.nombre})")
         return True
 
-    message = EmailMessage()
-    # Asegurar que el From no tenga espacios vacíos extra que disparen filtros de SPAM
-    from_header = f"{settings.EMAILS_FROM_NAME} <{settings.EMAILS_FROM_EMAIL}>" if getattr(settings, 'EMAILS_FROM_NAME', '') else settings.EMAILS_FROM_EMAIL
-    message["From"] = from_header
-    message["To"] = form_data.email
-    message["Subject"] = "¡Bienvenido a Hipha!"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="hipha.mx")
+    from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
+    from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
     
     # We replace newlines in the message to `<br>` for correct HTML formatting
     mensaje_formatted = form_data.mensaje.replace("\n", "<br>")
@@ -412,8 +448,16 @@ async def send_contract_followup_email(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HIPHA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject="¡Bienvenido a Hipha!",
+        html_content=html_content,
+        domain="hipha.mx"
+    )
+
     # Adjuntar PDF
     try:
         pdf_bytes = generate_contract_pdf(form_data)
@@ -423,7 +467,7 @@ async def send_contract_followup_email(form_data):
         logger.error(f"Error al generar o adjuntar PDF en send_contract_followup_email: {e}")
     
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Correo de contrato enviado exitosamente a {form_data.email}")
         return True
     except Exception as e:
@@ -432,15 +476,15 @@ async def send_contract_followup_email(form_data):
 
 
 async def send_healthyice_order_customer(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not healthyice_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a cliente HealthyIce {form_data.email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"HealthyIce <{settings.SMTP_USER}>"
-    message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["To"] = form_data.email
-    message["Subject"] = f"¡Hemos recibido tus datos, {form_data.nombre}!"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_name = settings.HEALTHYICE_EMAILS_FROM_NAME if settings.HEALTHYICE_EMAILS_FROM_NAME else "HealthyIce"
     
     html_content = f"""
     <html>
@@ -459,25 +503,33 @@ async def send_healthyice_order_customer(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HEALTHYICE",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject=f"¡Hemos recibido tus datos, {form_data.nombre}!",
+        html_content=html_content,
+        domain="healthyice.mx"
+    )
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo a cliente HealthyIce: {str(e)}")
         return False
 
 async def send_healthyice_order_team(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not healthyice_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo HealthyIce")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
-    message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
-    message["Subject"] = f"NUEVO PEDIDO PENDIENTE (Efectivo/Transferencia): {form_data.nombre}"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    to_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx, contacto@healthyice.mx"
     
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>')
     html_content = f"""
@@ -500,10 +552,20 @@ async def send_healthyice_order_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HEALTHYICE",
+        from_name="HealthyIce Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"NUEVO PEDIDO PENDIENTE (Efectivo/Transferencia): {form_data.nombre}",
+        html_content=html_content,
+        domain="healthyice.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo al equipo HealthyIce: {str(e)}")
@@ -511,15 +573,15 @@ async def send_healthyice_order_team(form_data):
 
 
 async def send_healthyice_payment_customer(payer_name: str, payer_email: str, order_details: str, total: float):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not healthyice_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a cliente HealthyIce {payer_email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"HealthyIce <{settings.SMTP_USER}>"
-    message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["To"] = payer_email
-    message["Subject"] = f"¡Tu pedido de HealthyIce está en camino, {payer_name}!"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_name = settings.HEALTHYICE_EMAILS_FROM_NAME if settings.HEALTHYICE_EMAILS_FROM_NAME else "HealthyIce"
     
     html_content = f"""
     <html>
@@ -539,10 +601,18 @@ async def send_healthyice_payment_customer(payer_name: str, payer_email: str, or
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HEALTHYICE",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=payer_email,
+        subject=f"¡Tu pedido de HealthyIce está en camino, {payer_name}!",
+        html_content=html_content,
+        domain="healthyice.mx"
+    )
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo de pago a cliente HealthyIce: {str(e)}")
@@ -550,15 +620,15 @@ async def send_healthyice_payment_customer(payer_name: str, payer_email: str, or
 
 
 async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_phone: str, address_str: str, order_details: str, total: float):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not healthyice_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo HealthyIce")
         return True
 
-    message = EmailMessage()
-    message["From"] = f"HealthyIce Web <{settings.SMTP_USER}>"
-    message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
-    message["Subject"] = f"NUEVO PEDIDO PAGADO (Mercado Pago): {payer_name} - ${total} MXN"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    to_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx, contacto@healthyice.mx"
     
     html_content = f"""
     <html>
@@ -580,10 +650,20 @@ async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HEALTHYICE",
+        from_name="HealthyIce Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"NUEVO PEDIDO PAGADO (Mercado Pago): {payer_name} - ${total} MXN",
+        html_content=html_content,
+        domain="healthyice.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = payer_email
+
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo al equipo HealthyIce por pedido pagado: {str(e)}")
@@ -978,16 +1058,15 @@ def generate_healthyice_contract_pdf(form_data) -> bytes:
 
 
 async def send_healthyice_contract_customer(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not healthyice_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce a {form_data.email}")
         return True
-        
-    message = EmailMessage()
-    from_header = f"HealthyIce <{settings.SMTP_USER}>"
-    message["From"] = from_header
-    message["To"] = form_data.email
-    message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["Subject"] = "¡Bienvenido a HealthyIce! Contrato de Colaboracion Comercial"
+
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_name = settings.HEALTHYICE_EMAILS_FROM_NAME if settings.HEALTHYICE_EMAILS_FROM_NAME else "HealthyIce"
     message["Date"] = formatdate(localtime=True)
     message["Message-ID"] = make_msgid(domain="healthyice.mx")
     
@@ -1019,8 +1098,16 @@ async def send_healthyice_contract_customer(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HEALTHYICE",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject="¡Bienvenido a HealthyIce! Contrato de Colaboracion Comercial",
+        html_content=html_content,
+        domain="healthyice.mx"
+    )
+
     try:
         pdf_bytes = generate_healthyice_contract_pdf(form_data)
         safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
@@ -1029,7 +1116,7 @@ async def send_healthyice_contract_customer(form_data):
         logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_customer: {e}")
         
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Correo de contrato HealthyIce enviado a cliente: {form_data.email}")
         return True
     except Exception as e:
@@ -1038,16 +1125,15 @@ async def send_healthyice_contract_customer(form_data):
 
 
 async def send_healthyice_contract_team(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not healthyice_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce al equipo")
         return True
-        
-    message = EmailMessage()
-    from_header = f"HealthyIce Web <{settings.SMTP_USER}>"
-    message["From"] = from_header
-    message["To"] = "hola@healthyice.mx, contacto@healthyice.mx"
-    message.add_header('Reply-To', 'hola@healthyice.mx')
-    message["Subject"] = f"NUEVO SOCIO COMERCIAL FIRMADO: {form_data.razon_social}"
+
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    to_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx, contacto@healthyice.mx"
     message["Date"] = formatdate(localtime=True)
     message["Message-ID"] = make_msgid(domain="healthyice.mx")
     
@@ -1104,8 +1190,18 @@ async def send_healthyice_contract_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
-    
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HEALTHYICE",
+        from_name="HealthyIce Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"NUEVO SOCIO COMERCIAL FIRMADO: {form_data.razon_social}",
+        html_content=html_content,
+        domain="healthyice.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
+
     try:
         pdf_bytes = generate_healthyice_contract_pdf(form_data)
         safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
@@ -1114,7 +1210,7 @@ async def send_healthyice_contract_team(form_data):
         logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_team: {e}")
         
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info("Notificacion de contrato HealthyIce enviada al equipo")
         return True
     except Exception as e:
@@ -1123,17 +1219,15 @@ async def send_healthyice_contract_team(form_data):
 
 
 async def send_whiteclean_confirmation_email(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    whiteclean_configured = bool(settings.WHITECLEAN_SMTP_HOST and settings.WHITECLEAN_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not whiteclean_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a prospecto WhiteClean {form_data.email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = "WhiteClean Limpieza Especializada <clientes@whiteclean.com.mx>"
-    message["To"] = form_data.email
-    message.add_header('Reply-To', 'clientes@whiteclean.com.mx')
-    message["Subject"] = f"¡Hemos recibido tu solicitud, {form_data.nombre}! ✨"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="whiteclean.com.mx")
+    from_email = settings.WHITECLEAN_EMAILS_FROM_EMAIL if settings.WHITECLEAN_EMAILS_FROM_EMAIL else "clientes@whiteclean.com.mx"
+    from_name = settings.WHITECLEAN_EMAILS_FROM_NAME if settings.WHITECLEAN_EMAILS_FROM_NAME else "WhiteClean Limpieza Especializada"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin mensaje adicional'
 
@@ -1197,10 +1291,18 @@ async def send_whiteclean_confirmation_email(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="WHITECLEAN",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject=f"¡Hemos recibido tu solicitud, {form_data.nombre}! ✨",
+        html_content=html_content,
+        domain="whiteclean.com.mx"
+    )
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Correo de confirmación WhiteClean enviado exitosamente a {form_data.email}")
         return True
     except Exception as e:
@@ -1209,17 +1311,14 @@ async def send_whiteclean_confirmation_email(form_data):
 
 
 async def send_whiteclean_notification_team(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    whiteclean_configured = bool(settings.WHITECLEAN_SMTP_HOST and settings.WHITECLEAN_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not whiteclean_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo WhiteClean")
         return True
 
-    message = EmailMessage()
-    message["From"] = "WhiteClean Web <clientes@whiteclean.com.mx>"
-    message["To"] = "clientes@whiteclean.com.mx, whiteclean1@hotmail.com"
-    message.add_header('Reply-To', form_data.email)
-    message["Subject"] = f"🚨 NUEVA SOLICITUD WEB: {form_data.nombre} {form_data.apellido} - {form_data.servicio}"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="whiteclean.com.mx")
+    from_email = settings.WHITECLEAN_EMAILS_FROM_EMAIL if settings.WHITECLEAN_EMAILS_FROM_EMAIL else "clientes@whiteclean.com.mx"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
 
@@ -1278,10 +1377,20 @@ async def send_whiteclean_notification_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="WHITECLEAN",
+        from_name="WhiteClean Web",
+        from_email=from_email,
+        to_email="clientes@whiteclean.com.mx, whiteclean1@hotmail.com",
+        subject=f"🚨 NUEVA SOLICITUD WEB: {form_data.nombre} {form_data.apellido} - {form_data.servicio}",
+        html_content=html_content,
+        domain="whiteclean.com.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info("Notificación de lead WhiteClean enviada con éxito al equipo y socio.")
         return True
     except Exception as e:
@@ -1290,17 +1399,15 @@ async def send_whiteclean_notification_team(form_data):
 
 
 async def send_chilechillon_confirmation_email(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    chile_configured = bool(settings.CHILECHILLON_SMTP_HOST and settings.CHILECHILLON_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not chile_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a prospecto Chile Chillón {form_data.email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Chile Chillón <hola@elchilechillon.com.mx>"
-    message["To"] = form_data.email
-    message.add_header('Reply-To', 'hola@elchilechillon.com.mx')
-    message["Subject"] = f"¡Tu sazón está a punto de potenciarse, {form_data.nombre}! 🌶️🔥"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+    from_email = settings.CHILECHILLON_EMAILS_FROM_EMAIL if settings.CHILECHILLON_EMAILS_FROM_EMAIL else "hola@elchilechillon.com.mx"
+    from_name = settings.CHILECHILLON_EMAILS_FROM_NAME if settings.CHILECHILLON_EMAILS_FROM_NAME else "Chile Chillón"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin comentarios adicionales'
     
@@ -1368,10 +1475,18 @@ async def send_chilechillon_confirmation_email(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="CHILECHILLON",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject=f"¡Tu sazón está a punto de potenciarse, {form_data.nombre}! 🌶️🔥",
+        html_content=html_content,
+        domain="elchilechillon.com.mx"
+    )
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Correo de confirmación Chile Chillón enviado con éxito a {form_data.email}")
         return True
     except Exception as e:
@@ -1380,17 +1495,15 @@ async def send_chilechillon_confirmation_email(form_data):
 
 
 async def send_chilechillon_notification_team(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    chile_configured = bool(settings.CHILECHILLON_SMTP_HOST and settings.CHILECHILLON_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not chile_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío de notificación de Chile Chillón al equipo")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Chile Chillón Web <hola@elchilechillon.com.mx>"
-    message["To"] = settings.EMAILS_FROM_EMAIL
-    message.add_header('Reply-To', form_data.email)
-    message["Subject"] = f"🌶️ NUEVA SOLICITUD WEB CHILE CHILLÓN: {form_data.nombre} - {form_data.perfil.upper()}"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+    from_email = settings.CHILECHILLON_EMAILS_FROM_EMAIL if settings.CHILECHILLON_EMAILS_FROM_EMAIL else "hola@elchilechillon.com.mx"
+    to_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "creativo@hipha.mx"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
     
@@ -1452,10 +1565,20 @@ async def send_chilechillon_notification_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="CHILECHILLON",
+        from_name="Chile Chillón Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"🌶️ NUEVA SOLICITUD WEB CHILE CHILLÓN: {form_data.nombre} - {form_data.perfil.upper()}",
+        html_content=html_content,
+        domain="elchilechillon.com.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info("Notificación de lead Chile Chillón enviada con éxito al equipo.")
         return True
     except Exception as e:
@@ -1464,17 +1587,15 @@ async def send_chilechillon_notification_team(form_data):
 
 
 async def send_grupogari_confirmation_email(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    gari_configured = bool(settings.GRUPOGARI_SMTP_HOST and settings.GRUPOGARI_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not gari_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a prospecto Grupo Gari {form_data.email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Grupo Gari | Cumplimiento Regulatorio <contacto@grupogari.com>"
-    message["To"] = form_data.email
-    message.add_header('Reply-To', 'contacto@grupogari.com')
-    message["Subject"] = f"Autodiagnóstico Recibido - Registro GARI-{form_data.nombre.upper()} 📄"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="grupogari.com")
+    from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupogari.com"
+    from_name = settings.GRUPOGARI_EMAILS_FROM_NAME if settings.GRUPOGARI_EMAILS_FROM_NAME else "Grupo Gari | Cumplimiento Regulatorio"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin detalles adicionales'
     rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
@@ -1542,10 +1663,18 @@ async def send_grupogari_confirmation_email(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="GRUPOGARI",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject=f"Autodiagnóstico Recibido - Registro GARI-{form_data.nombre.upper()} 📄",
+        html_content=html_content,
+        domain="grupogari.com"
+    )
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Correo de confirmación Grupo Gari enviado exitosamente a {form_data.email}")
         return True
     except Exception as e:
@@ -1554,17 +1683,15 @@ async def send_grupogari_confirmation_email(form_data):
 
 
 async def send_grupogari_notification_team(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    gari_configured = bool(settings.GRUPOGARI_SMTP_HOST and settings.GRUPOGARI_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not gari_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo Grupo Gari")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Grupo Gari Web <contacto@grupogari.com>"
-    message["To"] = settings.EMAILS_FROM_EMAIL
-    message.add_header('Reply-To', form_data.email)
-    message["Subject"] = f"🚨 NUEVO DIAGNÓSTICO WEB GARI: {form_data.nombre.upper()} - {form_data.servicio.upper()}"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="grupogari.com")
+    from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupogari.com"
+    to_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "contacto@grupogari.com"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
     rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
@@ -1632,10 +1759,20 @@ async def send_grupogari_notification_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="GRUPOGARI",
+        from_name="Grupo Gari Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"🚨 NUEVO DIAGNÓSTICO WEB GARI: {form_data.nombre.upper()} - {form_data.servicio.upper()}",
+        html_content=html_content,
+        domain="grupogari.com"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info("Notificación de lead Grupo Gari enviada con éxito al equipo.")
         return True
     except Exception as e:
@@ -1644,17 +1781,15 @@ async def send_grupogari_notification_team(form_data):
 
 
 async def send_valencia_servicios_notification_team(form_data):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    valencia_configured = bool(settings.VALENCIA_SMTP_HOST and settings.VALENCIA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not valencia_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo Valencia Servicios: {form_data.nombre_completo}")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Valencia Servicios Web <contacto@valenciaservicios.com.mx>"
-    recipient = settings.SMTP_USER if settings.SMTP_USER else "contacto@valenciaservicios.com.mx"
-    message["To"] = recipient
-    message["Subject"] = f"🛠️ NUEVO SERVICIO SOLICITADO: {form_data.nombre_completo} - {form_data.servicio_requerido}"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="valenciaservicios.com.mx")
+    from_email = settings.VALENCIA_EMAILS_FROM_EMAIL if settings.VALENCIA_EMAILS_FROM_EMAIL else "contacto@valenciaservicios.com.mx"
+    to_email = settings.VALENCIA_SMTP_USER if valencia_configured else (settings.SMTP_USER if settings.SMTP_USER else "contacto@valenciaservicios.com.mx")
 
     html_content = f"""
     <html>
@@ -1718,10 +1853,18 @@ async def send_valencia_servicios_notification_team(form_data):
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="VALENCIA",
+        from_name="Valencia Servicios Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"🛠️ NUEVO SERVICIO SOLICITADO: {form_data.nombre_completo} - {form_data.servicio_requerido}",
+        html_content=html_content,
+        domain="valenciaservicios.com.mx"
+    )
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         logger.info(f"Notificación de Valencia Servicios enviada con éxito para el cliente {form_data.nombre_completo}")
         return True
     except Exception as e:
@@ -1760,6 +1903,33 @@ def _prepare_project_email(
             smtp_port = int(smtp_port)
         except ValueError:
             smtp_port = 587
+
+    # Domain alignment validation for safety checks
+    if smtp_user:
+        smtp_user_lower = smtp_user.lower()
+        if prefix == "HIPHA":
+            # Global agency SMTP must belong to agency domain
+            if "hipha.mx" not in smtp_user_lower:
+                logger.critical(
+                    f"[SMTP ALIGNMENT CRITICAL ERROR] Global agency SMTP user '{smtp_user}' "
+                    f"does not belong to the expected domain 'hipha.mx'. "
+                    f"Check Vercel env variables!"
+                )
+        else:
+            # Client/Project SMTP
+            if project_configured:
+                # If project-specific SMTP is configured, it must align with the project's domain
+                if domain.lower() not in smtp_user_lower:
+                    logger.warning(
+                        f"[SMTP ALIGNMENT WARNING] Project '{prefix}' has specific SMTP configured "
+                        f"with user '{smtp_user}' but it does not match its domain '{domain}'."
+                    )
+            else:
+                # If falling back to agency SMTP, log info but don't warn about client domain mismatch
+                logger.info(
+                    f"[SMTP INFO] Project '{prefix}' using agency SMTP fallback ({smtp_user}). "
+                    f"Will reply to: {from_email}"
+                )
 
     # Real From calculation to avoid SPF / Sender mismatch failure
     actual_from = smtp_user
@@ -2043,17 +2213,15 @@ async def send_amdi_newsletter_notification_team(subscriber_email: str):
 
 
 async def send_chilechillon_order_customer(payer_name: str, payer_email: str, order_details: str, total: float):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    chile_configured = bool(settings.CHILECHILLON_SMTP_HOST and settings.CHILECHILLON_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not chile_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a cliente Chile Chillón {payer_email}")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Chile Chillón <hola@elchilechillon.com.mx>"
-    message["To"] = payer_email
-    message.add_header('Reply-To', 'hola@elchilechillon.com.mx')
-    message["Subject"] = f"¡Tu sazón está en camino, {payer_name}! 🌶️🔥"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+    from_email = settings.CHILECHILLON_EMAILS_FROM_EMAIL if settings.CHILECHILLON_EMAILS_FROM_EMAIL else "hola@elchilechillon.com.mx"
+    from_name = settings.CHILECHILLON_EMAILS_FROM_NAME if settings.CHILECHILLON_EMAILS_FROM_NAME else "Chile Chillón"
 
     html_content = f"""
     <html>
@@ -2089,10 +2257,18 @@ async def send_chilechillon_order_customer(payer_name: str, payer_email: str, or
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="CHILECHILLON",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=payer_email,
+        subject=f"¡Tu sazón está en camino, {payer_name}! 🌶️🔥",
+        html_content=html_content,
+        domain="elchilechillon.com.mx"
+    )
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo de orden a cliente Chile Chillón: {str(e)}")
@@ -2100,16 +2276,15 @@ async def send_chilechillon_order_customer(payer_name: str, payer_email: str, or
 
 
 async def send_chilechillon_order_team(payer_name: str, payer_email: str, payer_phone: str, address_str: str, order_details: str, total: float):
-    if not settings.SMTP_HOST or not settings.SMTP_USER:
+    chile_configured = bool(settings.CHILECHILLON_SMTP_HOST and settings.CHILECHILLON_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not chile_configured and not global_configured:
         logger.warning(f"SMTP no configurado. Simulando envío a equipo Chile Chillón")
         return True
 
-    message = EmailMessage()
-    message["From"] = "Chile Chillón Web <hola@elchilechillon.com.mx>"
-    message["To"] = "hola@elchilechillon.com.mx"
-    message["Subject"] = f"🔥 NUEVA COMPRA WEB: {payer_name} - ${total} MXN"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="elchilechillon.com.mx")
+    from_email = settings.CHILECHILLON_EMAILS_FROM_EMAIL if settings.CHILECHILLON_EMAILS_FROM_EMAIL else "hola@elchilechillon.com.mx"
+    to_email = settings.CHILECHILLON_EMAILS_FROM_EMAIL if settings.CHILECHILLON_EMAILS_FROM_EMAIL else "hola@elchilechillon.com.mx"
 
     html_content = f"""
     <html>
@@ -2135,10 +2310,20 @@ async def send_chilechillon_order_team(payer_name: str, payer_email: str, payer_
     </body>
     </html>
     """
-    message.set_content(html_content, subtype="html")
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="CHILECHILLON",
+        from_name="Chile Chillón Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"🔥 NUEVA COMPRA WEB: {payer_name} - ${total} MXN",
+        html_content=html_content,
+        domain="elchilechillon.com.mx"
+    )
+    del message['Reply-To']
+    message['Reply-To'] = payer_email
 
     try:
-        await _send_smtp(message)
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar correo de orden al equipo Chile Chillón: {str(e)}")

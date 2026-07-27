@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from app.api import contact, mercadopago, auth, sat
+from app.api import contact, mercadopago, auth, sat, qa, visual_generator
 from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal
 from app.models.user import User
@@ -83,6 +83,8 @@ app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dashboard"])
 app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
+app.include_router(qa.router, prefix="/api", tags=["qa"])
+app.include_router(visual_generator.router, prefix="/api/generator", tags=["generator"])
 
 
 

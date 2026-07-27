@@ -1768,6 +1768,10 @@
                     <p>Completa el formulario y te enviaremos la cotización directamente por WhatsApp.</p>
                     
                     <form id="serviceForm" onsubmit="handleFormSubmit(event)">
+                        <!-- Honeypot Field (anti-spam) -->
+                        <div style="display:none !important;" aria-hidden="true">
+                            <input type="text" id="confirm_email" name="confirm_email" tabindex="-1" autocomplete="off">
+                        </div>
                         <div class="form-group">
                             <label class="form-label" for="nombre_completo">Nombre Completo</label>
                             <input class="form-input" type="text" id="nombre_completo" required placeholder="Ej. Juan Pérez">
@@ -2039,6 +2043,8 @@
                 window.location.href = whatsappUrl;
             }
 
+            const honeypot = document.getElementById('confirm_email') ? document.getElementById('confirm_email').value : '';
+
             // 3. Reset form and show success feedback in current page
             document.getElementById('serviceForm').reset();
             showFeedback('¡Solicitud enviada! Se ha abierto WhatsApp para continuar tu cotización.', 'success');
@@ -2054,7 +2060,8 @@
                     telefono: telefono,
                     servicio_requerido: servicio,
                     direccion: direccion,
-                    horario_preferido: horarioVal
+                    horario_preferido: horarioVal,
+                    honeypot: honeypot
                 }),
                 keepalive: true
             }).catch(err => console.error("Error reporting lead in background:", err));

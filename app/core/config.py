@@ -28,9 +28,73 @@ class Settings(BaseSettings):
     AMDI_EMAILS_FROM_EMAIL: str = ""
     AMDI_EMAILS_FROM_NAME: str = ""
 
+    # CHILECHILLON Specific SMTP settings
+    CHILECHILLON_SMTP_HOST: str = ""
+    CHILECHILLON_SMTP_PORT: Union[int, str] = 587
+    CHILECHILLON_SMTP_USER: str = ""
+    CHILECHILLON_SMTP_PASSWORD: str = ""
+    CHILECHILLON_EMAILS_FROM_EMAIL: str = ""
+    CHILECHILLON_EMAILS_FROM_NAME: str = ""
+
+    # WHITECLEAN Specific SMTP settings
+    WHITECLEAN_SMTP_HOST: str = ""
+    WHITECLEAN_SMTP_PORT: Union[int, str] = 587
+    WHITECLEAN_SMTP_USER: str = ""
+    WHITECLEAN_SMTP_PASSWORD: str = ""
+    WHITECLEAN_EMAILS_FROM_EMAIL: str = ""
+    WHITECLEAN_EMAILS_FROM_NAME: str = ""
+
+    # GRUPOGARI Specific SMTP settings
+    GRUPOGARI_SMTP_HOST: str = ""
+    GRUPOGARI_SMTP_PORT: Union[int, str] = 587
+    GRUPOGARI_SMTP_USER: str = ""
+    GRUPOGARI_SMTP_PASSWORD: str = ""
+    GRUPOGARI_EMAILS_FROM_EMAIL: str = ""
+    GRUPOGARI_EMAILS_FROM_NAME: str = ""
+
+    # VALENCIA Specific SMTP settings
+    VALENCIA_SMTP_HOST: str = ""
+    VALENCIA_SMTP_PORT: Union[int, str] = 587
+    VALENCIA_SMTP_USER: str = ""
+    VALENCIA_SMTP_PASSWORD: str = ""
+    VALENCIA_EMAILS_FROM_EMAIL: str = ""
+    VALENCIA_EMAILS_FROM_NAME: str = ""
+
+    # BOTICA Specific SMTP settings
+    BOTICA_SMTP_HOST: str = ""
+    BOTICA_SMTP_PORT: Union[int, str] = 587
+    BOTICA_SMTP_USER: str = ""
+    BOTICA_SMTP_PASSWORD: str = ""
+    BOTICA_EMAILS_FROM_EMAIL: str = ""
+    BOTICA_EMAILS_FROM_NAME: str = ""
+
+    # HEALTHYICE Specific SMTP settings
+    HEALTHYICE_SMTP_HOST: str = ""
+    HEALTHYICE_SMTP_PORT: Union[int, str] = 587
+    HEALTHYICE_SMTP_USER: str = ""
+    HEALTHYICE_SMTP_PASSWORD: str = ""
+    HEALTHYICE_EMAILS_FROM_EMAIL: str = ""
+    HEALTHYICE_EMAILS_FROM_NAME: str = ""
+
+    # UROONCOLOGY Specific SMTP settings (Pendiente de credenciales)
+    UROONCOLOGY_SMTP_HOST: str = ""
+    UROONCOLOGY_SMTP_PORT: Union[int, str] = 587
+    UROONCOLOGY_SMTP_USER: str = ""
+    UROONCOLOGY_SMTP_PASSWORD: str = ""
+    UROONCOLOGY_EMAILS_FROM_EMAIL: str = ""
+    UROONCOLOGY_EMAILS_FROM_NAME: str = ""
+
+    # UROLOGIAAVANZADA Specific SMTP settings (Pendiente de credenciales)
+    UROLOGIAAVANZADA_SMTP_HOST: str = ""
+    UROLOGIAAVANZADA_SMTP_PORT: Union[int, str] = 587
+    UROLOGIAAVANZADA_SMTP_USER: str = ""
+    UROLOGIAAVANZADA_SMTP_PASSWORD: str = ""
+    UROLOGIAAVANZADA_EMAILS_FROM_EMAIL: str = ""
+    UROLOGIAAVANZADA_EMAILS_FROM_NAME: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
-    @validator("SMTP_PORT", "AMDI_SMTP_PORT", pre=True, always=True)
+    @validator("SMTP_PORT", pre=True, always=True)
     @classmethod
     def coerce_port(cls, v):
         if v == "" or v is None:
@@ -39,6 +103,48 @@ class Settings(BaseSettings):
             return int(v)
         except ValueError:
             return 587
+
+    @validator("AMDI_SMTP_HOST", pre=True, always=True)
+    @classmethod
+    def get_amdi_host(cls, v):
+        import os
+        return v or os.getenv("AMDI2_SMTP_HOST", "")
+
+    @validator("AMDI_SMTP_PORT", pre=True, always=True)
+    @classmethod
+    def get_amdi_port(cls, v):
+        import os
+        port_val = v or os.getenv("AMDI2_SMTP_PORT", "")
+        if port_val == "" or port_val is None:
+            return 587
+        try:
+            return int(port_val)
+        except ValueError:
+            return 587
+
+    @validator("AMDI_SMTP_USER", pre=True, always=True)
+    @classmethod
+    def get_amdi_user(cls, v):
+        import os
+        return v or os.getenv("AMDI2_SMTP_USER", "")
+
+    @validator("AMDI_SMTP_PASSWORD", pre=True, always=True)
+    @classmethod
+    def get_amdi_password(cls, v):
+        import os
+        return v or os.getenv("AMDI2_SMTP_PASSWORD", "")
+
+    @validator("AMDI_EMAILS_FROM_EMAIL", pre=True, always=True)
+    @classmethod
+    def get_amdi_from_email(cls, v):
+        import os
+        return v or os.getenv("AMDI2_EMAILS_FROM_EMAIL", "")
+
+    @validator("AMDI_EMAILS_FROM_NAME", pre=True, always=True)
+    @classmethod
+    def get_amdi_from_name(cls, v):
+        import os
+        return v or os.getenv("AMDI2_EMAILS_FROM_NAME", "")
 
     class Config:
         env_file = ".env"

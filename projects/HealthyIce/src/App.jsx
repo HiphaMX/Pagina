@@ -411,7 +411,8 @@ function App() {
     telefono: '', 
     opcionInteres: 'ProT Fit 0', 
     producto: '', 
-    mensaje: '' 
+    mensaje: '',
+    honeypot: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -480,7 +481,8 @@ function App() {
     fecha_inicio_anio: '',
     ciudad_jurisdiccion: 'Guadalajara, Jalisco',
     representante_healthyice: 'FRANCISCO DELGADILLO',
-    llenado_manual: false
+    llenado_manual: false,
+    honeypot: ''
   });
   const [isPartnerSubmitting, setIsPartnerSubmitting] = useState(false);
   const [partnerSubmitSuccess, setPartnerSubmitSuccess] = useState(false);
@@ -738,7 +740,8 @@ function App() {
       nombre: formData.nombre,
       email: formData.email,
       telefono: formData.telefono,
-      mensaje: fullMessage
+      mensaje: fullMessage,
+      honeypot: formData.honeypot
     };
 
     try {
@@ -2131,6 +2134,9 @@ function App() {
                   <>
                     {checkoutStep === 'details' ? (
                       <>
+                        <div style={{ display: 'none' }} aria-hidden="true">
+                          <input type="text" value={formData.honeypot || ''} onChange={e => setFormData({...formData, honeypot: e.target.value})} tabIndex="-1" autoComplete="off" />
+                        </div>
                         <div>
                           <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#101729', marginBottom: '0.25rem' }}>Nombre Completo</label>
                           <input type="text" required value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '1rem' }} placeholder="Juan Pérez" />
@@ -2656,6 +2662,9 @@ function App() {
                           </div>
 
                           <div className="partner-form-grid" style={{ opacity: partnerForm.llenado_manual ? 0.6 : 1, transition: 'opacity 0.25s ease' }}>
+                            <div style={{ display: 'none' }} aria-hidden="true">
+                              <input type="text" value={partnerForm.honeypot || ''} onChange={e => setPartnerForm({...partnerForm, honeypot: e.target.value})} tabIndex="-1" autoComplete="off" />
+                            </div>
                             <div style={{ gridColumn: 'span 2' }}>
                               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem', opacity: partnerForm.llenado_manual ? 0.6 : 1 }}>Razón Social / Nombre Comercial {partnerForm.llenado_manual ? '' : '*'}</label>
                               <input
