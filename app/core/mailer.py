@@ -489,8 +489,12 @@ async def send_healthyice_order_customer(form_data):
     html_content = f"""
     <html>
     <body style="font-family: 'Quicksand', Arial, sans-serif; color: #101729; background-color: #f8fafc; padding: 20px;">
-        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px;">
-            <h2 style="color: #101729; font-weight: bold;">Hola {form_data.nombre},</h2>
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <!-- Header con el Logotipo Oficial de HealthyIce -->
+            <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9;">
+                <img src="https://healthyice.mx/logo.svg" alt="HealthyIce Logo" style="height: 45px; margin: 0 auto; display: block;">
+            </div>
+            <h2 style="color: #101729; font-weight: bold; margin-top: 0;">Hola {form_data.nombre},</h2>
             <p>Hemos recibido tus datos correctamente. Muy pronto uno de nuestros asesores se pondrá en contacto contigo para darle seguimiento a tu pedido de paletas HealthyIce.</p>
             <p>Detalles que nos compartiste:</p>
             <ul>
@@ -586,8 +590,12 @@ async def send_healthyice_payment_customer(payer_name: str, payer_email: str, or
     html_content = f"""
     <html>
     <body style="font-family: 'Quicksand', Arial, sans-serif; color: #101729; background-color: #f8fafc; padding: 20px;">
-        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px;">
-            <h2 style="color: #101729; font-weight: bold;">Hola {payer_name},</h2>
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <!-- Header con el Logotipo Oficial de HealthyIce -->
+            <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9;">
+                <img src="https://healthyice.mx/logo.svg" alt="HealthyIce Logo" style="height: 45px; margin: 0 auto; display: block;">
+            </div>
+            <h2 style="color: #101729; font-weight: bold; margin-top: 0;">Hola {payer_name},</h2>
             <p>Hemos recibido el pago de tu pedido de paletas HealthyIce. Nuestro equipo comenzará a prepararlo de inmediato para su entrega.</p>
             <h3 style="color: #101729; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Resumen de tu pedido:</h3>
             <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
@@ -1074,6 +1082,10 @@ async def send_healthyice_contract_customer(form_data):
     <html>
     <body style="font-family: 'Quicksand', Arial, sans-serif; color: #101729; background-color: #f8fafc; padding: 20px; line-height: 1.6;">
         <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <!-- Header con el Logotipo Oficial de HealthyIce -->
+            <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9;">
+                <img src="https://healthyice.mx/logo.svg" alt="HealthyIce Logo" style="height: 45px; margin: 0 auto; display: block;">
+            </div>
             <h2 style="color: #0077ff; font-weight: bold; margin-top: 0;">¡Firma de Contrato Confirmada!</h2>
             <p>Hola <strong>{form_data.nombre}</strong>,</p>
             <p>Queremos darte la mas cordial bienvenida a nuestra red de socios comerciales. Hemos recibido correctamente la firma de tu contrato digital de colaboracion comercial.</p>
