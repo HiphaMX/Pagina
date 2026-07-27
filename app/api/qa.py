@@ -134,5 +134,26 @@ async def send_test_email(project: str, email: str):
         r1 = await send_healthyice_order_customer(form)
         r2 = await send_healthyice_order_team(form)
         return {"project": project, "customer_sent": r1, "team_sent": r2}
+    elif project == "CHILECHILLON":
+        from pydantic import BaseModel
+        class TempChileForm(BaseModel):
+            nombre: str
+            apellido: str = ""
+            email: str
+            telefono: str
+            perfil: str
+            mensaje: str = ""
+            honeypot: str = None
+        form = TempChileForm(
+            nombre="Prueba Chile Chillón",
+            email=email,
+            telefono="3336762545",
+            perfil="Cliente Final",
+            mensaje="Esta es una prueba del formulario de contacto para El Chile Chillón."
+        )
+        from app.core.mailer import send_chilechillon_confirmation_email, send_chilechillon_notification_team
+        r1 = await send_chilechillon_confirmation_email(form)
+        r2 = await send_chilechillon_notification_team(form)
+        return {"project": project, "customer_sent": r1, "team_sent": r2}
     else:
         return {"error": f"Project {project} is not supported for QA tests"}
