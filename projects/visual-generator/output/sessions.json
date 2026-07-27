@@ -1,0 +1,15 @@
+{
+  "Test Perfume Sauvage": {
+    "name": "Test Perfume Sauvage",
+    "aspect_ratio": "1:1",
+    "subject_description": "Sauvage product reference",
+    "module_a_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "module_a_weight": 0.85,
+    "module_b_image": null,
+    "module_b_weight": 0.7,
+    "module_c_image": null,
+    "module_c_weight": 0.6,
+    "module_d_image": null,
+    "module_d_weight": 0.9
+  }
+}

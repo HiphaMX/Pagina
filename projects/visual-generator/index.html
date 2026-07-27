@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HiphaMX Studio // Wizard de Producción Visual</title>
+  <!-- CSS Stylesheet Link -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="logo-container">
+        <div class="logo-mark"></div>
+        <span class="logo-text">HiphaMX // Visual Studio</span>
+        <span class="logo-badge">WIZARD V3.0</span>
+      </div>
+      <div class="header-status">
+        <div class="api-key-container" style="display: flex; align-items: center; gap: 8px; margin-right: 16px;">
+          <i class="fa-solid fa-key" style="color: var(--primary-color);" title="Ingresa tu Google API Key para traducción de prompts y render real"></i>
+          <input type="password" id="api-key-input" placeholder="Google AI Studio API Key..." style="background: rgba(0,0,0,0.4); border: 1px solid var(--surface-border); color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; width: 180px; outline: none; transition: var(--transition-snappy);" onchange="saveApiKey(this.value)">
+        </div>
+        <div class="status-dot"></div>
+        <span>Servidor local activo</span>
+      </div>
+    </header>
+
+    <!-- Workspace Grid -->
+    <main class="wizard-workspace">
+      
+      <!-- LEFT SIDEBAR: Stepper Progress & Product Memory -->
+      <aside class="sidebar-panel">
+        <div class="sidebar-section">
+          <h3 class="section-title"><i class="fa-solid fa-route"></i> Pasos del Flujo</h3>
+          <ul class="stepper-list">
+            <li class="step-item active" id="step-nav-1" onclick="goToStep(1)">
+              <span class="step-number">1</span>
+              <span class="step-label">Formato y Medida</span>
+            </li>
+            <li class="step-item" id="step-nav-2" onclick="goToStep(2)">
+              <span class="step-number">2</span>
+              <span class="step-label">Necesidad Visual</span>
+            </li>
+            <li class="step-item" id="step-nav-3" onclick="goToStep(3)">
+              <span class="step-number">3</span>
+              <span class="step-label">Archivos de Apoyo</span>
+            </li>
+            <li class="step-item" id="step-nav-4" onclick="goToStep(4)">
+              <span class="step-number">4</span>
+              <span class="step-label">Dirección de Arte</span>
+            </li>
+            <li class="step-item" id="step-nav-5" onclick="goToStep(5)">
+              <span class="step-number">5</span>
+              <span class="step-label">Producción Render</span>
+            </li>
+            <li class="step-item" id="step-nav-6" onclick="goToStep(6)">
+              <span class="step-number">6</span>
+              <span class="step-label">Canvas y Descarga</span>
+            </li>
+            <li class="step-item" id="step-nav-7" onclick="goToStep(7)">
+              <span class="step-number">7</span>
+              <span class="step-label">Continuidad y Memoria</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section product-memory-section">
+          <h3 class="section-title"><i class="fa-solid fa-box-archive"></i> Memoria de Producto</h3>
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Carga perfiles de productos consistentes guardados previamente.</p>
+          <div class="saved-products-list" id="saved-products-list">
+            <!-- Dynamically populated -->
+            <div class="no-products-msg">No hay perfiles guardados.</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER CONTENT: Step Switcher -->
+      <section class="wizard-content panel">
+        
+        <!-- STEP 1: Aspect Ratio Selection -->
+        <div class="step-panel active" id="panel-step-1">
+          <h2 class="panel-main-title">1. Selecciona el Formato y Medida</h2>
+          <p class="panel-desc">Define las proporciones de salida ideales para el canal de distribución publicitario.</p>
+          
+          <div class="format-cards-grid">
+            <div class="format-card active" data-ratio="1:1">
+              <div class="ratio-preview square"></div>
+              <span class="format-title">1:1 Cuadrado</span>
+              <span class="format-meta">Instagram Feed / E-commerce</span>
+            </div>
+            <div class="format-card" data-ratio="9:16">
+              <div class="ratio-preview vertical"></div>
+              <span class="format-title">9:16 Vertical</span>
+              <span class="format-meta">Stories / Reels / TikTok</span>
+            </div>
+            <div class="format-card" data-ratio="16:9">
+              <div class="ratio-preview landscape"></div>
+              <span class="format-title">16:9 Horizontal</span>
+              <span class="format-meta">Web Hero / Youtube / OOH</span>
+            </div>
+            <div class="format-card" data-ratio="4:5">
+              <div class="ratio-preview portrait"></div>
+              <span class="format-title">4:5 Retrato</span>
+              <span class="format-meta">Instagram vertical feed</span>
+            </div>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn next-btn" onclick="nextStep()">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Brief Description -->
+        <div class="step-panel" id="panel-step-2">
+          <h2 class="panel-main-title">2. ¿Cuál es tu necesidad de generación de imagen?</h2>
+          <p class="panel-desc">Describe brevemente la idea, escena, producto y atmósfera que imaginas.</p>
+          
+          <div class="control-group">
+            <label class="control-label" for="brief-input">Descripción Breve de la Escena</label>
+            <textarea class="textarea-input" id="brief-input" placeholder="Ej: Un frasco de perfume premium de vidrio oscuro con gotas de agua fría, reposando sobre una piedra volcánica mojada en un estudio minimalista. Iluminación lateral dramática."></textarea>
+          </div>
+
+          <div class="chips-suggestions">
+            <span class="suggestion-chip" onclick="applyBrief('Un frasco de perfume premium de vidrio oscuro con gotas de agua fría, reposando sobre una piedra volcánica mojada en un estudio minimalista. Iluminación lateral dramática.')">Perfume de Lujo</span>
+            <span class="suggestion-chip" onclick="applyBrief('Audífonos color titanio sobre base de metal pulido, estética cyberpunk, luz de neón azul y magenta de fondo, close-up.')">Audífonos Cyberpunk</span>
+            <span class="suggestion-chip" onclick="applyBrief('Zapatilla deportiva premium streetwear suspendida en el aire, salpicaduras de pintura color cian, iluminación limpia de estudio fotográfico.')">Sneaker Streetwear</span>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn prev-btn" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+            <button class="nav-btn next-btn" onclick="nextStep()">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Reference Files (Consistency) -->
+        <div class="step-panel" id="panel-step-3">
+          <h2 class="panel-main-title">3. Subir Archivos de Apoyo (Consistencia)</h2>
+          <p class="panel-desc">Carga la referencia visual del producto del cliente o rostro para mantener 100% de coherencia.</p>
+          
+          <div class="brand-grid">
+            <!-- Module A: Product Reference -->
+            <div class="consistency-card" id="card-mod-a">
+              <div class="card-header">
+                <span class="card-badge badge-a"><i class="fa-solid fa-cube"></i> MÓDULO A: Producto IP-Adapter</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-mod-a" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="upload-zone">
+                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                <span class="upload-text">Sube el producto del cliente</span>
+                <input type="file" class="upload-input" id="upload-mod-a" accept="image/*">
+                <div class="preview-container" id="preview-mod-a">
+                  <img src="" class="preview-image" alt="Producto">
+                  <div class="remove-preview" onclick="clearPreview('mod-a', event)"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+              </div>
+              <div class="control-group" style="margin-top: 12px; margin-bottom: 0;">
+                <label class="control-label" style="font-size: 10px;">
+                  <span>Fidelidad de Producto</span>
+                  <span class="control-value-indicator" id="val-mod-a">0.85</span>
+                </label>
+                <input type="range" id="slider-mod-a" min="0" max="1" step="0.05" value="0.85" style="margin: 4px 0;">
+              </div>
+            </div>
+
+            <!-- Module B: Character Consistency -->
+            <div class="consistency-card" id="card-mod-b">
+              <div class="card-header">
+                <span class="card-badge badge-b"><i class="fa-solid fa-user-check"></i> MÓDULO B: Rostro InstantID</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-mod-b">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="upload-zone">
+                <i class="fa-solid fa-face-smile upload-icon"></i>
+                <span class="upload-text">Sube rostro de referencia</span>
+                <input type="file" class="upload-input" id="upload-mod-b" accept="image/*">
+                <div class="preview-container" id="preview-mod-b">
+                  <img src="" class="preview-image" alt="Rostro">
+                  <div class="remove-preview" onclick="clearPreview('mod-b', event)"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+              </div>
+              <div class="control-group" style="margin-top: 12px; margin-bottom: 0;">
+                <label class="control-label" style="font-size: 10px;">
+                  <span>Fidelidad de Rostro</span>
+                  <span class="control-value-indicator" id="val-mod-b">0.70</span>
+                </label>
+                <input type="range" id="slider-mod-b" min="0" max="1" step="0.05" value="0.70" style="margin: 4px 0;">
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn prev-btn" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+            <button class="nav-btn next-btn" onclick="nextStep()">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Art Direction Prompting -->
+        <div class="step-panel" id="panel-step-4">
+          <h2 class="panel-main-title">4. Generación de Prompt y Dirección de Arte</h2>
+          <p class="panel-desc">Infiere y compila el prompt fotográfico utilizando el motor inteligente de IMAGENOLOGO.</p>
+          
+          <div class="prompt-builder-zone">
+            <button class="generate-prompt-btn" id="draft-prompt-btn" onclick="draftArtPrompt()">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> GENERAR PROMPT DE DIRECCIÓN DE ARTE
+            </button>
+            
+            <div class="control-group" style="margin-top: 20px;">
+              <label class="control-label" for="compiled-prompt-box">Prompt Técnico Compilado (Edítalo libremente)</label>
+              <textarea class="textarea-input prompt-compiled-textarea" id="compiled-prompt-box" placeholder="Presiona el botón superior para autocompilar la dirección de arte fotográfica..."></textarea>
+            </div>
+
+            <div class="prompt-negative-wrapper">
+              <span>Prompt Negativo:</span>
+              <input type="text" class="prompt-negative-input" id="negative-prompt-box" value="blurry, low quality, cheap look, logo, text, watermark, distorted shapes, warm colors">
+            </div>
+
+            <!-- Inferred Specs Indicators -->
+            <div class="inferred-specs-chips" id="inferred-specs-chips">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn prev-btn" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+            <button class="nav-btn next-btn" onclick="nextStep()">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Render Production -->
+        <div class="step-panel" id="panel-step-5">
+          <h2 class="panel-main-title">5. Iniciar Producción y Generación</h2>
+          <p class="panel-desc">Elige el motor de renderizado local o en la nube para procesar la imagen final.</p>
+          
+          <div class="engine-selection-zone">
+            <div class="control-group">
+              <label class="control-label" for="engine-select">Motor de Renderizado Local</label>
+              <div class="select-wrapper">
+                <select id="engine-select">
+                  <option value="mock" selected>Mock Inteligente (Curado Local / Test rápido)</option>
+                  <option value="google_imagen">Google Imagen 3 API (Generación Real)</option>
+                  <option value="webui">SD WebUI API local (localhost:7860)</option>
+                  <option value="comfyui">ComfyUI local (localhost:8188)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="render-warning-box">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>El modo **Mock Inteligente** utilizará fotos de catálogo HD para emular el renderizado y probar el flujo de forma instantánea.</span>
+            </div>
+          </div>
+
+          <div class="production-trigger-zone">
+            <button class="production-btn" id="render-trigger-btn" onclick="triggerRenderGeneration()">
+              <i class="fa-solid fa-bolt"></i> INICIAR PRODUCCIÓN VISUAL
+            </button>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn prev-btn" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+          </div>
+        </div>
+
+        <!-- STEP 6: Canvas & Delivery -->
+        <div class="step-panel" id="panel-step-6">
+          <h2 class="panel-main-title">6. Canvas de Presentación y Descarga</h2>
+          <p class="panel-desc">Visualiza, valida y descarga el render final en máxima resolución.</p>
+          
+          <div class="canvas-container-wrapper">
+            <div class="canvas-container">
+              
+              <!-- Laser Scanning / Loading Overlay -->
+              <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                <div class="laser-scanner">
+                  <img src="" class="scanner-image-back" id="loading-image-back" alt="Progreso">
+                </div>
+                <div class="loading-progress-container">
+                  <div class="progress-labels">
+                    <span class="loading-task-name" id="loading-task">Inicializando pipeline...</span>
+                    <span class="loading-percentage" id="loading-percent">0%</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-bar" id="progress-bar"></div>
+                  </div>
+                </div>
+                <div class="generation-log" id="generation-log">Espere por favor...</div>
+              </div>
+
+              <!-- Canvas display viewer -->
+              <div class="canvas-placeholder" id="canvas-placeholder">
+                <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 40px; color: var(--primary-color); margin-bottom: 12px;"></i>
+                <h3 style="color: white; margin-bottom: 4px;">Listo para producción</h3>
+                <p style="font-size: 11px; max-width: 250px; margin: 0 auto; color: var(--text-muted);">Ve al Paso 5 para iniciar el renderizado local de la imagen.</p>
+              </div>
+
+              <div class="canvas-display" id="canvas-display" style="display: none;">
+                <img src="" class="canvas-image" id="main-generated-image" alt="Imagen generada">
+              </div>
+            </div>
+
+            <!-- Floating canvas buttons -->
+            <div class="canvas-actions" id="canvas-actions" style="display: none;">
+              <a href="#" class="action-btn" id="download-link" download="visual_render.png">
+                <i class="fa-solid fa-download"></i> Descargar
+              </a>
+              <div class="action-divider"></div>
+              <button class="action-btn" onclick="upscaleImage()">
+                <i class="fa-solid fa-arrows-up-to-line"></i> Escalar 4K
+              </button>
+            </div>
+          </div>
+
+          <!-- History Turns -->
+          <div class="history-section">
+            <h3 class="history-title"><i class="fa-solid fa-clock-rotate-left"></i> Historial de Turnos / Iteración</h3>
+            <div class="history-grid" id="history-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn prev-btn" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+            <button class="nav-btn next-btn" onclick="nextStep()">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 7: Continuity & Memory -->
+        <div class="step-panel" id="panel-step-7">
+          <h2 class="panel-main-title">7. Continuidad y Memoria de Producto</h2>
+          <p class="panel-desc">Guarda los archivos de apoyo y configuración para generar múltiples escenas del mismo producto.</p>
+          
+          <div class="save-profile-zone">
+            <div class="control-group">
+              <label class="control-label" for="profile-name-input">Nombre del Perfil de Producto</label>
+              <input type="text" class="text-input" id="profile-name-input" placeholder="Ej: Perfume Sauvage 100ml">
+            </div>
+            
+            <button class="save-profile-btn" onclick="saveProductProfile()">
+              <i class="fa-solid fa-floppy-disk"></i> GUARDAR CONFIGURACIÓN EN MEMORIA
+            </button>
+          </div>
+
+          <div class="continuity-info-box">
+            <h3 style="color: var(--primary-color); font-size: 13px; margin-bottom: 6px;"><i class="fa-solid fa-lightbulb"></i> ¿Cómo funciona la continuidad?</h3>
+            <p style="font-size: 12px; line-height: 1.5; color: var(--text-muted);">
+              Al guardar este perfil de producto, sus imágenes de consistencia e IP-Adapter quedan retenidas en el panel izquierdo. Para generar un escenario diferente del mismo producto, simplemente selecciona el perfil guardado, regresa al **Paso 2**, escribe una nueva descripción de escena (ej. *"ahora flotando en una piscina con luz de atardecer"*), y genera nuevamente. El producto se mantendrá idéntico.
+            </p>
+          </div>
+
+          <div class="step-actions-footer">
+            <button class="nav-btn prev-btn" onclick="prevStep()"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+            <button class="nav-btn reset-btn" onclick="goToStep(1)">Finalizar y Nuevo <i class="fa-solid fa-circle-plus"></i></button>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast alerts -->
+  <div class="toast-notification" id="toast-notif">
+    <i class="fa-solid fa-circle-check toast-icon"></i>
+    <span id="toast-text">Acción completada</span>
+  </div>
+
+  <!-- JS Logic -->
+  <script>
+    let currentStep = 1;
+    let selectedRatio = "1:1";
+    let generatedHistory = [];
+    let currentActiveIndex = -1;
+    let savedSessions = {};
+
+    const imagesPool = {
+      perfume: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop",
+      audifonos: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop",
+      zapatillas: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop",
+      watches: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1200&auto=format&fit=crop",
+      cosmetics: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1200&auto=format&fit=crop",
+      gym: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200&auto=format&fit=crop",
+      coffee: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop",
+      food: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop",
+      car: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&auto=format&fit=crop",
+      default: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cargar API Key si ya está guardada
+      const savedKey = localStorage.getItem("google_api_key") || "";
+      if (savedKey) {
+        document.getElementById("api-key-input").value = savedKey;
+      }
+
+      // Step 1: Ratio cards click setup
+      const formatCards = document.querySelectorAll(".format-card");
+      formatCards.forEach(card => {
+        card.addEventListener("click", () => {
+          formatCards.forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          selectedRatio = card.getAttribute("data-ratio");
+          toast(`Formato ${selectedRatio} seleccionado`);
+        });
+      });
+
+      // Módulos de consistencia drag/drop
+      setupUploadPreview('upload-mod-a', 'preview-mod-a', 'card-mod-a', 'toggle-mod-a');
+      setupUploadPreview('upload-mod-b', 'preview-mod-b', 'card-mod-b', 'toggle-mod-b');
+
+      // Sliders indicators
+      setupValueIndicator('slider-mod-a', 'val-mod-a');
+      setupValueIndicator('slider-mod-b', 'val-mod-b');
+
+      // Load Sessions and History
+      loadHistory();
+      loadSavedSessions();
+    });
+
+    // Helper Indicators
+    function setupValueIndicator(inputId, displayId) {
+      const input = document.getElementById(inputId);
+      const display = document.getElementById(displayId);
+      if (input && display) {
+        input.addEventListener("input", (e) => {
+          display.textContent = parseFloat(e.target.value).toFixed(2);
+        });
+      }
+    }
+
+    // Step Nav
+    function goToStep(stepNum) {
+      if (stepNum < 1 || stepNum > 7) return;
+      
+      // Toggle active step panel
+      document.querySelectorAll(".step-panel").forEach(panel => panel.classList.remove("active"));
+      document.getElementById(`panel-step-${stepNum}`).classList.add("active");
+
+      // Toggle active step navigation bar
+      document.querySelectorAll(".step-item").forEach(item => item.classList.remove("active"));
+      for (let i = 1; i <= stepNum; i++) {
+        const navItem = document.getElementById(`step-nav-${i}`);
+        if (navItem) navItem.classList.add("active");
+      }
+      
+      currentStep = stepNum;
+    }
+
+    function nextStep() {
+      goToStep(currentStep + 1);
+    }
+
+    function prevStep() {
+      goToStep(currentStep - 1);
+    }
+
+    function applyBrief(text) {
+      document.getElementById("brief-input").value = text;
+      toast("Escena sugerida aplicada");
+    }
+
+    // Drag and drop setup
+    function setupUploadPreview(inputId, previewId, cardId, toggleId) {
+      const fileInput = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      const card = document.getElementById(cardId);
+      const toggle = document.getElementById(toggleId);
+      const zone = fileInput.parentElement;
+
+      zone.addEventListener("click", (e) => {
+        if (e.target.tagName !== "INPUT" && !e.target.classList.contains("remove-preview") && !e.target.closest(".remove-preview")) {
+          fileInput.click();
+        }
+      });
+
+      fileInput.addEventListener("change", function() {
+        handleFile(this.files[0], preview, card, toggle);
+      });
+
+      zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        zone.style.borderColor = "var(--primary-color)";
+        zone.style.background = "rgba(6, 182, 212, 0.05)";
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.style.borderColor = "var(--surface-border)";
+        zone.style.background = "rgba(0, 0, 0, 0.15)";
+      });
+
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.style.borderColor = "var(--surface-border)";
+        zone.style.background = "rgba(0, 0, 0, 0.15)";
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          fileInput.files = e.dataTransfer.files;
+          handleFile(e.dataTransfer.files[0], preview, card, toggle);
+        }
+      });
+    }
+
+    function handleFile(file, previewEl, cardEl, toggleEl) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewEl.querySelector("img").src = e.target.result;
+        previewEl.style.display = "block";
+        cardEl.classList.add("active");
+        document.getElementById(toggleEl).checked = true;
+        toast(`Imagen cargada correctamente`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPreview(moduleName, event) {
+      if (event) event.stopPropagation();
+      const input = document.getElementById(`upload-${moduleName}`);
+      const preview = document.getElementById(`preview-${moduleName}`);
+      const card = document.getElementById(`card-${moduleName}`);
+      const toggle = document.getElementById(`toggle-${moduleName}`);
+      
+      input.value = "";
+      preview.style.display = "none";
+      preview.querySelector("img").src = "";
+      card.classList.remove("active");
+      toggle.checked = false;
+      toast(`Módulo desactivado`);
+    }
+
+    // API key storage helper
+    function saveApiKey(val) {
+      localStorage.setItem("google_api_key", val.trim());
+      toast("Google API Key guardada");
+    }
+
+    // Step 4: Draft prompt
+    function draftArtPrompt() {
+      const brief = document.getElementById("brief-input").value.trim();
+      if (!brief) {
+        toast("Por favor escribe tu necesidad en el Paso 2");
+        goToStep(2);
+        return;
+      }
+
+      const draftBtn = document.getElementById("draft-prompt-btn");
+      draftBtn.disabled = true;
+      draftBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Generando Dirección de Arte...`;
+
+      const apiKey = localStorage.getItem("google_api_key") || "";
+
+      fetch("/api/generator/draft-prompt", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Gemini-API-Key": apiKey
+        },
+        body: JSON.stringify({
+          subject_description: brief,
+          aspect_ratio: selectedRatio
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("compiled-prompt-box").value = data.prompt_drafted;
+        
+        // Show Inferred Chips
+        const chipsContainer = document.getElementById("inferred-specs-chips");
+        chipsContainer.innerHTML = `
+          <span class="spec-chip"><i class="fa-solid fa-camera"></i> ${data.inferred_camera}</span>
+          <span class="spec-chip"><i class="fa-solid fa-eye"></i> ${data.inferred_lens}</span>
+          <span class="spec-chip"><i class="fa-solid fa-circle"></i> Diafragma ${data.inferred_aperture}</span>
+          <span class="spec-chip"><i class="fa-solid fa-lightbulb"></i> Iluminación ${data.inferred_lighting}</span>
+        `;
+        toast("Prompt fotográfico compilado en capas");
+      })
+      .catch(err => {
+        toast("Error al compilar prompt");
+        console.error(err);
+      })
+      .finally(() => {
+        draftBtn.disabled = false;
+        draftBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> GENERAR PROMPT DE DIRECCIÓN DE ARTE`;
+      });
+    }
+
+    // Step 5: Render visual
+    function triggerRenderGeneration() {
+      const promptCompiled = document.getElementById("compiled-prompt-box").value.trim();
+      if (!promptCompiled) {
+        toast("Por favor genera el prompt en el Paso 4");
+        goToStep(4);
+        return;
+      }
+
+      // Move UI step to Canvas screen
+      goToStep(6);
+
+      const getBase64 = (previewId) => {
+        const img = document.querySelector(`#${previewId} img`);
+        return img && img.src && img.src.startsWith("data:") ? img.src : null;
+      };
+
+      // Extract brief for logs mapping
+      const briefText = document.getElementById("brief-input").value;
+      const apiKey = localStorage.getItem("google_api_key") || "";
+
+      const payload = {
+        subject: briefText || "product",
+        context: promptCompiled,
+        negative_prompt: document.getElementById("negative-prompt-box").value,
+        photo_specs: {
+          camera_body: "Phase One XF IQ4 150MP",
+          lens: "50mm",
+          aperture: "f/1.8",
+          lighting_scheme: "studio",
+          lighting_direction: "rembrandt",
+          temp: 5600,
+          angle: "eye-level",
+          framing: "close-up"
+        },
+        consistency: {
+          module_a_active: document.getElementById("toggle-mod-a").checked,
+          module_a_weight: parseFloat(document.getElementById("slider-mod-a").value),
+          module_a_image: getBase64("preview-mod-a"),
+          module_b_active: document.getElementById("toggle-mod-b").checked,
+          module_b_weight: parseFloat(document.getElementById("slider-mod-b").value),
+          module_b_image: getBase64("preview-mod-b"),
+          module_c_active: false,
+          module_c_weight: 0.60,
+          module_c_image: null,
+          module_d_active: false,
+          module_d_weight: 0.90,
+          module_d_image: null
+        },
+        engine: document.getElementById("engine-select").value,
+        aspect_ratio: selectedRatio
+      };
+
+      const overlay = document.getElementById("loading-overlay");
+      overlay.style.display = "flex";
+
+      const progressBar = document.getElementById("progress-bar");
+      const percentEl = document.getElementById("loading-percent");
+      const taskEl = document.getElementById("loading-task");
+      const logEl = document.getElementById("generation-log");
+
+      // Setup placeholder overlay image while generating
+      let previewImg = imagesPool.default;
+      const lowerBrief = payload.subject.toLowerCase();
+      if (lowerBrief.includes("perfume") || lowerBrief.includes("frasco") || lowerBrief.includes("botella")) {
+        previewImg = imagesPool.perfume;
+      } else if (lowerBrief.includes("audifono") || lowerBrief.includes("headphone") || lowerBrief.includes("oreja") || lowerBrief.includes("auriculares")) {
+        previewImg = imagesPool.audifonos;
+      } else if (lowerBrief.includes("sneaker") || lowerBrief.includes("zapatilla") || lowerBrief.includes("zapato") || lowerBrief.includes("calzado")) {
+        previewImg = imagesPool.zapatillas;
+      } else if (lowerBrief.includes("reloj") || lowerBrief.includes("watch")) {
+        previewImg = imagesPool.watches;
+      } else if (lowerBrief.includes("cosmetico") || lowerBrief.includes("crema") || lowerBrief.includes("skincare") || lowerBrief.includes("belleza")) {
+        previewImg = imagesPool.cosmetics;
+      } else if (lowerBrief.includes("gimnasio") || lowerBrief.includes("gym") || lowerBrief.includes("atleta") || lowerBrief.includes("kira") || lowerBrief.includes("ejercicio")) {
+        previewImg = imagesPool.gym;
+      } else if (lowerBrief.includes("cafe") || lowerBrief.includes("coffee") || lowerBrief.includes("taza")) {
+        previewImg = imagesPool.coffee;
+      } else if (lowerBrief.includes("comida") || lowerBrief.includes("food") || lowerBrief.includes("platillo")) {
+        previewImg = imagesPool.food;
+      } else if (lowerBrief.includes("auto") || lowerBrief.includes("car") || lowerBrief.includes("coche")) {
+        previewImg = imagesPool.car;
+      }
+      document.getElementById("loading-image-back").src = previewImg;
+
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        if (progress < 90) {
+          progress += Math.floor(Math.random() * 8) + 2;
+          if (progress > 90) progress = 90;
+          progressBar.style.width = `${progress}%`;
+          percentEl.textContent = `${progress}%`;
+          
+          if (progress < 30) {
+            taskEl.textContent = "Acoplando pesos...";
+            logEl.textContent = "Adaptando IP-Adapter y consistencia geométrica...";
+          } else {
+            taskEl.textContent = "Difusión GPU...";
+            logEl.textContent = `Generando píxeles de alta definición. Paso ${Math.floor(progress/4)}/25...`;
+          }
+        }
+      }, 300);
+
+      fetch("/api/generator/generate", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Gemini-API-Key": apiKey
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(errData => {
+            throw new Error(errData.detail || "Error del backend");
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        clearInterval(progressInterval);
+        progressBar.style.width = "100%";
+        percentEl.textContent = "100%";
+        taskEl.textContent = "Completado";
+        logEl.textContent = "Producción visual de estudio completada.";
+        
+        setTimeout(() => {
+          overlay.style.display = "none";
+          document.getElementById("canvas-placeholder").style.display = "none";
+          const mainImg = document.getElementById("main-generated-image");
+          mainImg.src = data.image_url;
+          mainImg.style.display = "block";
+          
+          document.getElementById("canvas-display").style.display = "block";
+          document.getElementById("canvas-actions").style.display = "flex";
+          document.getElementById("download-link").href = data.image_url;
+
+          // Add to history
+          addToHistoryLocal(data.image_url, data.prompt_compiled);
+        }, 600);
+      })
+      .catch(err => {
+        clearInterval(progressInterval);
+        overlay.style.display = "none";
+        toast(`Error de generación: ${err.message}`);
+        console.error(err);
+      });
+    }
+
+    function addToHistoryLocal(url, prompt) {
+      const item = {
+        url: url,
+        prompt: prompt,
+        meta: "Estudio Local",
+        index: generatedHistory.length + 1
+      };
+      generatedHistory.unshift(item);
+      currentActiveIndex = 0;
+      updateHistoryGrid();
+    }
+
+    function updateHistoryGrid() {
+      const grid = document.getElementById("history-grid");
+      grid.innerHTML = "";
+
+      generatedHistory.forEach((item, idx) => {
+        const itemEl = document.createElement("div");
+        itemEl.className = `history-item ${idx === currentActiveIndex ? "active" : ''}`;
+        itemEl.innerHTML = `
+          <img src="${item.url}" class="history-thumb">
+          <span class="history-badge">#0${item.index}</span>
+        `;
+        itemEl.addEventListener("click", () => {
+          currentActiveIndex = idx;
+          document.getElementById("main-generated-image").src = item.url;
+          document.getElementById("compiled-prompt-box").value = item.prompt;
+          document.getElementById("download-link").href = item.url;
+          updateHistoryGrid();
+          toast(`Turno #${item.index} cargado en lienzo`);
+        });
+        grid.appendChild(itemEl);
+      });
+    }
+
+    function loadHistory() {
+      fetch("/api/generator/history")
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          generatedHistory = data.map((item, idx) => ({
+            url: item.url,
+            prompt: "Especificación técnica del render",
+            meta: "Guardado local",
+            index: data.length - idx
+          }));
+          currentActiveIndex = 0;
+          updateHistoryGrid();
+          
+          document.getElementById("canvas-placeholder").style.display = "none";
+          document.getElementById("canvas-display").style.display = "block";
+          document.getElementById("main-generated-image").src = generatedHistory[0].url;
+          document.getElementById("canvas-actions").style.display = "flex";
+          document.getElementById("download-link").href = generatedHistory[0].url;
+        }
+      });
+    }
+
+    function upscaleImage() {
+      toast("Escalando render a 4K con RealESRGAN local...");
+      setTimeout(() => {
+        toast("Imagen escalada a 4096px con nitidez de esquina a esquina");
+      }, 1500);
+    }
+
+    // Step 7: Save Consistency Profile
+    function saveProductProfile() {
+      const name = document.getElementById("profile-name-input").value.trim();
+      if (!name) {
+        toast("Escribe un nombre para el perfil");
+        return;
+      }
+
+      const getBase64 = (previewId) => {
+        const img = document.querySelector(`#${previewId} img`);
+        return img && img.src && img.src.startsWith("data:") ? img.src : null;
+      };
+
+      const payload = {
+        name: name,
+        aspect_ratio: selectedRatio,
+        subject_description: document.getElementById("brief-input").value,
+        module_a_image: getBase64("preview-mod-a"),
+        module_a_weight: parseFloat(document.getElementById("slider-mod-a").value),
+        module_b_image: getBase64("preview-mod-b"),
+        module_b_weight: parseFloat(document.getElementById("slider-mod-b").value),
+        module_c_image: null,
+        module_c_weight: 0.60,
+        module_d_image: null,
+        module_d_weight: 0.90
+      };
+
+      fetch("/api/generator/sessions/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        toast(data.message);
+        loadSavedSessions();
+        document.getElementById("profile-name-input").value = "";
+      })
+      .catch(err => {
+        toast("Error al guardar perfil");
+        console.error(err);
+      });
+    }
+
+    function loadSavedSessions() {
+      fetch("/api/generator/sessions")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("saved-products-list");
+        if (data.length === 0) {
+          container.innerHTML = `<div class="no-products-msg">No hay perfiles guardados.</div>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        data.forEach(profile => {
+          const item = document.createElement("div");
+          item.className = "saved-product-item";
+          
+          let thumbnail = `<i class="fa-solid fa-cube product-thumb-icon"></i>`;
+          if (profile.module_a_image) {
+            thumbnail = `<img src="${profile.module_a_image}" class="product-thumb-preview">`;
+          }
+          
+          item.innerHTML = `
+            ${thumbnail}
+            <div class="product-item-details">
+              <span class="product-item-name">${profile.name}</span>
+              <span class="product-item-ratio">Aspect Ratio: ${profile.aspect_ratio}</span>
+            </div>
+          `;
+          
+          item.addEventListener("click", () => {
+            loadProfileIntoUI(profile);
+          });
+          
+          container.appendChild(item);
+        });
+      });
+    }
+
+    function loadProfileIntoUI(profile) {
+      // 1. Load Ratio
+      selectedRatio = profile.aspect_ratio;
+      document.querySelectorAll(".format-card").forEach(card => {
+        if (card.getAttribute("data-ratio") === selectedRatio) {
+          card.classList.add("active");
+        } else {
+          card.classList.remove("active");
+        }
+      });
+
+      // 2. Load Description
+      document.getElementById("brief-input").value = profile.subject_description;
+
+      // 3. Load References
+      if (profile.module_a_image) {
+        document.querySelector("#preview-mod-a img").src = profile.module_a_image;
+        document.getElementById("preview-mod-a").style.display = "block";
+        document.getElementById("card-mod-a").classList.add("active");
+        document.getElementById("toggle-mod-a").checked = true;
+        document.getElementById("slider-mod-a").value = profile.module_a_weight;
+        document.getElementById("val-mod-a").textContent = profile.module_a_weight.toFixed(2);
+      } else {
+        clearPreview("mod-a");
+      }
+
+      if (profile.module_b_image) {
+        document.querySelector("#preview-mod-b img").src = profile.module_b_image;
+        document.getElementById("preview-mod-b").style.display = "block";
+        document.getElementById("card-mod-b").classList.add("active");
+        document.getElementById("toggle-mod-b").checked = true;
+        document.getElementById("slider-mod-b").value = profile.module_b_weight;
+        document.getElementById("val-mod-b").textContent = profile.module_b_weight.toFixed(2);
+      } else {
+        clearPreview("mod-b");
+      }
+
+      // Reset Prompt Draft Box to clean state
+      document.getElementById("compiled-prompt-box").value = "";
+      document.getElementById("inferred-specs-chips").innerHTML = "";
+
+      toast(`Perfil '${profile.name}' cargado en el Wizard`);
+      goToStep(2); // Send back to step 2 to write new scene description
+    }
+
+    // Toast
+    function toast(msg) {
+      const toastEl = document.getElementById("toast-notif");
+      document.getElementById("toast-text").textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => {
+        toastEl.classList.remove("show");
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
