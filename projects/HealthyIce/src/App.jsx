@@ -772,6 +772,10 @@ function App() {
 
   const handleProceedToPayment = (e) => {
     e.preventDefault();
+    if (cart.length === 0) {
+      alert("Tu carrito está vacío. Por favor añade paletas a tu carrito antes de proceder al pago.");
+      return;
+    }
     if (!formData.nombre || !formData.email || !formData.telefono || !address) {
       alert("Por favor completa todos los campos del formulario, incluyendo tu dirección de envío.");
       return;
