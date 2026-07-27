@@ -184,37 +184,8 @@ const FlavorCard = ({ flavor, idx, onPedir }) => {
       </motion.div>
       <h3 style={{ fontSize: '1.5rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 700, color: '#101729', marginBottom: '1rem' }}>{flavor.name}</h3>
       
-      {/* Selector de Línea, Formato y Precio */}
+      {/* Selector de Formato y Precio */}
       <div style={{ width: '100%', background: '#f8fafc', padding: '1rem', borderRadius: '16px', marginBottom: '1.5rem' }}>
-        {/* Selector de Línea */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-          <button 
-            type="button"
-            onClick={() => setSelectedLine('ProT Fit 0')}
-            style={{ 
-              flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
-              border: selectedLine === 'ProT Fit 0' ? '2px solid transparent' : '2px solid transparent', 
-              background: selectedLine === 'ProT Fit 0' ? 'white' : 'rgba(255, 255, 255, 0.4)', 
-              boxShadow: selectedLine === 'ProT Fit 0' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-              cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', gap: '0.3rem', alignItems: 'center'
-            }}
-          >
-            <span style={{ color: selectedLine === 'ProT Fit 0' ? '#98BC3C' : '#64748b' }}>ProT Fit 0</span>
-          </button>
-          <button 
-            type="button"
-            onClick={() => setSelectedLine('ProT Light')}
-            style={{ 
-              flex: 1, padding: '0.6rem 0.25rem', fontSize: '0.9rem', fontFamily: "'Quicksand', sans-serif", fontWeight: 800, borderRadius: '12px', 
-              border: selectedLine === 'ProT Light' ? '2px solid transparent' : '2px solid transparent', 
-              background: selectedLine === 'ProT Light' ? '#101729' : 'rgba(255, 255, 255, 0.4)', 
-              boxShadow: selectedLine === 'ProT Light' ? '0 4px 15px rgba(16,23,41,0.2)' : 'none',
-              cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'center', gap: '0.3rem', alignItems: 'center'
-            }}
-          >
-            <span style={{ color: selectedLine === 'ProT Light' ? 'var(--primary)' : '#64748b' }}>ProT Light</span>
-          </button>
-        </div>
 
         {/* Selector de Formato */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
@@ -959,7 +930,7 @@ function App() {
     { 
       id: 'fresa', name: 'FRESA', image: '/paleta_fresa_full.webp',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [-10, 10, -10], initialRotate: [20, 25, 20],
       style: { top: '30%', right: '-5%', width: '235px', height: '350px', zIndex: 5 },
       boxSide: 'left'
@@ -967,7 +938,7 @@ function App() {
     { 
       id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.webp',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [-5, 5, -5], initialRotate: [0, 2, 0],
       style: { top: '15%', left: '-5%', width: '285px', height: '430px', zIndex: 10 },
       boxSide: 'right'
@@ -976,7 +947,7 @@ function App() {
     { 
       id: 'fresa', name: 'FRESA', image: '/paleta_fresa.webp',
       desc: 'Dulzor natural y vibrante.', tags: ['Sin Calorías Extra', 'Hecha con Fruta Natural', 'Increíble Sabor'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [-20, 20, -20], initialRotate: [10, 15, 10],
       style: { top: '5%', left: '5%', width: '280px', height: '420px', zIndex: 5 },
       boxSide: 'right'
@@ -984,7 +955,7 @@ function App() {
     { 
       id: 'vainilla', name: 'VAINILLA', image: '/paleta_vainilla.webp',
       desc: 'Clásico puro desde el origen.', tags: ['El Postre de Rutina', 'Sabor Refrescante', 'Una Delicada Textura'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [15, -15, 15], initialRotate: [-25, -20, -25],
       style: { bottom: '5%', left: '18%', width: '300px', height: '450px', zIndex: 6 },
       boxSide: 'right'
@@ -992,7 +963,7 @@ function App() {
     { 
       id: 'chocolate', name: 'CHOCOLATE', image: '/paleta_chocolate.webp',
       desc: 'El boost perfecto post-entreno.', tags: ['Textura Cremosa', 'Sabor Intenso', 'Eleva tu Energía'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [-25, 25, -25], initialRotate: [-2, 2, -2],
       style: { top: '15%', left: '42%', transform: 'translateX(-50%)', width: '400px', height: '600px', zIndex: 10 },
       boxSide: 'right'
@@ -1000,7 +971,7 @@ function App() {
     { 
       id: 'cookies', name: 'COOKIES & CREAM', image: '/paleta_cookies_cream.webp',
       desc: 'Cremosidad irresistible.', tags: ['La Combinación Perfecta', 'Sin Calorías Extra', 'Tu Snack Ideal'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [20, -20, 20], initialRotate: [20, 25, 20],
       style: { bottom: '10%', right: '15%', width: '300px', height: '450px', zIndex: 7 },
       boxSide: 'left'
@@ -1008,7 +979,7 @@ function App() {
     { 
       id: 'cafe', name: 'CAFÉ', image: '/paleta_cafe.webp',
       desc: 'Energía y sabor intenso.', tags: ['Café Mexicano', 'Un shot de energía', 'Ideal para el antojo'],
-      linea: ['PROT FIT 0', 'PROT LIGHT'],
+      linea: ['PROT FIT 0'],
       initialY: [-15, 15, -15], initialRotate: [-15, -10, -15],
       style: { top: '10%', right: '5%', width: '250px', height: '380px', zIndex: 4 },
       boxSide: 'left'
@@ -1430,47 +1401,29 @@ function App() {
       <section id="lineas" className="section" style={{ background: 'white' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '3rem', marginBottom: '1rem', color: '#101729', textTransform: 'uppercase' }}>Dos Formas de Refrescarte</h2>
+            <h2 style={{ fontSize: '3rem', marginBottom: '1rem', color: '#101729', textTransform: 'uppercase' }}>Nuestra Fórmula de Sabor</h2>
             <p style={{ fontSize: '1.125rem', color: '#64748b', maxWidth: '600px', margin: '0 auto' }}>
-              Adaptamos nuestro delicioso sabor a lo que tu cuerpo necesita. Encuentra tu paleta ideal.
+              El equilibrio perfecto entre dulzura y ligereza. Pensada para disfrutar sin compromisos.
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             {/* Linea Fit 0 */}
             <motion.div 
-              style={{ flex: '1 1 45%', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: '#ffffff', position: 'relative', overflow: 'hidden' }}
+              style={{ flex: '0 1 600px', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: '#ffffff', position: 'relative', overflow: 'hidden' }}
               whileHover={{ y: -5, boxShadow: 'var(--shadow-xl)' }}
               transition={{ duration: 0.3 }}
             >
               <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: '#98BC3C', opacity: 0.1, borderRadius: '50%', filter: 'blur(30px)' }}></div>
-              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-dark)' }}><span style={{ color: '#98BC3C' }}>ProT Fit 0</span></h3>
-              <p style={{ fontSize: '1.25rem', color: '#475569', marginBottom: '2rem' }}>
-                El equilibrio perfecto entre dulzura y ligereza. Pensada para disfrutar sin compromisos.
+              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--text-dark)', textAlign: 'center' }}><span style={{ color: '#98BC3C' }}>ProT Fit 0</span></h3>
+              <p style={{ fontSize: '1.25rem', color: '#475569', marginBottom: '2rem', textAlign: 'center' }}>
+                Deliciosas paletas heladas diseñadas minuciosamente para ayudarte a alcanzar tus objetivos de bienestar y salud de forma refrescante y deliciosa.
               </p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Leaf color="#98BC3C" /> Ingredientes Naturales</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="#98BC3C" /> Sin azúcar añadida</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Activity color="#98BC3C" /> Cero sellos (Norma Oficial)</li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><PopsicleIcon color="#98BC3C" /> Antojo aliado de tus objetivos</li>
-              </ul>
-            </motion.div>
-
-            {/* Linea Pro */}
-            <motion.div 
-              style={{ flex: '1 1 45%', padding: '3rem', borderRadius: '32px', border: '1px solid #e2e8f0', background: '#0f172a', color: 'white', position: 'relative', overflow: 'hidden' }}
-              whileHover={{ y: -5, boxShadow: 'var(--shadow-xl)' }}
-              transition={{ duration: 0.3 }}
-            >
-              <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: 'var(--primary)', opacity: 0.2, borderRadius: '50%', filter: 'blur(30px)' }}></div>
-              <h3 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'white' }}><span style={{ color: 'var(--primary)' }}>ProT Light</span></h3>
-              <p style={{ fontSize: '1.25rem', color: '#94a3b8', marginBottom: '2rem' }}>
-                Potencia tu recuperación y bienestar. La paleta definitiva para estilos de vida activos.
-              </p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><HeartPulse color="var(--primary)" /> Alto en proteína</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><ShieldCheck color="var(--primary)" /> Sin azúcar añadida</li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.125rem', fontWeight: 600 }}><Droplets color="var(--primary)" /> El lado fit del placer</li>
               </ul>
             </motion.div>
           </div>
@@ -1483,7 +1436,7 @@ function App() {
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <h2 style={{ fontSize: '3rem', marginBottom: '1rem', color: '#101729', textTransform: 'uppercase' }}>Tus Sabores Favoritos</h2>
             <p style={{ fontSize: '1.125rem', color: '#64748b', maxWidth: '800px', margin: '0 auto' }}>
-              Todos los sabores de nuestras paletas los puedes adquirir en ambas opciones ProT Fit 0 y ProT Light, de acuerdo a tus necesidades tenemos una alternativa que te ayudará para alcanzar tus objetivos.
+              Todos los sabores de nuestras paletas están elaborados bajo nuestra exclusiva fórmula ProT Fit 0, diseñada para ayudarte a alcanzar tus objetivos sin sacrificar el sabor.
             </p>
           </div>
 
@@ -1951,9 +1904,6 @@ function App() {
                       <div style={{ flex: 1 }}>
                         <h4 style={{ margin: 0, fontSize: '1rem', color: '#101729', fontWeight: 700 }}>{item.name}</h4>
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
-                          <span style={{ fontSize: '0.75rem', background: item.line === 'ProT Fit 0' ? '#f0fdf4' : '#f8fafc', color: item.line === 'ProT Fit 0' ? '#166534' : '#475569', padding: '0.1rem 0.4rem', borderRadius: '6px', fontWeight: 700 }}>
-                            {item.line}
-                          </span>
                           <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#475569', padding: '0.1rem 0.4rem', borderRadius: '6px', fontWeight: 700 }}>
                             {item.format === '1 pieza' ? '1 Pza' : 'Pack 5'}
                           </span>
