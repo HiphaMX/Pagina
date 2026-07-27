@@ -1423,25 +1423,24 @@ async def send_chilechillon_confirmation_email(form_data):
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f1f5f9; background-color: #080505; margin: 0; padding: 40px 20px;">
         <div style="max-width: 600px; margin: 0 auto; background: #0d0707; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(229, 9, 20, 0.1); border: 1px solid rgba(229, 9, 20, 0.2);">
             
-            <!-- Header con la identidad de Chile Chillón -->
-            <div style="background-color: #080505; padding: 35px 20px; text-align: center; border-bottom: 4px solid #E50914;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 2px;">CHILE <span style="color: #E50914;">CHILLÓN</span></h1>
-                <p style="color: #FF6A00; margin: 5px 0 0 0; font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">Tu sazón en su máxima potencia</p>
+            <!-- Header con el Logotipo Oficial de Chile Chillón -->
+            <div style="background-color: #080505; padding: 30px 20px; text-align: center; border-bottom: 4px solid #E50914;">
+                <img src="https://elchilechillon.mx/Assets/Logo%20Navbar.svg" alt="Chile Chillón Logo" style="height: 65px; margin: 0 auto; display: block;">
             </div>
             
             <!-- Cuerpo del Correo -->
             <div style="padding: 40px 30px;">
                 <h2 style="color: #ffffff; font-size: 22px; font-weight: 700; margin-top: 0; margin-bottom: 20px;">¡Hola, {form_data.nombre}! 👋</h2>
                 <p style="font-size: 16px; line-height: 1.6; color: #cbd5e1; margin-bottom: 25px;">
-                    ¡Bienvenido al Club de la Flama! Hemos recibido correctamente tus datos desde nuestra landing page. Nuestro alquimista de sabor está revisando tu solicitud para ayudarte a elevar cada comida y botana de forma fácil y sin complicaciones.
+                    Muchas gracias por tu interés en nuestros productos, recibimos tu información y te contactaremos lo antes posible, no tengas duda.
                 </p>
                 
                 <!-- Tarjeta con resumen de solicitud -->
                 <div style="background-color: rgba(229, 9, 20, 0.05); border-left: 4px solid #E50914; padding: 25px; border-radius: 0 16px 16px 0; margin-bottom: 30px; border-top: 1px solid rgba(229, 9, 20, 0.1); border-right: 1px solid rgba(229, 9, 20, 0.1); border-bottom: 1px solid rgba(229, 9, 20, 0.1);">
-                    <h3 style="color: #FF6A00; font-size: 14px; font-weight: 800; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">Detalles de tu registro:</h3>
+                    <h3 style="color: #FF6A00; font-size: 14px; font-weight: 800; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">DETALLES DE TU REGISTRO:</h3>
                     <table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; color: #e2e8f0;">
                         <tr>
-                          <td style="padding: 6px 0; color: #94a3b8; width: 120px; font-weight: 600;">Perfil:</td>
+                          <td style="padding: 6px 0; color: #94a3b8; width: 130px; font-weight: 600;">Perfil:</td>
                           <td style="padding: 6px 0; color: #ffffff; font-weight: bold;">{perfil_text}</td>
                         </tr>
                         <tr>
@@ -1455,9 +1454,11 @@ async def send_chilechillon_confirmation_email(form_data):
                     </table>
                 </div>
                 
-                <p style="font-size: 15px; line-height: 1.6; color: #94a3b8; margin-bottom: 0;">
-                    En Chile Chillón elaboramos picante premium con fórmulas minuciosamente balanceadas y 100% naturales, asegurando la consistencia exacta en cada lote desde hace 10 años. ¡Prepárate para experimentar el sazón definitivo!
+                <p style="font-size: 15px; line-height: 1.6; color: #cbd5e1; margin-bottom: 25px;">
+                    En Chile Chillón elaboramos salsas picantes con fórmulas minuciosamente balanceadas y 100% naturales, asegurando la consistencia exacta en cada lote desde hace 10 años. ¡Prepárate para experimentar tu sazón al máximo en los próximos días!
                 </p>
+                
+                <p style="color: #FF6A00; font-weight: bold; font-size: 16px; margin: 0;">Equipo del Chile Chillón</p>
             </div>
             
             <!-- Footer del Correo -->
