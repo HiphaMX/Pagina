@@ -1224,8 +1224,9 @@
             
             <form id="contact-form" class="space-y-4" onsubmit="submitContactForm(event)">
                 <!-- Honeypot Field (anti-spam) -->
-                <div style="display:none !important;" aria-hidden="true">
-                    <input type="text" id="confirm_email" name="confirm_email" tabindex="-1" autocomplete="off">
+                <div style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                    <label for="website_url">Do not fill this field</label>
+                    <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
                 </div>
                 <!-- Nombre -->
                 <div>
@@ -1527,7 +1528,7 @@ async function submitContactForm(event) {
         email: formData.get('email'),
         telefono: formData.get('telefono'),
         mensaje: formData.get('mensaje') || '',
-        honeypot: formData.get('confirm_email')
+        honeypot: formData.get('website_url')
     };
 
     try {

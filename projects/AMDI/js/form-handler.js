@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var emailVal = form.querySelector('#Email') ? form.querySelector('#Email').value : '';
             var telVal = form.querySelector('#Tel-fono') ? form.querySelector('#Tel-fono').value : '';
             var msgVal = form.querySelector('#Mensaje') ? form.querySelector('#Mensaje').value : '';
-            var honeypotVal = form.querySelector('[name="confirm_email"]') ? form.querySelector('[name="confirm_email"]').value : '';
+            var honeypotVal = form.querySelector('[name="website_url"]') ? form.querySelector('[name="website_url"]').value : '';
             
             var payload = {
                 nombre: nombreVal,
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // In the newsletter form, Nombre field is #Nombre and Email is #Email-newsletter
             var nombreVal = form.querySelector('#Nombre') ? form.querySelector('#Nombre').value : '';
             var emailVal = form.querySelector('#Email-newsletter') ? form.querySelector('#Email-newsletter').value : '';
-            var honeypotVal = form.querySelector('[name="confirm_email"]') ? form.querySelector('[name="confirm_email"]').value : '';
+            var honeypotVal = form.querySelector('[name="website_url"]') ? form.querySelector('[name="website_url"]').value : '';
             
             var payload = {
                 nombre: nombreVal,
