@@ -494,7 +494,7 @@ async def send_healthyice_order_customer(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío a cliente HealthyIce {form_data.email}")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     from_name = settings.HEALTHYICE_EMAILS_FROM_NAME if settings.HEALTHYICE_EMAILS_FROM_NAME else "HealthyIce"
     
     html_content = f"""
@@ -594,7 +594,7 @@ async def send_healthyice_payment_customer(payer_name: str, payer_email: str, or
         logger.warning(f"SMTP no configurado. Simulando envío a cliente HealthyIce {payer_email}")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     from_name = settings.HEALTHYICE_EMAILS_FROM_NAME if settings.HEALTHYICE_EMAILS_FROM_NAME else "HealthyIce"
     
     html_content = f"""
@@ -1083,7 +1083,7 @@ async def send_healthyice_contract_customer(form_data):
         logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce a {form_data.email}")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     from_name = settings.HEALTHYICE_EMAILS_FROM_NAME if settings.HEALTHYICE_EMAILS_FROM_NAME else "HealthyIce"
     message["Date"] = formatdate(localtime=True)
     message["Message-ID"] = make_msgid(domain="healthyice.mx")
