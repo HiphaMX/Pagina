@@ -112,3 +112,27 @@ async def validate_smtp_alignment():
         },
         "report": report
     }
+
+@router.post("/qa/send-test-email")
+async def send_test_email(project: str, email: str):
+    project = project.upper()
+    if project == "BOTICA":
+        from app.core.mailer import send_botica_order_customer, send_botica_order_team
+        r1 = await send_botica_order_customer("Cliente Prueba Botica", email, "<ul><li>1x Ritual Adaptógenos Reset - $450 MXN</li></ul>", 450.0)
+        r2 = await send_botica_order_team("Cliente Prueba Botica", email, "3336762545", "Av. Paseo Natura 40, Zapopan", "<ul><li>1x Ritual Adaptógenos Reset - $450 MXN</li></ul>", 450.0)
+        return {"project": project, "customer_sent": r1, "team_sent": r2}
+    elif project == "HEALTHYICE":
+        from pydantic import BaseModel
+        class TempForm(BaseModel):
+            nombre: str
+            email: str
+            telefono: str
+            mensaje: str
+            honeypot: str = None
+        form = TempForm(nombre="Prueba HealthyIce", email=email, telefono="3336762545", mensaje="Esta es una prueba de contacto de HealthyIce")
+        from app.core.mailer import send_healthyice_order_customer, send_healthyice_order_team
+        r1 = await send_healthyice_order_customer(form)
+        r2 = await send_healthyice_order_team(form)
+        return {"project": project, "customer_sent": r1, "team_sent": r2}
+    else:
+        return {"error": f"Project {project} is not supported for QA tests"}
