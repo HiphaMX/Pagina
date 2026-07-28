@@ -91,7 +91,7 @@
           "value": "^(www\\.)?amdi\\.mx$"
         }
       ],
-      "dest": "/projects/AMDI/"
+      "dest": "/projects/AMDI/index.html"
     },
     {
       "src": "/(assets|blog)/(.*)",
@@ -121,7 +121,7 @@
           "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
         }
       ],
-      "dest": "/projects/urologia-avanzada/"
+      "dest": "/projects/urologia-avanzada/index.html"
     },
     {
       "src": "/(Assets|js)/(.*)",
@@ -151,7 +151,7 @@
           "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
         }
       ],
-      "dest": "/projects/JessicaMendoza/"
+      "dest": "/projects/JessicaMendoza/index.html"
     },
     {
       "src": "/amdi",
