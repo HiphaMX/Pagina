@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo | Jessica Mendoza Real Estate</title>
+    <title>Terrenos de Playa | Jessica Mendoza Real Estate</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -211,7 +211,7 @@
         /* Seccion Principal */
         main {
             flex-grow: 1;
-            padding-top: 11rem; /* Espacio limpio y holgado por debajo de la cabecera fija */
+            padding-top: 11rem;
             padding-bottom: 8rem;
         }
 
@@ -264,7 +264,7 @@
             border: 1px solid rgba(28, 25, 23, 0.06);
             padding: 1.25rem 2rem;
             display: grid;
-            grid-template-columns: 1.5fr repeat(3, 1fr) auto;
+            grid-template-columns: 1.5fr 1fr 1fr auto;
             gap: 1.25rem;
             align-items: center;
         }
@@ -343,7 +343,7 @@
         }
 
         .search-btn {
-            background-color: #2d3748; /* Gris Oxford */
+            background-color: #2d3748;
             color: #ffffff;
             border: none;
             border-radius: 6px;
@@ -517,7 +517,7 @@
         .search-conditional-fields {
             grid-column: 1 / -1;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.25rem;
             max-height: 0;
             overflow: hidden;
@@ -604,18 +604,18 @@
             transition: var(--transition-fast);
         }
 
-        .collection-card-strip span {
-            flex-grow: 1;
-            height: 100%;
-        }
-
-        .collection-card-strip span:nth-child(1) { background-color: var(--color-acento-light); }
-        .collection-card-strip span:nth-child(2) { background-color: #ffffff; }
-        .collection-card-strip span:nth-child(3) { background-color: var(--color-acento-primary); }
-
         .collection-card:hover .collection-card-strip {
             transform: translateY(0);
         }
+
+        .collection-card-strip span {
+            flex: 1;
+            height: 100%;
+        }
+
+        .collection-card-strip span:nth-child(1) { background-color: var(--color-acento-primary); }
+        .collection-card-strip span:nth-child(2) { background-color: #a3726f; }
+        .collection-card-strip span:nth-child(3) { background-color: #d1b8b6; }
 
         .collection-card-tag {
             position: absolute;
@@ -657,13 +657,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(28, 25, 23, 0.2);
+            background-color: rgba(28, 25, 23, 0.25);
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             opacity: 0;
             transition: var(--transition-fast);
-            backdrop-filter: blur(4px);
+            z-index: 4;
         }
 
         .collection-card:hover .collection-hover-view {
@@ -673,14 +673,13 @@
         .collection-view-btn {
             background-color: #ffffff;
             color: var(--color-text-dark);
-            border: none;
-            padding: 0.85rem 1.75rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            font-weight: 700;
+            padding: 0.75rem 1.75rem;
+            font-size: 0.72rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            font-weight: 700;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             transform: translateY(10px);
             transition: var(--transition-fast);
         }
@@ -692,22 +691,23 @@
         .collection-info {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.85rem;
+            position: relative;
         }
 
         .collection-info-header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: flex-start;
             gap: 1rem;
         }
 
         .collection-card-title {
             font-family: var(--font-sans);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.15rem;
+            line-height: 1.35;
             color: var(--color-text-dark);
-            letter-spacing: -0.01em;
             transition: var(--transition-fast);
         }
 
@@ -751,7 +751,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--color-acento-primary);
+            background: linear-gradient(to right, var(--color-acento-primary), #a3726f, #d1b8b6);
             transform: translateX(-100%);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -767,14 +767,11 @@
         }
 
         .collection-card-location {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            font-weight: 700;
             color: var(--color-text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            font-weight: 700;
         }
 
         .collection-arrow {
@@ -787,52 +784,52 @@
             transform: translate(2px, -2px);
         }
 
-        /* Estado Vacio */
+        /* Estado Vacío de Búsqueda */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 8rem 0;
+            padding: 5rem 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 1.25rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px dashed rgba(28, 25, 23, 0.15);
         }
 
         .empty-state h3 {
             font-family: var(--font-sans);
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
             color: var(--color-text-dark);
         }
 
         .empty-state p {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--color-text-muted);
-            max-width: 400px;
-            line-height: 1.6;
+            max-width: 420px;
+            line-height: 1.5;
         }
 
         .btn-clear-filters {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border: 1px solid var(--color-text-dark);
-            background: transparent;
-            color: var(--color-text-dark);
+            background-color: #2d3748;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            font-size: 0.68rem;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
             font-weight: 700;
+            border-radius: 6px;
             cursor: pointer;
-            border-radius: 9999px;
+            margin-top: 0.5rem;
             transition: var(--transition-fast);
         }
 
         .btn-clear-filters:hover {
-            background-color: var(--bg-stone-900);
-            color: #ffffff;
+            background-color: var(--color-acento-primary);
         }
 
         /* Footer Section (Homologado Oscuro) */
@@ -841,7 +838,6 @@
             color: #ffffff;
             padding: 6rem 0 3.5rem 0;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: auto;
         }
 
         .footer-grid {
@@ -1002,7 +998,6 @@
         .footer-legal a:hover {
             color: #ffffff;
         }
-        }
 
         /* Responsividad Móvil */
         @media (max-width: 968px) {
@@ -1019,7 +1014,7 @@
                 font-size: 1.5rem;
             }
             main {
-                padding-top: 8.5rem; /* Ajuste responsivo de espaciado en móviles */
+                padding-top: 8.5rem;
             }
         }
     </style>
@@ -1061,7 +1056,7 @@
             
             <ul class="nav-links">
                 <li><a href="index.html#experiencia">Servicios</a></li>
-                <li><a href="catalogo.html" class="active">Catálogo</a></li>
+                <li><a href="catalogo.html">Catálogo</a></li>
                 <li><a href="index.html#vende">Vende</a></li>
                 <li><a href="index.html#firma">Experiencia</a></li>
                 <li><a href="index.html#contacto">Contacto</a></li>
@@ -1084,7 +1079,7 @@
         </button>
         <ul class="mobile-menu-links">
             <li><a href="index.html#experiencia" onclick="toggleMenu()">Servicios</a></li>
-            <li><a href="catalogo.html" class="active" onclick="toggleMenu()">Catálogo</a></li>
+            <li><a href="catalogo.html" onclick="toggleMenu()">Catálogo</a></li>
             <li><a href="index.html#vende" onclick="toggleMenu()">Vende</a></li>
             <li><a href="index.html#firma" onclick="toggleMenu()">Experiencia</a></li>
             <li><a href="index.html#contacto" onclick="toggleMenu()">Contacto</a></li>
@@ -1097,108 +1092,75 @@
     <!-- Catálogo Principal -->
     <main>
         <div class="container">
-        <div class="catalog-header">
-            <div class="catalog-meta">
-                <span class="catalog-subtitle">Jessica Mendoza</span>
-                <h1 class="catalog-title">Catálogo <span>Inmobiliario</span></h1>
+            <div class="catalog-header">
+                <div class="catalog-meta">
+                    <span class="catalog-subtitle">Yucatán Premium</span>
+                    <h1 class="catalog-title">Terrenos de <span>Playa</span></h1>
+                </div>
             </div>
-        </div>
 
-        <!-- Potente Buscador Avanzado del Catálogo (Reubicado de Home) -->
-        <div class="catalog-search-wrap">
-            <form class="search-bar" id="catalog-search-form" onsubmit="event.preventDefault();">
-                <div class="search-group">
-                    <label for="search-text">Buscar</label>
-                    <div class="search-input-wrapper">
-                        <i data-lucide="search" style="width: 16px; height: 16px;"></i>
-                        <input type="text" id="search-text" placeholder="Colonia, dirección, palabra clave...">
+            <!-- Potente Buscador de Terrenos de Playa (Misma Estética) -->
+            <div class="catalog-search-wrap">
+                <form class="search-bar" id="beach-search-form" onsubmit="event.preventDefault();">
+                    <div class="search-group">
+                        <label for="search-text">Buscar</label>
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                            <input type="text" id="search-text" placeholder="Playa, desarrollo, palabra clave...">
+                        </div>
                     </div>
-                </div>
-                <div class="search-group">
-                    <label for="search-zone">Zona (ZMG / Ribera)</label>
-                    <select id="search-zone" class="search-select">
-                        <option value="all">Todas</option>
-                        <option value="Ajijic">Ajijic</option>
-                        <option value="Chapala">Chapala</option>
-                        <option value="Guadalajara">Guadalajara</option>
-                        <option value="Jocotepec">Jocotepec</option>
-                        <option value="Tlajomulco">Tlajomulco de Zúñiga</option>
-                        <option value="Tlaquepaque">Tlaquepaque</option>
-                        <option value="Tonalá">Tonalá</option>
-                        <option value="Zapopan">Zapopan</option>
-                    </select>
-                </div>
-                <div class="search-group">
-                    <label for="search-operation">Operación</label>
-                    <select id="search-operation" class="search-select">
-                        <option value="all">Todas</option>
-                        <option value="Compra">Compra</option>
-                        <option value="Renta">Renta</option>
-                    </select>
-                </div>
-                <div class="search-group">
-                    <label for="search-type">Tipo</label>
-                    <select id="search-type" class="search-select" onchange="toggleAdvancedFields(this.value);">
-                        <option value="all">Todos</option>
-                        <option value="Casa">Casa</option>
-                        <option value="Departamento">Departamento</option>
-                        <option value="Terreno">Terreno</option>
-                    </select>
-                </div>
-                <button type="button" class="search-btn" id="btn-search-trigger">
-                    Buscar <i data-lucide="search" style="width: 14px; height: 14px;"></i>
-                </button>
-
-                <!-- Campos condicionales avanzados (Casa/Departamento/Terreno) -->
-                <div class="search-conditional-fields" id="advanced-search-fields">
-                    <div class="search-group" id="search-beds-group">
-                        <label for="search-beds">Habitaciones</label>
-                        <select id="search-beds" class="search-select">
-                            <option value="all">Cualquiera</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4 o más</option>
+                    <div class="search-group">
+                        <label for="search-zone">Zona / Municipio</label>
+                        <select id="search-zone" class="search-select">
+                            <option value="all">Todas</option>
+                            <option value="Progreso">Progreso</option>
+                            <option value="Chicxulub">Chicxulub</option>
+                            <option value="Chelem">Chelem</option>
+                            <option value="Telchac">Telchac</option>
+                            <option value="Sisal">Sisal</option>
+                            <option value="Celestún">Celestún</option>
                         </select>
+                    </div>
+                    <div class="search-group">
+                        <label for="search-operation">Operación</label>
+                        <select id="search-operation" class="search-select">
+                            <option value="all">Todas</option>
+                            <option value="Compra">Compra</option>
+                        </select>
+                    </div>
+                    <div class="search-group" style="justify-content: flex-end; align-items: flex-end;">
+                        <button type="button" class="search-btn" id="btn-search-trigger">
+                            Buscar Terreno <i data-lucide="search" style="width: 16px; height: 16px; margin-left: 8px;"></i>
+                        </button>
                     </div>
                     
                     <!-- Slider de rango de precios (ocupa 2 columnas) -->
-                    <div class="search-group-slider" id="search-price-slider-group">
-                        <label>Presupuesto (MXN)</label>
+                    <div class="search-group-slider" id="search-price-slider-group" style="grid-column: span 1;">
+                        <label>Rango de Inversión (MXN)</label>
                         <div class="range-slider-container">
                             <div class="slider-track" id="slider-track-bar"></div>
-                            <input type="range" id="price-slider-min" class="range-slider" min="1000000" max="50000000" step="250000" value="1000000">
-                            <input type="range" id="price-slider-max" class="range-slider" min="1000000" max="50000000" step="250000" value="50000000">
+                            <input type="range" id="price-slider-min" class="range-slider" min="500000" max="15000000" step="100000" value="500000">
+                            <input type="range" id="price-slider-max" class="range-slider" min="500000" max="15000000" step="100000" value="15000000">
                         </div>
                         <div class="range-labels">
-                            <span id="label-min-val">$1,000,000</span>
-                            <span id="label-max-val">$50,000,000</span>
+                            <span id="label-min-val">$500,000</span>
+                            <span id="label-max-val">$15,000,000</span>
                         </div>
-                        <div class="range-inputs">
-                            <input type="text" id="search-price-min" class="range-input-box" placeholder="Mínimo" value="$1,000,000">
+                        <div class="range-inputs" style="display: none;">
+                            <input type="text" id="search-price-min" class="range-input-box" placeholder="Mínimo" value="$500,000">
                             <span class="range-sep">&ndash;</span>
-                            <input type="text" id="search-price-max" class="range-input-box" placeholder="Máximo" value="$50,000,000">
+                            <input type="text" id="search-price-max" class="range-input-box" placeholder="Máximo" value="$15,000,000">
                         </div>
                     </div>
+                </form>
+            </div>
 
-                    <div class="search-group" id="search-condition-group">
-                        <label for="search-condition">Condición</label>
-                        <select id="search-condition" class="search-select">
-                            <option value="all">Cualquiera</option>
-                            <option value="A estrenar">A estrenar (Nuevo)</option>
-                            <option value="Pre-propiedad">Pre-propiedad (Habitada)</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
+            <!-- Grid de Tarjetas -->
+            <div id="catalog-grid" class="results-grid">
+                <!-- Cargado dinámicamente por JS -->
+            </div>
         </div>
-
-        <!-- Grid de Tarjetas -->
-        <div id="catalog-grid" class="results-grid">
-            <!-- Cargado dinámicamente por JS -->
-        </div>
-    </div>
-</main>
+    </main>
 
     <!-- Footer -->
     <footer>
@@ -1222,7 +1184,7 @@
                                 <path class="cls-2" d="M611.16,141.94c23.8-1.16,39.55,18.82,34.36,41.83-7.74,34.32-59.2,33.11-65.32-1.66-3.67-20.85,9.51-39.12,30.97-40.17ZM610.66,158.71c-17.7,1.76-18,32.27,1.78,33.16,12.83.58,18.75-12.07,15.07-23.21-2.44-7.4-9.35-10.7-16.86-9.95Z"/>
                                 <path class="cls-2" d="M516.07,207.63l-.02-64.73h27.49c16.84.94,28.82,12.08,30.29,28.98,1.73,19.82-11.43,35.39-31.46,35.79l-26.3-.03ZM533.48,191.54h10.21c.75,0,3.12-.76,3.9-1.08,11.05-4.6,11.29-25.25.61-30.33-4.04-1.92-9.4-1.22-13.82-1.29-.28,0-.71-.19-.82-.17-.39.05-.09.39-.09.41v32.46Z"/>
                                 <path class="cls-2" d="M486.49,173.78v-30.88h17.1l-.25,65.09h-5.98c-.12,0-.61-.3-.75-.41-10.55-9.97-20.15-21.35-30.81-31.13-.24-.22-.14-.6-.48-.51-.23.03.08.21.08.25v31.22s-.23.25-.25.25h-16.77l-.02-64.94c.15-.13.32-.14.51-.16,1.23-.15,4.41-.13,5.66,0,.23.02.47-.02.66.17,10.58,10.19,20.76,20.81,31.29,31.06Z"/>
-                                <path class="cls-2" d="M333.81,98.23c.22.07.23.38.26.57.43,3.69-.85,9.2,1.29,12.49,3.07,4.73,12.23,4.4,14.44-1.07,1.06-2.62.83-8.35.88-11.41.22-13.66-.25-27.33-.14-40.99.35-.8,1.07-.29,1.7-.28,5.37.11,11.1.15,16.45,0,.7-.02,2.06-.62,2.08.4v48.17c-.35,19.31-15.62,30.72-34.41,27.26-16.31-3.01-21.27-15.07-21.73-30.24-.04-1.23-.14-3.17,0-4.33.02-.17.08-.57.26-.57h18.93Z"/>
+                                <path class="cls-2" d="M333.81,98.23c.22.07.23.38.26.57.43,3.69-.85,9.2,1.29,12.49,3.07,4.73,12.23,4.4,14.44-1.07,1.06-2.62.83-8.35.88-11.41.22-13.66-.25-27.33-.14-40.99.35-.8,1.07-.29,1.7-.28,5.37.11,11.1.15,16.45,0,.7-.02,1.63-.57,2.04.28l-.13,75.1Z"/>
                                 <path class="cls-2" d="M437.51,158.67l-22.81.02-.02,8.44h20.59s.25.23.25.25v15.19h-21.09v8.88l23.91.25v15.94h-40.93s-.25-.23-.25-.25v-64.26s.23-.25.25-.25h39.85s.25.23.25.25v15.53Z"/>
                                 <path class="cls-2" d="M701.69,207.65l.04-.88c8.19-17.93,16.61-35.76,24.9-53.64,1.6-3.46,3.2-6.94,4.6-10.47l.26-.11,7.65.18,29.64,64.5c-.03.3-.28.56-.57.57l-17.58-.18-3.72-8.11h-23.38s-3.65,8.14-3.65,8.14h-18.18ZM740.71,184.23l-5.64-14.61-5.48,14.61h11.12Z"/>
                                 <path class="cls-2" d="M699.69,148.29c-.07.31-1.25,1.97-1.52,2.46-7.54,13.67-15.23,27.27-22.89,40.87l24.91.17v15.86h-50.23s-.25-.23-.25-.25v-5.65c0-.26,2.45-3.81,2.69-4.45l21.73-38.38-21.92-.25v-15.77h47.24s.25.23.25.25c0,1.26.23,4.12,0,5.15Z"/>
@@ -1247,10 +1209,10 @@
                 <div class="footer-newsletter">
                     <h4 class="footer-links-title">Novedades</h4>
                     <p class="footer-newsletter-text">Suscríbete para recibir información sobre preventas exclusivas y análisis del mercado en la ZMG.</p>
-                    <form class="footer-form" id="newsletter-form" onsubmit="event.preventDefault(); alert('Gracias por suscribirte.'); this.reset();">
-                        <input type="email" required placeholder="Tu correo electrónico" aria-label="Correo electrónico">
-                        <button type="submit" aria-label="Suscribirse">
-                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                    <form class="footer-form" onsubmit="event.preventDefault(); alert('Gracias por suscribirte');">
+                        <input type="email" placeholder="Tu correo electrónico" required aria-label="Correo electrónico">
+                        <button type="submit" aria-label="Enviar suscripción">
+                            <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
                         </button>
                     </form>
                 </div>
@@ -1259,8 +1221,8 @@
             <div class="footer-bottom">
                 <p class="footer-copyright">&copy; 2026 Jessica Mendoza Real Estate. Todos los derechos reservados.</p>
                 <div class="footer-legal">
-                    <a href="/aviso-de-privacidad">Aviso de Privacidad</a>
-                    <a href="/terminos-y-condiciones">Términos y Condiciones</a>
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
                 </div>
             </div>
         </div>
@@ -1269,23 +1231,103 @@
     <!-- Scripts -->
     <script src="js/db.js"></script>
     <script>
-        // Inicializar Iconos
-        lucide.createIcons();
+        // Protección por contraseña temporal
+        (function() {
+            const AUTH_KEY = 'jm_auth_token';
+            const PASSWORD_CORRECT = 'jessica2026';
 
-        // Filtrar base de datos centralizada para mostrar solo propiedades de ZMG
-        const PROPERTIES_DB = window.PROPERTIES_DB.filter(item => !item.isPlaya);
+            if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+                return;
+            }
+
+            // Ocultar el contenido de main
+            const mainEl = document.querySelector('main');
+            if (mainEl) {
+                mainEl.style.display = 'none';
+            }
+
+            // Crear el modal de contraseña premium de pantalla completa
+            const lockScreen = document.createElement('div');
+            lockScreen.id = 'lock-screen-overlay';
+            lockScreen.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: linear-gradient(rgba(12, 10, 9, 0.9), rgba(12, 10, 9, 0.95)), url('Assets/nostalgic_door_philosophy_bg_1784781747887.jpg') no-repeat center center;
+                background-size: cover;
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Roboto, sans-serif;
+            `;
+
+            lockScreen.innerHTML = `
+                <div style="background: rgba(28, 25, 23, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 50px 40px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6);">
+                    <div style="width: 50px; height: 50px; background: rgba(214, 211, 209, 0.08); border: 1px solid rgba(214, 211, 209, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d6d3d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: #a8a29e; display: block; margin-bottom: 8px; font-weight: 500;">Acceso Restringido</span>
+                    <h2 style="font-family: 'Times New Roman', Times, serif; font-size: 1.85rem; font-weight: 300; font-style: italic; color: #ffffff; margin: 0 0 15px 0;">Jessica Mendoza <span style="display:block; font-size:0.6em; text-transform:uppercase; letter-spacing:2px; font-style:normal; margin-top:5px; color:#a8a29e;">Bienes Raíces</span></h2>
+                    <p style="font-size: 13px; color: #d6d3d1; margin-bottom: 25px; line-height: 1.6;">Este sitio web se encuentra en fase de actualización. Introduce la clave de acceso para continuar.</p>
+                    
+                    <form id="lock-auth-form" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+                        <input type="password" id="lock-pass-input" required placeholder="Contraseña de acceso" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 0.75rem 1.5rem; border-radius: 8px; width: 100%; text-align: center; margin-bottom: 1rem; font-size: 0.95rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+                        <div id="lock-error-msg" style="color: #ef4444; font-size: 13px; margin-bottom: 1.5rem; display: none;">Contraseña incorrecta. Por favor, intenta de nuevo.</div>
+                        <button type="submit" style="background: #ffffff; color: #1c1917; border: none; padding: 0.85rem 2rem; border-radius: 8px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.15em; cursor: pointer; width: 100%; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center;">Ingresar</button>
+                        <a href="index.html" style="color: #a8a29e; text-decoration: none; font-size: 13px; margin-top: 1.5rem; display: inline-block;">Volver al Inicio</a>
+                    </form>
+                </div>
+            `;
+
+            document.body.appendChild(lockScreen);
+
+            // Enfocar input
+            setTimeout(() => {
+                const input = document.getElementById('lock-pass-input');
+                if (input) input.focus();
+            }, 100);
+
+            // Handler de validación
+            const form = document.getElementById('lock-auth-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pass = document.getElementById('lock-pass-input').value;
+                const errorMsg = document.getElementById('lock-error-msg');
+
+                if (pass === PASSWORD_CORRECT) {
+                    sessionStorage.setItem(AUTH_KEY, 'true');
+                    document.body.removeChild(lockScreen);
+                    if (mainEl) {
+                        mainEl.style.display = 'block';
+                        if (window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    }
+                } else {
+                    errorMsg.style.display = 'block';
+                    const input = document.getElementById('lock-pass-input');
+                    input.value = '';
+                    input.focus();
+                }
+            });
+        })();
+
+        // Base de Datos de Terrenos de Playa (Yucatán)
+        const PLAYA_DB = window.PROPERTIES_DB.filter(item => item.isPlaya);
 
         // Referencias del DOM
         const catalogGrid = document.getElementById('catalog-grid');
         const searchText = document.getElementById('search-text');
         const searchZone = document.getElementById('search-zone');
         const searchOperation = document.getElementById('search-operation');
-        const searchType = document.getElementById('search-type');
-        const searchBeds = document.getElementById('search-beds');
-        const searchCondition = document.getElementById('search-condition');
         const btnSearchTrigger = document.getElementById('btn-search-trigger');
 
-        // Sliders de Precios
+        // Sliders de Precios (Rango de Terrenos de Playa)
         const sliderMin = document.getElementById('price-slider-min');
         const sliderMax = document.getElementById('price-slider-max');
         const inputMin = document.getElementById('search-price-min');
@@ -1294,16 +1336,14 @@
         const labelMax = document.getElementById('label-max-val');
         const track = document.getElementById('slider-track-bar');
 
-        // Configuración de Precios por defecto (Compra)
         let priceConfig = {
-            min: 1000000,
-            max: 50000000,
-            step: 250000,
-            defaultMin: 1000000,
-            defaultMax: 50000000
+            min: 500000,
+            max: 15000000,
+            step: 100000,
+            defaultMin: 500000,
+            defaultMax: 15000000
         };
 
-        // Formateador para las etiquetas de los thumbs
         function formatLabelValue(val) {
             val = parseFloat(val);
             return new Intl.NumberFormat('es-MX', {
@@ -1313,7 +1353,6 @@
             }).format(val);
         }
 
-        // Formateador general para las tarjetas
         const formatter = new Intl.NumberFormat('es-MX', {
             style: 'currency',
             currency: 'MXN',
@@ -1321,7 +1360,6 @@
             maximumFractionDigits: 0
         });
 
-        // Actualizar la pista (track) del slider
         function updateTrack() {
             const minVal = parseFloat(sliderMin.value);
             const maxVal = parseFloat(sliderMax.value);
@@ -1349,7 +1387,6 @@
             }).format(val);
         }
 
-        // Sincronizar sliders
         function updateSliderValues() {
             if (parseFloat(sliderMin.value) > parseFloat(sliderMax.value) - priceConfig.step) {
                 sliderMin.value = parseFloat(sliderMax.value) - priceConfig.step;
@@ -1361,10 +1398,9 @@
             labelMax.innerText = formatLabelValue(sliderMax.value);
             
             updateTrack();
-            renderCatalog(); // Filtrar dinámicamente en tiempo real
+            renderCatalog();
         }
 
-        // Sincronizar desde los inputs manuales
         function updateSliderValuesFromInputs() {
             let valMin = cleanNumber(inputMin.value) || priceConfig.min;
             let valMax = cleanNumber(inputMax.value) || priceConfig.max;
@@ -1385,138 +1421,34 @@
             renderCatalog();
         }
 
-        // Calibrar sliders por Operación (Compra vs Renta)
-        function calibratePriceRange() {
-            const op = searchOperation.value;
-            if (op === 'Renta') {
-                priceConfig = {
-                    min: 10000,
-                    max: 150000,
-                    step: 2500,
-                    defaultMin: 10000,
-                    defaultMax: 150000
-                };
-            } else {
-                priceConfig = {
-                    min: 1000000,
-                    max: 50000000,
-                    step: 250000,
-                    defaultMin: 1000000,
-                    defaultMax: 50000000
-                };
-            }
-
-            sliderMin.min = priceConfig.min;
-            sliderMin.max = priceConfig.max;
-            sliderMin.step = priceConfig.step;
-            sliderMin.value = priceConfig.defaultMin;
-
-            sliderMax.min = priceConfig.min;
-            sliderMax.max = priceConfig.max;
-            sliderMax.step = priceConfig.step;
-            sliderMax.value = priceConfig.defaultMax;
-
-            inputMin.value = formatNumberInput(priceConfig.defaultMin);
-            inputMax.value = formatNumberInput(priceConfig.defaultMax);
-
-            updateSliderValues();
-        }
-
-        // Lógica condicional del buscador
-        window.toggleAdvancedFields = function(type) {
-            const advancedFields = document.getElementById('advanced-search-fields');
-            const bedsGroup = document.getElementById('search-beds-group');
-            const conditionGroup = document.getElementById('search-condition-group');
-            const priceGroup = document.getElementById('search-price-slider-group');
-
-            if (type === 'Casa' || type === 'Departamento') {
-                advancedFields.classList.add('show');
-                advancedFields.style.gridTemplateColumns = 'repeat(4, 1fr)';
-                bedsGroup.style.display = 'flex';
-                conditionGroup.style.display = 'flex';
-                priceGroup.style.gridColumn = 'span 2';
-            } else if (type === 'Terreno') {
-                advancedFields.classList.add('show');
-                advancedFields.style.gridTemplateColumns = 'repeat(2, 1fr)';
-                bedsGroup.style.display = 'none';
-                conditionGroup.style.display = 'none';
-                priceGroup.style.gridColumn = 'span 2';
-                // Resetear campos no aplicables a Terrenos
-                searchBeds.value = 'all';
-                searchCondition.value = 'all';
-            } else {
-                advancedFields.classList.remove('show');
-                // Limpiar campos condicionales
-                searchBeds.value = 'all';
-                searchCondition.value = 'all';
-            }
-            renderCatalog();
-        };
-
-        // Renderizado y filtrado dinámico del catálogo
         function renderCatalog() {
             const textValue = searchText.value.toLowerCase().trim();
             const zoneValue = searchZone.value;
             const opValue = searchOperation.value;
-            const tipoValue = searchType.value;
-            const bedsValue = searchBeds.value;
-            const conditionValue = searchCondition.value;
             const priceMinVal = parseFloat(sliderMin.value);
             const priceMaxVal = parseFloat(sliderMax.value);
 
-            // Filtrar Base de Datos
-            const filtered = PROPERTIES_DB.filter(item => {
-                // Filtro por Texto libre (título, zona, municipio)
+            const filtered = PLAYA_DB.filter(item => {
                 const matchesText = !textValue || 
                     item.title.toLowerCase().includes(textValue) || 
                     item.zona.toLowerCase().includes(textValue) || 
                     item.municipio.toLowerCase().includes(textValue);
                 
-                // Filtro por Municipio
                 const matchesZone = zoneValue === 'all' || item.municipio === zoneValue;
-                
-                // Filtro por Operación
                 const matchesOp = opValue === 'all' || item.operacion === opValue;
-                
-                // Filtro por Tipo de Propiedad
-                const matchesTipo = tipoValue === 'all' || item.tipo === tipoValue;
-                
-                // Filtro por Habitaciones (solo Casa y Departamento)
-                let matchesBeds = true;
-                if (bedsValue !== 'all' && (item.tipo === 'Casa' || item.tipo === 'Departamento')) {
-                    if (bedsValue === '4') {
-                        matchesBeds = item.habitaciones >= 4;
-                    } else {
-                        matchesBeds = item.habitaciones === parseInt(bedsValue);
-                    }
-                }
+                const matchesPrice = item.precio >= priceMinVal && item.precio <= priceMaxVal;
 
-                // Filtro por Condición (Nuevo - Habitado)
-                let matchesCondition = true;
-                if (conditionValue !== 'all' && (item.tipo === 'Casa' || item.tipo === 'Departamento')) {
-                    matchesCondition = item.condicion === conditionValue;
-                }
-
-                // Filtro por Rango de Precios (Si es Renta en modo "Todas", se muestra siempre por la escala de precios)
-                let matchesPrice = false;
-                if (opValue === 'all' && item.operacion === 'Renta') {
-                    matchesPrice = true;
-                } else {
-                    matchesPrice = item.precio >= priceMinVal && item.precio <= priceMaxVal;
-                }
-
-                return matchesText && matchesZone && matchesOp && matchesTipo && matchesBeds && matchesCondition && matchesPrice;
+                return matchesText && matchesZone && matchesOp && matchesPrice;
             });
 
-            // Limpiar Grid
             catalogGrid.innerHTML = '';
 
             if (filtered.length === 0) {
                 catalogGrid.innerHTML = `
                     <div class="empty-state">
                         <i data-lucide="compass" style="width: 64px; height: 64px; stroke-width: 1; color: var(--color-text-muted);"></i>
-                        <h3>Sin resultados</h3>
-                        <p>No encontramos propiedades que coincidan con la combinación de filtros seleccionada. Intenta con otros parámetros.</p>
+                        <h3>Sin terrenos</h3>
+                        <p>No encontramos terrenos de playa que coincidan con la combinación de filtros seleccionada.</p>
                         <button class="btn-clear-filters" onclick="clearFilters()">Restablecer Filtros</button>
                     </div>
                 `;
@@ -1524,7 +1456,6 @@
                 return;
             }
 
-            // Renderizar Tarjetas
             filtered.forEach(item => {
                 const card = document.createElement('a');
                 card.href = `propiedad.html?id=${item.id}`;
@@ -1535,29 +1466,23 @@
                     const searchState = {
                         text: searchText.value,
                         zone: searchZone.value,
-                        operation: searchOperation.value,
-                        type: searchType.value,
-                        beds: searchBeds.value,
-                        condition: searchCondition.value,
                         priceMin: sliderMin.value,
                         priceMax: sliderMax.value,
                         scrollY: window.scrollY
                     };
-                    sessionStorage.setItem('jessica_mendoza_search_state', JSON.stringify(searchState));
+                    sessionStorage.setItem('jessica_mendoza_playa_search_state', JSON.stringify(searchState));
                 });
 
                 card.innerHTML = `
                     <div class="collection-image-wrapper">
                         <img src="${item.image}" alt="${item.title}" loading="lazy">
                         <span class="collection-card-tag">${item.operacion}</span>
-                        <span class="collection-card-tag-type">${item.tipo}</span>
+                        <span class="collection-card-tag-type">Terreno</span>
                         <div class="collection-hover-view">
                             <span class="collection-view-btn">Solicitar Info</span>
                         </div>
                         <div class="collection-card-strip">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                            <span></span><span></span><span></span>
                         </div>
                     </div>
                     <div class="collection-info">
@@ -1572,7 +1497,7 @@
                             <div class="collection-info-divider-fill"></div>
                         </div>
                         <div class="collection-card-footer">
-                            <span class="collection-card-location">${item.municipio}</span>
+                            <span class="collection-card-location">${item.municipio}, Yucatán</span>
                             <i data-lucide="arrow-up-right" class="collection-arrow" style="width: 18px; height: 18px;"></i>
                         </div>
                     </div>
@@ -1583,35 +1508,23 @@
             lucide.createIcons();
         }
 
-        // Restablecer filtros
         window.clearFilters = function() {
             searchText.value = '';
             searchZone.value = 'all';
             searchOperation.value = 'all';
-            searchType.value = 'all';
-            searchBeds.value = 'all';
-            searchCondition.value = 'all';
-            
-            toggleAdvancedFields('all');
-            calibratePriceRange();
+            sliderMin.value = priceConfig.min;
+            sliderMax.value = priceConfig.max;
+            updateSliderValues();
         };
 
-        // Listeners de los Sliders
+        // Listeners
         sliderMin.addEventListener('input', updateSliderValues);
         sliderMax.addEventListener('input', updateSliderValues);
-
-        // Listeners de los Inputs Manuales
         inputMin.addEventListener('change', updateSliderValuesFromInputs);
         inputMax.addEventListener('change', updateSliderValuesFromInputs);
-
-        // Listeners del Formulario
         searchText.addEventListener('input', renderCatalog);
         searchZone.addEventListener('change', renderCatalog);
-        searchOperation.addEventListener('change', () => {
-            calibratePriceRange();
-        });
-        searchBeds.addEventListener('change', renderCatalog);
-        searchCondition.addEventListener('change', renderCatalog);
+        searchOperation.addEventListener('change', renderCatalog);
         btnSearchTrigger.addEventListener('click', renderCatalog);
 
         // Menú Móvil
@@ -1633,8 +1546,8 @@
             menuClose.addEventListener('click', toggleMenu);
         }
 
-        // Inicialización y restauración de estado o pre-filtrado por URL
-        const savedStateStr = sessionStorage.getItem('jessica_mendoza_search_state');
+        // Inicialización y restauración de estado
+        const savedStateStr = sessionStorage.getItem('jessica_mendoza_playa_search_state');
         let initialized = false;
 
         if (savedStateStr) {
@@ -1642,13 +1555,6 @@
                 const state = JSON.parse(savedStateStr);
                 searchText.value = state.text || '';
                 searchZone.value = state.zone || 'all';
-                searchOperation.value = state.operation || 'all';
-                searchType.value = state.type || 'all';
-                searchBeds.value = state.beds || 'all';
-                searchCondition.value = state.condition || 'all';
-                
-                // Primero calibramos el rango de precios correspondiente
-                calibratePriceRange();
                 
                 // Asignamos los valores específicos del slider guardado
                 sliderMin.value = state.priceMin || priceConfig.min;
@@ -1659,7 +1565,7 @@
                 labelMax.innerText = formatLabelValue(sliderMax.value);
                 
                 updateTrack();
-                toggleAdvancedFields(searchType.value); // Esto internamente llama a renderCatalog()
+                renderCatalog();
                 
                 // Realizar scroll de forma diferida tras renderizar la UI
                 setTimeout(() => {
@@ -1669,41 +1575,15 @@
                     });
                 }, 100);
 
-                sessionStorage.removeItem('jessica_mendoza_search_state'); // Limpiar para cargas subsecuentes
+                sessionStorage.removeItem('jessica_mendoza_playa_search_state'); // Limpiar para cargas subsecuentes
                 initialized = true;
             } catch (e) {
-                console.error("Error restaurando estado de búsqueda:", e);
+                console.error("Error restaurando estado de búsqueda de playa:", e);
             }
         }
 
         if (!initialized) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlTipo = urlParams.get('tipo');
-            const urlOperacion = urlParams.get('operacion');
-            const urlCondicion = urlParams.get('condicion');
-
-            let hasPreFilters = false;
-
-            if (urlTipo) {
-                searchType.value = urlTipo;
-                hasPreFilters = true;
-            }
-            if (urlOperacion) {
-                searchOperation.value = urlOperacion;
-                hasPreFilters = true;
-            }
-            if (urlCondicion) {
-                searchCondition.value = urlCondicion;
-                hasPreFilters = true;
-            }
-
-            if (hasPreFilters) {
-                calibratePriceRange(); // Recalibrar límites de precios según la operación
-                toggleAdvancedFields(searchType.value); // Autogestionar campos de slider y renderizar catálogo
-            } else {
-                calibratePriceRange();
-                renderCatalog();
-            }
+            updateSliderValues();
         }
     </script>
 </body>

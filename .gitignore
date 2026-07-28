@@ -10,6 +10,7 @@ venv_pdf/
 
 # Variables de entorno
 .env
+.env.vercel*
 
 # MacOS
 .DS_Store
@@ -45,4 +46,6 @@ deploy.log
 stderr.txt
 stdout.txt
 test_contract.pdf
+copy_vars.sh
+projects/visual-generator/
 

@@ -1895,6 +1895,160 @@ async def send_valencia_servicios_notification_team(form_data):
         return False
 
 
+async def send_jessica_mendoza_confirmation_email(form_data):
+    jessica_configured = bool(settings.JESSICAMENDOZA_SMTP_HOST and settings.JESSICAMENDOZA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not jessica_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de confirmación a Jessica Mendoza: {form_data.email}")
+        return True
+
+    from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "contacto@jessicamendozabienesraices.com"
+    to_email = form_data.email
+
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c1917; background-color: #fafaf9; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); border: 1px solid #e7e5e4;">
+            
+            <!-- Header con la identidad de Jessica Mendoza -->
+            <div style="background-color: #0c0a09; padding: 40px 20px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif;">
+                    Jessica Mendoza
+                </h1>
+                <p style="margin: 8px 0 0 0; font-size: 11px; color: #a8a29e; letter-spacing: 2px;">REAL ESTATE</p>
+            </div>
+            
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 40px 30px; line-height: 1.7; font-size: 15px;">
+                <p style="margin-top: 0; font-weight: 600;">Estimado/a {form_data.nombre} {form_data.apellido},</p>
+                <p>He recibido tu solicitud con interés en la <strong>{form_data.intencion}</strong> de un/a <strong>{form_data.propiedad}</strong> en la Zona Metropolitana de Guadalajara.</p>
+                <p>Mi compromiso es acompañarte a tomar decisiones inmobiliarias inteligentes, seguras y rentables, asegurando que cada peso invertido y cada revisión jurídica proteja plenamente tu patrimonio familiar.</p>
+                <p>A la brevedad me pondré en contacto contigo de forma privada para iniciar el análisis estratégico de tu requerimiento.</p>
+                
+                <hr style="border: none; border-top: 1px solid #e7e5e4; margin: 30px 0;">
+                
+                <p style="margin: 0; font-style: italic; color: #57524d;">"Tu inversión exige inteligencia, pero tu familia merece un hogar con alma."</p>
+                <p style="margin: 5px 0 0 0; font-weight: bold; color: #0c0a09;">Jessica Mendoza</p>
+            </div>
+            
+            <!-- Footer del Correo -->
+            <div style="background-color: #fafaf9; padding: 25px; text-align: center; border-top: 1px solid #e7e5e4; font-size: 12px; color: #78716c;">
+                <p style="margin: 0 0 5px 0;"><strong>Jessica Mendoza Real Estate</strong></p>
+                <p style="margin: 0;">Consultoría e Intermediación Inmobiliaria Premium en Guadalajara y zonas de alta plusvalía.</p>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="JESSICAMENDOZA",
+        from_name="Jessica Mendoza Real Estate",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"Confirmación de Asesoría Privada - Jessica Mendoza",
+        html_content=html_content,
+        domain="jessicamendozabienesraices.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Correo de confirmación de Jessica Mendoza enviado con éxito a {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Error al enviar correo de confirmación de Jessica Mendoza a {to_email}: {str(e)}")
+        return False
+
+
+async def send_jessica_mendoza_notification_team(form_data):
+    jessica_configured = bool(settings.JESSICAMENDOZA_SMTP_HOST and settings.JESSICAMENDOZA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not jessica_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de notificación de Jessica Mendoza al equipo: {form_data.email}")
+        return True
+
+    from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "contacto@jessicamendozabienesraices.com"
+    to_email = settings.JESSICAMENDOZA_SMTP_USER if jessica_configured else (settings.SMTP_USER if settings.SMTP_USER else "contacto@jessicamendozabienesraices.com")
+
+    html_content = f"""
+    <html>
+    <body style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c1917; background-color: #fafaf9; margin: 0; padding: 40px 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); border: 1px solid #e7e5e4;">
+            
+            <!-- Header con la identidad de Jessica Mendoza -->
+            <div style="background-color: #0c0a09; padding: 30px 20px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                    Jessica Mendoza
+                </h1>
+                <p style="margin: 5px 0 0 0; font-size: 11px; color: #a8a29e; letter-spacing: 2px;">NUEVO PROSPECTO DE ASESORÍA PRIVADA</p>
+            </div>
+            
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 40px 30px;">
+                <p style="font-size: 16px; line-height: 1.6; color: #44403c; margin-top: 0; margin-bottom: 25px;">
+                    Se ha recibido una nueva solicitud de asesoría inmobiliaria. A continuación los detalles del prospecto:
+                </p>
+                
+                <!-- Tabla con detalles de solicitud -->
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 15px;">
+                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #1c1917; width: 160px; background-color: #fafaf9;">Nombre Completo:</td>
+                        <td style="padding: 12px 10px; color: #44403c; background-color: #fafaf9;">{form_data.nombre} {form_data.apellido}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #1c1917;">Correo Electrónico:</td>
+                        <td style="padding: 12px 10px; color: #44403c;">
+                            <a href="mailto:{form_data.email}" style="color: #0c0a09; text-decoration: underline;">{form_data.email}</a>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #1c1917; background-color: #fafaf9;">Teléfono:</td>
+                        <td style="padding: 12px 10px; color: #44403c; background-color: #fafaf9;">
+                            <a href="tel:{form_data.telefono}" style="color: #0c0a09; text-decoration: underline; font-weight: bold;">{form_data.telefono}</a>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #1c1917;">Tipo de Solicitud:</td>
+                        <td style="padding: 12px 10px; color: #0c0a09; font-weight: bold;">{form_data.intencion}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <td style="padding: 12px 10px; font-weight: bold; color: #1c1917; background-color: #fafaf9;">Propiedad de interés:</td>
+                        <td style="padding: 12px 10px; color: #44403c; background-color: #fafaf9;">{form_data.propiedad}</td>
+                    </tr>
+                    {f'<tr style="border-bottom: 1px solid #e7e5e4;"><td style="padding: 12px 10px; font-weight: bold; color: #1c1917;">Mensaje:</td><td style="padding: 12px 10px; color: #44403c;">{form_data.mensaje}</td></tr>' if form_data.mensaje else ''}
+                </table>
+            </div>
+            
+            <!-- Footer del Correo -->
+            <div style="background-color: #fafaf9; padding: 25px; text-align: center; border-top: 1px solid #e7e5e4; font-size: 12px; color: #78716c;">
+                <p style="margin: 0;">Este correo fue generado de forma automática por la landing page de <strong>Jessica Mendoza Real Estate</strong>.</p>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="JESSICAMENDOZA",
+        from_name="Jessica Mendoza Leads",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"🔔 NUEVO PROSPECTO ({form_data.intencion}): {form_data.nombre} {form_data.apellido} - {form_data.propiedad}",
+        html_content=html_content,
+        domain="jessicamendozabienesraices.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Notificación de prospecto para Jessica Mendoza enviada al equipo con éxito.")
+        return True
+    except Exception as e:
+        logger.error(f"Error al enviar notificación de prospecto para Jessica Mendoza al equipo: {str(e)}")
+        return False
+
+
 def _prepare_project_email(
     project_prefix: str,
     from_name: str,

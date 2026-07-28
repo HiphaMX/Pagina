@@ -93,6 +93,14 @@ class Settings(BaseSettings):
     UROLOGIAAVANZADA_EMAILS_FROM_EMAIL: str = ""
     UROLOGIAAVANZADA_EMAILS_FROM_NAME: str = ""
 
+    # JESSICAMENDOZA Specific SMTP settings (Pendiente de credenciales)
+    JESSICAMENDOZA_SMTP_HOST: str = ""
+    JESSICAMENDOZA_SMTP_PORT: Union[int, str] = 587
+    JESSICAMENDOZA_SMTP_USER: str = ""
+    JESSICAMENDOZA_SMTP_PASSWORD: str = ""
+    JESSICAMENDOZA_EMAILS_FROM_EMAIL: str = ""
+    JESSICAMENDOZA_EMAILS_FROM_NAME: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
     @validator("SMTP_PORT", pre=True, always=True)

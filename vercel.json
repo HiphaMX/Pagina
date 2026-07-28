@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|Jessica.Mendoza)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|JessicaMendoza)/'",
   "functions": {
     "api/index.py": {
       "excludeFiles": "projects/**"
@@ -122,6 +122,36 @@
         }
       ],
       "dest": "/projects/urologia-avanzada/"
+    },
+    {
+      "src": "/(Assets|js)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        }
+      ],
+      "dest": "/projects/JessicaMendoza/$1/$2"
+    },
+    {
+      "src": "/(catalogo|propiedad|terrenos-playa|aviso-de-privacidad|terminos-y-condiciones|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        }
+      ],
+      "dest": "/projects/JessicaMendoza/$1$2"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        }
+      ],
+      "dest": "/projects/JessicaMendoza/"
     },
     {
       "src": "/amdi",
@@ -274,11 +304,11 @@
     },
     {
       "src": "/jessica-mendoza/",
-      "dest": "/projects/Jessica Mendoza/"
+      "dest": "/projects/JessicaMendoza/"
     },
     {
       "src": "/jessica-mendoza/(.*)",
-      "dest": "/projects/Jessica Mendoza/$1"
+      "dest": "/projects/JessicaMendoza/$1"
     },
     {
       "handle": "filesystem"

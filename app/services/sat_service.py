@@ -17,7 +17,8 @@ from cfdiclient import Fiel, Autenticacion, DescargaMasiva, VerificaSolicitudDes
 from cfdiclient import solicitadescargaEmitidos, solicitadescargaRecibidos
 from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
 
-SECRETS_DIR = Path("/Users/fanssimarketingdigital/Documents/Chizko/HiphaMX-fastapi/.secrets")
+# Definir directorio de secretos relativo a la raíz del proyecto
+SECRETS_DIR = Path(__file__).resolve().parent.parent.parent / ".secrets"
 
 
 def get_fiel_for_rfc(rfc: str) -> Fiel:

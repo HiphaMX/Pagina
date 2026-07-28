@@ -1194,6 +1194,92 @@
     <script src="js/db.js"></script>
 
     <script>
+        // Protección por contraseña temporal
+        (function() {
+            const AUTH_KEY = 'jm_auth_token';
+            const PASSWORD_CORRECT = 'jessica2026';
+
+            if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+                return;
+            }
+
+            // Ocultar el contenido de main
+            const mainEl = document.querySelector('main');
+            if (mainEl) {
+                mainEl.style.display = 'none';
+            }
+
+            // Crear el modal de contraseña premium de pantalla completa
+            const lockScreen = document.createElement('div');
+            lockScreen.id = 'lock-screen-overlay';
+            lockScreen.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: linear-gradient(rgba(12, 10, 9, 0.9), rgba(12, 10, 9, 0.95)), url('Assets/nostalgic_door_philosophy_bg_1784781747887.jpg') no-repeat center center;
+                background-size: cover;
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Roboto, sans-serif;
+            `;
+
+            lockScreen.innerHTML = `
+                <div style="background: rgba(28, 25, 23, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 50px 40px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6);">
+                    <div style="width: 50px; height: 50px; background: rgba(214, 211, 209, 0.08); border: 1px solid rgba(214, 211, 209, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d6d3d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: #a8a29e; display: block; margin-bottom: 8px; font-weight: 500;">Acceso Restringido</span>
+                    <h2 style="font-family: 'Times New Roman', Times, serif; font-size: 1.85rem; font-weight: 300; font-style: italic; color: #ffffff; margin: 0 0 15px 0;">Jessica Mendoza <span style="display:block; font-size:0.6em; text-transform:uppercase; letter-spacing:2px; font-style:normal; margin-top:5px; color:#a8a29e;">Bienes Raíces</span></h2>
+                    <p style="font-size: 13px; color: #d6d3d1; margin-bottom: 25px; line-height: 1.6;">Este sitio web se encuentra en fase de actualización. Introduce la clave de acceso para continuar.</p>
+                    
+                    <form id="lock-auth-form" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+                        <input type="password" id="lock-pass-input" required placeholder="Contraseña de acceso" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 0.75rem 1.5rem; border-radius: 8px; width: 100%; text-align: center; margin-bottom: 1rem; font-size: 0.95rem; box-sizing: border-box; outline: none; transition: border-color 0.2s;">
+                        <div id="lock-error-msg" style="color: #ef4444; font-size: 13px; margin-bottom: 1.5rem; display: none;">Contraseña incorrecta. Por favor, intenta de nuevo.</div>
+                        <button type="submit" style="background: #ffffff; color: #1c1917; border: none; padding: 0.85rem 2rem; border-radius: 8px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.15em; cursor: pointer; width: 100%; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center;">Ingresar</button>
+                        <a href="index.html" style="color: #a8a29e; text-decoration: none; font-size: 13px; margin-top: 1.5rem; display: inline-block;">Volver al Inicio</a>
+                    </form>
+                </div>
+            `;
+
+            document.body.appendChild(lockScreen);
+
+            // Enfocar input
+            setTimeout(() => {
+                const input = document.getElementById('lock-pass-input');
+                if (input) input.focus();
+            }, 100);
+
+            // Handler de validación
+            const form = document.getElementById('lock-auth-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pass = document.getElementById('lock-pass-input').value;
+                const errorMsg = document.getElementById('lock-error-msg');
+
+                if (pass === PASSWORD_CORRECT) {
+                    sessionStorage.setItem(AUTH_KEY, 'true');
+                    document.body.removeChild(lockScreen);
+                    if (mainEl) {
+                        mainEl.style.display = 'block';
+                        if (window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    }
+                } else {
+                    errorMsg.style.display = 'block';
+                    const input = document.getElementById('lock-pass-input');
+                    input.value = '';
+                    input.focus();
+                }
+            });
+        })();
+
         // Cargar los iconos de Lucide
         lucide.createIcons();
 

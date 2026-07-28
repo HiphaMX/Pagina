@@ -8,3 +8,17 @@
 - **Envío de Correos y SMTP en Proyectos**:
   - Al implementar el envío de correos electrónicos para nuevos clientes o proyectos, se debe evitar configurar a mano el remitente (`From`) con un dominio que no corresponda al servidor SMTP autenticado (esto causa fallas en políticas de SPF/DMARC y rebotes permanentes 554 5.7.1).
   - En su lugar, se debe utilizar la función centralizada `_prepare_project_email` en `app/core/mailer.py`, la cual maneja automáticamente el fallback seguro al SMTP general de la agencia (configurando el `From` con el usuario autenticado y el `Reply-To` con el correo específico del proyecto) cuando no hay SMTP propio configurado en Vercel.
+
+- **Clasificación y Homologación de Proyectos (Prospectos) y Clientes (En Firme)**:
+  - **Proyectos (Prospectos / Demos)**:
+    - Son sitios en desarrollo, demos o propuestas para prospectos que aún no son clientes en firme.
+    - Se publican bajo el dominio de la agencia como subcarpetas (`hipha.mx/IEER`, `hipha.mx/Letrerama`, etc.).
+    - Las URLs limpias y reescrituras se manejan en `vercel.json` enlazando a `projects/[Nombre]/web/`.
+    - **Regla de Correos**: No requieren ni deben tener variables SMTP dedicadas. Utilizan automáticamente el fallback del servidor SMTP general de la agencia (`HIPHA`).
+    - *Prospectos Activos*: Centro Escolar El Paraiso (`el-paraiso`), IEER (`ieer`), Pumpapa (`pumpapa`), ni2 (`ni2`), Letrerama (`letrerama`), Grupo Gari (`grupo-gari`).
+  - **Clientes (Proyectos en Firme)**:
+    - Son proyectos aprobados que ya trabajan activamente con la agencia.
+    - Se despliegan en su propio dominio o subdominio en Vercel mediante reglas específicas de `host` en `vercel.json` (ej. `urologia-avanzada.com.mx`).
+    - **Regla de Correos**: Es obligatorio definir sus credenciales SMTP dedicadas en el esquema de Pydantic (`app/core/config.py`) y en el panel de Vercel. Si están pendientes de entrega de credenciales, heredan temporalmente el fallback al SMTP de la agencia (`HIPHA`).
+    - *Clientes Activos*: uro-oncology, urologia-avanzada, el chile chillón, white clean, Valencia servicios, Botica silvestre, HealthyIce, Jessica Mendoza.
+
