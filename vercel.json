@@ -299,16 +299,18 @@
     },
     {
       "src": "/jessica-mendoza",
-      "status": 308,
-      "headers": { "Location": "/jessica-mendoza/" }
+      "status": 301,
+      "headers": { "Location": "https://www.jessicamendozabienesraices.com" }
     },
     {
       "src": "/jessica-mendoza/",
-      "dest": "/projects/JessicaMendoza/"
+      "status": 301,
+      "headers": { "Location": "https://www.jessicamendozabienesraices.com/" }
     },
     {
       "src": "/jessica-mendoza/(.*)",
-      "dest": "/projects/JessicaMendoza/$1"
+      "status": 301,
+      "headers": { "Location": "https://www.jessicamendozabienesraices.com/$1" }
     },
     {
       "handle": "filesystem"
