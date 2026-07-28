@@ -1066,11 +1066,11 @@
             <i data-lucide="x" style="width: 28px; height: 28px;"></i>
         </button>
         <ul class="mobile-menu-links">
-            <li><a href="index.html#experiencia">Servicios</a></li>
-            <li><a href="catalogo.html">Catálogo</a></li>
-            <li><a href="index.html#vende">Vende</a></li>
-            <li><a href="index.html#firma">Experiencia</a></li>
-            <li><a href="index.html#contacto">Contacto</a></li>
+            <li><a href="index.html#experiencia" onclick="toggleMenu()">Servicios</a></li>
+            <li><a href="catalogo.html" onclick="toggleMenu()">Catálogo</a></li>
+            <li><a href="index.html#vende" onclick="toggleMenu()">Vende</a></li>
+            <li><a href="index.html#firma" onclick="toggleMenu()">Experiencia</a></li>
+            <li><a href="index.html#contacto" onclick="toggleMenu()">Contacto</a></li>
         </ul>
     </nav>
 
@@ -1288,7 +1288,7 @@
         const menuClose = document.getElementById('menu-close');
         const mobileMenu = document.getElementById('mobile-menu');
 
-        const toggleMenu = () => {
+        window.toggleMenu = () => {
             mobileMenu.classList.toggle('active');
             if (mobileMenu.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
