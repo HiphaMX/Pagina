@@ -3,7 +3,7 @@
   "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|JessicaMendoza)/'",
   "functions": {
     "api/**/*.py": {
-      "excludeFiles": "projects/HealthyIce/** | projects/BoticaSilvestre/** | projects/ValenciaServicios/** | projects/ChileChillon/** | projects/WhiteClean/** | projects/AMDI/** | projects/urologia-avanzada/** | projects/GrupoGari/** | projects/Centro?Escolar?El?Paraiso/** | projects/uro-oncology/** | projects/IEER/** | projects/Pumpapa/** | projects/Letrerama/** | projects/ni2/** | scratch/** | tests/** | venv/**"
+      "excludeFiles": "projects/{AMDI,ChileChillon,HealthyIce,Botica*,Valen*,White*,Grupo*,Centro*,uro-*,IEER,Pumpapa,Letrerama,ni2}/** | scratch/** | tests/** | venv/**"
     }
   },
   "headers": [
