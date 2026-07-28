@@ -97,7 +97,7 @@ def read_root():
 if os.path.exists("projects"):
     app.mount("/projects", StaticFiles(directory="projects"), name="projects")
 
-# trigger: force vercel rebuild for HealthyIce from_email update - v14
+# trigger: force vercel rebuild for AMDI reCAPTCHA - v15
 
 
 

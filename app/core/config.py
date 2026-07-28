@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     AMDI_SMTP_PASSWORD: str = ""
     AMDI_EMAILS_FROM_EMAIL: str = ""
     AMDI_EMAILS_FROM_NAME: str = ""
+    AMDI_RECAPTCHA_SECRET_KEY: str = ""
 
     # CHILECHILLON Specific SMTP settings
     CHILECHILLON_SMTP_HOST: str = ""
