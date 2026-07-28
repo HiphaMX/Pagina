@@ -89,16 +89,56 @@ app.include_router(visual_generator.router, prefix="/api/generator", tags=["gene
 
 
 
+HOST_PROJECT_MAP = {
+    "jessicamendozabienesraices": "JessicaMendoza",
+    "urologia-avanzada": "urologia-avanzada",
+    "amdi": "AMDI",
+    "valenciaservicios": "ValenciaServicios",
+    "elchilechillon": "ChileChillon",
+    "whiteclean": "WhiteClean",
+    "healthyice": "HealthyIce",
+    "botica-silvestre": "BoticaSilvestre",
+    "uro-oncology": "uro-oncology"
+}
+
 @app.get("/")
 def read_root(request: Request):
-    host = request.headers.get("host", "")
-    if "jessicamendozabienesraices" in host:
-        return FileResponse("projects/JessicaMendoza/index.html")
-    elif "urologia-avanzada" in host:
-        return FileResponse("projects/urologia-avanzada/index.html")
-    elif "amdi" in host:
-        return FileResponse("projects/AMDI/index.html")
+    host = request.headers.get("host", "").lower()
+    for keyword, folder in HOST_PROJECT_MAP.items():
+        if keyword in host:
+            index_path = os.path.join("projects", folder, "index.html")
+            if os.path.exists(index_path):
+                return FileResponse(index_path)
     return {"message": "Welcome to HiphaMX API"}
+
+@app.get("/{path_name:path}")
+def serve_client_static(request: Request, path_name: str):
+    host = request.headers.get("host", "").lower()
+    
+    # Determinar qué proyecto corresponde al host
+    project_dir = None
+    for keyword, folder in HOST_PROJECT_MAP.items():
+        if keyword in host:
+            project_dir = folder
+            break
+            
+    if not project_dir:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Not Found")
+        
+    file_path = os.path.join("projects", project_dir, path_name)
+    
+    # Verificar si el archivo físico existe
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+        
+    # Si no existe, verificar si agregando .html existe (para URLs limpias)
+    html_file_path = f"{file_path}.html"
+    if os.path.exists(html_file_path) and os.path.isfile(html_file_path):
+        return FileResponse(html_file_path)
+        
+    from fastapi import HTTPException
+    raise HTTPException(status_code=404, detail="Not Found")
 
 
 # Servir la carpeta de proyectos locales si existe
