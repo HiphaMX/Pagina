@@ -3,7 +3,7 @@
   "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|JessicaMendoza)/'",
   "functions": {
     "api/index.py": {
-      "excludeFiles": "projects/**"
+      "includeFiles": "app/**, api/**"
     }
   },
   "headers": [
