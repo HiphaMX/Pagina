@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
@@ -89,7 +90,14 @@ app.include_router(visual_generator.router, prefix="/api/generator", tags=["gene
 
 
 @app.get("/")
-def read_root():
+def read_root(request: Request):
+    host = request.headers.get("host", "")
+    if "jessicamendozabienesraices" in host:
+        return FileResponse("projects/JessicaMendoza/index.html")
+    elif "urologia-avanzada" in host:
+        return FileResponse("projects/urologia-avanzada/index.html")
+    elif "amdi" in host:
+        return FileResponse("projects/AMDI/index.html")
     return {"message": "Welcome to HiphaMX API"}
 
 
