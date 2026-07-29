@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configuración de reCAPTCHA v3 para AMDI (amdi.mx)
     // Clave de sitio pública. Si se requiere cambiar, reemplazar aquí.
-    var AMDI_RECAPTCHA_SITE_KEY = '6LdfE78qAAAAAD8Tug7f29J_sZf1R28rL4S6L0_8'; 
+    var AMDI_RECAPTCHA_SITE_KEY = '6Lc5qGstAAAAAAllYdTTAR9POtc_uiG8p46YYQYo'; 
 
     // Cargar dinámicamente el script de Google reCAPTCHA v3
     if (AMDI_RECAPTCHA_SITE_KEY) {
@@ -18,25 +18,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function injectHoneypots() {
         var forms = document.querySelectorAll('#wf-form-Newsletter-AMDI, #Contacto-Page');
         forms.forEach(function(f) {
-            if (!f.querySelector('[name="confirm_email_address"]')) {
+            if (!f.querySelector('[name="website"]')) {
                 var honeypotDiv = document.createElement('div');
+                // Ocultar usando coordenadas fuera de pantalla para despistar a bots que analizan opacity:0 o display:none
                 honeypotDiv.style.position = 'absolute';
-                honeypotDiv.style.opacity = '0';
-                honeypotDiv.style.pointerEvents = 'none';
-                honeypotDiv.style.zIndex = '-100';
-                honeypotDiv.style.height = '0';
-                honeypotDiv.style.width = '0';
+                honeypotDiv.style.left = '-9999px';
+                honeypotDiv.style.top = '-9999px';
+                honeypotDiv.style.width = '1px';
+                honeypotDiv.style.height = '1px';
                 honeypotDiv.style.overflow = 'hidden';
                 honeypotDiv.setAttribute('aria-hidden', 'true');
                 
                 var label = document.createElement('label');
-                label.setAttribute('for', 'confirm_email_address');
-                label.textContent = 'Confirmar Correo Electrónico';
+                label.setAttribute('for', 'website');
+                label.textContent = 'Sitio Web Personal';
                 
                 var input = document.createElement('input');
                 input.type = 'text';
-                input.id = 'confirm_email_address';
-                input.name = 'confirm_email_address';
+                input.id = 'website';
+                input.name = 'website';
                 input.tabIndex = -1;
                 input.autocomplete = 'off';
                 
@@ -75,7 +75,12 @@ document.addEventListener('DOMContentLoaded', function() {
             var telVal = form.querySelector('#Tel-fono') ? form.querySelector('#Tel-fono').value : '';
             var msgVal = form.querySelector('#Mensaje') ? form.querySelector('#Mensaje').value : '';
             // Campo de honeypot camuflado (inyectado o estático)
-            var honeypotVal = form.querySelector('[name="confirm_email_address"]') ? form.querySelector('[name="confirm_email_address"]').value : '';
+            var honeypotVal = "";
+            var hp1 = form.querySelector('[name="website"]') ? form.querySelector('[name="website"]').value : '';
+            var hp2 = form.querySelector('[name="confirm_email_address"]') ? form.querySelector('[name="confirm_email_address"]').value : '';
+            if (hp1 || hp2) {
+                honeypotVal = hp1 || hp2;
+            }
             
             // Ejecutar reCAPTCHA antes de enviar
             if (typeof grecaptcha !== 'undefined' && AMDI_RECAPTCHA_SITE_KEY) {
@@ -161,7 +166,12 @@ document.addEventListener('DOMContentLoaded', function() {
             var nombreVal = form.querySelector('#Nombre') ? form.querySelector('#Nombre').value : '';
             var emailVal = form.querySelector('#Email-newsletter') ? form.querySelector('#Email-newsletter').value : '';
             // Campo de honeypot camuflado (inyectado o estático)
-            var honeypotVal = form.querySelector('[name="confirm_email_address"]') ? form.querySelector('[name="confirm_email_address"]').value : '';
+            var honeypotVal = "";
+            var hp1 = form.querySelector('[name="website"]') ? form.querySelector('[name="website"]').value : '';
+            var hp2 = form.querySelector('[name="confirm_email_address"]') ? form.querySelector('[name="confirm_email_address"]').value : '';
+            if (hp1 || hp2) {
+                honeypotVal = hp1 || hp2;
+            }
             
             // Ejecutar reCAPTCHA antes de enviar
             if (typeof grecaptcha !== 'undefined' && AMDI_RECAPTCHA_SITE_KEY) {

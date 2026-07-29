@@ -32,6 +32,7 @@ class AMDINewsletterForm(BaseModel):
 async def verify_recaptcha(token: str) -> bool:
     if not settings.AMDI_RECAPTCHA_SECRET_KEY:
         # Fallback si no está configurada la credencial en Vercel
+        logger.warning("[SECURITY WARNING] AMDI_RECAPTCHA_SECRET_KEY is not configured in Vercel settings. reCAPTCHA verification bypassed (defaulted to True)!")
         return True
     try:
         async with httpx.AsyncClient() as client:
@@ -63,12 +64,15 @@ async def submit_amdi_contacto_form(form_data: AMDIContactoForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for AMDI contact form (email: {form_data.email}).")
         return {"message": "Formulario de contacto recibido correctamente"}
 
-    # Validar reCAPTCHA v3
-    if form_data.recaptcha_token:
-        is_human = await verify_recaptcha(form_data.recaptcha_token)
-        if not is_human:
-            logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for AMDI contact form (email: {form_data.email}).")
-            return {"message": "Formulario de contacto recibido correctamente"}
+    # Validar reCAPTCHA v3 de forma estricta (no opcional)
+    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for AMDI contact form (email: {form_data.email}).")
+        return {"message": "Formulario de contacto recibido correctamente"}
+
+    is_human = await verify_recaptcha(form_data.recaptcha_token)
+    if not is_human:
+        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for AMDI contact form (email: {form_data.email}).")
+        return {"message": "Formulario de contacto recibido correctamente"}
 
     # Enviar correo de confirmación al prospecto
     customer_email_sent = await send_amdi_contact_confirmation_email(form_data)
@@ -87,12 +91,15 @@ async def submit_amdi_newsletter_form(form_data: AMDINewsletterForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for AMDI newsletter form (email: {form_data.email}).")
         return {"message": "Suscripción a newsletter recibida correctamente"}
 
-    # Validar reCAPTCHA v3
-    if form_data.recaptcha_token:
-        is_human = await verify_recaptcha(form_data.recaptcha_token)
-        if not is_human:
-            logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for AMDI newsletter form (email: {form_data.email}).")
-            return {"message": "Suscripción a newsletter recibida correctamente"}
+    # Validar reCAPTCHA v3 de forma estricta (no opcional)
+    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for AMDI newsletter form (email: {form_data.email}).")
+        return {"message": "Suscripción a newsletter recibida correctamente"}
+
+    is_human = await verify_recaptcha(form_data.recaptcha_token)
+    if not is_human:
+        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for AMDI newsletter form (email: {form_data.email}).")
+        return {"message": "Suscripción a newsletter recibida correctamente"}
 
     # Enviar correo de bienvenida al boletín
     welcome_email_sent = await send_amdi_newsletter_welcome(form_data.email)
