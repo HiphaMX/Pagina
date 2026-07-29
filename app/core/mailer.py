@@ -1630,6 +1630,7 @@ async def send_grupogari_confirmation_email(form_data):
             
             <!-- Header Técnico Estilo Blueprint -->
             <div style="background-color: #0A0D14; padding: 30px 20px; text-align: center; border-bottom: 4px solid #FF9F1C;">
+                <img src="https://www.grupo-gari.com/Assets/fondo%20gris.svg" alt="Grupo Gari Logo" style="height: 50px; width: auto; display: block; margin: 0 auto 15px auto;">
                 <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 2px;">GRUPO <span style="color: #FF9F1C;">GARI</span></h1>
                 <p style="color: #64748B; margin: 5px 0 0 0; font-size: 11px; font-family: monospace; letter-spacing: 1px; text-transform: uppercase;">[REGULACIÓN · HIGIENE · SEGURIDAD]</p>
             </div>
@@ -1725,6 +1726,7 @@ async def send_grupogari_notification_team(form_data):
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
             
             <div style="background-color: #0A0D14; padding: 20px; text-align: center; color: white; border-bottom: 4px solid #FF9F1C;">
+                <img src="https://www.grupo-gari.com/Assets/fondo%20gris.svg" alt="Grupo Gari Logo" style="height: 40px; width: auto; display: block; margin: 0 auto 10px auto;">
                 <h2 style="margin: 0; font-size: 18px; color: #ffffff;">🚨 NUEVA SOLICITUD DE DIAGNÓSTICO</h2>
                 <p style="margin: 5px 0 0 0; font-size: 11px; color: #FF9F1C; font-weight: bold; font-family: monospace;">[Ecosistema Grupo Gari]</p>
             </div>
