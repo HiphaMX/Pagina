@@ -1,7 +1,88 @@
-/**
- * GRUPO GARI - CORE TECHNICAL ENGINE (JS)
- * Control de Flujos B2B, Diagnóstico Multietapa y Simulación Analítica de Conversión
- */
+(function() {
+    const AUTH_KEY = 'gari_auth_token';
+    const PASSWORD_CORRECT = 'Agnes2026';
+
+    // Si ya está autenticado, remover clase bloqueada y continuar
+    if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.remove('auth-locked');
+        });
+        return;
+    }
+    
+    // Cargar la pantalla de bloqueo
+    document.addEventListener('DOMContentLoaded', () => {
+        // Doble validación
+        if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+            document.body.classList.remove('auth-locked');
+            return;
+        }
+
+        const lockScreen = document.createElement('div');
+        lockScreen.id = 'lock-screen-overlay';
+        lockScreen.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0A0D14;
+            z-index: 99999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        `;
+
+        lockScreen.innerHTML = `
+            <div style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 50px 40px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6);">
+                <div style="width: 50px; height: 50px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em; color: #FF9F1C; display: block; margin-bottom: 8px; font-weight: 700;">Acceso Restringido</span>
+                <h2 style="font-size: 1.85rem; font-weight: 700; color: #ffffff; margin: 0 0 15px 0; letter-spacing: 1px;">GRUPO <span style="color: #FF9F1C;">GARI</span></h2>
+                <p style="font-size: 13px; color: #94A3B8; margin-bottom: 25px; line-height: 1.6;">Este sitio web se encuentra en fase de actualización. Por favor, introduzca la contraseña de acceso.</p>
+                
+                <form id="lock-auth-form" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+                    <input type="password" id="lock-pass-input" required placeholder="Contraseña de acceso" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 0.75rem 1.5rem; border-radius: 8px; width: 100%; text-align: center; margin-bottom: 1rem; font-size: 0.95rem; box-sizing: border-box; outline: none; transition: border-color 0.2s; font-family: inherit;">
+                    <div id="lock-error-msg" style="color: #ef4444; font-size: 13px; margin-bottom: 1.5rem; display: none;">Contraseña incorrecta. Por favor, intente de nuevo.</div>
+                    <button type="submit" style="background: #FF9F1C; color: #0A0D14; border: none; padding: 0.85rem 2rem; border-radius: 8px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.15em; cursor: pointer; width: 100%; transition: opacity 0.2s;">Ingresar</button>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(lockScreen);
+
+        // Enfocar input
+        setTimeout(() => {
+            const input = document.getElementById('lock-pass-input');
+            if (input) input.focus();
+        }, 100);
+
+        // Handler de validación
+        const form = document.getElementById('lock-auth-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('lock-pass-input').value;
+            const errorMsg = document.getElementById('lock-error-msg');
+
+            if (pass === PASSWORD_CORRECT) {
+                sessionStorage.setItem(AUTH_KEY, 'true');
+                document.body.removeChild(lockScreen);
+                document.body.classList.remove('auth-locked');
+            } else {
+                errorMsg.style.display = 'block';
+                const input = document.getElementById('lock-pass-input');
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        });
+    });
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('⚙️ GARI-CORE: Motor Técnico Inicializado. [Status: OK]');

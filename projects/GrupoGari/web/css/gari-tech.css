@@ -1147,3 +1147,12 @@ p {
     }
 }
 
+/* --- Sistema de Bloqueo por Contraseña (Pre-lanzamiento) --- */
+body.auth-locked > *:not(#lock-screen-overlay) {
+    display: none !important;
+}
+body.auth-locked {
+    background-color: #0A0D14 !important;
+    overflow: hidden !important;
+}
+
