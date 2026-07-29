@@ -1617,7 +1617,7 @@ async def send_grupogari_confirmation_email(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío a prospecto Grupo Gari {form_data.email}")
         return True
 
-    from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupogari.com"
+    from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
     from_name = settings.GRUPOGARI_EMAILS_FROM_NAME if settings.GRUPOGARI_EMAILS_FROM_NAME else "Grupo Gari | Cumplimiento Regulatorio"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin detalles adicionales'
@@ -1693,7 +1693,7 @@ async def send_grupogari_confirmation_email(form_data):
         to_email=form_data.email,
         subject=f"Autodiagnóstico Recibido - Registro GARI-{form_data.nombre.upper()} 📄",
         html_content=html_content,
-        domain="grupogari.com"
+        domain="grupo-gari.com"
     )
 
     try:
@@ -1713,8 +1713,8 @@ async def send_grupogari_notification_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío a equipo Grupo Gari")
         return True
 
-    from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupogari.com"
-    to_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "contacto@grupogari.com"
+    from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
+    to_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
     rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
@@ -1789,7 +1789,7 @@ async def send_grupogari_notification_team(form_data):
         to_email=to_email,
         subject=f"🚨 NUEVO DIAGNÓSTICO WEB GARI: {form_data.nombre.upper()} - {form_data.servicio.upper()}",
         html_content=html_content,
-        domain="grupogari.com"
+        domain="grupo-gari.com"
     )
     del message['Reply-To']
     message['Reply-To'] = form_data.email

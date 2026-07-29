@@ -378,7 +378,7 @@ INDICADORES CRITICOS DE VALIDACIÓN EXIGIDA:
 ------------------------------------------------------------------------
 Este autodiagnóstico preliminar sirve para preparar auditorías de la STPS.
 Para consultoría especializada modular agendada con validez de firma oficial,
-contactar a: contacto@grupogari.com o vía telefónica.
+contactar a: contacto@grupo-gari.com o vía telefónica.
 ========================================================================
     `;
 

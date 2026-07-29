@@ -15,10 +15,10 @@
     - Se publican bajo el dominio de la agencia como subcarpetas (`hipha.mx/IEER`, `hipha.mx/Letrerama`, etc.).
     - Las URLs limpias y reescrituras se manejan en `vercel.json` enlazando a `projects/[Nombre]/web/`.
     - **Regla de Correos**: No requieren ni deben tener variables SMTP dedicadas. Utilizan automáticamente el fallback del servidor SMTP general de la agencia (`HIPHA`).
-    - *Prospectos Activos*: Centro Escolar El Paraiso (`el-paraiso`), IEER (`ieer`), Pumpapa (`pumpapa`), ni2 (`ni2`), Letrerama (`letrerama`), Grupo Gari (`grupo-gari`).
+    - *Prospectos Activos*: Centro Escolar El Paraiso (`el-paraiso`), IEER (`ieer`), Pumpapa (`pumpapa`), ni2 (`ni2`), Letrerama (`letrerama`).
   - **Clientes (Proyectos en Firme)**:
     - Son proyectos aprobados que ya trabajan activamente con la agencia.
     - Se despliegan en su propio dominio o subdominio en Vercel mediante reglas específicas de `host` en `vercel.json` (ej. `urologia-avanzada.com.mx`).
     - **Regla de Correos**: Es obligatorio definir sus credenciales SMTP dedicadas en el esquema de Pydantic (`app/core/config.py`) y en el panel de Vercel. Si están pendientes de entrega de credenciales, heredan temporalmente el fallback al SMTP de la agencia (`HIPHA`).
-    - *Clientes Activos*: uro-oncology, urologia-avanzada, el chile chillón, white clean, Valencia servicios, Botica silvestre, HealthyIce, Jessica Mendoza.
+    - *Clientes Activos*: uro-oncology, urologia-avanzada, el chile chillón, white clean, Valencia servicios, Botica silvestre, HealthyIce, Jessica Mendoza, Grupo Gari.
 

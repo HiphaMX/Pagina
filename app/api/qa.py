@@ -16,7 +16,7 @@ async def validate_smtp_alignment():
         {"prefix": "AMDI", "domain": "amdi.mx", "name": "Adriana Medina Diseño Interior"},
         {"prefix": "CHILECHILLON", "domain": "chilechillon.com", "name": "El Chile Chillón"},
         {"prefix": "WHITECLEAN", "domain": "whiteclean.mx", "name": "White Clean"},
-        {"prefix": "GRUPOGARI", "domain": "grupogari.com", "name": "Grupo Gari"},
+        {"prefix": "GRUPOGARI", "domain": "grupo-gari.com", "name": "Grupo Gari"},
         {"prefix": "VALENCIA", "domain": "valenciaservicios.com", "name": "Valencia Servicios"},
         {"prefix": "BOTICA", "domain": "boticasilvestre.com", "name": "Botica Silvestre"},
         {"prefix": "HEALTHYICE", "domain": "healthyice.mx", "name": "HealthyIce"},
@@ -154,6 +154,23 @@ async def send_test_email(project: str, email: str):
         from app.core.mailer import send_chilechillon_confirmation_email, send_chilechillon_notification_team
         r1 = await send_chilechillon_confirmation_email(form)
         r2 = await send_chilechillon_notification_team(form)
+        return {"project": project, "customer_sent": r1, "team_sent": r2}
+    elif project == "GRUPOGARI":
+        from app.api.projects.grupogari import GrupoGariForm
+        form = GrupoGariForm(
+            nombre="Prueba Grupo Gari",
+            apellido="QA",
+            email=email,
+            telefono="3336762545",
+            rol="hr",
+            empleados="50",
+            industria="Alimentaria",
+            servicio="Protección Civil",
+            mensaje="Esta es una prueba de contacto de Grupo Gari para QA."
+        )
+        from app.core.mailer import send_grupogari_confirmation_email, send_grupogari_notification_team
+        r1 = await send_grupogari_confirmation_email(form)
+        r2 = await send_grupogari_notification_team(form)
         return {"project": project, "customer_sent": r1, "team_sent": r2}
     else:
         return {"error": f"Project {project} is not supported for QA tests"}

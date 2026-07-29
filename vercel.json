@@ -154,6 +154,36 @@
       "dest": "/projects/JessicaMendoza/index.html"
     },
     {
+      "src": "/(Assets|css|js)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?grupo-gari\\.com$"
+        }
+      ],
+      "dest": "/projects/GrupoGari/web/$1/$2"
+    },
+    {
+      "src": "/(certificacion-best-place-to-work|certificacion-iso|cotizacion-diagnostico|permisos-gubernamentales|proteccion-civil|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?grupo-gari\\.com$"
+        }
+      ],
+      "dest": "/projects/GrupoGari/web/$1$2"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?grupo-gari\\.com$"
+        }
+      ],
+      "dest": "/projects/GrupoGari/web/index.html"
+    },
+    {
       "src": "/amdi",
       "status": 308,
       "headers": { "Location": "/amdi/" }
@@ -273,16 +303,18 @@
     },
     {
       "src": "/grupo-gari",
-      "status": 308,
-      "headers": { "Location": "/grupo-gari/" }
+      "status": 301,
+      "headers": { "Location": "https://www.grupo-gari.com" }
     },
     {
       "src": "/grupo-gari/",
-      "dest": "/projects/GrupoGari/web/"
+      "status": 301,
+      "headers": { "Location": "https://www.grupo-gari.com/" }
     },
     {
       "src": "/grupo-gari/(.*)",
-      "dest": "/projects/GrupoGari/web/$1"
+      "status": 301,
+      "headers": { "Location": "https://www.grupo-gari.com/$1" }
     },
     {
       "src": "/el-paraiso",
