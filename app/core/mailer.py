@@ -1714,7 +1714,7 @@ async def send_grupogari_notification_team(form_data):
         return True
 
     from_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
-    to_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
+    to_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
     rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
