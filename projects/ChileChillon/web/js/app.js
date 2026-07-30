@@ -86,8 +86,8 @@ function initPreloader() {
   const preloader = document.getElementById("preloader");
   if (!preloader) return;
 
-  // Solo mostrar la animación en la primera visita
-  const preloaderSeen = localStorage.getItem("preloader_seen");
+  // Solo mostrar la animación en la primera visita de la sesión
+  const preloaderSeen = sessionStorage.getItem("preloader_seen");
   if (preloaderSeen) {
     preloader.style.display = "none";
     preloader.remove();
@@ -128,7 +128,7 @@ function initPreloader() {
 
       setTimeout(() => {
         preloader.classList.add("fade-out");
-        localStorage.setItem("preloader_seen", "true");
+        sessionStorage.setItem("preloader_seen", "true");
         setTimeout(() => preloader.remove(), 700);
       }, 450);
     } else {
@@ -662,6 +662,13 @@ function initCart() {
       price: 35,
       spicy: "🌶️🌶️",
       image: "Assets/Salsas/serrano.jpg",
+      filterClass: ""
+    },
+    semillas_enchiladas: {
+      name: "Semillas Enchiladas",
+      price: 60,
+      spicy: "🌶️🌶️🌶️",
+      image: "Assets/Salsas/semillas_enchiladas.jpg",
       filterClass: ""
     }
   };
