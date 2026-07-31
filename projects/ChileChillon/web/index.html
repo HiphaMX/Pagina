@@ -700,22 +700,22 @@
 
         </div>
 
-        <!-- COLUMNA DERECHA: RESULTADOS (GLASS PANEL NEGRO) -->
-        <div class="lg:col-span-5 bg-zinc-950 text-white rounded-[32px] p-6 sm:p-10 border border-zinc-800 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+        <!-- COLUMNA DERECHA: RESULTADOS (GLASS PANEL ROJO ADHOC) -->
+        <div class="lg:col-span-5 bg-[#D30611] text-white rounded-[32px] p-6 sm:p-10 border border-[#D30611]/10 shadow-2xl flex flex-col justify-between relative overflow-hidden">
           
           <!-- Glow Blob decorativo -->
-          <div class="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-[#D30611] opacity-20 blur-2xl pointer-events-none"></div>
+          <div class="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-white opacity-20 blur-2xl pointer-events-none"></div>
           
           <div class="space-y-8 relative z-10">
             <div>
               <h3 class="font-rubik font-black text-xs text-[#FFEED3] tracking-widest uppercase mb-1">Tu Retorno Estimado</h3>
-              <p class="text-xs text-zinc-400">Datos basados en el precio de venta sugerido al público.</p>
+              <p class="text-xs text-red-100/80">Datos basados en el precio de venta sugerido al público.</p>
             </div>
 
             <!-- Gran número de Ganancia Neta -->
-            <div class="border-y border-zinc-800 py-6">
-              <span class="text-xs font-bold text-zinc-400 block uppercase tracking-wider">Ganancia Neta Estimada</span>
-              <div id="calc-res-ganancia" class="text-4xl sm:text-5xl font-black text-emerald-400 font-rubik tracking-tight mt-1">
+            <div class="border-y border-white/20 py-6">
+              <span class="text-xs font-bold text-red-100 uppercase tracking-wider">Ganancia Neta Estimada</span>
+              <div id="calc-res-ganancia" class="text-4xl sm:text-5xl font-black text-[#FFEED3] font-rubik tracking-tight mt-1">
                 $0.00
               </div>
             </div>
@@ -723,21 +723,21 @@
             <!-- Detalles Financieros -->
             <div class="space-y-4">
               <div class="flex justify-between items-center text-sm font-medium">
-                <span class="text-zinc-400">Inversión Total:</span>
+                <span class="text-red-100">Inversión Total:</span>
                 <span id="calc-res-inversion" class="text-white font-bold">$0.00</span>
               </div>
               <div class="flex justify-between items-center text-sm font-medium">
-                <span class="text-zinc-400">Retorno Bruto (Ventas):</span>
+                <span class="text-red-100">Retorno Bruto (Ventas):</span>
                 <span id="calc-res-retorno" class="text-white font-bold">$0.00</span>
               </div>
               <div class="flex justify-between items-center text-sm font-medium">
-                <span class="text-zinc-400">Rendimiento (ROI %):</span>
-                <span id="calc-res-roi" class="text-emerald-400 font-black bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">0%</span>
+                <span class="text-red-100">Rendimiento (ROI %):</span>
+                <span id="calc-res-roi" class="text-white font-black bg-white/20 px-2.5 py-1 rounded-lg border border-white/30">0%</span>
               </div>
             </div>
 
             <!-- Info de soporte -->
-            <div class="bg-zinc-900 rounded-2xl p-4 border border-zinc-800 text-xs text-zinc-400 leading-relaxed flex items-start gap-3">
+            <div class="bg-black/10 rounded-2xl p-4 border border-white/15 text-xs text-red-100 leading-relaxed flex items-start gap-3">
               <i class="ph-bold ph-info text-base text-[#FFEED3] flex-shrink-0 mt-0.5"></i>
               <div>
                 <span class="font-bold text-white block mb-0.5">Envío y logística</span>
@@ -748,7 +748,7 @@
 
           <!-- Botón de WhatsApp -->
           <div class="pt-6 relative z-10">
-            <a id="calc-whatsapp-btn" href="https://wa.me/523921097809" target="_blank" rel="noopener" class="w-full bg-[#D30611] hover:bg-[#b0050e] text-white py-4 px-6 rounded-2xl font-bold font-rubik text-sm uppercase tracking-wider shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-3">
+            <a id="calc-whatsapp-btn" href="https://wa.me/523921097809" target="_blank" rel="noopener" class="w-full bg-[#FFEED3] hover:bg-white text-[#D30611] py-4 px-6 rounded-2xl font-bold font-rubik text-sm uppercase tracking-wider shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-3">
               <i class="ph-bold ph-whatsapp-logo text-xl"></i>
               Quiero ser Distribuidor
             </a>
