@@ -579,6 +579,304 @@
     </div>
   </section>
 
+  <!-- ==================== CALCULADORA DE DISTRIBUCIÓN ==================== -->
+  <section id="distribuidores" class="py-24 relative z-10 px-6 bg-slate-50 border-t border-slate-100">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- Encabezado -->
+      <div class="text-center mb-16">
+        <span class="px-4 py-1.5 bg-[#D30611]/10 text-[#D30611] border border-[#D30611]/25 text-xs font-black tracking-widest uppercase rounded-full font-rubik">
+          ¡HAZ NEGOCIO CON NOSOTROS!
+        </span>
+        <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mt-4 font-rubik">
+          Calculadora de Negocio y ROI
+        </h2>
+        <p class="mt-4 text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+          ¿Quieres distribuir Chile Chillón en tu zona o negocio? Elige la cantidad de cajas de salsas y semillas enchiladas que deseas adquirir y calcula tus ganancias estimadas de inmediato.
+        </p>
+      </div>
+
+      <!-- Grid Principal -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        
+        <!-- COLUMNA IZQUIERDA: CONTROLES -->
+        <div class="lg:col-span-7 bg-white rounded-[32px] p-6 sm:p-10 border border-slate-100 shadow-xl flex flex-col justify-between space-y-8">
+          
+          <!-- Salsas -->
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="font-rubik font-black text-lg text-slate-900 flex items-center gap-2">
+                  <i class="ph-bold ph-fire text-xl text-[#D30611]"></i>
+                  Salsas Chile Chillón
+                </h3>
+                <p class="text-xs text-slate-400 font-medium">Caja de mayoreo con 24 botellas (salsas mixtas o un solo sabor)</p>
+              </div>
+              <span id="calc-salsas-caja-val" class="font-rubik font-black text-lg text-[#D30611] bg-[#D30611]/5 px-3 py-1 rounded-xl">$480.00 <span class="text-[10px] text-slate-500 font-bold">/caja</span></span>
+            </div>
+
+            <!-- Nivel de descuento e indicador -->
+            <div class="flex justify-between text-[11px] font-bold text-slate-500 bg-slate-50 px-3 py-2 rounded-xl">
+              <span id="calc-salsas-nivel" class="text-slate-700">Elige cantidad de cajas...</span>
+              <span class="text-[#D30611]">PVP sugerido: $35.00 / botella</span>
+            </div>
+
+            <!-- Controles de cantidad -->
+            <div class="flex items-center gap-4">
+              <button onclick="changeQty('calc-salsas', -1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-bold flex justify-center items-center active:scale-95 transition-all">-</button>
+              <input type="number" id="calc-salsas" min="0" max="200" value="0" oninput="calcularROI()" class="flex-1 h-12 text-center font-rubik font-black text-xl text-slate-900 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#D30611] bg-slate-50/50">
+              <button onclick="changeQty('calc-salsas', 1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-bold flex justify-center items-center active:scale-95 transition-all">+</button>
+            </div>
+            
+            <!-- Slider -->
+            <input type="range" id="calc-salsas-slider" min="0" max="100" value="0" oninput="syncInputs('calc-salsas', this.value)" class="w-full accent-[#D30611] cursor-pointer mt-2">
+            <div class="flex justify-between text-[9px] font-bold text-slate-400 px-1">
+              <span>0 cajas</span>
+              <span>24+ cajas (Descuento Max)</span>
+              <span>100 cajas</span>
+            </div>
+          </div>
+
+          <!-- Semillas -->
+          <div class="space-y-4 pt-6 border-t border-slate-100">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="font-rubik font-black text-lg text-slate-900 flex items-center gap-2">
+                  <i class="ph-bold ph-nut text-xl text-amber-600"></i>
+                  Semillas Enchiladas
+                </h3>
+                <p class="text-xs text-slate-400 font-medium">Caja de mayoreo con 12 tarros</p>
+              </div>
+              <span id="calc-semillas-caja-val" class="font-rubik font-black text-lg text-[#D30611] bg-[#D30611]/5 px-3 py-1 rounded-xl">$600.00 <span class="text-[10px] text-slate-500 font-bold">/caja</span></span>
+            </div>
+
+            <!-- Nivel de descuento e indicador -->
+            <div class="flex justify-between text-[11px] font-bold text-slate-500 bg-slate-50 px-3 py-2 rounded-xl">
+              <span id="calc-semillas-nivel" class="text-slate-700">Elige cantidad de cajas...</span>
+              <span class="text-[#D30611]">PVP sugerido: $60.00 / tarro</span>
+            </div>
+
+            <!-- Controles de cantidad -->
+            <div class="flex items-center gap-4">
+              <button onclick="changeQty('calc-semillas', -1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-bold flex justify-center items-center active:scale-95 transition-all">-</button>
+              <input type="number" id="calc-semillas" min="0" max="200" value="0" oninput="calcularROI()" class="flex-1 h-12 text-center font-rubik font-black text-xl text-slate-900 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#D30611] bg-slate-50/50">
+              <button onclick="changeQty('calc-semillas', 1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-bold flex justify-center items-center active:scale-95 transition-all">+</button>
+            </div>
+            
+            <!-- Slider -->
+            <input type="range" id="calc-semillas-slider" min="0" max="100" value="0" oninput="syncInputs('calc-semillas', this.value)" class="w-full accent-[#D30611] cursor-pointer mt-2">
+            <div class="flex justify-between text-[9px] font-bold text-slate-400 px-1">
+              <span>0 cajas</span>
+              <span>16+ cajas (Descuento Max)</span>
+              <span>100 cajas</span>
+            </div>
+          </div>
+
+          <!-- Tabla de precios rápida -->
+          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100/50 text-[11px] text-slate-500 font-bold space-y-2">
+            <div class="flex justify-between items-center text-slate-800 uppercase tracking-widest text-[10px] font-black pb-2 border-b border-slate-200/60 mb-2">
+              <span>Tabulador de Precios</span>
+              <span>Descuentos por volumen</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-[#D30611] mb-1">SALSAS (Caja 24 pz):</p>
+                <ul class="space-y-0.5 pl-2 border-l border-[#D30611]/30">
+                  <li>• 1-11 cajas: $480.00/caja ($20 c/u)</li>
+                  <li>• 12-23 cajas: $432.00/caja ($18 c/u)</li>
+                  <li>• 24+ cajas: $408.00/caja ($17 c/u)</li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-amber-600 mb-1">SEMILLAS (Caja 12 pz):</p>
+                <ul class="space-y-0.5 pl-2 border-l border-amber-600/30">
+                  <li>• 1-10 cajas: $600.00/caja ($50 c/u)</li>
+                  <li>• 11-15 cajas: $576.00/caja ($48 c/u)</li>
+                  <li>• 16+ cajas: $540.00/caja ($45 c/u)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: RESULTADOS (GLASS PANEL NEGRO) -->
+        <div class="lg:col-span-5 bg-zinc-950 text-white rounded-[32px] p-6 sm:p-10 border border-zinc-800 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+          
+          <!-- Glow Blob decorativo -->
+          <div class="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-[#D30611] opacity-20 blur-2xl pointer-events-none"></div>
+          
+          <div class="space-y-8 relative z-10">
+            <div>
+              <h3 class="font-rubik font-black text-xs text-[#FFEED3] tracking-widest uppercase mb-1">Tu Retorno Estimado</h3>
+              <p class="text-xs text-zinc-400">Datos basados en el precio de venta sugerido al público.</p>
+            </div>
+
+            <!-- Gran número de Ganancia Neta -->
+            <div class="border-y border-zinc-800 py-6">
+              <span class="text-xs font-bold text-zinc-400 block uppercase tracking-wider">Ganancia Neta Estimada</span>
+              <div id="calc-res-ganancia" class="text-4xl sm:text-5xl font-black text-emerald-400 font-rubik tracking-tight mt-1">
+                $0.00
+              </div>
+            </div>
+
+            <!-- Detalles Financieros -->
+            <div class="space-y-4">
+              <div class="flex justify-between items-center text-sm font-medium">
+                <span class="text-zinc-400">Inversión Total:</span>
+                <span id="calc-res-inversion" class="text-white font-bold">$0.00</span>
+              </div>
+              <div class="flex justify-between items-center text-sm font-medium">
+                <span class="text-zinc-400">Retorno Bruto (Ventas):</span>
+                <span id="calc-res-retorno" class="text-white font-bold">$0.00</span>
+              </div>
+              <div class="flex justify-between items-center text-sm font-medium">
+                <span class="text-zinc-400">Rendimiento (ROI %):</span>
+                <span id="calc-res-roi" class="text-emerald-400 font-black bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">0%</span>
+              </div>
+            </div>
+
+            <!-- Info de soporte -->
+            <div class="bg-zinc-900 rounded-2xl p-4 border border-zinc-800 text-xs text-zinc-400 leading-relaxed flex items-start gap-3">
+              <i class="ph-bold ph-info text-base text-[#FFEED3] flex-shrink-0 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-white block mb-0.5">Envío y logística</span>
+                El costo del envío se cotiza según tu código postal. Ofrecemos precios preferenciales y envíos a todo México.
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de WhatsApp -->
+          <div class="pt-6 relative z-10">
+            <a id="calc-whatsapp-btn" href="https://wa.me/523921097809" target="_blank" rel="noopener" class="w-full bg-[#D30611] hover:bg-[#b0050e] text-white py-4 px-6 rounded-2xl font-bold font-rubik text-sm uppercase tracking-wider shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-3">
+              <i class="ph-bold ph-whatsapp-logo text-xl"></i>
+              Quiero ser Distribuidor
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Script interactivo de la calculadora -->
+  <script>
+    function changeQty(id, delta) {
+      const input = document.getElementById(id);
+      let val = (parseInt(input.value) || 0) + delta;
+      if (val < 0) val = 0;
+      input.value = val;
+      
+      // Sincronizar el slider correspondiente
+      const slider = document.getElementById(id + '-slider');
+      if (slider) slider.value = Math.min(val, 100);
+      
+      calcularROI();
+    }
+
+    function syncInputs(id, val) {
+      document.getElementById(id).value = val;
+      calcularROI();
+    }
+
+    function calcularROI() {
+      const inputSalsas = document.getElementById('calc-salsas');
+      const inputSemillas = document.getElementById('calc-semillas');
+      
+      let cajasSalsas = parseInt(inputSalsas.value) || 0;
+      let cajasSemillas = parseInt(inputSemillas.value) || 0;
+      
+      if (cajasSalsas < 0) { cajasSalsas = 0; inputSalsas.value = 0; }
+      if (cajasSemillas < 0) { cajasSemillas = 0; inputSemillas.value = 0; }
+
+      // 1. Calcular precio de Salsa
+      let precioCajaSalsas = 480;
+      let nivelSalsas = "Precio Regular ($20.00 c/u)";
+      if (cajasSalsas >= 24) {
+        precioCajaSalsas = 408;
+        nivelSalsas = "Mayorista 24+ cajas ($17.00 c/u) 🔥";
+      } else if (cajasSalsas >= 12) {
+        precioCajaSalsas = 432;
+        nivelSalsas = "Emprendedor 12-23 cajas ($18.00 c/u) 🌶️";
+      } else if (cajasSalsas === 0) {
+        nivelSalsas = "Elige cantidad de cajas (24 pz)";
+      } else {
+        nivelSalsas = "Minorista 1-11 cajas ($20.00 c/u)";
+      }
+
+      // 2. Calcular precio de Semillas
+      let precioCajaSemillas = 600;
+      let nivelSemillas = "Precio Regular ($50.00 c/u)";
+      if (cajasSemillas >= 16) {
+        precioCajaSemillas = 540;
+        nivelSemillas = "Mayorista 16+ cajas ($45.00 c/u) 🔥";
+      } else if (cajasSemillas >= 11) {
+        precioCajaSemillas = 576;
+        nivelSemillas = "Emprendedor 11-15 cajas ($48.00 c/u) 🌶️";
+      } else if (cajasSemillas === 0) {
+        nivelSemillas = "Elige cantidad de cajas (12 pz)";
+      } else {
+        nivelSemillas = "Minorista 1-10 cajas ($50.00 c/u)";
+      }
+
+      const inversionSalsas = cajasSalsas * precioCajaSalsas;
+      const inversionSemillas = cajasSemillas * precioCajaSemillas;
+      const inversionTotal = inversionSalsas + inversionSemillas;
+
+      const ventaSalsas = cajasSalsas * 24 * 35; // 35 pesos PVP botellita
+      const ventaSemillas = cajasSemillas * 12 * 60; // 60 pesos PVP tarro
+      const retornoTotal = ventaSalsas + ventaSemillas;
+
+      const gananciaNeta = retornoTotal - inversionTotal;
+      const roi = inversionTotal > 0 ? (gananciaNeta / inversionTotal) * 100 : 0;
+
+      // Actualizar interfaz
+      document.getElementById('calc-salsas-nivel').innerText = nivelSalsas;
+      document.getElementById('calc-salsas-caja-val').innerHTML = `$${precioCajaSalsas.toFixed(2)} <span class="text-[10px] text-slate-500 font-bold">/caja</span>`;
+      
+      document.getElementById('calc-semillas-nivel').innerText = nivelSemillas;
+      document.getElementById('calc-semillas-caja-val').innerHTML = `$${precioCajaSemillas.toFixed(2)} <span class="text-[10px] text-slate-500 font-bold">/caja</span>`;
+
+      // Formateadores
+      const formatter = new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2
+      });
+
+      document.getElementById('calc-res-inversion').innerText = formatter.format(inversionTotal);
+      document.getElementById('calc-res-retorno').innerText = formatter.format(retornoTotal);
+      document.getElementById('calc-res-ganancia').innerText = formatter.format(gananciaNeta);
+      document.getElementById('calc-res-roi').innerText = "+" + roi.toFixed(0) + "%";
+
+      // Mensaje de WhatsApp
+      const whatsappNumber = "523921097809";
+      let detailsText = "";
+      if (cajasSalsas > 0) detailsText += `${cajasSalsas} caja(s) de salsas`;
+      if (cajasSemillas > 0) {
+        if (cajasSalsas > 0) detailsText += " y ";
+        detailsText += `${cajasSemillas} caja(s) de semillas enchiladas`;
+      }
+
+      let message = `¡Hola Chile Chillón! Me interesa ser distribuidor mayorista y estuve usando la calculadora de la web. `;
+      if (cajasSalsas > 0 || cajasSemillas > 0) {
+        message += `Me gustaría cotizar un pedido de: ${detailsText}. La inversión estimada es de ${formatter.format(inversionTotal)} con una ganancia esperada de ${formatter.format(gananciaNeta)}. ¿Me podrían dar información sobre los métodos de pago y el envío a mi código postal?`;
+      } else {
+        message += `Me gustaría recibir información sobre los precios de mayoreo, catálogo de productos y condiciones de envío para iniciar mi negocio de distribución.`;
+      }
+
+      const encodedMessage = encodeURIComponent(message);
+      document.getElementById('calc-whatsapp-btn').href = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    }
+
+    // Inicializar cálculo por defecto
+    document.addEventListener("DOMContentLoaded", () => {
+      calcularROI();
+    });
+  </script>
+
   <!-- ==================== TESTIMONIOS SECTION ==================== -->
   <section id="testimonios" class="py-32 relative z-10 px-6 bg-white">
     <div class="max-w-7xl mx-auto">
