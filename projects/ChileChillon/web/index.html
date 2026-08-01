@@ -618,7 +618,6 @@
             <!-- Nivel de descuento e indicador -->
             <div class="flex justify-between text-[11px] font-bold text-slate-500 bg-slate-50 px-3 py-2 rounded-xl">
               <span id="calc-salsas-nivel" class="text-slate-700">Elige cantidad de cajas...</span>
-              <span class="text-[#D30611]">PVP sugerido: $35.00 / botella</span>
             </div>
 
             <!-- Controles de cantidad -->
@@ -647,7 +646,7 @@
                 </h3>
                 <p class="text-xs text-slate-400 font-medium">Caja de mayoreo con 12 tarros</p>
               </div>
-              <span id="calc-semillas-caja-val" class="font-rubik font-black text-lg text-[#D30611] bg-[#D30611]/5 px-3 py-1 rounded-xl">$600.00 <span class="text-[10px] text-slate-500 font-bold">/caja</span></span>
+              <span id="calc-semillas-caja-val" class="font-rubik font-black text-lg text-[#D30611] bg-[#D30611]/5 px-3 py-1 rounded-xl">$660.00 <span class="text-[10px] text-slate-500 font-bold">/caja</span></span>
             </div>
 
             <!-- Nivel de descuento e indicador -->
@@ -667,7 +666,7 @@
             <input type="range" id="calc-semillas-slider" min="0" max="100" value="0" oninput="syncInputs('calc-semillas', this.value)" class="w-full accent-[#D30611] cursor-pointer mt-2">
             <div class="flex justify-between text-[9px] font-bold text-slate-400 px-1">
               <span>0 cajas</span>
-              <span>16+ cajas (Descuento Max)</span>
+              <span>24+ cajas (Descuento Max)</span>
               <span>100 cajas</span>
             </div>
           </div>
@@ -781,25 +780,25 @@
       }
 
       // 2. Calcular precio de Semillas
-      let precioCajaSemillas = 600;
-      let nivelSemillas = "Precio Regular ($50.00 c/u)";
-      if (cajasSemillas >= 16) {
-        precioCajaSemillas = 540;
-        nivelSemillas = "Mayorista 16+ cajas ($45.00 c/u) 🔥";
-      } else if (cajasSemillas >= 11) {
-        precioCajaSemillas = 576;
-        nivelSemillas = "Emprendedor 11-15 cajas ($48.00 c/u) 🌶️";
+      let precioCajaSemillas = 660;
+      let nivelSemillas = "Precio Regular ($55.00 c/u)";
+      if (cajasSemillas >= 24) {
+        precioCajaSemillas = 600;
+        nivelSemillas = "Mayorista 24+ cajas ($50.00 c/u) 🔥";
+      } else if (cajasSemillas >= 12) {
+        precioCajaSemillas = 636;
+        nivelSemillas = "Emprendedor 12-23 cajas ($53.00 c/u) 🌶️";
       } else if (cajasSemillas === 0) {
         nivelSemillas = "Elige cantidad de cajas (12 pz)";
       } else {
-        nivelSemillas = "Minorista 1-10 cajas ($50.00 c/u)";
+        nivelSemillas = "Minorista 1-11 cajas ($55.00 c/u)";
       }
 
       const inversionSalsas = cajasSalsas * precioCajaSalsas;
       const inversionSemillas = cajasSemillas * precioCajaSemillas;
       const inversionTotal = inversionSalsas + inversionSemillas;
 
-      const ventaSalsas = cajasSalsas * 24 * 35; // 35 pesos PVP botellita
+      const ventaSalsas = cajasSalsas * 24 * 24; // 24 pesos PVP botellita (canvaseo)
       const ventaSemillas = cajasSemillas * 12 * 65; // 65 pesos PVP tarro
       const retornoTotal = ventaSalsas + ventaSemillas;
 
