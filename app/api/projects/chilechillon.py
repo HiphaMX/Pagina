@@ -14,6 +14,7 @@ from app.core.mailer import (
     send_chilechillon_confirmation_email,
     send_chilechillon_notification_team
 )
+from app.core.security import verify_recaptcha
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -30,12 +31,15 @@ class ChileChillonForm(BaseModel):
     perfil: str
     mensaje: Optional[str] = ""
     honeypot: Optional[str] = None
+    recaptcha_token: Optional[str] = None
 
 class QuinielaRegisterForm(BaseModel):
     nombre: str
     email: EmailStr
     telefono: Optional[str] = None
     prediccion_campeon: str
+    honeypot: Optional[str] = None
+    recaptcha_token: Optional[str] = None
 
 class QuinielaVoteForm(BaseModel):
     email: EmailStr
@@ -255,7 +259,18 @@ def get_fallback_reviews():
 @router.post("/chilechillon")
 async def submit_chilechillon_form(form_data: ChileChillonForm):
     if form_data.honeypot:
-        logger.warning(f"[SPAM DETECTED] Honeypot field filled for Chile Chillón (email: {form_data.email}).")
+        logger.warning(f"[SPAM DETECTED] Honeypot field filled for Chile Chillón contact form (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
+    # Validar reCAPTCHA v3 de forma estricta (no opcional)
+    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for Chile Chillón contact form (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
+    secret_key = settings.CHILECHILLON_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
+    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "ChileChillon")
+    if not is_human:
+        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for Chile Chillón contact form (email: {form_data.email}).")
         return {"message": "Formulario recibido correctamente"}
 
     customer_email_sent = await send_chilechillon_confirmation_email(form_data)
@@ -369,6 +384,20 @@ async def get_chile_chillon_reviews():
 
 @router.post("/chilechillon/quiniela/register")
 async def register_chilechillon_quiniela(form_data: QuinielaRegisterForm, db: Session = Depends(get_db)):
+    if form_data.honeypot:
+        logger.warning(f"[SPAM DETECTED] Honeypot field filled for Chile Chillón quiniela registration (email: {form_data.email}).")
+        return {"message": "Participante registrado exitosamente"}
+
+    # Validar reCAPTCHA v3 de forma estricta
+    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for Chile Chillón quiniela registration (email: {form_data.email}).")
+        return {"message": "Participante registrado exitosamente"}
+
+    secret_key = settings.CHILECHILLON_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
+    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "ChileChillon")
+    if not is_human:
+        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for Chile Chillón quiniela registration (email: {form_data.email}).")
+        return {"message": "Participante registrado exitosamente"}
     try:
         db_lead = db.query(ChileChillonLead).filter(ChileChillonLead.email == form_data.email).first()
         

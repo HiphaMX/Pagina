@@ -2994,6 +2994,14 @@
             newsletterForm.reset();
         });
 
+        // Configuración de reCAPTCHA v3 para Jessica Mendoza (jessicamendozabienesraices.com)
+        var JESSICAMENDOZA_RECAPTCHA_SITE_KEY = '';
+        if (JESSICAMENDOZA_RECAPTCHA_SITE_KEY) {
+            var script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=' + JESSICAMENDOZA_RECAPTCHA_SITE_KEY;
+            document.head.appendChild(script);
+        }
+
         // Envío del Formulario de Contacto Patrimonial
         const contactPatrimonialForm = document.getElementById('contact-patrimonial-form');
         const contactSubmitBtn = document.getElementById('contact-submit-btn');
@@ -3013,6 +3021,22 @@
 
                 // Desactivar botón y mostrar estado de carga
                 const originalBtnHTML = contactSubmitBtn.innerHTML;
+
+                // Obtener token reCAPTCHA v3 si está configurada la Site Key
+                let recaptchaToken = '';
+                if (typeof grecaptcha !== 'undefined' && JESSICAMENDOZA_RECAPTCHA_SITE_KEY) {
+                    try {
+                        recaptchaToken = await new Promise((resolve, reject) => {
+                            grecaptcha.ready(() => {
+                                grecaptcha.execute(JESSICAMENDOZA_RECAPTCHA_SITE_KEY, {action: 'submit_contacto'})
+                                    .then(resolve)
+                                    .catch(reject);
+                            });
+                        });
+                    } catch (err) {
+                        console.warn("reCAPTCHA error:", err);
+                    }
+                }
                 contactSubmitBtn.disabled = true;
                 contactSubmitBtn.innerHTML = `Enviando... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:inline-block; width:12px; height:12px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation: spinner-border .75s linear infinite; margin-left: 8px;"></span>`;
 
@@ -3038,7 +3062,8 @@
                             intencion: intencion,
                             propiedad: propiedad,
                             mensaje: mensaje,
-                            honeypot: honeypot
+                            honeypot: honeypot,
+                            recaptcha_token: recaptchaToken
                         })
                     });
 

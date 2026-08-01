@@ -1998,7 +1998,7 @@
         }
 
         // --- Form Submission Handling (with WhatsApp Redirect) ---
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
@@ -2023,6 +2023,22 @@
             if (!nombre || !telefono || !servicio || !direccion || !horarioVal) {
                 showFeedback('Por favor, rellena todos los campos obligatorios.', 'error');
                 return;
+            }
+
+            // Obtener token reCAPTCHA v3 si está configurada la Site Key
+            let recaptchaToken = '';
+            if (typeof grecaptcha !== 'undefined' && VALENCIA_RECAPTCHA_SITE_KEY) {
+                try {
+                    recaptchaToken = await new Promise((resolve, reject) => {
+                        grecaptcha.ready(() => {
+                            grecaptcha.execute(VALENCIA_RECAPTCHA_SITE_KEY, {action: 'submit_contacto'})
+                                .then(resolve)
+                                .catch(reject);
+                        });
+                    });
+                } catch (err) {
+                    console.warn("reCAPTCHA error:", err);
+                }
             }
 
             // 1. Format WhatsApp URL with prefilled text
@@ -2061,7 +2077,8 @@
                     servicio_requerido: servicio,
                     direccion: direccion,
                     horario_preferido: horarioVal,
-                    honeypot: honeypot
+                    honeypot: honeypot,
+                    recaptcha_token: recaptchaToken
                 }),
                 keepalive: true
             }).catch(err => console.error("Error reporting lead in background:", err));

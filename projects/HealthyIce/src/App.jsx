@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Leaf, Droplets, HeartPulse, Activity, ShieldCheck, ShoppingCart, X, Plus, Minus, Trash2, ArrowLeft, FileText, ChevronRight, Mail, TrendingUp, Megaphone, Award, Users, MapPin, Search } from 'lucide-react';
 
+const RECAPTCHA_SITE_KEY = ''; // Configuración de reCAPTCHA v3
 const POINTS_OF_SALE = [
   {
     id: 1,
@@ -324,6 +325,36 @@ const SignatureCanvas = ({ onSave }) => {
 };
 
 function App() {
+  useEffect(() => {
+    if (RECAPTCHA_SITE_KEY) {
+      const script = document.createElement('script');
+      script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+      script.async = true;
+      document.body.appendChild(script);
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, []);
+
+  const executeRecaptcha = (actionName) => {
+    return new Promise((resolve) => {
+      if (typeof window.grecaptcha !== 'undefined' && RECAPTCHA_SITE_KEY) {
+        window.grecaptcha.ready(() => {
+          window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: actionName })
+            .then(resolve)
+            .catch((err) => {
+              console.warn("reCAPTCHA execution error:", err);
+              resolve('');
+            });
+        });
+      } else {
+        resolve('');
+      }
+    });
+  };
+
+
   const [currentView, setCurrentView] = useState(() => {
     const path = window.location.pathname;
     const hash = window.location.hash;
@@ -560,6 +591,10 @@ function App() {
     }
 
     try {
+      // Obtener token reCAPTCHA v3
+      const recaptchaToken = await executeRecaptcha('submit_contract');
+      uppercasedForm['recaptcha_token'] = recaptchaToken;
+
       const response = await fetch('https://hipha-mx-fastapi.vercel.app/api/contact/healthyice/contract', {
         method: 'POST',
         headers: {
@@ -715,6 +750,10 @@ function App() {
       mensaje: fullMessage,
       honeypot: formData.honeypot
     };
+
+    // Obtener token reCAPTCHA v3
+    const recaptchaToken = await executeRecaptcha('submit_contact');
+    payload['recaptcha_token'] = recaptchaToken;
 
     try {
       const response = await fetch('https://hipha-mx-fastapi.vercel.app/api/contact/healthyice', {

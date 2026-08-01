@@ -2,6 +2,8 @@ import logging
 from fastapi import APIRouter, HTTPException, Response
 from pydantic import BaseModel
 from typing import Optional
+from app.core.config import settings
+from app.core.security import verify_recaptcha
 from app.api.projects.hipha import ContactForm
 from app.core.mailer import (
     send_healthyice_order_customer,
@@ -25,6 +27,7 @@ class HealthyIceContractForm(BaseModel):
     firma: Optional[str] = ""
     fecha: Optional[str] = None
     honeypot: Optional[str] = None
+    recaptcha_token: Optional[str] = None
     
     # Nuevos campos del contrato de colaboracion comercial
     nombre_establecimiento: Optional[str] = ""
@@ -47,6 +50,17 @@ async def submit_healthyice_form(form_data: ContactForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for HealthyIce contact form (email: {form_data.email}).")
         return {"message": "Formulario recibido correctamente"}
 
+    # Validar reCAPTCHA v3 de forma estricta (no opcional)
+    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for HealthyIce contact form (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
+    secret_key = settings.HEALTHYICE_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
+    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "HealthyIce")
+    if not is_human:
+        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for HealthyIce contact form (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
     # Enviar correo de confirmación al cliente
     customer_email_sent = await send_healthyice_order_customer(form_data)
     
@@ -63,6 +77,17 @@ async def submit_healthyice_contract(form_data: HealthyIceContractForm):
     if form_data.honeypot:
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for HealthyIce contract form (email: {form_data.email}).")
         # Devolvemos un PDF vacío o error silencioso de tipo exitoso
+        return Response(content=b"", media_type="application/pdf")
+
+    # Validar reCAPTCHA v3 de forma estricta
+    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for HealthyIce contract form (email: {form_data.email}).")
+        return Response(content=b"", media_type="application/pdf")
+
+    secret_key = settings.HEALTHYICE_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
+    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "HealthyIce_Contract")
+    if not is_human:
+        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for HealthyIce contract form (email: {form_data.email}).")
         return Response(content=b"", media_type="application/pdf")
 
     try:

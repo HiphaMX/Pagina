@@ -1,3 +1,12 @@
+// Configuración de reCAPTCHA v3 para White Clean (whiteclean.com.mx)
+var WHITECLEAN_RECAPTCHA_SITE_KEY = ''; 
+
+if (WHITECLEAN_RECAPTCHA_SITE_KEY) {
+    var script = document.createElement('script');
+    script.src = 'https://www.google.com/recaptcha/api.js?render=' + WHITECLEAN_RECAPTCHA_SITE_KEY;
+    document.head.appendChild(script);
+}
+
 // ─── LÓGICA DE INTERACTIVIDAD DE WHITE CLEAN (VIBRANTE & ULTRA-FLUIDA) ───
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -196,28 +205,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const honeypotVal = document.getElementById('confirm_email')?.value || '';
 
-      // Enviar datos al backend para disparar los correos
-      fetch('/api/contact/whiteclean', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          nombre: nombreVal,
-          apellido: apellidoVal,
-          email: emailVal,
-          telefono: telefonoVal,
-          servicio: servicioVal,
-          ubicacion: ubicacionVal,
-          mensaje: mensajeVal,
-          honeypot: honeypotVal
+      // Ejecutar reCAPTCHA antes de enviar si la Site Key está configurada
+      if (typeof grecaptcha !== 'undefined' && WHITECLEAN_RECAPTCHA_SITE_KEY) {
+        grecaptcha.ready(function() {
+          grecaptcha.execute(WHITECLEAN_RECAPTCHA_SITE_KEY, {action: 'submit_contacto'})
+          .then(function(token) {
+            sendWhiteCleanForm(token);
+          })
+          .catch(function(err) {
+            console.warn("Google reCAPTCHA execution error, proceeding without token:", err);
+            sendWhiteCleanForm('');
+          });
+        });
+      } else {
+        sendWhiteCleanForm('');
+      }
+
+      function sendWhiteCleanForm(recaptchaToken) {
+        // Enviar datos al backend para disparar los correos
+        fetch('/api/contact/whiteclean', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nombre: nombreVal,
+            apellido: apellidoVal,
+            email: emailVal,
+            telefono: telefonoVal,
+            servicio: servicioVal,
+            ubicacion: ubicacionVal,
+            mensaje: mensajeVal,
+            honeypot: honeypotVal,
+            recaptcha_token: recaptchaToken
+          })
         })
-      })
-      .then(res => {
-        if (submitBtn) {
-          submitBtn.value = originalBtnVal;
-          submitBtn.disabled = false;
-        }
+        .then(res => {
+          if (submitBtn) {
+            submitBtn.value = originalBtnVal;
+            submitBtn.disabled = false;
+          }
 
         if (res.ok) {
           // Mostrar banner de éxito

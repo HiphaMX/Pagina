@@ -1,3 +1,12 @@
+// Configuración de reCAPTCHA v3 para Chile Chillón (chilechillon.com)
+var CHILECHILLON_RECAPTCHA_SITE_KEY = ''; 
+
+if (CHILECHILLON_RECAPTCHA_SITE_KEY) {
+    var script = document.createElement('script');
+    script.src = 'https://www.google.com/recaptcha/api.js?render=' + CHILECHILLON_RECAPTCHA_SITE_KEY;
+    document.head.appendChild(script);
+}
+
 // 🌶️ Chile Chillón — Lógica de UI & Interactividad "Ultrapro"
 
 // --- Dataset de la Trilogía ---
@@ -469,53 +478,72 @@ function initContactForm() {
       </svg> Enviando...
     `;
 
-    // Capturar datos y mapear los campos requeridos
-    const formData = {
-      nombre: form.nombre.value.trim(),
-      apellido: form.apellido ? form.apellido.value.trim() : "",
-      email: form.email.value.trim(),
-      telefono: form.telefono.value.trim(),
-      perfil: form.perfil.value,
-      mensaje: form.mensaje ? form.mensaje.value.trim() : "",
-      honeypot: form.confirm_email ? form.confirm_email.value.trim() : ""
-    };
-
-    try {
-      const response = await fetch("/api/contact/chilechillon", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
+    // Ejecutar reCAPTCHA antes de enviar si la Site Key está configurada
+    if (typeof grecaptcha !== 'undefined' && CHILECHILLON_RECAPTCHA_SITE_KEY) {
+      grecaptcha.ready(function() {
+        grecaptcha.execute(CHILECHILLON_RECAPTCHA_SITE_KEY, {action: 'submit_contacto'})
+        .then(function(token) {
+          sendContactForm(token);
+        })
+        .catch(function(err) {
+          console.warn("Google reCAPTCHA execution error, proceeding without token:", err);
+          sendContactForm('');
+        });
       });
+    } else {
+      sendContactForm('');
+    }
 
-      const result = await response.json();
+    async function sendContactForm(recaptchaToken) {
+      // Capturar datos y mapear los campos requeridos
+      const formData = {
+        nombre: form.nombre.value.trim(),
+        apellido: form.apellido ? form.apellido.value.trim() : "",
+        email: form.email.value.trim(),
+        telefono: form.telefono.value.trim(),
+        perfil: form.perfil.value,
+        mensaje: form.mensaje ? form.mensaje.value.trim() : "",
+        honeypot: form.confirm_email ? form.confirm_email.value.trim() : "",
+        recaptcha_token: recaptchaToken
+      };
 
-      if (response.ok) {
-        responseDiv.className = "mt-6 p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm glass-panel";
+      try {
+        const response = await fetch("/api/contact/chilechillon", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          responseDiv.className = "mt-6 p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm glass-panel";
+          responseDiv.innerHTML = `
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <strong>¡Fórmula Recibida!</strong> Tu sazón está a punto de potenciarse.
+            </div>
+            <p class="mt-2 text-xs text-slate-300">Hemos enviado un correo de bienvenida. Un estratega culinario te contactará en breve.</p>
+          `;
+          form.reset();
+        } else {
+          throw new Error(result.detail || "Error en el servidor");
+        }
+      } catch (error) {
+        responseDiv.className = "mt-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm glass-panel";
         responseDiv.innerHTML = `
           <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <strong>¡Fórmula Recibida!</strong> Tu sazón está a punto de potenciarse.
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <strong>Error de Picor:</strong> ${error.message}
           </div>
-          <p class="mt-2 text-xs text-slate-300">Hemos enviado un correo de bienvenida. Un estratega culinario te contactará en breve.</p>
         `;
-        form.reset();
-      } else {
-        throw new Error(result.detail || "Error en el servidor");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        responseDiv.classList.remove("hidden");
       }
-    } catch (error) {
-      responseDiv.className = "mt-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm glass-panel";
-      responseDiv.innerHTML = `
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <strong>Error de Picor:</strong> ${error.message}
-        </div>
-      `;
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalBtnText;
-      responseDiv.classList.remove("hidden");
     }
   });
 }

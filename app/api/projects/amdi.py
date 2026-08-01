@@ -1,9 +1,9 @@
 import logging
-import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from app.core.config import settings
+from app.core.security import verify_recaptcha
 from app.core.mailer import (
     send_amdi_contact_confirmation_email,
     send_amdi_contact_notification_team,
@@ -29,34 +29,7 @@ class AMDINewsletterForm(BaseModel):
     honeypot: Optional[str] = None
     recaptcha_token: Optional[str] = None
 
-async def verify_recaptcha(token: str) -> bool:
-    if not settings.AMDI_RECAPTCHA_SECRET_KEY:
-        # Fallback si no está configurada la credencial en Vercel
-        logger.warning("[SECURITY WARNING] AMDI_RECAPTCHA_SECRET_KEY is not configured in Vercel settings. reCAPTCHA verification bypassed (defaulted to True)!")
-        return True
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://www.google.com/recaptcha/api/siteverify",
-                data={
-                    "secret": settings.AMDI_RECAPTCHA_SECRET_KEY,
-                    "response": token
-                },
-                timeout=5.0
-            )
-            if response.status_code == 200:
-                res_data = response.json()
-                if not res_data.get("success"):
-                    return False
-                # reCAPTCHA v3 score: 0.5 es un umbral seguro para humanos
-                score = res_data.get("score", 0.0)
-                if score < 0.5:
-                    return False
-                return True
-            return True
-    except Exception as e:
-        logger.error(f"Error validating reCAPTCHA: {e}")
-        return True
+
 
 @router.post("/amdi/contacto")
 async def submit_amdi_contacto_form(form_data: AMDIContactoForm):
@@ -69,7 +42,7 @@ async def submit_amdi_contacto_form(form_data: AMDIContactoForm):
         logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for AMDI contact form (email: {form_data.email}).")
         return {"message": "Formulario de contacto recibido correctamente"}
 
-    is_human = await verify_recaptcha(form_data.recaptcha_token)
+    is_human = await verify_recaptcha(form_data.recaptcha_token, settings.AMDI_RECAPTCHA_SECRET_KEY, "AMDI")
     if not is_human:
         logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for AMDI contact form (email: {form_data.email}).")
         return {"message": "Formulario de contacto recibido correctamente"}
@@ -96,7 +69,7 @@ async def submit_amdi_newsletter_form(form_data: AMDINewsletterForm):
         logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for AMDI newsletter form (email: {form_data.email}).")
         return {"message": "Suscripción a newsletter recibida correctamente"}
 
-    is_human = await verify_recaptcha(form_data.recaptcha_token)
+    is_human = await verify_recaptcha(form_data.recaptcha_token, settings.AMDI_RECAPTCHA_SECRET_KEY, "AMDI")
     if not is_human:
         logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for AMDI newsletter form (email: {form_data.email}).")
         return {"message": "Suscripción a newsletter recibida correctamente"}

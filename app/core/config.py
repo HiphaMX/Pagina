@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     EMAILS_FROM_EMAIL: str = ""
     EMAILS_FROM_NAME: str = ""
+    HIPHA_RECAPTCHA_SECRET_KEY: str = ""
 
     # AMDI Specific SMTP settings
     AMDI_SMTP_HOST: str = ""
@@ -36,6 +37,7 @@ class Settings(BaseSettings):
     CHILECHILLON_SMTP_PASSWORD: str = ""
     CHILECHILLON_EMAILS_FROM_EMAIL: str = ""
     CHILECHILLON_EMAILS_FROM_NAME: str = ""
+    CHILECHILLON_RECAPTCHA_SECRET_KEY: str = ""
 
     # WHITECLEAN Specific SMTP settings
     WHITECLEAN_SMTP_HOST: str = ""
@@ -44,6 +46,7 @@ class Settings(BaseSettings):
     WHITECLEAN_SMTP_PASSWORD: str = ""
     WHITECLEAN_EMAILS_FROM_EMAIL: str = ""
     WHITECLEAN_EMAILS_FROM_NAME: str = ""
+    WHITECLEAN_RECAPTCHA_SECRET_KEY: str = ""
 
     # GRUPOGARI Specific SMTP settings
     GRUPOGARI_SMTP_HOST: str = ""
@@ -52,6 +55,7 @@ class Settings(BaseSettings):
     GRUPOGARI_SMTP_PASSWORD: str = ""
     GRUPOGARI_EMAILS_FROM_EMAIL: str = ""
     GRUPOGARI_EMAILS_FROM_NAME: str = ""
+    GRUPOGARI_RECAPTCHA_SECRET_KEY: str = ""
 
     # VALENCIA Specific SMTP settings
     VALENCIA_SMTP_HOST: str = ""
@@ -60,6 +64,7 @@ class Settings(BaseSettings):
     VALENCIA_SMTP_PASSWORD: str = ""
     VALENCIA_EMAILS_FROM_EMAIL: str = ""
     VALENCIA_EMAILS_FROM_NAME: str = ""
+    VALENCIA_RECAPTCHA_SECRET_KEY: str = ""
 
     # BOTICA Specific SMTP settings
     BOTICA_SMTP_HOST: str = ""
@@ -68,6 +73,7 @@ class Settings(BaseSettings):
     BOTICA_SMTP_PASSWORD: str = ""
     BOTICA_EMAILS_FROM_EMAIL: str = ""
     BOTICA_EMAILS_FROM_NAME: str = ""
+    BOTICA_RECAPTCHA_SECRET_KEY: str = ""
 
     # HEALTHYICE Specific SMTP settings
     HEALTHYICE_SMTP_HOST: str = ""
@@ -76,6 +82,7 @@ class Settings(BaseSettings):
     HEALTHYICE_SMTP_PASSWORD: str = ""
     HEALTHYICE_EMAILS_FROM_EMAIL: str = ""
     HEALTHYICE_EMAILS_FROM_NAME: str = ""
+    HEALTHYICE_RECAPTCHA_SECRET_KEY: str = ""
 
     # UROONCOLOGY Specific SMTP settings (Pendiente de credenciales)
     UROONCOLOGY_SMTP_HOST: str = ""
@@ -84,6 +91,7 @@ class Settings(BaseSettings):
     UROONCOLOGY_SMTP_PASSWORD: str = ""
     UROONCOLOGY_EMAILS_FROM_EMAIL: str = ""
     UROONCOLOGY_EMAILS_FROM_NAME: str = ""
+    UROONCOLOGY_RECAPTCHA_SECRET_KEY: str = ""
 
     # UROLOGIAAVANZADA Specific SMTP settings (Pendiente de credenciales)
     UROLOGIAAVANZADA_SMTP_HOST: str = ""
@@ -92,6 +100,7 @@ class Settings(BaseSettings):
     UROLOGIAAVANZADA_SMTP_PASSWORD: str = ""
     UROLOGIAAVANZADA_EMAILS_FROM_EMAIL: str = ""
     UROLOGIAAVANZADA_EMAILS_FROM_NAME: str = ""
+    UROLOGIAAVANZADA_RECAPTCHA_SECRET_KEY: str = ""
 
     # JESSICAMENDOZA Specific SMTP settings (Pendiente de credenciales)
     JESSICAMENDOZA_SMTP_HOST: str = ""
@@ -100,6 +109,8 @@ class Settings(BaseSettings):
     JESSICAMENDOZA_SMTP_PASSWORD: str = ""
     JESSICAMENDOZA_EMAILS_FROM_EMAIL: str = ""
     JESSICAMENDOZA_EMAILS_FROM_NAME: str = ""
+    JESSICAMENDOZA_RECAPTCHA_SECRET_KEY: str = ""
+    LETRERAMA_RECAPTCHA_SECRET_KEY: str = ""
 
     GOOGLE_PLACES_API_KEY: str = ""
 

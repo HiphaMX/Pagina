@@ -2,7 +2,37 @@ import nodemailer from 'nodemailer';
 
 export async function POST(req) {
   try {
-    const { nombre, apellido, telefono, email, mensaje } = await req.json();
+    const { nombre, apellido, telefono, email, mensaje, honeypot, recaptcha_token } = await req.json();
+
+    if (honeypot) {
+      console.warn("[SPAM DETECTED] Honeypot field filled for Uro-Oncology contact form.");
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
+
+    // Validar reCAPTCHA v3 de forma fail-safe
+    const secretKey = process.env.UROONCOLOGY_RECAPTCHA_SECRET_KEY || process.env.RECAPTCHA_SECRET_KEY;
+    if (secretKey) {
+      if (!recaptcha_token) {
+        console.warn("[SPAM DETECTED] Missing or empty reCAPTCHA token for Uro-Oncology contact form.");
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+      }
+      try {
+        const verifyRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `secret=${secretKey}&response=${recaptcha_token}`
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success || verifyData.score < 0.5) {
+          console.warn(`[SPAM DETECTED] reCAPTCHA validation failed for Uro-Oncology. Success: ${verifyData.success}, Score: ${verifyData.score}`);
+          return new Response(JSON.stringify({ success: true }), { status: 200 });
+        }
+      } catch (err) {
+        console.error("Error validating reCAPTCHA for Uro-Oncology:", err);
+      }
+    } else {
+      console.warn("[SECURITY WARNING] UROONCOLOGY_RECAPTCHA_SECRET_KEY is not configured in environment variables. Verification bypassed!");
+    }
 
     const fullName = `${nombre} ${apellido}`;
 

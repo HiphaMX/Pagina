@@ -340,6 +340,22 @@ function initDiagnosticForm() {
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '⚙️ ENVIANDO DIAGNÓSTICO...';
 
+        // Obtener token reCAPTCHA v3 si está configurado
+        let recaptchaToken = '';
+        if (typeof grecaptcha !== 'undefined' && GRUPOGARI_RECAPTCHA_SITE_KEY) {
+            try {
+                recaptchaToken = await new Promise((resolve, reject) => {
+                    grecaptcha.ready(() => {
+                        grecaptcha.execute(GRUPOGARI_RECAPTCHA_SITE_KEY, {action: 'submit_diagnostico'})
+                            .then(resolve)
+                            .catch(reject);
+                    });
+                });
+            } catch (err) {
+                console.warn("reCAPTCHA error:", err);
+            }
+        }
+
         // Recopilar Datos de variables exactas
         const formData = {
             nombre: document.getElementById('field-nombre').value,
@@ -351,7 +367,8 @@ function initDiagnosticForm() {
             industria: document.getElementById('field-industria').value || 'manufactura',
             servicio: document.getElementById('field-servicio').value || 'Proteccion Civil',
             mensaje: document.getElementById('field-mensaje').value || 'Solicitud de diagnóstico inicial normativo.',
-            honeypot: document.getElementById('field-confirm-email')?.value || ''
+            honeypot: document.getElementById('field-confirm-email')?.value || '',
+            recaptcha_token: recaptchaToken
         };
 
         try {

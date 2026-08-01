@@ -3,7 +3,37 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from './ContactPopup.module.css';
 
+const RECAPTCHA_SITE_KEY = '';
+
 export default function ContactPopup({ isOpen, onClose }) {
+  useEffect(() => {
+    if (RECAPTCHA_SITE_KEY) {
+      const script = document.createElement('script');
+      script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+      script.async = true;
+      document.body.appendChild(script);
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, []);
+
+  const executeRecaptcha = (actionName) => {
+    return new Promise((resolve) => {
+      if (typeof window.grecaptcha !== 'undefined' && RECAPTCHA_SITE_KEY) {
+        window.grecaptcha.ready(() => {
+          window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: actionName })
+            .then(resolve)
+            .catch((err) => {
+              console.warn("reCAPTCHA execution error:", err);
+              resolve('');
+            });
+        });
+      } else {
+        resolve('');
+      }
+    });
+  };
   const [isMounted, setIsMounted] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,6 +57,7 @@ export default function ContactPopup({ isOpen, onClose }) {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const recaptchaToken = await executeRecaptcha('submit_contact');
     const formData = new FormData(e.target);
     const data = {
       nombre: formData.get('nombre'),
@@ -35,6 +66,7 @@ export default function ContactPopup({ isOpen, onClose }) {
       email: formData.get('email'),
       mensaje: formData.get('mensaje'),
       honeypot: formData.get('confirm_email'),
+      recaptcha_token: recaptchaToken
     };
 
     try {
@@ -79,7 +111,7 @@ export default function ContactPopup({ isOpen, onClose }) {
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <div style={{ display: 'none' }} aria-hidden="true">
+          <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
             <input type="text" id="confirm_email" name="confirm_email" tabIndex="-1" autoComplete="off" />
           </div>
           <div className={styles.formRow}>
