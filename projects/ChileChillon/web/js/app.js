@@ -874,8 +874,38 @@ function initCart() {
         `;
       });
 
+      // Calcular envío y total
+      const costoEnvio = subtotal > 900 ? 0 : 180;
+      const total = subtotal + costoEnvio;
+
+      // Validación mínimo 6 piezas
+      const warningBanner = document.getElementById("cart-warning");
+      const warningText = document.getElementById("cart-warning-text");
+      const cartTotal = document.getElementById("cart-total");
+      const cartShipping = document.getElementById("cart-shipping");
+
+      if (warningBanner && warningText && cartCheckoutBtn) {
+        if (totalItems < 6) {
+          const faltantes = 6 - totalItems;
+          warningText.innerText = `Mínimo para envío: 6 piezas (te faltan ${faltantes})`;
+          warningBanner.classList.remove("hidden");
+          cartCheckoutBtn.disabled = true;
+          cartCheckoutBtn.classList.add("opacity-50", "pointer-events-none");
+        } else {
+          warningBanner.classList.add("hidden");
+          cartCheckoutBtn.disabled = false;
+          cartCheckoutBtn.classList.remove("opacity-50", "pointer-events-none");
+        }
+      }
+
       cartItemsContainer.innerHTML = itemsHTML;
       cartSubtotal.innerText = `$${subtotal}.00 MXN`;
+      if (cartShipping) {
+        cartShipping.innerText = costoEnvio === 0 ? "Gratis" : `$${costoEnvio}.00 MXN`;
+      }
+      if (cartTotal) {
+        cartTotal.innerText = `$${total}.00 MXN`;
+      }
       cartFooter.classList.remove("hidden");
 
       // Vincular eventos de cantidad y eliminar
@@ -961,17 +991,22 @@ function initCart() {
 
       setTimeout(() => {
         // Crear mensaje formateado de WhatsApp
-        let messageText = "¡Hola Chile Chillón! 🌶️ Me gustaría confirmar el siguiente pedido de salsas:\n\n";
-        let totalVal = 0;
+        let messageText = "¡Hola Chile Chillón! 🌶️ Me gustaría confirmar el siguiente pedido:\n\n";
+        let subtotal = 0;
         cart.forEach(item => {
           const prod = products[item.id];
           if (prod) {
             messageText += `• *${item.quantity}x ${prod.name}* ($${prod.price}.00 MXN c/u)\n`;
-            totalVal += prod.price * item.quantity;
+            subtotal += prod.price * item.quantity;
           }
         });
-        messageText += `\n*Total a pagar: $${totalVal}.00 MXN*\n\n`;
-        messageText += "Quedo a la espera de sus datos para coordinar el pago (transferencia/efectivo) y el envío. ¡Muchas gracias!";
+        const costoEnvio = subtotal > 900 ? 0 : 180;
+        const total = subtotal + costoEnvio;
+
+        messageText += `\n*Subtotal:* $${subtotal}.00 MXN`;
+        messageText += `\n*Envío:* ${costoEnvio === 0 ? "Gratis (México)" : `$${costoEnvio}.00 MXN`}`;
+        messageText += `\n*Total a pagar:* $${total}.00 MXN\n\n`;
+        messageText += "Quedo a la espera de sus datos para coordinar el pago y el envío. ¡Muchas gracias!";
 
         const encodedMessage = encodeURIComponent(messageText);
         // Teléfono placeholder de la marca: 52 33 1234 5678 o similar

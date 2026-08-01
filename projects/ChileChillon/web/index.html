@@ -589,7 +589,7 @@
           ¡HAZ NEGOCIO CON NOSOTROS!
         </span>
         <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mt-4 font-rubik">
-          El sazón de Chile Chillón en tu negocio
+          El sazón que potencia tu negocio
         </h2>
         <p class="mt-4 text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
           ¿Quieres distribuir Chile Chillón en tu zona o negocio? Elige la cantidad de cajas de salsas y semillas enchiladas que deseas adquirir y calcula tus ganancias estimadas de inmediato.
@@ -1315,14 +1315,26 @@
     </div>
 
     <!-- Subtotal y Checkout -->
-    <div id="cart-footer" class="p-6 border-t border-slate-100 bg-slate-50 space-y-4 hidden">
-      <div class="flex justify-between items-center">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Subtotal</span>
-        <span id="cart-subtotal" class="font-bold text-slate-900 text-lg font-rubik">$0.00 MXN</span>
+    <div id="cart-footer" class="p-6 border-t border-slate-100 bg-slate-50 space-y-3 hidden">
+      <!-- Mínimo de envío warning -->
+      <div id="cart-warning" class="hidden bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-semibold p-2.5 rounded-xl flex items-center gap-2 mb-1">
+        <i class="ph-bold ph-warning text-sm"></i>
+        <span id="cart-warning-text">Mínimo para envío: 6 piezas (faltan 5)</span>
       </div>
-      <div class="flex justify-between items-center text-xs text-slate-400">
-        <span>Envío (Calculado al confirmar)</span>
-        <span>Por definir</span>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" class="font-bold text-slate-900 font-rubik">$0.00 MXN</span>
+      </div>
+      
+      <div class="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
+        <span>Envío (México)</span>
+        <span id="cart-shipping" class="font-bold text-slate-900 font-rubik">$0.00 MXN</span>
+      </div>
+
+      <div class="flex justify-between items-center border-t border-slate-200 pt-3">
+        <span class="text-xs font-black uppercase tracking-wider text-[#D30611]">Total</span>
+        <span id="cart-total" class="font-black text-[#D30611] text-xl font-rubik">$0.00 MXN</span>
       </div>
       
       <div class="pt-2">
