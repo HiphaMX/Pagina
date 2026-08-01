@@ -694,7 +694,7 @@ function initCart() {
     },
     semillas_enchiladas: {
       name: "Semillas Enchiladas",
-      price: 60,
+      price: 65,
       spicy: "🌶️🌶️🌶️",
       image: "Assets/Salsas/semillas_enchiladas.jpg",
       filterClass: ""
