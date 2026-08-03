@@ -8,7 +8,7 @@ from email.message import EmailMessage
 from email.utils import make_msgid, formatdate
 from app.core.config import settings
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # SMTP change trigger 2026-08-03
 
 async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, smtp_password=None):
     host = smtp_host or settings.SMTP_HOST
