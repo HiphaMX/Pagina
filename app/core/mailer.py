@@ -532,7 +532,10 @@ async def send_healthyice_order_customer(form_data):
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
-        logger.error(f"Fallo al enviarasync def send_healthyice_order_team(form_data):
+        logger.error(f"Fallo al enviar correo a cliente HealthyIce: {str(e)}")
+        return False
+
+async def send_healthyice_order_team(form_data):
     healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
     global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
 
@@ -590,8 +593,7 @@ async def send_healthyice_order_customer(form_data):
         except Exception as e:
             logger.error(f"Fallo al enviar correo al equipo HealthyIce ({recipient}): {str(e)}")
             
-    return successnviar correo al equipo HealthyIce: {str(e)}")
-        return False
+    return success
 
 
 async def send_healthyice_payment_customer(payer_name: str, payer_email: str, order_details: str, total: float):
