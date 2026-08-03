@@ -719,10 +719,10 @@
             </div>
           </div>
 
-          <!-- Botón de WhatsApp -->
+          <!-- Botón de Enlace al Formulario -->
           <div class="pt-6 relative z-10">
-            <a id="calc-whatsapp-btn" href="https://wa.me/523921097809" target="_blank" rel="noopener" class="w-full bg-[#FFEED3] hover:bg-white text-[#D30611] py-4 px-6 rounded-2xl font-bold font-rubik text-sm uppercase tracking-wider shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-3">
-              <i class="ph-bold ph-whatsapp-logo text-xl"></i>
+            <a id="calc-whatsapp-btn" href="javascript:void(0)" onclick="redirigirAlFormulario()" class="w-full bg-[#FFEED3] hover:bg-white text-[#D30611] py-4 px-6 rounded-2xl font-bold font-rubik text-sm uppercase tracking-wider shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-3">
+              <i class="ph-bold ph-paper-plane-tilt text-xl"></i>
               Quiero ser Distribuidor
             </a>
           </div>
@@ -824,8 +824,7 @@
       document.getElementById('calc-res-ganancia').innerText = formatter.format(gananciaNeta);
       document.getElementById('calc-res-roi').innerText = "+" + roi.toFixed(0) + "%";
 
-      // Mensaje de WhatsApp
-      const whatsappNumber = "523921097809";
+      // Guardar mensaje de cotización para el formulario
       let detailsText = "";
       if (cajasSalsas > 0) detailsText += `${cajasSalsas} caja(s) de salsas`;
       if (cajasSemillas > 0) {
@@ -835,13 +834,41 @@
 
       let message = `¡Hola Chile Chillón! Me interesa ser distribuidor mayorista y estuve usando la calculadora de la web. `;
       if (cajasSalsas > 0 || cajasSemillas > 0) {
-        message += `Me gustaría cotizar un pedido de: ${detailsText}. La inversión estimada es de ${formatter.format(inversionTotal)} con una ganancia esperada de ${formatter.format(gananciaNeta)}. ¿Me podrían dar información sobre los métodos de pago y el envío a mi código postal?`;
+        message += `Me gustaría cotizar un pedido de: ${detailsText}. La inversión estimada es de ${formatter.format(inversionTotal)} con una ganancia esperada de ${formatter.format(gananciaNeta)} (ROI del ${roi.toFixed(0)}%). ¿Me podrían dar información sobre los métodos de pago y el envío a mi código postal?`;
       } else {
         message += `Me gustaría recibir información sobre los precios de mayoreo, catálogo de productos y condiciones de envío para iniciar mi negocio de distribución.`;
       }
 
-      const encodedMessage = encodeURIComponent(message);
-      document.getElementById('calc-whatsapp-btn').href = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      ultimoMensajeCalculadora = message;
+    }
+
+    // Variable global para almacenar el ejercicio de la calculadora
+    let ultimoMensajeCalculadora = "";
+
+    function redirigirAlFormulario() {
+      // 1. Pre-llenar el textarea de mensaje
+      const msgField = document.getElementById('mensaje');
+      if (msgField && ultimoMensajeCalculadora) {
+        msgField.value = ultimoMensajeCalculadora;
+      }
+
+      // 2. Cambiar la intención del select a distribuidor
+      const selectField = document.getElementById('perfil');
+      if (selectField) {
+        selectField.value = "distribuidor";
+      }
+
+      // 3. Hacer scroll suave a la sección
+      const clubSec = document.getElementById('club');
+      if (clubSec) {
+        clubSec.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // 4. Enfocar el input de nombre
+      setTimeout(() => {
+        const nombreField = document.getElementById('nombre');
+        if (nombreField) nombreField.focus();
+      }, 800);
     }
 
     // Inicializar cálculo por defecto
