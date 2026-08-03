@@ -532,10 +532,7 @@ async def send_healthyice_order_customer(form_data):
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
         return True
     except Exception as e:
-        logger.error(f"Fallo al enviar correo a cliente HealthyIce: {str(e)}")
-        return False
-
-async def send_healthyice_order_team(form_data):
+        logger.error(f"Fallo al enviarasync def send_healthyice_order_team(form_data):
     healthyice_configured = bool(settings.HEALTHYICE_SMTP_HOST and settings.HEALTHYICE_SMTP_USER)
     global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
 
@@ -544,12 +541,18 @@ async def send_healthyice_order_team(form_data):
         return True
 
     from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
-    to_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx, contacto@healthyice.mx"
+    
+    # Enviar notificaciones individualmente a cada miembro del equipo
+    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
+        config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
+        if config_email and config_email not in recipients:
+            recipients.append(config_email)
     
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>')
     html_content = f"""
     <html>
-    <body style="font-family: Arial, sans-serif; color: #333;">
+    <body style="font-family: Arial, sans-serif; color: #33;">
         <h2>¡Nuevo prospecto de contacto registrado en la web!</h2>
         
         <h3>Datos de Contacto:</h3>
@@ -566,23 +569,28 @@ async def send_healthyice_order_team(form_data):
     </body>
     </html>
     """
-    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
-        project_prefix="HEALTHYICE",
-        from_name="HealthyIce Web",
-        from_email=from_email,
-        to_email=to_email,
-        subject=f"NUEVO PROSPECTO / CONTACTO WEB: {form_data.nombre}",
-        html_content=html_content,
-        domain="healthyice.mx"
-    )
-    del message['Reply-To']
-    message['Reply-To'] = form_data.email
+    
+    success = False
+    for recipient in recipients:
+        message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+            project_prefix="HEALTHYICE",
+            from_name="HealthyIce Web",
+            from_email=from_email,
+            to_email=recipient,
+            subject=f"NUEVO PROSPECTO / CONTACTO WEB: {form_data.nombre}",
+            html_content=html_content,
+            domain="healthyice.mx"
+        )
+        del message['Reply-To']
+        message['Reply-To'] = form_data.email
 
-    try:
-        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
-        return True
-    except Exception as e:
-        logger.error(f"Fallo al enviar correo al equipo HealthyIce: {str(e)}")
+        try:
+            await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+            success = True
+        except Exception as e:
+            logger.error(f"Fallo al enviar correo al equipo HealthyIce ({recipient}): {str(e)}")
+            
+    return successnviar correo al equipo HealthyIce: {str(e)}")
         return False
 
 
@@ -646,8 +654,14 @@ async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_
         return True
 
     from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
-    to_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx, contacto@healthyice.mx"
     
+    # Enviar notificaciones individualmente a cada miembro del equipo
+    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
+        config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
+        if config_email and config_email not in recipients:
+            recipients.append(config_email)
+            
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333;">
@@ -668,24 +682,28 @@ async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_
     </body>
     </html>
     """
-    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
-        project_prefix="HEALTHYICE",
-        from_name="HealthyIce Web",
-        from_email=from_email,
-        to_email=to_email,
-        subject=f"NUEVO PEDIDO PAGADO (Mercado Pago): {payer_name} - ${total} MXN",
-        html_content=html_content,
-        domain="healthyice.mx"
-    )
-    del message['Reply-To']
-    message['Reply-To'] = payer_email
+    
+    success = False
+    for recipient in recipients:
+        message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+            project_prefix="HEALTHYICE",
+            from_name="HealthyIce Web",
+            from_email=from_email,
+            to_email=recipient,
+            subject=f"NUEVO PEDIDO PAGADO (Mercado Pago): {payer_name} - ${total} MXN",
+            html_content=html_content,
+            domain="healthyice.mx"
+        )
+        del message['Reply-To']
+        message['Reply-To'] = payer_email
 
-    try:
-        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
-        return True
-    except Exception as e:
-        logger.error(f"Fallo al enviar correo al equipo HealthyIce por pedido pagado: {str(e)}")
-        return False
+        try:
+            await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+            success = True
+        except Exception as e:
+            logger.error(f"Fallo al enviar correo al equipo HealthyIce por pedido pagado ({recipient}): {str(e)}")
+            
+    return success
 
 
 class HealthyIcePDF(FPDF):
@@ -1155,10 +1173,14 @@ async def send_healthyice_contract_team(form_data):
         return True
 
     from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
-    to_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx, contacto@healthyice.mx"
-    message["Date"] = formatdate(localtime=True)
-    message["Message-ID"] = make_msgid(domain="healthyice.mx")
     
+    # Enviar notificaciones individualmente a cada miembro del equipo
+    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
+        config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
+        if config_email and config_email not in recipients:
+            recipients.append(config_email)
+            
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #33; line-height: 1.6;">
@@ -1212,17 +1234,20 @@ async def send_healthyice_contract_team(form_data):
     </body>
     </html>
     """
-    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
-        project_prefix="HEALTHYICE",
-        from_name="HealthyIce Web",
-        from_email=from_email,
-        to_email=to_email,
-        subject=f"NUEVO SOCIO COMERCIAL FIRMADO: {form_data.razon_social}",
-        html_content=html_content,
-        domain="healthyice.mx"
-    )
-    del message['Reply-To']
-    message['Reply-To'] = form_data.email
+    
+    success = False
+    for recipient in recipients:
+        message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+            project_prefix="HEALTHYICE",
+            from_name="HealthyIce Web",
+            from_email=from_email,
+            to_email=recipient,
+            subject=f"NUEVO SOCIO COMERCIAL FIRMADO: {form_data.razon_social}",
+            html_content=html_content,
+            domain="healthyice.mx"
+        )
+        del message['Reply-To']
+        message['Reply-To'] = form_data.email
 
     try:
         pdf_bytes = generate_healthyice_contract_pdf(form_data)
