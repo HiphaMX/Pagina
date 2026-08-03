@@ -1900,30 +1900,30 @@
         }
 
         /* Responsive */
+        /* Responsive & Mobile Optimization */
         @media (max-width: 991px) {
+            .container { padding: 0 2rem; }
+            .hero { padding: 8rem 0 4rem 0; }
             .hero-grid {
                 grid-template-columns: 1fr;
                 gap: 3.5rem;
             }
-
             .hero-content {
                 text-align: center;
                 align-items: center;
             }
-
+            .hero-desc { text-align: center; }
             .hero-actions {
                 justify-content: center;
             }
-
             .hero-hud-card {
                 margin: 0 auto;
+                max-width: 420px;
             }
-
             .metrics-grid {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 3rem;
             }
-
             .promise-sticky {
                 height: auto;
             }
@@ -1935,18 +1935,17 @@
             .promise-split-layout {
                 grid-template-columns: 1fr;
                 gap: 4rem;
-                padding: 0 2rem;
+                padding: 0 1.5rem;
             }
             .promise-visual-card-wrapper {
-                width: 320px;
-                height: 320px;
+                width: 340px;
+                height: 340px;
                 margin: 0 auto;
             }
-
             .promise-visual-card .card-icon {
-                width: 90px;
-                height: 90px;
-                font-size: 2.5rem;
+                width: 100px;
+                height: 100px;
+                font-size: 2.8rem;
             }
             .promise-content-col {
                 grid-template-columns: 1fr;
@@ -1959,7 +1958,7 @@
                 padding-left: 0;
                 height: auto;
                 justify-content: center;
-                margin-top: 1rem;
+                margin-top: 1.5rem;
             }
             .promise-timeline-line {
                 display: none;
@@ -1967,8 +1966,9 @@
             .promise-timeline-steps {
                 flex-direction: row;
                 width: 100%;
-                gap: 1.5rem;
+                gap: 1.25rem;
                 justify-content: center;
+                flex-wrap: wrap;
             }
             .promise-timeline-step {
                 padding-left: 0;
@@ -1977,53 +1977,41 @@
                 display: none;
             }
             .promise-timeline-step .step-label {
-                font-size: 0.65rem;
+                font-size: 0.7rem;
             }
-
             .sectors-grid {
                 grid-template-columns: 1fr;
             }
-
-
-
             .coverage-grid {
                 grid-template-columns: 1fr;
                 gap: 3.5rem;
             }
-
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 3.5rem;
             }
-
             .nav-links {
-                display: none;
+                gap: 1.5rem;
             }
-
             .conversational-paragraph {
                 font-size: 1.35rem;
                 line-height: 2.2;
                 text-align: left;
             }
-
             .inline-input, .inline-select {
                 display: block;
                 margin: 1rem 0;
             }
-
             .inline-input input, .inline-select select {
                 width: 100% !important;
                 text-align: left;
                 padding-left: 0;
             }
-
             .terminal-hud-header {
                 flex-direction: column;
                 gap: 1.25rem;
                 align-items: flex-start;
             }
-
-            /* Mobile Blog overrides */
             .blog-section {
                 padding: 5rem 0;
             }
@@ -2031,7 +2019,7 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2rem;
-                padding: 0 2rem;
+                padding: 0 1rem;
                 margin-bottom: 3.5rem;
             }
             .blog-title-right {
@@ -2040,13 +2028,11 @@
             .blog-grid {
                 grid-template-columns: 1fr;
                 gap: 4rem;
-                padding: 0 2rem;
+                padding: 0 1rem;
             }
             .blog-post-title {
                 font-size: 1.35rem;
             }
-
-            /* Mobile Reviews Marquee overrides */
             .reviews-section {
                 padding: 5rem 0;
             }
@@ -2062,8 +2048,52 @@
                 font-size: 0.92rem;
                 margin-bottom: 1.25rem;
             }
+        }
 
-            /* Removed reveal footer mobile overrides since footer is static */
+        @media (max-width: 767px) {
+            .container { padding: 0 1.5rem; }
+            .hero-title { font-size: clamp(2.5rem, 8vw, 3.5rem); }
+            .metrics-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .promise-visual-card-wrapper { width: 280px; height: 280px; }
+            .promise-visual-card .card-icon { width: 85px; height: 85px; font-size: 2.4rem; }
+            .section-title { font-size: clamp(2rem, 6vw, 2.5rem); }
+            .conversational-paragraph { font-size: 1.25rem; line-height: 1.9; }
+            .section-header { margin: 0 auto 3rem auto; }
+            
+            /* Scrollable Mobile Nav Capsule */
+            header { top: 1rem; }
+            header.scrolled { top: 0.5rem; }
+            .nav-wrapper { 
+                padding: 0.6rem 1rem; 
+                width: calc(100% - 2rem);
+            }
+            .nav-links { 
+                display: flex; 
+                gap: 1.25rem; 
+                overflow-x: auto; 
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 0;
+                scrollbar-width: none;
+            }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links a { font-size: 0.75rem; letter-spacing: 0.15em; padding: 0.25rem; }
+        }
+
+        @media (max-width: 479px) {
+            .container { padding: 0 1.25rem; }
+            .hero-title { font-size: 2.2rem; }
+            .hero-desc { font-size: 1rem; line-height: 1.6; }
+            .btn { padding: 0.8rem 1.5rem; font-size: 0.75rem; width: 100%; justify-content: center; }
+            .hero-actions { flex-direction: column; width: 100%; gap: 1rem; }
+            .hero-hud-card { padding: 1.5rem; }
+            .hud-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+            .promise-visual-card-wrapper { width: 240px; height: 240px; }
+            .promise-visual-card .card-icon { width: 75px; height: 75px; font-size: 2.1rem; }
+            .blog-post-title { font-size: 1.15rem; }
+            .section-desc { font-size: 1rem; line-height: 1.6; }
+            .nav-links { gap: 1rem; }
+            .metric-val { font-size: 2.8rem; }
+            .promise-sticky-container { padding: 4rem 0; }
         }
 
         /* Custom Cursor Follower */
@@ -2127,6 +2157,58 @@
         body.custom-cursor-active .blog-post-card {
             cursor: none;
         }
+
+        #hero-particles-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            mix-blend-mode: screen;
+            opacity: 0.65;
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            border: 1px solid rgba(227, 221, 213, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 2rem;
+            text-decoration: none;
+            box-shadow: 
+                0 10px 25px rgba(37, 211, 102, 0.3),
+                0 0 0 4px rgba(37, 211, 102, 0.15);
+            z-index: 99;
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(37, 211, 102, 0.55),
+                0 0 0 6px rgba(37, 211, 102, 0.25);
+            color: #ffffff;
+        }
+
+        @media (max-width: 767px) {
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.7rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2160,6 +2242,7 @@
         <div class="hero-timelapse-bg">
             <img id="hero-bg-img" src="Assets/nature_solar.jpg" alt="Villa Solar Premium en Valle de Guadalupe">
             <div id="sky-overlay"></div>
+            <canvas id="hero-particles-canvas"></canvas>
             <div class="hero-vignette"></div>
         </div>
         
@@ -2423,7 +2506,7 @@
 
         <div class="blog-grid">
             <!-- Article 1 -->
-            <a href="#contacto" class="blog-post-card">
+            <a href="articulo-autonomia.html" class="blog-post-card">
                 <div class="blog-img-wrapper">
                     <img src="Assets/industrial_storage.jpg" alt="Autonomía Energética Industrial" class="blog-post-img">
                 </div>
@@ -2438,7 +2521,7 @@
             </a>
 
             <!-- Article 2 -->
-            <a href="#contacto" class="blog-post-card">
+            <a href="articulo-offgrid.html" class="blog-post-card">
                 <div class="blog-img-wrapper">
                     <img src="Assets/nature_solar.jpg" alt="Sistemas Off-grid Residenciales" class="blog-post-img">
                 </div>
@@ -2453,7 +2536,7 @@
             </a>
 
             <!-- Article 3 -->
-            <a href="#contacto" class="blog-post-card">
+            <a href="articulo-calidad-energia.html" class="blog-post-card">
                 <div class="blog-img-wrapper">
                     <img src="Assets/telemetry_terminal.jpg" alt="Calidad de Energía Industrial" class="blog-post-img">
                 </div>
@@ -2639,7 +2722,7 @@
 
                 <div class="professional-group">
                     <label for="contact-phone">Teléfono de contacto</label>
-                    <input type="tel" id="contact-phone" placeholder="Ej. +52 33 3060 2726" required autocomplete="tel">
+                    <input type="tel" id="contact-phone" placeholder="Ej. +52 33 3302 5665" required autocomplete="tel">
                 </div>
 
                 <div class="professional-group">
@@ -2738,8 +2821,9 @@
                 <div class="footer-col">
                     <h4 class="footer-col-title">Contacto</h4>
                     <ul class="footer-links">
-                        <li><a href="mailto:contacto@ieer.mx"><i class="ph ph-envelope"></i> contacto@ieer.mx</a></li>
-                        <li><a href="tel:+523330602726"><i class="ph ph-phone"></i> +52 33 3060 2726</a></li>
+                        <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
+                        <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
                     </ul>
                 </div>
             </div>
@@ -2757,6 +2841,196 @@
 
     <!-- Interactive script -->
     <script>
+        /* ------------------------------------------------------------- */
+        /* INTERACTIVE SOLAR WIND & MAGNETIC FIELD CANVAS SIMULATION    */
+        /* ------------------------------------------------------------- */
+        (function() {
+            const canvas = document.getElementById('hero-particles-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            let width = canvas.width = canvas.offsetWidth;
+            let height = canvas.height = canvas.offsetHeight;
+            
+            window.addEventListener('resize', () => {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+            });
+            
+            let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+            const hero = document.querySelector('.hero');
+            
+            const setMousePos = (clientX, clientY) => {
+                const rect = hero.getBoundingClientRect();
+                mouse.targetX = clientX - rect.left;
+                mouse.targetY = clientY - rect.top;
+            };
+            
+            hero.addEventListener('mousemove', (e) => {
+                setMousePos(e.clientX, e.clientY);
+            });
+            
+            hero.addEventListener('mouseleave', () => {
+                mouse.targetX = -1000;
+                mouse.targetY = -1000;
+            });
+            
+            hero.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    setMousePos(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            
+            hero.addEventListener('touchend', () => {
+                mouse.targetX = -1000;
+                mouse.targetY = -1000;
+            });
+            
+            const numParticles = 40;
+            const particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    speed: 0.5 + Math.random() * 1.2,
+                    size: 0.8 + Math.random() * 1.8,
+                    alpha: 0.15 + Math.random() * 0.45,
+                    angleOffset: Math.random() * Math.PI * 2,
+                    angleSpeed: 0.008 + Math.random() * 0.012,
+                    amplitude: 6 + Math.random() * 12,
+                    color: Math.random() > 0.45 ? '169, 133, 103' : '227, 221, 213'
+                });
+            }
+            
+            const numLines = 5;
+            const lines = [];
+            for (let i = 0; i < numLines; i++) {
+                const points = [];
+                const numPoints = 8;
+                const baseHeight = (height / (numLines + 1)) * (i + 1);
+                for (let j = 0; j < numPoints; j++) {
+                    points.push({
+                        x: (width / (numPoints - 1)) * j,
+                        y: baseHeight + (Math.random() - 0.5) * 20,
+                        baseY: baseHeight,
+                        offsetY: Math.random() * Math.PI * 2,
+                        speed: 0.006 + Math.random() * 0.008
+                    });
+                }
+                lines.push({
+                    points: points,
+                    color: i % 2 === 0 ? 'rgba(169, 133, 103, 0.12)' : 'rgba(227, 221, 213, 0.06)',
+                    lineWidth: 1 + (i % 2) * 0.5
+                });
+            }
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, width, height);
+                
+                if (mouse.targetX !== -1000) {
+                    if (mouse.x === -1000) {
+                        mouse.x = mouse.targetX;
+                        mouse.y = mouse.targetY;
+                    } else {
+                        mouse.x += (mouse.targetX - mouse.x) * 0.08;
+                        mouse.y += (mouse.targetY - mouse.y) * 0.08;
+                    }
+                } else {
+                    mouse.x = -1000;
+                    mouse.y = -1000;
+                }
+                
+                lines.forEach(line => {
+                    ctx.beginPath();
+                    line.points.forEach((pt, index) => {
+                        pt.offsetY += pt.speed;
+                        let targetY = pt.baseY + Math.sin(pt.offsetY) * 15;
+                        
+                        let displayX = pt.x;
+                        let displayY = targetY;
+                        
+                        if (mouse.x !== -1000) {
+                            const dx = displayX - mouse.x;
+                            const dy = displayY - mouse.y;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < 150) {
+                                const force = (150 - dist) / 150;
+                                const angle = Math.atan2(dy, dx);
+                                displayX += Math.cos(angle) * force * 40;
+                                displayY += Math.sin(angle) * force * 40;
+                            }
+                        }
+                        
+                        if (index === 0) {
+                            ctx.moveTo(displayX, displayY);
+                        } else {
+                            const prevPt = line.points[index - 1];
+                            let prevDisplayX = prevPt.x;
+                            let prevDisplayY = prevPt.baseY + Math.sin(pt.offsetY - pt.speed) * 15;
+                            if (mouse.x !== -1000) {
+                                const pdx = prevDisplayX - mouse.x;
+                                const pdy = prevDisplayY - mouse.y;
+                                const pdist = Math.sqrt(pdx*pdx + pdy*pdy);
+                                if (pdist < 150) {
+                                    const pforce = (150 - pdist) / 150;
+                                    const pangle = Math.atan2(pdy, pdx);
+                                    prevDisplayX += Math.cos(pangle) * pforce * 40;
+                                    prevDisplayY += Math.sin(pangle) * pforce * 40;
+                                }
+                            }
+                            const xc = (prevDisplayX + displayX) / 2;
+                            const yc = (prevDisplayY + displayY) / 2;
+                            ctx.quadraticCurveTo(prevDisplayX, prevDisplayY, xc, yc);
+                        }
+                    });
+                    
+                    ctx.strokeStyle = line.color;
+                    ctx.lineWidth = line.lineWidth;
+                    ctx.stroke();
+                });
+                
+                particles.forEach(p => {
+                    p.x += p.speed;
+                    p.angleOffset += p.angleSpeed;
+                    
+                    let yOffset = Math.sin(p.angleOffset) * p.amplitude;
+                    let displayX = p.x;
+                    let displayY = p.y + yOffset;
+                    
+                    if (displayX > width + 10) {
+                        p.x = -10;
+                        p.y = Math.random() * height;
+                        displayX = p.x;
+                        displayY = p.y + yOffset;
+                    }
+                    
+                    if (mouse.x !== -1000) {
+                        const dx = displayX - mouse.x;
+                        const dy = displayY - mouse.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist < 130) {
+                            const force = (130 - dist) / 130;
+                            const angle = Math.atan2(dy, dx);
+                            displayX += Math.cos(angle) * force * 35;
+                            displayY += Math.sin(angle) * force * 35;
+                        }
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(displayX, displayY, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+                    
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = `rgba(${p.color}, ${p.alpha * 0.4})`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                });
+            }
+            
+            animate();
+        })();
+
         // Header scroll behavior
         window.addEventListener('scroll', () => {
             const header = document.getElementById('main-header');
@@ -3171,5 +3445,10 @@
             }, true);
         }
     </script>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." class="floating-whatsapp" target="_blank" aria-label="Contacto por WhatsApp">
+        <i class="ph-fill ph-whatsapp-logo"></i>
+    </a>
 </body>
 </html>

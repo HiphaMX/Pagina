@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Optimization -->
+    <title>La Nueva Era de la Autonomía Energética Industrial | IEER Journal</title>
+    <meta name="description" content="Análisis técnico sobre cómo los sistemas de almacenamiento de última generación redefinen la continuidad operativa en la industria mexicana.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Outfit:wght@100;200;300;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    
+    <style>
+        :root {
+            --bg-nature: #141a1c;
+            --bg-nature-accent: #0f1315;
+            --color-bronze: #a98567;
+            --color-alabaster: #e3ddd5;
+            --text-main: #e3ddd5;
+            --text-muted: #7e8d90;
+            --font-display: 'Outfit', sans-serif;
+            --font-tech: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-nature);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 6rem;
+        }
+
+        /* Capsule Nav Back Button */
+        header {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            margin: 0 auto;
+            width: calc(100% - 3rem);
+            max-width: 320px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(20, 26, 28, 0.28);
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            border-radius: 9999px;
+            backdrop-filter: blur(28px) saturate(220%);
+            -webkit-backdrop-filter: blur(28px) saturate(220%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--color-alabaster);
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-premium);
+        }
+
+        .back-link:hover {
+            color: var(--color-bronze);
+        }
+
+        /* Article Container */
+        .article-hero {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            padding-bottom: 4rem;
+        }
+
+        .article-hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .article-hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4) contrast(1.1);
+        }
+
+        .article-hero-vignette {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, var(--bg-nature) 100%);
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .article-meta {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            color: var(--color-bronze);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .article-meta .dot {
+            width: 4px;
+            height: 4px;
+            background-color: var(--color-bronze);
+            border-radius: 50%;
+        }
+
+        .article-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+            font-weight: 200;
+            color: var(--color-alabaster);
+            margin-bottom: 2rem;
+        }
+
+        /* Article Content */
+        .article-body {
+            font-size: 1.15rem;
+            color: #d1c9bd;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            margin-top: 4rem;
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+        }
+
+        .article-body h2 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--color-bronze);
+            margin: 3.5rem 0 1.5rem 0;
+            letter-spacing: -0.01em;
+        }
+
+        .article-body blockquote {
+            border-left: 2px solid var(--color-bronze);
+            padding-left: 2rem;
+            margin: 3rem 0;
+            font-style: italic;
+            font-size: 1.35rem;
+            color: var(--color-alabaster);
+            font-weight: 200;
+        }
+
+        .article-body ul {
+            margin: 2rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .article-body li {
+            margin-bottom: 1rem;
+        }
+
+        .article-footer {
+            margin-top: 6rem;
+            border-top: 1px solid rgba(169, 133, 103, 0.15);
+            padding-top: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .author-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-weight: bold;
+            color: var(--color-alabaster);
+            font-size: 0.95rem;
+        }
+
+        .author-role {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-tech);
+        }
+
+        /* Floating Contact CTA */
+        .contact-cta {
+            background: rgba(30, 39, 41, 0.45);
+            border: 1px solid rgba(169, 133, 103, 0.12);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-top: 5rem;
+            text-align: center;
+        }
+
+        .contact-cta h3 {
+            font-family: var(--font-display);
+            font-weight: 300;
+            color: var(--color-alabaster);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-cta p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.9rem 2.2rem;
+            border-radius: 9999px;
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: var(--transition-premium);
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-bronze) 0%, #8e6d50 100%);
+            color: #0f1315;
+            box-shadow: 0 4px 30px rgba(169, 133, 103, 0.18);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 45px rgba(169, 133, 103, 0.35);
+            color: var(--color-alabaster);
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            .article-hero {
+                height: 50vh;
+            }
+            .article-body {
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back Navigation Capsule -->
+    <header>
+        <div class="nav-wrapper">
+            <a href="/ieer/" class="back-link">
+                <i class="ph ph-arrow-left"></i> Volver a inicio
+            </a>
+        </div>
+    </header>
+
+    <!-- Article Hero -->
+    <section class="article-hero">
+        <div class="article-hero-bg">
+            <img src="Assets/industrial_storage.jpg" alt="Almacenamiento de Litio Industrial">
+        </div>
+        <div class="article-hero-vignette"></div>
+        
+        <div class="container">
+            <div class="article-meta">
+                <span>01 // Almacenamiento</span>
+                <span class="dot"></span>
+                <span>Lectura: 5 min</span>
+            </div>
+            <h1 class="article-title">La Nueva Era de la Autonomía Energética Industrial</h1>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <article class="article-body">
+            <p>La red eléctrica nacional de media y alta tensión en México enfrenta un reto sin precedentes: la saturación y la inestabilidad de las líneas de transmisión. Para las industrias y comercios de alta demanda operativa, esto no es un problema ambiental teórico, sino una amenaza financiera directa. Un micro-corte de voltaje de milisegundos puede apagar líneas de producción complejas, resultando en pérdidas millonarias en mermas, tiempos muertos y daños de maquinaria.</p>
+
+            <h2>La Limitación de la Red Convencional</h2>
+            <p>Históricamente, la respuesta de la ingeniería de control consistía en plantas generadoras a diésel que actúan como respaldo. Sin embargo, estas plantas tienen un tiempo de arranque físico que oscila entre los 8 y 20 segundos, insuficiente para evitar caídas en sistemas críticos digitales o de control continuo.</p>
+            
+            <blockquote>
+                "En la manufactura de precisión, la energía no solo debe estar disponible; debe ser pura, ininterrumpida y responder en microsegundos ante cualquier fluctuación de CFE."
+            </blockquote>
+
+            <h2>Sistemas Inteligentes con Baterías de Litio</h2>
+            <p>La evolución del almacenamiento energético se basa hoy en celdas de litio LFP (Litio Hierro Fosfato), gestionadas por inversores de grado industrial de respuesta ultra-rápida (inversores de almacenamiento híbrido bidireccional). Estos sistemas operan bajo el principio de <strong>sistema interactivo con la red</strong> o en configuraciones aisladas (Off-Grid).</p>
+            
+            <p>Su función principal radica en:</p>
+            <ul>
+                <li><strong>Corte en Microsegundos:</strong> Respuesta instantánea (menor a 10 milisegundos) que actúa antes de que los relevadores de protección de equipos críticos identifiquen la baja tensión.</li>
+                <li><strong>Peak Shaving (Control de Demanda Máxima):</strong> Inyección de potencia almacenada durante los picos de mayor demanda de la planta para evitar tarifas de cobro punitivo por parte del suministrador eléctrico.</li>
+                <li><strong>Regulación de Frecuencia:</strong> Estabilización de armónicos y fluctuaciones finas de tensión en subestaciones industriales propias.</li>
+            </ul>
+
+            <h2>Conclusión y Retorno de Inversión</h2>
+            <p>Implementar micro-redes de almacenamiento industrial no solo reduce la huella operativa, sino que blinda el activo principal de la empresa. El retorno de inversión (ROI) no se calcula simplemente por el ahorro de diésel o tarifas comerciales, sino por el costo evitado de una sola parada de planta crítica en el año. La independencia energética ha pasado de ser un lujo de sostenibilidad a un pilar estratégico de fiabilidad operativa.</p>
+        </article>
+
+        <!-- CTA Box -->
+        <div class="contact-cta">
+            <h3>¿Requieres un análisis de carga para tu planta?</h3>
+            <p>Agenda una consulta con nuestro equipo técnico especializado para evaluar la viabilidad de un banco de baterías industrial.</p>
+            <a href="/ieer/#contacto" class="btn btn-primary">Iniciar Consulta Técnica</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="article-footer">
+            <div class="author-box">
+                <div class="author-info">
+                    <span class="author-name">Ing. Luis Carlos Garza</span>
+                    <span class="author-role">Director de Ingeniería — IEER</span>
+                </div>
+            </div>
+            <div style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--text-muted);">
+                Agosto, 2026
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

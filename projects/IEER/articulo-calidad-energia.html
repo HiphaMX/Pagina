@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Optimization -->
+    <title>Calidad de Energía: El Silencioso Pilar de la Eficiencia | IEER Journal</title>
+    <meta name="description" content="El impacto económico invisible de las distorsiones armónicas y fluctuaciones de voltaje en maquinaria y sistemas de control industrial.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Outfit:wght@100;200;300;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    
+    <style>
+        :root {
+            --bg-nature: #141a1c;
+            --bg-nature-accent: #0f1315;
+            --color-bronze: #a98567;
+            --color-alabaster: #e3ddd5;
+            --text-main: #e3ddd5;
+            --text-muted: #7e8d90;
+            --font-display: 'Outfit', sans-serif;
+            --font-tech: 'Space Grotesk', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-nature);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 6rem;
+        }
+
+        /* Capsule Nav Back Button */
+        header {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            margin: 0 auto;
+            width: calc(100% - 3rem);
+            max-width: 320px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(20, 26, 28, 0.28);
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            border-radius: 9999px;
+            backdrop-filter: blur(28px) saturate(220%);
+            -webkit-backdrop-filter: blur(28px) saturate(220%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--color-alabaster);
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-premium);
+        }
+
+        .back-link:hover {
+            color: var(--color-bronze);
+        }
+
+        /* Article Container */
+        .article-hero {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            padding-bottom: 4rem;
+        }
+
+        .article-hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .article-hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4) contrast(1.1);
+        }
+
+        .article-hero-vignette {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, var(--bg-nature) 100%);
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .article-meta {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            color: var(--color-bronze);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .article-meta .dot {
+            width: 4px;
+            height: 4px;
+            background-color: var(--color-bronze);
+            border-radius: 50%;
+        }
+
+        .article-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+            font-weight: 200;
+            color: var(--color-alabaster);
+            margin-bottom: 2rem;
+        }
+
+        /* Article Content */
+        .article-body {
+            font-size: 1.15rem;
+            color: #d1c9bd;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            margin-top: 4rem;
+        }
+
+        .article-body p {
+            margin-bottom: 2rem;
+        }
+
+        .article-body h2 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--color-bronze);
+            margin: 3.5rem 0 1.5rem 0;
+            letter-spacing: -0.01em;
+        }
+
+        .article-body blockquote {
+            border-left: 2px solid var(--color-bronze);
+            padding-left: 2rem;
+            margin: 3rem 0;
+            font-style: italic;
+            font-size: 1.35rem;
+            color: var(--color-alabaster);
+            font-weight: 200;
+        }
+
+        .article-body ul {
+            margin: 2rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .article-body li {
+            margin-bottom: 1rem;
+        }
+
+        .article-footer {
+            margin-top: 6rem;
+            border-top: 1px solid rgba(169, 133, 103, 0.15);
+            padding-top: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .author-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-weight: bold;
+            color: var(--color-alabaster);
+            font-size: 0.95rem;
+        }
+
+        .author-role {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-tech);
+        }
+
+        /* Floating Contact CTA */
+        .contact-cta {
+            background: rgba(30, 39, 41, 0.45);
+            border: 1px solid rgba(169, 133, 103, 0.12);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-top: 5rem;
+            text-align: center;
+        }
+
+        .contact-cta h3 {
+            font-family: var(--font-display);
+            font-weight: 300;
+            color: var(--color-alabaster);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-cta p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.9rem 2.2rem;
+            border-radius: 9999px;
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: var(--transition-premium);
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-bronze) 0%, #8e6d50 100%);
+            color: #0f1315;
+            box-shadow: 0 4px 30px rgba(169, 133, 103, 0.18);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 45px rgba(169, 133, 103, 0.35);
+            color: var(--color-alabaster);
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            .article-hero {
+                height: 50vh;
+            }
+            .article-body {
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back Navigation Capsule -->
+    <header>
+        <div class="nav-wrapper">
+            <a href="/ieer/" class="back-link">
+                <i class="ph ph-arrow-left"></i> Volver a inicio
+            </a>
+        </div>
+    </header>
+
+    <!-- Article Hero -->
+    <section class="article-hero">
+        <div class="article-hero-bg">
+            <img src="Assets/telemetry_terminal.jpg" alt="Medición de Calidad de Energía">
+        </div>
+        <div class="article-hero-vignette"></div>
+        
+        <div class="container">
+            <div class="article-meta">
+                <span>03 // Auditoría Técnica</span>
+                <span class="dot"></span>
+                <span>Lectura: 6 min</span>
+            </div>
+            <h1 class="article-title">Calidad de Energía: El Silencioso Pilar de la Eficiencia</h1>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <article class="article-body">
+            <p>En el ámbito del consumo eléctrico comercial e industrial, existe un factor crítico que suele pasar desapercibido hasta que ocurre una catástrofe: la <strong>calidad de la energía</strong>. La mayoría de los directores financieros y jefes de mantenimiento asumen que la energía entregada es perfecta si el voltaje promedio es correcto. Sin embargo, las distorsiones internas de la onda sinusoidal representan un costo invisible masivo que degrada silenciosamente la infraestructura.</p>
+
+            <h2>¿Qué es la Distorsión Armónica?</h2>
+            <p>La proliferación de cargas no lineales (como variadores de frecuencia, fuentes conmutadas de servidores, sistemas de iluminación LED y computadoras) introduce perturbaciones llamadas armónicos. Estos armónicos distorsionan la onda de corriente alterna ideal de 60 Hz en múltiples múltiplos de la frecuencia fundamental.</p>
+            
+            <blockquote>
+                "Una mala calidad de energía acorta a la mitad el ciclo de vida de motores y transformadores sin dejar rastro visible en los primeros meses."
+            </blockquote>
+
+            <h2>Síntomas de una Energía Contaminada</h2>
+            <p>Cuando los armónicos u otras distorsiones como sags (bajas de tensión) y swells (picos de tensión) aumentan, las plantas y complejos comerciales experimentan síntomas costosos:</p>
+            
+            <ul>
+                <li><strong>Calentamiento Excesivo en Conductores y Transformadores:</strong> La distorsión aumenta la corriente eficaz total, disipando calor ineficiente y dañando los aislamientos térmicos.</li>
+                <li><strong>Disparos Falsos en Interruptores:</strong> Sistemas de protección termomagnética o diferenciales que se activan sin una sobrecarga real aparente.</li>
+                <li><strong>Desgaste en Rodamientos y Cojinetes de Motores:</strong> Corrientes parasitarias en el eje causadas por distorsiones de voltaje inducido, destruyendo la lubricación interna.</li>
+            </ul>
+
+            <h2>La Solución de Alta Ingeniería</h2>
+            <p>Para mitigar estas fallas, se requiere instrumentar auditorías de calidad de energía utilizando analizadores de redes de clase A. Entre las soluciones más eficaces se encuentran los <strong>filtros activos de armónicos (AHF)</strong> e inversores con factor de potencia corregido, que inyectan corrientes compensadoras dinámicas en milisegundos para limpiar el flujo eléctrico antes de que llegue a la maquinaria de precisión.</p>
+            
+            <p>Mantener una energía limpia no solo evita penalizaciones del Código de Red vigentes en México, sino que se traduce directamente en la reducción de costos operativos y la protección de los activos tecnológicos más caros de la empresa.</p>
+        </article>
+
+        <!-- CTA Box -->
+        <div class="contact-cta">
+            <h3>¿Detectas calentamiento inusual en tus tableros?</h3>
+            <p>Realizamos auditorías de Código de Red y calidad de energía bajo especificaciones de la Comisión Reguladora de Energía.</p>
+            <a href="/ieer/#contacto" class="btn btn-primary">Agendar Auditoría de Red</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="article-footer">
+            <div class="author-box">
+                <div class="author-info">
+                    <span class="author-name">Ing. Luis Carlos Garza</span>
+                    <span class="author-role">Director de Ingeniería — IEER</span>
+                </div>
+            </div>
+            <div style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--text-muted);">
+                Agosto, 2026
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
