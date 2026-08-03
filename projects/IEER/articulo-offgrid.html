@@ -291,6 +291,123 @@
                 font-size: 1.05rem;
             }
         }
+
+        /* Floating WhatsApp Button (HUD Inspired) */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 58px;
+            height: 58px;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf274;
+            font-size: 1.8rem;
+            text-decoration: none;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(37, 211, 102, 0.2),
+                inset 0 0 10px rgba(37, 211, 102, 0.1);
+            z-index: 99;
+            transition: var(--transition-premium);
+        }
+
+        /* Pulsing Bronze Ring (Inspired by the brown circle in the graphic) */
+        .floating-whatsapp::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 1px solid rgba(169, 133, 103, 0.45);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: whatsapp-bronze-pulse 3s infinite ease-in-out;
+            transition: var(--transition-premium);
+        }
+
+        /* Live Indicator Dot (Inspired by the white dot in the graphic) */
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        @keyframes whatsapp-bronze-pulse {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.2;
+                border-color: rgba(169, 133, 103, 0.2);
+            }
+            50% {
+                opacity: 0.8;
+                border-color: rgba(169, 133, 103, 0.6);
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+                border-color: rgba(169, 133, 103, 0);
+            }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6),
+                0 0 25px rgba(37, 211, 102, 0.5),
+                inset 0 0 15px rgba(37, 211, 102, 0.25);
+        }
+
+        .floating-whatsapp:hover i {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+        }
+
+        .floating-whatsapp:hover::before {
+            border-color: rgba(37, 211, 102, 0.6);
+            inset: -12px;
+        }
+
+        @media (max-width: 767px) {
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
+            .floating-whatsapp::before {
+                inset: -6px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -366,6 +483,9 @@
             </div>
         </div>
     </main>
-
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." class="floating-whatsapp" target="_blank" aria-label="Contacto por WhatsApp">
+        <i class="ph-fill ph-whatsapp-logo"></i>
+    </a>
 </body>
 </html>
