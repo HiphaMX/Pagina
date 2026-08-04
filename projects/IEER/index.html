@@ -81,6 +81,7 @@
             overflow-x: hidden !important;
             width: 100% !important;
             max-width: 100% !important;
+            position: relative;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -2187,8 +2188,8 @@
                 top: 1rem; 
                 left: 0 !important;
                 right: 0 !important;
-                width: 100vw !important;
-                max-width: 100vw !important;
+                width: 100% !important;
+                max-width: 100% !important;
                 display: flex;
                 justify-content: center;
                 box-sizing: border-box;
@@ -2660,8 +2661,10 @@
     <div class="custom-cursor-ring"></div>
 
     <!-- Atmospheric Glow Blends -->
-    <div class="nebula nebula-forest" style="top: -100px; right: -100px;"></div>
-    <div class="nebula nebula-bronze" style="bottom: 5%; left: -150px;"></div>
+    <div class="nebula-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 1;">
+        <div class="nebula nebula-forest" style="top: -100px; right: -100px;"></div>
+        <div class="nebula nebula-bronze" style="bottom: 5%; left: -150px;"></div>
+    </div>
 
     <!-- Floating Navigation Bar (Capsule Style) -->
     <header id="main-header">
