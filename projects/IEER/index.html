@@ -237,6 +237,30 @@
             text-shadow: 0 0 12px var(--color-bronze-glow);
         }
 
+        .nav-brand-link {
+            display: none;
+            font-family: var(--font-accent);
+            font-size: 1.15rem;
+            font-weight: normal;
+            color: var(--color-alabaster);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            transition: var(--transition-premium);
+        }
+
+        .nav-brand-link:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 10px var(--color-bronze-glow);
+        }
+
+        .hamburger-btn {
+            display: none;
+        }
+
+        .nav-menu {
+            display: block;
+        }
+
         /* General Button Styling */
         .btn {
             display: inline-flex;
@@ -2072,23 +2096,189 @@
             .conversational-paragraph { font-size: 1.25rem; line-height: 1.9; }
             .section-header { margin: 0 auto 3rem auto; }
             
-            /* Scrollable Mobile Nav Capsule */
-            header { top: 1rem; }
-            header.scrolled { top: 0.5rem; }
-            .nav-wrapper { 
-                padding: 0.6rem 1rem; 
-                width: calc(100% - 2rem);
+            /* Mobile Nav Capsule with Hamburger */
+            header { 
+                top: 1rem; 
             }
+            header.scrolled { 
+                top: 0.5rem; 
+            }
+            .nav-wrapper { 
+                padding: 0.6rem 1.25rem; 
+                width: calc(100% - 2rem);
+                max-width: 480px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+            }
+            
+            .nav-brand-link {
+                display: block;
+            }
+
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 22px;
+                height: 14px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                z-index: 110;
+            }
+
+            .hamburger-bar {
+                width: 100%;
+                height: 2px;
+                background-color: var(--color-alabaster);
+                border-radius: 2px;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            /* Hamburger transform into X */
+            .hamburger-btn.active .hamburger-bar:nth-child(1) {
+                transform: translateY(6px) rotate(45deg);
+                background-color: var(--color-bronze);
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(3) {
+                transform: translateY(-6px) rotate(-45deg);
+                background-color: var(--color-bronze);
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: calc(100% + 10px);
+                left: 0;
+                right: 0;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(20, 26, 28, 0.96);
+                border: 1px solid rgba(227, 221, 213, 0.08);
+                border-radius: 20px;
+                backdrop-filter: blur(25px) saturate(180%);
+                -webkit-backdrop-filter: blur(25px) saturate(180%);
+                display: none;
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1.25rem;
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+                opacity: 0;
+                transform: translateY(-10px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                z-index: 100;
+            }
+
+            .nav-menu.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
             .nav-links { 
                 display: flex; 
+                flex-direction: column;
+                align-items: center;
                 gap: 1.25rem; 
-                overflow-x: auto; 
-                -webkit-overflow-scrolling: touch;
-                padding-bottom: 0;
-                scrollbar-width: none;
+                width: 100%;
+                padding: 0;
             }
-            .nav-links::-webkit-scrollbar { display: none; }
-            .nav-links a { font-size: 0.75rem; letter-spacing: 0.15em; padding: 0.25rem; }
+            
+            .nav-links a { 
+                font-size: 0.85rem; 
+                letter-spacing: 0.2em; 
+                padding: 0.5rem; 
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+
+            /* Cobertura Zerocircle mobile layout */
+            .zerocircle-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+                align-items: center;
+            }
+            .zerocircle-divider {
+                display: none;
+            }
+            .zerocircle-left, .zerocircle-right {
+                font-size: clamp(1.2rem, 5.5vw, 1.8rem);
+                white-space: normal;
+                text-align: center;
+                letter-spacing: 0.02em;
+            }
+
+            /* Inquiry Form mobile layout overrides */
+            .inquiry-grid-form {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .inquiry-grid-form .form-column-full {
+                grid-column: span 1;
+            }
+
+            /* Sectors Showcase mobile layout overrides */
+            .sectors {
+                height: auto;
+                min-height: auto;
+                max-height: none;
+                padding: 4rem 0;
+            }
+            .sectors-viewport {
+                position: relative;
+                pointer-events: auto;
+            }
+            .sector-slider-nav {
+                position: relative;
+                top: 0;
+                left: 0;
+                width: 100%;
+                justify-content: center;
+                gap: 1.25rem;
+                margin-bottom: 2rem;
+                padding: 0 1rem;
+            }
+            .sector-nav-btn {
+                font-size: 0.8rem;
+                padding-bottom: 0.25rem;
+            }
+            .sector-massive-title-container {
+                display: none !important; /* Hide giant overlay text to prevent overlapping and clipping */
+            }
+            .sector-description-container {
+                position: relative;
+                right: 0;
+                bottom: 0;
+                max-width: none;
+                width: 100%;
+                padding: 0 1.25rem;
+                text-align: center;
+            }
+            .sector-desc-slide {
+                text-align: center;
+            }
+            .sector-slide-subtitle {
+                font-size: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+            .sector-slide-paragraph {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+                line-height: 1.6;
+            }
+            .sector-slide-specs {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .sector-slide-specs li {
+                font-size: 0.75rem;
+            }
         }
 
         @media (max-width: 479px) {
@@ -2312,13 +2502,23 @@
     <!-- Floating Navigation Bar (Capsule Style) -->
     <header id="main-header">
         <div class="nav-wrapper">
-            <!-- Removed logo from navbar -->
-            <ul class="nav-links">
-                <li><a href="#autonomia">Servicios</a></li>
-                <li><a href="#sectores">Soluciones</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-            </ul>
+            <a href="#inicio" class="nav-brand-link">IEER</a>
+            
+            <!-- Hamburger Button -->
+            <button class="hamburger-btn" aria-label="Menu" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+            
+            <nav class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="#autonomia">Servicios</a></li>
+                    <li><a href="#sectores">Soluciones</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
@@ -3128,6 +3328,37 @@
                 header.classList.remove('scrolled');
             }
         });
+
+        // Hamburger Menu Toggle
+        const hamburgerBtn = document.querySelector('.hamburger-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburgerBtn && navMenu) {
+            hamburgerBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const active = navMenu.classList.toggle('active');
+                hamburgerBtn.classList.toggle('active');
+                hamburgerBtn.setAttribute('aria-expanded', active);
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close menu when clicking links
+            const navLinks = navMenu.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
         // Sectors Showcase Interaction (Longbow Style)
         function switchSector(index) {
             const bgSlides = document.querySelectorAll('.sector-bg-slide');
