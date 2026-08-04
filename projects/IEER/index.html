@@ -78,8 +78,9 @@
             background-color: var(--bg-nature);
             color: var(--text-main);
             line-height: 1.8;
-            overflow-x: hidden;
-            width: 100%;
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100% !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -2527,6 +2528,7 @@
         }
 
         /* Floating WhatsApp Button (HUD Inspired) */
+        /* Floating WhatsApp Button (HUD Inspired) */
         .floating-whatsapp {
             position: fixed;
             bottom: 2rem;
@@ -2544,24 +2546,9 @@
             color: #3bf274;
             font-size: 1.8rem;
             text-decoration: none;
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.5),
-                0 0 15px rgba(37, 211, 102, 0.2),
-                inset 0 0 10px rgba(37, 211, 102, 0.1);
             z-index: 99;
             transition: var(--transition-premium);
-        }
-
-        /* Pulsing Bronze Ring (Inspired by the brown circle in the graphic) */
-        .floating-whatsapp::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border: 1px solid rgba(169, 133, 103, 0.45);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: whatsapp-bronze-pulse 3s infinite ease-in-out;
-            transition: var(--transition-premium);
+            animation: whatsapp-bronze-shadow-pulse 3s infinite ease-in-out;
         }
 
         /* Live Indicator Dot (Inspired by the white dot in the graphic) */
@@ -2578,20 +2565,24 @@
             animation: whatsapp-dot-flash 2s infinite alternate;
         }
 
-        @keyframes whatsapp-bronze-pulse {
+        @keyframes whatsapp-bronze-shadow-pulse {
             0% {
-                transform: scale(0.9);
-                opacity: 0.2;
-                border-color: rgba(169, 133, 103, 0.2);
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 0 rgba(169, 133, 103, 0.55),
+                    inset 0 0 10px rgba(37, 211, 102, 0.1);
             }
-            50% {
-                opacity: 0.8;
-                border-color: rgba(169, 133, 103, 0.6);
+            70% {
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 16px rgba(169, 133, 103, 0),
+                    inset 0 0 10px rgba(37, 211, 102, 0.1);
             }
             100% {
-                transform: scale(1.2);
-                opacity: 0;
-                border-color: rgba(169, 133, 103, 0);
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 0 rgba(169, 133, 103, 0),
+                    inset 0 0 10px rgba(37, 211, 102, 0.1);
             }
         }
 
@@ -2615,6 +2606,7 @@
             transform: scale(1.08) translateY(-2px);
             border-color: #3bf274;
             color: #ffffff;
+            animation: none;
             box-shadow: 
                 0 15px 35px rgba(0, 0, 0, 0.6),
                 0 0 25px rgba(37, 211, 102, 0.5),
@@ -2625,11 +2617,6 @@
             filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
         }
 
-        .floating-whatsapp:hover::before {
-            border-color: rgba(37, 211, 102, 0.6);
-            inset: -12px;
-        }
-
         @media (max-width: 767px) {
             .floating-whatsapp {
                 bottom: 1.5rem;
@@ -2637,9 +2624,28 @@
                 width: 48px;
                 height: 48px;
                 font-size: 1.5rem;
+                animation: whatsapp-bronze-shadow-pulse-mobile 3s infinite ease-in-out;
             }
-            .floating-whatsapp::before {
-                inset: -6px;
+        }
+
+        @keyframes whatsapp-bronze-shadow-pulse-mobile {
+            0% {
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 0 rgba(169, 133, 103, 0.55),
+                    inset 0 0 10px rgba(37, 211, 102, 0.1);
+            }
+            70% {
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 12px rgba(169, 133, 103, 0),
+                    inset 0 0 10px rgba(37, 211, 102, 0.1);
+            }
+            100% {
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    0 0 0 0 rgba(169, 133, 103, 0),
+                    inset 0 0 10px rgba(37, 211, 102, 0.1);
             }
         }
     </style>
