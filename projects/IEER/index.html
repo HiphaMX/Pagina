@@ -2156,19 +2156,23 @@
             .section-header { margin: 0 auto 3rem auto; }
             
             header { 
+                position: fixed !important;
                 top: 1rem; 
-                left: 0;
-                right: 0;
-                width: 100%;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100vw !important;
+                max-width: 100vw !important;
                 display: flex;
                 justify-content: center;
+                box-sizing: border-box;
+                padding: 0 1rem;
             }
             header.scrolled { 
                 top: 0.5rem; 
             }
             .nav-wrapper { 
                 padding: 0.6rem 1.25rem; 
-                width: calc(100% - 2rem);
+                width: 100% !important;
                 max-width: 480px;
                 display: flex;
                 justify-content: space-between;
@@ -2292,10 +2296,11 @@
                 animation: telemetry-pulse 2s infinite alternate;
             }
             .zerocircle-left, .zerocircle-right {
-                font-size: clamp(1.4rem, 6vw, 2rem);
-                white-space: nowrap;
+                font-size: clamp(1.1rem, 5.5vw, 1.6rem);
+                white-space: normal;
+                line-height: 1.3;
                 text-align: center;
-                letter-spacing: 0.08em;
+                letter-spacing: 0.05em;
                 margin: 0;
             }
 
@@ -2313,8 +2318,11 @@
             }
             .btn-submit-professional {
                 width: 100% !important;
+                padding: 1.25rem 1rem !important;
                 justify-content: center;
                 box-sizing: border-box;
+                font-size: 0.8rem;
+                letter-spacing: 0.12em;
             }
 
             /* Sectors Showcase mobile layout overrides */
