@@ -1523,6 +1523,18 @@
             gap: 1.25rem;
         }
 
+        .footer-logo {
+            width: 140px;
+            height: auto;
+            opacity: 0.9;
+            transition: var(--transition-premium);
+        }
+
+        .footer-logo:hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 10px rgba(169, 133, 103, 0.35));
+        }
+
         .footer-brand-text {
             font-size: 0.95rem;
             line-height: 1.7;
@@ -2871,7 +2883,7 @@
 
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <!-- Removed logo from footer -->
+                    <img src="Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo">
                     <p class="footer-brand-text">Ingeniería especializada en micro-redes, almacenamiento de baterías de litio y optimización energética independiente. Solidez de infraestructura en todo México.</p>
                 </div>
                 
