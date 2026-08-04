@@ -1562,16 +1562,40 @@
             gap: 1.25rem;
         }
 
+        .footer-logo-wrapper {
+            position: relative;
+            width: 140px;
+            height: 163px;
+            display: block;
+            transition: var(--transition-premium);
+        }
+
         .footer-logo {
             width: 140px;
             height: auto;
             opacity: 0.9;
-            transition: var(--transition-premium);
+            transition: opacity var(--transition-premium);
         }
 
-        .footer-logo:hover {
+        .footer-logo.logo-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .footer-logo-wrapper:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer-logo-wrapper:hover .logo-default {
+            opacity: 0;
+        }
+
+        .footer-logo-wrapper:hover .logo-hover {
             opacity: 1;
-            filter: drop-shadow(0 0 10px rgba(169, 133, 103, 0.35));
+            filter: drop-shadow(0 0 12px rgba(162, 184, 65, 0.35)) drop-shadow(0 0 4px rgba(155, 121, 91, 0.25));
         }
 
         .footer-brand-text {
@@ -3254,7 +3278,10 @@
 
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <img src="Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo">
+                    <div class="footer-logo-wrapper">
+                        <img src="Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
+                        <img src="Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
+                    </div>
                     <p class="footer-brand-text">Ingeniería especializada en micro-redes, almacenamiento de baterías de litio y optimización energética independiente. Solidez de infraestructura en todo México.</p>
                 </div>
                 
