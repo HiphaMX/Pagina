@@ -1310,6 +1310,11 @@
             box-shadow: 0 0 15px rgba(169, 133, 103, 0.15);
         }
 
+        .submit-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
         .btn-submit-professional {
             display: inline-flex;
             align-items: center;
@@ -2038,45 +2043,38 @@
             .promise-timeline-steps {
                 flex-direction: row;
                 width: 100%;
-                gap: 0.5rem;
+                gap: 0.8rem;
                 justify-content: center;
-                flex-wrap: wrap;
-                background: rgba(227, 221, 213, 0.03);
-                border: 1px solid rgba(227, 221, 213, 0.06);
-                padding: 0.4rem;
-                border-radius: 30px;
-                max-width: 520px;
-                margin: 0 auto;
+                align-items: center;
+                background: none;
+                border: none;
+                padding: 0;
+                margin: 2rem auto 0 auto;
                 box-sizing: border-box;
             }
             .promise-timeline-step {
-                padding: 0.5rem 1rem;
-                border-radius: 20px;
-                transition: all 0.4s ease;
-                cursor: pointer;
-                text-align: center;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: rgba(227, 221, 213, 0.25);
                 border: 1px solid transparent;
-                background: transparent;
+                padding: 0;
+                min-width: auto;
+                cursor: pointer;
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .promise-timeline-step .step-tick {
                 display: none;
             }
             .promise-timeline-step .step-label {
-                font-size: 0.72rem;
-                font-family: var(--font-tech);
-                text-transform: uppercase;
-                letter-spacing: 0.12em;
-                color: rgba(227, 221, 213, 0.5);
-                transition: all 0.4s ease;
+                display: none !important;
             }
             .promise-timeline-step.active {
-                background: rgba(169, 133, 103, 0.15);
-                border-color: rgba(169, 133, 103, 0.35);
-                box-shadow: 0 0 15px rgba(169, 133, 103, 0.08);
-            }
-            .promise-timeline-step.active .step-label {
-                color: var(--color-alabaster) !important;
-                text-shadow: 0 0 8px rgba(227, 221, 213, 0.4);
+                background: var(--color-bronze);
+                border-color: var(--color-bronze);
+                box-shadow: 0 0 10px var(--color-bronze);
+                width: 22px;
+                border-radius: 5px;
             }
             .sectors-grid {
                 grid-template-columns: 1fr;
@@ -2266,17 +2264,17 @@
             /* Cobertura Zerocircle mobile layout (Diagram Layout) */
             .zerocircle-header {
                 flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
+                justify-content: space-between;
                 align-items: center;
+                min-height: 380px;
                 display: flex;
             }
             .zerocircle-divider {
                 display: block !important;
                 width: 1px;
-                height: 50px;
+                height: 180px;
                 background: linear-gradient(180deg, rgba(227, 221, 213, 0.15) 0%, var(--color-bronze) 50%, rgba(227, 221, 213, 0.15) 100%);
-                margin: 1.25rem 0 !important;
+                margin: 1rem 0 !important;
                 position: relative;
                 flex-grow: 0;
             }
@@ -2309,18 +2307,37 @@
             .inquiry-grid-form .form-column-full {
                 grid-column: span 1;
             }
+            .submit-container {
+                justify-content: center;
+                width: 100%;
+            }
+            .btn-submit-professional {
+                width: 100% !important;
+                justify-content: center;
+                box-sizing: border-box;
+            }
 
             /* Sectors Showcase mobile layout overrides */
             .sectors {
-                height: auto;
-                min-height: auto;
+                height: 100vh;
+                min-height: 600px;
                 max-height: none;
-                padding: 4rem 0;
+                padding: 3rem 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                box-sizing: border-box;
             }
             .sectors-viewport {
                 position: relative;
                 pointer-events: auto;
                 width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                flex-grow: 1;
             }
             .sector-slider-nav {
                 position: relative;
@@ -3158,8 +3175,8 @@
                     <textarea id="contact-message" placeholder="Describe las cargas críticas que requieres respaldar (ej. bombas de riego, sistemas de refrigeración, aire acondicionado, casa de campo con cero apagones)..."></textarea>
                 </div>
 
-                <div class="form-column-full" style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
-                    <button type="submit" class="btn btn-primary btn-submit-professional" style="width: auto;">
+                <div class="form-column-full submit-container" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary btn-submit-professional">
                         <span>Enviar solicitud</span>
                         <i class="ph ph-paper-plane-tilt"></i>
                     </button>
@@ -3561,13 +3578,70 @@
             });
         }
 
+        // Services Autoplay & Swipe Slider on Mobile
+        let autoplayInterval = null;
+        let startX = 0;
+        let currentServiceIndex = 0;
+        const servicesContainer = document.querySelector('.promise-sticky-container');
+
+        function startAutoplay() {
+            if (autoplayInterval) clearInterval(autoplayInterval);
+            autoplayInterval = setInterval(() => {
+                if (window.innerWidth <= 991) {
+                    currentServiceIndex = (currentServiceIndex + 1) % 4;
+                    switchPromiseService(currentServiceIndex);
+                }
+            }, 4500);
+        }
+
+        function stopAutoplay() {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+            }
+        }
+
+        if (servicesContainer) {
+            // Autoplay init
+            startAutoplay();
+
+            // Touch swipe support
+            servicesContainer.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                stopAutoplay();
+            }, { passive: true });
+
+            servicesContainer.addEventListener('touchend', (e) => {
+                if (!startX) return;
+                const endX = e.changedTouches[0].clientX;
+                const diffX = startX - endX;
+
+                if (Math.abs(diffX) > 50) { // 50px threshold
+                    if (diffX > 0) {
+                        // Swipe Left -> Next
+                        currentServiceIndex = (currentServiceIndex + 1) % 4;
+                    } else {
+                        // Swipe Right -> Prev
+                        currentServiceIndex = (currentServiceIndex - 1 + 4) % 4;
+                    }
+                    switchPromiseService(currentServiceIndex);
+                }
+                startX = 0;
+                startAutoplay();
+            }, { passive: true });
+        }
+
         function scrollToService(index) {
             const section = document.querySelector('.promise-sticky');
             if (!section) return;
             
             const isMobile = window.innerWidth <= 991;
+            currentServiceIndex = index; // Sync index
+            
             if (isMobile) {
                 switchPromiseService(index);
+                stopAutoplay();
+                startAutoplay(); // Reset timer
                 return;
             }
             
