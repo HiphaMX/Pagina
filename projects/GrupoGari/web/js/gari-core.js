@@ -201,19 +201,19 @@ function initFaqAccordion() {
    ========================================================================== */
 
 const CURSOS_OPCIONES = [
-    "Brigadas de Emergencia (Primeros Auxilios, Combate de Incendios, Evacuación)",
-    "NOM-019-STPS (Comisión de Seguridad e Higiene)",
-    "NOM-035-STPS (Factores de Riesgo Psicosocial)",
-    "NOM-009-STPS (Seguridad para Trabajos en Alturas)",
-    "NOM-033-STPS (Trabajos en Espacios Confinados)",
-    "NOM-029-STPS (Mantenimiento de Instalaciones Eléctricas)"
+    "1. Seguridad y Protección Civil",
+    "2. Seguridad Eléctrica",
+    "3. Trabajos en Altura y Equipos de Elevación",
+    "4. Operación de Maquinaria y Equipos",
+    "5. Soldadura, Corte y Trabajos en Caliente",
+    "6. Seguridad Industrial",
+    "7. Manejo de Sustancias y Materiales Peligrosos",
+    "8. Normatividad STPS"
 ];
 
 const CERTIFICACIONES_OPCIONES = [
-    "ISO-9001:2015 (Sistemas de Gestión de Calidad)",
-    "ISO-14001:2015 (Sistemas de Gestión Ambiental)",
-    "ISO-45001:2018 (Seguridad y Salud en el Trabajo)",
-    "Distintivo Best Place to Work (Alineación NOM-035/036)"
+    "ISO 9001 - Sistema de Gestión de la Calidad",
+    "ISO 14001 - Sistema de Gestión Ambiental"
 ];
 
 function initDiagnosticForm() {
