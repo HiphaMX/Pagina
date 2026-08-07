@@ -572,53 +572,101 @@ function initAccompanimentStepper() {
     const checklistEl = document.getElementById('step-checklist');
     const durationEl = document.getElementById('step-duration');
 
+    let currentStep = 1;
+    const totalSteps = 5;
+    let autoplayInterval;
+
+    function goToStep(stepId) {
+        const data = ACCOMPANIMENT_STEPS[stepId];
+        if (!data) return;
+
+        // Cambiar estados activos en botones
+        stepButtons.forEach(b => b.classList.remove('active'));
+        const activeBtn = document.querySelector(`.step-btn[data-step="${stepId}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        // Efecto suave de fade out/in en el monitor
+        displayWrapper.style.opacity = '0';
+        watermark.style.opacity = '0';
+        watermark.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+            // Actualizar textos
+            watermark.textContent = data.watermark;
+            statusTag.textContent = data.status;
+            titleEl.textContent = data.title;
+            descEl.textContent = data.desc;
+            durationEl.textContent = data.duration;
+            
+            // Actualizar SVG
+            svgEl.innerHTML = data.svg;
+
+            // Actualizar checklist
+            checklistEl.innerHTML = "";
+            data.checklist.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span style="color: var(--acento-warn);">▪</span> ${item}`;
+                checklistEl.appendChild(li);
+            });
+
+            // Fade back in
+            displayWrapper.style.opacity = '1';
+            watermark.style.opacity = '0.08';
+            watermark.style.transform = 'translateY(0)';
+        }, 250);
+
+        // Track Evento de interacción con stepper
+        window.trackGariEvent('view_accompaniment_step', {
+            step_number: stepId,
+            step_title: data.title
+        });
+    }
+
+    // Event listener for user interaction
     stepButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const stepId = btn.dataset.step;
-            const data = ACCOMPANIMENT_STEPS[stepId];
-            if (!data) return;
-
-            // Cambiar estados activos en botones
-            stepButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // Efecto suave de fade out/in en el monitor
-            displayWrapper.style.opacity = '0';
-            watermark.style.opacity = '0';
-            watermark.style.transform = 'translateY(10px)';
-
-            setTimeout(() => {
-                // Actualizar textos
-                watermark.textContent = data.watermark;
-                statusTag.textContent = data.status;
-                titleEl.textContent = data.title;
-                descEl.textContent = data.desc;
-                durationEl.textContent = data.duration;
-                
-                // Actualizar SVG
-                svgEl.innerHTML = data.svg;
-
-                // Actualizar checklist
-                checklistEl.innerHTML = "";
-                data.checklist.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span style="color: var(--acento-warn);">▪</span> ${item}`;
-                    checklistEl.appendChild(li);
-                });
-
-                // Fade back in
-                displayWrapper.style.opacity = '1';
-                watermark.style.opacity = '0.08';
-                watermark.style.transform = 'translateY(0)';
-            }, 250);
-
-            // Track Evento de interacción con stepper
-            window.trackGariEvent('view_accompaniment_step', {
-                step_number: stepId,
-                step_title: data.title
-            });
+            currentStep = parseInt(stepId);
+            goToStep(stepId);
+            resetAutoplay();
         });
     });
+
+    // Auto-advance logic (Autoplay)
+    function startAutoplay() {
+        clearInterval(autoplayInterval);
+        autoplayInterval = setInterval(() => {
+            currentStep = (currentStep % totalSteps) + 1;
+            goToStep(currentStep.toString());
+        }, 5000);
+    }
+
+    function stopAutoplay() {
+        clearInterval(autoplayInterval);
+    }
+
+    function resetAutoplay() {
+        stopAutoplay();
+        startAutoplay();
+    }
+
+    // IntersectionObserver to auto start/stop based on viewport visibility
+    const consoleSection = document.querySelector('.blueprint-console');
+    if (consoleSection && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startAutoplay();
+                } else {
+                    stopAutoplay();
+                }
+            });
+        }, { threshold: 0.15 });
+        observer.observe(consoleSection);
+    } else {
+        // Fallback if IntersectionObserver is not supported
+        startAutoplay();
+    }
 }
 
 /* ==========================================================================
