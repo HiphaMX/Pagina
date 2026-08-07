@@ -646,7 +646,7 @@
                             
                             .monitor-screen {
                                 grid-column: span 1;
-                                min-height: 400px;
+                                min-height: auto;
                                 padding: 2rem 1.5rem;
                             }
                         }
@@ -734,11 +734,11 @@
                                         <li><span style="color: var(--acento-warn);">▪</span> Reporte de Hallazgos y Riesgos Regulatorios</li>
                                     </ul>
                                 </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1rem; position: relative; z-index: 5;">
-                                    <div style="font-family: var(--font-mono); font-size: 0.8rem;">
+                                <div class="step-footer" style="display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1rem; position: relative; z-index: 5;">
+                                    <div style="font-family: var(--font-mono); font-size: 0.85rem; border: 1px dashed var(--border-color); padding: 0.75rem 1rem; background: var(--bg-secondary); text-align: center; width: 100%; box-sizing: border-box;">
                                         <span style="color: var(--text-tertiary);">EST. TIMELINE:</span> <span id="step-duration" style="color: var(--text-primary); font-weight: bold;">2-3 Semanas</span>
                                     </div>
-                                    <a href="#contacto" class="btn btn-warn" style="font-family: var(--font-tech); padding: 0.75rem 1.5rem; font-size: 0.9rem;">Solicitar información</a>
+                                    <a href="#contacto" class="btn btn-warn" id="step-cta-btn" style="font-family: var(--font-tech); padding: 1rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; width: 100%; display: block; box-sizing: border-box; text-decoration: none;">Solicitar información</a>
                                 </div>
                                 <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                             </div>
@@ -1169,8 +1169,8 @@
                         </div>
 
                         <!-- Enviar -->
-                        <div class="form-navigation" style="display: flex; justify-content: flex-end;">
-                            <button type="submit" class="btn btn-warn" id="btn-submit" style="padding: 1rem 2.5rem; font-weight: bold; font-family: var(--font-tech); cursor: pointer; border: none;">Solicitar Información</button>
+                        <div class="form-navigation" style="display: flex; justify-content: center; width: 100%;">
+                            <button type="submit" class="btn btn-warn" id="btn-submit" style="width: 100%; padding: 1rem 2.5rem; font-weight: bold; font-family: var(--font-tech); cursor: pointer; border: none;">Solicitar Información</button>
                         </div>
                     </form>
                 </div>

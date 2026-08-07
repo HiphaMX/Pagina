@@ -614,6 +614,14 @@ function initAccompanimentStepper() {
             displayWrapper.style.opacity = '1';
             watermark.style.opacity = '0.08';
             watermark.style.transform = 'translateY(0)';
+            
+            // Move monitor-screen after activeBtn on mobile (accordion behavior)
+            if (window.innerWidth <= 991 && activeBtn) {
+                const monitorScreen = document.querySelector('.monitor-screen');
+                if (monitorScreen) {
+                    activeBtn.after(monitorScreen);
+                }
+            }
         }, 250);
 
         // Track Evento de interacción con stepper
@@ -668,6 +676,32 @@ function initAccompanimentStepper() {
         // Fallback if IntersectionObserver is not supported
         startAutoplay();
     }
+
+    // Position monitor screen after active button on mobile initial load
+    if (window.innerWidth <= 991) {
+        const activeBtn = document.querySelector('.step-btn.active');
+        const monitorScreen = document.querySelector('.monitor-screen');
+        if (activeBtn && monitorScreen) {
+            activeBtn.after(monitorScreen);
+        }
+    }
+
+    // Restore or change position of monitor screen on window resize
+    window.addEventListener('resize', () => {
+        const monitorScreen = document.querySelector('.monitor-screen');
+        const consoleEl = document.querySelector('.blueprint-console');
+        if (window.innerWidth > 991 && monitorScreen && consoleEl) {
+            const stepperControls = document.querySelector('.stepper-controls');
+            if (monitorScreen.parentElement === stepperControls) {
+                consoleEl.appendChild(monitorScreen);
+            }
+        } else if (window.innerWidth <= 991 && monitorScreen) {
+            const activeBtn = document.querySelector('.step-btn.active');
+            if (activeBtn && monitorScreen.previousElementSibling !== activeBtn) {
+                activeBtn.after(monitorScreen);
+            }
+        }
+    });
 }
 
 /* ==========================================================================
