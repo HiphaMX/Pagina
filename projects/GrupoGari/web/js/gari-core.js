@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicializar Componentes de Interfaz en Home
+    initMobileMenu(); // Inicializa el menú hamburguesa móvil
     initB2BSelector(); // Inicializa el Acordeón FAQ
     initAccompanimentStepper(); // Inicializa el visualizador de Acompañamiento 5 Pasos
     initHeroSlider(); // Inicializa el Slider TOP 10 Cursos
@@ -805,5 +806,38 @@ function initReviewsSlider() {
             const index = parseInt(dot.dataset.index);
             goToSlide(index);
         });
+    });
+}
+
+/* ==========================================================================
+   8. MENÚ HAMBURGUESA MÓVIL
+   ========================================================================== */
+
+function initMobileMenu() {
+    const burgerBtn = document.querySelector('.mobile-menu-btn');
+    const navList = document.querySelector('.tech-nav');
+    if (!burgerBtn || !navList) return;
+
+    burgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        burgerBtn.classList.toggle('active');
+        navList.classList.toggle('active');
+    });
+
+    // Cerrar al hacer click en enlaces
+    const links = navList.querySelectorAll('a');
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            burgerBtn.classList.remove('active');
+            navList.classList.remove('active');
+        });
+    });
+
+    // Cerrar si hace click fuera del navbar
+    document.addEventListener('click', (e) => {
+        if (!navList.contains(e.target) && !burgerBtn.contains(e.target)) {
+            burgerBtn.classList.remove('active');
+            navList.classList.remove('active');
+        }
     });
 }

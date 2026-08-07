@@ -21,6 +21,14 @@
                 <img src="Assets/fondo%20blanco.svg" alt="Grupo Gari Logo" style="height: 48px; width: auto; display: block;">
             </a>
             
+            <button class="mobile-menu-btn" aria-label="Abrir menú" style="display: none; background: transparent; border: none; color: var(--text-primary); cursor: pointer; padding: 0.5rem; transition: transform var(--transition-fast); align-items: center; justify-content: center; z-index: 1001;">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <line class="line-1" x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transition: transform var(--transition-fast), y1 var(--transition-fast), y2 var(--transition-fast); transform-origin: center;"/>
+                    <line class="line-2" x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transition: opacity var(--transition-fast);"/>
+                    <line class="line-3" x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transition: transform var(--transition-fast), y1 var(--transition-fast), y2 var(--transition-fast); transform-origin: center;"/>
+                </svg>
+            </button>
+            
             <nav>
                 <ul class="tech-nav">
                     <li><a href="#nav-header" class="nav-link active">Inicio</a></li>
@@ -624,18 +632,16 @@
                             
                             .stepper-controls {
                                 grid-column: span 1;
-                                flex-direction: row;
-                                overflow-x: auto;
-                                padding-bottom: 0.5rem;
+                                flex-direction: column;
                                 gap: 0.75rem;
-                                scroll-snap-type: x mandatory;
                                 height: auto;
                             }
                             
                             .step-btn {
-                                flex: 0 0 240px;
-                                scroll-snap-align: start;
+                                width: 100%;
+                                flex: none;
                                 padding: 1.25rem 1.5rem;
+                                box-sizing: border-box;
                             }
                             
                             .monitor-screen {
