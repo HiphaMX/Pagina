@@ -162,187 +162,159 @@ function registerDirectContactEvents() {
    ========================================================================== */
 
 function initB2BSelector() {
-    const cards = document.querySelectorAll('.b2b-card');
-    const hrBlock = document.getElementById('segment-hr-block');
-    const ownerBlock = document.getElementById('segment-owner-block');
+    // Inicializar el acordeón FAQ en la página principal
+    initFaqAccordion();
+}
 
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            // Remover active de todas
-            cards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-
-            const segment = card.dataset.segment;
+function initFaqAccordion() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const answer = item.querySelector('.faq-answer');
+            const icon = item.querySelector('.faq-icon');
+            const isOpen = item.classList.contains('active');
             
-            // Track de interacción
-            window.trackGariEvent('select_b2b_segment', {
-                selected_role: segment
+            // Cerrar otros
+            faqItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                    otherItem.querySelector('.faq-icon').textContent = '+';
+                }
             });
 
-            // Conmutación visual de bloques
-            if (segment === 'hr') {
-                hrBlock.style.display = 'block';
-                ownerBlock.style.display = 'none';
+            if (isOpen) {
+                item.classList.remove('active');
+                answer.style.maxHeight = null;
+                icon.textContent = '+';
             } else {
-                hrBlock.style.display = 'none';
-                ownerBlock.style.display = 'block';
+                item.classList.add('active');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.textContent = '-';
             }
         });
     });
 }
 
 /* ==========================================================================
-   3. FORMULARIO DE DIAGNÓSTICO MULTIETAPA (Funnel de Conversión)
+   3. FORMULARIO DE CONTACTO DINÁMICO (Funnel de Conversión)
    ========================================================================== */
+
+const CURSOS_OPCIONES = [
+    "Brigadas de Emergencia (Primeros Auxilios, Combate de Incendios, Evacuación)",
+    "NOM-019-STPS (Comisión de Seguridad e Higiene)",
+    "NOM-035-STPS (Factores de Riesgo Psicosocial)",
+    "NOM-009-STPS (Seguridad para Trabajos en Alturas)",
+    "NOM-033-STPS (Trabajos en Espacios Confinados)",
+    "NOM-029-STPS (Mantenimiento de Instalaciones Eléctricas)"
+];
+
+const CERTIFICACIONES_OPCIONES = [
+    "ISO-9001:2015 (Sistemas de Gestión de Calidad)",
+    "ISO-14001:2015 (Sistemas de Gestión Ambiental)",
+    "ISO-45001:2018 (Seguridad y Salud en el Trabajo)",
+    "Distintivo Best Place to Work (Alineación NOM-035/036)"
+];
 
 function initDiagnosticForm() {
     const form = document.getElementById('diagnostic-form');
-    const steps = Array.from(document.querySelectorAll('.form-step-content'));
-    const stepIndicators = Array.from(document.querySelectorAll('.form-step-dot'));
-    const btnNext = document.getElementById('btn-next');
-    const btnPrev = document.getElementById('btn-prev');
+    if (!form) return;
+
+    const rolSelect = document.getElementById('field-rol');
+    const servicioSelect = document.getElementById('field-servicio');
     const btnSubmit = document.getElementById('btn-submit');
-    
-    let currentStepIndex = 0;
 
-    // Actualizar Visibilidad de Botones de Navegación
-    function updateNavigationUI() {
-        // Ocultar/Mostrar botón Anterior
-        if (currentStepIndex === 0) {
-            btnPrev.style.display = 'none';
-        } else {
-            btnPrev.style.display = 'inline-flex';
-        }
-
-        // Intercambiar Siguiente y Enviar en la última pantalla
-        if (currentStepIndex === steps.length - 1) {
-            btnNext.style.display = 'none';
-            btnSubmit.style.display = 'inline-flex';
-        } else {
-            btnNext.style.display = 'inline-flex';
-            btnSubmit.style.display = 'none';
-        }
-
-        // Actualizar Indicadores de Etapa
-        stepIndicators.forEach((indicator, idx) => {
-            indicator.classList.remove('active', 'completed');
-            if (idx === currentStepIndex) {
-                indicator.classList.add('active');
-            } else if (idx < currentStepIndex) {
-                indicator.classList.add('completed');
+    // Cambios dinámicos en el tipo de servicio
+    if (rolSelect && servicioSelect) {
+        rolSelect.addEventListener('change', () => {
+            const val = rolSelect.value;
+            
+            // Limpiar opciones previas
+            servicioSelect.innerHTML = "";
+            
+            if (val === 'capacitacion') {
+                servicioSelect.disabled = false;
+                servicioSelect.style.opacity = "1";
+                
+                const placeholderOpt = document.createElement('option');
+                placeholderOpt.value = "";
+                placeholderOpt.disabled = true;
+                placeholderOpt.selected = true;
+                placeholderOpt.textContent = "Seleccione el curso...";
+                servicioSelect.appendChild(placeholderOpt);
+                
+                CURSOS_OPCIONES.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt;
+                    el.textContent = opt;
+                    servicioSelect.appendChild(el);
+                });
+            } else if (val === 'certificacion') {
+                servicioSelect.disabled = false;
+                servicioSelect.style.opacity = "1";
+                
+                const placeholderOpt = document.createElement('option');
+                placeholderOpt.value = "";
+                placeholderOpt.disabled = true;
+                placeholderOpt.selected = true;
+                placeholderOpt.textContent = "Seleccione la certificación...";
+                servicioSelect.appendChild(placeholderOpt);
+                
+                CERTIFICACIONES_OPCIONES.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt;
+                    el.textContent = opt;
+                    servicioSelect.appendChild(el);
+                });
+            } else {
+                servicioSelect.disabled = true;
+                servicioSelect.style.opacity = "0.6";
+                const el = document.createElement('option');
+                el.value = "";
+                el.disabled = true;
+                el.selected = true;
+                el.textContent = "Primero seleccione el tipo...";
+                servicioSelect.appendChild(el);
             }
         });
     }
 
-    // Validación de campos de la etapa actual
-    function validateCurrentStep() {
-        const currentStep = steps[currentStepIndex];
-        const requiredInputs = currentStep.querySelectorAll('[required]');
-        let stepIsValid = true;
+    // Validación y Envío
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validar todos los campos requeridos
+        const requiredInputs = form.querySelectorAll('[required]');
+        let formIsValid = true;
 
         requiredInputs.forEach(input => {
-            // Remover cualquier estilo de error previo
             input.style.borderColor = 'var(--border-color)';
-            
             if (!input.value.trim()) {
                 input.style.borderColor = 'var(--acento-warn)';
-                stepIsValid = false;
+                formIsValid = false;
             }
 
-            // Validar patrón si existe (ej. teléfono o email)
             if (input.type === 'email' && input.value) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(input.value.trim())) {
                     input.style.borderColor = 'var(--acento-warn)';
-                    stepIsValid = false;
+                    formIsValid = false;
                 }
             }
         });
 
-        // Validar opción seleccionada en grids de tarjetas
-        const optionGrid = currentStep.querySelector('[data-required-grid="true"]');
-        if (optionGrid) {
-            const selected = optionGrid.querySelector('.form-option-card.selected');
-            if (!selected) {
-                optionGrid.style.outline = '1px dashed var(--acento-warn)';
-                stepIsValid = false;
-            } else {
-                optionGrid.style.outline = 'none';
-            }
+        if (!formIsValid) {
+            alert("Por favor rellene todos los campos obligatorios (*) marcados en rojo.");
+            return;
         }
 
-        return stepIsValid;
-    }
-
-    // Avance de Etapa
-    btnNext.addEventListener('click', () => {
-        if (validateCurrentStep()) {
-            // Ocultar actual
-            steps[currentStepIndex].classList.remove('active');
-            
-            // Avanzar
-            currentStepIndex++;
-            steps[currentStepIndex].classList.add('active');
-            
-            updateNavigationUI();
-            
-            // Track de avance de etapa
-            window.trackGariEvent('diagnostic_step_forward', {
-                step_number: currentStepIndex + 1,
-                step_title: steps[currentStepIndex].dataset.stepTitle
-            });
-            
-            // Scroll arriba del formulario
-            form.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-
-    // Retroceso de Etapa
-    btnPrev.addEventListener('click', () => {
-        // Ocultar actual
-        steps[currentStepIndex].classList.remove('active');
-        
-        // Retroceder
-        currentStepIndex--;
-        steps[currentStepIndex].classList.add('active');
-        
-        updateNavigationUI();
-        
-        // Scroll arriba
-        form.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Soporte para selección en Cards de Grids Técnicas
-    document.querySelectorAll('.form-option-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const siblings = card.parentNode.querySelectorAll('.form-option-card');
-            siblings.forEach(s => s.classList.remove('selected'));
-            card.classList.add('selected');
-
-            // Setear valor en el input oculto correspondiente
-            const targetInputId = card.parentNode.dataset.targetInput;
-            if (targetInputId) {
-                document.getElementById(targetInputId).value = card.dataset.value;
-            }
-
-            // Eliminar error si había
-            card.parentNode.style.outline = 'none';
-        });
-    });
-
-    // Envío Final del Formulario
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        if (!validateCurrentStep()) return;
-
-        // Cambiar estado visual del botón de envío
+        // Cambiar estado visual del botón
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '⚙️ ENVIANDO DIAGNÓSTICO...';
+        btnSubmit.innerHTML = '⚙️ ENVIANDO SOLICITUD...';
 
-        // Obtener token reCAPTCHA v3 si está configurado
+        // Obtener reCAPTCHA si existe
         let recaptchaToken = '';
-        if (typeof grecaptcha !== 'undefined' && GRUPOGARI_RECAPTCHA_SITE_KEY) {
+        if (typeof grecaptcha !== 'undefined' && typeof GRUPOGARI_RECAPTCHA_SITE_KEY !== 'undefined') {
             try {
                 recaptchaToken = await new Promise((resolve, reject) => {
                     grecaptcha.ready(() => {
@@ -356,17 +328,16 @@ function initDiagnosticForm() {
             }
         }
 
-        // Recopilar Datos de variables exactas
         const formData = {
             nombre: document.getElementById('field-nombre').value,
-            apellido: document.getElementById('field-apellido').value || '',
+            apellido: document.getElementById('field-apellido').value,
             email: document.getElementById('field-email').value,
             telefono: document.getElementById('field-telefono').value,
-            rol: document.getElementById('field-rol').value || 'hr',
-            empleados: document.getElementById('field-empleados').value || '1-50',
-            industria: document.getElementById('field-industria').value || 'manufactura',
-            servicio: document.getElementById('field-servicio').value || 'Proteccion Civil',
-            mensaje: document.getElementById('field-mensaje').value || 'Solicitud de diagnóstico inicial normativo.',
+            rol: rolSelect.value,
+            empleados: document.getElementById('field-empleados').value,
+            industria: document.getElementById('field-industria').value,
+            servicio: servicioSelect.value,
+            mensaje: document.getElementById('field-mensaje').value || 'Solicitud de información general.',
             honeypot: document.getElementById('field-confirm-email')?.value || '',
             recaptcha_token: recaptchaToken
         };
@@ -381,26 +352,21 @@ function initDiagnosticForm() {
             });
 
             if (response.ok) {
-                // Registrar Conversión Crítica en Analítica
                 window.trackGariEvent('generate_lead', {
-                    lead_category: 'diagnostico_tecnico',
+                    lead_category: 'solicitud_informacion',
                     company_size: formData.empleados,
                     target_cert: formData.servicio,
                     industry: formData.industria
                 });
-
-                // Redireccionar o mostrar pantalla de éxito técnico
                 showSuccessState(formData);
             } else {
-                throw new Error('Error técnico en el servidor API.');
+                throw new Error('Error en el servidor.');
             }
         } catch (error) {
-            console.error('❌ GARI-CORE: Fallo de red al enviar prospecto:', error);
-            alert('Fallo de conexión técnica. Los datos no se pudieron sincronizar. Reintentando de forma local...');
-            
-            // Degradación elegante: simular éxito de cara al usuario
+            console.error('❌ GARI-CORE: Fallo al enviar prospecto:', error);
+            // Degradación elegante (offline simulation)
             window.trackGariEvent('generate_lead', {
-                lead_category: 'diagnostico_tecnico_offline_simulated',
+                lead_category: 'solicitud_informacion_offline_simulated',
                 company_size: formData.empleados,
                 target_cert: formData.servicio,
                 industry: formData.industria
@@ -410,36 +376,55 @@ function initDiagnosticForm() {
     });
 
     function showSuccessState(data) {
-        // Reemplazar cuerpo del formulario con diseño de éxito procedimental
         const wrapper = document.querySelector('.diagnostic-form-wrap');
         wrapper.innerHTML = `
-            <div class="tech-box" style="border-color: var(--acento-ok); animation: fadeIn 0.4s ease-out forwards;">
-                <span class="tech-tag ok">TRANSACCIÓN COMPLETA</span>
-                <h3 style="margin-bottom: 1rem; color: var(--acento-ok);">CÓDIGO DE REGISTRO: GARI-${Math.floor(100000 + Math.random() * 900000)}</h3>
-                <p style="margin-bottom: 2rem;">
-                    Hemos procesado tus datos regulatorios con éxito. Nuestro sistema de automatización CRM ha disparado un flujo de nutrición segmentado para tu perfil de <strong>${data.rol === 'hr' ? 'Gestión de RRHH' : 'Dueño de Empresa'}</strong>.
+            <div class="tech-box" style="border-color: var(--acento-ok); padding: 3rem; animation: fadeIn 0.4s ease-out forwards; position: relative;">
+                <span class="tech-tag ok" style="margin-bottom: 1.5rem;">REGISTRO COMPLETO</span>
+                <h3 style="margin-bottom: 1.5rem; color: var(--acento-ok); font-family: var(--font-tech); font-size: 1.5rem;">CÓDIGO: GARI-${Math.floor(100000 + Math.random() * 900000)}</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.6; color: var(--text-secondary);">
+                    Hemos registrado tu solicitud con éxito. Un ingeniero de nuestro departamento de regulación y cumplimiento se pondrá en contacto en menos de 24 horas hábiles.
                 </p>
-                <div style="background-color: var(--bg-secondary); padding: 1.5rem; border: 1px solid var(--border-color); margin-bottom: 2rem;">
+                <div style="background-color: var(--bg-primary); padding: 1.5rem; border: 1px solid var(--border-color); margin-bottom: 2rem;">
                     <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
                         <span style="color: var(--text-primary); font-weight: bold;">[ESTADO]:</span> EN COLA DE ASIGNACIÓN<br>
-                        <span style="color: var(--text-primary); font-weight: bold;">[REQUERIMIENTO]:</span> Consultoría ${data.servicio}<br>
-                        <span style="color: var(--text-primary); font-weight: bold;">[CANAL ASIGNADO]:</span> Ejecutivo Técnico Senior<br>
+                        <span style="color: var(--text-primary); font-weight: bold;">[TIPO]:</span> ${data.rol === 'capacitacion' ? 'Capacitación STPS' : 'Certificación B2B'}<br>
+                        <span style="color: var(--text-primary); font-weight: bold;">[REQUERIMIENTO]:</span> ${data.servicio}<br>
                         <span style="color: var(--text-primary); font-weight: bold;">[COMPAÑÍA]:</span> ${data.industria.toUpperCase()} (${data.empleados} colaboradores)
                     </div>
                 </div>
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="index" class="btn btn-outline">Retornar al Inicio</a>
+                    <a href="/" class="btn btn-outline">Cerrar Transacción</a>
                     <button id="btn-success-download" class="btn btn-warn">⚙️ Descargar Checklist de Autodiagnóstico</button>
                 </div>
+                <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
             </div>
         `;
 
-        // Añadir comportamiento de descarga al nuevo botón de éxito
         document.getElementById('btn-success-download').addEventListener('click', () => {
-            triggerLeadMagnetDownload(data.servicio.includes('ISO') ? 'ISO-9001' : 'ProteccionCivil');
+            triggerLeadMagnetDownload(data.rol === 'certificacion' ? 'ISO-9001' : 'PC');
         });
     }
 }
+
+// Función global auxiliar para pre-seleccionar opciones desde las tarjetas del home
+function selectFormOption(category, specificOption) {
+    const rolSelect = document.getElementById('field-rol');
+    const serviceSelect = document.getElementById('field-servicio');
+    
+    if (rolSelect) {
+        rolSelect.value = category;
+        // Disparar evento change manual
+        const event = new Event('change');
+        rolSelect.dispatchEvent(event);
+    }
+    
+    if (serviceSelect) {
+        setTimeout(() => {
+            serviceSelect.value = specificOption;
+        }, 80);
+    }
+}
+window.selectFormOption = selectFormOption;
 
 /* ==========================================================================
    4. SISTEMA DE DESCARGA DE LEAD MAGNETS (Checklists Técnicos)

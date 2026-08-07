@@ -1648,7 +1648,12 @@ async def send_grupogari_confirmation_email(form_data):
     from_name = settings.GRUPOGARI_EMAILS_FROM_NAME if settings.GRUPOGARI_EMAILS_FROM_NAME else "Grupo Gari | Cumplimiento Regulatorio"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Sin detalles adicionales'
-    rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
+    rol_text = (
+        "Cursos de Capacitación" if form_data.rol == "capacitacion"
+        else "Certificaciones B2B" if form_data.rol == "certificacion"
+        else "Recursos Humanos & Capacitación" if form_data.rol == "hr"
+        else "General / Dueño de Empresa / Operativo"
+    )
 
     html_content = f"""
     <html>
@@ -1744,7 +1749,12 @@ async def send_grupogari_notification_team(form_data):
     to_email = settings.GRUPOGARI_EMAILS_FROM_EMAIL if settings.GRUPOGARI_EMAILS_FROM_EMAIL else "contacto@grupo-gari.com"
 
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else 'Ninguno'
-    rol_text = "Recursos Humanos & Capacitación" if form_data.rol == "hr" else "Dueño de Empresa / Operativo"
+    rol_text = (
+        "Cursos de Capacitación" if form_data.rol == "capacitacion"
+        else "Certificaciones B2B" if form_data.rol == "certificacion"
+        else "Recursos Humanos & Capacitación" if form_data.rol == "hr"
+        else "General / Dueño de Empresa / Operativo"
+    )
 
     html_content = f"""
     <html>

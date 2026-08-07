@@ -17,22 +17,21 @@
          ========================================== -->
     <header class="tech-header" id="nav-header">
         <div class="container header-container">
-            <a href="index" class="logo-link">
+            <a href="/" class="logo-link">
                 <img src="Assets/fondo%20blanco.svg" alt="Grupo Gari Logo" style="height: 48px; width: auto; display: block;">
             </a>
             
             <nav>
                 <ul class="tech-nav">
-                    <li><a href="index" class="nav-link active">Inicio</a></li>
-                    <li><a href="certificacion-iso" class="nav-link">Normativas ISO</a></li>
-                    <li><a href="certificacion-best-place-to-work" class="nav-link">Best Place to Work</a></li>
-                    <li><a href="permisos-gubernamentales" class="nav-link">Permisos Gobierno</a></li>
-                    <li><a href="proteccion-civil" class="nav-link">Protección Civil</a></li>
+                    <li><a href="#nav-header" class="nav-link active">Inicio</a></li>
+                    <li><a href="#cursos" class="nav-link">Cursos de Capacitación</a></li>
+                    <li><a href="#certificaciones" class="nav-link">Certificaciones</a></li>
+                    <li><a href="#faq" class="nav-link">Preguntas Frecuentes</a></li>
                 </ul>
             </nav>
             
             <div>
-                <a href="cotizacion-diagnostico" class="btn btn-outline" id="header-cta-btn">Diagnóstico Técnico</a>
+                <a href="#contacto" class="btn btn-outline" id="header-cta-btn">Solicitar Información</a>
             </div>
         </div>
     </header>
@@ -50,8 +49,8 @@
                         Portal corporativo diseñado para simplificar la contratación de consultoría en seguridad industrial, higiene y medio ambiente. Blindamos sus operaciones contra riesgos legales ante auditorías de la STPS y Protección Civil.
                     </p>
                     <div style="display: flex; gap: 1.25rem; flex-wrap: wrap;">
-                        <a href="cotizacion-diagnostico" class="btn btn-warn" id="hero-primary-cta">Iniciar Autodiagnóstico</a>
-                        <a href="#soluciones" class="btn btn-outline" id="hero-secondary-cta">Explorar Soluciones</a>
+                        <a href="#contacto" class="btn btn-warn" id="hero-primary-cta">Solicitar Información</a>
+                        <a href="#cursos" class="btn btn-outline" id="hero-secondary-cta">Ver Cursos y Certificaciones</a>
                     </div>
                 </div>
                 
@@ -95,68 +94,119 @@
         <!-- ==========================================
              SELECTOR DE PERFIL B2B (Home Inbound)
              ========================================== -->
-        <section class="b2b-selector-section">
+        <!-- ==========================================
+             SECCIÓN A: CURSOS DE CAPACITACIÓN (Acreditados STPS DC-3)
+             ========================================== -->
+        <section class="solutions-section" id="cursos" style="padding: 5rem 0; background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 3.5rem;">
-                    <span class="tech-tag" style="justify-content: center;">ARQUITECTURA DE INFORMACIÓN</span>
-                    <h2>Navegación Personalizada por Rol de Decisión</h2>
-                    <p style="margin-top: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                        Seleccione su posición corporativa para desplegar los checklists de cumplimiento normativo específicos a su área.
+                <div style="margin-bottom: 4rem; max-width: 800px;">
+                    <span class="tech-tag">PROGRAMA FEDERAL DE CAPACITACIÓN</span>
+                    <h2 style="margin-top: 1rem; font-size: clamp(2rem, 3.5vw, 2.8rem);">Cursos de Capacitación Acreditados STPS</h2>
+                    <p style="margin-top: 1.2rem; color: var(--text-secondary); line-height: 1.7; font-size: 1.05rem;">
+                        Formación técnica y operativa con instructores autorizados ante la Secretaría del Trabajo y Previsión Social. Emitimos constancias de competencias y habilidades laborales **DC-3** válidas a nivel nacional.
                     </p>
                 </div>
                 
-                <div class="b2b-layout">
-                    <!-- Tarjeta para Recursos Humanos / Capacitación -->
-                    <div class="tech-box b2b-card active" data-segment="hr" id="card-selector-hr">
-                        <span class="tech-tag">ÁREA: ADMINISTRACIÓN</span>
-                        <h3 style="margin-bottom: 1rem;">Gerente de Recursos Humanos / Capacitación</h3>
-                        <p style="margin-bottom: 2rem;">
-                            Enfoque en la obtención rápida de DC-3, acreditación de planes anuales de capacitación de instructores internos y cumplimiento estricto de la NOM-035.
-                        </p>
-                        <span class="text-mono">[Métricas: DC-3 / Rotación / NOM-035]</span>
-                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
-                    </div>
-                    
-                    <!-- Tarjeta para Directores / Dueños de Empresas -->
-                    <div class="tech-box b2b-card" data-segment="owner" id="card-selector-owner">
-                        <span class="tech-tag">ÁREA: OPERACIÓN & LEGAL</span>
-                        <h3 style="margin-bottom: 1rem;">Dueño de Empresa / Director de Operaciones</h3>
-                        <p style="margin-bottom: 2rem;">
-                            Enfoque en mitigación de riesgos patrimoniales ante visitas e inspecciones de la STPS, obtención de licencias de Protección Civil y prevención de paros.
-                        </p>
-                        <span class="text-mono">[Métricas: Continuidad / Multas / Auditorías]</span>
-                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
-                    </div>
-                </div>
-
-                <!-- Bloque Dinámico 1: Recursos Humanos -->
-                <div id="segment-hr-block" style="margin-top: 4rem; display: block;">
-                    <div class="tech-box" style="background-color: var(--bg-primary);">
-                        <span class="tech-tag ok">PLAN DE ACCIÓN RECURSOS HUMANOS</span>
-                        <h3 style="margin-bottom: 1rem;">Garantice DC-3 Válidas ante Auditorías Técnicas</h3>
-                        <p style="margin-bottom: 2rem; max-width: 800px;">
-                            El principal cuello de botella en auditorías de recursos humanos radica en la falsedad o invalidez de las constancias de habilidades (DC-3). Grupo Gari valida, registra y capacita a sus colaboradores con instructores acreditados ante la STPS en las normativas NOM-019 (Seguridad e Higiene) y NOM-035 (Riesgos Psicosociales).
-                        </p>
-                        <div style="display: flex; gap: 1rem;">
-                            <a href="cotizacion-diagnostico" class="btn btn-outline">Solicitar Validación de DC-3</a>
-                            <button onclick="triggerLeadMagnetDownload('ISO-9001')" class="btn btn-warn">Descargar Checklist de Capacitación</button>
+                <div class="solutions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+                    <!-- Curso 1: Brigadas de Emergencia -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-NOM-002</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Brigadas de Emergencia</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Capacitación integral en Primeros Auxilios, Combate de Incendios, Evacuación y Rescate. Cumplimiento de requerimientos estatales de Protección Civil.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: DC-3 / PROTECCIÓN CIVIL]<br>
+                                [DURACIÓN: Modular según riesgo]
+                            </div>
                         </div>
+                        <a href="#contacto" onclick="selectFormOption('capacitacion', 'Brigadas de Emergencia (Primeros Auxilios, Combate de Incendios, Evacuación)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Curso</a>
                         <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                     </div>
-                </div>
 
-                <!-- Bloque Dinámico 2: Dueño / Director -->
-                <div id="segment-owner-block" style="margin-top: 4rem; display: none;">
-                    <div class="tech-box" style="background-color: var(--bg-primary);">
-                        <span class="tech-tag ok">PLAN DE ACCIÓN OPERATIVO</span>
-                        <h3 style="margin-bottom: 1rem;">Evite Paros de Planta por Multas Regulatorias</h3>
-                        <p style="margin-bottom: 2rem; max-width: 800px;">
-                            La seguridad patrimonial de su planta exige licencias estructurales y planes de contingencia aprobados por la delegación local de Protección Civil. Nuestro equipo realiza inspecciones preventivas bajo los lineamientos de la NOM-002-STPS para blindar su empresa ante auditorías sorpresivas del gobierno.
-                        </p>
-                        <div style="display: flex; gap: 1rem;">
-                            <a href="cotizacion-diagnostico" class="btn btn-outline">Agendar Auditoría Preventiva</a>
-                            <button onclick="triggerLeadMagnetDownload('PC')" class="btn btn-warn">Descargar Checklist Protección Civil</button>
+                    <!-- Curso 2: NOM-019-STPS -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-NOM-019</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Comisión de Seguridad e Higiene</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Constitución, integración, organización y funcionamiento de las Comisiones de Seguridad e Higiene. Gestión y reporte de accidentes.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: DC-3 STPS Obligatoria]<br>
+                                [DIRIGIDO A: Brigadistas y Jefes]
+                            </div>
                         </div>
+                        <a href="#contacto" onclick="selectFormOption('capacitacion', 'NOM-019-STPS (Comisión de Seguridad e Higiene)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Curso</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- Curso 3: NOM-035-STPS -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-NOM-035</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Riesgos Psicosociales</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Identificación y análisis de factores de riesgo psicosocial en el trabajo. Prevención de violencia laboral y promoción del entorno organizacional favorable.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: DC-3 STPS]<br>
+                                [DIRIGIDO A: RRHH y Directivos]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('capacitacion', 'NOM-035-STPS (Factores de Riesgo Psicosocial)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Curso</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- Curso 4: Trabajos en Alturas (NOM-009) -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-NOM-009</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Trabajos en Alturas</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Medidas de seguridad y prevención de riesgos para la realización de trabajos en alturas. Uso correcto de arnés, líneas de vida y andamios.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: DC-3 STPS]<br>
+                                [ENFOQUE: Teórico-Práctico en sitio]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('capacitacion', 'NOM-009-STPS (Seguridad para Trabajos en Alturas)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Curso</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- Curso 5: Espacios Confinados (NOM-033) -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-NOM-033</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Espacios Confinados</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Procedimientos de seguridad para trabajos en espacios confinados. Análisis de atmósfera, equipos de respiración y planes de rescate.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: DC-3 STPS]<br>
+                                [ENFOQUE: Mitigación de alto riesgo]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('capacitacion', 'NOM-033-STPS (Trabajos en Espacios Confinados)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Curso</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- Curso 6: Electricidad y LOTO (NOM-029) -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-NOM-029</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Seguridad Eléctrica y LOTO</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Mantenimiento de instalaciones eléctricas y sistema de Bloqueo y Candadeo (Lockout / Tagout) para control de energía peligrosa.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: DC-3 STPS]<br>
+                                [FÓRMULA: Seguridad en mantenimiento]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('capacitacion', 'NOM-029-STPS (Mantenimiento de Instalaciones Eléctricas)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Curso</a>
                         <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                     </div>
                 </div>
@@ -164,107 +214,85 @@
         </section>
 
         <!-- ==========================================
-             MÓDULOS DE SOLUCIONES (3 PILARES)
+             SECCIÓN B: CERTIFICACIÓN (Sistemas de Gestión B2B)
              ========================================== -->
-        <section class="solutions-section" id="soluciones">
+        <section class="solutions-section" id="certificaciones" style="padding: 5rem 0; border-bottom: 1px solid var(--border-color);">
             <div class="container">
-                <div style="margin-bottom: 4.5rem; max-width: 650px;">
-                    <span class="tech-tag">MÓDULOS OPERACIONALES</span>
-                    <h2>Especialización en Cumplimiento e Ingeniería Regulatoria</h2>
-                    <p style="margin-top: 1rem;">
-                        Nuestra estructura de servicios responde a las exigencias normativas dictadas por la legislación federal, garantizando validez técnica.
+                <div style="margin-bottom: 4rem; max-width: 800px;">
+                    <span class="tech-tag">CERTIFICACIONES INTERNACIONALES Y NOM</span>
+                    <h2 style="margin-top: 1rem; font-size: clamp(2rem, 3.5vw, 2.8rem);">Certificaciones y Sistemas de Gestión B2B</h2>
+                    <p style="margin-top: 1.2rem; color: var(--text-secondary); line-height: 1.7; font-size: 1.05rem;">
+                        Facilitamos la implantación, transición e integración de estándares internacionales y sellos de alta exigencia comercial. Reducimos el tiempo de auditorías hasta en un 40%.
                     </p>
                 </div>
-                
-                <div class="solutions-grid">
-                    <!-- Seguridad Industrial -->
-                    <div class="tech-box solution-card" id="solution-card-seguridad">
-                         <div>
-                             <div class="solution-icon-wrap">
-                                 <!-- Icono Técnico de Seguridad -->
-                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                                 </svg>
-                             </div>
-                             <h3 style="margin-bottom: 1rem;">Seguridad Industrial</h3>
-                             <p style="font-size: 0.95rem;">
-                                 Planes de contingencia autorizados ante Protección Civil, dictámenes estructurales de naves de producción, y comisiones mixtas de seguridad (NOM-019-STPS).
-                             </p>
-                         </div>
-                         
-                         <div class="solution-links">
-                             <a href="proteccion-civil" class="solution-link">Plan de Protección Civil</a>
-                             <a href="permisos-gubernamentales" class="solution-link">Inspección Estructural</a>
-                         </div>
-                         <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+
+                <div class="solutions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+                    <!-- ISO 9001 -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-ISO-9001</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Sistemas de Gestión de Calidad (ISO 9001:2015)</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Implantación modular de procesos de calidad para garantizar la estandarización operativa y habilitar la participación en licitaciones internacionales exigentes.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: Certificación Internacional]<br>
+                                [ENFOQUE: Eficiencia y satisfacción]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('certificacion', 'ISO-9001:2015 (Sistemas de Gestión de Calidad)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Certificación</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                     </div>
 
-                    <!-- Higiene Industrial -->
-                    <div class="tech-box solution-card" id="solution-card-higiene">
-                         <div>
-                             <div class="solution-icon-wrap">
-                                 <!-- Icono Técnico de Higiene -->
-                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                     <circle cx="12" cy="12" r="10"/>
-                                     <path d="M8 12h8M12 8v8"/>
-                                 </svg>
-                             </div>
-                             <h3 style="margin-bottom: 1rem;">Higiene Industrial</h3>
-                             <p style="font-size: 0.95rem;">
-                                 Monitoreo y muestreo de agentes contaminantes (ruido, iluminación, vibraciones), y auditorías para certificaciones de alta exigencia humana como Best Place to Work.
-                             </p>
-                         </div>
-                         
-                         <div class="solution-links">
-                             <a href="certificacion-best-place-to-work" class="solution-link">Certificación del Entorno</a>
-                             <a href="cotizacion-diagnostico" class="solution-link">Estudios de Iluminación & Ruido</a>
-                         </div>
-                         <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    <!-- ISO 14001 -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-ISO-14001</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Sistemas de Gestión Ambiental (ISO 14001:2015)</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Control y optimización de residuos, huella ambiental e integración de requerimientos federales (MIA y SEMARNAT) bajo normatividad internacional.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: Certificación Internacional]<br>
+                                [ENFOQUE: Sustentabilidad y cumplimiento]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('certificacion', 'ISO-14001:2015 (Sistemas de Gestión Ambiental)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Certificación</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                     </div>
 
-                    <!-- Medio Ambiente -->
-                    <div class="tech-box solution-card" id="solution-card-ambiente">
-                         <div>
-                             <div class="solution-icon-wrap">
-                                 <!-- Icono Técnico de Medio Ambiente -->
-                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                                 </svg>
-                             </div>
-                             <h3 style="margin-bottom: 1rem;">Medio Ambiente</h3>
-                             <p style="font-size: 0.95rem;">
-                                 Gestión de trámites de impacto ambiental (MIA), bitácoras de residuos peligrosos ante SEMARNAT, y consultoría modular en Sistemas Ambientales ISO-14001.
-                             </p>
-                         </div>
-                         
-                         <div class="solution-links">
-                             <a href="certificacion-iso" class="solution-link">Consultoría ISO 14001</a>
-                             <a href="permisos-gubernamentales" class="solution-link">Dictámenes Ambientales</a>
-                         </div>
-                         <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    <!-- ISO 45001 -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-ISO-45001</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Seguridad y Salud Laboral (ISO 45001:2018)</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Estructuración técnica de sistemas para mitigar accidentes de trabajo y proteger la integridad física y mental de sus colaboradores en la planta.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: Certificación Internacional]<br>
+                                [ENFOQUE: Cero accidentes y bienestar]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('certificacion', 'ISO-45001:2018 (Seguridad y Salud en el Trabajo)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Certificación</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                     </div>
 
-                    <!-- EPP y Señalización (NUEVO - DESDE EL PDF DE ADN) -->
-                    <div class="tech-box solution-card" id="solution-card-epp">
-                         <div>
-                             <div class="solution-icon-wrap">
-                                 <!-- Icono Técnico de Casco / EPP -->
-                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                     <rect x="3" y="11" width="18" height="10" rx="2"/>
-                                     <path d="M12 2v9M8 5h8"/>
-                                 </svg>
-                             </div>
-                             <h3 style="margin-bottom: 1rem;">Equipos & EPP</h3>
-                             <p style="font-size: 0.95rem;">
-                                 Suministro de productos de seguridad industrial de acuerdo a NOM: calzado dieléctrico, equipo de protección personal (EPP), y gráficos de señalización restrictivos.
-                             </p>
-                         </div>
-                         
-                         <div class="solution-links">
-                             <a href="cotizacion-diagnostico" class="solution-link">Catálogo de Equipos B2B</a>
-                             <a href="cotizacion-diagnostico" class="solution-link">Señalización Homologada</a>
-                         </div>
-                         <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    <!-- Best Place to Work -->
+                    <div class="tech-box" style="padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span class="tech-tag" style="font-family: var(--font-mono); font-size: 0.75rem;">CÓDIGO: GARI-BPTW</span>
+                            <h3 style="margin: 1.5rem 0 1rem 0; font-family: var(--font-tech); font-size: 1.4rem;">Distintivo Best Place to Work</h3>
+                            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                                Alineación integral de cumplimiento legal (NOM-035 y NOM-036) acoplada a la consultoría de atracción de talento para obtener el distintivo de marca empleadora.
+                            </p>
+                            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 2rem;">
+                                [VALIDEZ: Distintivo de Prestigio]<br>
+                                [ENFOQUE: Retención y cultura interna]
+                            </div>
+                        </div>
+                        <a href="#contacto" onclick="selectFormOption('certificacion', 'Distintivo Best Place to Work (Alineación NOM-035/036)')" class="btn btn-outline" style="text-align: center; width: 100%;">Cotizar Certificación</a>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                     </div>
                 </div>
             </div>
@@ -638,6 +666,189 @@
                 </div>
             </div>
         </section>
+        <!-- ==========================================
+             SECCIÓN C: PREGUNTAS FRECUENTES (FAQ Accordion)
+             ========================================== -->
+        <section class="solutions-section" id="faq" style="padding: 5rem 0; background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color);">
+            <div class="container" style="max-width: 900px;">
+                <div style="margin-bottom: 4rem; text-align: center;">
+                    <span class="tech-tag" style="justify-content: center;">AUDITORÍA DE DUDAS</span>
+                    <h2 style="margin-top: 1rem; font-size: clamp(2rem, 3.5vw, 2.5rem);">Preguntas Frecuentes de Cumplimiento</h2>
+                </div>
+
+                <div class="faq-accordion-wrap" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <!-- FAQ 1 -->
+                    <div class="tech-box faq-item" style="padding: 1.5rem 2rem; cursor: pointer; transition: background-color var(--transition-fast); position: relative;">
+                        <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-family: var(--font-tech); font-size: 1.15rem;">
+                            <span>¿Sus instructores y agentes capacitadores cuentan con registro ante la STPS?</span>
+                            <span class="faq-icon" style="transition: transform var(--transition-fast); color: var(--acento-warn); font-size: 1.5rem;">+</span>
+                        </div>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height var(--transition-smooth) ease-out; margin-top: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                            <p style="padding-top: 1rem;">
+                                Sí, todo nuestro personal docente y de consultoría está debidamente registrado como Agente Capacitador Externo ante la Secretaría del Trabajo y Previsión Social (STPS). Emitimos constancias de competencias y habilidades laborales en formato DC-3 con validez y registro federal.
+                            </p>
+                        </div>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="tech-box faq-item" style="padding: 1.5rem 2rem; cursor: pointer; transition: background-color var(--transition-fast); position: relative;">
+                        <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-family: var(--font-tech); font-size: 1.15rem;">
+                            <span>¿Cuánto tiempo toma implementar un sistema de gestión ISO?</span>
+                            <span class="faq-icon" style="transition: transform var(--transition-fast); color: var(--acento-warn); font-size: 1.5rem;">+</span>
+                        </div>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height var(--transition-smooth) ease-out; margin-top: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                            <p style="padding-top: 1rem;">
+                                Dependiendo del tamaño y madurez de su organización, nuestra metodología modular tipo "plano de ingeniería" permite completar la consultoría, auditorías internas previas e implantación de las normas ISO 9001, 14001 o 45001 en un plazo de 3 a 6 meses, reduciendo los tiempos convencionales hasta en un 40%.
+                            </p>
+                        </div>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="tech-box faq-item" style="padding: 1.5rem 2rem; cursor: pointer; transition: background-color var(--transition-fast); position: relative;">
+                        <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-family: var(--font-tech); font-size: 1.15rem;">
+                            <span>¿Qué validez tienen sus programas de Protección Civil?</span>
+                            <span class="faq-icon" style="transition: transform var(--transition-fast); color: var(--acento-warn); font-size: 1.5rem;">+</span>
+                        </div>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height var(--transition-smooth) ease-out; margin-top: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                            <p style="padding-top: 1rem;">
+                                Nuestros programas internos de Protección Civil son elaborados por terceros acreditados autorizados. Se acompañan de peritajes técnicos estructurales y dictámenes de instalaciones (eléctricas y de gas) firmados por peritos con registro vigente ante las autoridades municipales y estatales correspondientes.
+                            </p>
+                        </div>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="tech-box faq-item" style="padding: 1.5rem 2rem; cursor: pointer; transition: background-color var(--transition-fast); position: relative;">
+                        <div class="faq-question" style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-family: var(--font-tech); font-size: 1.15rem;">
+                            <span>¿Cómo atienden inspecciones sorpresa de la STPS?</span>
+                            <span class="faq-icon" style="transition: transform var(--transition-fast); color: var(--acento-warn); font-size: 1.5rem;">+</span>
+                        </div>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height var(--transition-smooth) ease-out; margin-top: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                            <p style="padding-top: 1rem;">
+                                Contamos con un servicio de Guardia Técnica y defensa regulatoria. En caso de una visita de inspección oficial por parte de la STPS, acudimos a su planta o preparamos las carpetas de descargo legal en un plazo máximo de 72 horas hábiles, mitigando los riesgos de multas o clausuras.
+                            </p>
+                        </div>
+                        <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SECCIÓN D: FORMULARIO DE CONTACTO UNIFICADO
+             ========================================== -->
+        <section class="matrix-section" id="contacto" style="padding: 5rem 0;">
+            <div class="container" style="max-width: 800px;">
+                <!-- CABECERA DEL FORMULARIO -->
+                <div style="text-align: center; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    <span class="tech-tag" style="justify-content: center;">PROCEDIMIENTO DE ENTRADA</span>
+                    <h2>Solicitud de Información y Cotización</h2>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        Complete las variables de su organización. Nuestro sistema tabulará sus necesidades regulatorias para proponer soluciones de mitigación modular.
+                    </p>
+                </div>
+
+                <!-- CONTENEDOR DEL FORMULARIO -->
+                <div class="diagnostic-form-wrap" style="background-color: var(--bg-secondary); padding: 3rem; border: 1px solid var(--border-color); position: relative;">
+                    <form id="diagnostic-form" novalidate>
+                        
+                        <!-- Honeypot Field (anti-spam) -->
+                        <div style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                            <input type="text" id="field-confirm-email" name="confirm_email" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <span class="tech-tag" style="margin-bottom: 2rem;">CÓDIGO: GARI-CONTACT.01</span>
+
+                        <!-- Fila 1: Nombre y Apellidos (Obligatorios) -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-nombre" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Nombre *</label>
+                                <input type="text" class="form-input" id="field-nombre" placeholder="Nombre completo" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-apellido" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Apellidos *</label>
+                                <input type="text" class="form-input" id="field-apellido" placeholder="Apellidos" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                        </div>
+
+                        <!-- Fila 2: Email y Teléfono (Obligatorios) -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-email" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Email Corporativo *</label>
+                                <input type="email" class="form-input" id="field-email" placeholder="correo@empresa.com" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-telefono" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Celular / WhatsApp *</label>
+                                <input type="tel" class="form-input" id="field-telefono" placeholder="Ej: 33 0000 0000" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                        </div>
+
+                        <!-- Fila 3: Colaboradores e Industria -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-empleados" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Volumen de Colaboradores en Planta *</label>
+                                <select class="form-select" id="field-empleados" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; height: 42px;">
+                                    <option value="" disabled selected>Seleccione el rango de empleados...</option>
+                                    <option value="1-50">1 - 50 empleados (Micro/Pequeña)</option>
+                                    <option value="51-250">51 - 250 empleados (Mediana)</option>
+                                    <option value="251-500">251 - 500 empleados (Grande)</option>
+                                    <option value="501+">Más de 500 empleados (Corporativo)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-industria" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Giro o Industria de la Empresa *</label>
+                                <select class="form-select" id="field-industria" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; height: 42px;">
+                                    <option value="" disabled selected>Seleccione la industria...</option>
+                                    <option value="manufactura">Manufactura / Producción Industrial</option>
+                                    <option value="logistica">Logística / Almacén / Distribución</option>
+                                    <option value="salud">Sector Salud / Farmacéutico</option>
+                                    <option value="alimentos">Alimentos / Restaurantes / Consumo</option>
+                                    <option value="servicios">Servicios Generales / Oficinas Corporativas</option>
+                                    <option value="construccion">Construcción / Obra Civil</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fila 4: Tipo de Requerimiento (Cursos o Certificación) -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-rol" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Solución o Certificación Requerida *</label>
+                                <select class="form-select" id="field-rol" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; height: 42px;">
+                                    <option value="" disabled selected>Seleccione el tipo...</option>
+                                    <option value="capacitacion">Cursos de Capacitación</option>
+                                    <option value="certificacion">Certificación</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-servicio" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Especificar Selección *</label>
+                                <select class="form-select" id="field-servicio" required disabled style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; opacity: 0.6; height: 42px;">
+                                    <option value="" disabled selected>Primero seleccione el tipo...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fila 5: Detalles Adicionales -->
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label class="form-label" for="field-mensaje" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Detalles Adicionales del Proyecto</label>
+                            <textarea class="form-textarea" id="field-mensaje" rows="4" placeholder="Describa brevemente si cuenta con auditorías en curso, fechas límites de Protección Civil o requerimientos de DC-3..." style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; resize: vertical;"></textarea>
+                        </div>
+
+                        <!-- Aviso Legal de Privacidad Obligatorio -->
+                        <div style="background-color: var(--bg-primary); padding: 1.25rem; border: 1px solid var(--border-color); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">
+                            Al enviar este formulario, usted acepta que sus datos serán almacenados y tratados bajo nuestra política corporativa de privacidad para la cotización y envío de información técnica. Cumplimos con la Ley Federal de Protección de Datos Personales en Posesión de Particulares de México.
+                        </div>
+
+                        <!-- Enviar -->
+                        <div class="form-navigation" style="display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn btn-warn" id="btn-submit" style="padding: 1rem 2.5rem; font-weight: bold; font-family: var(--font-tech); cursor: pointer; border: none;">Solicitar Información</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+        </section>
     </main>
 
     <!-- ==========================================
@@ -656,20 +867,20 @@
             </div>
             
             <div class="footer-links-col">
-                <h4 class="footer-title">Certificaciones</h4>
+                <h4 class="footer-title">Navegación</h4>
                 <ul class="footer-links">
-                    <li><a href="certificacion-iso">Sistemas ISO</a></li>
-                    <li><a href="certificacion-best-place-to-work">Best Place to Work</a></li>
-                    <li><a href="proteccion-civil">Protección Civil</a></li>
-                    <li><a href="permisos-gubernamentales">Permisos Gobierno</a></li>
+                    <li><a href="#cursos">Cursos de Capacitación</a></li>
+                    <li><a href="#certificaciones">Certificaciones ISO / BPTW</a></li>
+                    <li><a href="#faq">Preguntas Frecuentes</a></li>
+                    <li><a href="#contacto">Solicitud de Información</a></li>
                 </ul>
             </div>
             
             <div class="footer-links-col">
                 <h4 class="footer-title">Ecosistema</h4>
                 <ul class="footer-links">
-                    <li><a href="cotizacion-diagnostico">Autodiagnóstico</a></li>
-                    <li><a href="index">Acerca del Portal</a></li>
+                    <li><a href="#contacto">Contacto Técnico</a></li>
+                    <li><a href="#nav-header">Acerca del Portal</a></li>
                     <li><a href="https://hipha.mx" target="_blank">Desarrollado por HiphaMX</a></li>
                 </ul>
             </div>

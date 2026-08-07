@@ -164,14 +164,53 @@
       "dest": "/projects/GrupoGari/web/$1/$2"
     },
     {
-      "src": "/(certificacion-best-place-to-work|certificacion-iso|cotizacion-diagnostico|permisos-gubernamentales|proteccion-civil|index)(.html|)",
+      "src": "/(certificacion-best-place-to-work|certificacion-iso)(.html|)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?grupo-gari\\.com$"
         }
       ],
-      "dest": "/projects/GrupoGari/web/$1$2"
+      "status": 308,
+      "headers": {
+        "Location": "/#certificaciones"
+      }
+    },
+    {
+      "src": "/(proteccion-civil|permisos-gubernamentales)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?grupo-gari\\.com$"
+        }
+      ],
+      "status": 308,
+      "headers": {
+        "Location": "/#cursos"
+      }
+    },
+    {
+      "src": "/cotizacion-diagnostico(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?grupo-gari\\.com$"
+        }
+      ],
+      "status": 308,
+      "headers": {
+        "Location": "/#contacto"
+      }
+    },
+    {
+      "src": "/index(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?grupo-gari\\.com$"
+        }
+      ],
+      "dest": "/projects/GrupoGari/web/index.html"
     },
     {
       "src": "/",
