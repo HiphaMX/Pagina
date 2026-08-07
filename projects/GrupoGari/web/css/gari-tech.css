@@ -1037,15 +1037,23 @@ p {
         grid-column: auto !important;
     }
     .header-container {
+        display: flex !important;
         flex-direction: row !important;
         height: 70px !important;
         padding: 0 1.5rem !important;
-        justify-content: space-between !important;
+        justify-content: flex-end !important;
         align-items: center !important;
-        position: relative;
+        position: relative !important;
+    }
+    .logo-link {
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 0 !important;
     }
     .mobile-menu-btn {
         display: flex !important;
+        z-index: 1001 !important;
     }
     .mobile-menu-btn.active .line-1 {
         transform: translateY(6px) rotate(45deg);
