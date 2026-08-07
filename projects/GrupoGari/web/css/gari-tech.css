@@ -927,7 +927,7 @@ p {
 }
 
 .footer-links-col {
-    grid-column: span 2;
+    grid-column: span 4;
 }
 
 .footer-contact-col {
