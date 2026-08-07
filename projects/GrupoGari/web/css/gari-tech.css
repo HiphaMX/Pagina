@@ -149,8 +149,66 @@ body {
     border-width: 0 2px 2px 0;
 }
 
+.tech-box {
+    transition: background-color var(--transition-smooth), border-color var(--transition-smooth), color var(--transition-smooth);
+}
+
+.tech-box::before, .tech-box::after,
+.tech-box > .corner-bottom-left, .tech-box > .corner-bottom-right {
+    transition: border-color var(--transition-smooth);
+}
+
 .tech-box:hover {
     border-color: var(--acento-warn);
+}
+
+/* Efecto Hover Amarillo para las Fichas de Cursos y Certificaciones */
+.solutions-grid .tech-box h3, 
+.solutions-grid .tech-box ul, 
+.solutions-grid .tech-box p,
+.solutions-grid .tech-box .tech-tag, 
+.solutions-grid .tech-box .btn-outline {
+    transition: all var(--transition-smooth);
+}
+
+.solutions-grid .tech-box:hover {
+    background-color: var(--acento-warn) !important;
+    border-color: var(--acento-warn) !important;
+}
+
+.solutions-grid .tech-box:hover h3 {
+    color: #121417 !important;
+}
+
+.solutions-grid .tech-box:hover p {
+    color: #343A40 !important;
+}
+
+.solutions-grid .tech-box:hover ul {
+    color: #121417 !important;
+}
+
+.solutions-grid .tech-box:hover .tech-tag {
+    color: #121417 !important;
+    border-color: rgba(18, 20, 23, 0.3) !important;
+    background-color: rgba(18, 20, 23, 0.05) !important;
+}
+
+.solutions-grid .tech-box:hover::before, 
+.solutions-grid .tech-box:hover::after,
+.solutions-grid .tech-box:hover > .corner-bottom-left, 
+.solutions-grid .tech-box:hover > .corner-bottom-right {
+    border-color: #121417 !important;
+}
+
+.solutions-grid .tech-box:hover .btn-outline {
+    border-color: #121417 !important;
+    color: #121417 !important;
+}
+
+.solutions-grid .tech-box:hover .btn-outline:hover {
+    background-color: #121417 !important;
+    color: #FFFFFF !important;
 }
 
 /* Etiqueta Técnica Monoespaciada */
