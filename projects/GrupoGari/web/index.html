@@ -313,77 +313,226 @@
                         <span class="tech-tag">METODOLOGÍA DE TRABAJO</span>
                         <h3 style="font-size: 1.8rem; margin-top: 1rem; font-family: var(--font-tech);">Nuestro Acompañamiento en 5 Pasos</h3>
                         <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.95rem;">
-                            Estructura de fases consecutivas diseñadas para asegurar el cumplimiento regulatorio e implantación sin fricciones.
+                            Estructura interactiva de fases de consultoría técnica para la planeación, implementación y dictamen de certificación.
                         </p>
                     </div>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; position: relative;">
-                        <!-- Paso 1 -->
-                        <div class="tech-box" style="padding: 2.5rem 1.5rem; background-color: var(--bg-secondary); min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--acento-warn); stroke-width: 2; margin-bottom: 1.5rem;" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem;">[FASE 01]</div>
-                                <h4 style="font-family: var(--font-tech); font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary);">1. Diagnóstico</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">Evaluamos la situación actual de la organización y determinamos las brechas existentes.</p>
-                            </div>
-                            <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
+
+                    <style>
+                        /* Estilos para el Tablero de Acompañamiento Interactivo */
+                        .blueprint-console {
+                            display: grid;
+                            grid-template-columns: repeat(12, 1fr);
+                            gap: 3rem;
+                            margin-top: 3rem;
+                            background: var(--bg-secondary);
+                            border: 1px solid var(--border-color);
+                            padding: 3rem;
+                            position: relative;
+                        }
+
+                        .tech-grid-lines {
+                            position: absolute;
+                            inset: 0;
+                            background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+                            background-size: 40px 40px;
+                            opacity: 0.15;
+                            pointer-events: none;
+                        }
+
+                        .stepper-controls {
+                            grid-column: span 5;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 1rem;
+                            position: relative;
+                            z-index: 2;
+                        }
+
+                        .step-btn {
+                            background: transparent;
+                            border: 1px solid var(--border-color);
+                            padding: 1.25rem 1.5rem;
+                            text-align: left;
+                            cursor: pointer;
+                            position: relative;
+                            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .step-btn:hover {
+                            border-color: var(--text-primary);
+                            background: rgba(255, 255, 255, 0.02);
+                        }
+
+                        .step-btn.active {
+                            background: var(--bg-primary);
+                            border-color: var(--acento-warn);
+                        }
+
+                        .step-btn.active .step-glow-dot {
+                            background: var(--acento-warn);
+                            box-shadow: 0 0 10px var(--acento-warn), 0 0 20px var(--acento-warn);
+                        }
+
+                        .step-btn.active h4 {
+                            color: var(--text-primary) !important;
+                        }
+
+                        .step-btn.active span {
+                            color: var(--acento-warn) !important;
+                        }
+
+                        .step-glow-dot {
+                            position: absolute;
+                            right: 1.5rem;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            width: 8px;
+                            height: 8px;
+                            background: var(--border-color);
+                            border-radius: 50%;
+                            transition: all 0.3s;
+                        }
+
+                        .monitor-screen {
+                            grid-column: span 7;
+                            padding: 3rem;
+                            background: var(--bg-primary);
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            min-height: 480px;
+                            position: relative;
+                            overflow: hidden;
+                            z-index: 2;
+                        }
+
+                        @media (max-width: 991px) {
+                            .blueprint-console {
+                                grid-template-columns: 1fr;
+                                padding: 1.5rem;
+                                gap: 2rem;
+                            }
+                            
+                            .stepper-controls {
+                                grid-column: span 1;
+                                flex-direction: row;
+                                overflow-x: auto;
+                                padding-bottom: 0.5rem;
+                                gap: 0.75rem;
+                                scroll-snap-type: x mandatory;
+                            }
+                            
+                            .step-btn {
+                                flex: 0 0 240px;
+                                scroll-snap-align: start;
+                            }
+                            
+                            .monitor-screen {
+                                grid-column: span 1;
+                                min-height: 400px;
+                                padding: 2rem 1.5rem;
+                            }
+                        }
+                    </style>
+
+                    <div class="blueprint-console">
+                        <!-- Background grid line decoration for technical blueprint aesthetic -->
+                        <div class="tech-grid-lines"></div>
+
+                        <!-- Left side: Interactive Stepper (Column span 5) -->
+                        <div class="stepper-controls">
+                            <!-- Step 1 -->
+                            <button class="step-btn active" data-step="1">
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">[PHASE 01 // DIAGNÓSTICO]</span>
+                                <h4 style="font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-secondary); font-weight: bold; margin: 0;">1. Diagnóstico</h4>
+                                <div class="step-glow-dot"></div>
+                                <div class="corner-top-right"></div>
+                            </button>
+                            
+                            <!-- Step 2 -->
+                            <button class="step-btn" data-step="2">
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">[PHASE 02 // PLANEACIÓN]</span>
+                                <h4 style="font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-secondary); font-weight: bold; margin: 0;">2. Planeación</h4>
+                                <div class="step-glow-dot"></div>
+                                <div class="corner-top-right"></div>
+                            </button>
+
+                            <!-- Step 3 -->
+                            <button class="step-btn" data-step="3">
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">[PHASE 03 // IMPL]</span>
+                                <h4 style="font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-secondary); font-weight: bold; margin: 0;">3. Implementación</h4>
+                                <div class="step-glow-dot"></div>
+                                <div class="corner-top-right"></div>
+                            </button>
+
+                            <!-- Step 4 -->
+                            <button class="step-btn" data-step="4">
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">[PHASE 04 // AUDITORÍA INT]</span>
+                                <h4 style="font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-secondary); font-weight: bold; margin: 0;">4. Prep. Auditoría</h4>
+                                <div class="step-glow-dot"></div>
+                                <div class="corner-top-right"></div>
+                            </button>
+
+                            <!-- Step 5 -->
+                            <button class="step-btn" data-step="5">
+                                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">[PHASE 05 // DICTAMEN]</span>
+                                <h4 style="font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-secondary); font-weight: bold; margin: 0;">5. Certificación</h4>
+                                <div class="step-glow-dot"></div>
+                                <div class="corner-top-right"></div>
+                            </button>
                         </div>
 
-                        <!-- Paso 2 -->
-                        <div class="tech-box" style="padding: 2.5rem 1.5rem; background-color: var(--bg-secondary); min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--acento-warn); stroke-width: 2; margin-bottom: 1.5rem;" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                                </svg>
-                                <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem;">[FASE 02]</div>
-                                <h4 style="font-family: var(--font-tech); font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary);">2. Planeación</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">Definimos las acciones necesarias para implementar o fortalecer el sistema de gestión.</p>
-                            </div>
-                            <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
-                        </div>
+                        <!-- Right side: Technical Blueprint Monitor (Column span 7) -->
+                        <div class="monitor-screen tech-box">
+                            <!-- Big Watermark index in the background -->
+                            <div id="step-watermark" style="position: absolute; right: -2rem; bottom: -4rem; font-family: var(--font-mono); font-size: 16rem; font-weight: 900; color: var(--border-color); opacity: 0.08; line-height: 1; pointer-events: none; transition: all 0.4s ease;">01</div>
 
-                        <!-- Paso 3 -->
-                        <div class="tech-box" style="padding: 2.5rem 1.5rem; background-color: var(--bg-secondary); min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--acento-warn); stroke-width: 2; margin-bottom: 1.5rem;" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem;">[FASE 03]</div>
-                                <h4 style="font-family: var(--font-tech); font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary);">3. Implementación</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">Acompañamos al personal en la documentación, aplicación y seguimiento de los procesos.</p>
-                            </div>
-                            <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
-                        </div>
+                            <!-- Step Content Wrapper -->
+                            <div id="step-content-display" style="transition: opacity 0.3s ease-out; opacity: 1;">
+                                <!-- Icon and Header -->
+                                <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+                                    <div id="step-icon-container" style="background: rgba(255, 159, 28, 0.1); border: 1px solid var(--acento-warn); padding: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                                        <svg id="step-svg" style="width: 32px; height: 32px; fill: none; stroke: var(--acento-warn); stroke-width: 2;" viewBox="0 0 24 24">
+                                            <!-- Initial Step 1 Icon (Diagnóstico) -->
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <span id="step-status-tag" class="tech-tag" style="background: rgba(255,159,28,0.1); color: var(--acento-warn); border-color: var(--acento-warn);">ACTIVO: FASE 01</span>
+                                        <h3 id="step-title" style="font-family: var(--font-tech); font-size: 1.8rem; margin: 0.25rem 0 0 0; color: var(--text-primary);">1. Diagnóstico</h3>
+                                    </div>
+                                </div>
 
-                        <!-- Paso 4 -->
-                        <div class="tech-box" style="padding: 2.5rem 1.5rem; background-color: var(--bg-secondary); min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--acento-warn); stroke-width: 2; margin-bottom: 1.5rem;" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                                <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem;">[FASE 04]</div>
-                                <h4 style="font-family: var(--font-tech); font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary);">4. Prep. Auditoría</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">Realizamos revisión documental, evaluación interna y preparación del personal.</p>
-                            </div>
-                            <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
-                        </div>
+                                <!-- Description -->
+                                <p id="step-desc" style="font-size: 1.05rem; line-height: 1.7; color: var(--text-secondary); margin-bottom: 2.5rem;">
+                                    Evaluamos la situación actual de la organización y determinamos las brechas existentes.
+                                </p>
 
-                        <!-- Paso 5 -->
-                        <div class="tech-box" style="padding: 2.5rem 1.5rem; background-color: var(--bg-secondary); min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <svg style="width: 24px; height: 24px; fill: none; stroke: var(--acento-warn); stroke-width: 2; margin-bottom: 1.5rem;" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                                <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem;">[FASE 05]</div>
-                                <h4 style="font-family: var(--font-tech); font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--text-primary);">5. Certificación</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">Brindamos asesoramiento durante las etapas para llegar preparados a la certificación.</p>
+                                <!-- Technical checklist & deliverables -->
+                                <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 1.5rem; margin-bottom: 2rem; position: relative;">
+                                    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 1rem;">[DELIVERABLES_LOG_V1.0]</div>
+                                    <ul id="step-checklist" style="list-style: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+                                        <li><span style="color: var(--acento-warn);">▪</span> Gap Analysis Inicial (ISO 9001 / 14001)</li>
+                                        <li><span style="color: var(--acento-warn);">▪</span> Mapeo de Procesos y Aspectos Críticos</li>
+                                        <li><span style="color: var(--acento-warn);">▪</span> Reporte de Hallazgos y Riesgos Regulatorios</li>
+                                    </ul>
+                                </div>
                             </div>
+
+                            <!-- Progress and Action Footer -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1rem; position: relative; z-index: 5;">
+                                <div style="font-family: var(--font-mono); font-size: 0.8rem;">
+                                    <span style="color: var(--text-tertiary);">EST. TIMELINE:</span> <span id="step-duration" style="color: var(--text-primary); font-weight: bold;">2-3 Semanas</span>
+                                </div>
+                                <a href="#contacto" class="btn btn-warn" style="font-family: var(--font-tech); padding: 0.75rem 1.5rem; font-size: 0.9rem;">Iniciar Diagnóstico</a>
+                            </div>
+
                             <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </section>

@@ -95,10 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
         initDiagnosticForm();
     }
 
-    // Inicializar Selector de Perfil B2B en Home si existe
-    if (document.querySelector('.b2b-selector-section')) {
-        initB2BSelector();
-    }
+    // Inicializar Componentes de Interfaz en Home
+    initB2BSelector(); // Inicializa el Acordeón FAQ
+    initAccompanimentStepper(); // Inicializa el visualizador de Acompañamiento 5 Pasos
 
     // Registrar Clicks Rápidos de Contacto (Eventos Críticos)
     registerDirectContactEvents();
@@ -485,3 +484,137 @@ contactar a: contacto@grupo-gari.com o vía telefónica.
 
 // Exportar función para activarla desde landings específicas de servicio
 window.triggerLeadMagnetDownload = triggerLeadMagnetDownload;
+
+/* ==========================================================================
+   5. SISTEMA DE ACOMPAÑAMIENTO EN 5 PASOS INTERACTIVO
+   ========================================================================== */
+
+const ACCOMPANIMENT_STEPS = {
+    "1": {
+        watermark: "01",
+        status: "ACTIVO: FASE 01",
+        title: "1. Diagnóstico",
+        desc: "Evaluamos la situación actual de la organización y determinamos las brechas existentes en sus procesos frente a la normatividad ISO seleccionada.",
+        duration: "2-3 Semanas",
+        checklist: [
+            "Gap Analysis Inicial (ISO 9001 / 14001)",
+            "Mapeo de Procesos y Aspectos Críticos",
+            "Reporte de Hallazgos y Riesgos Regulatorios"
+        ],
+        svg: `<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />`
+    },
+    "2": {
+        watermark: "02",
+        status: "ACTIVO: FASE 02",
+        title: "2. Planeación",
+        desc: "Definimos las acciones necesarias para implementar o fortalecer el sistema de gestión. Creamos el mapa de ruta y asignamos responsabilidades clave.",
+        duration: "1-2 Semanas",
+        checklist: [
+            "Cronograma Técnico Detallado",
+            "Matriz de Roles y Responsabilidades",
+            "Plan de Capacitación al Comité de Calidad/Ambiental"
+        ],
+        svg: `<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />`
+    },
+    "3": {
+        watermark: "03",
+        status: "ACTIVO: FASE 03",
+        title: "3. Implementación",
+        desc: "Acompañamos al personal en la documentación, aplicación y seguimiento de los procesos. Creamos manuales de calidad, políticas y registros de control.",
+        duration: "8-12 Semanas",
+        checklist: [
+            "Redacción y Liberación de Manuales y Procedimientos",
+            "Capacitación General del Personal en Nuevas Prácticas",
+            "Registro del Historial de Operación y Control Interno"
+        ],
+        svg: `<path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />`
+    },
+    "4": {
+        watermark: "04",
+        status: "ACTIVO: FASE 04",
+        title: "4. Preparación para Auditoría",
+        desc: "Realizamos revisión documental exhaustiva, auditoría interna formal y la preparación intensiva de todo el personal para enfrentar el dictamen externo.",
+        duration: "3-4 Semanas",
+        checklist: [
+            "Auditoría Interna Cruzada de Simulación",
+            "Cierre Correctivo de Acciones y Desviaciones",
+            "Revisión por la Dirección y Minuta de Acuerdos"
+        ],
+        svg: `<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />`
+    },
+    "5": {
+        watermark: "05",
+        status: "ACTIVO: FASE 05",
+        title: "5. Certificación",
+        desc: "Brindamos asesoramiento experto durante todas las etapas de auditoría oficial de certificación realizadas por el organismo acreditado internacionalmente.",
+        duration: "2 Semanas",
+        checklist: [
+            "Defensa de Procesos ante el Auditor Externo",
+            "Atención de Observaciones o No Conformidades",
+            "Dictamen de Recomendación para la Certificación"
+        ],
+        svg: `<path stroke-linecap="round" stroke-linejoin="round" d="M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />`
+    }
+};
+
+function initAccompanimentStepper() {
+    const stepButtons = document.querySelectorAll('.step-btn');
+    if (stepButtons.length === 0) return;
+
+    const watermark = document.getElementById('step-watermark');
+    const displayWrapper = document.getElementById('step-content-display');
+    const svgEl = document.getElementById('step-svg');
+    const statusTag = document.getElementById('step-status-tag');
+    const titleEl = document.getElementById('step-title');
+    const descEl = document.getElementById('step-desc');
+    const checklistEl = document.getElementById('step-checklist');
+    const durationEl = document.getElementById('step-duration');
+
+    stepButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const stepId = btn.dataset.step;
+            const data = ACCOMPANIMENT_STEPS[stepId];
+            if (!data) return;
+
+            // Cambiar estados activos en botones
+            stepButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Efecto suave de fade out/in en el monitor
+            displayWrapper.style.opacity = '0';
+            watermark.style.opacity = '0';
+            watermark.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                // Actualizar textos
+                watermark.textContent = data.watermark;
+                statusTag.textContent = data.status;
+                titleEl.textContent = data.title;
+                descEl.textContent = data.desc;
+                durationEl.textContent = data.duration;
+                
+                // Actualizar SVG
+                svgEl.innerHTML = data.svg;
+
+                // Actualizar checklist
+                checklistEl.innerHTML = "";
+                data.checklist.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span style="color: var(--acento-warn);">▪</span> ${item}`;
+                    checklistEl.appendChild(li);
+                });
+
+                // Fade back in
+                displayWrapper.style.opacity = '1';
+                watermark.style.opacity = '0.08';
+                watermark.style.transform = 'translateY(0)';
+            }, 250);
+
+            // Track Evento de interacción con stepper
+            window.trackGariEvent('view_accompaniment_step', {
+                step_number: stepId,
+                step_title: data.title
+            });
+        });
+    });
+}
