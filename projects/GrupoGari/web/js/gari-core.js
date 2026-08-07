@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializar Componentes de Interfaz en Home
     initB2BSelector(); // Inicializa el Acordeón FAQ
     initAccompanimentStepper(); // Inicializa el visualizador de Acompañamiento 5 Pasos
+    initHeroSlider(); // Inicializa el Slider TOP 10 Cursos
 
     // Registrar Clicks Rápidos de Contacto (Eventos Críticos)
     registerDirectContactEvents();
@@ -617,4 +618,98 @@ function initAccompanimentStepper() {
             });
         });
     });
+}
+
+/* ==========================================================================
+   6. MOTOR DE SLIDER HERO TOP 10
+   ========================================================================== */
+
+function initHeroSlider() {
+    const sliderSec = document.getElementById('hero-slider');
+    if (!sliderSec) return;
+
+    const slides = sliderSec.querySelectorAll('.slide-item');
+    const prevBtn = sliderSec.querySelector('.slider-arrow.prev');
+    const nextBtn = sliderSec.querySelector('.slider-arrow.next');
+    const currentCounter = document.getElementById('slider-curr');
+    const progressBar = sliderSec.querySelector('.slider-progress-bar');
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    let progressInterval = null;
+    let progressPercent = 0;
+    const slideDuration = 6000; // 6 segundos por slide
+    const progressStepTime = 30; // Actualizar barra cada 30ms
+
+    function updateCounter() {
+        if (currentCounter) {
+            const formatted = (currentIndex + 1).toString().padStart(2, '0');
+            currentCounter.textContent = formatted;
+        }
+    }
+
+    function goToSlide(index) {
+        slides[currentIndex].classList.remove('active');
+        currentIndex = (index + totalSlides) % totalSlides;
+        slides[currentIndex].classList.add('active');
+        updateCounter();
+        resetAutoplay();
+
+        // Track evento GA4
+        const activeSlide = slides[currentIndex];
+        const title = activeSlide.querySelector('h1').textContent;
+        window.trackGariEvent('view_hero_slide', {
+            slide_index: currentIndex + 1,
+            slide_title: title
+        });
+    }
+
+    function nextSlide() {
+        goToSlide(currentIndex + 1);
+    }
+
+    // Exportar función global para avanzar manualmente o por autoplay
+    window.nextSlide = nextSlide;
+
+    function prevSlide() {
+        goToSlide(currentIndex - 1);
+    }
+
+    function startProgress() {
+        progressPercent = 0;
+        if (progressBar) progressBar.style.width = '0%';
+        
+        clearInterval(progressInterval);
+        progressInterval = setInterval(() => {
+            progressPercent += (progressStepTime / slideDuration) * 100;
+            if (progressPercent >= 100) {
+                progressPercent = 100;
+                if (progressBar) progressBar.style.width = '100%';
+                clearInterval(progressInterval);
+                nextSlide();
+            } else {
+                if (progressBar) progressBar.style.width = `${progressPercent}%`;
+            }
+        }, progressStepTime);
+    }
+
+    function resetAutoplay() {
+        clearInterval(progressInterval);
+        startProgress();
+    }
+
+    function pauseAutoplay() {
+        clearInterval(progressInterval);
+    }
+
+    // Event listeners
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+    // Pausar al pasar el cursor sobre la sección del slider
+    sliderSec.addEventListener('mouseenter', pauseAutoplay);
+    sliderSec.addEventListener('mouseleave', resetAutoplay);
+
+    // Inicializar barra de progreso y autoplay
+    startProgress();
 }
