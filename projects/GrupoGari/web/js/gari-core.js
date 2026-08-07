@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initB2BSelector(); // Inicializa el Acordeón FAQ
     initAccompanimentStepper(); // Inicializa el visualizador de Acompañamiento 5 Pasos
     initHeroSlider(); // Inicializa el Slider TOP 10 Cursos
+    initReviewsSlider(); // Inicializa el Slider de 3 Opiniones B2B
 
     // Registrar Clicks Rápidos de Contacto (Eventos Críticos)
     registerDirectContactEvents();
@@ -178,14 +179,14 @@ function initFaqAccordion() {
             faqItems.forEach(otherItem => {
                 if (otherItem !== item) {
                     otherItem.classList.remove('active');
-                    otherItem.querySelector('.faq-answer').style.maxHeight = null;
+                    otherItem.querySelector('.faq-answer').style.maxHeight = '0px';
                     otherItem.querySelector('.faq-icon').textContent = '+';
                 }
             });
 
             if (isOpen) {
                 item.classList.remove('active');
-                answer.style.maxHeight = null;
+                answer.style.maxHeight = '0px';
                 icon.textContent = '+';
             } else {
                 item.classList.add('active');
@@ -712,4 +713,49 @@ function initHeroSlider() {
 
     // Inicializar barra de progreso y autoplay
     startProgress();
+}
+
+/* ==========================================================================
+   7. SLIDER DE RESEÑAS B2B (3 Opiniones)
+   ========================================================================== */
+
+function initReviewsSlider() {
+    const sliderContainer = document.querySelector('.reviews-slider-container');
+    if (!sliderContainer) return;
+
+    const track = sliderContainer.querySelector('.reviews-track');
+    const dots = sliderContainer.querySelectorAll('.review-dot');
+    const prevBtn = sliderContainer.querySelector('.review-arrow.prev');
+    const nextBtn = sliderContainer.querySelector('.review-arrow.next');
+
+    let currentIndex = 0;
+    const totalSlides = 3;
+
+    function goToSlide(index) {
+        currentIndex = (index + totalSlides) % totalSlides;
+        
+        // Desplazar el track
+        track.style.transform = `translateX(-${currentIndex * 33.333}%)`;
+        
+        // Actualizar dots
+        dots.forEach((dot, idx) => {
+            if (idx === currentIndex) {
+                dot.classList.add('active');
+                dot.style.background = 'var(--acento-warn)';
+            } else {
+                dot.classList.remove('active');
+                dot.style.background = 'var(--border-color)';
+            }
+        });
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            const index = parseInt(dot.dataset.index);
+            goToSlide(index);
+        });
+    });
 }
