@@ -189,11 +189,17 @@ body {
 }
 
 .solutions-grid .tech-box:hover .tech-tag {
-    color: #121417 !important;
-    border-color: rgba(18, 20, 23, 0.3) !important;
-    background-color: rgba(18, 20, 23, 0.05) !important;
+    color: #FFFFFF !important;
+    background-color: #121417 !important;
+    border: 1px solid #121417 !important;
+    padding: 0.25rem 0.6rem !important;
+    display: inline-flex !important;
+    width: max-content !important;
 }
 
+.solutions-grid .tech-box:hover .tech-tag::before {
+    display: none !important;
+}
 .solutions-grid .tech-box:hover::before, 
 .solutions-grid .tech-box:hover::after,
 .solutions-grid .tech-box:hover > .corner-bottom-left, 
