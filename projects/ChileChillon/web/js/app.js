@@ -103,6 +103,14 @@ function initPreloader() {
     return;
   }
 
+  // Precargar las imágenes de la animación para evitar parpadeos o trabas
+  const preloadedImages = [];
+  for (let i = 1; i <= 6; i++) {
+    const img = new Image();
+    img.src = `Assets/Chillando/enchilado${i}.svg`;
+    preloadedImages.push(img);
+  }
+
   const bar = document.getElementById("preloader-bar");
   const percentText = document.getElementById("preloader-percentage");
   const msgText = document.getElementById("preloader-message");
@@ -196,9 +204,28 @@ function initCustomCursor() {
   const glow = document.createElement("div");
   glow.className = "custom-cursor-glow";
 
+  const canvas = document.createElement("canvas");
+  canvas.style.position = "fixed";
+  canvas.style.left = "0";
+  canvas.style.top = "0";
+  canvas.style.width = "100vw";
+  canvas.style.height = "100vh";
+  canvas.style.pointerEvents = "none";
+  canvas.style.zIndex = "999997";
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
   document.body.appendChild(cursor);
   document.body.appendChild(glow);
+  document.body.appendChild(canvas);
   document.body.classList.add("has-custom-cursor");
+
+  const ctx = canvas.getContext("2d");
 
   let mouseX = 0, mouseY = 0;
   let cursorX = 0, cursorY = 0;
@@ -214,7 +241,7 @@ function initCustomCursor() {
     mouseY = e.clientY;
 
     const now = Date.now();
-    if (now - lastSpawnTime > 35) { // Limitar tasa de refresco para rendimiento a 60fps
+    if (now - lastSpawnTime > 35) { // Limitar tasa de refresco para rendimiento
       const dx = mouseX - lastMouseX;
       const dy = mouseY - lastMouseY;
       const speed = Math.sqrt(dx * dx + dy * dy);
@@ -230,14 +257,12 @@ function initCustomCursor() {
 
   // Generador dinámico de partículas con colores y formas orgánicas
   function spawnChiliParticle(x, y, baseVx, baseVy) {
-    const el = document.createElement("div");
-    
     // Distribución: 55% chile rojo, 25% chile naranja/habanero, 10% chile tatemado, 10% semilla dorada
     const r = Math.random();
     let bgColor = "#D30611"; // Rojo flama
     let width = Math.random() * 5 + 4; // 4px a 9px
     let height = Math.random() * 6 + 5; // 5px a 11px
-    let borderRadius = `${Math.random()*4+2}px ${Math.random()*4+2}px ${Math.random()*4+2}px ${Math.random()*4+2}px`;
+    let isSemilla = false;
     
     if (r < 0.55) {
       bgColor = "#D30611"; // Rojo
@@ -249,29 +274,16 @@ function initCustomCursor() {
       bgColor = "#FFD000"; // Semilla de chile dorada
       width = 4;
       height = 5.5;
-      borderRadius = "50%"; // Semillas redondas
+      isSemilla = true;
     }
 
-    // Estilos optimizados para renderizado acelerado por GPU
-    el.style.position = "fixed";
-    el.style.left = "0";
-    el.style.top = "0";
-    el.style.width = `${width}px`;
-    el.style.height = `${height}px`;
-    el.style.backgroundColor = bgColor;
-    el.style.borderRadius = borderRadius;
-    el.style.pointerEvents = "none";
-    el.style.zIndex = "999996";
-    el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    el.style.opacity = "1";
-    el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.15)";
-    
-    document.body.appendChild(el);
-
     activeParticles.push({
-      el: el,
-      x: x - width / 2,
-      y: y - height / 2,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      color: bgColor,
+      isSemilla: isSemilla,
       vx: baseVx + (Math.random() - 0.5) * 2.5, // Velocidad inicial + inercia del cursor
       vy: baseVy - Math.random() * 1.5 - 0.5, // Flotación inicial hacia arriba
       gravity: 0.12, // Gravedad suave para jalar las hojuelas abajo
@@ -297,7 +309,10 @@ function initCustomCursor() {
     glow.style.left = `${glowX}px`;
     glow.style.top = `${glowY}px`;
 
-    // Actualizar y renderizar físicas de partículas
+    // Limpiar canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Actualizar y renderizar físicas de partículas en el canvas
     for (let i = activeParticles.length - 1; i >= 0; i--) {
       const p = activeParticles[i];
       p.x += p.vx;
@@ -307,12 +322,37 @@ function initCustomCursor() {
       p.alpha -= p.alphaDecay;
 
       if (p.alpha <= 0) {
-        p.el.remove();
         activeParticles.splice(i, 1);
       } else {
-        // Uso de translate3d para forzar renderizado por GPU (silky smooth)
-        p.el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.rotation}deg) scale(${p.scale})`;
-        p.el.style.opacity = p.alpha;
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.scale(p.scale, p.scale);
+        
+        // Dibujar sombra suave de la partícula
+        ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+        ctx.shadowBlur = 3;
+        ctx.shadowOffsetY = 1;
+
+        ctx.fillStyle = p.color;
+
+        if (p.isSemilla) {
+          // Dibujar semilla redonda/ovalada
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.width / 2, p.height / 2, 0, 0, 2 * Math.PI);
+          ctx.fill();
+        } else {
+          // Dibujar hojuela de chile
+          if (ctx.roundRect) {
+            ctx.beginPath();
+            ctx.roundRect(-p.width / 2, -p.height / 2, p.width, p.height, 2);
+            ctx.fill();
+          } else {
+            ctx.fillRect(-p.width / 2, -p.height / 2, p.width, p.height);
+          }
+        }
+        ctx.restore();
       }
     }
 
@@ -333,6 +373,7 @@ function initCustomCursor() {
     });
   });
 }
+
 
 // --- Termómetro Scoville ---
 function initThermometer() {
@@ -659,35 +700,35 @@ function initCart() {
   const products = {
     arbol: {
       name: "Chile Chillón de Árbol",
-      price: 35,
+      price: 40,
       spicy: "🌶️🌶️🌶️🌶️",
       image: "Assets/Salsas/de_arbol.jpg",
       filterClass: ""
     },
     habanero: {
       name: "Chile Chillón Habanero",
-      price: 35,
+      price: 40,
       spicy: "🌶️🌶️🌶️🌶️",
       image: "Assets/Salsas/habanero.jpg",
       filterClass: ""
     },
     habanero_tatemado: {
       name: "Habanero Tatemado",
-      price: 35,
+      price: 40,
       spicy: "🌶️🌶️🌶️🌶️",
       image: "Assets/Salsas/tatemado.jpg",
       filterClass: ""
     },
     negra: {
       name: "Chile Chillón Negra",
-      price: 35,
+      price: 40,
       spicy: "🌶️🌶️🌶️",
       image: "Assets/Salsas/negra.jpg",
       filterClass: ""
     },
     serrano: {
       name: "Chile Chillón Serrano",
-      price: 35,
+      price: 40,
       spicy: "🌶️🌶️",
       image: "Assets/Salsas/serrano.jpg",
       filterClass: ""
@@ -825,6 +866,8 @@ function initCart() {
           const tiendaSec = document.getElementById("tienda");
           if (tiendaSec) {
             tiendaSec.scrollIntoView({ behavior: "smooth" });
+          } else {
+            window.location.href = "index.html#tienda";
           }
         });
       }
@@ -875,19 +918,20 @@ function initCart() {
       });
 
       // Calcular envío y total
-      const costoEnvio = subtotal > 900 ? 0 : 180;
+      const costoEnvio = subtotal > 599 ? 0 : 160;
       const total = subtotal + costoEnvio;
 
-      // Validación mínimo 6 piezas
+      // Validación mínimo 6 salsas
+      const totalSalsas = cart.reduce((sum, item) => sum + (item.id !== 'semillas_enchiladas' ? item.quantity : 0), 0);
       const warningBanner = document.getElementById("cart-warning");
       const warningText = document.getElementById("cart-warning-text");
       const cartTotal = document.getElementById("cart-total");
       const cartShipping = document.getElementById("cart-shipping");
 
       if (warningBanner && warningText && cartCheckoutBtn) {
-        if (totalItems < 6) {
-          const faltantes = 6 - totalItems;
-          warningText.innerText = `Mínimo para envío: 6 piezas (te faltan ${faltantes})`;
+        if (totalSalsas < 6) {
+          const faltantes = 6 - totalSalsas;
+          warningText.innerText = `Mínimo para envío: 6 salsas (te faltan ${faltantes})`;
           warningBanner.classList.remove("hidden");
           cartCheckoutBtn.disabled = true;
           cartCheckoutBtn.classList.add("opacity-50", "pointer-events-none");
@@ -1000,7 +1044,7 @@ function initCart() {
             subtotal += prod.price * item.quantity;
           }
         });
-        const costoEnvio = subtotal > 900 ? 0 : 180;
+        const costoEnvio = subtotal > 599 ? 0 : 160;
         const total = subtotal + costoEnvio;
 
         messageText += `\n*Subtotal:* $${subtotal}.00 MXN`;
