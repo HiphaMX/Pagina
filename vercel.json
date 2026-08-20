@@ -104,7 +104,17 @@
       "dest": "/projects/urologia-avanzada/$1/$2"
     },
     {
-      "src": "/(blog|diagnostico|equipo-medico|pacientes|tipos-de-cirugia|preguntas-frecuentes-centro-de-urologia-avanzada|aviso-de-privacidad-centro-de-urologia-avanzada|index|llms.txt)(.html|)",
+      "src": "/llms.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/urologia-avanzada/llms.txt"
+    },
+    {
+      "src": "/(blog|diagnostico|equipo-medico|pacientes|tipos-de-cirugia|preguntas-frecuentes-centro-de-urologia-avanzada|aviso-de-privacidad-centro-de-urologia-avanzada|index)(.html|)",
       "has": [
         {
           "type": "host",
