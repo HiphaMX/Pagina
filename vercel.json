@@ -104,7 +104,7 @@
       "dest": "/projects/urologia-avanzada/$1/$2"
     },
     {
-      "src": "/(blog|diagnostico|equipo-medico|pacientes|tipos-de-cirugia|preguntas-frecuentes-centro-de-urologia-avanzada|aviso-de-privacidad-centro-de-urologia-avanzada|index)(.html|)",
+      "src": "/(blog|diagnostico|equipo-medico|pacientes|tipos-de-cirugia|preguntas-frecuentes-centro-de-urologia-avanzada|aviso-de-privacidad-centro-de-urologia-avanzada|index|llms.txt)(.html|)",
       "has": [
         {
           "type": "host",

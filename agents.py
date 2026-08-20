@@ -342,6 +342,33 @@ Tu tarea:
 3. Proporcionar un reporte de hallazgos ordenado por criticidad (Bloqueante, Alto, Medio, Bajo).
 4. Retroalimentar a KAM con las áreas de oportunidad de inmediato.""",
     },
+    {
+        "id": 11,
+        "key": "geopilot",
+        "name": "GEOPilot",
+        "icon": "🛰️",
+        "color": C.fg(6, 182, 212),       # Cyan
+        "role": "Generative Engine Optimization (GEO) & Agentic Web Specialist",
+        "file": "AGENT_GEOPILOT.md",
+        "badge": "Especialista en IA & llms.txt",
+        "tags": ["GEO", "llms.txt", "robots.txt", "RAG", "TollBit", "crawlers", "IA", "agentes"],
+        "when_to_use": [
+            "Optimizar la indexación de tu web para que aparezca en ChatGPT, Gemini o Perplexity",
+            "Generar el archivo llms.txt o llms-full.txt de tu sitio",
+            "Configurar robots.txt para bloquear bots de entrenamiento de IA pero permitir buscadores",
+            "Definir estrategias de monetización y control de tráfico de bots con pasarelas como TollBit",
+        ],
+        "activation": """Actúa como GEOPilot, el agente especializado en optimización para motores generativos (GEO) y la web agéntica de HiphaMX.
+
+Proyecto / Cliente: [nombre]
+URL del sitio o entorno: [URL o local]
+
+Tu tarea:
+1. Diseñar o actualizar la configuración de acceso para agentes de IA.
+2. Generar el archivo llms.txt o llms-full.txt optimizado en Markdown.
+3. Sugerir las directivas adecuadas para robots.txt.
+4. Diseñar la estrategia de control/monetización si se requiere.""",
+    },
 ]
 
 # ─── Helper functions ────────────────────────────────────────────────────────
@@ -395,7 +422,7 @@ def print_agent_list():
 
     hr()
     print()
-    print(f"  {CYAN}[11]{C.RESET} {WHITE}🔍  Ayúdame a elegir un agente{C.RESET}  {MUTED}(responde unas preguntas){C.RESET}")
+    print(f"  {CYAN}[12]{C.RESET} {WHITE}🔍  Ayúdame a elegir un agente{C.RESET}  {MUTED}(responde unas preguntas){C.RESET}")
     print(f"  {MUTED}[0]  Salir{C.RESET}")
     print()
 
@@ -463,6 +490,7 @@ def wizard():
         ("Tengo un problema de seguridad o quiero auditar el código.",        ["codeguardian"]),
         ("Necesito analizar datos (CSV/Excel) o investigar tendencias.",      ["datos"]),
         ("Necesito probar formularios, pagos, correos SMTP, PDFs o UX.",      ["sitesentinel"]),
+        ("Necesito optimizar mi web para agentes de IA (GEO, llms.txt).",     ["geopilot"]),
         ("No sé bien, muéstrame todos los agentes.",                          None),
     ]
 
@@ -544,7 +572,7 @@ def main():
     while True:
         print_agent_list()
 
-        choice = input(f"  {CYAN}Selecciona un agente {MUTED}[1-10, 11, 0]{CYAN}: {C.RESET}").strip()
+        choice = input(f"  {CYAN}Selecciona un agente {MUTED}[1-11, 12, 0]{CYAN}: {C.RESET}").strip()
 
         if choice == "0":
             clear()
@@ -554,7 +582,7 @@ def main():
             print()
             break
 
-        elif choice == "11":
+        elif choice == "12":
             result = wizard()
             if result:
                 print_agent_detail(result)

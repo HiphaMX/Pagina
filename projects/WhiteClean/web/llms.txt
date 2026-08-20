@@ -1,0 +1,28 @@
+# White Clean — Limpieza Especializada
+> White Clean es una empresa líder en México especializada en servicios de limpieza profesional profunda, desinfección y detallado para hogares, oficinas y vehículos, utilizando tecnología avanzada y personal certificado.
+
+## Información de la Empresa
+- **Sitio Web:** [whiteclean.com.mx](https://www.whiteclean.com.mx)
+- **Contacto:** [Cotiza tus Servicios / Contacto](https://www.whiteclean.com.mx/cotiza-tus-servicios)
+- **Sobre Nosotros:** [Conoce a White Clean](https://www.whiteclean.com.mx/conoce-a-white-clean)
+- **Preguntas Frecuentes:** [FAQ](https://www.whiteclean.com.mx/preguntas-frecuentes)
+
+## Catálogo de Servicios Especializados
+Limpieza profunda y desinfección a domicilio para diversos elementos:
+- [Limpieza de Muebles](https://www.whiteclean.com.mx/muebles-limpieza-especializada): Sofás, sillones, sillas y vestiduras de tela o piel.
+- [Limpieza de Alfombras](https://www.whiteclean.com.mx/alfombras-limpieza-especializada): Tratamiento contra manchas profundas y ácaros en alfombras residenciales y corporativas.
+- [Limpieza de Tapetes](https://www.whiteclean.com.mx/tapetes-limpieza-especializada): Cuidado especializado para tapetes de diferentes materiales y tejidos.
+- [Limpieza de Colchones](https://www.whiteclean.com.mx/colchones-limpieza-especializada): Desinfección profunda con tecnología de extracción de ácaros y alérgenos.
+- [Limpieza de Cortinas](https://www.whiteclean.com.mx/cortinas-limpieza-especializada): Lavado y desmanchado de persianas y cortinas.
+- [Limpieza de Pisos](https://www.whiteclean.com.mx/pisos-limpieza-especializada): Lavado, pulido y abrillantado de mármol, terrazo, porcelanato y concreto.
+- [Limpieza de Barras y Encimeras](https://www.whiteclean.com.mx/barras-limpieza-especializada): Cuidado y pulido de granito, cuarzo y mármol en cocinas o baños.
+- [Desinfección de Espacios](https://www.whiteclean.com.mx/desinfeccion-limpieza-especializada): Nebulización y sanitización profunda contra virus y bacterias.
+- [Mamparas y Divisiones](https://www.whiteclean.com.mx/mamparas-limpieza-especializada): Limpieza de mamparas de oficina y divisiones de baño.
+- [Detallado de Interiores](https://www.whiteclean.com.mx/interiores-limpieza-especializada): Limpieza profunda de vestiduras, techos, puertas y alfombras del auto.
+- [Detallado General y Pulido](https://www.whiteclean.com.mx/detallado-limpieza-especializada): Servicios integrales de pulido y encerado automotriz o de superficies residenciales.
+
+## Blog Técnico e Informativo (GEO / RAG Index)
+Artículos informativos sobre mantenimiento, limpieza y cuidado de materiales:
+- [Cómo identificar el tipo de tela de mis muebles](https://www.whiteclean.com.mx/post/como-identificar-el-tipo-de-tela-de-mis-muebles)
+- [Piedras más comunes para cubiertas de cocinas (Granito, Mármol, Cuarzo)](https://www.whiteclean.com.mx/post/piedras-mas-comunes-para-cocinas)
+- [Guía sobre Detallado Automotriz Premium](https://www.whiteclean.com.mx/post/detallado-automotriz-premium)

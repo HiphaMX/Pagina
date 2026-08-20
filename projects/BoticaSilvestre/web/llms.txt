@@ -1,0 +1,16 @@
+# Botica Silvestre
+> Botica Silvestre es un boticario artesanal y e-commerce especializado en microdosis de extractos herbales 100% naturales, diseñados para promover el bienestar físico, mental y emocional a través de la herbolaria intuitiva.
+
+## Catálogo de Microdosis ($390 MXN / Tintura Madre 30ml)
+Extractos herbales concentrados de base alcohol para dosificación sublingual (5 a 12 gotas):
+
+- **Calma:** Extracto base herbal con directriz calmante y relajante (Tila, caléndula, lavanda, flor de manita, pasiflora, menta, manzanilla). Diseñado para reducir el estrés, equilibrar emociones y facilitar el descanso diario.
+- **Luna:** Extracto herbal tonificante diseñado para el bienestar del sistema reproductor femenino (Muitle, hoja de frambuesa, uña de gato, cancerina, romero, ruda). Alivia malestares menstruales, calambres y promueve la circulación.
+- **Sueña:** Extracto reconfortante que promueve el descanso profundo y mejora el estado de ánimo (Hierba de san juan, tila, toronjil, wereke, damiana, té limón). Posee propiedades ansiolíticas suaves.
+- **Equilibra:** Extracto tonificante y depurativo diseñado para limpiar el hígado, desintoxicar el organismo y regular niveles metabólicos (Muitle, zapote blanco, moringa, diente de león, hierba del sapo, wereke).
+- **Descansa:** Tintura tranquilizante formulada específicamente para conciliar el sueño y combatir el insomnio (Valeriana y orégano), facilitando un ciclo de sueño profundo sin interrupciones.
+
+## Páginas Clave del Sitio Web
+- [Inicio](https://boticasilvestre.mx/index.html): Conoce la esencia y filosofía del boticario.
+- [La Botica](https://boticasilvestre.mx/botica.html): Catálogo completo y tienda online de tinturas y remedios herbales.
+- [Ritual](https://boticasilvestre.mx/ritual.html): Métodos y rituales de auto-cuidado sugeridos para el uso intuitivo de las microdosis.

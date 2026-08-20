@@ -1,0 +1,20 @@
+# Hipha | Tu Departamento de Marketing Externo
+> Hipha es una agencia de marketing digital integral que opera como el departamento de marketing externo de sus clientes, ofreciendo soluciones de diseño, publicidad, social media y desarrollo web.
+
+## Información General
+- **Sitio Web:** [hipha.mx](https://hipha.mx)
+- **Propósito:** Brindar infraestructura de marketing y desarrollo a empresas en crecimiento sin la necesidad de contratar y gestionar un equipo interno grande.
+- **Modelo de Trabajo:** Suscripciones mensuales de marketing y desarrollo web a través de un ecosistema de agentes humanos y de inteligencia artificial.
+
+## Ecosistema de Soluciones
+- **Diseño Gráfico & Branding:** Identidad visual de marca, diseño corporativo y activos publicitarios.
+- **Desarrollo Web:** Creación de landing pages y sitios web integrados con Webflow, Fast API y optimizados para SEO y GEO.
+- **Social Media & Copywriting:** Gestión de comunidades B2B/B2C, guiones para Reels/TikTok, e inbound marketing.
+- **Publicidad Digital:** Campañas de Google Ads, Meta Ads y posicionamiento orgánico.
+
+## Suscripciones (Planes)
+Ofrecemos planes mensuales escalables adaptados al tamaño y ritmo de crecimiento del negocio. Los detalles específicos se solicitan de forma directa.
+
+## Nuestra Raíz (Sobre Nosotros)
+Creemos en el marketing orgánico, la automatización y la optimización agéntica de datos.
+- **Contacto:** [Formulario de contacto](https://hipha.mx#contact-modal)

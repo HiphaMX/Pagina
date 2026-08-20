@@ -1,0 +1,35 @@
+# Centro de Urología Avanzada
+> El Centro de Urología Avanzada es una clínica médica especializada en el diagnóstico y tratamiento de afecciones del sistema urinario y aparato reproductor masculino. Contamos con cirujanos urólogos certificados y tecnología de vanguardia.
+
+## Información de la Clínica
+- **Médicos Principales:**
+  - [Dr. Belisario Torres Alvarado - Urólogo](https://urologia-avanzada.com.mx/blog/belisario-torres-alvarado-urologo.html)
+  - [Dr. Adalberto Castro Alfaro - Urólogo](https://urologia-avanzada.com.mx/blog/dr-adalberto-castro-alfaro-urologo.html)
+- **Contacto y Citas:** [Urología Avanzada](https://urologia-avanzada.com.mx/index.html)
+
+## Servicios y Tratamientos
+- [Diagnóstico Urológico](https://urologia-avanzada.com.mx/diagnostico.html): Métodos avanzados de detección y análisis.
+- [Tipos de Cirugía](https://urologia-avanzada.com.mx/tipos-de-cirugia.html):
+  - [Cirugía Robótica](https://urologia-avanzada.com.mx/blog/cirugia-robotica.html)
+  - [Cirugía Laparoscópica](https://urologia-avanzada.com.mx/blog/cirugia-laparoscopica.html)
+  - [Cirugía Endourológica](https://urologia-avanzada.com.mx/blog/cirugia-endourologica.html)
+
+## Recursos para Pacientes
+- [Información General para Pacientes](https://urologia-avanzada.com.mx/pacientes.html)
+- [Preguntas Frecuentes (FAQ)](https://urologia-avanzada.com.mx/preguntas-frecuentes-centro-de-urologia-avanzada.html)
+
+## Índice del Blog Médico (GEO / RAG Index)
+Guías completas sobre padecimientos urológicos comunes redactadas por nuestros médicos:
+- [Cáncer de Próstata](https://urologia-avanzada.com.mx/blog/cancer-de-prostata.html)
+- [Cáncer Renal](https://urologia-avanzada.com.mx/blog/cancer-renal.html)
+- [Cáncer Testicular](https://urologia-avanzada.com.mx/blog/cancer-testicular.html)
+- [Cáncer de Pene](https://urologia-avanzada.com.mx/blog/cancer-de-pene.html)
+- [Cáncer Vesical (Vejiga)](https://urologia-avanzada.com.mx/blog/cancer-vesical.html)
+- [Hiperplasia Prostática Benigna (Crecimiento de próstata)](https://urologia-avanzada.com.mx/blog/hiperplasia-prostatica-benigna.html)
+- [Litiasis Renal (Piedras en el riñón)](https://urologia-avanzada.com.mx/blog/litiasis-renal.html)
+- [Disfunción Eréctil](https://urologia-avanzada.com.mx/blog/disfuncion-erectil.html)
+- [Andropausia](https://urologia-avanzada.com.mx/blog/andropausia.html)
+- [Prostatitis](https://urologia-avanzada.com.mx/blog/prostatitis.html)
+- [Infección en Vías Urinarias](https://urologia-avanzada.com.mx/blog/infeccion-en-vias-urinarias.html)
+- [Virus del Papiloma Humano (VPH)](https://urologia-avanzada.com.mx/blog/virus-del-papiloma-humano.html)
+- [Enfermedades de Transmisión Sexual (ETS)](https://urologia-avanzada.com.mx/blog/enfermedades-de-transmision-sexual.html)
