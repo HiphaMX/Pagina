@@ -3271,21 +3271,21 @@ const PuntosDeVenta = ({ setCurrentView }) => {
 
       marker.bindPopup(`
         <div style="font-family: 'Outfit', sans-serif; padding: 0.5rem; min-width: 180px;">
-          <h4 style="margin: 0 0 0.3rem 0; font-size: 1rem; font-weight: 700; color: #101729; font-family: 'Quicksand', sans-serif;">\${pt.name}</h4>
+          <h4 style="margin: 0 0 0.3rem 0; font-size: 1rem; font-weight: 700; color: #101729; font-family: 'Quicksand', sans-serif;">${pt.name}</h4>
           <span style="
             display: inline-block; 
-            background: \${pt.giro === 'Gimnasio' ? '#98BC3C' : '#00e5ff'}; 
-            color: \${pt.giro === 'Gimnasio' ? 'white' : '#101729'}; 
+            background: ${pt.giro === 'Gimnasio' ? '#98BC3C' : '#00e5ff'}; 
+            color: ${pt.giro === 'Gimnasio' ? 'white' : '#101729'}; 
             font-size: 0.7rem; 
             padding: 0.15rem 0.5rem; 
             border-radius: 99px; 
             margin-bottom: 0.5rem; 
             font-weight: 800;
           ">
-            \${pt.giro}
+            ${pt.giro}
           </span>
-          <div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: #64748b;">\${pt.location}</div>
-          <a href="\${pt.url}" target="_blank" rel="noopener noreferrer" style="
+          <div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: #64748b;">${pt.location}</div>
+          <a href="${pt.url}" target="_blank" rel="noopener noreferrer" style="
             display: inline-flex; 
             align-items: center; 
             justify-content: center; 
@@ -3308,7 +3308,7 @@ const PuntosDeVenta = ({ setCurrentView }) => {
 
       marker.on('click', () => {
         setSelectedPointId(pt.id);
-        const cardEl = document.getElementById(`pos-card-\${pt.id}`);
+        const cardEl = document.getElementById(`pos-card-${pt.id}`);
         if (cardEl) {
           cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
