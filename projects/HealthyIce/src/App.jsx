@@ -138,6 +138,294 @@ const POINTS_OF_SALE = [
     giro: "Gimnasio",
     location: "Jalisco - Ocotlán",
     url: "https://maps.app.goo.gl/U8Q4BCc9TNi3d51d7"
+  },
+  {
+    id: 16,
+    name: "YG Fitness Center",
+    lat: 20.9384571,
+    lon: -101.4293159,
+    giro: "Gimnasio",
+    location: "Guanajuato - Silao",
+    url: "https://maps.app.goo.gl/tFFdBRuhPr3k87Cm7"
+  },
+  {
+    id: 17,
+    name: "Fruits Shop HS'z",
+    lat: 20.6125678,
+    lon: -103.2907824,
+    giro: "Punto de venta",
+    location: "ZMG - Tlaquepaque",
+    url: "https://maps.app.goo.gl/D6k9VTzwSXjFLWv16"
+  },
+  {
+    id: 18,
+    name: "Santuario Fitness Club",
+    lat: 20.1280909,
+    lon: -101.1810479,
+    giro: "Gimnasio",
+    location: "Guanajuato - Moroleón",
+    url: "https://maps.app.goo.gl/3xkS1yRzBsNPnR6T6"
+  },
+  {
+    id: 19,
+    name: "Iron Fitness suplementos",
+    lat: 20.6445212,
+    lon: -103.400714,
+    giro: "Tienda suplementos",
+    location: "ZMG - Zapopan",
+    url: "https://maps.app.goo.gl/iwFSZiEXs6FryPHW6"
+  },
+  {
+    id: 20,
+    name: "Muscle Hiit Gym",
+    lat: 20.6974811,
+    lon: -103.3676485,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/ijQPvekFftNvRYfb8"
+  },
+  {
+    id: 21,
+    name: "Omnia Fitness Center",
+    lat: 21.1735933,
+    lon: -101.6704205,
+    giro: "Gimnasio",
+    location: "Guanajuato - León",
+    url: "https://maps.app.goo.gl/ggZzsTZgRLU45KL76"
+  },
+  {
+    id: 22,
+    name: "Gym Reto 30 Fitness Center",
+    lat: 20.8274088,
+    lon: -105.1383583,
+    giro: "Gimnasio",
+    location: "Jalisco - Puerto Vallarta",
+    url: "https://maps.app.goo.gl/Zo2zXBF1jQrrTTZJ8"
+  },
+  {
+    id: 23,
+    name: "Gym 360",
+    lat: 21.0825499,
+    lon: -101.5850934,
+    giro: "Gimnasio",
+    location: "Guanajuato - León",
+    url: "https://maps.app.goo.gl/hriCgaUjSoMnfGjJ7"
+  },
+  {
+    id: 24,
+    name: "Vitamin drops",
+    lat: 21.1525412,
+    lon: -101.8367834,
+    giro: "Tienda suplementos",
+    location: "Guanajuato - León",
+    url: "https://maps.app.goo.gl/MZSk9Fooze7LAo5M7"
+  },
+  {
+    id: 25,
+    name: "Sinergym",
+    lat: 21.116271,
+    lon: -101.7022421,
+    giro: "Gimnasio",
+    location: "Guanajuato - León",
+    url: "https://maps.app.goo.gl/oWhrS5uopYf4czFF9"
+  },
+  {
+    id: 26,
+    name: "Suplementos N",
+    lat: 20.6883097,
+    lon: -103.3765378,
+    giro: "Tienda suplementos",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/TQfR2L7FDKRHg1pn8"
+  },
+  {
+    id: 27,
+    name: "Wolf Gym",
+    lat: 20.665252,
+    lon: -103.3464073,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/6u4A7watsXUgoRc89"
+  },
+  {
+    id: 28,
+    name: "Gold's Gym Centro Sur",
+    lat: 20.603618,
+    lon: -103.4037717,
+    giro: "Gimnasio",
+    location: "ZMG - Tlaquepaque",
+    url: "https://maps.app.goo.gl/AGLEyzmkyMHHaBAa7"
+  },
+  {
+    id: 29,
+    name: "Taurino Gym & Fitness",
+    lat: 20.361931,
+    lon: -102.6830659,
+    giro: "Gimnasio",
+    location: "Jalisco - Ocotlán",
+    url: "https://maps.app.goo.gl/VDLCYEdpRCzJGFna9"
+  },
+  {
+    id: 30,
+    name: "Navi Gym",
+    lat: 20.6713657,
+    lon: -103.3068812,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/HbxTcxeuwGMdFkrA8"
+  },
+  {
+    id: 31,
+    name: "Sport fresno",
+    lat: 20.6584319,
+    lon: -103.3778385,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/fS1mt42ViVqdtSQdA"
+  },
+  {
+    id: 32,
+    name: "YG Fitness Center",
+    lat: 20.9385035,
+    lon: -101.4318092,
+    giro: "Gimnasio",
+    location: "Guanajuato - Silao",
+    url: "https://maps.app.goo.gl/Qwqoh6EZcKqUsbEn6"
+  },
+  {
+    id: 33,
+    name: "TimeFit",
+    lat: 21.1470585,
+    lon: -101.7867158,
+    giro: "Gimnasio",
+    location: "Guanajuato - León",
+    url: "https://maps.app.goo.gl/Y6eDfNoTgXQZrkkA7"
+  },
+  {
+    id: 34,
+    name: "Sport Tiger Gym",
+    lat: 20.6438314,
+    lon: -103.3589973,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/67MxC8tS52DKcJmWA"
+  },
+  {
+    id: 35,
+    name: "Enjoy fitness center",
+    lat: 20.6091288,
+    lon: -103.3835199,
+    giro: "Gimnasio",
+    location: "ZMG - Tlaquepaque",
+    url: "https://maps.app.goo.gl/AXyngxPZQHR75J5c9"
+  },
+  {
+    id: 36,
+    name: "Fitness Factory",
+    lat: 20.6721604,
+    lon: -103.4283535,
+    giro: "Gimnasio",
+    location: "ZMG - Zapopan",
+    url: "https://maps.app.goo.gl/P6JFAy7yUbAcBYBH7"
+  },
+  {
+    id: 37,
+    name: "Verde y organico",
+    lat: 20.6548726,
+    lon: -103.4093948,
+    giro: "Tienda suplementos",
+    location: "ZMG - Zapopan",
+    url: "https://maps.app.goo.gl/M4QGjKJiqWS1jQav6"
+  },
+  {
+    id: 38,
+    name: "Cuban gym",
+    lat: 20.5901333,
+    lon: -103.4292252,
+    giro: "Gimnasio",
+    location: "ZMG - Zapopan",
+    url: "https://maps.app.goo.gl/mKY97Vuwp3aLx44dA"
+  },
+  {
+    id: 39,
+    name: "StronGym",
+    lat: 20.590132,
+    lon: -103.4472499,
+    giro: "Gimnasio",
+    location: "ZMG - Tlajomulco",
+    url: "https://maps.app.goo.gl/Yq1p3k4DVRF3dsa47"
+  },
+  {
+    id: 40,
+    name: "Lagar Gym",
+    lat: 20.6580122,
+    lon: -103.3710157,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/utrG9uLFRUcdb9Gh9"
+  },
+  {
+    id: 41,
+    name: "City Fit Guadalajara",
+    lat: 20.6447934,
+    lon: -103.384924,
+    giro: "Gimnasio",
+    location: "ZMG - Guadalajara",
+    url: "https://maps.app.goo.gl/pECEbE8YD477zjJW9"
+  },
+  {
+    id: 42,
+    name: "Leya Sport Gym",
+    lat: 20.5472703,
+    lon: -103.3375978,
+    giro: "Gimnasio",
+    location: "ZMG - Tlajomulco",
+    url: "https://maps.app.goo.gl/8k5cFJTZZf3R8mGt9"
+  },
+  {
+    id: 43,
+    name: "Power Gym",
+    lat: 20.4162485,
+    lon: -103.6653772,
+    giro: "Gimnasio",
+    location: "Jalisco - Villa Corona",
+    url: "https://maps.app.goo.gl/CiNr4mQWhcgjEwaCA"
+  },
+  {
+    id: 44,
+    name: "Joss Gym",
+    lat: 20.6621378,
+    lon: -103.2378474,
+    giro: "Gimnasio",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/cpaM4rNSL8S5KceWA"
+  },
+  {
+    id: 45,
+    name: "Dark Man Gym",
+    lat: 20.6607409,
+    lon: -103.2343455,
+    giro: "Gimnasio",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/k4Sn1sFLLHJiP9jg9"
+  },
+  {
+    id: 46,
+    name: "BulkZone",
+    lat: 20.632316,
+    lon: -103.2472838,
+    giro: "Tienda suplementos",
+    location: "ZMG - Tonalá",
+    url: "https://maps.app.goo.gl/Kvgy29DWB6i4RuqS9"
+  },
+  {
+    id: 47,
+    name: "MyFit Fitness Center",
+    lat: 20.6339141,
+    lon: -103.4020141,
+    giro: "Gimnasio",
+    location: "ZMG - Zapopan",
+    url: "https://maps.app.goo.gl/kdvbm7u58PquZBBg6"
   }
 ];
 
@@ -3453,15 +3741,14 @@ const PuntosDeVenta = ({ setCurrentView }) => {
               </div>
               
               {/* Giro Filters */}
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                {['Todos', 'Gimnasio', 'Consultorio'].map(g => (
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {['Todos', 'Gimnasio', 'Consultorio', 'Tienda suplementos', 'Punto de venta'].map(g => (
                   <button
                     key={g}
                     type="button"
                     onClick={() => { setSelectedGiro(g); setSelectedPointId(null); }}
                     style={{
-                      flex: 1,
-                      padding: '0.5rem 0.25rem',
+                      padding: '0.5rem 0.75rem',
                       fontSize: '0.85rem',
                       fontFamily: "'Outfit', sans-serif",
                       fontWeight: 700,
@@ -3474,7 +3761,7 @@ const PuntosDeVenta = ({ setCurrentView }) => {
                       boxShadow: selectedGiro === g ? '0 4px 10px rgba(16,23,41,0.15)' : 'none'
                     }}
                   >
-                    {g === 'Todos' ? 'Todos' : g === 'Gimnasio' ? 'Gimnasios' : 'Consultorios'}
+                    {g === 'Todos' ? 'Todos' : g === 'Gimnasio' ? 'Gimnasios' : g === 'Consultorio' ? 'Consultorios' : g === 'Tienda suplementos' ? 'Suplementos' : 'Puntos de Venta'}
                   </button>
                 ))}
               </div>
