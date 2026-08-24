@@ -3348,8 +3348,10 @@ const PuntosDeVenta = ({ setCurrentView }) => {
           0% { transform: scale(0.33); opacity: 1; }
           80%, 100% { opacity: 0; }
         }
-        .custom-leaflet-marker:hover {
+        .custom-leaflet-marker:hover > div {
           transform: rotate(-45deg) scale(1.15) !important;
+        }
+        .custom-leaflet-marker:hover {
           z-index: 1000 !important;
         }
       `}</style>
@@ -3493,7 +3495,7 @@ const PuntosDeVenta = ({ setCurrentView }) => {
                   return (
                     <div
                       key={pt.id}
-                      id={`pos-card-\${pt.id}`}
+                      id={`pos-card-${pt.id}`}
                       onClick={() => handleSelectCard(pt)}
                       className="glass-card"
                       style={{
