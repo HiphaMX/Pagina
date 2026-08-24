@@ -3437,7 +3437,7 @@ const PuntosDeVenta = ({ setCurrentView }) => {
                           pt.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesGiro = selectedGiro === 'Todos' || pt.giro === selectedGiro;
     return matchesSearch && matchesGiro;
-  });
+  }).sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
 
   useEffect(() => {
     if (!L) return;
