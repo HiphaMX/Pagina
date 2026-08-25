@@ -1155,7 +1155,7 @@ p {
 }
 
 .marquee-logo-card {
-    height: 80px;
+    height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1179,20 +1179,20 @@ p {
     flex-shrink: 0;
 }
 
-/* Clases de ajuste de peso visual */
+/* Clases de ajuste de peso visual (escalados un ~15% más grandes) */
 .marquee-logo-card.logo-wide img {
-    max-height: 32px;
-    max-width: 140px;
+    max-height: 38px;
+    max-width: 150px;
 }
 
 .marquee-logo-card.logo-medium img {
-    max-height: 42px;
-    max-width: 130px;
+    max-height: 48px;
+    max-width: 140px;
 }
 
 .marquee-logo-card.logo-square img {
-    max-height: 52px;
-    max-width: 120px;
+    max-height: 58px;
+    max-width: 130px;
 }
 
 .marquee-logo-card:hover img {
