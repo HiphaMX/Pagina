@@ -1124,7 +1124,7 @@ p {
 /* --- Marquesina Infinita de Logotipos de Clientes --- */
 .clients-marquee-section {
     padding: 4rem 0;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     overflow: hidden;
@@ -1155,25 +1155,21 @@ p {
 }
 
 .marquee-logo-card {
-    height: 70px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0.5rem 1.5rem;
-    border: 1px dashed var(--border-color);
     background-color: var(--bg-primary);
     transition: all var(--transition-fast);
     flex-shrink: 0;
 }
 
 .marquee-logo-card:hover {
-    border-color: var(--acento-warn);
     transform: translateY(-2px);
 }
 
 .marquee-logo-card img {
-    max-height: 40px;
-    max-width: 150px;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -1181,6 +1177,22 @@ p {
     opacity: 0.6;
     transition: all var(--transition-fast);
     flex-shrink: 0;
+}
+
+/* Clases de ajuste de peso visual */
+.marquee-logo-card.logo-wide img {
+    max-height: 32px;
+    max-width: 140px;
+}
+
+.marquee-logo-card.logo-medium img {
+    max-height: 42px;
+    max-width: 130px;
+}
+
+.marquee-logo-card.logo-square img {
+    max-height: 52px;
+    max-width: 120px;
 }
 
 .marquee-logo-card:hover img {
