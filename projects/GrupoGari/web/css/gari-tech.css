@@ -1155,15 +1155,11 @@ p {
 }
 
 .marquee-logo-card {
+    height: 70px;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-tertiary);
-    letter-spacing: 0.05em;
-    padding: 0.6rem 1.8rem;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
     border: 1px dashed var(--border-color);
     background-color: var(--bg-primary);
     transition: all var(--transition-fast);
@@ -1171,21 +1167,24 @@ p {
 }
 
 .marquee-logo-card:hover {
-    color: var(--acento-warn);
     border-color: var(--acento-warn);
     transform: translateY(-2px);
 }
 
-.marquee-logo-card svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
-    opacity: 0.7;
-    transition: opacity var(--transition-fast);
+.marquee-logo-card img {
+    max-height: 40px;
+    max-width: 150px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: all var(--transition-fast);
     flex-shrink: 0;
 }
 
-.marquee-logo-card:hover svg {
+.marquee-logo-card:hover img {
+    filter: grayscale(0%);
     opacity: 1;
 }
 
