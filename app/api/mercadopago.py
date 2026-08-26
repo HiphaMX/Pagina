@@ -88,10 +88,6 @@ async def create_preference(cart: CartRequest, request: Request, db: Session = D
 
     preference_data = {
         "items": mp_items,
-        "shipments": {
-            "cost": shipping_cost,
-            "mode": "custom"
-        },
         "back_urls": {
             "success": f"{site_domain}/index.html",
             "failure": f"{site_domain}/index.html",
@@ -102,23 +98,21 @@ async def create_preference(cart: CartRequest, request: Request, db: Session = D
         "notification_url": f"{backend_url}/api/mercadopago/webhook?store={store_name}"
     }
 
+    if shipping_cost > 0.0:
+        preference_data["shipments"] = {
+            "cost": shipping_cost,
+            "mode": "custom"
+        }
+
     if cart.payer:
         preference_data["payer"] = {}
+        if cart.payer.email:
+            preference_data["payer"]["email"] = cart.payer.email
         if cart.payer.name:
             parts = cart.payer.name.split(" ", 1)
             preference_data["payer"]["name"] = parts[0]
             if len(parts) > 1:
                 preference_data["payer"]["surname"] = parts[1]
-        if cart.payer.email:
-            preference_data["payer"]["email"] = cart.payer.email
-        if cart.payer.phone:
-            preference_data["payer"]["phone"] = {"area_code": "", "number": cart.payer.phone}
-        if cart.payer.address:
-            preference_data["payer"]["address"] = {}
-            if cart.payer.address.street_name:
-                preference_data["payer"]["address"]["street_name"] = cart.payer.address.street_name
-            if cart.payer.address.zip_code:
-                preference_data["payer"]["address"]["zip_code"] = cart.payer.address.zip_code
 
     # We add metadata here for the webhook to use later
     if cart.payer and cart.payer.email:
@@ -389,57 +383,6 @@ async def process_payment(payload: PaymentRequest):
             "id": payment.get("id"),
             "status": status,
             "status_detail": status_detail
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/test_preference_debug")
-async def test_preference_debug(secret: str, store: str = "healthyice"):
-    if secret != "HiphaSecret2026!":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    try:
-        store_sdk = get_sdk_for_store(store)
-        
-        if store == "healthyice":
-            token = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
-        elif store == "chilechillon":
-            token = os.getenv("CHILECHILLON_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
-        else:
-            token = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
-        
-        is_sandbox = token.startswith("TEST-")
-        
-        preference_data = {
-            "items": [
-                {
-                    "title": "Paleta Test de Depuracion",
-                    "quantity": 1,
-                    "currency_id": "MXN",
-                    "unit_price": 10.0
-                }
-            ],
-            "back_urls": {
-                "success": "https://www.healthyice.mx/index.html",
-                "failure": "https://www.healthyice.mx/index.html",
-                "pending": "https://www.healthyice.mx/index.html"
-            },
-            "auto_return": "approved",
-            "statement_descriptor": "HEALTHY ICE TEST"
-        }
-        
-        preference_response = store_sdk.preference().create(preference_data)
-        pref = preference_response.get("response", {})
-        
-        return {
-            "token_starts_with_TEST": is_sandbox,
-            "token_length": len(token),
-            "preference_id": pref.get("id"),
-            "init_point": pref.get("init_point"),
-            "sandbox_init_point": pref.get("sandbox_init_point"),
-            "selected_init_point_key": "sandbox_init_point" if is_sandbox else "init_point",
-            "selected_url": pref.get("sandbox_init_point" if is_sandbox else "init_point"),
-            "full_response": pref
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
