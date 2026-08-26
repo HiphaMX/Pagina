@@ -1,8 +1,12 @@
 import os
+import json
 import mercadopago
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
 from typing import List, Optional
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.models.healthyice_order import HealthyIceOrder
 
 router = APIRouter()
 
@@ -41,7 +45,7 @@ class CartRequest(BaseModel):
     store: Optional[str] = "botica"
 
 @router.post("/create_preference")
-async def create_preference(cart: CartRequest, request: Request):
+async def create_preference(cart: CartRequest, request: Request, db: Session = Depends(get_db)):
     store_name = cart.store or "botica"
     if not cart.items:
         raise HTTPException(status_code=400, detail="Cart is empty")
@@ -133,6 +137,34 @@ async def create_preference(cart: CartRequest, request: Request):
         if cart.payer.address:
             address_str = f"{cart.payer.address.street_name or ''}, CP {cart.payer.address.zip_code or ''}"
 
+        # Persistir orden borrador para HealthyIce en base de datos antes de ir a Mercado Pago
+        order_id = None
+        if store_name == "healthyice":
+            try:
+                cart_items_list = []
+                for item in cart.items:
+                    cart_items_list.append({
+                        "name": item.name,
+                        "price": item.price,
+                        "quantity": item.quantity,
+                        "image": item.image
+                    })
+                new_order = HealthyIceOrder(
+                    nombre=payer_name,
+                    email=payer_email,
+                    telefono=payer_phone,
+                    direccion=address_str,
+                    carrito_items=json.dumps(cart_items_list),
+                    total=total_price,
+                    status="pending_payment"
+                )
+                db.add(new_order)
+                db.commit()
+                db.refresh(new_order)
+                order_id = new_order.id
+            except Exception as db_err:
+                print(f"Error al guardar orden pre-pago: {db_err}")
+
         preference_data["metadata"] = {
             "cart_html": order_details_html,
             "payer_name": payer_name,
@@ -140,7 +172,8 @@ async def create_preference(cart: CartRequest, request: Request):
             "payer_phone": payer_phone,
             "address": address_str,
             "total": str(total_with_shipping),
-            "store": store_name
+            "store": store_name,
+            "order_id": str(order_id) if order_id else ""
         }
 
     try:
@@ -163,8 +196,9 @@ async def create_preference(cart: CartRequest, request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/webhook")
-async def mercadopago_webhook(request: Request, store: str = "botica"):
+async def mercadopago_webhook(request: Request, store: str = "botica", db: Session = Depends(get_db)):
     payload = await request.json()
     action = payload.get("action") or payload.get("type") or payload.get("topic")
     
@@ -190,8 +224,21 @@ async def mercadopago_webhook(request: Request, store: str = "botica"):
                         address_str = metadata.get("address", "")
                         cart_html = metadata.get("cart_html", "")
                         total = float(metadata.get("total", 0.0))
+                        order_id_str = metadata.get("order_id")
                         
                         if store_name == "healthyice":
+                            # Actualizar la orden local a "paid" (pagado)
+                            if order_id_str:
+                                try:
+                                    order_id = int(order_id_str)
+                                    order = db.query(HealthyIceOrder).filter(HealthyIceOrder.id == order_id).first()
+                                    if order:
+                                        order.status = "paid"
+                                        order.mercadopago_payment_id = str(payment_id)
+                                        db.commit()
+                                except Exception as db_err:
+                                    print(f"Error al actualizar orden {order_id_str} en webhook: {db_err}")
+
                             from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
                             asyncio.create_task(send_healthyice_payment_customer(payer_name, payer_email, cart_html, total))
                             asyncio.create_task(send_healthyice_payment_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))

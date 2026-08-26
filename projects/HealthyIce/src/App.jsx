@@ -1018,6 +1018,34 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const mpStatus = queryParams.get('status');
+    const mpPaymentId = queryParams.get('payment_id');
+    
+    if (mpStatus && mpPaymentId) {
+      setFormData(prev => ({
+        ...prev,
+        opcionInteres: 'Pedido Personalizado'
+      }));
+      setCheckoutStep('payment');
+      
+      if (mpStatus === 'approved') {
+        setPaymentStatus('approved');
+        setCart([]);
+      } else if (mpStatus === 'pending' || mpStatus === 'in_process') {
+        setPaymentStatus('pending');
+        setCart([]);
+      } else {
+        setPaymentStatus('rejected');
+        setPaymentErrorMessage('El pago no pudo ser completado. Por favor intenta de nuevo.');
+      }
+      
+      setIsModalOpen(true);
+      
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -1108,23 +1136,9 @@ function App() {
   useEffect(() => {
     if (checkoutStep !== 'payment') return;
 
-    let controller = null;
-
-    const initMercadoPago = async () => {
+    const startCheckoutPro = async () => {
       setPaymentStatus('loading');
       try {
-        const configResponse = await fetch('https://hipha-mx-fastapi.vercel.app/api/mercadopago/config?store=healthyice');
-        if (!configResponse.ok) throw new Error('Error al obtener la configuración de pago');
-        const configData = await configResponse.json();
-        const publicKey = configData.public_key;
-
-        if (!publicKey) {
-          throw new Error('Clave pública de Mercado Pago no configurada');
-        }
-
-        const mp = new window.MercadoPago(publicKey, { locale: 'es-MX' });
-        const bricksBuilder = mp.bricks();
-
         const cartItems = cart.map(item => ({
           name: `HealthyIce - ${item.name} (${item.format})`,
           price: item.price,
@@ -1146,100 +1160,26 @@ function App() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ items: cartItems, payer: payerInfo, store: "healthyice" })
         });
+        
         if (!prefResponse.ok) throw new Error('Error al crear la preferencia de pago');
         const prefData = await prefResponse.json();
-        const preferenceId = prefData.id;
-
-        let cartHtml = '<ul>';
-        cartItems.forEach(item => {
-          cartHtml += `<li>${item.quantity}x ${item.name} - $${item.price} MXN</li>`;
-        });
-        cartHtml += '</ul>';
-
-        const settings = {
-          initialization: {
-            amount: totalAmountInCart,
-            preferenceId: preferenceId,
-            schema: {
-              payer: {
-                email: payerInfo.email,
-              }
-            }
-          },
-          customization: {
-            paymentMethods: {
-              creditCard: 'all',
-              debitCard: 'all',
-              mercadoPago: 'all'
-            },
-            visual: {
-              style: {
-                theme: 'default'
-              }
-            }
-          },
-          callbacks: {
-            onReady: () => {
-              setPaymentStatus('ready');
-            },
-            onSubmit: ({ selectedPaymentMethod, formData: mpFormData }) => {
-              mpFormData.additional_info = {
-                payer_name: payerInfo.name,
-                payer_phone: payerInfo.phone,
-                address: address,
-                cart_html: cartHtml
-              };
-              mpFormData.store = "healthyice";
-
-              return new Promise((resolve, reject) => {
-                fetch('https://hipha-mx-fastapi.vercel.app/api/mercadopago/process_payment', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(mpFormData)
-                })
-                .then(response => {
-                  if (!response.ok) throw new Error('Payment processing failed');
-                  return response.json();
-                })
-                .then(result => {
-                  resolve();
-                  handlePaymentResult(result);
-                })
-                .catch(error => {
-                  reject();
-                  setPaymentStatus('error');
-                  setPaymentErrorMessage('Hubo un error al procesar el pago con nuestro servidor. Por favor intenta de nuevo.');
-                });
-              });
-            },
-            onError: (error) => {
-              console.error('Mercado Pago Brick error:', error);
-              setPaymentStatus('error');
-              setPaymentErrorMessage('Error en la pasarela de pagos. Por favor verifica tus datos e intenta de nuevo.');
-            }
-          }
-        };
-
-        controller = await bricksBuilder.create(
-          'payment',
-          'payment-brick_container',
-          settings
-        );
-
+        const initPoint = prefData.init_point;
+        
+        if (!initPoint) {
+          throw new Error('No se recibió la URL de redirección (init_point)');
+        }
+        
+        // Redirigir al Checkout Pro de Mercado Pago de inmediato
+        window.location.href = initPoint;
+        
       } catch (err) {
-        console.error('Mercado Pago initialization failed:', err);
+        console.error('Mercado Pago Checkout Pro failed:', err);
         setPaymentStatus('error');
-        setPaymentErrorMessage(`No se pudo cargar la pasarela de pagos. Detalle: ${err.message}`);
+        setPaymentErrorMessage(`No se pudo iniciar la pasarela de pagos. Detalle: ${err.message}`);
       }
     };
 
-    initMercadoPago();
-
-    return () => {
-      if (controller && typeof controller.unmount === 'function') {
-        controller.unmount();
-      }
-    };
+    startCheckoutPro();
   }, [checkoutStep]);
 
   const flavors = [
@@ -2607,17 +2547,12 @@ function App() {
                             <button type="button" onClick={() => setCheckoutStep('details')} className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', fontSize: '0.95rem', border: 'none', cursor: 'pointer' }}>Intentar de nuevo</button>
                           </div>
                         )}
-                        {(paymentStatus === 'loading' || paymentStatus === 'ready') && (
-                          <>
-                            {paymentStatus === 'loading' && (
-                              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-                                <div style={{ border: '4px solid rgba(0,0,0,0.1)', width: '36px', height: '36px', borderRadius: '50%', borderLeftColor: '#98BC3C', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
-                                <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>Cargando pasarela de pagos...</p>
-                              </div>
-                            )}
-                            <div id="payment-brick_container" style={{ display: paymentStatus === 'loading' ? 'none' : 'block' }}></div>
-                          </>
-                        )}
+                         {paymentStatus === 'loading' && (
+                           <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                             <div style={{ border: '4px solid rgba(0,0,0,0.1)', width: '36px', height: '36px', borderRadius: '50%', borderLeftColor: '#98BC3C', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
+                             <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>Redirigiendo a pasarela de pago segura...</p>
+                           </div>
+                         )}
                       </>
                     )}
                   </>
