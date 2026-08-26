@@ -1135,6 +1135,8 @@ function App() {
 
   useEffect(() => {
     if (checkoutStep !== 'payment') return;
+    if (paymentStatus === 'approved' || paymentStatus === 'pending' || paymentStatus === 'rejected') return;
+    if (cart.length === 0) return;
 
     const startCheckoutPro = async () => {
       setPaymentStatus('loading');
