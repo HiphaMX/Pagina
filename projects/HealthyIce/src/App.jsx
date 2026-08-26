@@ -1170,8 +1170,6 @@ function App() {
             paymentMethods: {
               creditCard: 'all',
               debitCard: 'all',
-              ticket: 'all',
-              bankTransfer: 'all',
               mercadoPago: 'all'
             },
             visual: {
