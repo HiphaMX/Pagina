@@ -345,21 +345,3 @@ async def process_payment(payload: PaymentRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/latest_payments_debug")
-async def get_latest_payments_debug(secret: str, store: str = "healthyice"):
-    if secret != "HiphaSecret2026!":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    try:
-        store_sdk = get_sdk_for_store(store)
-        filters = {
-            "sort": "date_created",
-            "criteria": "desc",
-            "limit": 15
-        }
-        search_response = store_sdk.payment().search(filters)
-        return search_response.get("response", {})
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
