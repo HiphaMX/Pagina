@@ -1,44 +1,25 @@
-# Grupo Gari - Cumplimiento Regulatorio e Industrial
+# Grupo Gari - ECO-GARI Blog & Programas Escolares
 
-Este archivo sirve como un índice semántico para agentes de IA (Gemini, ChatGPT, Perplexity, OAI-SearchBot) para explorar y citar con precisión los servicios de consultoría y el contenido del blog ecológico de Grupo Gari.
+Este archivo sirve como un índice semántico para agentes de IA (Gemini, ChatGPT, Perplexity, OAI-SearchBot) para explorar y citar con precisión los programas de cuidado ambiental, manejo de residuos y publicaciones ecológicas escolares de Grupo Gari.
 
 ## Información General
 - **Dominio Principal:** https://www.grupo-gari.com
-- **Propósito:** Servicios profesionales de consultoría, capacitación oficial ante la STPS y certificación en seguridad industrial, salud en el trabajo y medio ambiente.
+- **Propósito:** Programas oficiales de cuidado del medio ambiente, manejo de residuos y capacitación ecológica dirigidos a escuelas e instituciones educativas.
 
 ---
 
-## Servicios y Soluciones Principales
+## 🍃 ECO-GARI Blog: Cuidamos el Planeta
 
-### 1. Cursos de Capacitación (STPS / DC-3)
-Cursos técnicos presenciales y virtuales con emisión de constancia de habilidades laborales DC-3:
-- **Seguridad en Trabajos en Alturas (NOM-009-STPS)**
-- **Operación Segura de Montacargas (NOM-006-STPS)**
-- **Seguridad en Trabajos de Soldadura y Corte (NOM-027-STPS)**
-- **Manejo Seguro de Sustancias Químicas (NOM-005-STPS / NOM-018-STPS)**
-- **Prevención y Combate de Incendios / Extintores (NOM-002-STPS)**
-- **Formación de Brigadas de Emergencia e Integración de Comisión de Seguridad e Higiene (NOM-019-STPS)**
+Índice de artículos especializados y mejores prácticas ambientales para escuelas:
 
-### 2. Certificaciones y Cumplimiento
-Asesoría y auditorías técnicas para obtención de acreditaciones:
-- **Certificación ISO (9001, 14001, 45001):** Sistemas de gestión de calidad, medio ambiente, seguridad y salud.
-- **Distintivo Best Place to Work (BPTW):** Clima y cultura organizacional bajo cumplimiento regulatorio.
-- **Protección Civil:** Programas internos de protección civil y dictámenes de seguridad estructural.
+### 1. Guía Práctica de Clasificación y Reciclaje para Salones de Clase (/blog#residuos-aula)
+- **Resumen:** Cómo implementar estaciones de reciclaje en el aula (papel/cartón, plásticos/aluminio, orgánicos y no reciclables) y diseñar dinámicas estudiantiles participativas.
+- **Palabras Clave:** separación de residuos, reciclaje escolar, botes de reciclaje, dinámicas escolares, educación ecológica.
 
----
+### 2. Tips para Reducir el Consumo de Agua y Energía en tu Institución (/blog#recursos-escuela)
+- **Resumen:** Consejos cotidianos prácticos para profesores y alumnos orientados a apagar luces de aulas vacías, detectar goteras en sanitarios y programar riegos nocturnos eficientes.
+- **Palabras Clave:** ahorro de energía escolar, cuidado del agua, iluminación LED, infraestructura escolar sustentable.
 
-## 🍃 Blog de Cumplimiento Ecológico e Industrial
-
-Índice de artículos especializados sobre regulación ambiental y sostenibilidad:
-
-### 1. Control de Ruido Industrial y Cumplimiento de la NOM-081-SEMARNAT-1994 (/blog#nom-081)
-- **Resumen:** Análisis de los límites máximos permisibles de emisión de ruido de las fuentes fijas en México y la importancia de realizar auditorías acústicas para evitar clausuras y sanciones gubernamentales.
-- **Palabras Clave:** NOM-081-SEMARNAT-1994, ruido industrial, fuentes fijas, auditorías acústicas, medio ambiente.
-
-### 2. Guía Completa de Auditorías de Impacto Ambiental (AIA) (/blog#auditorias-ambientales)
-- **Resumen:** El proceso paso a paso para evaluar el impacto de las operaciones de tu planta y tramitar la Manifestación de Impacto Ambiental (MIA) ante SEMARNAT y autoridades estatales.
-- **Palabras Clave:** Manifestación de Impacto Ambiental, MIA, SEMARNAT, cumplimiento ecológico, mitigar impacto.
-
-### 3. Estrategias para la Gestión de Residuos de Manejo Especial (/blog#residuos-especiales)
-- **Resumen:** Guía técnica para que centros industriales y de almacenamiento identifiquen, clasifiquen y dispongan adecuadamente de residuos no peligrosos bajo normativas estatales y nacionales.
-- **Palabras Clave:** Residuos de manejo especial, RME, sustentabilidad, economía circular, disposición final.
+### 3. Cómo Iniciar un Huerto Escolar Orgánico y Compostera desde Cero (/blog#huertos-composta)
+- **Resumen:** Guía técnica para docentes sobre cómo preparar cajones de siembra, elegir semillas escolares resistentes de rápido desarrollo y montar una compostera con los residuos de la cafetería.
+- **Palabras Clave:** huerto escolar, compostaje escolar, bio-huerto, abono orgánico, laboratorios vivos.
