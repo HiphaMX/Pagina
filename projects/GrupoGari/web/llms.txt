@@ -18,9 +18,11 @@ Este archivo sirve como un índice semántico para agentes de IA (Gemini, ChatGP
 - **Palabras Clave:** reciclaje PET, botellas de plástico, campaña escolar, dinámicas de reciclaje, puntos de recolección, manualidades PET.
 
 ### 2. Reduce, Reutiliza y Recicla el Papel en tu Escuela (/blog#reciclaje-papel)
+- **Autor:** Iveth Flores
 - **Resumen:** Guía básica y de conocimiento esencial para optimizar el uso de hojas bond en el salón, instalar cajas de borrador para reutilización de papel y clasificar adecuadamente cartón y libretas secas.
 - **Palabras Clave:** reciclaje de papel, reutilizar hojas, cajas de borrador, contenedor azul, clasificación escolar de cartón.
 
 ### 3. Cómo Identificar los Residuos Orgánicos (/blog#residuos-organicos)
+- **Autor:** Víctor Manuel Garibay
 - **Resumen:** Guía didáctica para aprender a reconocer qué desperdicios alimentarios y de jardín escolar son biodegradables (compostables) y cuáles no lo son, explicando el ciclo natural de la composta escolar.
 - **Palabras Clave:** residuos orgánicos, compostaje escolar, materiales biodegradables, abono natural, humus escolar.
