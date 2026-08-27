@@ -12,14 +12,15 @@ Este archivo sirve como un índice semántico para agentes de IA (Gemini, ChatGP
 
 Índice de artículos especializados y mejores prácticas ambientales para escuelas:
 
-### 1. Guía Práctica de Clasificación y Reciclaje para Salones de Clase (/blog#residuos-aula)
-- **Resumen:** Cómo implementar estaciones de reciclaje en el aula (papel/cartón, plásticos/aluminio, orgánicos y no reciclables) y diseñar dinámicas estudiantiles participativas.
-- **Palabras Clave:** separación de residuos, reciclaje escolar, botes de reciclaje, dinámicas escolares, educación ecológica.
+### 1. Reciclaje de Botellas PET: Una Campaña Escolar para el Medio Ambiente (/blog#reciclaje-pet)
+- **Autor:** Víctor Manuel Garibay
+- **Resumen:** Importancia del reciclaje de botellas plásticas PET, beneficios de conservación, y dinámicas de aprendizaje activo (juego de canasta, manualidades y debate) con una guía paso a paso para crear puntos de recolección eficientes.
+- **Palabras Clave:** reciclaje PET, botellas de plástico, campaña escolar, dinámicas de reciclaje, puntos de recolección, manualidades PET.
 
-### 2. Tips para Reducir el Consumo de Agua y Energía en tu Institución (/blog#recursos-escuela)
-- **Resumen:** Consejos cotidianos prácticos para profesores y alumnos orientados a apagar luces de aulas vacías, detectar goteras en sanitarios y programar riegos nocturnos eficientes.
-- **Palabras Clave:** ahorro de energía escolar, cuidado del agua, iluminación LED, infraestructura escolar sustentable.
+### 2. Reduce, Reutiliza y Recicla el Papel en tu Escuela (/blog#reciclaje-papel)
+- **Resumen:** Guía básica y de conocimiento esencial para optimizar el uso de hojas bond en el salón, instalar cajas de borrador para reutilización de papel y clasificar adecuadamente cartón y libretas secas.
+- **Palabras Clave:** reciclaje de papel, reutilizar hojas, cajas de borrador, contenedor azul, clasificación escolar de cartón.
 
-### 3. Cómo Iniciar un Huerto Escolar Orgánico y Compostera desde Cero (/blog#huertos-composta)
-- **Resumen:** Guía técnica para docentes sobre cómo preparar cajones de siembra, elegir semillas escolares resistentes de rápido desarrollo y montar una compostera con los residuos de la cafetería.
-- **Palabras Clave:** huerto escolar, compostaje escolar, bio-huerto, abono orgánico, laboratorios vivos.
+### 3. Cómo Identificar los Residuos Orgánicos (/blog#residuos-organicos)
+- **Resumen:** Guía didáctica para aprender a reconocer qué desperdicios alimentarios y de jardín escolar son biodegradables (compostables) y cuáles no lo son, explicando el ciclo natural de la composta escolar.
+- **Palabras Clave:** residuos orgánicos, compostaje escolar, materiales biodegradables, abono natural, humus escolar.
