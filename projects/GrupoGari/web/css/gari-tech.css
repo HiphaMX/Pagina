@@ -342,6 +342,18 @@ p {
     border-color: var(--bg-blueprint);
 }
 
+.btn-ok {
+    border-color: var(--acento-ok);
+    background-color: var(--acento-ok);
+    color: var(--bg-blueprint);
+}
+
+.btn-ok:hover {
+    background-color: var(--bg-blueprint);
+    color: var(--acento-ok);
+    border-color: var(--bg-blueprint);
+}
+
 .btn-outline {
     background-color: transparent;
     color: var(--text-primary);
