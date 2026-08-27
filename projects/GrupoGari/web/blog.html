@@ -509,6 +509,24 @@
                 console.error('Error al copiar:', err);
             });
         }
+        
+        function autoOpenArticleFromHash() {
+            if (window.location.hash) {
+                const targetId = window.location.hash;
+                const article = document.querySelector(targetId);
+                if (article) {
+                    const details = article.querySelector('details.blog-details');
+                    if (details) {
+                        details.open = true;
+                        setTimeout(() => {
+                            article.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 200);
+                    }
+                }
+            }
+        }
+        window.addEventListener('load', autoOpenArticleFromHash);
+        window.addEventListener('hashchange', autoOpenArticleFromHash);
     </script>
 </body>
 </html>
