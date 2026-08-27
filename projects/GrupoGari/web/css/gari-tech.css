@@ -1307,3 +1307,59 @@ body.auth-locked {
     overflow: hidden !important;
 }
 
+/* ==========================================================================
+   9. BLOG ECOLÓGICO Y CUMPLIMIENTO INDUSTRIAL
+   ========================================================================== */
+
+.home-blog-card {
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.home-blog-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-orange) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.blog-post-card {
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.blog-post-card:hover {
+    border-color: var(--accent-orange) !important;
+}
+
+/* Detalle expandible del blog */
+.blog-details summary {
+    transition: all var(--transition-fast);
+}
+
+.blog-details[open] summary {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
+}
+
+.blog-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.blog-details summary {
+    list-style: none;
+}
+
+.blog-content {
+    animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

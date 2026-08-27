@@ -1,0 +1,44 @@
+# Grupo Gari - Cumplimiento Regulatorio e Industrial
+
+Este archivo sirve como un índice semántico para agentes de IA (Gemini, ChatGPT, Perplexity, OAI-SearchBot) para explorar y citar con precisión los servicios de consultoría y el contenido del blog ecológico de Grupo Gari.
+
+## Información General
+- **Dominio Principal:** https://www.grupo-gari.com
+- **Propósito:** Servicios profesionales de consultoría, capacitación oficial ante la STPS y certificación en seguridad industrial, salud en el trabajo y medio ambiente.
+
+---
+
+## Servicios y Soluciones Principales
+
+### 1. Cursos de Capacitación (STPS / DC-3)
+Cursos técnicos presenciales y virtuales con emisión de constancia de habilidades laborales DC-3:
+- **Seguridad en Trabajos en Alturas (NOM-009-STPS)**
+- **Operación Segura de Montacargas (NOM-006-STPS)**
+- **Seguridad en Trabajos de Soldadura y Corte (NOM-027-STPS)**
+- **Manejo Seguro de Sustancias Químicas (NOM-005-STPS / NOM-018-STPS)**
+- **Prevención y Combate de Incendios / Extintores (NOM-002-STPS)**
+- **Formación de Brigadas de Emergencia e Integración de Comisión de Seguridad e Higiene (NOM-019-STPS)**
+
+### 2. Certificaciones y Cumplimiento
+Asesoría y auditorías técnicas para obtención de acreditaciones:
+- **Certificación ISO (9001, 14001, 45001):** Sistemas de gestión de calidad, medio ambiente, seguridad y salud.
+- **Distintivo Best Place to Work (BPTW):** Clima y cultura organizacional bajo cumplimiento regulatorio.
+- **Protección Civil:** Programas internos de protección civil y dictámenes de seguridad estructural.
+
+---
+
+## 🍃 Blog de Cumplimiento Ecológico e Industrial
+
+Índice de artículos especializados sobre regulación ambiental y sostenibilidad:
+
+### 1. Control de Ruido Industrial y Cumplimiento de la NOM-081-SEMARNAT-1994 (/blog#nom-081)
+- **Resumen:** Análisis de los límites máximos permisibles de emisión de ruido de las fuentes fijas en México y la importancia de realizar auditorías acústicas para evitar clausuras y sanciones gubernamentales.
+- **Palabras Clave:** NOM-081-SEMARNAT-1994, ruido industrial, fuentes fijas, auditorías acústicas, medio ambiente.
+
+### 2. Guía Completa de Auditorías de Impacto Ambiental (AIA) (/blog#auditorias-ambientales)
+- **Resumen:** El proceso paso a paso para evaluar el impacto de las operaciones de tu planta y tramitar la Manifestación de Impacto Ambiental (MIA) ante SEMARNAT y autoridades estatales.
+- **Palabras Clave:** Manifestación de Impacto Ambiental, MIA, SEMARNAT, cumplimiento ecológico, mitigar impacto.
+
+### 3. Estrategias para la Gestión de Residuos de Manejo Especial (/blog#residuos-especiales)
+- **Resumen:** Guía técnica para que centros industriales y de almacenamiento identifiquen, clasifiquen y dispongan adecuadamente de residuos no peligrosos bajo normativas estatales y nacionales.
+- **Palabras Clave:** Residuos de manejo especial, RME, sustentabilidad, economía circular, disposición final.
