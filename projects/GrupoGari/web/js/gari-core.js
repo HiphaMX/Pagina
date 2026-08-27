@@ -268,10 +268,10 @@ function initDiagnosticForm() {
             apellido: document.getElementById('field-apellido').value,
             email: document.getElementById('field-email').value,
             telefono: document.getElementById('field-telefono').value,
-            rol: rolSelect.value,
+            rol: rolSelect ? rolSelect.value : 'school_eco_program',
             empleados: document.getElementById('field-empleados').value,
             industria: document.getElementById('field-industria').value,
-            servicio: servicioSelect.value,
+            servicio: servicioSelect ? servicioSelect.value : 'Certificación de Plantel Ecológico',
             mensaje: document.getElementById('field-mensaje').value || 'Solicitud de información general.',
             honeypot: document.getElementById('field-confirm-email')?.value || '',
             recaptcha_token: recaptchaToken
