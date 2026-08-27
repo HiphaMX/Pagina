@@ -134,6 +134,20 @@ const CERTIFICACIONES_OPCIONES = [
     "ISO 14001 - Sistema de Gestión Ambiental"
 ];
 
+const ECO_CURSOS_OPCIONES = [
+    "1. Curso de Clasificación de Residuos en el Aula",
+    "2. Taller de Ahorro y Eficiencia de Agua en Baños",
+    "3. Taller de Ahorro de Energía en Aulas y Pasillos",
+    "4. Curso de Huertos Escolares y Compostaje",
+    "5. Taller General de Educación Ambiental"
+];
+
+const ECO_CERTIFICACIONES_OPCIONES = [
+    "Distintivo de Plantel Ecológico (ECO-GARI)",
+    "Certificación de Escuela Sustentable",
+    "Certificación ISO 14001 para Colegios"
+];
+
 function initDiagnosticForm() {
     const form = document.getElementById('diagnostic-form');
     if (!form) return;
@@ -141,6 +155,7 @@ function initDiagnosticForm() {
     const rolSelect = document.getElementById('field-rol');
     const servicioSelect = document.getElementById('field-servicio');
     const btnSubmit = document.getElementById('btn-submit');
+    const isSchoolForm = document.getElementById('form-type')?.value === 'school';
 
     // Cambios dinámicos en el tipo de servicio
     if (rolSelect && servicioSelect) {
@@ -158,10 +173,11 @@ function initDiagnosticForm() {
                 placeholderOpt.value = "";
                 placeholderOpt.disabled = true;
                 placeholderOpt.selected = true;
-                placeholderOpt.textContent = "Seleccione el curso...";
+                placeholderOpt.textContent = isSchoolForm ? "Seleccione el taller ecológico..." : "Seleccione el curso...";
                 servicioSelect.appendChild(placeholderOpt);
                 
-                CURSOS_OPCIONES.forEach(opt => {
+                const opciones = isSchoolForm ? ECO_CURSOS_OPCIONES : CURSOS_OPCIONES;
+                opciones.forEach(opt => {
                     const el = document.createElement('option');
                     el.value = opt;
                     el.textContent = opt;
@@ -175,10 +191,11 @@ function initDiagnosticForm() {
                 placeholderOpt.value = "";
                 placeholderOpt.disabled = true;
                 placeholderOpt.selected = true;
-                placeholderOpt.textContent = "Seleccione la certificación...";
+                placeholderOpt.textContent = isSchoolForm ? "Seleccione el distintivo..." : "Seleccione la certificación...";
                 servicioSelect.appendChild(placeholderOpt);
                 
-                CERTIFICACIONES_OPCIONES.forEach(opt => {
+                const opciones = isSchoolForm ? ECO_CERTIFICACIONES_OPCIONES : CERTIFICACIONES_OPCIONES;
+                opciones.forEach(opt => {
                     const el = document.createElement('option');
                     el.value = opt;
                     el.textContent = opt;

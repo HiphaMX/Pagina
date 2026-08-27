@@ -220,14 +220,14 @@
         <section class="blog-cta-section" style="background-color: var(--bg-blueprint); color: #FFFFFF; padding: 4.5rem 0; text-align: center; position: relative;">
             <div class="blueprint-grid" style="position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none;"></div>
             <div class="container" style="position: relative; z-index: 2; max-width: 800px;">
-                <h2 style="font-family: var(--font-tech); font-size: 1.8rem; margin-bottom: 1rem; text-transform: uppercase;">
+                <h2 style="font-family: var(--font-tech); font-size: 1.8rem; margin-bottom: 1rem; text-transform: uppercase; color: #FFFFFF;">
                     ¿Quieres certificar tu escuela como un Plantel Ecológico?
                 </h2>
                 <p style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem; color: rgba(255, 255, 255, 0.85);">
                     Nuestros especialistas capacitan e implementan programas de manejo de residuos y mejores prácticas ambientales en instituciones educativas para acceder a distintivos ecológicos oficiales.
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="/#contacto" class="btn btn-warn" style="text-decoration: none; padding: 0.85rem 2rem;">
+                    <a href="#contacto" class="btn btn-warn" style="text-decoration: none; padding: 0.85rem 2rem; background-color: var(--acento-ok);">
                         Solicitar Asesoría para tu Institución
                     </a>
                     <a href="https://wa.me/523921110911" class="btn btn-outline" style="text-decoration: none; padding: 0.85rem 2rem; border-color: rgba(255,255,255,0.3); color: #FFFFFF;" data-analytics="whatsapp" data-placement="blog_cta">
@@ -236,6 +236,123 @@
                 </div>
             </div>
             <div class="corner-bottom-left" style="position: absolute; bottom: 0; left: 0; border-bottom: 16px solid var(--bg-primary); border-right: 16px solid transparent; width: 0; height: 0;"></div>
+        </section>
+
+        <!-- ==========================================
+             SECCIÓN FORMULARIO DE REGISTRO ESCOLAR (ECO-GARI)
+             ========================================== -->
+        <section class="matrix-section" id="contacto" style="padding: 5rem 0; border-top: 1px solid var(--border-color); background-color: var(--bg-primary);">
+            <div class="container" style="max-width: 800px;">
+                <!-- CABECERA DEL FORMULARIO -->
+                <div style="text-align: center; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    <span class="tech-tag" style="justify-content: center; background-color: rgba(32, 201, 151, 0.15); color: var(--acento-ok); border: 1px solid var(--acento-ok);">CUIDAMOS EL PLANETA</span>
+                    <h2 style="font-family: var(--font-tech); font-size: 2rem; color: var(--text-primary); text-transform: uppercase; margin-top: 1rem;">
+                        Registro de Plantel Ecológico
+                    </h2>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        Inscriba su institución para recibir consultoría, capacitar a sus estudiantes en manejo de residuos e implementar el distintivo ecológico oficial.
+                    </p>
+                </div>
+
+                <!-- CONTENEDOR DEL FORMULARIO -->
+                <div class="diagnostic-form-wrap" style="background-color: var(--bg-secondary); padding: 3rem; border: 1px solid var(--border-color); position: relative;">
+                    <form id="diagnostic-form" novalidate>
+                        
+                        <!-- Form Type School (para javascript) -->
+                        <input type="hidden" id="form-type" value="school">
+
+                        <!-- Honeypot Field (anti-spam) -->
+                        <div style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                            <input type="text" id="field-confirm-email" name="confirm_email" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <span class="tech-tag" style="margin-bottom: 2rem; color: var(--acento-ok); border-color: var(--acento-ok);">CÓDIGO: GARI-ECO-SCHOOL.01</span>
+
+                        <!-- Fila 1: Nombre y Apellidos (Obligatorios) -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-nombre" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Nombre del Contacto *</label>
+                                <input type="text" class="form-input" id="field-nombre" placeholder="Nombre completo" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-apellido" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Apellidos *</label>
+                                <input type="text" class="form-input" id="field-apellido" placeholder="Apellidos" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                        </div>
+
+                        <!-- Fila 2: Email y Teléfono (Obligatorios) -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-email" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Email Institucional *</label>
+                                <input type="email" class="form-input" id="field-email" placeholder="correo@institucion.edu.mx" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-telefono" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Celular / WhatsApp *</label>
+                                <input type="tel" class="form-input" id="field-telefono" placeholder="Ej: 33 0000 0000" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none;">
+                            </div>
+                        </div>
+
+                        <!-- Fila 3: Cantidad de Alumnos e Institución -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-empleados" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Matrícula / Cantidad de Alumnos *</label>
+                                <select class="form-select" id="field-empleados" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; height: 42px;">
+                                    <option value="" disabled selected>Seleccione la matrícula...</option>
+                                    <option value="1-50">Menos de 100 alumnos</option>
+                                    <option value="51-250">100 - 500 alumnos</option>
+                                    <option value="251-500">501 - 1000 alumnos</option>
+                                    <option value="501+">Más de 1000 alumnos</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-industria" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Nivel Educativo / Tipo de Plantel *</label>
+                                <select class="form-select" id="field-industria" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; height: 42px;">
+                                    <option value="" disabled selected>Seleccione el nivel...</option>
+                                    <option value="preescolar">Preescolar / Primaria</option>
+                                    <option value="secundaria">Secundaria / Preparatoria</option>
+                                    <option value="universidad">Universidad / Superior</option>
+                                    <option value="otro">Otro Centro Educativo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fila 4: Tipo de Requerimiento (Cursos o Certificación) -->
+                        <div class="form-group" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label class="form-label" for="field-rol" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Programa de Interés *</label>
+                                <select class="form-select" id="field-rol" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; height: 42px;">
+                                    <option value="" disabled selected>Seleccione el programa...</option>
+                                    <option value="capacitacion">Cursos y Talleres Ecológicos</option>
+                                    <option value="certificacion">Distintivo / Certificación Ambiental</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" for="field-servicio" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Especificar Selección *</label>
+                                <select class="form-select" id="field-servicio" required disabled style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; opacity: 0.6; height: 42px;">
+                                    <option value="" disabled selected>Primero seleccione el programa...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fila 5: Detalles Adicionales -->
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label class="form-label" for="field-mensaje" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; font-family: var(--font-tech);">Detalles o Necesidades Especiales</label>
+                            <textarea class="form-textarea" id="field-mensaje" rows="4" placeholder="Describa brevemente si cuenta con iniciativas previas o algún requerimiento específico para su plantel..." style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; resize: vertical;"></textarea>
+                        </div>
+
+                        <!-- Aviso Legal de Privacidad -->
+                        <div style="background-color: var(--bg-primary); padding: 1.25rem; border: 1px solid var(--border-color); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">
+                            Al enviar este formulario, usted acepta que sus datos serán almacenados y tratados bajo nuestra política de privacidad corporativa para el envío de información de programas ecológicos escolares.
+                        </div>
+
+                        <!-- Enviar -->
+                        <div class="form-navigation" style="display: flex; justify-content: center; width: 100%;">
+                            <button type="submit" class="btn btn-warn" id="btn-submit" style="width: 100%; padding: 1rem 2.5rem; font-weight: bold; font-family: var(--font-tech); cursor: pointer; border: none; background-color: var(--acento-ok);">Registrar mi Escuela</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="corner-bottom-left"></div><div class="corner-bottom-right"></div>
         </section>
     </main>
 
