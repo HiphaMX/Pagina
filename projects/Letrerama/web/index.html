@@ -1777,8 +1777,45 @@
     fill: #33f1ff !important;
   }
 
-  /* Mobile Responsive Nomenclature Index */
-  .blueprint-mobile-index {
+  /* Interactive Callout Number Pins (Visible on all devices, key interactive anchor on mobile) */
+  .callout-pin {
+    cursor: pointer;
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .callout-pin .pin-touch-zone {
+    fill: #090d16;
+    stroke: rgba(51, 241, 255, 0.6);
+    stroke-width: 1.5;
+    transition: all 0.25s ease;
+  }
+  .callout-pin .pin-badge-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    fill: #33f1ff;
+    user-select: none;
+    pointer-events: none;
+    transition: fill 0.25s ease;
+  }
+  .callout-pin:hover .pin-touch-zone,
+  .callout-group.active .callout-pin .pin-touch-zone {
+    fill: rgba(51, 241, 255, 0.3) !important;
+    stroke: var(--neon-pink) !important;
+    stroke-width: 2.2 !important;
+    filter: drop-shadow(0 0 10px rgba(51, 241, 255, 0.9));
+  }
+  .callout-pin:hover .pin-badge-text,
+  .callout-group.active .callout-pin .pin-badge-text {
+    fill: #ffffff !important;
+    font-weight: 900;
+  }
+  .callout-group.active .callout-pin {
+    transform: scale(1.22);
+  }
+
+  /* Mobile Unified Telemetry HUD - Hidden by default on Desktop */
+  .blueprint-mobile-hud {
     display: none;
   }
 
@@ -2988,53 +3025,178 @@
       align-items: flex-start;
       gap: 0.85rem;
     }
-    .callout-group text {
+    /* Hide desktop descriptive text on mobile; preserve prominent interactive pins */
+    .callout-text-block {
       display: none !important;
     }
+    .callout-pin {
+      display: block !important;
+    }
+    .callout-pin .pin-touch-zone {
+      r: 18 !important;
+      stroke-width: 2 !important;
+    }
+    .callout-pin .pin-badge-text {
+      font-size: 12px !important;
+    }
+
+    /* Unified Docked Telemetry HUD (<950px) */
     .blueprint-mobile-index {
-      display: grid !important;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
+      display: none !important;
+    }
+    .blueprint-mobile-hud {
+      display: flex !important;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-top: 1rem;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 1.25rem;
+      padding-top: 1rem;
+      width: 100%;
     }
-    .mobile-idx-item {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 0.85rem 1rem;
+    .hud-scrubber-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    .hud-scrubber-track {
       display: flex;
-      gap: 0.75rem;
-      align-items: flex-start;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .hud-scrubber-track::-webkit-scrollbar {
+      display: none;
+    }
+    .hud-chip {
+      flex: 0 0 auto;
+      scroll-snap-align: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.45rem 0.85rem;
+      border-radius: 9999px;
       cursor: pointer;
-      transition: var(--transition-smooth);
+      white-space: nowrap;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      -webkit-tap-highlight-color: transparent;
     }
-    .mobile-idx-item:hover, .mobile-idx-item.active {
-      background: rgba(51, 241, 255, 0.06);
-      border-color: var(--neon-pink);
+    .hud-chip:hover, .hud-chip.active {
+      background: rgba(51, 241, 255, 0.15);
+      border-color: #33f1ff;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(51, 241, 255, 0.35);
     }
-    .mobile-idx-badge {
+    .hud-chip.active::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--neon-pink);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-pink);
+    }
+    .hud-detail-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(2, 6, 23, 0.98) 100%);
+      border: 1px solid rgba(51, 241, 255, 0.3);
+      border-radius: 16px;
+      padding: 1.15rem 1.25rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+    .hud-detail-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #33f1ff, var(--neon-pink), transparent);
+    }
+    .hud-detail-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+    .hud-step-badge {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
-      color: var(--neon-pink);
       font-weight: 800;
-      background: rgba(51, 241, 255, 0.1);
-      padding: 0.2rem 0.45rem;
-      border-radius: 6px;
-      flex-shrink: 0;
+      color: var(--neon-pink);
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
-    .mobile-idx-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.92rem;
-      font-weight: 700;
+    .hud-step-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neon-pink);
+      box-shadow: 0 0 8px var(--neon-pink);
+    }
+    .hud-nav-btns {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .hud-nav-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: #f8fafc;
-      margin-bottom: 0.2rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .mobile-idx-desc {
-      font-size: 0.78rem;
+    .hud-nav-btn:hover, .hud-nav-btn:active {
+      background: rgba(51, 241, 255, 0.2);
+      border-color: #33f1ff;
+      color: #33f1ff;
+    }
+    .hud-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 0.35rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hud-desc {
+      font-size: 0.82rem;
       color: #94a3b8;
       line-height: 1.45;
+      margin: 0 0 0.65rem 0;
+    }
+    .hud-spec-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      display: inline-block;
+      line-height: 1.35;
     }
   }
 </style>
@@ -3473,23 +3635,35 @@
         </g>
 
         <!-- CALLOUT 07: DRENES DE CONDENSACIÓN -->
-        <g class="callout-group" id="callout07" onmouseenter="highlightCallout(7)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout07" onclick="selectComponent(7)" onmouseenter="selectComponent(7)">
           <circle cx="495" cy="797" r="3.5" class="callout-anchor" />
           <polyline points="495,797 370,760 320,760" class="callout-line" />
-          <text x="310" y="746" class="callout-idx" text-anchor="end">07 //</text>
-          <text x="310" y="762" class="callout-title" text-anchor="end">DRENES DE CONDENSACIÓN (7)</text>
-          <text x="310" y="778" class="callout-desc" text-anchor="end">Ranuras maquinadas por router CNC en la base</text>
-          <text x="310" y="792" class="callout-spec" text-anchor="end">Respiración pasiva · Evitan humedad y hongos</text>
+          <g class="callout-pin" id="pin07">
+            <circle cx="320" cy="760" r="16" class="pin-touch-zone" />
+            <text x="320" y="764.5" class="pin-badge-text" text-anchor="middle">07</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="295" y="746" class="callout-idx" text-anchor="end">07 //</text>
+            <text x="295" y="762" class="callout-title" text-anchor="end">DRENES DE CONDENSACIÓN (7)</text>
+            <text x="295" y="778" class="callout-desc" text-anchor="end">Ranuras maquinadas por router CNC en la base</text>
+            <text x="295" y="792" class="callout-spec" text-anchor="end">Respiración pasiva · Evitan humedad y hongos</text>
+          </g>
         </g>
 
         <!-- CALLOUT 08: CHASIS ACM & ANCLAJES -->
-        <g class="callout-group" id="callout08" onmouseenter="highlightCallout(8)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout08" onclick="selectComponent(8)" onmouseenter="selectComponent(8)">
           <circle cx="680" cy="765" r="3.5" class="callout-anchor" />
           <polyline points="680,765 750,680 800,680" class="callout-line" />
-          <text x="810" y="666" class="callout-idx">08 //</text>
-          <text x="810" y="682" class="callout-title">CHASIS ACM & ANCLAJES (8)</text>
-          <text x="810" y="698" class="callout-desc">Panel Aluminio Compuesto 3mm disipador pasivo</text>
-          <text x="810" y="712" class="callout-spec">Espárragos roscados inox 1/4" con separador</text>
+          <g class="callout-pin" id="pin08">
+            <circle cx="800" cy="680" r="16" class="pin-touch-zone" />
+            <text x="800" y="684.5" class="pin-badge-text" text-anchor="middle">08</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="825" y="666" class="callout-idx">08 //</text>
+            <text x="825" y="682" class="callout-title">CHASIS ACM & ANCLAJES (8)</text>
+            <text x="825" y="698" class="callout-desc">Panel Aluminio Compuesto 3mm disipador pasivo</text>
+            <text x="825" y="712" class="callout-spec">Espárragos roscados inox 1/4" con separador</text>
+          </g>
         </g>
       </g>
 
@@ -3497,7 +3671,7 @@
       <!-- ═════════════════════════════════════════════════════════════ -->
       <!-- CAPA 04: MATRIZ DE MÓDULOS LED BATWING 170° (Base Y = 460)    -->
       <!-- ═════════════════════════════════════════════════════════════ -->
-      <g class="bp-layer bp-layer-04" id="bpLayer04" onmouseenter="highlightCallout(5)" onmouseleave="resetHighlight()">
+      <g class="bp-layer bp-layer-04" id="bpLayer04" onmouseenter="selectComponent(5)">
         <!-- Molded silicone dual-conductor wiring interconnect -->
         <path d="M 512 480 V 645 L 685 607" fill="none" stroke="#0284c7" stroke-width="3.5" stroke-linecap="round" />
         <path d="M 512 480 V 645 L 685 607" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="6 3" />
@@ -3589,23 +3763,35 @@
         </g>
 
         <!-- CALLOUT 05: MATRIZ DE MÓDULOS LED -->
-        <g class="callout-group" id="callout05" onmouseenter="highlightCallout(5)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout05" onclick="selectComponent(5)" onmouseenter="selectComponent(5)">
           <circle cx="512" cy="535" r="3.5" class="callout-anchor" />
           <polyline points="512,535 370,510 320,510" class="callout-line" />
-          <text x="310" y="496" class="callout-idx" text-anchor="end">05 //</text>
-          <text x="310" y="512" class="callout-title" text-anchor="end">MÓDULOS LED SMD 2835 (5)</text>
-          <text x="310" y="528" class="callout-desc" text-anchor="end">Chips industriales de alta disipación térmica</text>
-          <text x="310" y="542" class="callout-spec" text-anchor="end">Vida útil >50,000h · IP67 Waterproof</text>
+          <g class="callout-pin" id="pin05">
+            <circle cx="320" cy="510" r="16" class="pin-touch-zone" />
+            <text x="320" y="514.5" class="pin-badge-text" text-anchor="middle">05</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="295" y="496" class="callout-idx" text-anchor="end">05 //</text>
+            <text x="295" y="512" class="callout-title" text-anchor="end">MÓDULOS LED SMD 2835 (5)</text>
+            <text x="295" y="528" class="callout-desc" text-anchor="end">Chips industriales de alta disipación térmica</text>
+            <text x="295" y="542" class="callout-spec" text-anchor="end">Vida útil >50,000h · IP67 Waterproof</text>
+          </g>
         </g>
 
         <!-- CALLOUT 06: ÓPTICA BATWING 170° -->
-        <g class="callout-group" id="callout06" onmouseenter="highlightCallout(6)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout06" onclick="selectComponent(6)" onmouseenter="selectComponent(6)">
           <circle cx="635" cy="618" r="3.5" class="callout-anchor" />
           <polyline points="635,618 750,480 800,480" class="callout-line" />
-          <text x="810" y="466" class="callout-idx">06 //</text>
-          <text x="810" y="482" class="callout-title">ÓPTICA BATWING 170° (6)</text>
-          <text x="810" y="498" class="callout-desc">Lente gran angular de dispersión lateral 170°</text>
-          <text x="810" y="512" class="callout-spec">Erradica sombras y manchas de luz ("cebra")</text>
+          <g class="callout-pin" id="pin06">
+            <circle cx="800" cy="480" r="16" class="pin-touch-zone" />
+            <text x="800" y="484.5" class="pin-badge-text" text-anchor="middle">06</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="825" y="466" class="callout-idx">06 //</text>
+            <text x="825" y="482" class="callout-title">ÓPTICA BATWING 170° (6)</text>
+            <text x="825" y="498" class="callout-desc">Lente gran angular de dispersión lateral 170°</text>
+            <text x="825" y="512" class="callout-spec">Erradica sombras y manchas de luz ("cebra")</text>
+          </g>
         </g>
       </g>
 
@@ -3613,7 +3799,7 @@
       <!-- ═════════════════════════════════════════════════════════════ -->
       <!-- CAPA 03: CANTO 3D DE ALUMINIO ROLADO 10CM (Base Y = 320)      -->
       <!-- ═════════════════════════════════════════════════════════════ -->
-      <g class="bp-layer bp-layer-03" id="bpLayer03" filter="url(#layerShadowDeep)" onmouseenter="highlightCallout(4)" onmouseleave="resetHighlight()">
+      <g class="bp-layer bp-layer-03" id="bpLayer03" filter="url(#layerShadowDeep)" onmouseenter="selectComponent(4)">
         <!-- 3D Extrusion Sidewalls (10cm depth walls with anisotropic brushed lighting) -->
         <!-- Left vertical wall -->
         <polygon points="475,320 475,530 475,558 475,348" fill="url(#anodizedMetal)" stroke="#64748b" stroke-width="1.2" />
@@ -3650,13 +3836,19 @@
         <text x="442" y="338" fill="#33f1ff" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" text-anchor="end">100 MM</text>
 
         <!-- CALLOUT 04: CANTO DE ALUMINIO 10 CM -->
-        <g class="callout-group" id="callout04" onmouseenter="highlightCallout(4)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout04" onclick="selectComponent(4)" onmouseenter="selectComponent(4)">
           <circle cx="475" cy="420" r="3.5" class="callout-anchor" />
           <polyline points="475,420 370,360 320,360" class="callout-line" />
-          <text x="310" y="346" class="callout-idx" text-anchor="end">04 //</text>
-          <text x="310" y="362" class="callout-title" text-anchor="end">CANTO DE ALUMINIO 10 CM (4)</text>
-          <text x="310" y="378" class="callout-desc" text-anchor="end">Aleación 5052-H32 rolada en robot CNC</text>
-          <text x="310" y="392" class="callout-spec" text-anchor="end">Interior blanco >96% reflex · Soldadura TIG</text>
+          <g class="callout-pin" id="pin04">
+            <circle cx="320" cy="360" r="16" class="pin-touch-zone" />
+            <text x="320" y="364.5" class="pin-badge-text" text-anchor="middle">04</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="295" y="346" class="callout-idx" text-anchor="end">04 //</text>
+            <text x="295" y="362" class="callout-title" text-anchor="end">CANTO DE ALUMINIO 10 CM (4)</text>
+            <text x="295" y="378" class="callout-desc" text-anchor="end">Aleación 5052-H32 rolada en robot CNC</text>
+            <text x="295" y="392" class="callout-spec" text-anchor="end">Interior blanco >96% reflex · Soldadura TIG</text>
+          </g>
         </g>
       </g>
 
@@ -3664,7 +3856,7 @@
       <!-- ═════════════════════════════════════════════════════════════ -->
       <!-- CAPA 02: MOLDURA TRIM-CAP & JUNTA EPDM (Base Y = 190)         -->
       <!-- ═════════════════════════════════════════════════════════════ -->
-      <g class="bp-layer bp-layer-02" id="bpLayer02" filter="url(#layerShadowSoft)" onmouseenter="highlightCallout(2)" onmouseleave="resetHighlight()">
+      <g class="bp-layer bp-layer-02" id="bpLayer02" filter="url(#layerShadowSoft)" onmouseenter="selectComponent(2)">
         <!-- Outer Trim-Cap Molding Profile with Chamfer Stroke -->
         <polygon points="475,190 550,173 550,335 705,301 705,366 475,400" fill="none" stroke="url(#epdmRubber)" stroke-width="15" stroke-linejoin="round" />
         <polygon points="475,190 550,173 550,335 705,301 705,366 475,400" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linejoin="round" />
@@ -3691,23 +3883,35 @@
         </g>
 
         <!-- CALLOUT 02: MOLDURA TRIM-CAP CAB -->
-        <g class="callout-group" id="callout02" onmouseenter="highlightCallout(2)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout02" onclick="selectComponent(2)" onmouseenter="selectComponent(2)">
           <circle cx="475" cy="280" r="3.5" class="callout-anchor" />
           <polyline points="475,280 370,210 320,210" class="callout-line" />
-          <text x="310" y="196" class="callout-idx" text-anchor="end">02 //</text>
-          <text x="310" y="212" class="callout-title" text-anchor="end">MOLDURA TRIM-CAP CAB (2)</text>
-          <text x="310" y="228" class="callout-desc" text-anchor="end">Perfil perimetral 1" CAB termoformado</text>
-          <text x="310" y="242" class="callout-spec" text-anchor="end">Ensamble hermético de sujeción a presión</text>
+          <g class="callout-pin" id="pin02">
+            <circle cx="320" cy="210" r="16" class="pin-touch-zone" />
+            <text x="320" y="214.5" class="pin-badge-text" text-anchor="middle">02</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="295" y="196" class="callout-idx" text-anchor="end">02 //</text>
+            <text x="295" y="212" class="callout-title" text-anchor="end">MOLDURA TRIM-CAP CAB (2)</text>
+            <text x="295" y="228" class="callout-desc" text-anchor="end">Perfil perimetral 1" CAB termoformado</text>
+            <text x="295" y="242" class="callout-spec" text-anchor="end">Ensamble hermético de sujeción a presión</text>
+          </g>
         </g>
 
         <!-- CALLOUT 03: JUNTA HERMÉTICA EPDM -->
-        <g class="callout-group" id="callout03" onmouseenter="highlightCallout(3)" onmouseleave="resetHighlight()">
+        <g class="callout-group" id="callout03" onclick="selectComponent(3)" onmouseenter="selectComponent(3)">
           <circle cx="630" cy="320" r="3.5" class="callout-anchor" />
           <polyline points="630,320 750,260 800,260" class="callout-line" />
-          <text x="810" y="246" class="callout-idx">03 //</text>
-          <text x="810" y="262" class="callout-title">JUNTA ESTANCA EPDM (3)</text>
-          <text x="810" y="278" class="callout-desc">Elastómero vulcanizado con memoria permanente</text>
-          <text x="810" y="292" class="callout-spec">Sellado estanco IP66 contra lluvia y polución</text>
+          <g class="callout-pin" id="pin03">
+            <circle cx="800" cy="260" r="16" class="pin-touch-zone" />
+            <text x="800" y="264.5" class="pin-badge-text" text-anchor="middle">03</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="825" y="246" class="callout-idx">03 //</text>
+            <text x="825" y="262" class="callout-title">JUNTA ESTANCA EPDM (3)</text>
+            <text x="825" y="278" class="callout-desc">Elastómero vulcanizado con memoria permanente</text>
+            <text x="825" y="292" class="callout-spec">Sellado estanco IP66 contra lluvia y polución</text>
+          </g>
         </g>
       </g>
 
@@ -3715,7 +3919,7 @@
       <!-- ═════════════════════════════════════════════════════════════ -->
       <!-- CAPA 01: CARA ACRÍLICA DIFUSORA 4MM (Base Y = 65)             -->
       <!-- ═════════════════════════════════════════════════════════════ -->
-      <g class="bp-layer bp-layer-01" id="bpLayer01" filter="url(#layerShadowSoft)" onmouseenter="highlightCallout(1)" onmouseleave="resetHighlight()">
+      <g class="bp-layer bp-layer-01 active" id="bpLayer01" filter="url(#layerShadowSoft)" onmouseenter="selectComponent(1)">
         <!-- 4mm Optical Bevel Rim Edge (Simulating thickness of virgin cast sheet) -->
         <polygon points="475,65 550,48 550,53 475,70" fill="rgba(255,255,255,0.45)" />
         <polygon points="475,275 705,241 705,246 475,280" fill="rgba(15,23,42,0.45)" />
@@ -3733,81 +3937,58 @@
         <polygon points="483,74 542,61 542,201 697,167 697,231 483,264" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.4" stroke-dasharray="10 5" />
 
         <!-- CALLOUT 01: CARA ACRÍLICA DIFUSORA -->
-        <g class="callout-group" id="callout01" onmouseenter="highlightCallout(1)" onmouseleave="resetHighlight()">
+        <g class="callout-group active" id="callout01" onclick="selectComponent(1)" onmouseenter="selectComponent(1)">
           <circle cx="630" cy="195" r="3.5" class="callout-anchor" />
           <polyline points="630,195 750,110 800,110" class="callout-line" />
-          <text x="810" y="96" class="callout-idx">01 //</text>
-          <text x="810" y="112" class="callout-title">CARA ACRÍLICA DIFUSORA (1)</text>
-          <text x="810" y="128" class="callout-desc">Acrílico Óptico Cast 4.0 mm virgen de colada</text>
-          <text x="810" y="142" class="callout-spec">Transmitancia >92% · Filtro Anti-Amarilleo UV</text>
+          <g class="callout-pin" id="pin01">
+            <circle cx="800" cy="110" r="16" class="pin-touch-zone" />
+            <text x="800" y="114.5" class="pin-badge-text" text-anchor="middle">01</text>
+          </g>
+          <g class="callout-text-block">
+            <text x="825" y="96" class="callout-idx">01 //</text>
+            <text x="825" y="112" class="callout-title">CARA ACRÍLICA DIFUSORA (1)</text>
+            <text x="825" y="128" class="callout-desc">Acrílico Óptico Cast 4.0 mm virgen de colada</text>
+            <text x="825" y="142" class="callout-spec">Transmitancia >92% · Filtro Anti-Amarilleo UV</text>
+          </g>
         </g>
       </g>
 
     </svg>
 
-    <!-- Mobile-Optimized Responsive Nomenclature Index (<950px) -->
-    <div class="blueprint-mobile-index">
-      <div class="mobile-idx-item active" id="mobIdx1" onclick="highlightCallout(1)">
-        <span class="mobile-idx-badge">01</span>
-        <div>
-          <div class="mobile-idx-title">Cara Acrílica Difusora (1)</div>
-          <div class="mobile-idx-desc">Acrílico Óptico Cast 4.0 mm · Transmitancia >92% Anti-UV</div>
+    <!-- Unified Mobile Telemetry HUD (<950px) -->
+    <div class="blueprint-mobile-hud" id="blueprintMobileHud">
+      <!-- Horizontal Layer Scrubber / Quick Tabs -->
+      <div class="hud-scrubber-wrapper">
+        <div class="hud-scrubber-track" id="hudScrubberTrack">
+          <button class="hud-chip active" id="hudChip1" onclick="selectComponent(1)">01 Acrílico</button>
+          <button class="hud-chip" id="hudChip2" onclick="selectComponent(2)">02 Trim-Cap</button>
+          <button class="hud-chip" id="hudChip3" onclick="selectComponent(3)">03 Junta EPDM</button>
+          <button class="hud-chip" id="hudChip4" onclick="selectComponent(4)">04 Canto 10cm</button>
+          <button class="hud-chip" id="hudChip5" onclick="selectComponent(5)">05 LEDs 2835</button>
+          <button class="hud-chip" id="hudChip6" onclick="selectComponent(6)">06 Batwing 170°</button>
+          <button class="hud-chip" id="hudChip7" onclick="selectComponent(7)">07 Drenes CNC</button>
+          <button class="hud-chip" id="hudChip8" onclick="selectComponent(8)">08 Chasis ACM</button>
         </div>
       </div>
 
-      <div class="mobile-idx-item" id="mobIdx2" onclick="highlightCallout(2)">
-        <span class="mobile-idx-badge">02</span>
-        <div>
-          <div class="mobile-idx-title">Moldura Trim-Cap CAB (2)</div>
-          <div class="mobile-idx-desc">Perfil perimetral 1" termoformado · Ensamble hermético a presión</div>
+      <!-- Dynamic Active Component Detail Card -->
+      <div class="hud-detail-card" id="hudDetailCard">
+        <div class="hud-detail-top">
+          <div class="hud-step-badge" id="hudStepBadge">COMPONENTE 01 DE 08 // FRONTAL</div>
+          <div class="hud-nav-btns">
+            <button class="hud-nav-btn" onclick="prevComponent()" aria-label="Componente anterior">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="hud-nav-btn" onclick="nextComponent()" aria-label="Componente siguiente">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div class="mobile-idx-item" id="mobIdx3" onclick="highlightCallout(3)">
-        <span class="mobile-idx-badge">03</span>
-        <div>
-          <div class="mobile-idx-title">Junta Estanca EPDM (3)</div>
-          <div class="mobile-idx-desc">Elastómero vulcanizado con sellado estanco IP66 contra lluvia</div>
-        </div>
-      </div>
-
-      <div class="mobile-idx-item" id="mobIdx4" onclick="highlightCallout(4)">
-        <span class="mobile-idx-badge">04</span>
-        <div>
-          <div class="mobile-idx-title">Canto de Aluminio 10 CM (4)</div>
-          <div class="mobile-idx-desc">Aleación 5052-H32 rolada CNC · Interior blanco reflectivo >96%</div>
-        </div>
-      </div>
-
-      <div class="mobile-idx-item" id="mobIdx5" onclick="highlightCallout(5)">
-        <span class="mobile-idx-badge">05</span>
-        <div>
-          <div class="mobile-idx-title">Módulos LED SMD 2835 (5)</div>
-          <div class="mobile-idx-desc">Chips industriales Epistar · Vida útil >50,000 horas · IP67</div>
-        </div>
-      </div>
-
-      <div class="mobile-idx-item" id="mobIdx6" onclick="highlightCallout(6)">
-        <span class="mobile-idx-badge">06</span>
-        <div>
-          <div class="mobile-idx-title">Óptica Batwing 170° (6)</div>
-          <div class="mobile-idx-desc">Dispersión lateral 170° · Erradica sombras y manchas cebra</div>
-        </div>
-      </div>
-
-      <div class="mobile-idx-item" id="mobIdx7" onclick="highlightCallout(7)">
-        <span class="mobile-idx-badge">07</span>
-        <div>
-          <div class="mobile-idx-title">Drenes de Condensación (7)</div>
-          <div class="mobile-idx-desc">Respiración pasiva por router CNC · Evitan humedad interna</div>
-        </div>
-      </div>
-
-      <div class="mobile-idx-item" id="mobIdx8" onclick="highlightCallout(8)">
-        <span class="mobile-idx-badge">08</span>
-        <div>
-          <div class="mobile-idx-title">Chasis ACM & Anclajes Inox (8)</div>
-          <div class="mobile-idx-desc">Panel ACM 3mm + Espárragos roscados inox 1/4" a muro</div>
+        
+        <div class="hud-content">
+          <h4 class="hud-title" id="hudTitle">Cara Acrílica Difusora (1)</h4>
+          <p class="hud-desc" id="hudDesc">Acrílico Óptico Cast 4.0 mm virgen de colada celular para difusión homogénea sin puntos de sombra.</p>
+          <div class="hud-spec-tag" id="hudSpec">Transmitancia >92% · Filtro Anti-Amarilleo UV permanente</div>
         </div>
       </div>
     </div>
@@ -4622,51 +4803,135 @@
     playSoftCooldownClick();
   }
 
-  function highlightCallout(calloutIdx) {
-    // Mapping of callouts to their corresponding SVG layer
-    const calloutToLayerMap = {
-      1: 'bpLayer01',
-      2: 'bpLayer02',
-      3: 'bpLayer02',
-      4: 'bpLayer03',
-      5: 'bpLayer04',
-      6: 'bpLayer04',
-      7: 'bpLayer05',
-      8: 'bpLayer05'
-    };
+  const blueprintData = [
+    {
+      id: 1,
+      layerId: 'bpLayer01',
+      badge: 'COMPONENTE 01 DE 08 // FRONTAL',
+      title: 'Cara Acrílica Difusora Cast (1)',
+      desc: 'Acrílico Óptico Cast 4.0 mm virgen de colada celular para difusión homogénea sin puntos de sombra.',
+      spec: 'Transmitancia >92% · Filtro Anti-Amarilleo UV permanente'
+    },
+    {
+      id: 2,
+      layerId: 'bpLayer02',
+      badge: 'COMPONENTE 02 DE 08 // ENVOLVENTE',
+      title: 'Moldura Trim-Cap CAB (2)',
+      desc: 'Perfil perimetral 1" en acetato butirato de celulosa (CAB) termoformado a alta temperatura.',
+      spec: 'Ensamble hermético de sujeción a presión'
+    },
+    {
+      id: 3,
+      layerId: 'bpLayer02',
+      badge: 'COMPONENTE 03 DE 08 // SELLADO',
+      title: 'Junta Estanca EPDM (3)',
+      desc: 'Elastómero vulcanizado con memoria permanente de deformación nula ante calor extremo.',
+      spec: 'Sellado estanco IP66 contra lluvia y polución'
+    },
+    {
+      id: 4,
+      layerId: 'bpLayer03',
+      badge: 'COMPONENTE 04 DE 08 // CUERPO 3D',
+      title: 'Canto de Aluminio 10 CM (4)',
+      desc: 'Aleación 5052-H32 rolada en robot CNC con soldaduras TIG reforzadas en aristas.',
+      spec: 'Interior blanco reflexivo >96% · Soldadura TIG'
+    },
+    {
+      id: 5,
+      layerId: 'bpLayer04',
+      badge: 'COMPONENTE 05 DE 08 // ILUMINACIÓN',
+      title: 'Módulos LED SMD 2835 (5)',
+      desc: 'Chips industriales Epistar de alta disipación térmica y lúmenes constantes por módulo.',
+      spec: 'Vida útil >50,000h · Certificación IP67 Waterproof'
+    },
+    {
+      id: 6,
+      layerId: 'bpLayer04',
+      badge: 'COMPONENTE 06 DE 08 // DISPERSIÓN',
+      title: 'Óptica Batwing 170° (6)',
+      desc: 'Lente gran angular de dispersión lateral 170° que erradica sombras y efecto cebra.',
+      spec: 'Luz expansiva sin manchas · Ahorro de módulos'
+    },
+    {
+      id: 7,
+      layerId: 'bpLayer05',
+      badge: 'COMPONENTE 07 DE 08 // CLIMATIZACIÓN',
+      title: 'Drenes de Condensación (7)',
+      desc: 'Ranuras maquinadas por router CNC en la cara inferior para desfogue térmico pasivo.',
+      spec: 'Respiración pasiva · Evitan condensación y hongos'
+    },
+    {
+      id: 8,
+      layerId: 'bpLayer05',
+      badge: 'COMPONENTE 08 DE 08 // ESTRUCTURA',
+      title: 'Chasis ACM & Anclajes Inox (8)',
+      desc: 'Panel Aluminio Compuesto 3mm disipador pasivo y espárragos roscados inoxidables 1/4".',
+      spec: 'Fijación mecánica sólida con separador a muro'
+    }
+  ];
 
-    // Highlight or unhighlight callout groups in SVG and mobile items
+  let currentComponentIdx = 1;
+
+  function selectComponent(idx) {
+    if (idx < 1) idx = 8;
+    if (idx > 8) idx = 1;
+    currentComponentIdx = idx;
+
+    const comp = blueprintData[idx - 1];
+
+    // Update HUD Content
+    const badgeEl = document.getElementById('hudStepBadge');
+    const titleEl = document.getElementById('hudTitle');
+    const descEl = document.getElementById('hudDesc');
+    const specEl = document.getElementById('hudSpec');
+
+    if (badgeEl) badgeEl.textContent = comp.badge;
+    if (titleEl) titleEl.textContent = comp.title;
+    if (descEl) descEl.textContent = comp.desc;
+    if (specEl) specEl.textContent = comp.spec;
+
+    // Update Scrubber chips
+    for (let i = 1; i <= 8; i++) {
+      const chip = document.getElementById(`hudChip${i}`);
+      if (chip) chip.classList.toggle('active', i === idx);
+    }
+
+    // Scroll active chip into view horizontally
+    const activeChip = document.getElementById(`hudChip${idx}`);
+    if (activeChip) {
+      activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    // Highlight or unhighlight callout groups and pins
     for (let i = 1; i <= 8; i++) {
       const padIdx = String(i).padStart(2, '0');
       const g = document.getElementById(`callout${padIdx}`);
-      if (g) g.classList.toggle('active', i === calloutIdx);
-      const mob = document.getElementById(`mobIdx${i}`);
-      if (mob) mob.classList.toggle('active', i === calloutIdx);
+      if (g) g.classList.toggle('active', i === idx);
     }
 
     // Highlight the corresponding layer in the 3D drawing
-    const targetLayerId = calloutToLayerMap[calloutIdx];
     ['bpLayer01', 'bpLayer02', 'bpLayer03', 'bpLayer04', 'bpLayer05'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.classList.toggle('active', id === targetLayerId);
+      if (el) el.classList.toggle('active', id === comp.layerId);
     });
 
     playSoftCooldownClick();
   }
 
-  function resetHighlight() {
-    for (let i = 1; i <= 8; i++) {
-      const padIdx = String(i).padStart(2, '0');
-      const g = document.getElementById(`callout${padIdx}`);
-      if (g) g.classList.remove('active');
-      const mob = document.getElementById(`mobIdx${i}`);
-      if (mob && i !== 1) mob.classList.remove('active');
-    }
+  function prevComponent() {
+    selectComponent(currentComponentIdx - 1);
+  }
 
-    ['bpLayer01', 'bpLayer02', 'bpLayer03', 'bpLayer04', 'bpLayer05'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('active');
-    });
+  function nextComponent() {
+    selectComponent(currentComponentIdx + 1);
+  }
+
+  function highlightCallout(calloutIdx) {
+    selectComponent(calloutIdx);
+  }
+
+  function resetHighlight() {
+    // Retain currently active component so HUD is always populated
   }
 
   // ─── 3D DIFFERENTIAL PARALLAX & ORGANIC HOVER MOTION ───
