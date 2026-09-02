@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class LetreramaQuoteForm(BaseModel):
     nombre: str
-    telefono: str
+    telefono: Optional[str] = ""
     email: EmailStr
     empresa: Optional[str] = ""
     tiene_vector: str  # "SI" / "NO"
