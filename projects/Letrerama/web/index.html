@@ -1379,6 +1379,304 @@
     font-weight: 700;
   }
 
+  /* ─── 3D ENGINEERING ANATOMY SECTION (Exploded Letter L - Blueprint Edition) ─── */
+  .engineering-anatomy-section {
+    max-width: 1350px;
+    margin: 6rem auto;
+    padding: 0 2.5rem;
+    position: relative;
+    z-index: 10;
+    scroll-margin-top: 7.5rem;
+  }
+
+  .anatomy-hdr {
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto 2.75rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .anatomy-hdr-tag {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-tech);
+    color: var(--text-primary);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    padding: 0.55rem 1.4rem;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 1.25rem;
+  }
+
+  .anatomy-hdr-tag .tag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-pink);
+    box-shadow: 0 0 10px var(--neon-pink);
+    animation: blink-dot 2s infinite ease-in-out;
+  }
+
+  .anatomy-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    line-height: 1.15;
+    margin-bottom: 0.85rem;
+  }
+
+  .anatomy-title .gradient-span {
+    background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .anatomy-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* Main Blueprint Stage Card - Full width & monumental */
+  .blueprint-stage-card {
+    background: radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.65) 0%, rgba(3, 7, 18, 0.9) 100%);
+    border: 1px solid rgba(51, 241, 255, 0.15);
+    border-radius: 28px;
+    padding: 2rem 2.5rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), inset 0 0 50px rgba(51, 241, 255, 0.03);
+  }
+
+  /* Technical Corner Crosshairs */
+  .stage-tech-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: rgba(51, 241, 255, 0.35);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .stage-tech-corner.tl { top: 20px; left: 20px; border-top: 2px solid; border-left: 2px solid; }
+  .stage-tech-corner.tr { top: 20px; right: 20px; border-top: 2px solid; border-right: 2px solid; }
+  .stage-tech-corner.bl { bottom: 20px; left: 20px; border-bottom: 2px solid; border-left: 2px solid; }
+  .stage-tech-corner.br { bottom: 20px; right: 20px; border-bottom: 2px solid; border-right: 2px solid; }
+
+  /* Blueprint Header Bar */
+  .blueprint-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 5;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .blueprint-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .blueprint-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--neon-pink);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .blueprint-specs-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Discrete LED power pill toggle */
+  .blueprint-led-toggle {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.45rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: var(--transition-smooth);
+  }
+  .blueprint-led-toggle:hover {
+    background: rgba(51, 241, 255, 0.08);
+    border-color: var(--neon-pink);
+  }
+  .blueprint-led-toggle .toggle-lamp {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #64748b;
+    transition: var(--transition-smooth);
+  }
+  .blueprint-stage-card.leds-active .blueprint-led-toggle {
+    background: rgba(145, 252, 6, 0.1);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(145, 252, 6, 0.2);
+  }
+  .blueprint-stage-card.leds-active .blueprint-led-toggle .toggle-lamp {
+    background: var(--neon-blue);
+    box-shadow: 0 0 10px var(--neon-blue);
+  }
+
+  /* The Main SVG Blueprint Canvas */
+  .blueprint-svg-canvas {
+    width: 100%;
+    height: auto;
+    max-height: 860px;
+    display: block;
+    overflow: visible;
+  }
+
+  /* SVG interactive styles */
+  .callout-group {
+    cursor: pointer;
+    transition: opacity 0.2s ease, filter 0.2s ease;
+  }
+  .callout-group:hover, .callout-group.active {
+    opacity: 1;
+  }
+  .callout-group .callout-line {
+    stroke: rgba(51, 241, 255, 0.35);
+    stroke-width: 1.2;
+    fill: none;
+    transition: stroke 0.25s ease, stroke-width 0.25s ease, filter 0.25s ease;
+  }
+  .callout-group .callout-anchor {
+    fill: #38bdf8;
+    transition: fill 0.25s ease, r 0.25s ease, filter 0.25s ease;
+  }
+  .callout-group .callout-title {
+    fill: #f8fafc;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: fill 0.25s ease;
+  }
+  .callout-group .callout-idx {
+    fill: var(--neon-pink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+  .callout-group .callout-desc {
+    fill: #94a3b8;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+  .callout-group .callout-spec {
+    fill: #64748b;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+  }
+
+  /* Hover / Active Callout Highlights */
+  .callout-group:hover .callout-line, .callout-group.active .callout-line {
+    stroke: #33f1ff !important;
+    stroke-width: 2 !important;
+    filter: drop-shadow(0 0 6px rgba(51, 241, 255, 0.9));
+  }
+  .callout-group:hover .callout-anchor, .callout-group.active .callout-anchor {
+    fill: #91fc06 !important;
+    r: 5 !important;
+    filter: drop-shadow(0 0 8px #91fc06);
+  }
+  .callout-group:hover .callout-title, .callout-group.active .callout-title {
+    fill: #33f1ff !important;
+  }
+
+  /* 3D Letter Layer SVG styles */
+  .bp-layer {
+    cursor: pointer;
+    transition: filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  }
+  .bp-layer:hover, .bp-layer.active {
+    filter: drop-shadow(0 0 16px rgba(51, 241, 255, 0.75)) drop-shadow(0 0 30px rgba(145, 252, 6, 0.4));
+  }
+
+  /* Acrylic Face Shader */
+  .bp-acrylic-face {
+    fill: rgba(224, 242, 254, 0.18);
+    stroke: rgba(255, 255, 255, 0.75);
+    stroke-width: 1.5;
+    transition: fill 0.4s ease, filter 0.4s ease;
+  }
+  .blueprint-stage-card.leds-active .bp-acrylic-face {
+    fill: rgba(51, 241, 255, 0.82);
+    stroke: #ffffff;
+    filter: drop-shadow(0 0 25px rgba(51, 241, 255, 0.95)) drop-shadow(0 0 50px rgba(145, 252, 6, 0.5));
+  }
+
+  /* LED Modules in blueprint */
+  .bp-led-emitter {
+    fill: #334155;
+    stroke: #64748b;
+    stroke-width: 1;
+    transition: fill 0.3s ease, filter 0.3s ease;
+  }
+  .bp-led-cone {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .blueprint-stage-card.leds-active .bp-led-emitter {
+    fill: #91fc06;
+    stroke: #ffffff;
+    filter: drop-shadow(0 0 10px #91fc06);
+  }
+  .blueprint-stage-card.leds-active .bp-led-cone {
+    opacity: 0.85;
+  }
+
+  /* Alignment guide lines in CAD */
+  .cad-guide-line {
+    stroke: rgba(51, 241, 255, 0.2);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+
+  /* Mobile Responsive Nomenclature Index */
+  .blueprint-mobile-index {
+    display: none;
+  }
+
   /* ─── DYNAMIC PORTFOLIO CINEMATIC SLIDER ─── */
   .portfolio-slider-section {
     max-width: 1300px;
@@ -2567,6 +2865,72 @@
       padding: 1.5rem !important;
       gap: 1.5rem !important;
     }
+
+    /* Engineering Anatomy Blueprint Responsive */
+    .engineering-anatomy-section {
+      padding: 0 1.25rem !important;
+      margin: 3.5rem auto 5rem !important;
+    }
+    .anatomy-title {
+      font-size: 2.1rem !important;
+    }
+    .blueprint-stage-card {
+      padding: 1.25rem !important;
+      border-radius: 20px !important;
+    }
+    .blueprint-top-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+    .callout-group text {
+      display: none !important;
+    }
+    .blueprint-mobile-index {
+      display: grid !important;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1.25rem;
+    }
+    .mobile-idx-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .mobile-idx-item:hover, .mobile-idx-item.active {
+      background: rgba(51, 241, 255, 0.06);
+      border-color: var(--neon-pink);
+    }
+    .mobile-idx-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--neon-pink);
+      font-weight: 800;
+      background: rgba(51, 241, 255, 0.1);
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .mobile-idx-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.2rem;
+    }
+    .mobile-idx-desc {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
   }
 </style>
 </head>
@@ -2585,6 +2949,7 @@
   </button>
   <div class="mobile-nav-menu">
     <a href="#soluciones" class="mobile-menu-link" onclick="toggleMobileMenu()">Soluciones</a>
+    <a href="#ingenieria" class="mobile-menu-link" onclick="toggleMobileMenu()">Ingeniería</a>
     <a href="#materiales" class="mobile-menu-link" onclick="toggleMobileMenu()">Materiales</a>
     <a href="#proyectos" class="mobile-menu-link" onclick="toggleMobileMenu()">Proyectos</a>
     <a href="#cotizar" class="mobile-menu-cta" onclick="toggleMobileMenu()">Solicitar cotización</a>
@@ -2687,6 +3052,7 @@
   </a>
   <div class="nav-menu">
     <a href="#soluciones" class="menu-item-link">Soluciones</a>
+    <a href="#ingenieria" class="menu-item-link">Ingeniería</a>
     <a href="#materiales" class="menu-item-link">Materiales</a>
     <a href="#proyectos" class="menu-item-link">Proyectos</a>
     <a href="#cotizar" class="nav-studio-cta">Solicitar cotización</a>
@@ -2805,6 +3171,398 @@
     </div>
 
   </div>
+</div>
+
+
+
+<!-- 3D ENGINEERING ANATOMY SECTION (Exploded Letter L - Blueprint Edition) -->
+<div class="engineering-anatomy-section" id="ingenieria">
+  
+  <!-- Header -->
+  <div class="anatomy-hdr">
+    <span class="anatomy-hdr-tag"><span class="tag-dot"></span> [ MANUAL TÉCNICO // FIG. 01 — DESPIECE ISOMÉTRICO ]</span>
+    <h2 class="anatomy-title">Ingeniería de una <span class="gradient-span">Letra Corpórea 3D</span></h2>
+    <p class="anatomy-desc">Disección de ensamble milimétrico a escala real. Conoce cada componente y la arquitectura interna que garantiza más de 50,000 horas de brillo uniforme sin filtraciones.</p>
+  </div>
+
+  <!-- Monumental Single-Element Blueprint Stage Card -->
+  <div class="blueprint-stage-card leds-active" id="blueprintStageCard">
+    <!-- Technical Corner Crosshairs -->
+    <div class="stage-tech-corner tl"></div>
+    <div class="stage-tech-corner tr"></div>
+    <div class="stage-tech-corner bl"></div>
+    <div class="stage-tech-corner br"></div>
+
+    <!-- Blueprint Top Metadata & Single Pill Control -->
+    <div class="blueprint-top-bar">
+      <div class="blueprint-meta-left">
+        <div class="blueprint-badge">
+          <span style="display:inline-block; width:6px; height:6px; background:var(--neon-pink); border-radius:50%; box-shadow:0 0 8px var(--neon-pink);"></span>
+          DISECCIÓN TÉCNICA // CORTE Y ENSAMBLE
+        </div>
+        <div class="blueprint-specs-pill">
+          H: 600 MM · W: 450 MM · ESPESOR CANTO: 100 MM
+        </div>
+      </div>
+
+      <!-- Minimalist Floating Illumination Switch -->
+      <button class="blueprint-led-toggle" id="btnBlueprintLeds" onclick="toggleBlueprintLeds()" title="Alternar simulación de encendido nocturno">
+        <span class="toggle-lamp"></span>
+        <span id="blueprintLedLabel">ILUMINACIÓN NOCTURNA [6500K]: ACTIVA</span>
+      </button>
+    </div>
+
+    <!-- The Expansive SVG Technical Blueprint -->
+    <svg class="blueprint-svg-canvas" viewBox="0 0 1180 900" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Subtle blueprint grid pattern -->
+        <pattern id="bpGridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1" />
+        </pattern>
+
+        <!-- Acrylic face gradient -->
+        <linearGradient id="bpAcrylicGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+          <stop offset="40%" stop-color="rgba(51,241,255,0.4)" />
+          <stop offset="100%" stop-color="rgba(145,252,6,0.3)" />
+        </linearGradient>
+
+        <!-- Brushed metal sidewall gradient -->
+        <linearGradient id="bpMetalSide" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#1e293b" />
+          <stop offset="50%" stop-color="#334155" />
+          <stop offset="100%" stop-color="#0f172a" />
+        </linearGradient>
+
+        <!-- Batwing 170 degree light cone gradient -->
+        <radialGradient id="bpBatwingCone" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#33f1ff" stop-opacity="0.5" />
+          <stop offset="60%" stop-color="#33f1ff" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#33f1ff" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+
+      <!-- Background Grid -->
+      <rect width="100%" height="100%" fill="url(#bpGridPattern)" />
+
+      <!-- ─── CAD ASSEMBLY AXIS (Dashed Guide Lines Linking All Layers) ─── -->
+      <g class="cad-guide-lines">
+        <!-- V1 Axis: Top-Left Corner -->
+        <line x1="475" y1="48" x2="475" y2="800" class="cad-guide-line" />
+        <!-- V2 Axis: Top-Right of Stem -->
+        <line x1="550" y1="31" x2="550" y2="735" class="cad-guide-line" />
+        <!-- V4 Axis: Base Top-Right -->
+        <line x1="705" y1="159" x2="705" y2="701" class="cad-guide-line" />
+        <!-- V5 Axis: Base Bottom-Right -->
+        <line x1="705" y1="224" x2="705" y2="766" class="cad-guide-line" />
+        <!-- V6 Axis: Bottom-Left -->
+        <line x1="475" y1="258" x2="475" y2="800" class="cad-guide-line" />
+      </g>
+
+
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <!-- CAPA 05: CHASIS POSTERIOR ACM & ANCLAJES (Base Y = 590)       -->
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <g class="bp-layer bp-layer-05" id="bpLayer05" onmouseenter="highlightCallout(8)" onmouseleave="resetHighlight()">
+        <!-- Stainless Steel Wall Standoff Studs (Espárragos roscados inox) -->
+        <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2">
+          <line x1="512" y1="605" x2="512" y2="630" />
+          <line x1="512" y1="700" x2="512" y2="725" />
+          <line x1="512" y1="785" x2="512" y2="810" />
+          <line x1="680" y1="755" x2="680" y2="780" />
+        </g>
+        <circle cx="512" cy="630" r="4.5" fill="#475569" stroke="#94a3b8" stroke-width="1.5" />
+        <circle cx="512" cy="725" r="4.5" fill="#475569" stroke="#94a3b8" stroke-width="1.5" />
+        <circle cx="512" cy="810" r="4.5" fill="#475569" stroke="#94a3b8" stroke-width="1.5" />
+        <circle cx="680" cy="780" r="4.5" fill="#475569" stroke="#94a3b8" stroke-width="1.5" />
+
+        <!-- ACM 3mm Backplate outline -->
+        <polygon points="475,590 550,573 550,735 705,701 705,766 475,800" fill="#090d16" stroke="#334155" stroke-width="2.5" />
+        
+        <!-- Rubber Wire Gland Grommet -->
+        <circle cx="512" cy="670" r="7" fill="#020617" stroke="#64748b" stroke-width="1.5" />
+        <circle cx="512" cy="670" r="3" fill="#38bdf8" />
+
+        <!-- CNC Condensation Weep Holes (Drenes de Humedad) -->
+        <rect x="495" y="794" width="16" height="4" rx="2" fill="#38bdf8" stroke="#0284c7" stroke-width="0.75" />
+        <rect x="580" y="775" width="16" height="4" rx="2" fill="#38bdf8" stroke="#0284c7" stroke-width="0.75" />
+        <rect x="655" y="759" width="16" height="4" rx="2" fill="#38bdf8" stroke="#0284c7" stroke-width="0.75" />
+      </g>
+
+
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <!-- CAPA 04: MATRIZ DE MÓDULOS LED BATWING 170° (Base Y = 460)    -->
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <g class="bp-layer bp-layer-04" id="bpLayer04" onmouseenter="highlightCallout(5)" onmouseleave="resetHighlight()">
+        <!-- Molded silicone wiring interconnect -->
+        <path d="M 512 480 V 645 L 685 607" fill="none" stroke="#0ea5e9" stroke-width="2.2" stroke-dasharray="5 3" />
+
+        <!-- LED Module 1 (Stem Top) -->
+        <g transform="translate(512, 480)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+        <!-- LED Module 2 (Stem Mid 1) -->
+        <g transform="translate(512, 535)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+        <!-- LED Module 3 (Stem Mid 2) -->
+        <g transform="translate(512, 590)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+        <!-- LED Module 4 (Corner Junction) -->
+        <g transform="translate(512, 645)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+        <!-- LED Module 5 (Base 1) -->
+        <g transform="translate(575, 631)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+        <!-- LED Module 6 (Base 2) -->
+        <g transform="translate(635, 618)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+        <!-- LED Module 7 (Base End) -->
+        <g transform="translate(685, 607)">
+          <circle cx="0" cy="0" r="28" fill="url(#bpBatwingCone)" class="bp-led-cone" />
+          <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1.2" />
+          <rect x="-5" y="-4" width="10" height="8" rx="1.5" class="bp-led-emitter" />
+          <circle cx="0" cy="0" r="5" fill="none" stroke="#38bdf8" stroke-width="1" />
+        </g>
+      </g>
+
+
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <!-- CAPA 03: CANTO 3D DE ALUMINIO ROLADO 10CM (Base Y = 320)      -->
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <g class="bp-layer bp-layer-03" id="bpLayer03" onmouseenter="highlightCallout(4)" onmouseleave="resetHighlight()">
+        <!-- 3D Extrusion Sidewalls (Depth walls representing 10cm) -->
+        <!-- Left vertical wall -->
+        <polygon points="475,320 475,530 475,558 475,348" fill="url(#bpMetalSide)" stroke="#475569" stroke-width="1" />
+        <!-- Bottom angled wall -->
+        <polygon points="475,530 705,496 705,524 475,558" fill="#1e293b" stroke="#475569" stroke-width="1" />
+        <!-- Base right vertical wall -->
+        <polygon points="705,431 705,496 705,524 705,459" fill="url(#bpMetalSide)" stroke="#475569" stroke-width="1" />
+
+        <!-- Interior Cavity (Coated in optic reflective white) -->
+        <polygon points="475,320 550,303 550,465 705,431 705,496 475,530" fill="#ffffff" fill-opacity="0.94" stroke="#64748b" stroke-width="2" />
+
+        <!-- Welded corner seams -->
+        <line x1="549" y1="464" x2="551" y2="466" stroke="#ffb800" stroke-width="3" />
+        <line x1="704" y1="430" x2="706" y2="432" stroke="#ffb800" stroke-width="3" />
+
+        <!-- Dimension callout for 100mm depth -->
+        <line x1="455" y1="320" x2="455" y2="348" stroke="#33f1ff" stroke-width="1" />
+        <line x1="451" y1="320" x2="459" y2="320" stroke="#33f1ff" stroke-width="1" />
+        <line x1="451" y1="348" x2="459" y2="348" stroke="#33f1ff" stroke-width="1" />
+        <text x="445" y="338" fill="#33f1ff" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" text-anchor="end">100 MM</text>
+      </g>
+
+
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <!-- CAPA 02: MOLDURA TRIM-CAP & JUNTA EPDM (Base Y = 190)         -->
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <g class="bp-layer bp-layer-02" id="bpLayer02" onmouseenter="highlightCallout(2)" onmouseleave="resetHighlight()">
+        <!-- Outer Trim-Cap Molding Profile -->
+        <polygon points="475,190 550,173 550,335 705,301 705,366 475,400" fill="none" stroke="#0f172a" stroke-width="14" stroke-linejoin="round" />
+        <!-- EPDM Vulcanized Gasket Core -->
+        <polygon points="475,190 550,173 550,335 705,301 705,366 475,400" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="6 3" stroke-linejoin="round" />
+        
+        <!-- Retaining clamp clips -->
+        <circle cx="475" cy="190" r="3" fill="#94a3b8" />
+        <circle cx="550" cy="173" r="3" fill="#94a3b8" />
+        <circle cx="550" cy="335" r="3" fill="#94a3b8" />
+        <circle cx="705" cy="301" r="3" fill="#94a3b8" />
+        <circle cx="705" cy="366" r="3" fill="#94a3b8" />
+        <circle cx="475" cy="400" r="3" fill="#94a3b8" />
+      </g>
+
+
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <!-- CAPA 01: CARA ACRÍLICA DIFUSORA 4MM (Base Y = 65)             -->
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <g class="bp-layer bp-layer-01" id="bpLayer01" onmouseenter="highlightCallout(1)" onmouseleave="resetHighlight()">
+        <!-- 4mm Bevel rim edge -->
+        <polygon points="475,65 550,48 550,210 705,176 705,241 475,275" fill="url(#bpAcrylicGrad)" stroke="rgba(255,255,255,0.75)" stroke-width="2" class="bp-acrylic-face" />
+        
+        <!-- Specular gloss highlight line -->
+        <polygon points="483,75 542,62 542,202 697,168 697,231 483,263" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" stroke-dasharray="8 4" />
+      </g>
+
+
+      <!-- ═════════════════════════════════════════════════════════════ -->
+      <!-- LEADER LINES & TECHNICAL NOMENCLATURE (The Workshop Diagram)  -->
+      <!-- ═════════════════════════════════════════════════════════════ -->
+
+      <!-- ─── CALLOUT 02: MOLDURA TRIM-CAP CAB (Izquierda Superior) ─── -->
+      <g class="callout-group" id="callout02" onmouseenter="highlightCallout(2)" onmouseleave="resetHighlight()">
+        <circle cx="475" cy="280" r="3.5" class="callout-anchor" />
+        <polyline points="475,280 370,210 320,210" class="callout-line" />
+        <text x="310" y="196" class="callout-idx" text-anchor="end">02 //</text>
+        <text x="310" y="212" class="callout-title" text-anchor="end">MOLDURA TRIM-CAP CAB (2)</text>
+        <text x="310" y="228" class="callout-desc" text-anchor="end">Perfil perimetral 1" CAB termoformado</text>
+        <text x="310" y="242" class="callout-spec" text-anchor="end">Ensamble hermético de sujeción a presión</text>
+      </g>
+
+      <!-- ─── CALLOUT 04: CANTO DE ALUMINIO 10 CM (Izquierda Media) ─── -->
+      <g class="callout-group" id="callout04" onmouseenter="highlightCallout(4)" onmouseleave="resetHighlight()">
+        <circle cx="475" cy="420" r="3.5" class="callout-anchor" />
+        <polyline points="475,420 370,360 320,360" class="callout-line" />
+        <text x="310" y="346" class="callout-idx" text-anchor="end">04 //</text>
+        <text x="310" y="362" class="callout-title" text-anchor="end">CANTO DE ALUMINIO 10 CM (4)</text>
+        <text x="310" y="378" class="callout-desc" text-anchor="end">Aleación 5052-H32 rolada en robot CNC</text>
+        <text x="310" y="392" class="callout-spec" text-anchor="end">Interior blanco >96% reflex · Soldadura TIG</text>
+      </g>
+
+      <!-- ─── CALLOUT 05: MATRIZ DE MÓDULOS LED (Izquierda Media-Baja) ─ -->
+      <g class="callout-group" id="callout05" onmouseenter="highlightCallout(5)" onmouseleave="resetHighlight()">
+        <circle cx="512" cy="535" r="3.5" class="callout-anchor" />
+        <polyline points="512,535 370,510 320,510" class="callout-line" />
+        <text x="310" y="496" class="callout-idx" text-anchor="end">05 //</text>
+        <text x="310" y="512" class="callout-title" text-anchor="end">MÓDULOS LED SMD 2835 (5)</text>
+        <text x="310" y="528" class="callout-desc" text-anchor="end">Chips industriales de alta disipación térmica</text>
+        <text x="310" y="542" class="callout-spec" text-anchor="end">Vida útil >50,000h · IP67 Waterproof</text>
+      </g>
+
+      <!-- ─── CALLOUT 07: DRENES DE CONDENSACIÓN (Izquierda Inferior) ── -->
+      <g class="callout-group" id="callout07" onmouseenter="highlightCallout(7)" onmouseleave="resetHighlight()">
+        <circle cx="495" cy="797" r="3.5" class="callout-anchor" />
+        <polyline points="495,797 370,760 320,760" class="callout-line" />
+        <text x="310" y="746" class="callout-idx" text-anchor="end">07 //</text>
+        <text x="310" y="762" class="callout-title" text-anchor="end">DRENES DE CONDENSACIÓN (7)</text>
+        <text x="310" y="778" class="callout-desc" text-anchor="end">Ranuras maquinadas por router CNC en la base</text>
+        <text x="310" y="792" class="callout-spec" text-anchor="end">Respiración pasiva · Evitan humedad y hongos</text>
+      </g>
+
+
+      <!-- ─── CALLOUT 01: CARA ACRÍLICA DIFUSORA (Derecha Superior) ──── -->
+      <g class="callout-group" id="callout01" onmouseenter="highlightCallout(1)" onmouseleave="resetHighlight()">
+        <circle cx="630" cy="195" r="3.5" class="callout-anchor" />
+        <polyline points="630,195 750,110 800,110" class="callout-line" />
+        <text x="810" y="96" class="callout-idx">01 //</text>
+        <text x="810" y="112" class="callout-title">CARA ACRÍLICA DIFUSORA (1)</text>
+        <text x="810" y="128" class="callout-desc">Acrílico Óptico Cast 4.0 mm virgen de colada</text>
+        <text x="810" y="142" class="callout-spec">Transmitancia >92% · Filtro Anti-Amarilleo UV</text>
+      </g>
+
+      <!-- ─── CALLOUT 03: JUNTA HERMÉTICA EPDM (Derecha Media-Alta) ──── -->
+      <g class="callout-group" id="callout03" onmouseenter="highlightCallout(3)" onmouseleave="resetHighlight()">
+        <circle cx="630" cy="320" r="3.5" class="callout-anchor" />
+        <polyline points="630,320 750,260 800,260" class="callout-line" />
+        <text x="810" y="246" class="callout-idx">03 //</text>
+        <text x="810" y="262" class="callout-title">JUNTA ESTANCA EPDM (3)</text>
+        <text x="810" y="278" class="callout-desc">Elastómero vulcanizado con memoria permanente</text>
+        <text x="810" y="292" class="callout-spec">Sellado estanco IP66 contra lluvia y polución</text>
+      </g>
+
+      <!-- ─── CALLOUT 06: ÓPTICA BATWING 170° (Derecha Media-Baja) ───── -->
+      <g class="callout-group" id="callout06" onmouseenter="highlightCallout(6)" onmouseleave="resetHighlight()">
+        <circle cx="635" cy="618" r="3.5" class="callout-anchor" />
+        <polyline points="635,618 750,480 800,480" class="callout-line" />
+        <text x="810" y="466" class="callout-idx">06 //</text>
+        <text x="810" y="482" class="callout-title">ÓPTICA BATWING 170° (6)</text>
+        <text x="810" y="498" class="callout-desc">Lente gran angular de dispersión lateral 170°</text>
+        <text x="810" y="512" class="callout-spec">Erradica sombras y manchas de luz ("cebra")</text>
+      </g>
+
+      <!-- ─── CALLOUT 08: CHASIS ACM & ESPÁRRAGOS (Derecha Inferior) ─── -->
+      <g class="callout-group" id="callout08" onmouseenter="highlightCallout(8)" onmouseleave="resetHighlight()">
+        <circle cx="680" cy="765" r="3.5" class="callout-anchor" />
+        <polyline points="680,765 750,680 800,680" class="callout-line" />
+        <text x="810" y="666" class="callout-idx">08 //</text>
+        <text x="810" y="682" class="callout-title">CHASIS ACM & ANCLAJES (8)</text>
+        <text x="810" y="698" class="callout-desc">Panel Aluminio Compuesto 3mm disipador pasivo</text>
+        <text x="810" y="712" class="callout-spec">Espárragos roscados inox 1/4" con separador</text>
+      </g>
+
+    </svg>
+
+    <!-- Mobile-Optimized Responsive Nomenclature Index (<950px) -->
+    <div class="blueprint-mobile-index">
+      <div class="mobile-idx-item active" id="mobIdx1" onclick="highlightCallout(1)">
+        <span class="mobile-idx-badge">01</span>
+        <div>
+          <div class="mobile-idx-title">Cara Acrílica Difusora (1)</div>
+          <div class="mobile-idx-desc">Acrílico Óptico Cast 4.0 mm · Transmitancia >92% Anti-UV</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx2" onclick="highlightCallout(2)">
+        <span class="mobile-idx-badge">02</span>
+        <div>
+          <div class="mobile-idx-title">Moldura Trim-Cap CAB (2)</div>
+          <div class="mobile-idx-desc">Perfil perimetral 1" termoformado · Ensamble hermético a presión</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx3" onclick="highlightCallout(3)">
+        <span class="mobile-idx-badge">03</span>
+        <div>
+          <div class="mobile-idx-title">Junta Estanca EPDM (3)</div>
+          <div class="mobile-idx-desc">Elastómero vulcanizado con sellado estanco IP66 contra lluvia</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx4" onclick="highlightCallout(4)">
+        <span class="mobile-idx-badge">04</span>
+        <div>
+          <div class="mobile-idx-title">Canto de Aluminio 10 CM (4)</div>
+          <div class="mobile-idx-desc">Aleación 5052-H32 rolada CNC · Interior blanco reflectivo >96%</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx5" onclick="highlightCallout(5)">
+        <span class="mobile-idx-badge">05</span>
+        <div>
+          <div class="mobile-idx-title">Módulos LED SMD 2835 (5)</div>
+          <div class="mobile-idx-desc">Chips industriales Epistar · Vida útil >50,000 horas · IP67</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx6" onclick="highlightCallout(6)">
+        <span class="mobile-idx-badge">06</span>
+        <div>
+          <div class="mobile-idx-title">Óptica Batwing 170° (6)</div>
+          <div class="mobile-idx-desc">Dispersión lateral 170° · Erradica sombras y manchas cebra</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx7" onclick="highlightCallout(7)">
+        <span class="mobile-idx-badge">07</span>
+        <div>
+          <div class="mobile-idx-title">Drenes de Condensación (7)</div>
+          <div class="mobile-idx-desc">Respiración pasiva por router CNC · Evitan humedad interna</div>
+        </div>
+      </div>
+
+      <div class="mobile-idx-item" id="mobIdx8" onclick="highlightCallout(8)">
+        <span class="mobile-idx-badge">08</span>
+        <div>
+          <div class="mobile-idx-title">Chasis ACM & Anclajes Inox (8)</div>
+          <div class="mobile-idx-desc">Panel ACM 3mm + Espárragos roscados inox 1/4" a muro</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 
@@ -3596,7 +4354,69 @@
   function resetSlideTimer() {
     startSlideTimer();
   }
+  // ─── 3D ENGINEERING ANATOMY (Exploded Letter L - Blueprint Edition) ───
+  let isBlueprintLedsOn = true;
 
+  function toggleBlueprintLeds() {
+    isBlueprintLedsOn = !isBlueprintLedsOn;
+    const stage = document.getElementById('blueprintStageCard');
+    const label = document.getElementById('blueprintLedLabel');
+
+    if (stage) stage.classList.toggle('leds-active', isBlueprintLedsOn);
+    if (label) {
+      label.textContent = isBlueprintLedsOn 
+        ? 'ILUMINACIÓN NOCTURNA [6500K]: ACTIVA' 
+        : 'ILUMINACIÓN DIURNA [OFF]: MODO PLANO';
+    }
+    playSoftCooldownClick();
+  }
+
+  function highlightCallout(calloutIdx) {
+    // Mapping of callouts to their corresponding SVG layer
+    const calloutToLayerMap = {
+      1: 'bpLayer01',
+      2: 'bpLayer02',
+      3: 'bpLayer02',
+      4: 'bpLayer03',
+      5: 'bpLayer04',
+      6: 'bpLayer04',
+      7: 'bpLayer05',
+      8: 'bpLayer05'
+    };
+
+    // Highlight or unhighlight callout groups in SVG and mobile items
+    for (let i = 1; i <= 8; i++) {
+      const padIdx = String(i).padStart(2, '0');
+      const g = document.getElementById(`callout${padIdx}`);
+      if (g) g.classList.toggle('active', i === calloutIdx);
+      const mob = document.getElementById(`mobIdx${i}`);
+      if (mob) mob.classList.toggle('active', i === calloutIdx);
+    }
+
+    // Highlight the corresponding layer in the 3D drawing
+    const targetLayerId = calloutToLayerMap[calloutIdx];
+    ['bpLayer01', 'bpLayer02', 'bpLayer03', 'bpLayer04', 'bpLayer05'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('active', id === targetLayerId);
+    });
+
+    playSoftCooldownClick();
+  }
+
+  function resetHighlight() {
+    for (let i = 1; i <= 8; i++) {
+      const padIdx = String(i).padStart(2, '0');
+      const g = document.getElementById(`callout${padIdx}`);
+      if (g) g.classList.remove('active');
+      const mob = document.getElementById(`mobIdx${i}`);
+      if (mob && i !== 1) mob.classList.remove('active');
+    }
+
+    ['bpLayer01', 'bpLayer02', 'bpLayer03', 'bpLayer04', 'bpLayer05'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    });
+  }
 
 
   function startOnLoadLaserAnimation() {
