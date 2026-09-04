@@ -764,17 +764,31 @@
     z-index: 5;
   }
 
+  .mat-disc-wrapper {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    z-index: 3;
+  }
+
   .hud-scanner-container {
     position: absolute;
+    top: 50%;
+    left: 50%;
     width: 440px;
     height: 440px;
-    top: -60px;
-    left: -60px;
+    margin-top: -220px;
+    margin-left: -220px;
     border-radius: 60% 40% 50% 70% / 50% 60% 40% 60%;
     background: conic-gradient(from 0deg, #ff3366, #ff00ff, #33f1ff, #91fc06, #ff3366);
-    filter: blur(24px);
-    opacity: 0.78;
+    filter: blur(28px);
+    opacity: 0.85;
     z-index: 1;
+    pointer-events: none;
     animation: morphBlob 10s ease-in-out infinite, rotateHUD 8s linear infinite;
   }
   @keyframes rotateHUD {
@@ -1017,17 +1031,27 @@
       left: auto;
       transform: none;
       margin-bottom: 2rem;
+      overflow: visible;
+    }
+    .mat-disc-wrapper {
+      width: 250px !important;
+      height: 250px !important;
+      position: relative !important;
+      overflow: visible !important;
+      margin: 0 auto !important;
     }
     .hud-scanner-container {
-      width: 300px;
-      height: 300px;
-      top: -25px;
-      left: -25px;
-      filter: blur(18px);
+      width: 330px !important;
+      height: 330px !important;
+      margin-top: -165px !important;
+      margin-left: -165px !important;
+      top: 50% !important;
+      left: 50% !important;
+      filter: blur(26px) !important;
     }
     .mat-screen-frame {
-      width: 250px;
-      height: 250px;
+      width: 250px !important;
+      height: 250px !important;
     }
     .mat-constellation-item {
       position: relative !important;
@@ -3042,40 +3066,71 @@
       margin: 3.5rem auto 4.5rem !important;
       width: 100% !important;
       max-width: 100vw !important;
-      overflow: hidden !important;
+      overflow: visible !important;
       box-sizing: border-box !important;
     }
 
     .material-showcase-grid {
-      padding: 2.25rem 1rem !important;
-      border-radius: 20px !important;
+      padding: 2.25rem 0.85rem !important;
+      border-radius: 28px !important;
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
-      overflow: hidden !important;
+      overflow: visible !important;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0%, rgba(255, 255, 255, 0.005) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.06) !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
     }
 
     .mat-constellation-wrapper {
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
-      overflow: hidden !important;
+      overflow: visible !important;
+    }
+
+    .mat-visualizer-center {
+      width: 100% !important;
+      max-width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      position: relative !important;
+      overflow: visible !important;
+      margin-bottom: 1.25rem !important;
+    }
+
+    .mat-disc-wrapper {
+      width: 210px !important;
+      height: 210px !important;
+      position: relative !important;
+      overflow: visible !important;
+      margin: 0 auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
 
     .mat-screen-frame {
-      width: 220px !important;
-      height: 220px !important;
-      max-width: 75vw !important;
-      max-height: 75vw !important;
+      width: 210px !important;
+      height: 210px !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      position: relative !important;
+      z-index: 3 !important;
     }
 
     .hud-scanner-container {
-      width: 260px !important;
-      height: 260px !important;
-      max-width: 85vw !important;
-      max-height: 85vw !important;
-      top: -20px !important;
-      left: -20px !important;
+      width: 270px !important;
+      height: 270px !important;
+      top: 50% !important;
+      left: 50% !important;
+      margin-top: -135px !important;
+      margin-left: -135px !important;
+      filter: blur(24px) !important;
+      opacity: 0.88 !important;
+      z-index: 1 !important;
+      pointer-events: none !important;
     }
     
     /* Hero layout reordering & sizing */
@@ -4174,13 +4229,15 @@
       
       <!-- CENTER VISUALIZER -->
       <div class="mat-visualizer-center">
-        <!-- Pure CSS Conic Gradient Rotating Glowing Ring (Morphing) -->
-        <div class="hud-scanner-container"></div>
-        
-        <div class="mat-screen-frame">
-          <div class="mat-scanline"></div>
-          <div class="mat-noise-flash" id="matNoiseFlash"></div>
-          <img src="assets/mat_acrilico.jpg" alt="Visualizador de Materiales Letrerama" class="mat-screen-img" id="matScreenImg">
+        <div class="mat-disc-wrapper">
+          <!-- Pure CSS Conic Gradient Rotating Glowing Ring (Morphing) -->
+          <div class="hud-scanner-container"></div>
+          
+          <div class="mat-screen-frame">
+            <div class="mat-scanline"></div>
+            <div class="mat-noise-flash" id="matNoiseFlash"></div>
+            <img src="assets/mat_acrilico.jpg" alt="Visualizador de Materiales Letrerama" class="mat-screen-img" id="matScreenImg">
+          </div>
         </div>
         
         <p class="mat-screen-caption" id="specUsoFrecuente">
