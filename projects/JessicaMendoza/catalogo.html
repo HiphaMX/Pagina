@@ -229,6 +229,93 @@
             margin-bottom: 2.5rem;
             border-bottom: 1px solid rgba(28, 25, 23, 0.1);
             padding-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+        }
+
+        .btn-fav-filter {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            background: #ffffff;
+            border: 1px solid var(--bg-stone-200);
+            padding: 0.65rem 1.25rem;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .btn-fav-filter:hover {
+            border-color: #d6d3d1;
+            background: var(--bg-stone-100);
+        }
+
+        .btn-fav-filter.active {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            color: #e11d48;
+        }
+
+        .card-fav-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            color: #78716c;
+        }
+
+        .card-fav-btn:hover {
+            transform: scale(1.1);
+            background: #ffffff;
+            color: #e11d48;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-fav-btn.active {
+            color: #e11d48;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--bg-stone-900);
+            color: #ffffff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1300;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
         }
 
         .catalog-meta {
@@ -1167,6 +1254,11 @@
                     <span class="catalog-subtitle">Jessica Mendoza</span>
                     <h1 class="catalog-title">Catálogo <span>Inmobiliario</span></h1>
                 </div>
+                <button type="button" id="btn-toggle-favorites" class="btn-fav-filter" onclick="toggleFavoritesFilter()" title="Filtrar por propiedades guardadas">
+                    <i data-lucide="heart" id="fav-filter-icon" style="width: 16px; height: 16px;"></i>
+                    <span>Mis Favoritos (<span id="fav-count-badge">0</span>)</span>
+                </button>
+            </div>
             <!-- Potente Buscador Avanzado del Catálogo (Reubicado de Home) -->
             <div class="catalog-search-wrap">
                 <form class="search-bar" id="catalog-search-form" onsubmit="event.preventDefault();">
@@ -1257,9 +1349,13 @@
                 <!-- Cargado dinámicamente por JS -->
             </div>
         </div>
-    </main></div>
-        </div>
     </main>
+
+    <!-- Toast de Notificaciones -->
+    <div class="toast" id="toast-message">
+        <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: #4ade80;"></i>
+        <span id="toast-text">Propiedad guardada en tus favoritos</span>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -1612,6 +1708,68 @@
             renderCatalog();
         };
 
+        // Estado de Favoritos
+        let filterFavoritesOnly = false;
+
+        function getSavedList() {
+            return JSON.parse(localStorage.getItem('jessica_mendoza_saved') || '[]');
+        }
+
+        function updateFavoritesBadge() {
+            const saved = getSavedList();
+            const badge = document.getElementById('fav-count-badge');
+            if (badge) badge.innerText = saved.length;
+        }
+
+        window.toggleFavoritesFilter = function(forceVal) {
+            filterFavoritesOnly = typeof forceVal === 'boolean' ? forceVal : !filterFavoritesOnly;
+            const btn = document.getElementById('btn-toggle-favorites');
+            const icon = document.getElementById('fav-filter-icon');
+            if (btn) {
+                if (filterFavoritesOnly) {
+                    btn.classList.add('active');
+                    if (icon) {
+                        icon.style.fill = '#e11d48';
+                        icon.style.color = '#e11d48';
+                    }
+                } else {
+                    btn.classList.remove('active');
+                    if (icon) {
+                        icon.style.fill = 'none';
+                        icon.style.color = 'currentColor';
+                    }
+                }
+            }
+            renderCatalog();
+        };
+
+        window.toggleCardFavorite = function(e, id) {
+            e.preventDefault();
+            e.stopPropagation();
+            let saved = getSavedList();
+            if (saved.includes(id)) {
+                saved = saved.filter(savedId => savedId !== id);
+                showToast("Propiedad eliminada de tus favoritos");
+            } else {
+                saved.push(id);
+                showToast("Propiedad guardada en tus favoritos");
+            }
+            localStorage.setItem('jessica_mendoza_saved', JSON.stringify(saved));
+            updateFavoritesBadge();
+            renderCatalog();
+        };
+
+        function showToast(message) {
+            const toast = document.getElementById('toast-message');
+            const toastText = document.getElementById('toast-text');
+            if (!toast || !toastText) return;
+            toastText.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2800);
+        }
+
         // Renderizado y filtrado dinámico del catálogo
         function renderCatalog() {
             const textValue = searchText.value.toLowerCase().trim();
@@ -1622,14 +1780,21 @@
             const conditionValue = searchCondition.value;
             const priceMinVal = parseFloat(sliderMin.value);
             const priceMaxVal = parseFloat(sliderMax.value);
+            const savedIds = getSavedList();
 
             // Filtrar Base de Datos
             const filtered = PROPERTIES_DB.filter(item => {
-                // Filtro por Texto libre (título, zona, municipio)
+                // Filtro por Favoritos
+                if (filterFavoritesOnly && !savedIds.includes(item.id)) {
+                    return false;
+                }
+
+                // Filtro por Texto libre (título, zona, municipio, código ID)
                 const matchesText = !textValue || 
                     item.title.toLowerCase().includes(textValue) || 
                     item.zona.toLowerCase().includes(textValue) || 
-                    item.municipio.toLowerCase().includes(textValue);
+                    item.municipio.toLowerCase().includes(textValue) ||
+                    (item.codigo && item.codigo.toLowerCase().includes(textValue));
                 
                 // Filtro por Municipio
                 const matchesZone = zoneValue === 'all' || item.municipio === zoneValue;
@@ -1674,20 +1839,32 @@
             catalogGrid.innerHTML = '';
 
             if (filtered.length === 0) {
-                catalogGrid.innerHTML = `
-                    <div class="empty-state">
-                        <i data-lucide="compass" style="width: 64px; height: 64px; stroke-width: 1; color: var(--color-text-muted);"></i>
-                        <h3>Sin resultados</h3>
-                        <p>No encontramos propiedades que coincidan con la combinación de filtros seleccionada. Intenta con otros parámetros.</p>
-                        <button class="btn-clear-filters" onclick="clearFilters()">Restablecer Filtros</button>
-                    </div>
-                `;
+                if (filterFavoritesOnly) {
+                    catalogGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i data-lucide="heart" style="width: 56px; height: 56px; stroke-width: 1.2; color: #e11d48; margin: 0 auto 1rem auto;"></i>
+                            <h3>No tienes propiedades guardadas</h3>
+                            <p>Haz clic en el corazón de cualquier propiedad para guardarla aquí y revisarla cuando quieras.</p>
+                            <button class="btn-clear-filters" onclick="toggleFavoritesFilter(false)">Ver todo el catálogo</button>
+                        </div>
+                    `;
+                } else {
+                    catalogGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i data-lucide="compass" style="width: 64px; height: 64px; stroke-width: 1; color: var(--color-text-muted); margin: 0 auto 1rem auto;"></i>
+                            <h3>Sin resultados</h3>
+                            <p>No encontramos propiedades que coincidan con la combinación de filtros seleccionada. Intenta con otros parámetros.</p>
+                            <button class="btn-clear-filters" onclick="clearFilters()">Restablecer Filtros</button>
+                        </div>
+                    `;
+                }
                 lucide.createIcons();
                 return;
             }
 
             // Renderizar Tarjetas
             filtered.forEach(item => {
+                const isSaved = savedIds.includes(item.id);
                 const card = document.createElement('a');
                 card.href = `propiedad.html?id=${item.id}${item.slug ? `&nombre=${item.slug}` : ''}`;
                 card.className = "collection-card";
@@ -1713,6 +1890,9 @@
                         <img src="${item.image}" alt="${item.title}" loading="lazy">
                         <span class="collection-card-tag">${item.operacion}</span>
                         <span class="collection-card-tag-type">${item.tipo}</span>
+                        <button type="button" class="card-fav-btn ${isSaved ? 'active' : ''}" onclick="toggleCardFavorite(event, ${item.id})" aria-label="Guardar en favoritos" title="Guardar en favoritos">
+                            <i data-lucide="heart" style="width: 16px; height: 16px; ${isSaved ? 'fill: #e11d48; color: #e11d48;' : ''}"></i>
+                        </button>
                         <div class="collection-hover-view">
                             <span class="collection-view-btn">Solicitar Info</span>
                         </div>
@@ -1735,6 +1915,7 @@
                         </div>
                         <div class="collection-card-footer">
                             <span class="collection-card-location">${item.municipio}</span>
+                            ${item.codigo ? `<span style="font-size: 0.72rem; font-weight: 700; color: #78716c; background: #f5f5f4; border: 1px solid #e7e5e4; padding: 0.15rem 0.5rem; border-radius: 4px; letter-spacing: 0.05em;">ID: ${item.codigo}</span>` : ''}
                             <i data-lucide="arrow-up-right" class="collection-arrow" style="width: 18px; height: 18px;"></i>
                         </div>
                     </div>
@@ -1742,6 +1923,7 @@
                 catalogGrid.appendChild(card);
             });
 
+            updateFavoritesBadge();
             lucide.createIcons();
         }
 
@@ -1843,8 +2025,25 @@
             const urlTipo = urlParams.get('tipo');
             const urlOperacion = urlParams.get('operacion');
             const urlCondicion = urlParams.get('condicion');
+            const urlFavoritos = urlParams.get('favoritos') === 'true' || urlParams.get('filtro') === 'favoritos';
+            const urlCodigo = urlParams.get('codigo') || urlParams.get('id_propiedad');
 
             let hasPreFilters = false;
+
+            if (urlCodigo) {
+                searchText.value = urlCodigo;
+                hasPreFilters = true;
+            }
+            if (urlFavoritos) {
+                filterFavoritesOnly = true;
+                const btn = document.getElementById('btn-toggle-favorites');
+                const icon = document.getElementById('fav-filter-icon');
+                if (btn) btn.classList.add('active');
+                if (icon) {
+                    icon.style.fill = '#e11d48';
+                    icon.style.color = '#e11d48';
+                }
+            }
 
             if (urlTipo) {
                 searchType.value = urlTipo;

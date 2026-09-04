@@ -4,6 +4,7 @@
         // 1. PROPIEDAD REAL: CASA EN RENTA LOS ROBLES RESIDENCIAL (COTO HELECHOS)
         {
             id: 1,
+            codigo: "JM0926-01",
             slug: "casa-en-renta-en-los-robles-residencial",
             title: "Casa en Renta en Los Robles Residencial",
             municipio: "Zapopan",
@@ -68,6 +69,7 @@
         // 2. RESIDENCIA VALLE IMPERIAL (ZMG)
         {
             id: 2,
+            codigo: "JM0926-02",
             slug: "residencia-de-autor-valle-imperial",
             title: "Residencia de Autor - Valle Imperial",
             municipio: "Zapopan",
@@ -96,6 +98,7 @@
         // 3. LOFT BOUTIQUE (ZMG)
         {
             id: 3,
+            codigo: "JM0926-03",
             slug: "loft-boutique-providencia",
             title: "Loft Boutique - Providencia",
             municipio: "Guadalajara",
@@ -123,6 +126,7 @@
         // 4. TERRENO PLAYA (YUCATÁN)
         {
             id: 4,
+            codigo: "JM0926-04",
             slug: "lote-residencial-sunset-telchac",
             title: "Lote Residencial Sunset - Telchac",
             municipio: "Telchac",

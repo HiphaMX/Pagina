@@ -1593,6 +1593,7 @@
         // Obtener el ID y/o Slug de la propiedad desde los parámetros de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const propertyId = parseInt(urlParams.get('id'));
+        const propertyCode = urlParams.get('codigo') || urlParams.get('ref') || urlParams.get('id_propiedad');
         const propertySlug = urlParams.get('nombre') || urlParams.get('slug') || urlParams.get('propiedad');
 
         // Elementos de la UI
@@ -1616,10 +1617,13 @@
             maximumFractionDigits: 0
         });
 
-        // Buscar la propiedad en la base de datos centralizada (por ID o por Slug)
+        // Buscar la propiedad en la base de datos centralizada (por ID numérico, por Código JM o por Slug)
         let currentProperty = null;
         if (!isNaN(propertyId)) {
             currentProperty = window.PROPERTIES_DB.find(item => item.id === propertyId);
+        }
+        if (!currentProperty && propertyCode) {
+            currentProperty = window.PROPERTIES_DB.find(item => item.codigo && item.codigo.toLowerCase() === propertyCode.toLowerCase());
         }
         if (!currentProperty && propertySlug) {
             currentProperty = window.PROPERTIES_DB.find(item => item.slug === propertySlug);
@@ -1635,13 +1639,21 @@
         if (currentProperty) {
             const cleanSlug = currentProperty.slug || currentProperty.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
+            // Construir la URL completa y limpia de la propiedad
+            const cleanPath = window.location.pathname.replace(/\/$/, '') || '/propiedad';
+            const propertyFullUrl = `${window.location.origin}${cleanPath}?id=${currentProperty.id}&nombre=${cleanSlug}`;
+
             // Ajustar la URL del navegador sin recargar para que incluya siempre el nombre amigable
             const currentSearch = window.location.search;
             const expectedSearch = `?id=${currentProperty.id}&nombre=${cleanSlug}`;
             if (currentSearch !== expectedSearch) {
-                const cleanPath = window.location.pathname.replace(/\/$/, '') || '/propiedad';
                 window.history.replaceState({ id: currentProperty.id, slug: cleanSlug }, currentProperty.title, `${cleanPath}${expectedSearch}`);
             }
+
+            // Mensaje de WhatsApp enriquecido con Código ID y la URL desde donde dan click
+            const codigoTexto = currentProperty.codigo ? ` (ID: ${currentProperty.codigo})` : '';
+            const whatsappMsg = `Hola Jessica, me interesa agendar cita o recibir más información de la propiedad: ${currentProperty.title}${codigoTexto}.\n\nEnlace: ${propertyFullUrl}`;
+            const whatsappLink = `https://wa.me/523339564830?text=${encodeURIComponent(whatsappMsg)}`;
 
             // Actualizar título de la página y metadatos dinámicos
             document.title = `${currentProperty.title} | Jessica Mendoza Bienes Raíces`;
@@ -1790,6 +1802,7 @@
                     <div class="prop-title-wrap">
                         <h1>${currentProperty.title}</h1>
                         <div class="prop-meta-top">
+                            ${currentProperty.codigo ? `<span style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; color: #1c1917; background: #f5f5f4; border: 1px solid #e7e5e4; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; letter-spacing: 0.05em;"><i data-lucide="hash" style="width: 13px; height: 13px; color: var(--color-acento-primary);"></i>ID: ${currentProperty.codigo}</span><span class="meta-dot"></span>` : ''}
                             <span>${currentProperty.tipo}</span>
                             <span class="meta-dot"></span>
                             <span>${currentProperty.zona}, ${currentProperty.municipio}</span>
@@ -1836,9 +1849,10 @@
                                 </div>
                                 <span class="card-tag ${currentProperty.operacion.toLowerCase()}">${currentProperty.operacion}</span>
                             </div>
+                            ${currentProperty.codigo ? `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 0.85rem; padding-bottom: 0.65rem; border-bottom: 1px solid #f5f5f4;"><span>ID Catálogo:</span><span style="font-weight: 700; color: #1c1917; background: #f5f5f4; border: 1px solid #e7e5e4; padding: 0.15rem 0.5rem; border-radius: 4px; letter-spacing: 0.05em;">${currentProperty.codigo}</span></div>` : ''}
                             ${currentProperty.mantenimiento ? `<div style="font-size: 0.85rem; color: #166534; background-color: #f0fdf4; padding: 0.4rem 0.75rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1.25rem; font-weight: 500;"><i data-lucide="check-circle-2" style="width: 15px; height: 15px;"></i> Cuota de mantenimiento incluida</div>` : ''}
                             
-                            <a href="https://wa.me/523339564830?text=Hola%20Jessica,%20me%20interesa%20agendar%20cita%20o%20recibir%20más%20información%20de%20la%20propiedad:%20${encodeURIComponent(currentProperty.title)}" target="_blank" class="btn-whatsapp-primary" style="margin-top: 1rem;">
+                            <a href="${whatsappLink}" target="_blank" class="btn-whatsapp-primary" style="margin-top: 1rem;">
                                 <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
                                 Agendar Cita / Info
                             </a>
