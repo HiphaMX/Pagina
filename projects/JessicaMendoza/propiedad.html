@@ -13,7 +13,23 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargando Propiedad | Jessica Mendoza Real Estate</title>
+    <title>Cargando Propiedad | Jessica Mendoza Bienes Raíces</title>
+
+    <!-- Metadatos Open Graph / WhatsApp / Redes Sociales -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Jessica Mendoza Bienes Raíces">
+    <meta property="og:title" id="og-title" content="Casa en Renta en Los Robles Residencial | Jessica Mendoza Bienes Raíces">
+    <meta property="og:description" id="og-desc" content="Exclusiva residencia en renta dentro de Coto Helechos, Los Robles Residencial, Zapopan. 3 recámaras, paneles solares, cocina con parota y granito.">
+    <meta property="og:image" id="og-image" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp">
+    <meta property="og:image:secure_url" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="768">
+    <meta property="og:image:alt" content="Casa en Renta en Los Robles Residencial">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="Casa en Renta en Los Robles Residencial | Jessica Mendoza Bienes Raíces">
+    <meta name="twitter:description" id="twitter-desc" content="Exclusiva residencia en renta dentro de Coto Helechos, Los Robles Residencial, Zapopan. 3 recámaras, paneles solares, cocina con parota y granito.">
+    <meta name="twitter:image" id="twitter-image" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -742,20 +758,24 @@
             gap: 0.75rem;
         }
 
-        /* Galería Modal Pantalla Completa */
+        /* Galería Modal Pantalla Completa - Lightbox Cinemático de Lujo */
         .photo-modal {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 100vw;
             height: 100vh;
-            background-color: #ffffff;
-            z-index: 1200;
+            background-color: rgba(12, 10, 9, 0.98);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 9999;
             opacity: 0;
             visibility: hidden;
-            transition: var(--transition-premium);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
             display: flex;
             flex-direction: column;
+            color: #ffffff;
+            user-select: none;
         }
 
         .photo-modal.active {
@@ -767,57 +787,222 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid rgba(28,25,23,0.06);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(12, 10, 9, 0.85);
+            z-index: 25;
         }
 
-        .modal-top h2 {
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+        .modal-top-info {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
         }
 
-        .btn-close-modal {
-            background: none;
-            border: 1px solid var(--color-text-dark);
-            padding: 0.5rem 1rem;
+        .modal-top-info h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+            margin: 0;
+            max-width: 50vw;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-counter {
+            font-size: 0.8rem;
+            color: #d6d3d1;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.25rem 0.85rem;
+            border-radius: 20px;
+        }
+
+        .modal-top-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-modal-action, .btn-close-modal {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 0.55rem 1.1rem;
             border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            font-size: 0.78rem;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            transition: var(--transition-fast);
+            transition: all 0.2s ease;
         }
 
-        .btn-close-modal:hover {
-            background-color: var(--bg-stone-100);
+        .btn-modal-action:hover, .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: #ffffff;
+            color: #ffffff;
         }
 
-        .modal-body-gallery {
+        /* Escenario Principal del Visor */
+        .modal-viewer {
             flex: 1;
-            overflow-y: auto;
-            padding: 3rem 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 2rem;
-        }
-
-        .modal-img-container {
-            width: 90%;
-            max-width: 800px;
-            border-radius: 8px;
+            justify-content: center;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 0.5rem 0;
         }
 
-        .modal-img-container img {
+        .modal-stage {
             width: 100%;
-            height: auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 4rem;
+        }
+
+        .modal-active-image {
+            max-width: 90vw;
+            max-height: calc(100vh - 190px);
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .modal-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(28, 25, 23, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 30;
+            transition: all 0.2s ease;
+        }
+
+        .modal-nav-btn:hover {
+            background: var(--color-acento-primary);
+            border-color: var(--color-acento-primary);
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .modal-nav-btn.prev {
+            left: 1.5rem;
+        }
+
+        .modal-nav-btn.next {
+            right: 1.5rem;
+        }
+
+        /* Tira Inferior de Miniaturas */
+        .modal-thumbnail-strip {
+            height: 90px;
+            background: rgba(12, 10, 9, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0 1.5rem;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+            z-index: 25;
+        }
+
+        .modal-thumbnail-strip::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .modal-thumbnail-strip::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+        }
+
+        .modal-thumb {
+            width: 72px;
+            height: 54px;
+            flex-shrink: 0;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0.45;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .modal-thumb:hover {
+            opacity: 0.85;
+        }
+
+        .modal-thumb.active {
+            opacity: 1;
+            border-color: #ffffff;
+            transform: scale(1.06);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
+        }
+
+        @media (max-width: 768px) {
+            .modal-top {
+                padding: 0.85rem 1rem;
+            }
+            .modal-top-info h2 {
+                font-size: 0.9rem;
+                max-width: 45vw;
+            }
+            .btn-modal-action span, .btn-close-modal span {
+                display: none;
+            }
+            .modal-stage {
+                padding: 0 0.5rem;
+            }
+            .modal-active-image {
+                max-width: 96vw;
+                max-height: calc(100vh - 165px);
+            }
+            .modal-nav-btn {
+                width: 44px;
+                height: 44px;
+            }
+            .modal-nav-btn.prev {
+                left: 0.6rem;
+            }
+            .modal-nav-btn.next {
+                right: 0.6rem;
+            }
+            .modal-thumbnail-strip {
+                height: 75px;
+                padding: 0 0.75rem;
+            }
+            .modal-thumb {
+                width: 58px;
+                height: 44px;
+            }
         }
 
         /* Notificación Copiar enlace */
@@ -1075,7 +1260,7 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo-wrap">
-                    <a href="index.html" aria-label="Jessica Mendoza Real Estate">
+                    <a href="index.html" aria-label="Jessica Mendoza Bienes Raíces">
                         <svg class="logo-svg" viewBox="0 0 768.77 297.18">
                             <g>
                                 <g>
@@ -1169,17 +1354,43 @@
         </div>
     </main>
 
-    <!-- Galería Modal Pantalla Completa -->
-    <div class="photo-modal" id="photo-modal">
+    <!-- Galería Modal Pantalla Completa - Lightbox Cinemático -->
+    <div class="photo-modal" id="photo-modal" role="dialog" aria-modal="true" aria-label="Galería de Fotos">
         <div class="modal-top">
-            <h2 id="modal-property-title">Galería de Fotos</h2>
-            <button class="btn-close-modal" id="btn-close-modal">
-                <i data-lucide="x" style="width: 16px; height: 16px;"></i>
-                Cerrar galería
+            <div class="modal-top-info">
+                <h2 id="modal-property-title">Galería de Fotos</h2>
+                <span class="modal-counter" id="modal-counter">Foto 1 de 24</span>
+            </div>
+            <div class="modal-top-actions">
+                <button class="btn-modal-action" onclick="copyLink()" title="Compartir propiedad">
+                    <i data-lucide="share" style="width: 15px; height: 15px;"></i>
+                    <span>Compartir</span>
+                </button>
+                <button class="btn-close-modal" id="btn-close-modal" title="Cerrar (Esc)">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                    <span>Cerrar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Escenario de la Foto Activa -->
+        <div class="modal-viewer">
+            <button class="modal-nav-btn prev" id="modal-btn-prev" aria-label="Foto anterior" onclick="changeModalPhoto(-1)">
+                <i data-lucide="chevron-left" style="width: 28px; height: 28px;"></i>
+            </button>
+            
+            <div class="modal-stage" id="modal-stage">
+                <img id="modal-active-img" src="" alt="Foto de la propiedad" class="modal-active-image">
+            </div>
+
+            <button class="modal-nav-btn next" id="modal-btn-next" aria-label="Siguiente foto" onclick="changeModalPhoto(1)">
+                <i data-lucide="chevron-right" style="width: 28px; height: 28px;"></i>
             </button>
         </div>
-        <div class="modal-body-gallery" id="modal-gallery-images">
-            <!-- Imágenes inyectadas por JS -->
+
+        <!-- Tira Inferior de Miniaturas -->
+        <div class="modal-thumbnail-strip" id="modal-thumbnails">
+            <!-- Inyectado dinámicamente por JS -->
         </div>
     </div>
 
@@ -1379,17 +1590,21 @@
             menuClose.addEventListener('click', toggleMenu);
         }
 
-        // Obtener el ID de la propiedad desde los parámetros de la URL
+        // Obtener el ID y/o Slug de la propiedad desde los parámetros de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const propertyId = parseInt(urlParams.get('id'));
+        const propertySlug = urlParams.get('nombre') || urlParams.get('slug') || urlParams.get('propiedad');
 
         // Elementos de la UI
         const propertyContent = document.getElementById('property-detail-content');
         const alternativesGrid = document.getElementById('alternatives-grid');
         const photoModal = document.getElementById('photo-modal');
         const btnCloseModal = document.getElementById('btn-close-modal');
-        const modalGalleryImages = document.getElementById('modal-gallery-images');
+        const modalActiveImg = document.getElementById('modal-active-img');
+        const modalStage = document.getElementById('modal-stage');
+        const modalThumbnails = document.getElementById('modal-thumbnails');
         const modalPropertyTitle = document.getElementById('modal-property-title');
+        const modalCounter = document.getElementById('modal-counter');
         const toast = document.getElementById('toast-message');
         const linkBackCatalog = document.getElementById('link-back-catalog');
 
@@ -1401,10 +1616,53 @@
             maximumFractionDigits: 0
         });
 
-        // Buscar la propiedad en la base de datos centralizada
-        const currentProperty = window.PROPERTIES_DB.find(item => item.id === propertyId);
+        // Buscar la propiedad en la base de datos centralizada (por ID o por Slug)
+        let currentProperty = null;
+        if (!isNaN(propertyId)) {
+            currentProperty = window.PROPERTIES_DB.find(item => item.id === propertyId);
+        }
+        if (!currentProperty && propertySlug) {
+            currentProperty = window.PROPERTIES_DB.find(item => item.slug === propertySlug);
+        }
+        if (!currentProperty && window.PROPERTIES_DB && window.PROPERTIES_DB.length > 0 && !urlParams.has('id')) {
+            currentProperty = window.PROPERTIES_DB[0];
+        }
+
+        // Variables de estado de la galería
+        let activeImages = [];
+        let currentPhotoIndex = 0;
 
         if (currentProperty) {
+            const cleanSlug = currentProperty.slug || currentProperty.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+            // Ajustar la URL del navegador sin recargar para que incluya siempre el nombre amigable
+            const currentSearch = window.location.search;
+            const expectedSearch = `?id=${currentProperty.id}&nombre=${cleanSlug}`;
+            if (currentSearch !== expectedSearch) {
+                const cleanPath = window.location.pathname.replace(/\/$/, '') || '/propiedad';
+                window.history.replaceState({ id: currentProperty.id, slug: cleanSlug }, currentProperty.title, `${cleanPath}${expectedSearch}`);
+            }
+
+            // Actualizar título de la página y metadatos dinámicos
+            document.title = `${currentProperty.title} | Jessica Mendoza Bienes Raíces`;
+
+            const ogTitle = document.getElementById('og-title');
+            const twitterTitle = document.getElementById('twitter-title');
+            const ogDesc = document.getElementById('og-desc');
+            const twitterDesc = document.getElementById('twitter-desc');
+            const ogImage = document.getElementById('og-image');
+            const twitterImage = document.getElementById('twitter-image');
+
+            if (ogTitle) ogTitle.content = `${currentProperty.title} | Jessica Mendoza Bienes Raíces`;
+            if (twitterTitle) twitterTitle.content = `${currentProperty.title} | Jessica Mendoza Bienes Raíces`;
+            if (ogDesc) ogDesc.content = currentProperty.descripcion ? currentProperty.descripcion.slice(0, 160) + '...' : '';
+            if (twitterDesc) twitterDesc.content = currentProperty.descripcion ? currentProperty.descripcion.slice(0, 160) + '...' : '';
+
+            const primaryPhoto = (currentProperty.imagenes && currentProperty.imagenes.length > 0) ? currentProperty.imagenes[0] : currentProperty.image;
+            const fullPhotoUrl = primaryPhoto.startsWith('http') ? primaryPhoto : (window.location.origin + primaryPhoto);
+            if (ogImage) ogImage.content = fullPhotoUrl;
+            if (twitterImage) twitterImage.content = fullPhotoUrl;
+
             // Ajustar el enlace del botón de regreso según si es un terreno de playa o propiedad ZMG
             if (currentProperty.isPlaya) {
                 linkBackCatalog.href = "terrenos-playa.html";
@@ -1414,16 +1672,12 @@
                 linkBackCatalog.innerHTML = '<i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Volver al catálogo';
             }
 
-// Actualizar título de la página
-            document.title = `${currentProperty.title} | Jessica Mendoza Real Estate`;
+            // Colección de imágenes
+            const rawImgs = currentProperty.imagenes || [currentProperty.image];
+            activeImages = rawImgs.slice(0, 25);
 
             // Construir galería de imágenes al estilo Airbnb (Máximo 5 para el grid)
             let galleryHTML = '';
-            const imgs = currentProperty.imagenes || [currentProperty.image];
-            
-            // Limitamos a un máximo de 25 imágenes para todo el detalle (las cuales se verán completas en el modal)
-            const activeImages = imgs.slice(0, 25);
-
             if (activeImages.length >= 5) {
                 galleryHTML = `
                     <div class="airbnb-gallery">
@@ -1449,7 +1703,6 @@
                     </div>
                 `;
             } else {
-                // Si la propiedad tiene menos de 5 fotos (como los terrenos) mostramos una galería simplificada
                 galleryHTML = `
                     <div class="airbnb-gallery" style="grid-template-columns: 1fr; grid-template-rows: 408px;">
                         <div class="gallery-item large" style="height: 408px;" onclick="openPhotoGallery(0)">
@@ -1504,7 +1757,7 @@
                 `;
             }
 
-            // Metadatos de especificaciones (Metros, cuartos, baños, estacionamientos)
+            // Metadatos de especificaciones
             let specsHTML = '';
             if (currentProperty.tipo !== 'Terreno') {
                 const banosTexto = currentProperty.banos ? `${currentProperty.banos} Baños` : `${currentProperty.habitaciones - 1 || 2} Baños`;
@@ -1589,17 +1842,19 @@
                                 <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
                                 Agendar Cita / Info
                             </a>
-                            <p class="card-disclaimer">Atención personalizada y directa por Jessica Mendoza Real Estate.</p>
+                            <p class="card-disclaimer">Atención personalizada y directa por Jessica Mendoza Bienes Raíces</p>
                         </div>
                     </div>
                 </div>
             `;
 
-            // Cargar las imágenes en la galería modal completa
+            // Configurar el Lightbox Cinemático
             modalPropertyTitle.innerText = currentProperty.title;
-            modalGalleryImages.innerHTML = activeImages.map((img, index) => `
-                <div class="modal-img-container">
-                    <img src="${img}" alt="Fotografía ${index + 1} de ${currentProperty.title}" loading="lazy">
+
+            // Renderizar miniaturas en la barra inferior del modal
+            modalThumbnails.innerHTML = activeImages.map((img, index) => `
+                <div class="modal-thumb ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="goToPhoto(${index})" title="Fotografía ${index + 1}">
+                    <img src="${img}" alt="Miniatura ${index + 1}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
             `).join('');
 
@@ -1622,54 +1877,190 @@
             lucide.createIcons();
         }
 
-        // Lógica de Galería Modal
+        // ==========================================
+        // CONTROLADOR DEL LIGHTBOX CINEMÁTICO
+        // ==========================================
+        function updateModalPhotoView() {
+            if (!activeImages.length) return;
+            const currentSrc = activeImages[currentPhotoIndex];
+            
+            // Transición suave
+            modalActiveImg.style.opacity = '0';
+            setTimeout(() => {
+                modalActiveImg.src = currentSrc;
+                modalActiveImg.alt = `Fotografía ${currentPhotoIndex + 1} de ${currentProperty ? currentProperty.title : ''}`;
+                modalActiveImg.onload = () => {
+                    modalActiveImg.style.opacity = '1';
+                };
+                // Fallback si ya está en caché
+                modalActiveImg.style.opacity = '1';
+            }, 100);
+
+            modalCounter.textContent = `Foto ${currentPhotoIndex + 1} de ${activeImages.length}`;
+
+            // Sincronizar tira de miniaturas
+            const thumbs = modalThumbnails.querySelectorAll('.modal-thumb');
+            thumbs.forEach((th, idx) => {
+                if (idx === currentPhotoIndex) {
+                    th.classList.add('active');
+                    th.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    th.classList.remove('active');
+                }
+            });
+        }
+
         window.openPhotoGallery = function(startIndex) {
+            currentPhotoIndex = (typeof startIndex === 'number' && startIndex >= 0 && startIndex < activeImages.length) ? startIndex : 0;
+            updateModalPhotoView();
             photoModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         };
 
-        btnCloseModal.addEventListener('click', () => {
+        window.closePhotoGallery = function() {
             photoModal.classList.remove('active');
             document.body.style.overflow = '';
+        };
+
+        window.changeModalPhoto = function(delta) {
+            if (!activeImages.length) return;
+            currentPhotoIndex = (currentPhotoIndex + delta + activeImages.length) % activeImages.length;
+            updateModalPhotoView();
+        };
+
+        window.goToPhoto = function(index) {
+            if (index >= 0 && index < activeImages.length) {
+                currentPhotoIndex = index;
+                updateModalPhotoView();
+            }
+        };
+
+        if (btnCloseModal) {
+            btnCloseModal.addEventListener('click', window.closePhotoGallery);
+        }
+
+        // Cerrar al hacer clic en el fondo del escenario (fuera de la foto)
+        if (modalStage) {
+            modalStage.addEventListener('click', (e) => {
+                if (e.target === modalStage) {
+                    window.closePhotoGallery();
+                }
+            });
+        }
+
+        // Navegación con teclado (Flechas y Escape)
+        document.addEventListener('keydown', (e) => {
+            if (!photoModal || !photoModal.classList.contains('active')) return;
+            if (e.key === 'Escape') {
+                window.closePhotoGallery();
+            } else if (e.key === 'ArrowRight') {
+                window.changeModalPhoto(1);
+            } else if (e.key === 'ArrowLeft') {
+                window.changeModalPhoto(-1);
+            }
         });
 
-        // Lógica de Guardado (Favoritos visuales con localStorage)
+        // Gestos de deslizamiento táctil para móviles
+        let touchStartX = 0;
+        let touchEndX = 0;
+        if (modalStage) {
+            modalStage.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            modalStage.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchEndX - touchStartX;
+                if (Math.abs(diff) > 45) {
+                    if (diff < 0) {
+                        window.changeModalPhoto(1); // Deslizar a la izquierda = siguiente foto
+                    } else {
+                        window.changeModalPhoto(-1); // Deslizar a la derecha = foto anterior
+                    }
+                }
+            }, { passive: true });
+        }
+
+        // ==========================================
+        // FAVORITOS (LOCALSTORAGE)
+        // ==========================================
         window.toggleSave = function() {
+            if (!currentProperty) return;
             const heartIcon = document.getElementById('icon-heart-save');
             let saved = JSON.parse(localStorage.getItem('jessica_mendoza_saved') || '[]');
             
-            if (saved.includes(propertyId)) {
-                saved = saved.filter(id => id !== propertyId);
-                heartIcon.style.fill = 'none';
-                heartIcon.style.color = 'currentColor';
+            if (saved.includes(currentProperty.id)) {
+                saved = saved.filter(id => id !== currentProperty.id);
+                if (heartIcon) {
+                    heartIcon.style.fill = 'none';
+                    heartIcon.style.color = 'currentColor';
+                }
                 showToast("Propiedad eliminada de tus favoritos");
             } else {
-                saved.push(propertyId);
-                heartIcon.style.fill = 'var(--color-acento-primary)';
-                heartIcon.style.color = 'var(--color-acento-primary)';
+                saved.push(currentProperty.id);
+                if (heartIcon) {
+                    heartIcon.style.fill = 'var(--color-acento-primary)';
+                    heartIcon.style.color = 'var(--color-acento-primary)';
+                }
                 showToast("Propiedad guardada en tus favoritos");
             }
             localStorage.setItem('jessica_mendoza_saved', JSON.stringify(saved));
         };
 
         // Inicializar estado del corazón de favorito
-        const savedList = JSON.parse(localStorage.getItem('jessica_mendoza_saved') || '[]');
-        const heartIcon = document.getElementById('icon-heart-save');
-        if (heartIcon && savedList.includes(propertyId)) {
-            heartIcon.style.fill = 'var(--color-acento-primary)';
-            heartIcon.style.color = 'var(--color-acento-primary)';
+        if (currentProperty) {
+            const savedList = JSON.parse(localStorage.getItem('jessica_mendoza_saved') || '[]');
+            const heartIcon = document.getElementById('icon-heart-save');
+            if (heartIcon && savedList.includes(currentProperty.id)) {
+                heartIcon.style.fill = 'var(--color-acento-primary)';
+                heartIcon.style.color = 'var(--color-acento-primary)';
+            }
         }
 
-        // Lógica de Copiar Link (Compartir)
-        window.copyLink = function() {
+        // ==========================================
+        // COMPARTIR ENLACE OPTIMIZADO
+        // ==========================================
+        window.copyLink = async function() {
+            const currentSlug = currentProperty ? (currentProperty.slug || 'propiedad') : 'propiedad';
+            const cleanPath = window.location.pathname.replace(/\/$/, '') || '/propiedad';
+            const shareUrl = currentProperty 
+                ? `${window.location.origin}${cleanPath}?id=${currentProperty.id}&nombre=${currentSlug}`
+                : window.location.href;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: currentProperty ? currentProperty.title : document.title,
+                        text: currentProperty ? `${currentProperty.title} | Jessica Mendoza Bienes Raíces` : document.title,
+                        url: shareUrl
+                    });
+                    showToast("Enlace compartido con éxito");
+                    return;
+                } catch (err) {
+                    // Si el usuario canceló el diálogo nativo o hubo error, fallback a portapapeles
+                }
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast("Enlace de la propiedad copiado al portapapeles");
+                }).catch(() => {
+                    fallbackCopy(shareUrl);
+                });
+            } else {
+                fallbackCopy(shareUrl);
+            }
+        };
+
+        function fallbackCopy(text) {
             const tempInput = document.createElement('input');
-            tempInput.value = window.location.href;
+            tempInput.value = text;
             document.body.appendChild(tempInput);
             tempInput.select();
             document.execCommand('copy');
             document.body.removeChild(tempInput);
             showToast("Enlace de la propiedad copiado al portapapeles");
-        };
+        }
 
         // Mostrar Toast
         function showToast(message) {
@@ -1680,24 +2071,23 @@
             }, 3000);
         }
 
-        // Renderizar propiedades recomendadas
+        // ==========================================
+        // PROPIEDADES RECOMENDADAS
+        // ==========================================
         function renderRecomendados() {
             if (!currentProperty) return;
 
-            // Filtrar alternativas: misma operación, mismo tipo, excluir la propiedad actual y que pertenezcan a la misma categoría (playa vs ZMG)
             let filtered = window.PROPERTIES_DB.filter(item => 
                 item.id !== currentProperty.id && 
                 item.isPlaya === currentProperty.isPlaya
             );
 
-            // Ordenar por afinidad (mismo tipo de propiedad y operación primero)
             filtered.sort((a, b) => {
                 let scoreA = 0;
                 let scoreB = 0;
                 
                 if (a.tipo === currentProperty.tipo) scoreA += 2;
                 if (a.operacion === currentProperty.operacion) scoreA += 2;
-                // Similitud de precio
                 scoreA -= Math.abs(a.precio - currentProperty.precio) / currentProperty.precio;
 
                 if (b.tipo === currentProperty.tipo) scoreB += 2;
@@ -1707,7 +2097,6 @@
                 return scoreB - scoreA;
             });
 
-            // Tomar las 3 mejores alternativas
             const itemsToShow = filtered.slice(0, 3);
 
             if (itemsToShow.length === 0) {
@@ -1716,7 +2105,7 @@
             }
 
             alternativesGrid.innerHTML = itemsToShow.map(item => `
-                <a href="propiedad.html?id=${item.id}" class="collection-card">
+                <a href="propiedad.html?id=${item.id}&nombre=${item.slug || ''}" class="collection-card">
                     <div class="collection-card-img-wrap">
                         <span class="collection-card-tag">${item.operacion}</span>
                         <span class="collection-card-tag-type">${item.tipo}</span>

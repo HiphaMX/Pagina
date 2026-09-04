@@ -3182,7 +3182,7 @@
             if (!carousel) return;
             
             carousel.innerHTML = activeProperties.map(item => `
-                <a href="propiedad.html?id=${item.id}" class="collection-card">
+                <a href="propiedad.html?id=${item.id}${item.slug ? `&nombre=${item.slug}` : ''}" class="collection-card">
                     <div class="collection-image-wrapper">
                         <span class="collection-card-tag">${item.operacion}</span>
                         <span class="collection-card-tag-type">${item.tipo}</span>

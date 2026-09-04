@@ -1,9 +1,10 @@
-// Base de Datos Centralizada de Propiedades - Jessica Mendoza Real Estate
+// Base de Datos Centralizada de Propiedades - Jessica Mendoza Bienes Raíces
 (function() {
     window.PROPERTIES_DB = [
         // 1. PROPIEDAD REAL: CASA EN RENTA LOS ROBLES RESIDENCIAL (COTO HELECHOS)
         {
             id: 1,
+            slug: "casa-en-renta-en-los-robles-residencial",
             title: "Casa en Renta en Los Robles Residencial",
             municipio: "Zapopan",
             zona: "Los Robles Residencial",
@@ -19,32 +20,32 @@
             condicion: "Listo para habitar",
             isPlaya: false,
             descripcion: "Hermosa y amplia residencia en renta dentro del exclusivo Coto Helechos en Los Robles Residencial, Zapopan. Cuenta con acceso controlado y seguridad 24/7 con cuota de mantenimiento incluida. Diseñada con acabados de autor, ofrece sala y comedor con impresionante doble altura, candiles, lámparas y sistema inteligente de iluminación regulable. Cocina integral con madera de parota y encimeras de granito equipada con estufa con horno y campana. Destaca por contar con una habitación en planta baja con baño completo, vestidor y aire acondicionado, además de medio baño para visitas. Equipada con paneles solares para un ahorro sustancial en consumo eléctrico. En planta alta dispone de dos habitaciones con baño completo y vestidor cada una, aire acondicionado en recámara principal y ventiladores de techo. Cochera para 3 autos, jardín privado, bodega y cuarto de servicio en un entorno natural privilegiado.",
-            image: "Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+            image: "/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
             imagenes: [
-                "Assets/Propiedades/LosRobles/01-fachada-principal.webp",
-                "Assets/Propiedades/LosRobles/02-sala-comedor-doble-altura.webp",
-                "Assets/Propiedades/LosRobles/03-cocina-integral-parota-granito.webp",
-                "Assets/Propiedades/LosRobles/04-recamara-principal-vista.webp",
-                "Assets/Propiedades/LosRobles/05-jardin-terraza-posterior.webp",
-                "Assets/Propiedades/LosRobles/06-fachada-angulo-jardin.webp",
-                "Assets/Propiedades/LosRobles/07-jardin-posterior-verde.webp",
-                "Assets/Propiedades/LosRobles/08-jardin-lateral-terraza.webp",
-                "Assets/Propiedades/LosRobles/09-terraza-exterior.webp",
-                "Assets/Propiedades/LosRobles/10-area-jardin-posterior.webp",
-                "Assets/Propiedades/LosRobles/11-exterior-ventanal.webp",
-                "Assets/Propiedades/LosRobles/12-sala-doble-altura-vertical.webp",
-                "Assets/Propiedades/LosRobles/13-doble-altura-vista-montana.webp",
-                "Assets/Propiedades/LosRobles/14-escalera-doble-altura.webp",
-                "Assets/Propiedades/LosRobles/15-vista-aerea-sala-comedor.webp",
-                "Assets/Propiedades/LosRobles/16-recamara-planta-baja.webp",
-                "Assets/Propiedades/LosRobles/17-pasillo-distribuidor-planta-alta.webp",
-                "Assets/Propiedades/LosRobles/18-vestidor-recamara-principal.webp",
-                "Assets/Propiedades/LosRobles/19-medio-bano-visitas.webp",
-                "Assets/Propiedades/LosRobles/20-recamara-secundaria.webp",
-                "Assets/Propiedades/LosRobles/21-recamara-secundaria-closet.webp",
-                "Assets/Propiedades/LosRobles/22-bano-completo-vanity-granito.webp",
-                "Assets/Propiedades/LosRobles/23-puerta-principal-parota-cerradura-digital.webp",
-                "Assets/Propiedades/LosRobles/24-bano-completo-cancel-templado.webp"
+                "/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+                "/Assets/Propiedades/LosRobles/02-sala-comedor-doble-altura.webp",
+                "/Assets/Propiedades/LosRobles/03-cocina-integral-parota-granito.webp",
+                "/Assets/Propiedades/LosRobles/04-recamara-principal-vista.webp",
+                "/Assets/Propiedades/LosRobles/05-jardin-terraza-posterior.webp",
+                "/Assets/Propiedades/LosRobles/06-fachada-angulo-jardin.webp",
+                "/Assets/Propiedades/LosRobles/07-jardin-posterior-verde.webp",
+                "/Assets/Propiedades/LosRobles/08-jardin-lateral-terraza.webp",
+                "/Assets/Propiedades/LosRobles/09-terraza-exterior.webp",
+                "/Assets/Propiedades/LosRobles/10-area-jardin-posterior.webp",
+                "/Assets/Propiedades/LosRobles/11-exterior-ventanal.webp",
+                "/Assets/Propiedades/LosRobles/12-sala-doble-altura-vertical.webp",
+                "/Assets/Propiedades/LosRobles/13-doble-altura-vista-montana.webp",
+                "/Assets/Propiedades/LosRobles/14-escalera-doble-altura.webp",
+                "/Assets/Propiedades/LosRobles/15-vista-aerea-sala-comedor.webp",
+                "/Assets/Propiedades/LosRobles/16-recamara-planta-baja.webp",
+                "/Assets/Propiedades/LosRobles/17-pasillo-distribuidor-planta-alta.webp",
+                "/Assets/Propiedades/LosRobles/18-vestidor-recamara-principal.webp",
+                "/Assets/Propiedades/LosRobles/19-medio-bano-visitas.webp",
+                "/Assets/Propiedades/LosRobles/20-recamara-secundaria.webp",
+                "/Assets/Propiedades/LosRobles/21-recamara-secundaria-closet.webp",
+                "/Assets/Propiedades/LosRobles/22-bano-completo-vanity-granito.webp",
+                "/Assets/Propiedades/LosRobles/23-puerta-principal-parota-cerradura-digital.webp",
+                "/Assets/Propiedades/LosRobles/24-bano-completo-cancel-templado.webp"
             ],
             amenidades: [
                 "Coto Privado Helechos",
@@ -67,6 +68,7 @@
         // 2. RESIDENCIA VALLE IMPERIAL (ZMG)
         {
             id: 2,
+            slug: "residencia-de-autor-valle-imperial",
             title: "Residencia de Autor - Valle Imperial",
             municipio: "Zapopan",
             zona: "Valle Imperial",
@@ -94,6 +96,7 @@
         // 3. LOFT BOUTIQUE (ZMG)
         {
             id: 3,
+            slug: "loft-boutique-providencia",
             title: "Loft Boutique - Providencia",
             municipio: "Guadalajara",
             zona: "Providencia",
@@ -120,6 +123,7 @@
         // 4. TERRENO PLAYA (YUCATÁN)
         {
             id: 4,
+            slug: "lote-residencial-sunset-telchac",
             title: "Lote Residencial Sunset - Telchac",
             municipio: "Telchac",
             zona: "Telchac Puerto",

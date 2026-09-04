@@ -1535,7 +1535,7 @@
 
             filtered.forEach(item => {
                 const card = document.createElement('a');
-                card.href = `propiedad.html?id=${item.id}`;
+                card.href = `propiedad.html?id=${item.id}${item.slug ? `&nombre=${item.slug}` : ''}`;
                 card.className = "collection-card";
 
                 // Guardar filtros y scroll al hacer clic
