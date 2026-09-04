@@ -18,7 +18,7 @@
             estacionamientos: 3,
             terreno: 246,
             construccion: 250,
-            condicion: "Listo para habitar",
+            condicion: "Residencial Usado",
             isPlaya: false,
             descripcion: "Hermosa y amplia residencia en renta dentro del exclusivo Coto Helechos en Los Robles Residencial, Zapopan. Cuenta con acceso controlado y seguridad 24/7 con cuota de mantenimiento incluida. Diseñada con acabados de autor, ofrece sala y comedor con impresionante doble altura, candiles, lámparas y sistema inteligente de iluminación regulable. Cocina integral con madera de parota y encimeras de granito equipada con estufa con horno y campana. Destaca por contar con una habitación en planta baja con baño completo, vestidor y aire acondicionado, además de medio baño para visitas. Equipada con paneles solares para un ahorro sustancial en consumo eléctrico. En planta alta dispone de dos habitaciones con baño completo y vestidor cada una, aire acondicionado en recámara principal y ventiladores de techo. Cochera para 3 autos, jardín privado, bodega y cuarto de servicio en un entorno natural privilegiado.",
             image: "/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
