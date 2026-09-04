@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|JessicaMendoza)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama)/'",
   "functions": {
     "api/**/*.py": {
       "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}"
@@ -257,6 +257,56 @@
         }
       ],
       "dest": "/projects/GrupoGari/web/index.html"
+    },
+    {
+      "src": "/(assets)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+        }
+      ],
+      "dest": "/projects/Letrerama/web/assets/$2"
+    },
+    {
+      "src": "/llms.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+        }
+      ],
+      "dest": "/projects/Letrerama/web/llms.txt"
+    },
+    {
+      "src": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+        }
+      ],
+      "dest": "/projects/Letrerama/web/robots.txt"
+    },
+    {
+      "src": "/(index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+        }
+      ],
+      "dest": "/projects/Letrerama/web/index.html"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+        }
+      ],
+      "dest": "/projects/Letrerama/web/index.html"
     },
     {
       "src": "/amdi",

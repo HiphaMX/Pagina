@@ -110,6 +110,14 @@ class Settings(BaseSettings):
     JESSICAMENDOZA_EMAILS_FROM_EMAIL: str = ""
     JESSICAMENDOZA_EMAILS_FROM_NAME: str = ""
     JESSICAMENDOZA_RECAPTCHA_SECRET_KEY: str = ""
+
+    # LETRERAMA Specific SMTP settings (Pendiente de credenciales)
+    LETRERAMA_SMTP_HOST: str = ""
+    LETRERAMA_SMTP_PORT: Union[int, str] = 587
+    LETRERAMA_SMTP_USER: str = ""
+    LETRERAMA_SMTP_PASSWORD: str = ""
+    LETRERAMA_EMAILS_FROM_EMAIL: str = ""
+    LETRERAMA_EMAILS_FROM_NAME: str = ""
     LETRERAMA_RECAPTCHA_SECRET_KEY: str = ""
 
     GOOGLE_PLACES_API_KEY: str = ""

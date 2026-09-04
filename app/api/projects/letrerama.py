@@ -4,6 +4,10 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from app.core.config import settings
 from app.core.security import verify_recaptcha
+from app.core.mailer import (
+    send_letrerama_quote_confirmation_customer,
+    send_letrerama_quote_notification_team
+)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -49,5 +53,13 @@ async def submit_letrerama_quote(form_data: LetreramaQuoteForm):
     logger.info(f"[Letrerama Backend] Cotización recibida de: {form_data.nombre} ({form_data.email})")
     logger.info(f"  Proyecto: {form_data.tecnica} | Medidas: {form_data.medida_ancho}x{form_data.medida_alto} cm")
     
+    # Enviar correos de confirmación al cliente y notificación al equipo
+    customer_email_sent = await send_letrerama_quote_confirmation_customer(form_data)
+    team_email_sent = await send_letrerama_quote_notification_team(form_data)
+
+    if not customer_email_sent and not team_email_sent:
+        logger.error(f"Fallo crítico al despachar correos de cotización para {form_data.email}")
+        raise HTTPException(status_code=500, detail="Error al enviar correos de confirmación")
+
     return {"message": "Formulario recibido correctamente"}
 

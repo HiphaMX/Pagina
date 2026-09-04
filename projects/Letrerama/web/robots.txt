@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Motores de búsqueda en tiempo real de IA (GEO / RAG Search)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Bloqueo de scrapers de entrenamiento sin atribución
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+# Documentación de Web Agéntica y Sitemap
+# llms-txt: https://letrerama.mx/llms.txt

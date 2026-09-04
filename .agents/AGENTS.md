@@ -15,11 +15,11 @@
     - Se publican bajo el dominio de la agencia como subcarpetas (`hipha.mx/IEER`, `hipha.mx/Letrerama`, etc.).
     - Las URLs limpias y reescrituras se manejan en `vercel.json` enlazando a `projects/[Nombre]/web/`.
     - **Regla de Correos**: No requieren ni deben tener variables SMTP dedicadas. Utilizan automáticamente el fallback del servidor SMTP general de la agencia (`HIPHA`).
-    - *Prospectos Activos*: Centro Escolar El Paraiso (`el-paraiso`), IEER (`ieer`), Pumpapa (`pumpapa`), ni2 (`ni2`), Letrerama (`letrerama`).
+    - *Prospectos Activos*: Centro Escolar El Paraiso (`el-paraiso`), IEER (`ieer`), Pumpapa (`pumpapa`), ni2 (`ni2`).
   - **Clientes (Proyectos en Firme)**:
     - Son proyectos aprobados que ya trabajan activamente con la agencia.
     - Se despliegan en su propio dominio o subdominio en Vercel mediante reglas específicas de `host` en `vercel.json` (ej. `urologia-avanzada.com.mx`).
     - **Regla de Correos**: Es obligatorio definir sus credenciales SMTP dedicadas en el esquema de Pydantic (`app/core/config.py`) y en el panel de Vercel. Si están pendientes de entrega de credenciales, heredan temporalmente el fallback al SMTP de la agencia (`HIPHA`).
-    - *Clientes Activos*: uro-oncology, urologia-avanzada, el chile chillón, white clean, Valencia servicios, Botica silvestre, HealthyIce, Jessica Mendoza, Grupo Gari.
+    - *Clientes Activos*: uro-oncology, urologia-avanzada, el chile chillón, white clean, Valencia servicios, Botica silvestre, HealthyIce, Jessica Mendoza, Grupo Gari, Letrerama.
     - **Regla de Web Agéntica y GEO (llms.txt)**: Es un estándar obligatorio para todos los clientes activos implementar un archivo `/llms.txt` en Markdown en la raíz del sitio web de producción. Este archivo debe servir como un índice semántico para que los agentes de IA (ChatGPT, Gemini, Perplexity) consuman y citen el contenido de valor (blog) y los servicios del cliente de forma rápida. Opcionalmente, se deben definir reglas híbridas en `robots.txt` para bloquear el entrenamiento de modelos (`GPTBot`, `ClaudeBot`, `Google-Extended`) pero permitir buscadores en tiempo real (`OAI-SearchBot`, `PerplexityBot`).
 

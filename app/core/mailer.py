@@ -2548,6 +2548,225 @@ async def send_chilechillon_order_team(payer_name: str, payer_email: str, payer_
         return False
 
 
+async def send_letrerama_quote_confirmation_customer(form_data):
+    letrerama_configured = bool(settings.LETRERAMA_SMTP_HOST and settings.LETRERAMA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not letrerama_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de confirmación Letrerama para {form_data.email}")
+        return True
+
+    from_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "contacto@letrerama.mx"
+    from_name = settings.LETRERAMA_EMAILS_FROM_NAME if settings.LETRERAMA_EMAILS_FROM_NAME else "Letrerama | Anuncios Luminosos"
+
+    canto_str = f"{form_data.medida_canto} cm" if form_data.medida_canto else "Estándar"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"></head>
+    <body style="margin: 0; padding: 30px 15px; background-color: #05070a; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #cbd5e1;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #0b0f17; border-radius: 16px; border: 1px solid rgba(51, 241, 255, 0.2); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+            <tr>
+                <td style="padding: 35px 30px; text-align: center; background: radial-gradient(circle at top, rgba(51, 241, 255, 0.15), transparent 70%); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div style="display: inline-block; font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-transform: uppercase;">
+                        LETRE<span style="color: #33f1ff;">RAMA</span>
+                    </div>
+                    <p style="margin: 8px 0 0 0; font-size: 13px; color: #94a3b8; letter-spacing: 1px; text-transform: uppercase;">Taller Especializado en Letras Corpóreas & Iluminación LED</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 35px 30px;">
+                    <h1 style="margin: 0 0 16px 0; font-size: 22px; color: #ffffff; font-weight: 700;">¡Recibimos tu solicitud, {form_data.nombre}!</h1>
+                    <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #94a3b8;">
+                        Nuestro equipo técnico y de diseño industrial ya está revisando los parámetros y especificaciones de tu proyecto para preparar tu cotización formal con render previo.
+                    </p>
+                    
+                    <div style="background-color: #06090e; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); padding: 20px; margin-bottom: 25px;">
+                        <h3 style="margin: 0 0 15px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #33f1ff;">Resumen de tu Configuración</h3>
+                        <table width="100%" cellpadding="6" cellspacing="0" style="font-size: 14px;">
+                            <tr>
+                                <td style="color: #64748b; width: 45%;">Técnica:</td>
+                                <td style="color: #ffffff; font-weight: 600;">{form_data.tecnica}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Dimensiones:</td>
+                                <td style="color: #91fc06; font-weight: 600;">{form_data.medida_ancho} x {form_data.medida_alto} cm</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Canto / Profundidad:</td>
+                                <td style="color: #ffffff;">{canto_str}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Material Principal:</td>
+                                <td style="color: #ffffff;">{form_data.material}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Iluminación:</td>
+                                <td style="color: #33f1ff;">{form_data.iluminacion}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Altura Instalación:</td>
+                                <td style="color: #ffffff;">{form_data.altura_instalacion} m</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #64748b;">Ubicación:</td>
+                                <td style="color: #ffffff;">{form_data.direccion_instalacion}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p style="margin: 0 0 20px 0; font-size: 14px; line-height: 1.6; color: #94a3b8;">
+                        Nos comunicaremos contigo a la brevedad vía correo o WhatsApp para validar detalles arquitectónicos o el archivo de tus vectores.
+                    </p>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <a href="https://instagram.com/letrerama" style="display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #33f1ff, #00b4d8); color: #05070a; font-size: 13px; font-weight: 700; text-decoration: none; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px;">
+                            Ver Proyectos en Instagram
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #070a10; padding: 20px; text-align: center; font-size: 12px; color: #475569; border-top: 1px solid rgba(255,255,255,0.04);">
+                    &copy; 2026 Letrerama. Todos los derechos reservados.
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="LETRERAMA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject="⚡ Recibimos tu solicitud de cotización — Letrerama",
+        html_content=html_content,
+        domain="letrerama.mx"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar confirmación de cotización al cliente Letrerama: {str(e)}")
+        return False
 
 
+async def send_letrerama_quote_notification_team(form_data):
+    letrerama_configured = bool(settings.LETRERAMA_SMTP_HOST and settings.LETRERAMA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
 
+    if not letrerama_configured and not global_configured:
+        logger.warning(f"SMTP no configurado. Simulando envío de notificación de cotización Letrerama al equipo")
+        return True
+
+    from_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "contacto@letrerama.mx"
+    to_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else (settings.EMAILS_FROM_EMAIL or "contacto@letrerama.mx")
+
+    canto_str = f"{form_data.medida_canto} cm" if form_data.medida_canto else "Estándar"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; padding: 25px;">
+        <div style="max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="border-bottom: 2px solid #33f1ff; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="color: #0f172a; margin: 0 0 5px 0;">⚡ Nueva Cotización Solicitada en Web</h2>
+                <p style="margin: 0; color: #64748b; font-size: 14px;">Letrerama — Lead de Alta Intención</p>
+            </div>
+
+            <h3 style="color: #0284c7; font-size: 15px; margin-bottom: 10px;">👤 Datos del Contacto</h3>
+            <table width="100%" cellpadding="6" cellspacing="0" style="font-size: 14px; margin-bottom: 20px; background-color: #f8fafc; border-radius: 8px;">
+                <tr>
+                    <td style="color: #64748b; width: 35%;"><strong>Nombre:</strong></td>
+                    <td style="color: #0f172a;">{form_data.nombre}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Email:</strong></td>
+                    <td style="color: #0284c7;"><a href="mailto:{form_data.email}">{form_data.email}</a></td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Teléfono / WhatsApp:</strong></td>
+                    <td style="color: #0f172a;">{form_data.telefono or 'No proporcionado'}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Empresa / Marca:</strong></td>
+                    <td style="color: #0f172a;">{form_data.empresa or 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>¿Cuenta con vector?:</strong></td>
+                    <td style="color: #0f172a; font-weight: bold;">{form_data.tiene_vector}</td>
+                </tr>
+            </table>
+
+            <h3 style="color: #0284c7; font-size: 15px; margin-bottom: 10px;">📐 Parámetros Técnicos del Letrero</h3>
+            <table width="100%" cellpadding="6" cellspacing="0" style="font-size: 14px; margin-bottom: 20px; background-color: #f8fafc; border-radius: 8px;">
+                <tr>
+                    <td style="color: #64748b; width: 35%;"><strong>Técnica:</strong></td>
+                    <td style="color: #0f172a; font-weight: bold;">{form_data.tecnica}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Medidas (Ancho x Alto):</strong></td>
+                    <td style="color: #0f172a; font-weight: bold;">{form_data.medida_ancho} x {form_data.medida_alto} cm</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Canto / Espesor:</strong></td>
+                    <td style="color: #0f172a;">{canto_str}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Material Principal:</strong></td>
+                    <td style="color: #0f172a;">{form_data.material}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Sistema de Iluminación:</strong></td>
+                    <td style="color: #0f172a;">{form_data.iluminacion}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Altura de Montaje:</strong></td>
+                    <td style="color: #0f172a;">{form_data.altura_instalacion} metros</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Dirección / Ciudad:</strong></td>
+                    <td style="color: #0f172a;">{form_data.direccion_instalacion}</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="LETRERAMA",
+        from_name="Letrerama Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"⚡ NUEVA COTIZACIÓN: {form_data.nombre} - {form_data.tecnica} ({form_data.medida_ancho}x{form_data.medida_alto} cm)",
+        html_content=html_content,
+        domain="letrerama.mx"
+    )
+
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
+
+    # Adjuntar archivo de logotipo si fue enviado en base64
+    if form_data.logo_base64:
+        try:
+            raw_b64 = form_data.logo_base64
+            if "," in raw_b64:
+                raw_b64 = raw_b64.split(",", 1)[1]
+            file_bytes = base64.b64decode(raw_b64)
+            filename = form_data.logo_filename or "logotipo_cliente"
+            message.add_attachment(file_bytes, maintype="application", subtype="octet-stream", filename=filename)
+        except Exception as att_err:
+            logger.warning(f"No se pudo adjuntar el logo en la notificación de Letrerama: {att_err}")
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo de cotización al equipo Letrerama: {str(e)}")
+        return False

@@ -1,0 +1,48 @@
+# Letrerama — Taller Especializado en Letras Corpóreas & Anuncios Luminosos
+> Letrerama es un taller industrial mexicano líder en diseño, manufactura y montaje de anuncios luminosos, letras 3D corpóreas de alta gama, cajas de luz y sistemas de iluminación arquitectónica LED para marcas, corporativos y retail.
+
+## Información de la Empresa
+- **Sitio Web Oficial:** [letrerama.mx](https://letrerama.mx)
+- **Instagram Oficial:** [@letrerama](https://instagram.com/letrerama)
+- **Cotizador Digital Interactivo:** [Cotizar Anuncio Luminoso](https://letrerama.mx/#cotizador)
+- **Simulador de Materiales:** [Explorador de Técnicas](https://letrerama.mx/#materiales)
+- **Despiece Técnico de Taller:** [Manual de Ensamble de Letra Corpórea](https://letrerama.mx/#despiece)
+
+---
+
+## Catálogo de Técnicas y Soluciones de Fabricación
+
+### 1. Letras Corpóreas 3D (Canal Letters)
+Letras volumétricas tridimensionales con acabados de precisión mediante maquinaria CNC y fibra óptica láser.
+- **Materiales Frontales:** Acrílico óptico Cast de 4.0 mm de espesor, con filtro UV anti-amarilleamiento y alta dispersión fotónica.
+- **Cantos y Perfilería:** Aluminio rolado mecanizado CNC de 80 mm a 120 mm de profundidad, laqueado electrostático al horno en color blanco reflectante interior para maximizar la emisión lumínica.
+- **Moldura:** Trim-Cap CAB termoformado de 1 pulgada con junta elastomérica vulcanizada EPDM para sellado hermético IP67 contra lluvia y polvo.
+- **Iluminación:** Módulos LED Epistar SMD 2835 de alta eficiencia con lentes ópticos tipo Batwing de 170° de apertura angular, eliminando sombras internas o puntos calientes ("hotspots").
+
+### 2. Cajas de Luz Arquitectónicas (Lightboxes)
+Estructuras tubulares de aluminio con frentes de acrílico translúcido o lona backlite tensada, iluminadas de forma homogénea para fachadas de alto impacto y señalización comercial perimetral.
+
+### 3. Neón LED Flexible de Segunda Generación
+Tubos de silicón extruido con tiras LED SMD ultra-densas que replican la estética del vidrio de neón tradicional sin fragilidad, con un 70% de ahorro energético y operación a 12V de bajo voltaje para interiores de oficinas, restaurantes y eventos.
+
+### 4. Placas Corporativas y Señalética de Edificio
+Placas grabadas y caladas en acero inoxidable cepillado, latón o aluminio anodizado con anclajes flotantes ocultos de acero inoxidable para recepciones y vestíbulos empresariales.
+
+---
+
+## Especificaciones de Ensamble y Estándar de Taller (Blueprint)
+Cada elemento fabricado por Letrerama cumple rigurosas normas de resistencia ambiental para intemperie:
+1. **Cara Difusora:** Polímero acrílico Cast grado óptico con bisel perimetral y destello especular.
+2. **Junta Hermética:** Sellado perimetral contra condensación y humedad con gomas EPDM.
+3. **Cuerpo Metálico:** Cantos con costuras y cordones de soldadura micro-TIG para máxima rigidez estructural ante ráfagas de viento.
+4. **Circuitería LED:** Fuentes de poder certificadas IP67 con supresión de picos de voltaje y cableado automotriz estanco.
+5. **Chasis ACM:** Respaldo de panel de aluminio compuesto (ACM) con perforaciones de drenaje inferior para prevenir acumulación de rocío o agua de lluvia.
+
+---
+
+## Cotización y Asesoría Técnica
+- **Herramienta Web:** El usuario puede especificar técnica, medidas milimétricas (ancho, alto, canto), material, tipo de iluminación (Frontlit, Backlit/Halo, Sin Luz) y subir su archivo vectorial (.AI, .EPS, .SVG, .PDF) para recibir una propuesta técnico-económica y render tridimensional sin costo.
+- **Cobertura:** Fabricación centralizada en taller propio con capacidad de instalación en sitio y envíos protegidos a nivel nacional.
+
+---
+*Última actualización: Septiembre 2026*
