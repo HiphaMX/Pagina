@@ -20,7 +20,7 @@ const salsasData = {
     accentClass: "text-[#D30611]",
     glowColor: "rgba(211, 6, 17, 0.4)",
     radialGlow: "radial-gradient(circle, #D30611 0%, rgba(211, 6, 17, 0) 70%)",
-    description: "Un picor alegre y herbal, ideal para potenciar el sabor de tus snacks, botanas y comidas cotidianas de forma fácil y sin complicaciones. Combina la frescura del cilantro con el calor del jalapeño artesanal.",
+    description: "Un picor alegre y herbal, ideal para potenciar el sabor de tus snacks, botanas y comidas cotidianas de forma fácil y sin complicaciones. Combina la frescura del cilantro con el calor del jalapeño fresco.",
     ingredients: "Jalapeños premium seleccionados, cilantro criollo fresco, ajo de rancho asado, sal de grano y un toque de limón.",
     chillido: "Nivel Alegre 🌶️",
     badgeColor: "bg-[#D30611]/10 text-[#D30611] border-[#D30611]/20",
@@ -1233,7 +1233,7 @@ function initTestimonios() {
       initials: "CO",
       tag: "Cliente Google",
       stars: 5,
-      text: "Sabor artesanal garantizado. Llevo comprándolas desde hace meses y la consistencia siempre es la misma. Un producto de calidad impecable."
+      text: "Sabor tradicional garantizado. Llevo comprándolas desde hace meses y la consistencia siempre es la misma. Un producto de calidad impecable."
     },
     {
       name: "Laura Guzmán",
