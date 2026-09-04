@@ -19,4 +19,5 @@ User-agent: Google-Extended
 Disallow: /
 
 # Documentación de Web Agéntica y Sitemap
-# llms-txt: https://letrerama.mx/llms.txt
+# llms-txt: https://www.letrerama.com/llms.txt
+Sitemap: https://www.letrerama.com/sitemap.xml

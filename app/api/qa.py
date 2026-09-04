@@ -20,7 +20,7 @@ async def validate_smtp_alignment():
         {"prefix": "VALENCIA", "domain": "valenciaservicios.com", "name": "Valencia Servicios"},
         {"prefix": "BOTICA", "domain": "boticasilvestre.com", "name": "Botica Silvestre"},
         {"prefix": "HEALTHYICE", "domain": "healthyice.mx", "name": "HealthyIce"},
-        {"prefix": "LETRERAMA", "domain": "letrerama.mx", "name": "Letrerama"},
+        {"prefix": "LETRERAMA", "domain": "letrerama.com", "name": "Letrerama"},
     ]
 
     report: List[Dict[str, Any]] = []

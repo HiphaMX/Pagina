@@ -263,7 +263,7 @@
       "has": [
         {
           "type": "host",
-          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+          "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
       "dest": "/projects/Letrerama/web/assets/$2"
@@ -273,7 +273,7 @@
       "has": [
         {
           "type": "host",
-          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+          "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
       "dest": "/projects/Letrerama/web/llms.txt"
@@ -283,7 +283,7 @@
       "has": [
         {
           "type": "host",
-          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+          "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
       "dest": "/projects/Letrerama/web/robots.txt"
@@ -293,7 +293,7 @@
       "has": [
         {
           "type": "host",
-          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+          "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
       "dest": "/projects/Letrerama/web/index.html"
@@ -303,7 +303,7 @@
       "has": [
         {
           "type": "host",
-          "value": "^(www\\.)?letrerama\\.(mx|com\\.mx|com)$"
+          "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
       "dest": "/projects/Letrerama/web/index.html"
