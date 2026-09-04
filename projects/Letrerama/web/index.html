@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Letrerama — Ingeniería de Corte & Estructuras Luminosas 3D</title>
 
-<!-- Google Fonts -->
+<!-- Google Fonts & Resource Hints -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -1865,6 +1867,8 @@
     position: relative;
     z-index: 10;
     scroll-margin-top: 7.5rem;
+    content-visibility: auto;
+    contain-intrinsic-size: auto none auto 800px;
   }
 
   .projects-header {
@@ -2130,6 +2134,8 @@
     position: relative;
     z-index: 10;
     scroll-margin-top: 7.5rem;
+    content-visibility: auto;
+    contain-intrinsic-size: auto none auto 600px;
   }
 
   .quote-layout-grid {
@@ -4236,7 +4242,7 @@
           <div class="mat-screen-frame">
             <div class="mat-scanline"></div>
             <div class="mat-noise-flash" id="matNoiseFlash"></div>
-            <img src="assets/mat_acrilico.jpg" alt="Visualizador de Materiales Letrerama" class="mat-screen-img" id="matScreenImg">
+            <img src="assets/mat_acrilico.webp" alt="Visualizador de Materiales Letrerama" class="mat-screen-img" id="matScreenImg" width="1376" height="768" fetchpriority="high" decoding="async">
           </div>
         </div>
         
@@ -4248,7 +4254,7 @@
       <div class="mat-chips-container">
         <!-- BADGE 1: Acrílico -->
         <div class="mat-constellation-item cell-tl float-ast-1 active"
-             data-img="assets/mat_acrilico.jpg" 
+             data-img="assets/mat_acrilico.webp" 
              data-uso="Ideal para logos 3D con luz trasera elegante."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4258,7 +4264,7 @@
         
         <!-- BADGE 2: Aluminio Compuesto -->
         <div class="mat-constellation-item cell-tc float-ast-2"
-             data-img="assets/mat_aluminio.jpg" 
+             data-img="assets/mat_aluminio.webp" 
              data-uso="Ideal para anuncios grandes en fachadas de negocios."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4268,7 +4274,7 @@
         
         <!-- BADGE 3: Innovadores Materiales -->
         <div class="mat-constellation-item cell-tr float-ast-3"
-             data-img="assets/mat_polimero.jpg" 
+             data-img="assets/mat_polimero.webp" 
              data-uso="Ideal para decorar fachadas con texturas modernas."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4278,7 +4284,7 @@
         
         <!-- BADGE 4: Neón Flex LED -->
         <div class="mat-constellation-item cell-ml float-ast-4"
-             data-img="assets/mat_neon.jpg" 
+             data-img="assets/mat_neon.webp" 
              data-uso="Ideal para letreros de luz neón en cuartos y oficinas."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4288,7 +4294,7 @@
         
         <!-- BADGE 5: Rotulación en Vinil -->
         <div class="mat-constellation-item cell-mr float-ast-5"
-             data-img="assets/mat_vinil.jpg" 
+             data-img="assets/mat_vinil.webp" 
              data-uso="Ideal para rotular camionetas y vidrios comerciales."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4298,7 +4304,7 @@
         
         <!-- BADGE 6: Grabado Láser -->
         <div class="mat-constellation-item cell-bl float-ast-6"
-             data-img="assets/mat_grabado.jpg" 
+             data-img="assets/mat_grabado.webp" 
              data-uso="Ideal para hacer placas de oficina y reconocimientos."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4308,7 +4314,7 @@
         
         <!-- BADGE 7: Vinil Textil -->
         <div class="mat-constellation-item cell-bc float-ast-7"
-             data-img="assets/mat_textil.jpg" 
+             data-img="assets/mat_textil.webp" 
              data-uso="Ideal para estampar tu logo en uniformes y gorras."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4318,7 +4324,7 @@
         
         <!-- BADGE 8: Impresión DTF -->
         <div class="mat-constellation-item cell-br float-ast-8"
-             data-img="assets/mat_dtf.jpg" 
+             data-img="assets/mat_dtf.webp" 
              data-uso="Ideal para estampar playeras a color desde una pieza."
              onmouseenter="selectMaterial(this)"
              onclick="selectMaterial(this)">
@@ -4355,7 +4361,7 @@
     <!-- 01: Boutique Letrerama -->
     <article class="project-card" data-category="fachadas 3d">
       <div class="project-card-media" onclick="openProjectGallery('01')">
-        <img src="assets/gallery_storefront.jpg" alt="Fachada Comercial Boutique Letrerama" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_storefront.webp" alt="Fachada Comercial Boutique Letrerama" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Fachada & 3D</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4379,7 +4385,7 @@
     <!-- 02: Oficina Corporativa -->
     <article class="project-card" data-category="neon">
       <div class="project-card-media" onclick="openProjectGallery('02')">
-        <img src="assets/gallery_office_neon.jpg" alt="Letrero Neon de Oficina Letrerama" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_office_neon.webp" alt="Letrero Neon de Oficina Letrerama" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Neón Flex</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4403,7 +4409,7 @@
     <!-- 03: Letras de Acrílico & Oro -->
     <article class="project-card" data-category="3d">
       <div class="project-card-media" onclick="openProjectGallery('03')">
-        <img src="assets/gallery_gold_backlit.jpg" alt="Letras Volumétricas Retroiluminadas Oro" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_gold_backlit.webp" alt="Letras Volumétricas Retroiluminadas Oro" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Letras 3D Oro</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4427,7 +4433,7 @@
     <!-- 04: Corporativo DIMMO -->
     <article class="project-card" data-category="3d fachadas">
       <div class="project-card-media" onclick="openProjectGallery('04')">
-        <img src="assets/gallery_dimmo.jpg" alt="Letrero Corpóreo Luminoso DIMMO" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_dimmo.webp" alt="Letrero Corpóreo Luminoso DIMMO" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Volumétrico Exterior</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4451,7 +4457,7 @@
     <!-- 05: Cafetería San Duo -->
     <article class="project-card" data-category="cajas">
       <div class="project-card-media" onclick="openProjectGallery('05')">
-        <img src="assets/gallery_sanduo.jpg" alt="Caja de Luz Redonda San Duo" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_sanduo.webp" alt="Caja de Luz Redonda San Duo" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Caja de Luz</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4475,7 +4481,7 @@
     <!-- 06: Showroom Easy Living -->
     <article class="project-card" data-category="3d">
       <div class="project-card-media" onclick="openProjectGallery('06')">
-        <img src="assets/gallery_easyliving.jpg" alt="Letras 3D Backlit easyliving" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_easyliving.webp" alt="Letras 3D Backlit easyliving" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Letras 3D Backlit</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4499,7 +4505,7 @@
     <!-- 07: Neon Good Things -->
     <article class="project-card" data-category="neon">
       <div class="project-card-media" onclick="openProjectGallery('07')">
-        <img src="assets/gallery_neon_grow.jpg" alt="Letrero Neon Flex Good Things Grow Here" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_neon_grow.webp" alt="Letrero Neon Flex Good Things Grow Here" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Neón Flex</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -4523,7 +4529,7 @@
     <!-- 08: Premios Padel Lion -->
     <article class="project-card" data-category="grabado">
       <div class="project-card-media" onclick="openProjectGallery('08')">
-        <img src="assets/gallery_trophies.jpg" alt="Trofeos Grabados Letrerama Padel Lion" class="project-card-img" loading="lazy">
+        <img src="assets/gallery_trophies.webp" alt="Trofeos Grabados Letrerama Padel Lion" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
         <span class="project-card-badge">Grabado Láser CNC</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
@@ -5529,88 +5535,88 @@
       title: "Boutique Letrerama",
       desc: "Fachada comercial premium con revestimiento metálico, letras 3D retroiluminadas y cajas de luz caladas.",
       images: [
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_gold_backlit.jpg",
-        "assets/gallery_office_neon.jpg",
-        "assets/gallery_dimmo.jpg",
-        "assets/gallery_sanduo.jpg"
+        "assets/gallery_storefront.webp",
+        "assets/gallery_gold_backlit.webp",
+        "assets/gallery_office_neon.webp",
+        "assets/gallery_dimmo.webp",
+        "assets/gallery_sanduo.webp"
       ]
     },
     "02": {
       title: "Oficina Letrerama",
       desc: "Diseño e instalación de letrero de neón flex personalizado para recepción e interior corporativo.",
       images: [
-        "assets/gallery_office_neon.jpg",
-        "assets/gallery_neon_grow.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_easyliving.jpg",
-        "assets/gallery_trophies.jpg"
+        "assets/gallery_office_neon.webp",
+        "assets/gallery_neon_grow.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_easyliving.webp",
+        "assets/gallery_trophies.webp"
       ]
     },
     "03": {
       title: "Letras de Acrílico & Oro",
       desc: "Letras volumétricas retroiluminadas doradas de acero inoxidable cepillado con difusor de acrílico.",
       images: [
-        "assets/gallery_gold_backlit.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_easyliving.jpg",
-        "assets/gallery_dimmo.jpg",
-        "assets/gallery_office_neon.jpg"
+        "assets/gallery_gold_backlit.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_easyliving.webp",
+        "assets/gallery_dimmo.webp",
+        "assets/gallery_office_neon.webp"
       ]
     },
     "04": {
       title: "Corporativo DIMMO",
       desc: "Letrero corpóreo exterior de aluminio pintado de gran formato con iluminación led de alta eficiencia.",
       images: [
-        "assets/gallery_dimmo.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_sanduo.jpg",
-        "assets/gallery_gold_backlit.jpg",
-        "assets/gallery_easyliving.jpg"
+        "assets/gallery_dimmo.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_sanduo.webp",
+        "assets/gallery_gold_backlit.webp",
+        "assets/gallery_easyliving.webp"
       ]
     },
     "05": {
       title: "Cafetería San Duo",
       desc: "Caja de luz calada circular de doble vista para exterior con iluminación led cálida.",
       images: [
-        "assets/gallery_sanduo.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_dimmo.jpg",
-        "assets/gallery_office_neon.jpg",
-        "assets/gallery_neon_grow.jpg"
+        "assets/gallery_sanduo.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_dimmo.webp",
+        "assets/gallery_office_neon.webp",
+        "assets/gallery_neon_grow.webp"
       ]
     },
     "06": {
       title: "Showroom Easy Living",
       desc: "Letrero corpóreo 3D de aluminio cepillado retroiluminado indirecto led de 3500K.",
       images: [
-        "assets/gallery_easyliving.jpg",
-        "assets/gallery_gold_backlit.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_office_neon.jpg",
-        "assets/gallery_dimmo.jpg"
+        "assets/gallery_easyliving.webp",
+        "assets/gallery_gold_backlit.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_office_neon.webp",
+        "assets/gallery_dimmo.webp"
       ]
     },
     "07": {
       title: "Neon Good Things",
       desc: "Letrero de neón flex decorativo 'Good Things Grow Here' montado sobre acrílico transparente.",
       images: [
-        "assets/gallery_neon_grow.jpg",
-        "assets/gallery_office_neon.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_easyliving.jpg",
-        "assets/gallery_sanduo.jpg"
+        "assets/gallery_neon_grow.webp",
+        "assets/gallery_office_neon.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_easyliving.webp",
+        "assets/gallery_sanduo.webp"
       ]
     },
     "08": {
       title: "Premios Padel Lion",
       desc: "Trofeos y placas de acrílico cristal de alta precisión grabadas en láser CNC con cantos pulidos.",
       images: [
-        "assets/gallery_trophies.jpg",
-        "assets/gallery_gold_backlit.jpg",
-        "assets/gallery_storefront.jpg",
-        "assets/gallery_dimmo.jpg",
-        "assets/gallery_office_neon.jpg"
+        "assets/gallery_trophies.webp",
+        "assets/gallery_gold_backlit.webp",
+        "assets/gallery_storefront.webp",
+        "assets/gallery_dimmo.webp",
+        "assets/gallery_office_neon.webp"
       ]
     }
   };
