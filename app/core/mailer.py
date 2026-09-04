@@ -2008,7 +2008,7 @@ async def send_jessica_mendoza_notification_team(form_data):
         return True
 
     from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "contacto@jessicamendozabienesraices.com"
-    to_email = settings.JESSICAMENDOZA_SMTP_USER if jessica_configured else (settings.SMTP_USER if settings.SMTP_USER else "contacto@jessicamendozabienesraices.com")
+    to_email = settings.JESSICAMENDOZA_SMTP_USER if jessica_configured else ("j.mendoza@hipha.mx" if not settings.SMTP_USER else f"j.mendoza@hipha.mx, {settings.SMTP_USER}")
 
     html_content = f"""
     <html>
@@ -2077,6 +2077,8 @@ async def send_jessica_mendoza_notification_team(form_data):
         html_content=html_content,
         domain="jessicamendozabienesraices.com"
     )
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)

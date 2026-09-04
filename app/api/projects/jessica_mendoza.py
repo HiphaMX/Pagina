@@ -29,16 +29,15 @@ async def submit_jessica_mendoza_form(form_data: JessicaMendozaForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for Jessica Mendoza (email: {form_data.email}).")
         return {"message": "Formulario recibido correctamente"}
 
-    # Validar reCAPTCHA v3 de forma estricta (no opcional)
-    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
-        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for Jessica Mendoza (email: {form_data.email}).")
-        return {"message": "Formulario recibido correctamente"}
-
-    secret_key = settings.JESSICAMENDOZA_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
-    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "JessicaMendoza")
-    if not is_human:
-        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for Jessica Mendoza (email: {form_data.email}).")
-        return {"message": "Formulario recibido correctamente"}
+    # Validar reCAPTCHA v3 si el token está presente
+    if form_data.recaptcha_token and form_data.recaptcha_token.strip():
+        secret_key = settings.JESSICAMENDOZA_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
+        is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "JessicaMendoza")
+        if not is_human:
+            logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for Jessica Mendoza (email: {form_data.email}).")
+            return {"message": "Formulario recibido correctamente"}
+    else:
+        logger.info(f"[SECURITY INFO] Missing reCAPTCHA token for Jessica Mendoza (email: {form_data.email}). Bypassed verification.")
 
     customer_email_sent = await send_jessica_mendoza_confirmation_email(form_data)
     team_email_sent = await send_jessica_mendoza_notification_team(form_data)
