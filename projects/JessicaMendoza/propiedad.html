@@ -1414,33 +1414,33 @@
                 linkBackCatalog.innerHTML = '<i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Volver al catálogo';
             }
 
-            // Actualizar título de la página
+// Actualizar título de la página
             document.title = `${currentProperty.title} | Jessica Mendoza Real Estate`;
 
             // Construir galería de imágenes al estilo Airbnb (Máximo 5 para el grid)
             let galleryHTML = '';
             const imgs = currentProperty.imagenes || [currentProperty.image];
             
-            // Limitamos a un máximo de 10 imágenes para todo el detalle (las cuales se verán completas en el modal)
-            const activeImages = imgs.slice(0, 10);
+            // Limitamos a un máximo de 25 imágenes para todo el detalle (las cuales se verán completas en el modal)
+            const activeImages = imgs.slice(0, 25);
 
             if (activeImages.length >= 5) {
                 galleryHTML = `
                     <div class="airbnb-gallery">
                         <div class="gallery-item large" onclick="openPhotoGallery(0)">
-                            <img src="${activeImages[0]}" alt="${currentProperty.title}">
+                            <img src="${activeImages[0]}" alt="${currentProperty.title}" fetchpriority="high">
                         </div>
                         <div class="gallery-item" onclick="openPhotoGallery(1)">
-                            <img src="${activeImages[1]}" alt="Interior 1">
+                            <img src="${activeImages[1]}" alt="Interior 1" loading="lazy">
                         </div>
                         <div class="gallery-item" onclick="openPhotoGallery(2)">
-                            <img src="${activeImages[2]}" alt="Interior 2">
+                            <img src="${activeImages[2]}" alt="Interior 2" loading="lazy">
                         </div>
                         <div class="gallery-item" onclick="openPhotoGallery(3)">
-                            <img src="${activeImages[3]}" alt="Interior 3">
+                            <img src="${activeImages[3]}" alt="Interior 3" loading="lazy">
                         </div>
                         <div class="gallery-item" onclick="openPhotoGallery(4)">
-                            <img src="${activeImages[4]}" alt="Interior 4">
+                            <img src="${activeImages[4]}" alt="Interior 4" loading="lazy">
                         </div>
                         <button class="btn-all-photos" onclick="openPhotoGallery(0)">
                             <i data-lucide="grid" style="width: 16px; height: 16px;"></i>
@@ -1453,7 +1453,7 @@
                 galleryHTML = `
                     <div class="airbnb-gallery" style="grid-template-columns: 1fr; grid-template-rows: 408px;">
                         <div class="gallery-item large" style="height: 408px;" onclick="openPhotoGallery(0)">
-                            <img src="${activeImages[0]}" alt="${currentProperty.title}">
+                            <img src="${activeImages[0]}" alt="${currentProperty.title}" fetchpriority="high">
                         </div>
                         ${activeImages.length > 1 ? `
                         <button class="btn-all-photos" onclick="openPhotoGallery(0)">
@@ -1471,17 +1471,18 @@
                 if (lower.includes('seguridad') || lower.includes('vigilancia')) return 'shield';
                 if (lower.includes('gimnasio') || lower.includes('gym')) return 'dumbbell';
                 if (lower.includes('jardín') || lower.includes('areas verdes')) return 'flower2';
-                if (lower.includes('estacionamiento') || lower.includes('cochera')) return 'car';
+                if (lower.includes('estacionamiento') || lower.includes('cochera') || lower.includes('autos')) return 'car';
                 if (lower.includes('aire') || lower.includes('clima')) return 'wind';
                 if (lower.includes('vista') || lower.includes('panorámica')) return 'eye';
                 if (lower.includes('elevador')) return 'arrow-up-down';
                 if (lower.includes('cine')) return 'clapperboard';
                 if (lower.includes('juegos') || lower.includes('club')) return 'smile';
                 if (lower.includes('golf')) return 'flag';
-                if (lower.includes('terraza')) return 'sun';
-                if (lower.includes('mascotas') || lower.includes('pet')) return 'dog';
-                if (lower.includes('marina') || lower.includes('mar') || lower.includes('lago')) return 'waves';
-                if (lower.includes('cocina')) return 'utensils';
+                if (lower.includes('solar') || lower.includes('paneles')) return 'sun';
+                if (lower.includes('pet') || lower.includes('mascota')) return 'paw-print';
+                if (lower.includes('cocina') || lower.includes('parota')) return 'utensils';
+                if (lower.includes('inteligente') || lower.includes('luz')) return 'sparkles';
+                if (lower.includes('bodega') || lower.includes('almacén')) return 'archive';
                 return 'check';
             };
 
@@ -1503,21 +1504,27 @@
                 `;
             }
 
-            // Metadatos de especificaciones (Metros, cuartos, baños)
-            // Ya que en la base de datos algunos campos son opcionales, los manejamos dinámicamente
+            // Metadatos de especificaciones (Metros, cuartos, baños, estacionamientos)
             let specsHTML = '';
             if (currentProperty.tipo !== 'Terreno') {
+                const banosTexto = currentProperty.banos ? `${currentProperty.banos} Baños` : `${currentProperty.habitaciones - 1 || 2} Baños`;
+                const m2Texto = currentProperty.construccion ? `${currentProperty.construccion} m² const.` : `${currentProperty.tipo === 'Casa' ? '280' : '140'} m² const.`;
+                const terrenoExtra = currentProperty.terreno ? `<span><i data-lucide="layers" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.terreno} m² terr.</span>` : '';
+                const cocherasExtra = currentProperty.estacionamientos ? `<span><i data-lucide="car" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.estacionamientos} Autos</span>` : '';
+
                 specsHTML = `
                     <div class="specs-bar">
                         <span><i data-lucide="bed" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.habitaciones} Habitaciones</span>
-                        <span><i data-lucide="bath" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.habitaciones - 1 || 2} Baños</span>
-                        <span><i data-lucide="maximize-2" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.tipo === 'Casa' ? '280' : '140'} m²</span>
+                        <span><i data-lucide="bath" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${banosTexto}</span>
+                        <span><i data-lucide="maximize-2" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${m2Texto}</span>
+                        ${terrenoExtra}
+                        ${cocherasExtra}
                     </div>
                 `;
             } else {
                 specsHTML = `
                     <div class="specs-bar">
-                        <span><i data-lucide="maximize-2" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> Terreno Regular</span>
+                        <span><i data-lucide="maximize-2" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.terreno ? currentProperty.terreno + ' m²' : 'Terreno Regular'}</span>
                         <span><i data-lucide="map-pin" style="width: 20px; height: 20px; stroke-width: 1.5;"></i> ${currentProperty.zona}</span>
                     </div>
                 `;
@@ -1569,13 +1576,20 @@
                     <!-- Columna Derecha (Tarjeta Sticky) -->
                     <div class="sticky-card-wrap reveal" style="transition-delay: 0.15s;">
                         <div class="contact-card">
-                            <div class="card-price-row" style="margin-bottom: 0;">
+                            <div class="card-price-row" style="margin-bottom: 0.75rem;">
                                 <div>
                                     <span class="card-price">${formatter.format(currentProperty.precio)}</span>
                                     <span class="card-price-type">${currentProperty.operacion === 'Renta' ? '/ mes' : ''}</span>
                                 </div>
                                 <span class="card-tag ${currentProperty.operacion.toLowerCase()}">${currentProperty.operacion}</span>
                             </div>
+                            ${currentProperty.mantenimiento ? `<div style="font-size: 0.85rem; color: #166534; background-color: #f0fdf4; padding: 0.4rem 0.75rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1.25rem; font-weight: 500;"><i data-lucide="check-circle-2" style="width: 15px; height: 15px;"></i> Cuota de mantenimiento incluida</div>` : ''}
+                            
+                            <a href="https://wa.me/523339564830?text=Hola%20Jessica,%20me%20interesa%20agendar%20cita%20o%20recibir%20más%20información%20de%20la%20propiedad:%20${encodeURIComponent(currentProperty.title)}" target="_blank" class="btn-whatsapp-primary" style="margin-top: 1rem;">
+                                <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
+                                Agendar Cita / Info
+                            </a>
+                            <p class="card-disclaimer">Atención personalizada y directa por Jessica Mendoza Real Estate.</p>
                         </div>
                     </div>
                 </div>
@@ -1585,7 +1599,7 @@
             modalPropertyTitle.innerText = currentProperty.title;
             modalGalleryImages.innerHTML = activeImages.map((img, index) => `
                 <div class="modal-img-container">
-                    <img src="${img}" alt="Fotografía ${index + 1} de ${currentProperty.title}">
+                    <img src="${img}" alt="Fotografía ${index + 1} de ${currentProperty.title}" loading="lazy">
                 </div>
             `).join('');
 

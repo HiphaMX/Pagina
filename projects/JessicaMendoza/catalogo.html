@@ -1725,7 +1725,7 @@
                     <div class="collection-info">
                         <div class="collection-info-header">
                             <h3 class="collection-card-title">${item.title}</h3>
-                            <span class="collection-card-price">${formatter.format(item.precio)}</span>
+                            <span class="collection-card-price">${formatter.format(item.precio)}${item.operacion === 'Renta' ? ' <small style="font-size: 0.75em; font-weight: normal; color: var(--color-text-muted);">/ mes</small>' : ''}</span>
                         </div>
                         <div class="collection-card-meta">
                             <span><i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> ${item.zona}</span>
