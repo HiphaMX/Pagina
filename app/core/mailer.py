@@ -2556,7 +2556,7 @@ async def send_letrerama_quote_confirmation_customer(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío de confirmación Letrerama para {form_data.email}")
         return True
 
-    from_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "contacto@letrerama.com"
+    from_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "carlos.ordaz@letrerama.com"
     from_name = settings.LETRERAMA_EMAILS_FROM_NAME if settings.LETRERAMA_EMAILS_FROM_NAME else "Letrerama | Anuncios Luminosos"
 
     canto_str = f"{form_data.medida_canto} cm" if form_data.medida_canto else "Estándar"
@@ -2663,8 +2663,8 @@ async def send_letrerama_quote_notification_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío de notificación de cotización Letrerama al equipo")
         return True
 
-    from_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "contacto@letrerama.com"
-    to_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else (settings.EMAILS_FROM_EMAIL or "contacto@letrerama.com")
+    from_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "carlos.ordaz@letrerama.com"
+    to_email = settings.LETRERAMA_EMAILS_FROM_EMAIL if settings.LETRERAMA_EMAILS_FROM_EMAIL else "carlos.ordaz@letrerama.com"
 
     canto_str = f"{form_data.medida_canto} cm" if form_data.medida_canto else "Estándar"
 
