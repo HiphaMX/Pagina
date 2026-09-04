@@ -1819,286 +1819,272 @@
     display: none;
   }
 
-  /* ─── DYNAMIC PORTFOLIO CINEMATIC SLIDER ─── */
-  .portfolio-slider-section {
-    max-width: 1300px;
+  /* ─── MODERN PROJECTS & PORTFOLIO SHOWCASE (100% RESPONSIVE & ZERO-OVERFLOW) ─── */
+  .projects-showcase-section {
+    width: 100%;
+    max-width: 1240px;
     margin: 6rem auto;
-    padding: 0 3.5rem;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+    overflow: hidden;
     position: relative;
     z-index: 10;
     scroll-margin-top: 7.5rem;
   }
 
-  .slider-layout-grid {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 2.5rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.03) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 28px;
-    padding: 2.5rem;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  .projects-header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 2.5rem;
   }
 
-  /* LEFT INFO PANEL */
-  .slider-info-panel {
+  .projects-filter-bar {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-right: 1rem;
-  }
-
-  .slider-index-wrapper {
-    display: flex;
-    align-items: baseline;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    margin-bottom: 2rem;
-  }
-
-  .slider-index-wrapper .current-index {
-    font-size: 2.2rem;
-    color: var(--text-primary);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 900;
-    line-height: 1;
-  }
-
-  .slider-index-wrapper .index-separator {
-    margin: 0 0.5rem;
-  }
-
-  .slider-meta {
-    margin-bottom: 3rem;
-  }
-
-  .slider-section-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    color: #ffffff;
-  }
-
-  .slider-section-desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-  }
-
-  .slider-controls {
-    display: flex;
-    gap: 0.75rem;
-  }
-
-  .slider-btn {
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.75rem;
+    padding: 0.25rem;
   }
 
-  .slider-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-    color: var(--neon-pink);
-  }
-
-  .slider-btn:active {
-    transform: scale(0.95);
-  }
-
-  /* MAIN SLIDER CONTAINER */
-  .slider-main-panel {
-    position: relative;
-    aspect-ratio: 16/9;
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .slide-item {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease, visibility 0.8s;
-    z-index: 1;
-  }
-
-  .slide-item.active {
-    opacity: 1;
-    visibility: visible;
-    z-index: 2;
-  }
-
-  .slide-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.65) contrast(1.05);
-    transition: transform 12s ease-out;
-  }
-
-  .slide-item.active .slide-img {
-    transform: scale(1.06);
-  }
-
-  /* Technical Grid Lines Overlays */
-  .slide-grid-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 3;
-  }
-
-  .grid-line-h {
-    position: absolute;
-    top: 65%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .grid-line-v {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 70%;
-    width: 1px;
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .slide-annotation {
-    position: absolute;
+  .projects-filter-btn {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    padding: 0.6rem 1.25rem;
+    border-radius: 30px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.35);
-    letter-spacing: 0.1em;
-    padding: 0.5rem 0.85rem;
-  }
-
-  .slide-annotation.tl {
-    top: 1rem;
-    left: 1rem;
-    border-left: 2px solid var(--neon-pink);
-    padding-left: 0.5rem;
-  }
-
-  .slide-annotation.tr {
-    top: 1rem;
-    right: 1rem;
-    border-right: 2px solid var(--neon-blue);
-    padding-right: 0.5rem;
-  }
-
-  /* Slide Content Overlay */
-  .slide-overlay-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 3rem;
-    background: linear-gradient(to top, rgba(2, 2, 4, 0.9) 0%, rgba(2, 2, 4, 0.3) 60%, transparent 100%);
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .slide-subtitle {
     font-size: 0.72rem;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--neon-pink);
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-  }
-
-  .slide-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 2.4rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-    margin-bottom: 1.25rem;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  }
-
-  .slide-cta-link {
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #ffffff;
-    text-decoration: none;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-    padding-bottom: 0.3rem;
-    transition: all 0.3s ease;
+    user-select: none;
   }
 
-  .slide-cta-link:hover {
-    color: var(--neon-pink);
+  .projects-filter-btn:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
+  }
+
+  .projects-filter-btn.active {
+    background: rgba(51, 241, 255, 0.12);
     border-color: var(--neon-pink);
-    gap: 0.75rem;
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(51, 241, 255, 0.3);
   }
 
-  /* Responsive Adjustments */
-  @media (max-width: 950px) {
-    .slider-layout-grid {
+  /* Responsive Grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 1100px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .projects-grid {
       grid-template-columns: 1fr;
-      padding: 2rem;
+      gap: 1.25rem;
     }
-    
-    .slider-info-panel {
-      padding-right: 0;
-      margin-bottom: 2rem;
+    .projects-filter-bar {
+      gap: 0.5rem;
     }
-    
-    .slider-index-wrapper {
-      margin-bottom: 1rem;
+    .projects-filter-btn {
+      font-size: 0.68rem;
+      padding: 0.5rem 0.95rem;
     }
-    
-    .slider-meta {
-      margin-bottom: 1.5rem;
-    }
-    
-    .slider-controls {
-      display: none;
-    }
-    
-    .slide-title {
-      font-size: 1.6rem;
-    }
-    
-    .slide-overlay-content {
-      padding: 1.5rem;
-    }
+  }
+
+  /* Card Component */
+  .project-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    position: relative;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .project-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(51, 241, 255, 0.35);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(51, 241, 255, 0.2);
+  }
+
+  .project-card.is-hidden {
+    display: none !important;
+  }
+
+  /* Card Image Frame */
+  .project-card-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #090a10;
+    cursor: pointer;
+  }
+
+  .project-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-card:hover .project-card-img {
+    transform: scale(1.08);
+  }
+
+  .project-card-badge {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    background: rgba(2, 2, 4, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--neon-pink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    z-index: 2;
+    text-transform: uppercase;
+  }
+
+  .project-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(2, 2, 4, 0.85) 0%, rgba(2, 2, 4, 0.2) 60%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+
+  .project-card:hover .project-card-overlay {
+    opacity: 1;
+  }
+
+  .project-card-view-btn {
+    background: linear-gradient(135deg, #00f0ff 0%, #00ff7f 100%);
+    color: #000000;
+    border: none;
+    padding: 0.65rem 1.25rem;
+    border-radius: 30px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transform: translateY(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .project-card:hover .project-card-view-btn {
+    transform: translateY(0);
+  }
+
+  /* Card Content */
+  .project-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+    gap: 0.85rem;
+  }
+
+  .project-card-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+
+  .project-card-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  .project-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 0.85rem;
+    margin-top: auto;
+  }
+
+  .project-spec-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .project-spec-pill span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--neon-blue);
+    box-shadow: 0 0 6px var(--neon-blue);
+  }
+
+  .project-card-cotizar-link {
+    color: var(--neon-pink);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.25s ease;
+  }
+
+  .project-card-cotizar-link:hover {
+    color: #ffffff;
+    gap: 0.45rem;
   }
 
   /* ─── DYNAMIC TECHNICAL QUOTE FORM ─── */
@@ -2681,6 +2667,44 @@
   
   .gallery-thumb-item:hover {
     opacity: 0.9;
+  }
+
+  .gallery-cta-btn {
+    background: linear-gradient(135deg, #00f0ff 0%, #00ff7f 100%);
+    color: #000000;
+    border: none;
+    padding: 0.55rem 1.25rem;
+    border-radius: 30px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .gallery-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 127, 0.5);
+  }
+
+  @media (max-width: 680px) {
+    .gallery-info-bar {
+      flex-direction: column;
+      gap: 0.85rem;
+      align-items: stretch;
+    }
+    .gallery-info-bar > div:last-child {
+      justify-content: space-between;
+      width: 100%;
+    }
   }
 
   /* ─── PREMIUM MOBILE & TABLET RESPONSIVE OVERRIDES ─── */
@@ -4118,190 +4142,219 @@
   </div>
 </div>
 
-<!-- DYNAMIC PORTFOLIO CINEMATIC SLIDER -->
-<div class="portfolio-slider-section" id="proyectos">
-  <div class="slider-layout-grid">
-    
-    <!-- LEFT PANEL: Navigation & Info -->
-    <div class="slider-info-panel">
-      <div class="slider-index-wrapper">
-        <span class="current-index" id="sliderCurrentIndex">01</span>
-        <span class="index-separator">/</span>
-        <span class="total-index">08</span>
-      </div>
-      
-      <div class="slider-meta">
-        <span class="section-hdr-tag" style="background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border-tech); color: var(--text-primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; padding: 0.55rem 1.35rem; border-radius: 30px; display: inline-flex; align-items: center; gap: 0.65rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 1rem;"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--neon-pink); box-shadow: 0 0 8px var(--neon-pink);"></span> [ Portafolio ]</span>
-        <h2 class="slider-section-title">Trabajos Realizados</h2>
-        <p class="slider-section-desc">Una selección premium de proyectos diseñados, fabricados e instalados con las técnicas de iluminación más avanzadas.</p>
-      </div>
-      
-      <div class="slider-controls">
-        <button class="slider-btn prev" onclick="prevSlide()" aria-label="Anterior">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        </button>
-        <button class="slider-btn next" onclick="nextSlide()" aria-label="Siguiente">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </button>
-      </div>
-    </div>
-    
-    <!-- MAIN PANEL: Large Cinematic Slider Container -->
-    <div class="slider-main-panel">
-      
-      <!-- Slide 1 -->
-      <div class="slide-item active" data-index="01">
-        <img src="assets/gallery_storefront.jpg" alt="Fachada Comercial Boutique Letrerama" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">L-SYS // VERIFICATION: OK</div>
-          <div class="slide-annotation tr">GRID_COORD: 45.9 / 88.2</div>
-        </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Fachada Comercial & Cladding</span>
-          <h3 class="slide-title">Boutique Letrerama</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('01')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Slide 2 -->
-      <div class="slide-item" data-index="02">
-        <img src="assets/gallery_office_neon.jpg" alt="Letrero Neon de Oficina Letrerama" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">N-GLOW // VOLTAGE: 220V</div>
-          <div class="slide-annotation tr">GRID_COORD: 12.4 / 94.6</div>
-        </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Letreros Neón Flex Premium</span>
-          <h3 class="slide-title">Oficina Letrerama</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('02')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Slide 3 -->
-      <div class="slide-item" data-index="03">
-        <img src="assets/gallery_gold_backlit.jpg" alt="Letras Volumétricas Retroiluminadas Oro" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">HALO-L // INTENSITY: MAX</div>
-          <div class="slide-annotation tr">GRID_COORD: 77.1 / 15.3</div>
-        </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Letras Volumétricas 3D Retroiluminadas</span>
-          <h3 class="slide-title">Letras de Acrílico & Oro</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('03')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
-        </div>
-      </div>
+<!-- MODERN PROJECTS & PORTFOLIO SHOWCASE SECTION -->
+<div class="projects-showcase-section" id="proyectos">
+  <div class="projects-header">
+    <span class="section-hdr-tag" style="background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border-tech); color: var(--text-primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; padding: 0.55rem 1.35rem; border-radius: 30px; display: inline-flex; align-items: center; gap: 0.65rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 1rem;"><span style="width: 6px; height: 6px; border-radius: 50%; background: var(--neon-pink); box-shadow: 0 0 8px var(--neon-pink);"></span> [ Portafolio de Obras ]</span>
+    <h2 class="slider-section-title" style="font-size: 2.6rem; margin-bottom: 0.75rem; text-align: center;">Trabajos Realizados & Proyectos</h2>
+    <p class="slider-section-desc" style="text-align: center; max-width: 720px; margin: 0 auto;">Una selección de proyectos diseñados, fabricados e instalados por nuestro taller. Letras volumétricas 3D, neón flex, cajas de luz y fachadas para marcas que destacan.</p>
+  </div>
 
-      <!-- Slide 4 -->
-      <div class="slide-item" data-index="04">
-        <img src="assets/gallery_dimmo.jpg" alt="Letrero Corpóreo Luminoso DIMMO" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">D-SYS // STATUS: ACTIVE</div>
-          <div class="slide-annotation tr">GRID_COORD: 60.1 / 12.8</div>
-        </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Letrero Volumétrico Exterior</span>
-          <h3 class="slide-title">Corporativo DIMMO</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('04')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Slide 5 -->
-      <div class="slide-item" data-index="05">
-        <img src="assets/gallery_sanduo.jpg" alt="Caja de Luz Redonda San Duo" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">S-LBOX // COLOR: RED-WARM</div>
-          <div class="slide-annotation tr">GRID_COORD: 88.9 / 41.2</div>
-        </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Caja de Luz Calada Silueta</span>
-          <h3 class="slide-title">Cafetería San Duo</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('05')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
+  <!-- Interactive Category Filter Bar -->
+  <div class="projects-filter-bar">
+    <button class="projects-filter-btn active" onclick="filterProjects('all', this)">Todos (8)</button>
+    <button class="projects-filter-btn" onclick="filterProjects('3d', this)">Letras 3D & Corpóreos</button>
+    <button class="projects-filter-btn" onclick="filterProjects('neon', this)">Neón Flex LED</button>
+    <button class="projects-filter-btn" onclick="filterProjects('cajas', this)">Cajas de Luz</button>
+    <button class="projects-filter-btn" onclick="filterProjects('fachadas', this)">Fachadas & Cladding</button>
+    <button class="projects-filter-btn" onclick="filterProjects('grabado', this)">Grabado Láser</button>
+  </div>
+
+  <!-- Responsive Projects Grid -->
+  <div class="projects-grid" id="projectsGrid">
+    
+    <!-- 01: Boutique Letrerama -->
+    <article class="project-card" data-category="fachadas 3d">
+      <div class="project-card-media" onclick="openProjectGallery('01')">
+        <img src="assets/gallery_storefront.jpg" alt="Fachada Comercial Boutique Letrerama" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Fachada & 3D</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
         </div>
       </div>
-      
-      <!-- Slide 6 -->
-      <div class="slide-item" data-index="06">
-        <img src="assets/gallery_easyliving.jpg" alt="Letras 3D Backlit easyliving" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">EL-BACKLIT // EMISSION: 3500K</div>
-          <div class="slide-annotation tr">GRID_COORD: 23.5 / 67.9</div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Boutique Letrerama</h3>
+          <p class="project-card-desc">Fachada comercial premium con revestimiento metálico, letras 3D retroiluminadas y caja calada.</p>
         </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Letras 3D Iluminación Indirecta</span>
-          <h3 class="slide-title">Showroom Easy Living</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('06')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Halo 6500K · IP66</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
-      
-      <!-- Slide 7 -->
-      <div class="slide-item" data-index="07">
-        <img src="assets/gallery_neon_grow.jpg" alt="Letrero Neon Flex Good Things Grow Here" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">N-FLEX // DRAWN: VECTOR</div>
-          <div class="slide-annotation tr">GRID_COORD: 95.3 / 11.2</div>
-        </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Letrero Neón Flex de Diseño</span>
-          <h3 class="slide-title">Neon Good Things</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('07')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
+    </article>
+
+    <!-- 02: Oficina Corporativa -->
+    <article class="project-card" data-category="neon">
+      <div class="project-card-media" onclick="openProjectGallery('02')">
+        <img src="assets/gallery_office_neon.jpg" alt="Letrero Neon de Oficina Letrerama" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Neón Flex</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
         </div>
       </div>
-      
-      <!-- Slide 8 -->
-      <div class="slide-item" data-index="08">
-        <img src="assets/gallery_trophies.jpg" alt="Trofeos Grabados Letrerama Padel Lion" class="slide-img">
-        <div class="slide-grid-layer">
-          <div class="grid-line-h"></div>
-          <div class="grid-line-v"></div>
-          <div class="slide-annotation tl">L-GRV // PRECISION: 0.05MM</div>
-          <div class="slide-annotation tr">GRID_COORD: 10.8 / 33.7</div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Oficina Letrerama</h3>
+          <p class="project-card-desc">Neón flex personalizado de alta intensidad montado en base de acrílico para recepción.</p>
         </div>
-        <div class="slide-overlay-content">
-          <span class="slide-subtitle">Trofeos & Grabados en Acrílico</span>
-          <h3 class="slide-title">Premios Padel Lion</h3>
-          <div class="slide-action-row">
-            <button class="slide-action-btn btn-ver-mas" onclick="openProjectGallery('08')">VER MÁS</button>
-            <a href="#cotizar" class="slide-action-btn btn-cotizar">Cotizar mi Anuncio</a>
-          </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> 12V Siliconado · Bajo Consumo</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
-      
-    </div>
+    </article>
+
+    <!-- 03: Letras de Acrílico & Oro -->
+    <article class="project-card" data-category="3d">
+      <div class="project-card-media" onclick="openProjectGallery('03')">
+        <img src="assets/gallery_gold_backlit.jpg" alt="Letras Volumétricas Retroiluminadas Oro" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Letras 3D Oro</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Letras Acrílico & Oro</h3>
+          <p class="project-card-desc">Letras volumétricas doradas con acabado cepillado y halo posterior blanco difuso.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Acrílico 4mm · Acero Inox</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 04: Corporativo DIMMO -->
+    <article class="project-card" data-category="3d fachadas">
+      <div class="project-card-media" onclick="openProjectGallery('04')">
+        <img src="assets/gallery_dimmo.jpg" alt="Letrero Corpóreo Luminoso DIMMO" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Volumétrico Exterior</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Corporativo DIMMO</h3>
+          <p class="project-card-desc">Letrero exterior de gran formato en aluminio pintado al horno con módulos Epistar.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Aluminio Rolado · Batwing 170°</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 05: Cafetería San Duo -->
+    <article class="project-card" data-category="cajas">
+      <div class="project-card-media" onclick="openProjectGallery('05')">
+        <img src="assets/gallery_sanduo.jpg" alt="Caja de Luz Redonda San Duo" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Caja de Luz</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Cafetería San Duo</h3>
+          <p class="project-card-desc">Caja de luz calada circular de doble vista para exterior con silueta e iluminación cálida.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Doble Cara · Luz 3000K</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 06: Showroom Easy Living -->
+    <article class="project-card" data-category="3d">
+      <div class="project-card-media" onclick="openProjectGallery('06')">
+        <img src="assets/gallery_easyliving.jpg" alt="Letras 3D Backlit easyliving" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Letras 3D Backlit</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Showroom Easy Living</h3>
+          <p class="project-card-desc">Letras corpóreas de aluminio cepillado con retroiluminación indirecta de 3500K.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Soldadura TIG · Luz Cálida</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 07: Neon Good Things -->
+    <article class="project-card" data-category="neon">
+      <div class="project-card-media" onclick="openProjectGallery('07')">
+        <img src="assets/gallery_neon_grow.jpg" alt="Letrero Neon Flex Good Things Grow Here" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Neón Flex</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Neon Good Things</h3>
+          <p class="project-card-desc">Letrero decorativo 'Good Things Grow Here' en neón flex flexible de trazo caligráfico.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Neón 12V · Durabilidad &gt;50,000h</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 08: Premios Padel Lion -->
+    <article class="project-card" data-category="grabado">
+      <div class="project-card-media" onclick="openProjectGallery('08')">
+        <img src="assets/gallery_trophies.jpg" alt="Trofeos Grabados Letrerama Padel Lion" class="project-card-img" loading="lazy">
+        <span class="project-card-badge">Grabado Láser CNC</span>
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (5)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">Premios Padel Lion</h3>
+          <p class="project-card-desc">Trofeos y placas conmemorativas en acrílico cristal virgen con desbaste y corte láser.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> Precisión 0.05mm · Pulido CNC</div>
+          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
   </div>
 </div>
 
@@ -4532,7 +4585,10 @@
         <h4 class="gallery-project-title" id="galleryProjectTitle">Proyecto</h4>
         <p class="gallery-project-desc" id="galleryProjectDesc">Galería de fotos del proyecto realizado.</p>
       </div>
-      <div class="gallery-counter"><span id="galleryCurrentPhoto">1</span> / <span id="galleryTotalPhotos">5</span></div>
+      <div style="display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0;">
+        <div class="gallery-counter"><span id="galleryCurrentPhoto">1</span> / <span id="galleryTotalPhotos">5</span></div>
+        <a href="#cotizar" class="gallery-cta-btn" onclick="closeGalleryModal()">Cotizar este Proyecto</a>
+      </div>
     </div>
     
     <!-- Thumbnails Container -->
@@ -4732,51 +4788,23 @@
     } catch(e) {}
   }
 
-  // Cinematic Portfolio Slider Logic
-  let currentSlideIdx = 0;
-  const slides = document.querySelectorAll('.slide-item');
-  const indexDisplay = document.getElementById('sliderCurrentIndex');
-  let slideInterval = null;
+  // Projects Filter Logic
+  function filterProjects(category, btnElement) {
+    const buttons = document.querySelectorAll('.projects-filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
 
-  function showSlide(index) {
-    if (slides.length === 0) return;
-    
-    // Remove active class from current slide
-    slides[currentSlideIdx].classList.remove('active');
-    
-    // Calculate new index
-    currentSlideIdx = (index + slides.length) % slides.length;
-    
-    // Add active class to new slide
-    slides[currentSlideIdx].classList.add('active');
-    
-    // Update index number display
-    if (indexDisplay) {
-      indexDisplay.textContent = String(currentSlideIdx + 1).padStart(2, '0');
-    }
-  }
+    const cards = document.querySelectorAll('.project-card');
+    cards.forEach(card => {
+      const cardCategories = (card.getAttribute('data-category') || '').split(' ');
+      if (category === 'all' || cardCategories.includes(category)) {
+        card.classList.remove('is-hidden');
+      } else {
+        card.classList.add('is-hidden');
+      }
+    });
 
-  function nextSlide() {
-    showSlide(currentSlideIdx + 1);
-    resetSlideTimer();
     playSoftCooldownClick();
-  }
-
-  function prevSlide() {
-    showSlide(currentSlideIdx - 1);
-    resetSlideTimer();
-    playSoftCooldownClick();
-  }
-
-  function startSlideTimer() {
-    if (slideInterval) clearInterval(slideInterval);
-    slideInterval = setInterval(() => {
-      showSlide(currentSlideIdx + 1);
-    }, 8000); // Auto rotate every 8 seconds
-  }
-
-  function resetSlideTimer() {
-    startSlideTimer();
   }
   // ─── 3D ENGINEERING ANATOMY (Exploded Letter L - Blueprint Edition) ───
   let isBlueprintLedsOn = true;
@@ -5102,9 +5130,8 @@
     requestAnimationFrame(animate);
   }
 
-  // Start auto-rotation and intro laser animation on DOM load
+  // Start intro laser animation and material visualizer on DOM load
   document.addEventListener('DOMContentLoaded', () => {
-    startSlideTimer();
     updateTechBlueprint();
     startOnLoadLaserAnimation();
     
@@ -5112,32 +5139,6 @@
     const firstMat = document.querySelector('.mat-constellation-item');
     if (firstMat) {
       selectMaterial(firstMat);
-    }
-
-    // Add touch swipe support to cinematic slider
-    const sliderPanel = document.querySelector('.slider-main-panel');
-    if (sliderPanel) {
-      let touchStartX = 0;
-      let touchEndX = 0;
-      
-      sliderPanel.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-      }, { passive: true });
-      
-      sliderPanel.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      }, { passive: true });
-      
-      function handleSwipe() {
-        const swipeDistance = touchEndX - touchStartX;
-        const threshold = 50; // min distance in px
-        if (swipeDistance < -threshold) {
-          nextSlide(); // Swiped left -> next
-        } else if (swipeDistance > threshold) {
-          prevSlide(); // Swiped right -> prev
-        }
-      }
     }
   });
 
