@@ -66,10 +66,9 @@
                 "Cancel de Cristal Templado"
             ]
         },
-        // 2. RESIDENCIA VALLE IMPERIAL (ZMG)
+        // 2. RESIDENCIA VALLE IMPERIAL (ZMG) [EJEMPLO]
         {
             id: 2,
-            codigo: "JM0926-02",
             slug: "residencia-de-autor-valle-imperial",
             title: "Residencia de Autor - Valle Imperial",
             municipio: "Zapopan",
@@ -95,10 +94,9 @@
             ],
             amenidades: ["Coto Privado", "Seguridad 24/7", "Alberca Templada", "Terraza Club", "Área de Asadores", "Jardín Privado", "Estudio / Flex Room", "Cocina Equipada", "2 Estacionamientos", "Campo de Golf Cercano"]
         },
-        // 3. LOFT BOUTIQUE (ZMG)
+        // 3. LOFT BOUTIQUE (ZMG) [EJEMPLO]
         {
             id: 3,
-            codigo: "JM0926-03",
             slug: "loft-boutique-providencia",
             title: "Loft Boutique - Providencia",
             municipio: "Guadalajara",
@@ -123,10 +121,9 @@
             ],
             amenidades: ["Seguridad 24/7", "Lobby / Recepción", "Elevador", "2 Estacionamientos", "Roof Garden Común", "Pet Friendly", "Cocina Integral", "Balcón", "Área de Lavado", "Bicicletero"]
         },
-        // 4. TERRENO PLAYA (YUCATÁN)
+        // 4. TERRENO PLAYA (YUCATÁN) [EJEMPLO]
         {
             id: 4,
-            codigo: "JM0926-04",
             slug: "lote-residencial-sunset-telchac",
             title: "Lote Residencial Sunset - Telchac",
             municipio: "Telchac",
