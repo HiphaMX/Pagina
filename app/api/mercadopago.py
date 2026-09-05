@@ -422,3 +422,38 @@ async def process_payment(payload: PaymentRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@router.post("/resend_order_notification")
+@router.get("/resend_order_notification")
+async def resend_order_notification(secret: str, payment_id: int = 177380420944, target_email: Optional[str] = None):
+    if secret != "HiphaSecret2026!":
+        raise HTTPException(status_code=403, detail="Forbidden")
+    try:
+        store_sdk = get_sdk_for_store("healthyice")
+        payment_info = store_sdk.payment().get(payment_id)
+        payment = payment_info.get("response", {})
+        metadata = payment.get("metadata", {})
+        
+        payer_name = metadata.get("payer_name") or "Karen Esteban"
+        payer_email = target_email or metadata.get("payer_email") or "karenrassy79@gmail.com"
+        payer_phone = metadata.get("payer_phone") or "3337247361"
+        address_str = metadata.get("address") or "Santo Tomás  34A, Col. Jardines de san Ignacio , Zapopan"
+        cart_html = metadata.get("cart_html") or ""
+        total = float(metadata.get("total") or 300.0)
+        
+        from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
+        customer_sent = await send_healthyice_payment_customer(payer_name, payer_email, cart_html, total)
+        team_sent = await send_healthyice_payment_team(payer_name, payer_email, payer_phone, address_str, cart_html, total)
+        
+        return {
+            "status": "success",
+            "payment_id": payment_id,
+            "customer_email_sent": customer_sent,
+            "team_email_sent": team_sent,
+            "sent_to_customer": payer_email,
+            "payer_name": payer_name
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
