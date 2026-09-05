@@ -386,3 +386,41 @@ async def process_payment(payload: PaymentRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/latest_payments_debug")
+async def latest_payments_debug(secret: str, store: str = "healthyice", db: Session = Depends(get_db)):
+    if secret != "HiphaSecret2026!":
+        raise HTTPException(status_code=403, detail="Forbidden")
+    try:
+        store_sdk = get_sdk_for_store(store)
+        filters = {
+            "sort": "date_created",
+            "criteria": "desc",
+            "limit": 15
+        }
+        search_response = store_sdk.payment().search(filters)
+        
+        orders = db.query(HealthyIceOrder).order_by(HealthyIceOrder.id.desc()).limit(10).all()
+        orders_data = [
+            {
+                "id": o.id,
+                "nombre": o.nombre,
+                "email": o.email,
+                "telefono": o.telefono,
+                "direccion": o.direccion,
+                "carrito_items": o.carrito_items,
+                "total": o.total,
+                "status": o.status,
+                "mercadopago_payment_id": o.mercadopago_payment_id,
+                "created_at": str(o.created_at)
+            } for o in orders
+        ]
+        
+        return {
+            "payments": search_response.get("response", {}).get("results", []),
+            "orders": orders_data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
