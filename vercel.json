@@ -351,14 +351,23 @@
     {
       "src": "/letrerama",
       "status": 308,
-      "headers": { "Location": "/letrerama/" }
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "/letrerama/",
+      "status": 308,
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "/letrerama/(.*)",
+      "status": 308,
+      "headers": { "Location": "/" }
     },
     {
       "src": "/letrerama\\.html",
       "status": 308,
-      "headers": { "Location": "/letrerama/" }
+      "headers": { "Location": "/" }
     },
-
     {
       "src": "/terminos-y-condiciones",
       "dest": "/terminos-y-condiciones.html"
@@ -366,14 +375,6 @@
     {
       "src": "/aviso-de-privacidad",
       "dest": "/aviso-de-privacidad.html"
-    },
-    {
-      "src": "/letrerama/",
-      "dest": "/projects/Letrerama/web/"
-    },
-    {
-      "src": "/letrerama/(.*)",
-      "dest": "/projects/Letrerama/web/$1"
     },
     {
       "src": "/valencia-servicios",
