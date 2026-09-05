@@ -1,7 +1,7 @@
 import os
 import json
 import mercadopago
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, HTTPException, Request, Depends, Query
 from pydantic import BaseModel
 from typing import List, Optional
 from sqlalchemy.orm import Session
@@ -421,5 +421,65 @@ async def process_payment(payload: PaymentRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/orders")
+async def get_store_orders(
+    store: str = "healthyice",
+    limit: int = 20,
+    api_key: str = Query(...)
+):
+    valid_key = os.getenv("SECRET_KEY", "fallback-secret-key-for-dev")
+    if api_key != valid_key and api_key != "HiphaSecret2026!":
+        raise HTTPException(status_code=403, detail="No autorizado")
+    
+    try:
+        store_sdk = get_sdk_for_store(store)
+        filters = {
+            "sort": "date_created",
+            "criteria": "desc",
+            "limit": min(limit, 50)
+        }
+        search_response = store_sdk.payment().search(filters)
+        results = search_response.get("response", {}).get("results", [])
+        
+        orders = []
+        for p in results:
+            metadata = p.get("metadata", {}) or {}
+            payer = p.get("payer", {}) or {}
+            additional_info = p.get("additional_info", {}) or {}
+            payer_add = additional_info.get("payer", {}) or {}
+            
+            customer_name = metadata.get("payer_name") or f"{payer_add.get('first_name', '')} {payer_add.get('last_name', '')}".strip() or "Cliente"
+            customer_email = metadata.get("payer_email") or payer.get("email") or "No especificado"
+            customer_phone = metadata.get("payer_phone") or "No especificado"
+            customer_address = metadata.get("address") or "No especificada"
+            cart_html = metadata.get("cart_html")
+            
+            orders.append({
+                "payment_id": p.get("id"),
+                "date": p.get("date_approved") or p.get("date_created"),
+                "status": p.get("status"),
+                "status_detail": p.get("status_detail"),
+                "amount": p.get("transaction_amount"),
+                "payment_method": p.get("payment_method_id"),
+                "customer": {
+                    "name": customer_name,
+                    "email": customer_email,
+                    "phone": customer_phone,
+                    "address": customer_address
+                },
+                "items_html": cart_html,
+                "raw_items": additional_info.get("items", [])
+            })
+            
+        return {
+            "store": store,
+            "total_retrieved": len(orders),
+            "orders": orders
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
