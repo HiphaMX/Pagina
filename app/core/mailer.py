@@ -10,24 +10,70 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)  # SMTP change trigger 2026-08-03
 
-async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, smtp_password=None):
+async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, smtp_password=None, fallback_to_agency=True):
     host = smtp_host or settings.SMTP_HOST
     port = smtp_port or settings.SMTP_PORT
     user = smtp_user or settings.SMTP_USER
     password = smtp_password or settings.SMTP_PASSWORD
 
+    if port == "" or port is None:
+        port = 587
+    else:
+        try:
+            port = int(port)
+        except ValueError:
+            port = 587
+
     use_tls = (port == 465)
     start_tls = (port != 465)
-    await aiosmtplib.send(
-        message,
-        hostname=host,
-        port=port,
-        username=user,
-        password=password,
-        use_tls=use_tls,
-        start_tls=start_tls,
-        timeout=5.0
-    )
+    try:
+        await aiosmtplib.send(
+            message,
+            hostname=host,
+            port=port,
+            username=user,
+            password=password,
+            use_tls=use_tls,
+            start_tls=start_tls,
+            timeout=8.0
+        )
+    except Exception as primary_err:
+        # Si falló un SMTP de cliente y tenemos el SMTP de la agencia configurado, aplicar fallback automático
+        if fallback_to_agency and host != settings.SMTP_HOST and settings.SMTP_HOST and settings.SMTP_USER:
+            logger.warning(
+                f"Fallo al enviar por SMTP principal {host}:{port} ({primary_err}). "
+                f"Aplicando fallback de emergencia al SMTP general de la agencia ({settings.SMTP_HOST})..."
+            )
+            original_from = message.get('From', '')
+            original_reply_to = message.get('Reply-To', '')
+            disp_name = original_from.split("<")[0].strip() if "<" in original_from else "Notificaciones"
+            
+            if not original_reply_to and user:
+                message['Reply-To'] = user
+                
+            del message['From']
+            message['From'] = f"{disp_name} <{settings.SMTP_USER}>"
+            
+            agency_port = 587
+            if settings.SMTP_PORT:
+                try:
+                    agency_port = int(settings.SMTP_PORT)
+                except ValueError:
+                    agency_port = 587
+                    
+            await aiosmtplib.send(
+                message,
+                hostname=settings.SMTP_HOST,
+                port=agency_port,
+                username=settings.SMTP_USER,
+                password=settings.SMTP_PASSWORD,
+                use_tls=(agency_port == 465),
+                start_tls=(agency_port != 465),
+                timeout=10.0
+            )
+            logger.info("Envío de correo exitoso mediante fallback de la agencia.")
+        else:
+            raise primary_err
 
 
 def format_spanish_date(date_str: str) -> str:

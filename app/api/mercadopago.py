@@ -234,16 +234,34 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                                     print(f"Error al actualizar orden {order_id_str} en webhook: {db_err}")
 
                             from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
-                            asyncio.create_task(send_healthyice_payment_customer(payer_name, payer_email, cart_html, total))
-                            asyncio.create_task(send_healthyice_payment_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                            try:
+                                await send_healthyice_payment_customer(payer_name, payer_email, cart_html, total)
+                            except Exception as mail_err:
+                                print(f"Error enviando correo a cliente HealthyIce: {mail_err}")
+                            try:
+                                await send_healthyice_payment_team(payer_name, payer_email, payer_phone, address_str, cart_html, total)
+                            except Exception as mail_err:
+                                print(f"Error enviando correo a equipo HealthyIce: {mail_err}")
                         elif store_name == "chilechillon":
                             from app.core.mailer import send_chilechillon_order_customer, send_chilechillon_order_team
-                            asyncio.create_task(send_chilechillon_order_customer(payer_name, payer_email, cart_html, total))
-                            asyncio.create_task(send_chilechillon_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                            try:
+                                await send_chilechillon_order_customer(payer_name, payer_email, cart_html, total)
+                            except Exception as mail_err:
+                                print(f"Error enviando correo a cliente ChileChillón: {mail_err}")
+                            try:
+                                await send_chilechillon_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total)
+                            except Exception as mail_err:
+                                print(f"Error enviando correo a equipo ChileChillón: {mail_err}")
                         else:
                             from app.core.mailer import send_botica_order_customer, send_botica_order_team
-                            asyncio.create_task(send_botica_order_customer(payer_name, payer_email, cart_html, total))
-                            asyncio.create_task(send_botica_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total))
+                            try:
+                                await send_botica_order_customer(payer_name, payer_email, cart_html, total)
+                            except Exception as mail_err:
+                                print(f"Error enviando correo a cliente Botica: {mail_err}")
+                            try:
+                                await send_botica_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total)
+                            except Exception as mail_err:
+                                print(f"Error enviando correo a equipo Botica: {mail_err}")
                         
             except Exception as e:
                 print(f"Webhook error: {e}")
@@ -365,61 +383,41 @@ async def process_payment(payload: PaymentRequest):
 
         # If payment is approved immediately, send emails right away
         if status == "approved":
-            import asyncio
             if store_name == "healthyice":
                 from app.core.mailer import send_healthyice_payment_customer, send_healthyice_payment_team
-                asyncio.create_task(send_healthyice_payment_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
-                asyncio.create_task(send_healthyice_payment_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+                try:
+                    await send_healthyice_payment_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount)
+                except Exception as mail_err:
+                    print(f"Error enviando correo a cliente HealthyIce: {mail_err}")
+                try:
+                    await send_healthyice_payment_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount)
+                except Exception as mail_err:
+                    print(f"Error enviando correo a equipo HealthyIce: {mail_err}")
             elif store_name == "chilechillon":
                 from app.core.mailer import send_chilechillon_order_customer, send_chilechillon_order_team
-                asyncio.create_task(send_chilechillon_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
-                asyncio.create_task(send_chilechillon_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+                try:
+                    await send_chilechillon_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount)
+                except Exception as mail_err:
+                    print(f"Error enviando correo a cliente ChileChillón: {mail_err}")
+                try:
+                    await send_chilechillon_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount)
+                except Exception as mail_err:
+                    print(f"Error enviando correo a equipo ChileChillón: {mail_err}")
             else:
                 from app.core.mailer import send_botica_order_customer, send_botica_order_team
-                asyncio.create_task(send_botica_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount))
-                asyncio.create_task(send_botica_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount))
+                try:
+                    await send_botica_order_customer(payer_name, payload.payer.email, cart_html, payload.transaction_amount)
+                except Exception as mail_err:
+                    print(f"Error enviando correo a cliente Botica: {mail_err}")
+                try:
+                    await send_botica_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount)
+                except Exception as mail_err:
+                    print(f"Error enviando correo a equipo Botica: {mail_err}")
 
         return {
             "id": payment.get("id"),
             "status": status,
             "status_detail": status_detail
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/latest_payments_debug")
-async def latest_payments_debug(secret: str, store: str = "healthyice", db: Session = Depends(get_db)):
-    if secret != "HiphaSecret2026!":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    try:
-        store_sdk = get_sdk_for_store(store)
-        filters = {
-            "sort": "date_created",
-            "criteria": "desc",
-            "limit": 15
-        }
-        search_response = store_sdk.payment().search(filters)
-        
-        orders = db.query(HealthyIceOrder).order_by(HealthyIceOrder.id.desc()).limit(10).all()
-        orders_data = [
-            {
-                "id": o.id,
-                "nombre": o.nombre,
-                "email": o.email,
-                "telefono": o.telefono,
-                "direccion": o.direccion,
-                "carrito_items": o.carrito_items,
-                "total": o.total,
-                "status": o.status,
-                "mercadopago_payment_id": o.mercadopago_payment_id,
-                "created_at": str(o.created_at)
-            } for o in orders
-        ]
-        
-        return {
-            "payments": search_response.get("response", {}).get("results", []),
-            "orders": orders_data
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
