@@ -2430,6 +2430,142 @@
     opacity: 1;
   }
 
+  /* Category Real Project Example Card */
+  .quote-work-example-card {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(51, 241, 255, 0.22);
+    border-radius: 14px;
+    padding: 0.95rem 1.15rem;
+    margin-top: 0.35rem;
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .quote-work-example-card.quote-field-highlight,
+  #quoteTecnica.quote-field-highlight {
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 25px rgba(51, 241, 255, 0.5) !important;
+    transform: scale(1.01);
+  }
+
+  .example-thumb-wrapper {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #000;
+  }
+
+  .example-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .quote-work-example-card:hover .example-thumb-img {
+    transform: scale(1.08);
+  }
+
+  .example-tag-pill {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    color: var(--neon-blue);
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .example-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .example-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  .example-project-badge {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .example-cat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--neon-pink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255, 0, 127, 0.08);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 0, 127, 0.2);
+  }
+
+  .example-card-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .example-view-photos-link {
+    align-self: flex-start;
+    background: transparent;
+    border: none;
+    color: var(--neon-blue);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0;
+    margin-top: 0.2rem;
+    transition: all 0.2s ease;
+  }
+
+  .example-view-photos-link:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 600px) {
+    .quote-work-example-card {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+      padding: 0.85rem;
+    }
+    .example-thumb-wrapper {
+      width: 100%;
+      height: 140px;
+    }
+  }
+
   /* Transition slide animation for depth option */
   #cantoFieldWrapper {
     transition: all 0.3s ease;
@@ -4386,7 +4522,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Volumétrico 3D · Gran Formato</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('01', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4410,7 +4546,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> 3D & Caja de Luz · Frontlit</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('02', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4434,7 +4570,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Grabado Láser · Multimaterial</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('03', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4458,7 +4594,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Acrílico Cast · Pulido Láser</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('04', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4482,7 +4618,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Acrílico Backlit · Halo LED</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('05', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4506,7 +4642,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Bastidor Acanalado · Montaje 3D</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('06', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4530,7 +4666,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Banderola 2 Caras · Chasis IP66</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('07', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4554,7 +4690,7 @@
         </div>
         <div class="project-card-footer">
           <div class="project-spec-pill"><span></span> Impresión 3D · Aluminio Rolado</div>
-          <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('08', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
@@ -4633,21 +4769,45 @@
       <!-- Technical specs selection -->
       <div class="form-group-row">
         <div class="form-group">
-          <label for="quoteTecnica">Técnica del Letrero</label>
-          <select id="quoteTecnica" required onchange="toggleCantoField()">
-            <option value="Logotipo 3D" selected>Logotipo 3D (Volumétrico)</option>
-            <option value="Caja de Luz">Caja de Luz</option>
-            <option value="Logotipo 2D">Logotipo 2D (Plano)</option>
-            <option value="Neon Led">Neón Led Flex</option>
+          <label for="quoteTecnica">Tipo de Trabajo / Categoría Comercial</label>
+          <select id="quoteTecnica" required onchange="updateCategoryExample()">
+            <option value="3D" selected>3D (Letras y Logotipos Corpóreos)</option>
+            <option value="3D y caja de luz">3D y Caja de Luz (Híbrido Iluminado)</option>
+            <option value="Trofeos diferentes materiales">Trofeos Diferentes Materiales (Multimaterial)</option>
+            <option value="Letrero acrílico">Letrero Acrílico (Placa Cristal / Cantos Pulidos)</option>
+            <option value="Letrero acrílico retro iluminado">Letrero Acrílico Retroiluminado (Halo LED Backlit)</option>
+            <option value="Bastidor 3D y acanalado">Bastidor 3D y Acanalado (Fachada)</option>
+            <option value="Banderola">Banderola Comercial (Doble Cara)</option>
+            <option value="Impresión 3D y aluminio">Impresión 3D y Aluminio Rolado</option>
+            <option value="Otro / Proyecto Especial">Otro / Proyecto Especial a Medida</option>
           </select>
         </div>
         <div class="form-group">
           <label for="quoteIluminacion">Tipo de Iluminación</label>
           <select id="quoteIluminacion" required onchange="updateTechBlueprint()">
             <option value="Retroiluminado" selected>Retroiluminado (Backlit Halo)</option>
-            <option value="Iluminación interior">Iluminación Interior</option>
+            <option value="Iluminación interior">Iluminación Interior (Frontlit)</option>
             <option value="Sin iluminación">Sin Iluminación</option>
           </select>
+        </div>
+      </div>
+      
+      <!-- Dynamic Real Project Example Banner -->
+      <div class="quote-work-example-card" id="quoteCategoryExampleCard">
+        <div class="example-thumb-wrapper">
+          <img src="assets/work_dimmo_1.webp" id="exampleCardImg" alt="Ejemplo de trabajo real" class="example-thumb-img">
+          <span class="example-tag-pill">Ejemplo</span>
+        </div>
+        <div class="example-card-content">
+          <div class="example-card-header">
+            <span class="example-project-badge" id="exampleCardBadge">DIMMO</span>
+            <span class="example-cat-label" id="exampleCardCat">Categoría: 3D</span>
+          </div>
+          <p class="example-card-desc" id="exampleCardDesc">Letras volumétricas 3D de precisión milimétrica fabricadas en taller con acabado esmaltado automotriz.</p>
+          <button type="button" class="example-view-photos-link" id="exampleViewPhotosBtn" onclick="openExampleGallery()">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver fotos reales de este proyecto</span>
+          </button>
         </div>
       </div>
       
@@ -4671,9 +4831,11 @@
         <div class="form-group">
           <label for="quoteMaterial">Material Principal</label>
           <select id="quoteMaterial" required onchange="updateTechBlueprint()">
-            <option value="Acrílico" selected>Acrílico Premium</option>
+            <option value="Acrílico" selected>Acrílico Premium (Cast / Cristal)</option>
             <option value="Aluminio cepillado">Aluminio Cepillado</option>
             <option value="Aluminio pintado">Aluminio Pintado en Horno</option>
+            <option value="Madera y Acrílico">Madera & Acrílico Multimaterial</option>
+            <option value="Polímero / Impresión 3D">Polímero Aditivo / Impresión 3D</option>
           </select>
         </div>
         <div class="form-group">
@@ -4791,7 +4953,7 @@
       </div>
       <div style="display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0;">
         <div class="gallery-counter"><span id="galleryCurrentPhoto">1</span> / <span id="galleryTotalPhotos">5</span></div>
-        <a href="#cotizar" class="gallery-cta-btn" onclick="closeGalleryModal()">Cotizar este Proyecto</a>
+        <a href="#cotizar" class="gallery-cta-btn" onclick="quoteFromCurrentGallery(event)">Cotizar este Proyecto</a>
       </div>
     </div>
     
@@ -5399,18 +5561,213 @@
   let selectedLogoBase64 = null;
   let selectedLogoFilename = null;
 
-  function toggleCantoField() {
-    const tecnica = document.getElementById('quoteTecnica').value;
-    const cantoWrapper = document.getElementById('cantoFieldWrapper');
-    const bpCantoRow = document.getElementById('bpCantoRow');
-    if (tecnica === 'Logotipo 3D') {
-      cantoWrapper.classList.remove('hidden');
-      if (bpCantoRow) bpCantoRow.style.display = 'flex';
-    } else {
-      cantoWrapper.classList.add('hidden');
-      if (bpCantoRow) bpCantoRow.style.display = 'none';
+  // Commercial Categories to Project Mapping & Real Reference Details
+  const categoryProjectMap = {
+    "3D": {
+      id: "01",
+      name: "DIMMO",
+      desc: "Letras volumétricas 3D de precisión milimétrica fabricadas en taller con acabado esmaltado automotriz.",
+      image: "assets/work_dimmo_1.webp",
+      hasCanto: true,
+      defaultCanto: 5,
+      suggestedIluminacion: "Retroiluminado",
+      suggestedMaterial: "Aluminio pintado"
+    },
+    "3D y caja de luz": {
+      id: "02",
+      name: "Pepe Bulls",
+      desc: "Integración híbrida de letras volumétricas 3D corpóreas con caja de luz frontal e iluminación LED.",
+      image: "assets/work_pepebulls_1.webp",
+      hasCanto: true,
+      defaultCanto: 8,
+      suggestedIluminacion: "Iluminación interior",
+      suggestedMaterial: "Aluminio cepillado"
+    },
+    "Trofeos diferentes materiales": {
+      id: "03",
+      name: "Trofeos Pádel",
+      desc: "Manufactura especializada en trofeos y galardones combinando acrílico cristal virgen, madera y corte láser.",
+      image: "assets/work_trofeos_padel_1.webp",
+      hasCanto: false,
+      defaultCanto: null,
+      suggestedIluminacion: "Sin iluminación",
+      suggestedMaterial: "Madera y Acrílico"
+    },
+    "Letrero acrílico": {
+      id: "04",
+      name: "Chaks",
+      desc: "Letrero en placa de acrílico cristal virgen con corte láser de alta definición y cantos pulidos al diamante.",
+      image: "assets/work_chaks_1.webp",
+      hasCanto: false,
+      defaultCanto: null,
+      suggestedIluminacion: "Sin iluminación",
+      suggestedMaterial: "Acrílico"
+    },
+    "Letrero acrílico retro iluminado": {
+      id: "05",
+      name: "Drink House",
+      desc: "Letras de acrílico con sistema de halo perimetral retroiluminado (backlit) y proyección suave a muro.",
+      image: "assets/work_drinkhouse_1.webp",
+      hasCanto: true,
+      defaultCanto: 3,
+      suggestedIluminacion: "Retroiluminado",
+      suggestedMaterial: "Acrílico"
+    },
+    "Bastidor 3D y acanalado": {
+      id: "06",
+      name: "Clínica Oftálmica",
+      desc: "Bastidor arquitectónico acanalado para fachada con ensamble de letras corpóreas 3D y fijación oculta.",
+      image: "assets/work_oftalmica_1.webp",
+      hasCanto: true,
+      defaultCanto: 10,
+      suggestedIluminacion: "Iluminación interior",
+      suggestedMaterial: "Aluminio pintado"
+    },
+    "Banderola": {
+      id: "07",
+      name: "San Café",
+      desc: "Banderola comercial saliente de doble cara con chasis metálico estanco para intemperie e iluminación cálida.",
+      image: "assets/work_sancafe_1.webp",
+      hasCanto: true,
+      defaultCanto: 12,
+      suggestedIluminacion: "Iluminación interior",
+      suggestedMaterial: "Aluminio pintado"
+    },
+    "Impresión 3D y aluminio": {
+      id: "08",
+      name: "Mentha Boutique",
+      desc: "Rotulación de vanguardia fusionando manufactura aditiva / impresión 3D técnica con perfilería rolada de aluminio.",
+      image: "assets/work_mentha_1.webp",
+      hasCanto: true,
+      defaultCanto: 5,
+      suggestedIluminacion: "Retroiluminado",
+      suggestedMaterial: "Polímero / Impresión 3D"
+    },
+    "Otro / Proyecto Especial": {
+      id: null,
+      name: "Proyecto Especial a Medida",
+      desc: "Diseño y manufactura personalizada según las necesidades arquitectónicas y de branding de tu empresa.",
+      image: "assets/work_dimmo_1.webp",
+      hasCanto: true,
+      defaultCanto: 5,
+      suggestedIluminacion: "Retroiluminado",
+      suggestedMaterial: "Acrílico"
     }
+  };
+
+  const projectIdToCategory = {
+    "01": "3D",
+    "02": "3D y caja de luz",
+    "03": "Trofeos diferentes materiales",
+    "04": "Letrero acrílico",
+    "05": "Letrero acrílico retro iluminado",
+    "06": "Bastidor 3D y acanalado",
+    "07": "Banderola",
+    "08": "Impresión 3D y aluminio"
+  };
+
+  let activeExampleProjectId = "01";
+
+  function updateCategoryExample() {
+    const tecnicaSelect = document.getElementById('quoteTecnica');
+    if (!tecnicaSelect) return;
+    const tecnicaVal = tecnicaSelect.value;
+    const info = categoryProjectMap[tecnicaVal] || categoryProjectMap["3D"];
+
+    activeExampleProjectId = info.id;
+
+    const imgEl = document.getElementById('exampleCardImg');
+    const badgeEl = document.getElementById('exampleCardBadge');
+    const catEl = document.getElementById('exampleCardCat');
+    const descEl = document.getElementById('exampleCardDesc');
+    const viewBtn = document.getElementById('exampleViewPhotosBtn');
+
+    if (imgEl) imgEl.src = info.image;
+    if (badgeEl) badgeEl.textContent = info.name;
+    if (catEl) catEl.textContent = `Categoría: ${tecnicaVal}`;
+    if (descEl) descEl.textContent = info.desc;
+
+    if (viewBtn) {
+      if (info.id) {
+        viewBtn.style.display = 'inline-flex';
+        const spanEl = viewBtn.querySelector('span');
+        if (spanEl) spanEl.textContent = `Ver fotos reales de ${info.name} ↗`;
+      } else {
+        viewBtn.style.display = 'none';
+      }
+    }
+
+    // Toggle Canto / Depth field
+    const cantoWrapper = document.getElementById('cantoFieldWrapper');
+    const cantoInput = document.getElementById('quoteCanto');
+    const bpCantoRow = document.getElementById('bpCantoRow');
+    if (cantoWrapper) {
+      if (info.hasCanto) {
+        cantoWrapper.classList.remove('hidden');
+        if (cantoInput && info.defaultCanto) cantoInput.value = info.defaultCanto;
+        if (bpCantoRow) bpCantoRow.style.display = 'flex';
+      } else {
+        cantoWrapper.classList.add('hidden');
+        if (bpCantoRow) bpCantoRow.style.display = 'none';
+      }
+    }
+
     updateTechBlueprint();
+  }
+
+  // Alias for backward compatibility
+  function toggleCantoField() {
+    updateCategoryExample();
+  }
+
+  function openExampleGallery() {
+    if (activeExampleProjectId) {
+      openProjectGallery(activeExampleProjectId);
+    }
+  }
+
+  function quoteProject(projId, event) {
+    if (event) event.preventDefault();
+    closeGalleryModal();
+
+    const category = projectIdToCategory[projId];
+    if (category) {
+      const selectEl = document.getElementById('quoteTecnica');
+      if (selectEl) {
+        selectEl.value = category;
+        updateCategoryExample();
+      }
+    }
+
+    const formSection = document.getElementById('cotizar');
+    if (formSection) {
+      formSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    setTimeout(() => {
+      const selectEl = document.getElementById('quoteTecnica');
+      const exampleCard = document.getElementById('quoteCategoryExampleCard');
+      if (selectEl) {
+        selectEl.focus();
+        selectEl.classList.add('quote-field-highlight');
+        setTimeout(() => selectEl.classList.remove('quote-field-highlight'), 1800);
+      }
+      if (exampleCard) {
+        exampleCard.classList.add('quote-field-highlight');
+        setTimeout(() => exampleCard.classList.remove('quote-field-highlight'), 1800);
+      }
+    }, 400);
+  }
+
+  function quoteFromCurrentGallery(event) {
+    if (event) event.preventDefault();
+    if (currentGalleryProj) {
+      quoteProject(currentGalleryProj, event);
+    } else {
+      closeGalleryModal();
+      const formSection = document.getElementById('cotizar');
+      if (formSection) formSection.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   function handleFileSelect(event) {
@@ -5485,6 +5842,9 @@
     const vectorOption = document.querySelector('input[name="vectorOption"]:checked');
     const tieneVector = vectorOption ? vectorOption.value : 'SI';
 
+    const cantoWrapper = document.getElementById('cantoFieldWrapper');
+    const hasCanto = cantoWrapper && !cantoWrapper.classList.contains('hidden');
+
     const payload = {
       nombre: document.getElementById('quoteNombre').value,
       telefono: document.getElementById('quoteInstagram') ? document.getElementById('quoteInstagram').value : '',
@@ -5496,7 +5856,7 @@
       tecnica: document.getElementById('quoteTecnica').value,
       medida_ancho: parseFloat(document.getElementById('quoteAncho').value),
       medida_alto: parseFloat(document.getElementById('quoteAlto').value),
-      medida_canto: document.getElementById('quoteTecnica').value === 'Logotipo 3D' ? parseFloat(document.getElementById('quoteCanto').value) : null,
+      medida_canto: hasCanto && document.getElementById('quoteCanto') ? parseFloat(document.getElementById('quoteCanto').value) : null,
       iluminacion: document.getElementById('quoteIluminacion').value,
       material: document.getElementById('quoteMaterial').value,
       altura_instalacion: parseFloat(document.getElementById('quoteAlturaInstalacion').value),
@@ -5718,7 +6078,10 @@
     }
   });
 
-
+  // Initialize category reference example card on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCategoryExample();
+  });
 </script>
 </body>
 </html>
