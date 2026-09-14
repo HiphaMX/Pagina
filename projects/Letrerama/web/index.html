@@ -4354,203 +4354,206 @@
   <!-- Interactive Category Filter Bar -->
   <div class="projects-filter-bar">
     <button class="projects-filter-btn active" onclick="filterProjects('all', this)">Todos (8)</button>
-    <button class="projects-filter-btn" onclick="filterProjects('3d', this)">Letras 3D & Corpóreos</button>
-    <button class="projects-filter-btn" onclick="filterProjects('neon', this)">Neón Flex LED</button>
+    <button class="projects-filter-btn" onclick="filterProjects('3d', this)">3D & Corpóreos</button>
     <button class="projects-filter-btn" onclick="filterProjects('cajas', this)">Cajas de Luz</button>
-    <button class="projects-filter-btn" onclick="filterProjects('fachadas', this)">Fachadas & Cladding</button>
-    <button class="projects-filter-btn" onclick="filterProjects('grabado', this)">Grabado Láser</button>
+    <button class="projects-filter-btn" onclick="filterProjects('acrilico', this)">Letrero Acrílico</button>
+    <button class="projects-filter-btn" onclick="filterProjects('backlit', this)">Acrílico Backlit</button>
+    <button class="projects-filter-btn" onclick="filterProjects('bastidores', this)">Bastidor 3D</button>
+    <button class="projects-filter-btn" onclick="filterProjects('banderolas', this)">Banderola</button>
+    <button class="projects-filter-btn" onclick="filterProjects('trofeos', this)">Trofeos</button>
+    <button class="projects-filter-btn" onclick="filterProjects('impresion3d', this)">Impresión 3D</button>
   </div>
 
   <!-- Responsive Projects Grid -->
   <div class="projects-grid" id="projectsGrid">
     
-    <!-- 01: Boutique Letrerama -->
-    <article class="project-card" data-category="fachadas 3d">
+    <!-- 01: 3D - DIMMO -->
+    <article class="project-card" data-category="3d">
       <div class="project-card-media" onclick="openProjectGallery('01')">
-        <img src="assets/gallery_storefront.webp" alt="Fachada Comercial Boutique Letrerama" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Fachada & 3D</span>
+        <img src="assets/work_dimmo_1.webp" alt="Letras 3D Corpóreas DIMMO" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">3D Corpóreo</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (3)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Boutique Letrerama</h3>
-          <p class="project-card-desc">Fachada comercial premium con revestimiento metálico, letras 3D retroiluminadas y caja calada.</p>
+          <h3 class="project-card-title">DIMMO</h3>
+          <p class="project-card-desc">Letras volumétricas 3D de precisión milimétrica fabricadas en taller con acabado esmaltado automotriz.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Halo 6500K · IP66</div>
+          <div class="project-spec-pill"><span></span> Volumétrico 3D · Gran Formato</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 02: Oficina Corporativa -->
-    <article class="project-card" data-category="neon">
+    <!-- 02: 3D y caja de luz - Pepe bulls -->
+    <article class="project-card" data-category="3d cajas">
       <div class="project-card-media" onclick="openProjectGallery('02')">
-        <img src="assets/gallery_office_neon.webp" alt="Letrero Neon de Oficina Letrerama" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Neón Flex</span>
+        <img src="assets/work_pepebulls_1.webp" alt="3D y Caja de Luz Pepe Bulls" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">3D & Caja de Luz</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (3)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Oficina Letrerama</h3>
-          <p class="project-card-desc">Neón flex personalizado de alta intensidad montado en base de acrílico para recepción.</p>
+          <h3 class="project-card-title">Pepe Bulls</h3>
+          <p class="project-card-desc">Integración híbrida de letras volumétricas 3D corpóreas con caja de luz frontal e iluminación LED.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> 12V Siliconado · Bajo Consumo</div>
+          <div class="project-spec-pill"><span></span> 3D & Caja de Luz · Frontlit</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 03: Letras de Acrílico & Oro -->
-    <article class="project-card" data-category="3d">
+    <!-- 03: Trofeos diferentes materiales - trofeos pádel -->
+    <article class="project-card" data-category="trofeos">
       <div class="project-card-media" onclick="openProjectGallery('03')">
-        <img src="assets/gallery_gold_backlit.webp" alt="Letras Volumétricas Retroiluminadas Oro" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Letras 3D Oro</span>
+        <img src="assets/work_trofeos_padel_1.webp" alt="Trofeos Diferentes Materiales Pádel" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">Trofeos Multimaterial</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (2)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Letras Acrílico & Oro</h3>
-          <p class="project-card-desc">Letras volumétricas doradas con acabado cepillado y halo posterior blanco difuso.</p>
+          <h3 class="project-card-title">Trofeos Pádel</h3>
+          <p class="project-card-desc">Manufactura especializada en trofeos y galardones combinando acrílico cristal virgen, madera y corte láser.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Acrílico 4mm · Acero Inox</div>
+          <div class="project-spec-pill"><span></span> Grabado Láser · Multimaterial</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 04: Corporativo DIMMO -->
-    <article class="project-card" data-category="3d fachadas">
+    <!-- 04: Letrero acrílico - chaks -->
+    <article class="project-card" data-category="acrilico">
       <div class="project-card-media" onclick="openProjectGallery('04')">
-        <img src="assets/gallery_dimmo.webp" alt="Letrero Corpóreo Luminoso DIMMO" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Volumétrico Exterior</span>
+        <img src="assets/work_chaks_1.webp" alt="Letrero de Acrílico Chaks" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">Letrero Acrílico</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (2)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Corporativo DIMMO</h3>
-          <p class="project-card-desc">Letrero exterior de gran formato en aluminio pintado al horno con módulos Epistar.</p>
+          <h3 class="project-card-title">Chaks</h3>
+          <p class="project-card-desc">Letrero en placa de acrílico cristal virgen con corte láser de alta definición y cantos pulidos al diamante.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Aluminio Rolado · Batwing 170°</div>
+          <div class="project-spec-pill"><span></span> Acrílico Cast · Pulido Láser</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 05: Cafetería San Duo -->
-    <article class="project-card" data-category="cajas">
+    <!-- 05: Letrero acrílico retro iluminado - drink house -->
+    <article class="project-card" data-category="acrilico backlit 3d">
       <div class="project-card-media" onclick="openProjectGallery('05')">
-        <img src="assets/gallery_sanduo.webp" alt="Caja de Luz Redonda San Duo" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Caja de Luz</span>
+        <img src="assets/work_drinkhouse_1.webp" alt="Letrero Acrílico Retroiluminado Drink House" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">Acrílico Retroiluminado</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (2)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Cafetería San Duo</h3>
-          <p class="project-card-desc">Caja de luz calada circular de doble vista para exterior con silueta e iluminación cálida.</p>
+          <h3 class="project-card-title">Drink House</h3>
+          <p class="project-card-desc">Letras de acrílico con sistema de halo perimetral retroiluminado (backlit) y proyección suave a muro.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Doble Cara · Luz 3000K</div>
+          <div class="project-spec-pill"><span></span> Acrílico Backlit · Halo LED</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 06: Showroom Easy Living -->
-    <article class="project-card" data-category="3d">
+    <!-- 06: Bastidor 3D y acanalado - oftalmica -->
+    <article class="project-card" data-category="bastidores 3d">
       <div class="project-card-media" onclick="openProjectGallery('06')">
-        <img src="assets/gallery_easyliving.webp" alt="Letras 3D Backlit easyliving" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Letras 3D Backlit</span>
+        <img src="assets/work_oftalmica_1.webp" alt="Bastidor 3D y Acanalado Oftálmica" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">Bastidor 3D & Acanalado</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (2)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Showroom Easy Living</h3>
-          <p class="project-card-desc">Letras corpóreas de aluminio cepillado con retroiluminación indirecta de 3500K.</p>
+          <h3 class="project-card-title">Clínica Oftálmica</h3>
+          <p class="project-card-desc">Bastidor arquitectónico acanalado para fachada con ensamble de letras corpóreas 3D y fijación oculta.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Soldadura TIG · Luz Cálida</div>
+          <div class="project-spec-pill"><span></span> Bastidor Acanalado · Montaje 3D</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 07: Neon Good Things -->
-    <article class="project-card" data-category="neon">
+    <!-- 07: Banderola - san café -->
+    <article class="project-card" data-category="banderolas cajas">
       <div class="project-card-media" onclick="openProjectGallery('07')">
-        <img src="assets/gallery_neon_grow.webp" alt="Letrero Neon Flex Good Things Grow Here" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Neón Flex</span>
+        <img src="assets/work_sancafe_1.webp" alt="Banderola Comercial San Café" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">Banderola Comercial</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (2)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Neon Good Things</h3>
-          <p class="project-card-desc">Letrero decorativo 'Good Things Grow Here' en neón flex flexible de trazo caligráfico.</p>
+          <h3 class="project-card-title">San Café</h3>
+          <p class="project-card-desc">Banderola comercial saliente de doble cara con chasis metálico estanco para intemperie e iluminación cálida.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Neón 12V · Durabilidad &gt;50,000h</div>
+          <div class="project-spec-pill"><span></span> Banderola 2 Caras · Chasis IP66</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
     </article>
 
-    <!-- 08: Premios Padel Lion -->
-    <article class="project-card" data-category="grabado">
+    <!-- 08: Impresión 3D y aluminio - mentha -->
+    <article class="project-card" data-category="impresion3d 3d">
       <div class="project-card-media" onclick="openProjectGallery('08')">
-        <img src="assets/gallery_trophies.webp" alt="Trofeos Grabados Letrerama Padel Lion" class="project-card-img" loading="lazy" decoding="async" width="1376" height="768">
-        <span class="project-card-badge">Grabado Láser CNC</span>
+        <img src="assets/work_mentha_1.webp" alt="Impresión 3D y Aluminio Mentha" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <span class="project-card-badge">Impresión 3D & Aluminio</span>
         <div class="project-card-overlay">
           <button class="project-card-view-btn" aria-label="Ver galería de fotos">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Ver Fotos (5)</span>
+            <span>Ver Fotos (2)</span>
           </button>
         </div>
       </div>
       <div class="project-card-body">
         <div>
-          <h3 class="project-card-title">Premios Padel Lion</h3>
-          <p class="project-card-desc">Trofeos y placas conmemorativas en acrílico cristal virgen con desbaste y corte láser.</p>
+          <h3 class="project-card-title">Mentha Boutique</h3>
+          <p class="project-card-desc">Rotulación de vanguardia fusionando manufactura aditiva / impresión 3D técnica con perfilería rolada de aluminio.</p>
         </div>
         <div class="project-card-footer">
-          <div class="project-spec-pill"><span></span> Precisión 0.05mm · Pulido CNC</div>
+          <div class="project-spec-pill"><span></span> Impresión 3D · Aluminio Rolado</div>
           <a href="#cotizar" class="project-card-cotizar-link" title="Cotizar proyecto similar">Cotizar &rarr;</a>
         </div>
       </div>
@@ -5535,94 +5538,72 @@
       submitBtn.disabled = false;
     }
   }
-  // Dynamic Lightbox Project Galleries database (5 images per project max)
+  // Dynamic Lightbox Project Galleries database (real client photos)
   const projectGalleries = {
     "01": {
-      title: "Boutique Letrerama",
-      desc: "Fachada comercial premium con revestimiento metálico, letras 3D retroiluminadas y cajas de luz caladas.",
+      title: "DIMMO",
+      desc: "Letras volumétricas 3D de precisión milimétrica fabricadas en taller con acabado esmaltado automotriz.",
       images: [
-        "assets/gallery_storefront.webp",
-        "assets/gallery_gold_backlit.webp",
-        "assets/gallery_office_neon.webp",
-        "assets/gallery_dimmo.webp",
-        "assets/gallery_sanduo.webp"
+        "assets/work_dimmo_1.webp",
+        "assets/work_dimmo_2.webp",
+        "assets/work_dimmo_3.webp"
       ]
     },
     "02": {
-      title: "Oficina Letrerama",
-      desc: "Diseño e instalación de letrero de neón flex personalizado para recepción e interior corporativo.",
+      title: "Pepe Bulls",
+      desc: "Integración híbrida de letras volumétricas 3D corpóreas con caja de luz frontal e iluminación LED.",
       images: [
-        "assets/gallery_office_neon.webp",
-        "assets/gallery_neon_grow.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_easyliving.webp",
-        "assets/gallery_trophies.webp"
+        "assets/work_pepebulls_1.webp",
+        "assets/work_pepebulls_2.webp",
+        "assets/work_pepebulls_3.webp"
       ]
     },
     "03": {
-      title: "Letras de Acrílico & Oro",
-      desc: "Letras volumétricas retroiluminadas doradas de acero inoxidable cepillado con difusor de acrílico.",
+      title: "Trofeos Pádel",
+      desc: "Manufactura especializada en trofeos y galardones combinando acrílico cristal virgen, madera y corte láser.",
       images: [
-        "assets/gallery_gold_backlit.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_easyliving.webp",
-        "assets/gallery_dimmo.webp",
-        "assets/gallery_office_neon.webp"
+        "assets/work_trofeos_padel_1.webp",
+        "assets/work_trofeos_padel_2.webp"
       ]
     },
     "04": {
-      title: "Corporativo DIMMO",
-      desc: "Letrero corpóreo exterior de aluminio pintado de gran formato con iluminación led de alta eficiencia.",
+      title: "Chaks",
+      desc: "Letrero en placa de acrílico cristal virgen con corte láser de alta definición y cantos pulidos al diamante.",
       images: [
-        "assets/gallery_dimmo.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_sanduo.webp",
-        "assets/gallery_gold_backlit.webp",
-        "assets/gallery_easyliving.webp"
+        "assets/work_chaks_1.webp",
+        "assets/work_chaks_2.webp"
       ]
     },
     "05": {
-      title: "Cafetería San Duo",
-      desc: "Caja de luz calada circular de doble vista para exterior con iluminación led cálida.",
+      title: "Drink House",
+      desc: "Letras de acrílico con sistema de halo perimetral retroiluminado (backlit) y proyección suave a muro.",
       images: [
-        "assets/gallery_sanduo.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_dimmo.webp",
-        "assets/gallery_office_neon.webp",
-        "assets/gallery_neon_grow.webp"
+        "assets/work_drinkhouse_1.webp",
+        "assets/work_drinkhouse_2.webp"
       ]
     },
     "06": {
-      title: "Showroom Easy Living",
-      desc: "Letrero corpóreo 3D de aluminio cepillado retroiluminado indirecto led de 3500K.",
+      title: "Clínica Oftálmica",
+      desc: "Bastidor arquitectónico acanalado para fachada con ensamble de letras corpóreas 3D y fijación oculta.",
       images: [
-        "assets/gallery_easyliving.webp",
-        "assets/gallery_gold_backlit.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_office_neon.webp",
-        "assets/gallery_dimmo.webp"
+        "assets/work_oftalmica_1.webp",
+        "assets/work_oftalmica_2.webp"
       ]
     },
     "07": {
-      title: "Neon Good Things",
-      desc: "Letrero de neón flex decorativo 'Good Things Grow Here' montado sobre acrílico transparente.",
+      title: "San Café",
+      desc: "Banderola comercial saliente de doble cara con chasis metálico estanco para intemperie e iluminación cálida.",
       images: [
-        "assets/gallery_neon_grow.webp",
-        "assets/gallery_office_neon.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_easyliving.webp",
-        "assets/gallery_sanduo.webp"
+        "assets/work_sancafe_1.webp",
+        "assets/work_sancafe_2.webp"
       ]
     },
     "08": {
-      title: "Premios Padel Lion",
-      desc: "Trofeos y placas de acrílico cristal de alta precisión grabadas en láser CNC con cantos pulidos.",
+      title: "Mentha Boutique",
+      desc: "Rotulación de vanguardia fusionando manufactura aditiva / impresión 3D técnica con perfilería rolada de aluminio.",
       images: [
-        "assets/gallery_trophies.webp",
-        "assets/gallery_gold_backlit.webp",
-        "assets/gallery_storefront.webp",
-        "assets/gallery_dimmo.webp",
-        "assets/gallery_office_neon.webp"
+        "assets/work_mentha_1.webp",
+        "assets/work_mentha_2.webp"
       ]
     }
   };
