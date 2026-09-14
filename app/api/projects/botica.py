@@ -81,7 +81,7 @@ class BatchStockUpdateRequest(BaseModel):
     updates: List[ProductStockUpdate]
 
 def verify_botica_admin(password: str) -> bool:
-    expected = getattr(settings, "BOTICA_ADMIN_PASSWORD", "botica2026")
+    expected = getattr(settings, "BOTICA_ADMIN_PASSWORD", "Mibotic4_2026")
     return password.strip() == expected.strip()
 
 @router.get("/stock")

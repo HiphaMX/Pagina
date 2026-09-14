@@ -43,14 +43,14 @@ def test_admin_login_invalid():
 
 def test_admin_login_valid():
     client = TestClient(app)
-    response = client.post("/api/botica/admin/login", json={"password": "botica2026"})
+    response = client.post("/api/botica/admin/login", json={"password": "Mibotic4_2026"})
     assert response.status_code == 200
     assert response.json()["success"] is True
 
 def test_admin_update_stock():
     client = TestClient(app)
     payload = {
-        "password": "botica2026",
+        "password": "Mibotic4_2026",
         "updates": [
             {"slug": "focus-tintura", "stock": 3, "is_active": True},
             {"slug": "focus-oleato", "stock": 0, "is_active": True}
