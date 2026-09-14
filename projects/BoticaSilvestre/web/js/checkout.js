@@ -112,7 +112,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         payer_name: payerInfo.name,
                         payer_phone: payerInfo.phone,
                         address: payerInfo.address.street_name,
-                        cart_html: cartHtml
+                        cart_html: cartHtml,
+                        cart_items: cart
                     };
 
                     return new Promise((resolve, reject) => {

@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 from app.api import contact, mercadopago, auth, sat, qa, visual_generator
+from app.api.projects import botica as botica_project
 from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal
 from app.models.user import User
@@ -86,6 +87,8 @@ app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dash
 app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
 app.include_router(qa.router, prefix="/api", tags=["qa"])
 app.include_router(visual_generator.router, prefix="/api/generator", tags=["generator"])
+app.include_router(botica_project.router, prefix="/api/botica", tags=["botica"])
+
 
 
 

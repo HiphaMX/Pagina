@@ -1446,3 +1446,50 @@ span.format-tag {
     font-weight: 300;
 }
 
+/* Real-Time Stock Status Badges & Buttons */
+.stock-indicator-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-stock-out {
+    background: rgba(220, 53, 69, 0.12);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.25);
+}
+
+.badge-stock-low {
+    background: rgba(217, 119, 6, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+.btn-add-cart.btn-out-of-stock,
+.btn-add-cart:disabled {
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    border-color: #cbd5e1 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+    pointer-events: auto;
+}
+
+.format-tag.format-out-of-stock {
+    opacity: 0.55;
+    position: relative;
+}
+
+

@@ -74,6 +74,8 @@ class Settings(BaseSettings):
     BOTICA_EMAILS_FROM_EMAIL: str = ""
     BOTICA_EMAILS_FROM_NAME: str = ""
     BOTICA_RECAPTCHA_SECRET_KEY: str = ""
+    BOTICA_ADMIN_PASSWORD: str = "botica2026"
+
 
     # HEALTHYICE Specific SMTP settings
     HEALTHYICE_SMTP_HOST: str = ""

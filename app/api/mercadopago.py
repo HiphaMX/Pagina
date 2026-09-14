@@ -3,7 +3,7 @@ import json
 import mercadopago
 from fastapi import APIRouter, HTTPException, Request, Depends, Query
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.healthyice_order import HealthyIceOrder
@@ -262,6 +262,16 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                                 await send_botica_order_team(payer_name, payer_email, payer_phone, address_str, cart_html, total)
                             except Exception as mail_err:
                                 print(f"Error enviando correo a equipo Botica: {mail_err}")
+
+                            # Descontar stock de Botica automáticamente
+                            try:
+                                from app.api.projects.botica import deduct_botica_stock
+                                webhook_items = payment.get("additional_info", {}).get("items", [])
+                                if webhook_items:
+                                    deduct_botica_stock(db, webhook_items)
+                            except Exception as stock_err:
+                                print(f"Error descontando stock Botica en webhook: {stock_err}")
+
                         
             except Exception as e:
                 print(f"Webhook error: {e}")
@@ -284,6 +294,8 @@ class PaymentAdditionalInfo(BaseModel):
     payer_phone: str
     address: str
     cart_html: str
+    cart_items: Optional[List[Dict[str, Any]]] = None
+
 
 
 class PaymentRequest(BaseModel):
@@ -309,7 +321,7 @@ def get_mercadopago_config(store: str = "botica"):
 
 
 @router.post("/process_payment")
-async def process_payment(payload: PaymentRequest):
+async def process_payment(payload: PaymentRequest, db: Session = Depends(get_db)):
     store_name = payload.store or "botica"
     try:
         store_sdk = get_sdk_for_store(store_name)
@@ -413,6 +425,20 @@ async def process_payment(payload: PaymentRequest):
                     await send_botica_order_team(payer_name, payload.payer.email, payer_phone, address_str, cart_html, payload.transaction_amount)
                 except Exception as mail_err:
                     print(f"Error enviando correo a equipo Botica: {mail_err}")
+
+                # Descontar stock de Botica automáticamente
+                try:
+                    from app.api.projects.botica import deduct_botica_stock
+                    items_to_deduct = []
+                    if payload.additional_info and payload.additional_info.cart_items:
+                        items_to_deduct = payload.additional_info.cart_items
+                    elif payment.get("additional_info", {}).get("items"):
+                        items_to_deduct = payment.get("additional_info", {}).get("items")
+                    if items_to_deduct:
+                        deduct_botica_stock(db, items_to_deduct)
+                except Exception as stock_err:
+                    print(f"Error descontando stock Botica en process_payment: {stock_err}")
+
 
         return {
             "id": payment.get("id"),

@@ -1,3 +1,105 @@
+// Real-Time Stock Management for Botica Silvestre
+window.boticaStockMap = {};
+const BOTICA_STOCK_API = 'https://hipha-mx-fastapi.vercel.app/api/botica/stock';
+
+async function loadBoticaStock() {
+    try {
+        const res = await fetch(BOTICA_STOCK_API);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.stock_map) {
+            window.boticaStockMap = data.stock_map;
+            updateAllProductCardsStock();
+        }
+    } catch (e) {
+        console.warn('No se pudo sincronizar el inventario de Botica Silvestre:', e);
+    }
+}
+
+function getCardStockInfo(card) {
+    if (!card) return { stock: 99, is_active: true };
+    const btn = card.querySelector('.btn-add-cart');
+    if (!btn) return { stock: 99, is_active: true };
+    const baseName = btn.dataset.name ? btn.dataset.name.trim() : '';
+    const activeTag = card.querySelector('.format-tag.active');
+    const format = activeTag ? activeTag.textContent.trim() : '';
+    const key = format ? `${baseName} - ${format}` : baseName;
+
+    const stockMap = window.boticaStockMap || {};
+    const info = stockMap[key] || stockMap[key.toLowerCase()] || stockMap[baseName] || stockMap[baseName.toLowerCase()];
+    if (info !== undefined) {
+        return typeof info === 'number' ? { stock: info, is_active: true } : info;
+    }
+    return { stock: 10, is_active: true };
+}
+
+function updateProductCardStockUI(card) {
+    if (!card) return;
+    const btn = card.querySelector('.btn-add-cart');
+    if (!btn) return;
+    const imgWrapper = card.querySelector('.product-image-wrapper');
+    const info = getCardStockInfo(card);
+    const stock = info.stock !== undefined ? info.stock : 10;
+    const isActive = info.is_active !== false;
+
+    let badge = card.querySelector('.stock-indicator-badge');
+
+    if (!isActive || stock <= 0) {
+        if (!badge && imgWrapper) {
+            badge = document.createElement('div');
+            badge.className = 'stock-indicator-badge badge-stock-out';
+            imgWrapper.appendChild(badge);
+        } else if (badge) {
+            badge.className = 'stock-indicator-badge badge-stock-out';
+        }
+        if (badge) badge.textContent = 'Agotado';
+
+        btn.disabled = true;
+        btn.classList.add('btn-out-of-stock');
+        btn.innerHTML = 'Agotado';
+    } else if (stock <= 3) {
+        if (!badge && imgWrapper) {
+            badge = document.createElement('div');
+            badge.className = 'stock-indicator-badge badge-stock-low';
+            imgWrapper.appendChild(badge);
+        } else if (badge) {
+            badge.className = 'stock-indicator-badge badge-stock-low';
+        }
+        if (badge) badge.textContent = `¡Últimas ${stock} pzas!`;
+
+        btn.disabled = false;
+        btn.classList.remove('btn-out-of-stock');
+        btn.innerHTML = '<i data-lucide="shopping-cart"></i> Añadir';
+        if (window.lucide) lucide.createIcons();
+    } else {
+        if (badge) badge.remove();
+        btn.disabled = false;
+        btn.classList.remove('btn-out-of-stock');
+        btn.innerHTML = '<i data-lucide="shopping-cart"></i> Añadir';
+        if (window.lucide) lucide.createIcons();
+    }
+
+    // Actualizar estilo visual de los tags de formato del card
+    const tags = card.querySelectorAll('.format-tag');
+    const baseName = btn.dataset.name ? btn.dataset.name.trim() : '';
+    tags.forEach(tag => {
+        const fmt = tag.textContent.trim();
+        const tagKey = `${baseName} - ${fmt}`;
+        const tagInfo = (window.boticaStockMap || {})[tagKey] || (window.boticaStockMap || {})[tagKey.toLowerCase()];
+        if (tagInfo && (tagInfo.stock <= 0 || tagInfo.is_active === false)) {
+            tag.classList.add('format-out-of-stock');
+            tag.title = 'Agotado en esta presentación';
+        } else {
+            tag.classList.remove('format-out-of-stock');
+            tag.title = '';
+        }
+    });
+}
+
+function updateAllProductCardsStock() {
+    document.querySelectorAll('.product-card').forEach(updateProductCardStockUI);
+}
+
 window.selectFormat = function(btn) {
     const container = btn.closest('.product-format-tags');
     if (container) {
@@ -23,11 +125,15 @@ window.selectFormat = function(btn) {
                 
                 desc.innerText = prefix + base;
             }
+            updateProductCardStockUI(card);
         }
     }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Sincronizar stock inicial
+    loadBoticaStock();
+
     const cartIconBtn = document.getElementById('cart-icon-btn');
     const closeCartBtn = document.getElementById('close-cart');
     const cartSidebar = document.getElementById('cart-sidebar');
@@ -67,13 +173,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const format = activeFormatTag ? activeFormatTag.textContent.trim() : '';
             const name = format ? `${baseName} - ${format}` : baseName;
             
-            const price = parseFloat(e.currentTarget.dataset.price);
-            const image = e.currentTarget.dataset.image;
+            // Validar stock antes de añadir
+            const stockInfo = getCardStockInfo(productCard);
+            if (!stockInfo.is_active || stockInfo.stock <= 0) {
+                alert('Este producto o presentación se encuentra actualmente agotado.');
+                return;
+            }
 
             const existingItem = cart.find(item => item.name === name);
             if (existingItem) {
+                if (existingItem.quantity >= stockInfo.stock) {
+                    alert(`Solo contamos con ${stockInfo.stock} unidades disponibles de este producto.`);
+                    return;
+                }
                 existingItem.quantity += 1;
             } else {
+                const price = parseFloat(e.currentTarget.dataset.price);
+                const image = e.currentTarget.dataset.image;
                 cart.push({ name, price, image, quantity: 1 });
             }
 
@@ -90,7 +206,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addToCart = (name, price, image) => {
         const existingItem = cart.find(item => item.name === name);
+        const stockMap = window.boticaStockMap || {};
+        const info = stockMap[name] || stockMap[name.toLowerCase()];
+        const availableStock = info ? info.stock : 99;
+
         if (existingItem) {
+            if (existingItem.quantity >= availableStock) {
+                alert(`Solo contamos con ${availableStock} unidades disponibles.`);
+                return;
+            }
             existingItem.quantity += 1;
         } else {
             cart.push({ name, price, image, quantity: 1 });
@@ -103,6 +227,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateQuantity = (name, change) => {
         const item = cart.find(i => i.name === name);
         if (item) {
+            if (change > 0) {
+                const stockMap = window.boticaStockMap || {};
+                const info = stockMap[name] || stockMap[name.toLowerCase()];
+                if (info && info.stock !== undefined && item.quantity + change > info.stock) {
+                    alert(`Solo contamos con ${info.stock} unidades disponibles de ${name}.`);
+                    return;
+                }
+            }
+
             item.quantity += change;
             if (item.quantity <= 0) {
                 cart = cart.filter(i => i.name !== name);
@@ -118,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveCart();
         renderCart();
     };
+
 
     // Save & Render
     const saveCart = () => {
