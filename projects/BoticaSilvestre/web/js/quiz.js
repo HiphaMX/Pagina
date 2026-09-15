@@ -16,7 +16,7 @@ const PRODUCTS_DB = {
     { id: 'fluye', product: 'Fluye', subtitle: 'Aceite de coco + Cera de abeja + Herbolaria', icon: 'zap', desc: 'Dolor en las articulaciones', price: 190, image: 'assets/images/Product Shots/Fluye1.webp' },
   ],
   step3: [
-    { id: 'yes', product: 'Armonizador', subtitle: 'Spray Energético', icon: 'sparkles', desc: 'Spray aerobeo ambiental con salvia, ruda y pirul para disipar energías hostiles.', price: 59, image: 'assets/images/Product Shots/Armonizador1.webp' },
+    { id: 'yes', product: 'Armonizador', subtitle: 'Spray Energético (250 ml)', icon: 'sparkles', desc: 'Spray aerobeo ambiental (250 ml) con salvia, ruda y pirul para disipar energías hostiles.', price: 190, image: 'assets/images/Product Shots/Armonizador1.webp' },
     { id: 'no', product: 'Omitir armonización', subtitle: 'Continuar sin sellar', icon: 'x', desc: 'Prefiero no añadir esta frecuencia por ahora.' }
   ]
 };

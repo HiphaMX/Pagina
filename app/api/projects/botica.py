@@ -26,7 +26,7 @@ DEFAULT_BOTICA_CATALOG = [
     {"slug": "smile-oleato", "base_name": "Smile", "format": "Oleato", "display_name": "Smile - Oleato", "category": "Soul Shine", "price": 690.0, "stock": 10, "image_url": "assets/images/Product Shots/Smile 01.webp"},
     {"slug": "mystic-tintura", "base_name": "Mystic", "format": "Tintura", "display_name": "Mystic - Tintura", "category": "Soul Shine", "price": 990.0, "stock": 0, "image_url": "assets/images/Product Shots/Mystic 01.webp"},
     {"slug": "mystic-oleato", "base_name": "Mystic", "format": "Oleato", "display_name": "Mystic - Oleato", "category": "Soul Shine", "price": 990.0, "stock": 0, "image_url": "assets/images/Product Shots/Mystic 01.webp"},
-    {"slug": "armonizador-spray", "base_name": "Armonizador", "format": "Spray", "display_name": "Armonizador - Spray", "category": "Soul Shine", "price": 59.0, "stock": 10, "image_url": "assets/images/Product Shots/Armonizador1.webp"},
+    {"slug": "armonizador-spray", "base_name": "Armonizador", "format": "Spray", "display_name": "Armonizador - Spray", "category": "Soul Shine", "price": 190.0, "stock": 10, "image_url": "assets/images/Product Shots/Armonizador1.webp"},
 
     # Sabina
     {"slug": "calma-tintura", "base_name": "Calma", "format": "Tintura", "display_name": "Calma - Tintura", "category": "Sabina", "price": 390.0, "stock": 10, "image_url": "assets/images/Product Shots/Sabina/Calma 01.webp"},
@@ -93,6 +93,12 @@ def get_botica_stock(db: Session = Depends(get_db)):
     Base.metadata.create_all(bind=engine)
     seed_botica_catalog(db)
 
+    # Asegurar precio actualizado en catálogo existente
+    armonizador = db.query(BoticaProduct).filter(BoticaProduct.slug == "armonizador-spray").first()
+    if armonizador and armonizador.price != 190.0:
+        armonizador.price = 190.0
+        db.commit()
+
     products = db.query(BoticaProduct).order_by(BoticaProduct.id).all()
     
     items_data = []
@@ -132,6 +138,11 @@ def get_botica_stock(db: Session = Depends(get_db)):
             "is_active": p.is_active,
             "price": p.price
         }
+        # Aliases adicionales para armonizador
+        if p.slug == "armonizador-spray":
+            stock_map["armonizador"] = stock_map[p.slug]
+            stock_map["armonizador - spray (250 ml)"] = stock_map[p.slug]
+            stock_map["armonizador spray"] = stock_map[p.slug]
 
     db_engine_name = "postgresql" if "postgresql" in str(engine.url) else "sqlite"
     return {
