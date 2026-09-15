@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|Centro Escolar El Paraiso|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama)/'",
   "functions": {
     "api/**/*.py": {
       "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}"
