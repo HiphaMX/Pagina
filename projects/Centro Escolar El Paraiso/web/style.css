@@ -1671,188 +1671,128 @@ body.theme-dark .rotary-node::after {
   display: none;
 }
 
-/* Gear Styling */
-.gear {
+/* Gear & Kinematic Transmission Styling */
+.svg-desktop {
+  display: block;
+}
+
+.svg-mobile {
+  display: none;
+}
+
+/* Base Gear & Pinion Styling */
+.gear-assembly,
+.pinion-driver {
   transform-origin: center;
 }
 
-.gear circle, .gear rect {
-  stroke: rgba(255, 255, 255, 0.2);
-  fill: none;
-  transition: stroke 0.4s ease, fill 0.4s ease;
+.gear-teeth-outline {
+  transition: stroke 0.4s ease, filter 0.4s ease;
 }
 
-.gear rect {
-  fill: rgba(255, 255, 255, 0.04);
+.gear-cutout-outline {
+  transition: stroke 0.4s ease;
+}
+
+.bearing-race {
+  transition: stroke 0.4s ease;
 }
 
 .gear-hub {
   fill: #0c1b12 !important;
-  stroke: rgba(255, 255, 255, 0.2) !important;
-  stroke-width: 2px;
+  stroke: rgba(255, 255, 255, 0.25) !important;
+  stroke-width: 1.5px;
+  transition: fill 0.4s ease, stroke 0.4s ease, filter 0.4s ease;
 }
 
-/* Gear transform origins (absolute px inside viewboxes) */
-/* Desktop */
-.svg-desktop .gear-1 { transform-origin: 75px 100px; }
-.svg-desktop .gear-2 { transform-origin: 165px 210px; }
-.svg-desktop .gear-3 { transform-origin: 75px 320px; }
-
-/* Mobile */
-.svg-mobile .gear-1 { transform-origin: 75px 75px; }
-.svg-mobile .gear-2 { transform-origin: 200px 75px; }
-.svg-mobile .gear-3 { transform-origin: 325px 75px; }
-
-/* Active glow transitions */
-.gear-1.active circle, .gear-1.active rect {
-  stroke: var(--color-accent-green);
-}
-.gear-1.active rect {
-  fill: rgba(16, 185, 129, 0.08);
-}
-.gear-1.active .gear-hub {
-  fill: var(--color-accent-green) !important;
-  stroke: var(--color-accent-green) !important;
-  filter: drop-shadow(0 0 4px var(--color-accent-green));
+/* Motor Unit (Unidad Motriz M-01 / Impulsor Inicial) */
+.motor-unit {
+  transition: filter 0.4s ease;
 }
 
-.gear-2.active circle, .gear-2.active rect {
-  stroke: var(--color-accent-green);
-}
-.gear-2.active rect {
-  fill: rgba(16, 185, 129, 0.08);
-}
-.gear-2.active .gear-hub {
-  fill: var(--color-accent-green) !important;
-  stroke: var(--color-accent-green) !important;
-  filter: drop-shadow(0 0 4px var(--color-accent-green));
-}
-
-.gear-3.active circle, .gear-3.active rect {
-  stroke: var(--color-accent-green);
-}
-.gear-3.active rect {
-  fill: rgba(16, 185, 129, 0.08);
-}
-.gear-3.active .gear-hub {
-  fill: var(--color-accent-green) !important;
-  stroke: var(--color-accent-green) !important;
-  filter: drop-shadow(0 0 4px var(--color-accent-green));
-}
-
-/* Rotation interactions based on active step */
-.admissions-maker-layout.step-1-active .gear-1 {
-  transform: rotate(90deg);
-}
-
-.admissions-maker-layout.step-2-active .gear-1 {
-  transform: rotate(180deg);
-}
-.admissions-maker-layout.step-2-active .gear-2 {
-  transform: rotate(-100deg); /* rotates counter-clockwise */
-}
-
-.admissions-maker-layout.step-3-active .gear-1 {
-  transform: rotate(270deg);
-}
-.admissions-maker-layout.step-3-active .gear-2 {
-  transform: rotate(-200deg);
-}
-.admissions-maker-layout.step-3-active .gear-3 {
-  transform: rotate(90deg);
-}
-
-.admissions-maker-layout.step-4-active .gear-1 {
-  transform: rotate(360deg);
-}
-.admissions-maker-layout.step-4-active .gear-2 {
-  transform: rotate(-300deg);
-}
-.admissions-maker-layout.step-4-active .gear-3 {
-  transform: rotate(180deg);
-}
-
-/* Robotic Arm Styling */
-.robotic-arm {
-  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.svg-desktop .robotic-arm {
-  transform-origin: 215px 50px;
-}
-
-.svg-mobile .robotic-arm {
-  transform-origin: 380px 20px;
-}
-
-.arm-link-1, .arm-link-2 {
-  stroke: rgba(255, 255, 255, 0.35);
-  transition: stroke 0.4s ease;
-}
-
-.arm-joint {
-  fill: #0c1b12;
-  stroke: rgba(255, 255, 255, 0.35);
-  transition: stroke 0.4s ease, fill 0.4s ease;
-}
-
-.arm-gripper path {
-  stroke: rgba(255, 255, 255, 0.4);
-  transition: stroke 0.4s ease;
-}
-
-.gripper-laser {
-  fill: #ff5f56;
+.motor-led {
   transition: fill 0.4s ease, filter 0.4s ease;
-  filter: drop-shadow(0 0 2px #ff5f56);
 }
 
-/* Arm glowing and target tracking on active states */
-/* Desktop arm angles */
-.admissions-maker-layout.step-1-active .svg-desktop .robotic-arm { transform: rotate(8deg); }
-.admissions-maker-layout.step-2-active .svg-desktop .robotic-arm { transform: rotate(38deg); }
-.admissions-maker-layout.step-3-active .svg-desktop .robotic-arm { transform: rotate(66deg); }
-.admissions-maker-layout.step-4-active .svg-desktop .robotic-arm { transform: rotate(90deg); }
+.power-conduit {
+  stroke-dasharray: 4 2;
+  animation: powerFlow 1.2s linear infinite;
+}
 
-/* Mobile arm angles */
-.admissions-maker-layout.step-1-active .svg-mobile .robotic-arm { transform: rotate(25deg); }
-.admissions-maker-layout.step-2-active .svg-mobile .robotic-arm { transform: rotate(50deg); }
-.admissions-maker-layout.step-3-active .svg-mobile .robotic-arm { transform: rotate(70deg); }
-.admissions-maker-layout.step-4-active .svg-mobile .robotic-arm { transform: rotate(88deg); }
+@keyframes powerFlow {
+  0% { stroke-dashoffset: 12; }
+  100% { stroke-dashoffset: 0; }
+}
 
-/* Glowing parts on active */
-.admissions-maker-layout.step-1-active .arm-link-1,
-.admissions-maker-layout.step-1-active .arm-link-2,
-.admissions-maker-layout.step-2-active .arm-link-1,
-.admissions-maker-layout.step-2-active .arm-link-2,
-.admissions-maker-layout.step-3-active .arm-link-1,
-.admissions-maker-layout.step-3-active .arm-link-2,
-.admissions-maker-layout.step-4-active .arm-link-1,
-.admissions-maker-layout.step-4-active .arm-link-2 {
+.torque-arc {
+  animation: pulseTorque 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulseTorque {
+  0% { opacity: 0.6; stroke-width: 1.4; }
+  100% { opacity: 1; stroke-width: 2.2; }
+}
+
+/* Kinetic Mesh Points */
+.mesh-point {
+  opacity: 0.25;
+  transition: opacity 0.5s ease;
+}
+
+.mesh-point.active {
+  opacity: 1;
+}
+
+.mesh-spark {
+  animation: kineticPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes kineticPulse {
+  0% { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.3); opacity: 1; }
+}
+
+/* Active States for Gears */
+.gear-assembly.active .gear-teeth-outline {
+  stroke: var(--color-accent-green);
+  filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.6));
+}
+
+.gear-assembly.active .gear-cutout-outline {
+  stroke: rgba(16, 185, 129, 0.5);
+}
+
+.gear-assembly.active .bearing-race {
   stroke: var(--color-accent-green);
 }
 
-.admissions-maker-layout.step-1-active .arm-joint,
-.admissions-maker-layout.step-2-active .arm-joint,
-.admissions-maker-layout.step-3-active .arm-joint,
-.admissions-maker-layout.step-4-active .arm-joint {
-  fill: var(--color-accent-green);
-  stroke: #ffffff;
+.gear-assembly.active .gear-hub {
+  fill: var(--color-accent-green) !important;
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 0 8px var(--color-accent-green));
 }
 
-.admissions-maker-layout.step-1-active .arm-gripper path,
-.admissions-maker-layout.step-2-active .arm-gripper path,
-.admissions-maker-layout.step-3-active .arm-gripper path,
-.admissions-maker-layout.step-4-active .arm-gripper path {
-  stroke: #ffffff;
+.gear-assembly.active text {
+  fill: #040d07;
 }
 
-.admissions-maker-layout.step-1-active .gripper-laser,
-.admissions-maker-layout.step-2-active .gripper-laser,
-.admissions-maker-layout.step-3-active .gripper-laser,
-.admissions-maker-layout.step-4-active .gripper-laser {
-  fill: var(--color-accent-green);
-  filter: drop-shadow(0 0 6px var(--color-accent-green));
+.gear-assembly.active + .step-label,
+.gear-assembly.active text.step-label {
+  fill: var(--color-accent-green) !important;
+}
+
+/* Output Telemetry Bar */
+.output-status-bar text {
+  transition: fill 0.4s ease;
+}
+
+.status-dot {
+  animation: blinkStatus 1.5s ease-in-out infinite;
+}
+
+@keyframes blinkStatus {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 /* Right Column: Admission Steps Cards */

@@ -1159,50 +1159,91 @@ function initOverlayMenu() {
 }
 
 /* ==========================================================================
-   10. INTERACTIVE MAKER ADMISSIONS CIRCUIT PANEL
+   10. INTERACTIVE MAKER ADMISSIONS CIRCUIT PANEL (PRECISION GEAR TRANSMISSION)
    ========================================================================== */
 function initInteractiveAdmissions() {
   const cards = document.querySelectorAll('.admission-step-card');
   const container = document.querySelector('.admissions-maker-layout');
-  const gears = document.querySelectorAll('.gear');
-
   if (cards.length === 0 || !container) return;
 
+  // Desktop SVG Elements
+  const dPinion = document.querySelector('.svg-desktop .pinion-rotator');
+  const dG1 = document.querySelector('.svg-desktop .gear-1 .gear-rotator');
+  const dG2 = document.querySelector('.svg-desktop .gear-2 .gear-rotator');
+  const dG3 = document.querySelector('.svg-desktop .gear-3 .gear-rotator');
+  const dGear1Assy = document.querySelector('.svg-desktop .gear-1');
+  const dGear2Assy = document.querySelector('.svg-desktop .gear-2');
+  const dGear3Assy = document.querySelector('.svg-desktop .gear-3');
+  const dMesh12 = document.querySelector('.svg-desktop .mesh-12');
+  const dMesh23 = document.querySelector('.svg-desktop .mesh-23');
+  const dStatusText = document.querySelector('.svg-desktop .status-text');
+
+  // Mobile SVG Elements
+  const mPinion = document.querySelector('.svg-mobile .pinion-rotator');
+  const mG1 = document.querySelector('.svg-mobile .gear-1 .gear-rotator');
+  const mG2 = document.querySelector('.svg-mobile .gear-2 .gear-rotator');
+  const mG3 = document.querySelector('.svg-mobile .gear-3 .gear-rotator');
+  const mGear1Assy = document.querySelector('.svg-mobile .gear-1');
+  const mGear2Assy = document.querySelector('.svg-mobile .gear-2');
+  const mGear3Assy = document.querySelector('.svg-mobile .gear-3');
+  const mMesh12 = document.querySelector('.svg-mobile .mesh-12');
+  const mMesh23 = document.querySelector('.svg-mobile .mesh-23');
+
+  // Exact kinematic phase offsets for precision meshing
+  const D_PHI1_0 = 55.0;
+  const D_PHI2_0 = 247.857;
+  const D_PHI3_0 = 297.857;
+  const D_PHIP_0 = 46.250;
+
+  const M_PHI1_0 = 0.0;
+  const M_PHI2_0 = 192.857;
+  const M_PHI3_0 = 0.0;
+  const M_PHIP_0 = 318.750;
+
   function activateStepForStep(step) {
-    // Update active classes on layout container
+    const s = parseInt(step, 10);
+
+    // Update container classes
     container.classList.remove('step-1-active', 'step-2-active', 'step-3-active', 'step-4-active');
     container.classList.add(`step-${step}-active`);
 
-    // Update active card
+    // Update cards
     cards.forEach(c => {
-      if (c.getAttribute('data-step') === step) {
+      if (c.getAttribute('data-step') === String(step)) {
         c.classList.add('active');
       } else {
         c.classList.remove('active');
       }
     });
 
-    // Update active gears (cumulative activation matches mechanical interaction)
-    gears.forEach(g => g.classList.remove('active'));
-    if (step === '1') {
-      const g1 = document.querySelectorAll('.gear-1');
-      g1.forEach(g => g.classList.add('active'));
-    } else if (step === '2') {
-      const g1 = document.querySelectorAll('.gear-1');
-      const g2 = document.querySelectorAll('.gear-2');
-      g1.forEach(g => g.classList.add('active'));
-      g2.forEach(g => g.classList.add('active'));
-    } else if (step === '3' || step === '4') {
-      const g1 = document.querySelectorAll('.gear-1');
-      const g2 = document.querySelectorAll('.gear-2');
-      const g3 = document.querySelectorAll('.gear-3');
-      g1.forEach(g => g.classList.add('active'));
-      g2.forEach(g => g.classList.add('active'));
-      g3.forEach(g => g.classList.add('active'));
+    // Cumulative gear visual activation
+    if (dGear1Assy) dGear1Assy.classList.toggle('active', s >= 1);
+    if (dGear2Assy) dGear2Assy.classList.toggle('active', s >= 2);
+    if (dGear3Assy) dGear3Assy.classList.toggle('active', s >= 3);
+
+    if (mGear1Assy) mGear1Assy.classList.toggle('active', s >= 1);
+    if (mGear2Assy) mGear2Assy.classList.toggle('active', s >= 2);
+    if (mGear3Assy) mGear3Assy.classList.toggle('active', s >= 3);
+
+    // Mesh contact indicators
+    if (dMesh12) dMesh12.classList.toggle('active', s >= 2);
+    if (dMesh23) dMesh23.classList.toggle('active', s >= 3);
+    if (mMesh12) mMesh12.classList.toggle('active', s >= 2);
+    if (mMesh23) mMesh23.classList.toggle('active', s >= 3);
+
+    // Live status readout
+    if (dStatusText) {
+      if (s === 1) {
+        dStatusText.textContent = 'IMPULSO INICIAL // PASO 01: VISITA GUIADA';
+      } else if (s === 2) {
+        dStatusText.textContent = 'TRANSMISIÓN EN CADENA // PASO 02: INMERSIÓN';
+      } else {
+        dStatusText.textContent = 'MECANISMO COMPLETO // PASO 03: INSCRIPCIÓN';
+      }
     }
   }
 
-  // Trigger on click for accessibility & direct interaction
+  // Click handler
   cards.forEach(card => {
     card.addEventListener('click', () => {
       const step = card.getAttribute('data-step');
@@ -1210,23 +1251,21 @@ function initInteractiveAdmissions() {
     });
   });
 
-  // Automatically activate steps as user scrolls down the section
+  // Scroll handler
   function handleScrollActivation() {
     const rect = container.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
     const containerTop = rect.top;
     const containerHeight = rect.height;
-
-    // Midpoint of viewport is our detection threshold
     const midpoint = viewportHeight / 2;
 
     let activeIndex = 0;
     if (containerTop > midpoint - containerHeight * 0.25) {
-      activeIndex = 0; // step 1
+      activeIndex = 0;
     } else if (containerTop <= midpoint - containerHeight * 0.25 && containerTop > midpoint - containerHeight * 0.75) {
-      activeIndex = 1; // step 2
+      activeIndex = 1;
     } else {
-      activeIndex = 2; // step 3
+      activeIndex = 2;
     }
 
     const targetCard = cards[activeIndex];
@@ -1237,54 +1276,55 @@ function initInteractiveAdmissions() {
   }
 
   window.addEventListener('scroll', handleScrollActivation, { passive: true });
-  // Set initial state based on current scroll position
   handleScrollActivation();
 
-  // Gear animation variables
-  let phi1 = 0; // angle of gear-1 in degrees
-  let phi2 = 0; // angle of gear-2 in degrees
-  let phi3 = 0; // angle of gear-3 in degrees
-
-  const desktopGear1 = document.querySelector('.svg-desktop .gear-1');
-  const desktopGear2 = document.querySelector('.svg-desktop .gear-2');
-  const desktopGear3 = document.querySelector('.svg-desktop .gear-3');
-
-  const mobileGear1 = document.querySelector('.svg-mobile .gear-1');
-  const mobileGear2 = document.querySelector('.svg-mobile .gear-2');
-  const mobileGear3 = document.querySelector('.svg-mobile .gear-3');
-
+  // 60fps Kinematic Transmission Animation Loop
+  let angle = 0;
+  const speed = 0.55; // degrees per frame
   let animationFrameId;
 
   function animate() {
-    // Gear speeds (degrees per frame)
-    const baseSpeed = 0.5;
+    angle = (angle + speed) % 360;
 
-    // Spin gear-1 (clockwise) if active
-    if (desktopGear1 && (desktopGear1.classList.contains('active') || (mobileGear1 && mobileGear1.classList.contains('active')))) {
-      phi1 = (phi1 + baseSpeed) % 360;
+    // Desktop rotations
+    if (dPinion) {
+      const rotDP = D_PHIP_0 - angle * (14.0 / 8.0);
+      dPinion.setAttribute('transform', `rotate(${rotDP})`);
     }
-    // Spin gear-2 (counter-clockwise) if active
-    if (desktopGear2 && (desktopGear2.classList.contains('active') || (mobileGear2 && mobileGear2.classList.contains('active')))) {
-      phi2 = (phi2 - baseSpeed * 1.2) % 360; // 1.2 factor for gear teeth/ratio feel
+    if (dG1) {
+      const rotDG1 = D_PHI1_0 + angle;
+      dG1.setAttribute('transform', `rotate(${rotDG1})`);
     }
-    // Spin gear-3 (clockwise) if active
-    if (desktopGear3 && (desktopGear3.classList.contains('active') || (mobileGear3 && mobileGear3.classList.contains('active')))) {
-      phi3 = (phi3 + baseSpeed * 0.84) % 360;
+    if (dG2) {
+      const rotDG2 = D_PHI2_0 - angle;
+      dG2.setAttribute('transform', `rotate(${rotDG2})`);
+    }
+    if (dG3) {
+      const rotDG3 = D_PHI3_0 + angle;
+      dG3.setAttribute('transform', `rotate(${rotDG3})`);
     }
 
-    // Apply rotations
-    if (desktopGear1) desktopGear1.style.transform = `rotate(${phi1}deg)`;
-    if (desktopGear2) desktopGear2.style.transform = `rotate(${phi2}deg)`;
-    if (desktopGear3) desktopGear3.style.transform = `rotate(${phi3}deg)`;
-
-    if (mobileGear1) mobileGear1.style.transform = `rotate(${phi1}deg)`;
-    if (mobileGear2) mobileGear2.style.transform = `rotate(${phi2}deg)`;
-    if (mobileGear3) mobileGear3.style.transform = `rotate(${phi3}deg)`;
+    // Mobile rotations
+    if (mPinion) {
+      const rotMP = M_PHIP_0 - angle * (14.0 / 8.0);
+      mPinion.setAttribute('transform', `rotate(${rotMP})`);
+    }
+    if (mG1) {
+      const rotMG1 = M_PHI1_0 + angle;
+      mG1.setAttribute('transform', `rotate(${rotMG1})`);
+    }
+    if (mG2) {
+      const rotMG2 = M_PHI2_0 - angle;
+      mG2.setAttribute('transform', `rotate(${rotMG2})`);
+    }
+    if (mG3) {
+      const rotMG3 = M_PHI3_0 + angle;
+      mG3.setAttribute('transform', `rotate(${rotMG3})`);
+    }
 
     animationFrameId = requestAnimationFrame(animate);
   }
 
-  // Use IntersectionObserver to start/stop the animation
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1298,7 +1338,7 @@ function initInteractiveAdmissions() {
         }
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.08 });
 
   observer.observe(container);
 }

@@ -11,7 +11,7 @@
   <meta name="author" content="HiphaMX">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -497,153 +497,277 @@
           <div class="admissions-machine-panel">
             <div class="machine-label">SISTEMA CENTRO ESCOLAR EL PARAISO</div>
             <div class="machine-board">
-              <!-- SVG Desktop (250x400) -->
-              <svg class="machine-svg svg-desktop" viewBox="0 0 250 400" aria-hidden="true">
-                <!-- Gear 1 -->
-                <g class="gear gear-1 active">
-                  <circle cx="75" cy="100" r="50" />
-                  <circle class="gear-hub" cx="75" cy="100" r="12" />
-                  <!-- Teeth (12) -->
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(0, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(30, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(60, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(90, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(120, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(150, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(180, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(210, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(240, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(270, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(300, 75, 100)" />
-                  <rect x="67" y="30" width="16" height="20" rx="3" transform="rotate(330, 75, 100)" />
+              <!-- SVG Desktop (260x380) -->
+              <svg class="machine-svg svg-desktop" viewBox="0 0 260 380" aria-hidden="true">
+                <defs>
+                  <!-- Glow Filters -->
+                  <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+
+                  <filter id="mesh-spark" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="blur1" />
+                    <feGaussianBlur stdDeviation="1.5" result="blur2" />
+                    <feMerge>
+                      <feMergeNode in="blur1" />
+                      <feMergeNode in="blur2" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+
+                  <!-- Linear Gradients -->
+                  <linearGradient id="gear-metallic" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#164e32" stop-opacity="0.9" />
+                    <stop offset="50%" stop-color="#0a2617" stop-opacity="0.95" />
+                    <stop offset="100%" stop-color="#05170d" stop-opacity="0.98" />
+                  </linearGradient>
+
+                  <linearGradient id="motor-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1b4332" />
+                    <stop offset="100%" stop-color="#081c15" />
+                  </linearGradient>
+                </defs>
+
+                <!-- Technical Background Circuit Lines -->
+                <g class="tech-grid" opacity="0.35">
+                  <line x1="20" y1="20" x2="240" y2="20" stroke="rgba(16,185,129,0.2)" stroke-width="0.75" stroke-dasharray="2 4" />
+                  <line x1="240" y1="20" x2="240" y2="360" stroke="rgba(16,185,129,0.2)" stroke-width="0.75" stroke-dasharray="2 4" />
+                  <line x1="20" y1="360" x2="240" y2="360" stroke="rgba(16,185,129,0.2)" stroke-width="0.75" stroke-dasharray="2 4" />
+                  <line x1="20" y1="20" x2="20" y2="360" stroke="rgba(16,185,129,0.2)" stroke-width="0.75" stroke-dasharray="2 4" />
+
+                  <!-- Kinematic Link Line connecting centers -->
+                  <path d="M 50.4 41.4 L 90 110 L 147.8 192.6 L 90 275.2" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="1" stroke-dasharray="3 3" />
                 </g>
 
-                <!-- Gear 2 -->
-                <g class="gear gear-2">
-                  <circle cx="165" cy="210" r="42" />
-                  <circle class="gear-hub" cx="165" cy="210" r="10" />
-                  <!-- Teeth (12) -->
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(0, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(30, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(60, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(90, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(120, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(150, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(180, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(210, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(240, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(270, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(300, 165, 210)" />
-                  <rect x="158" y="150" width="14" height="18" rx="3" transform="rotate(330, 165, 210)" />
+                <!-- MOTOR DRIVE UNIT (Unidad Motriz M-01 / Impulsor Inicial) -->
+                <g class="motor-unit">
+                  <!-- Motor Housing -->
+                  <rect x="12" y="14" width="46" height="34" rx="4" fill="url(#motor-grad)" stroke="rgba(16,185,129,0.5)" stroke-width="1.2" />
+                  <!-- Cooling Fins -->
+                  <line x1="16" y1="18" x2="16" y2="44" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                  <line x1="20" y1="18" x2="20" y2="44" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                  <line x1="24" y1="18" x2="24" y2="44" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                  <!-- Power Cable Conduit -->
+                  <path class="power-conduit" d="M 5 28 L 12 28" stroke="#10b981" stroke-width="2" stroke-linecap="round" />
+                  <!-- Motor Status LED -->
+                  <circle class="motor-led" cx="50" cy="22" r="2.5" fill="#10b981" filter="url(#neon-glow)" />
+                  <!-- Technical Label -->
+                  <text x="14" y="10" fill="rgba(16,185,129,0.8)" font-family="monospace" font-size="6.5" letter-spacing="0.5">M-01 DRIVE</text>
+                  <text x="15" y="55" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="5.5">IMPULSO INICIAL</text>
                 </g>
 
-                <!-- Gear 3 -->
-                <g class="gear gear-3">
-                  <circle cx="75" cy="320" r="50" />
-                  <circle class="gear-hub" cx="75" cy="320" r="12" />
-                  <!-- Teeth (12) -->
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(0, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(30, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(60, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(90, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(120, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(150, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(180, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(210, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(240, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(270, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(300, 75, 320)" />
-                  <rect x="67" y="250" width="16" height="20" rx="3" transform="rotate(330, 75, 320)" />
+                <!-- MOTOR PINION (Driver Gear z=8) -->
+                <g class="pinion-driver" transform="translate(50.4, 41.4)">
+                  <!-- Rotating group -->
+                  <g class="pinion-rotator">
+                    <!-- Pinion Teeth Body -->
+                    <path d="M 19.88 -5.10 L 28.31 -5.29 L 35.18 -4.16 L 35.18 4.16 L 28.31 5.29 L 19.88 5.10 L 18.96 7.85 L 17.66 10.45 L 23.76 16.28 L 27.82 21.93 L 21.93 27.82 L 16.28 23.76 L 10.45 17.66 L 7.85 18.96 L 5.10 19.88 L 5.29 28.31 L 4.16 35.18 L -4.16 35.18 L -5.29 28.31 L -5.10 19.88 L -7.85 18.96 L -10.45 17.66 L -16.28 23.76 L -21.93 27.82 L -27.82 21.93 L -23.76 16.28 L -17.66 10.45 L -18.96 7.85 L -19.88 5.10 L -28.31 5.29 L -35.18 4.16 L -35.18 -4.16 L -28.31 -5.29 L -19.88 -5.10 L -18.96 -7.85 L -17.66 -10.45 L -23.76 -16.28 L -27.82 -21.93 L -21.93 -27.82 L -16.28 -23.76 L -10.45 -17.66 L -7.85 -18.96 L -5.10 -19.88 L -5.29 -28.31 L -4.16 -35.18 L 4.16 -35.18 L 5.29 -28.31 L 5.10 -19.88 L 7.85 -18.96 L 10.45 -17.66 L 16.28 -23.76 L 21.93 -27.82 L 27.82 -21.93 L 23.76 -16.28 L 17.66 -10.45 L 18.96 -7.85 Z" fill="url(#gear-metallic)" stroke="rgba(16,185,129,0.8)" stroke-width="1.2" />
+                    <!-- Pitch Line -->
+                    <circle cx="0" cy="0" r="28.8" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="0.8" stroke-dasharray="2 2" />
+                    <!-- Cutouts -->
+                    <path d="M 14.34 -10.88 A 18 18 0 0 1 14.34 10.88 L 7.97 6.05 A 10 10 0 0 0 7.97 -6.05 Z M 2.26 17.86 A 18 18 0 0 1 -16.59 6.98 L -9.22 3.88 A 10 10 0 0 0 1.25 9.92 Z M -16.59 -6.98 A 18 18 0 0 1 2.26 -17.86 L 1.25 -9.92 A 10 10 0 0 0 -9.22 -3.88 Z" fill="#05170d" stroke="rgba(16,185,129,0.3)" stroke-width="0.75" />
+                    <!-- Center Shaft -->
+                    <circle cx="0" cy="0" r="8" fill="#040d07" stroke="#10b981" stroke-width="1.5" />
+                    <circle cx="0" cy="0" r="3" fill="#10b981" />
+                  </g>
+                  <!-- Dynamic Input Torque Direction Arc -->
+                  <path class="torque-arc" d="M -16 -20 A 25 25 0 0 0 -22 14" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="3 2" />
+                  <polygon points="-24,11 -20,18 -16,12" fill="#10b981" />
                 </g>
 
-                <!-- Robotic Arm (Pivots around 215, 50) -->
-                <g class="robotic-arm">
-                  <line class="arm-link-1" x1="215" y1="50" x2="160" y2="140" stroke-width="6" stroke-linecap="round" />
-                  <circle class="arm-joint" cx="160" cy="140" r="8" />
-                  <line class="arm-link-2" x1="160" y1="140" x2="110" y2="210" stroke-width="4" stroke-linecap="round" />
-                  <circle class="arm-joint" cx="110" cy="210" r="6" />
-                  <!-- Gripper Claw -->
-                  <path class="arm-gripper" d="M105,210 L100,225 L92,225 M115,210 L120,225 L128,225" fill="none" stroke-width="3" stroke-linecap="round" />
-                  <!-- Laser Beam -->
-                  <polygon class="gripper-laser" points="109,225 111,225 112,305 108,305" />
-                  <!-- Base Joint -->
-                  <circle class="arm-joint" cx="215" cy="50" r="12" />
+                <!-- KINETIC MESH POINT P-1 (Pinion to Gear 1) -->
+                <g class="mesh-point mesh-p1" transform="translate(70.2, 75.7)">
+                  <circle class="mesh-spark" cx="0" cy="0" r="4" fill="#10b981" opacity="0.6" filter="url(#mesh-spark)" />
+                  <circle cx="0" cy="0" r="1.5" fill="#ffffff" />
+                </g>
+
+                <!-- GEAR 1 (Paso 01: Visita Guiada - z=14) -->
+                <g class="gear-assembly gear-1 active" transform="translate(90.0, 110.0)">
+                  <g class="gear-rotator">
+                    <!-- Outer Involute Gear Body -->
+                    <path d="M 41.69 -6.03 L 50.12 -5.31 L 56.89 -3.84 L 56.89 3.84 L 50.12 5.31 L 41.69 6.03 L 41.06 9.37 L 40.17 12.66 L 47.46 16.97 L 52.92 21.23 L 49.60 28.14 L 42.85 26.53 L 34.94 23.52 L 32.93 26.26 L 30.70 28.83 L 35.40 35.88 L 38.47 42.09 L 32.47 46.87 L 27.10 42.49 L 21.28 36.35 L 18.28 37.95 L 15.15 39.30 L 16.33 47.68 L 16.40 54.61 L 8.92 56.32 L 5.98 50.04 L 3.40 41.98 L 0.00 42.12 L -3.40 41.98 L -5.98 50.04 L -8.92 56.32 L -16.40 54.61 L -16.33 47.68 L -15.15 39.30 L -18.28 37.95 L -21.28 36.35 L -27.10 42.49 L -32.47 46.87 L -38.47 42.09 L -35.40 35.88 L -30.70 28.83 L -32.93 26.26 L -34.94 23.52 L -42.85 26.53 L -49.60 28.14 L -52.92 21.23 L -47.46 16.97 L -40.17 12.66 L -41.06 9.37 L -41.69 6.03 L -50.12 5.31 L -56.89 3.84 L -56.89 -3.84 L -50.12 -5.31 L -41.69 -6.03 L -41.06 -9.37 L -40.17 -12.66 L -47.46 -16.97 L -52.92 -21.23 L -49.60 -28.14 L -42.85 -26.53 L -34.94 -23.52 L -32.93 -26.26 L -30.70 -28.83 L -35.40 -35.88 L -38.47 -42.09 L -32.47 -46.87 L -27.10 -42.49 L -21.28 -36.35 L -18.28 -37.95 L -15.15 -39.30 L -16.33 -47.68 L -16.40 -54.61 L -8.92 -56.32 L -5.98 -50.04 L -3.40 -41.98 L -0.00 -42.12 L 3.40 -41.98 L 5.98 -50.04 L 8.92 -56.32 L 16.40 -54.61 L 16.33 -47.68 L 15.15 -39.30 L 18.28 -37.95 L 21.28 -36.35 L 27.10 -42.49 L 32.47 -46.87 L 38.47 -42.09 L 35.40 -35.88 L 30.70 -28.83 L 32.93 -26.26 L 34.94 -23.52 L 42.85 -26.53 L 49.60 -28.14 L 52.92 -21.23 L 47.46 -16.97 L 40.17 -12.66 L 41.06 -9.37 Z" fill="url(#gear-metallic)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" class="gear-teeth-outline" />
+                    <!-- Pitch Circle Diameter (Engineering Reference) -->
+                    <circle cx="0" cy="0" r="50.4" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="0.8" stroke-dasharray="2 3" />
+                    <!-- Weight Reduction CNC Cutouts -->
+                    <path d="M 30.93 -16.38 A 35 35 0 0 1 30.93 16.38 L 17.68 9.36 A 20 20 0 0 0 17.68 -9.36 Z M 16.38 30.93 A 35 35 0 0 1 -16.38 30.93 L -9.36 17.68 A 20 20 0 0 0 9.36 17.68 Z M -30.93 16.38 A 35 35 0 0 1 -30.93 -16.38 L -17.68 -9.36 A 20 20 0 0 0 -17.68 9.36 Z M -16.38 -30.93 A 35 35 0 0 1 16.38 -30.93 L 9.36 -17.68 A 20 20 0 0 0 -9.36 -17.68 Z" fill="#05170d" stroke="rgba(255,255,255,0.15)" stroke-width="0.75" class="gear-cutout-outline" />
+                    <!-- Inner Bearing Race -->
+                    <circle cx="0" cy="0" r="19" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" class="bearing-race" />
+                    <circle cx="0" cy="0" r="16" fill="#040d07" stroke="rgba(16,185,129,0.3)" stroke-width="0.8" />
+                    <!-- Hub Badge -->
+                    <circle class="gear-hub" cx="0" cy="0" r="12" fill="#0c1b12" stroke="#10b981" stroke-width="1.5" filter="url(#neon-glow)" />
+                    <!-- Step Number centered -->
+                    <text x="0" y="3.5" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="700" font-size="9" letter-spacing="0.5">01</text>
+                  </g>
+                  <!-- Label -->
+                  <text x="62" y="-38" fill="#10b981" font-family="monospace" font-size="6.5" font-weight="600">PASO 01 // VISITA</text>
+                </g>
+
+                <!-- KINETIC MESH POINT 1-2 (Gear 1 to Gear 2) -->
+                <g class="mesh-point mesh-12" transform="translate(118.9, 151.3)">
+                  <circle class="mesh-ring" cx="0" cy="0" r="6" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="0.75" stroke-dasharray="2 2" />
+                  <circle class="mesh-spark" cx="0" cy="0" r="3.5" fill="#10b981" opacity="0.8" filter="url(#mesh-spark)" />
+                  <circle cx="0" cy="0" r="1.5" fill="#ffffff" />
+                </g>
+
+                <!-- GEAR 2 (Paso 02: Sesión Inmersiva - z=14) -->
+                <g class="gear-assembly gear-2" transform="translate(147.8, 192.6)">
+                  <g class="gear-rotator">
+                    <!-- Outer Involute Gear Body -->
+                    <path d="M 41.69 -6.03 L 50.12 -5.31 L 56.89 -3.84 L 56.89 3.84 L 50.12 5.31 L 41.69 6.03 L 41.06 9.37 L 40.17 12.66 L 47.46 16.97 L 52.92 21.23 L 49.60 28.14 L 42.85 26.53 L 34.94 23.52 L 32.93 26.26 L 30.70 28.83 L 35.40 35.88 L 38.47 42.09 L 32.47 46.87 L 27.10 42.49 L 21.28 36.35 L 18.28 37.95 L 15.15 39.30 L 16.33 47.68 L 16.40 54.61 L 8.92 56.32 L 5.98 50.04 L 3.40 41.98 L 0.00 42.12 L -3.40 41.98 L -5.98 50.04 L -8.92 56.32 L -16.40 54.61 L -16.33 47.68 L -15.15 39.30 L -18.28 37.95 L -21.28 36.35 L -27.10 42.49 L -32.47 46.87 L -38.47 42.09 L -35.40 35.88 L -30.70 28.83 L -32.93 26.26 L -34.94 23.52 L -42.85 26.53 L -49.60 28.14 L -52.92 21.23 L -47.46 16.97 L -40.17 12.66 L -41.06 9.37 L -41.69 6.03 L -50.12 5.31 L -56.89 3.84 L -56.89 -3.84 L -50.12 -5.31 L -41.69 -6.03 L -41.06 -9.37 L -40.17 -12.66 L -47.46 -16.97 L -52.92 -21.23 L -49.60 -28.14 L -42.85 -26.53 L -34.94 -23.52 L -32.93 -26.26 L -30.70 -28.83 L -35.40 -35.88 L -38.47 -42.09 L -32.47 -46.87 L -27.10 -42.49 L -21.28 -36.35 L -18.28 -37.95 L -15.15 -39.30 L -16.33 -47.68 L -16.40 -54.61 L -8.92 -56.32 L -5.98 -50.04 L -3.40 -41.98 L -0.00 -42.12 L 3.40 -41.98 L 5.98 -50.04 L 8.92 -56.32 L 16.40 -54.61 L 16.33 -47.68 L 15.15 -39.30 L 18.28 -37.95 L 21.28 -36.35 L 27.10 -42.49 L 32.47 -46.87 L 38.47 -42.09 L 35.40 -35.88 L 30.70 -28.83 L 32.93 -26.26 L 34.94 -23.52 L 42.85 -26.53 L 49.60 -28.14 L 52.92 -21.23 L 47.46 -16.97 L 40.17 -12.66 L 41.06 -9.37 Z" fill="url(#gear-metallic)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" class="gear-teeth-outline" />
+                    <!-- Pitch Circle Diameter -->
+                    <circle cx="0" cy="0" r="50.4" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="0.8" stroke-dasharray="2 3" />
+                    <!-- Weight Reduction Cutouts -->
+                    <path d="M 30.93 -16.38 A 35 35 0 0 1 30.93 16.38 L 17.68 9.36 A 20 20 0 0 0 17.68 -9.36 Z M 16.38 30.93 A 35 35 0 0 1 -16.38 30.93 L -9.36 17.68 A 20 20 0 0 0 9.36 17.68 Z M -30.93 16.38 A 35 35 0 0 1 -30.93 -16.38 L -17.68 -9.36 A 20 20 0 0 0 -17.68 9.36 Z M -16.38 -30.93 A 35 35 0 0 1 16.38 -30.93 L 9.36 -17.68 A 20 20 0 0 0 -9.36 -17.68 Z" fill="#05170d" stroke="rgba(255,255,255,0.15)" stroke-width="0.75" class="gear-cutout-outline" />
+                    <!-- Inner Bearing Race -->
+                    <circle cx="0" cy="0" r="19" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" class="bearing-race" />
+                    <circle cx="0" cy="0" r="16" fill="#040d07" stroke="rgba(16,185,129,0.3)" stroke-width="0.8" />
+                    <!-- Hub Badge -->
+                    <circle class="gear-hub" cx="0" cy="0" r="12" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                    <!-- Step Number centered -->
+                    <text x="0" y="3.5" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="700" font-size="9" letter-spacing="0.5">02</text>
+                  </g>
+                  <!-- Label -->
+                  <text x="62" y="4" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="6.5" font-weight="600" class="step-label">PASO 02 // INMERSIÓN</text>
+                </g>
+
+                <!-- KINETIC MESH POINT 2-3 (Gear 2 to Gear 3) -->
+                <g class="mesh-point mesh-23" transform="translate(118.9, 233.9)">
+                  <circle class="mesh-ring" cx="0" cy="0" r="6" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="0.75" stroke-dasharray="2 2" />
+                  <circle class="mesh-spark" cx="0" cy="0" r="3.5" fill="#10b981" opacity="0.8" filter="url(#mesh-spark)" />
+                  <circle cx="0" cy="0" r="1.5" fill="#ffffff" />
+                </g>
+
+                <!-- GEAR 3 (Paso 03: Inscripción - z=14) -->
+                <g class="gear-assembly gear-3" transform="translate(90.0, 275.2)">
+                  <g class="gear-rotator">
+                    <!-- Outer Involute Gear Body -->
+                    <path d="M 41.69 -6.03 L 50.12 -5.31 L 56.89 -3.84 L 56.89 3.84 L 50.12 5.31 L 41.69 6.03 L 41.06 9.37 L 40.17 12.66 L 47.46 16.97 L 52.92 21.23 L 49.60 28.14 L 42.85 26.53 L 34.94 23.52 L 32.93 26.26 L 30.70 28.83 L 35.40 35.88 L 38.47 42.09 L 32.47 46.87 L 27.10 42.49 L 21.28 36.35 L 18.28 37.95 L 15.15 39.30 L 16.33 47.68 L 16.40 54.61 L 8.92 56.32 L 5.98 50.04 L 3.40 41.98 L 0.00 42.12 L -3.40 41.98 L -5.98 50.04 L -8.92 56.32 L -16.40 54.61 L -16.33 47.68 L -15.15 39.30 L -18.28 37.95 L -21.28 36.35 L -27.10 42.49 L -32.47 46.87 L -38.47 42.09 L -35.40 35.88 L -30.70 28.83 L -32.93 26.26 L -34.94 23.52 L -42.85 26.53 L -49.60 28.14 L -52.92 21.23 L -47.46 16.97 L -40.17 12.66 L -41.06 9.37 L -41.69 6.03 L -50.12 5.31 L -56.89 3.84 L -56.89 -3.84 L -50.12 -5.31 L -41.69 -6.03 L -41.06 -9.37 L -40.17 -12.66 L -47.46 -16.97 L -52.92 -21.23 L -49.60 -28.14 L -42.85 -26.53 L -34.94 -23.52 L -32.93 -26.26 L -30.70 -28.83 L -35.40 -35.88 L -38.47 -42.09 L -32.47 -46.87 L -27.10 -42.49 L -21.28 -36.35 L -18.28 -37.95 L -15.15 -39.30 L -16.33 -47.68 L -16.40 -54.61 L -8.92 -56.32 L -5.98 -50.04 L -3.40 -41.98 L -0.00 -42.12 L 3.40 -41.98 L 5.98 -50.04 L 8.92 -56.32 L 16.40 -54.61 L 16.33 -47.68 L 15.15 -39.30 L 18.28 -37.95 L 21.28 -36.35 L 27.10 -42.49 L 32.47 -46.87 L 38.47 -42.09 L 35.40 -35.88 L 30.70 -28.83 L 32.93 -26.26 L 34.94 -23.52 L 42.85 -26.53 L 49.60 -28.14 L 52.92 -21.23 L 47.46 -16.97 L 40.17 -12.66 L 41.06 -9.37 Z" fill="url(#gear-metallic)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" class="gear-teeth-outline" />
+                    <!-- Pitch Circle Diameter -->
+                    <circle cx="0" cy="0" r="50.4" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="0.8" stroke-dasharray="2 3" />
+                    <!-- Weight Reduction Cutouts -->
+                    <path d="M 30.93 -16.38 A 35 35 0 0 1 30.93 16.38 L 17.68 9.36 A 20 20 0 0 0 17.68 -9.36 Z M 16.38 30.93 A 35 35 0 0 1 -16.38 30.93 L -9.36 17.68 A 20 20 0 0 0 9.36 17.68 Z M -30.93 16.38 A 35 35 0 0 1 -30.93 -16.38 L -17.68 -9.36 A 20 20 0 0 0 -17.68 9.36 Z M -16.38 -30.93 A 35 35 0 0 1 16.38 -30.93 L 9.36 -17.68 A 20 20 0 0 0 -9.36 -17.68 Z" fill="#05170d" stroke="rgba(255,255,255,0.15)" stroke-width="0.75" class="gear-cutout-outline" />
+                    <!-- Inner Bearing Race -->
+                    <circle cx="0" cy="0" r="19" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" class="bearing-race" />
+                    <circle cx="0" cy="0" r="16" fill="#040d07" stroke="rgba(16,185,129,0.3)" stroke-width="0.8" />
+                    <!-- Hub Badge -->
+                    <circle class="gear-hub" cx="0" cy="0" r="12" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                    <!-- Step Number centered -->
+                    <text x="0" y="3.5" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="700" font-size="9" letter-spacing="0.5">03</text>
+                  </g>
+                  <!-- Label -->
+                  <text x="62" y="36" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="6.5" font-weight="600" class="step-label">PASO 03 // INGRESO</text>
+                </g>
+
+                <!-- OUTPUT ADMISSIONS TELEMETRY STATUS BAR -->
+                <g class="output-status-bar" transform="translate(20, 342)">
+                  <rect x="0" y="0" width="220" height="24" rx="4" fill="rgba(7,19,11,0.85)" stroke="rgba(16,185,129,0.4)" stroke-width="1" />
+                  <circle class="status-dot" cx="12" cy="12" r="3.5" fill="#10b981" filter="url(#neon-glow)" />
+                  <text class="status-text" x="22" y="15" fill="#10b981" font-family="monospace" font-size="7" font-weight="600" letter-spacing="0.5">ENGRANAJE SINCRONIZADO // PASO 01 ACTIVO</text>
                 </g>
               </svg>
 
-              <!-- SVG Mobile (400x150) -->
-              <svg class="machine-svg svg-mobile" viewBox="0 0 400 150" aria-hidden="true">
-                <!-- Gear 1 -->
-                <g class="gear gear-1 active">
-                  <circle cx="75" cy="75" r="45" />
-                  <circle class="gear-hub" cx="75" cy="75" r="10" />
-                  <!-- Teeth (12) -->
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(0, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(30, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(60, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(90, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(120, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(150, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(180, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(210, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(240, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(270, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(300, 75, 75)" />
-                  <rect x="68" y="10" width="14" height="18" rx="2" transform="rotate(330, 75, 75)" />
+              <!-- SVG Mobile (360x140) -->
+              <svg class="machine-svg svg-mobile" viewBox="0 0 360 140" aria-hidden="true">
+                <defs>
+                  <filter id="neon-glow-m" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2.5" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <linearGradient id="gear-metallic-m" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#164e32" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#05170d" stop-opacity="0.98" />
+                  </linearGradient>
+                  <linearGradient id="motor-grad-m" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1b4332" />
+                    <stop offset="100%" stop-color="#081c15" />
+                  </linearGradient>
+                </defs>
+
+                <!-- Grid lines -->
+                <path d="M 36.4 29 L 95 70 L 186 70 L 277 70" fill="none" stroke="rgba(16,185,129,0.25)" stroke-width="1" stroke-dasharray="3 3" />
+
+                <!-- Motor Housing Mobile -->
+                <g class="motor-unit">
+                  <rect x="8" y="10" width="36" height="26" rx="3" fill="url(#motor-grad-m)" stroke="rgba(16,185,129,0.5)" stroke-width="1" />
+                  <circle class="motor-led" cx="38" cy="16" r="2" fill="#10b981" filter="url(#neon-glow-m)" />
+                  <text x="11" y="24" fill="rgba(16,185,129,0.85)" font-family="monospace" font-size="5.5">M-01</text>
                 </g>
 
-                <!-- Gear 2 -->
-                <g class="gear gear-2">
-                  <circle cx="200" cy="75" r="45" />
-                  <circle class="gear-hub" cx="200" cy="75" r="10" />
-                  <!-- Teeth (12) -->
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(0, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(30, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(60, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(90, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(120, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(150, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(180, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(210, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(240, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(270, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(300, 200, 75)" />
-                  <rect x="193" y="10" width="14" height="18" rx="2" transform="rotate(330, 200, 75)" />
+                <!-- Mobile Pinion -->
+                <g class="pinion-driver" transform="translate(36.4, 29.0)">
+                  <g class="pinion-rotator">
+                    <path d="M 17.94 -4.61 L 25.56 -4.77 L 31.76 -3.76 L 31.76 3.76 L 25.56 4.77 L 17.94 4.61 L 17.11 7.09 L 15.95 9.43 L 21.45 14.70 L 25.11 19.80 L 19.80 25.11 L 14.70 21.45 L 9.43 15.95 L 7.09 17.11 L 4.61 17.94 L 4.77 25.56 L 3.76 31.76 L -3.76 31.76 L -4.77 25.56 L -4.61 17.94 L -7.09 17.11 L -9.43 15.95 L -14.70 21.45 L -19.80 25.11 L -25.11 19.80 L -21.45 14.70 L -15.95 9.43 L -17.11 7.09 L -17.94 4.61 L -25.56 4.77 L -31.76 3.76 L -31.76 -3.76 L -25.56 -4.77 L -17.94 -4.61 L -17.11 -7.09 L -15.95 -9.43 L -21.45 -14.70 L -25.11 -19.80 L -19.80 -25.11 L -14.70 -21.45 L -9.43 -15.95 L -7.09 -17.11 L -4.61 -17.94 L -4.77 -25.56 L -3.76 -31.76 L 3.76 -31.76 L 4.77 -25.56 L 4.61 -17.94 L 7.09 -17.11 L 9.43 -15.95 L 14.70 -21.45 L 19.80 -25.11 L 25.11 -19.80 L 21.45 -14.70 L 15.95 -9.43 L 17.11 -7.09 Z" fill="url(#gear-metallic-m)" stroke="rgba(16,185,129,0.8)" stroke-width="1.1" />
+                    <path d="M 12.74 -9.67 A 16 16 0 0 1 12.74 9.67 L 7.17 5.44 A 9 9 0 0 0 7.17 -5.44 Z M 2.01 15.87 A 16 16 0 0 1 -14.75 6.20 L -8.30 3.49 A 9 9 0 0 0 1.13 8.93 Z M -14.75 -6.20 A 16 16 0 0 1 2.01 -15.87 L 1.13 -8.93 A 9 9 0 0 0 -8.30 -3.49 Z" fill="#05170d" stroke="rgba(16,185,129,0.3)" stroke-width="0.6" />
+                    <circle cx="0" cy="0" r="7" fill="#040d07" stroke="#10b981" stroke-width="1.2" />
+                    <circle cx="0" cy="0" r="2.5" fill="#10b981" />
+                  </g>
                 </g>
 
-                <!-- Gear 3 -->
-                <g class="gear gear-3">
-                  <circle cx="325" cy="75" r="45" />
-                  <circle class="gear-hub" cx="325" cy="75" r="10" />
-                  <!-- Teeth (12) -->
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(0, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(30, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(60, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(90, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(120, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(150, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(180, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(210, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(240, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(270, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(300, 325, 75)" />
-                  <rect x="318" y="10" width="14" height="18" rx="2" transform="rotate(330, 325, 75)" />
+                <!-- Kinetic Mesh P-1 -->
+                <g class="mesh-point mesh-p1" transform="translate(65.7, 49.5)">
+                  <circle class="mesh-spark" cx="0" cy="0" r="3" fill="#10b981" opacity="0.7" />
+                  <circle cx="0" cy="0" r="1.2" fill="#ffffff" />
                 </g>
 
-                <!-- Robotic Arm (Pivots around 380, 20) -->
-                <g class="robotic-arm">
-                  <line class="arm-link-1" x1="380" y1="20" x2="330" y2="60" stroke-width="5" stroke-linecap="round" />
-                  <circle class="arm-joint" cx="330" cy="60" r="6" />
-                  <line class="arm-link-2" x1="330" y1="60" x2="280" y2="90" stroke-width="3" stroke-linecap="round" />
-                  <circle class="arm-joint" cx="280" cy="90" r="4" />
-                  <!-- Gripper -->
-                  <path class="arm-gripper" d="M276,90 L270,100 M284,90 L288,100" fill="none" stroke-width="2" stroke-linecap="round" />
-                  <!-- Laser Beam -->
-                  <polygon class="gripper-laser" points="278,98 280,98 282,150 276,150" />
-                  <!-- Base point -->
-                  <circle class="arm-joint" cx="380" cy="20" r="10" />
+                <!-- Mobile Gear 1 (cx=95, cy=70) -->
+                <g class="gear-assembly gear-1 active" transform="translate(95.0, 70.0)">
+                  <g class="gear-rotator">
+                    <path d="M 37.63 -5.44 L 45.25 -4.79 L 51.36 -3.46 L 51.36 3.46 L 45.25 4.79 L 37.63 5.44 L 37.07 8.46 L 36.27 11.43 L 42.84 15.32 L 47.78 19.17 L 44.77 25.41 L 38.69 23.95 L 31.55 21.23 L 29.73 23.71 L 27.72 26.03 L 31.96 32.39 L 34.73 38.00 L 29.32 42.32 L 24.47 38.36 L 19.21 32.82 L 16.50 34.26 L 13.68 35.48 L 14.74 43.05 L 14.81 49.31 L 8.05 50.85 L 5.40 45.18 L 3.07 37.90 L 0.00 38.02 L -3.07 37.90 L -5.40 45.18 L -8.05 50.85 L -14.81 49.31 L -14.74 43.05 L -13.68 35.48 L -16.50 34.26 L -19.21 32.82 L -24.47 38.36 L -29.32 42.32 L -34.73 38.00 L -31.96 32.39 L -27.72 26.03 L -29.73 23.71 L -31.55 21.23 L -38.69 23.95 L -44.77 25.41 L -47.78 19.17 L -42.84 15.32 L -36.27 11.43 L -37.07 8.46 L -37.63 5.44 L -45.25 4.79 L -51.36 3.46 L -51.36 -3.46 L -45.25 -4.79 L -37.63 -5.44 L -37.07 -8.46 L -36.27 -11.43 L -42.84 -15.32 L -47.78 -19.17 L -44.77 -25.41 L -38.69 -23.95 L -31.55 -21.23 L -29.73 -23.71 L -27.72 -26.03 L -31.96 -32.39 L -34.73 -38.00 L -29.32 -42.32 L -24.47 -38.36 L -19.21 -32.82 L -16.50 -34.26 L -13.68 -35.48 L -14.74 -43.05 L -14.81 -49.31 L -8.05 -50.85 L -5.40 -45.18 L -3.07 -37.90 L -0.00 -38.02 L 3.07 -37.90 L 5.40 -45.18 L 8.05 -50.85 L 14.81 -49.31 L 14.74 -43.05 L 13.68 -35.48 L 16.50 -34.26 L 19.21 -32.82 L 24.47 -38.36 L 29.32 -42.32 L 34.73 -38.00 L 31.96 -32.39 L 27.72 -26.03 L 29.73 -23.71 L 31.55 -21.23 L 38.69 -23.95 L 44.77 -25.41 L 47.78 -19.17 L 42.84 -15.32 L 36.27 -11.43 L 37.07 -8.46 Z" fill="url(#gear-metallic-m)" stroke="rgba(255,255,255,0.25)" stroke-width="1.1" class="gear-teeth-outline" />
+                    <circle cx="0" cy="0" r="45.5" fill="none" stroke="rgba(16,185,129,0.35)" stroke-width="0.7" stroke-dasharray="2 3" />
+                    <path d="M 27.40 -14.51 A 31 31 0 0 1 27.40 14.51 L 15.91 8.42 A 18 18 0 0 0 15.91 -8.42 Z M 14.51 27.40 A 31 31 0 0 1 -14.51 27.40 L -8.42 15.91 A 18 18 0 0 0 8.42 15.91 Z M -27.40 14.51 A 31 31 0 0 1 -27.40 -14.51 L -15.91 -8.42 A 18 18 0 0 0 -15.91 8.42 Z M -14.51 -27.40 A 31 31 0 0 1 14.51 -27.40 L 8.42 -15.91 A 18 18 0 0 0 -8.42 -15.91 Z" fill="#05170d" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" class="gear-cutout-outline" />
+                    <circle cx="0" cy="0" r="17" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.2" class="bearing-race" />
+                    <circle class="gear-hub" cx="0" cy="0" r="11" fill="#0c1b12" stroke="#10b981" stroke-width="1.5" filter="url(#neon-glow-m)" />
+                    <text x="0" y="3.2" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="700" font-size="8.5">01</text>
+                  </g>
+                  <text x="0" y="55" text-anchor="middle" fill="#10b981" font-family="monospace" font-size="6.5" font-weight="600">VISITA</text>
+                </g>
+
+                <!-- Kinetic Mesh 1-2 -->
+                <g class="mesh-point mesh-12" transform="translate(140.5, 70.0)">
+                  <circle class="mesh-spark" cx="0" cy="0" r="3.5" fill="#10b981" opacity="0.8" />
+                  <circle cx="0" cy="0" r="1.2" fill="#ffffff" />
+                </g>
+
+                <!-- Mobile Gear 2 (cx=186, cy=70) -->
+                <g class="gear-assembly gear-2" transform="translate(186.0, 70.0)">
+                  <g class="gear-rotator">
+                    <path d="M 37.63 -5.44 L 45.25 -4.79 L 51.36 -3.46 L 51.36 3.46 L 45.25 4.79 L 37.63 5.44 L 37.07 8.46 L 36.27 11.43 L 42.84 15.32 L 47.78 19.17 L 44.77 25.41 L 38.69 23.95 L 31.55 21.23 L 29.73 23.71 L 27.72 26.03 L 31.96 32.39 L 34.73 38.00 L 29.32 42.32 L 24.47 38.36 L 19.21 32.82 L 16.50 34.26 L 13.68 35.48 L 14.74 43.05 L 14.81 49.31 L 8.05 50.85 L 5.40 45.18 L 3.07 37.90 L 0.00 38.02 L -3.07 37.90 L -5.40 45.18 L -8.05 50.85 L -14.81 49.31 L -14.74 43.05 L -13.68 35.48 L -16.50 34.26 L -19.21 32.82 L -24.47 38.36 L -29.32 42.32 L -34.73 38.00 L -31.96 32.39 L -27.72 26.03 L -29.73 23.71 L -31.55 21.23 L -38.69 23.95 L -44.77 25.41 L -47.78 19.17 L -42.84 15.32 L -36.27 11.43 L -37.07 8.46 L -37.63 5.44 L -45.25 4.79 L -51.36 3.46 L -51.36 -3.46 L -45.25 -4.79 L -37.63 -5.44 L -37.07 -8.46 L -36.27 -11.43 L -42.84 -15.32 L -47.78 -19.17 L -44.77 -25.41 L -38.69 -23.95 L -31.55 -21.23 L -29.73 -23.71 L -27.72 -26.03 L -31.96 -32.39 L -34.73 -38.00 L -29.32 -42.32 L -24.47 -38.36 L -19.21 -32.82 L -16.50 -34.26 L -13.68 -35.48 L -14.74 -43.05 L -14.81 -49.31 L -8.05 -50.85 L -5.40 -45.18 L -3.07 -37.90 L -0.00 -38.02 L 3.07 -37.90 L 5.40 -45.18 L 8.05 -50.85 L 14.81 -49.31 L 14.74 -43.05 L 13.68 -35.48 L 16.50 -34.26 L 19.21 -32.82 L 24.47 -38.36 L 29.32 -42.32 L 34.73 -38.00 L 31.96 -32.39 L 27.72 -26.03 L 29.73 -23.71 L 31.55 -21.23 L 38.69 -23.95 L 44.77 -25.41 L 47.78 -19.17 L 42.84 -15.32 L 36.27 -11.43 L 37.07 -8.46 Z" fill="url(#gear-metallic-m)" stroke="rgba(255,255,255,0.25)" stroke-width="1.1" class="gear-teeth-outline" />
+                    <circle cx="0" cy="0" r="45.5" fill="none" stroke="rgba(16,185,129,0.35)" stroke-width="0.7" stroke-dasharray="2 3" />
+                    <path d="M 27.40 -14.51 A 31 31 0 0 1 27.40 14.51 L 15.91 8.42 A 18 18 0 0 0 15.91 -8.42 Z M 14.51 27.40 A 31 31 0 0 1 -14.51 27.40 L -8.42 15.91 A 18 18 0 0 0 8.42 15.91 Z M -27.40 14.51 A 31 31 0 0 1 -27.40 -14.51 L -15.91 -8.42 A 18 18 0 0 0 -15.91 8.42 Z M -14.51 -27.40 A 31 31 0 0 1 14.51 -27.40 L 8.42 -15.91 A 18 18 0 0 0 -8.42 -15.91 Z" fill="#05170d" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" class="gear-cutout-outline" />
+                    <circle cx="0" cy="0" r="17" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.2" class="bearing-race" />
+                    <circle class="gear-hub" cx="0" cy="0" r="11" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                    <text x="0" y="3.2" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="700" font-size="8.5">02</text>
+                  </g>
+                  <text x="0" y="55" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="6.5" font-weight="600" class="step-label">INMERSIÓN</text>
+                </g>
+
+                <!-- Kinetic Mesh 2-3 -->
+                <g class="mesh-point mesh-23" transform="translate(231.5, 70.0)">
+                  <circle class="mesh-spark" cx="0" cy="0" r="3.5" fill="#10b981" opacity="0.8" />
+                  <circle cx="0" cy="0" r="1.2" fill="#ffffff" />
+                </g>
+
+                <!-- Mobile Gear 3 (cx=277, cy=70) -->
+                <g class="gear-assembly gear-3" transform="translate(277.0, 70.0)">
+                  <g class="gear-rotator">
+                    <path d="M 37.63 -5.44 L 45.25 -4.79 L 51.36 -3.46 L 51.36 3.46 L 45.25 4.79 L 37.63 5.44 L 37.07 8.46 L 36.27 11.43 L 42.84 15.32 L 47.78 19.17 L 44.77 25.41 L 38.69 23.95 L 31.55 21.23 L 29.73 23.71 L 27.72 26.03 L 31.96 32.39 L 34.73 38.00 L 29.32 42.32 L 24.47 38.36 L 19.21 32.82 L 16.50 34.26 L 13.68 35.48 L 14.74 43.05 L 14.81 49.31 L 8.05 50.85 L 5.40 45.18 L 3.07 37.90 L 0.00 38.02 L -3.07 37.90 L -5.40 45.18 L -8.05 50.85 L -14.81 49.31 L -14.74 43.05 L -13.68 35.48 L -16.50 34.26 L -19.21 32.82 L -24.47 38.36 L -29.32 42.32 L -34.73 38.00 L -31.96 32.39 L -27.72 26.03 L -29.73 23.71 L -31.55 21.23 L -38.69 23.95 L -44.77 25.41 L -47.78 19.17 L -42.84 15.32 L -36.27 11.43 L -37.07 8.46 L -37.63 5.44 L -45.25 4.79 L -51.36 3.46 L -51.36 -3.46 L -45.25 -4.79 L -37.63 -5.44 L -37.07 -8.46 L -36.27 -11.43 L -42.84 -15.32 L -47.78 -19.17 L -44.77 -25.41 L -38.69 -23.95 L -31.55 -21.23 L -29.73 -23.71 L -27.72 -26.03 L -31.96 -32.39 L -34.73 -38.00 L -29.32 -42.32 L -24.47 -38.36 L -19.21 -32.82 L -16.50 -34.26 L -13.68 -35.48 L -14.74 -43.05 L -14.81 -49.31 L -8.05 -50.85 L -5.40 -45.18 L -3.07 -37.90 L -0.00 -38.02 L 3.07 -37.90 L 5.40 -45.18 L 8.05 -50.85 L 14.81 -49.31 L 14.74 -43.05 L 13.68 -35.48 L 16.50 -34.26 L 19.21 -32.82 L 24.47 -38.36 L 29.32 -42.32 L 34.73 -38.00 L 31.96 -32.39 L 27.72 -26.03 L 29.73 -23.71 L 31.55 -21.23 L 38.69 -23.95 L 44.77 -25.41 L 47.78 -19.17 L 42.84 -15.32 L 36.27 -11.43 L 37.07 -8.46 Z" fill="url(#gear-metallic-m)" stroke="rgba(255,255,255,0.25)" stroke-width="1.1" class="gear-teeth-outline" />
+                    <circle cx="0" cy="0" r="45.5" fill="none" stroke="rgba(16,185,129,0.35)" stroke-width="0.7" stroke-dasharray="2 3" />
+                    <path d="M 27.40 -14.51 A 31 31 0 0 1 27.40 14.51 L 15.91 8.42 A 18 18 0 0 0 15.91 -8.42 Z M 14.51 27.40 A 31 31 0 0 1 -14.51 27.40 L -8.42 15.91 A 18 18 0 0 0 8.42 15.91 Z M -27.40 14.51 A 31 31 0 0 1 -27.40 -14.51 L -15.91 -8.42 A 18 18 0 0 0 -15.91 8.42 Z M -14.51 -27.40 A 31 31 0 0 1 14.51 -27.40 L 8.42 -15.91 A 18 18 0 0 0 -8.42 -15.91 Z" fill="#05170d" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" class="gear-cutout-outline" />
+                    <circle cx="0" cy="0" r="17" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.2" class="bearing-race" />
+                    <circle class="gear-hub" cx="0" cy="0" r="11" fill="#0c1b12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+                    <text x="0" y="3.2" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="700" font-size="8.5">03</text>
+                  </g>
+                  <text x="0" y="55" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="monospace" font-size="6.5" font-weight="600" class="step-label">INGRESO</text>
                 </g>
               </svg>
+
             </div>
           </div>
 
@@ -1326,6 +1450,6 @@
   </dialog>
 
   <!-- --- JAVASCRIPT LOGIC --- -->
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
