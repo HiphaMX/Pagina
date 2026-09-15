@@ -67,6 +67,7 @@ html, body {
   line-height: 1.6;
   font-weight: 400;
   scroll-behavior: smooth;
+  overflow-x: hidden;
   transition: background-color var(--transition-slow), color var(--transition-slow), border-color var(--transition-slow);
 }
 
@@ -550,6 +551,17 @@ body.theme-dark .logo-light {
 }
 .hero-actions {
   margin-top: 24px;
+}
+@media (max-width: 480px) {
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .hero-actions .btn {
+    width: 100%;
+    margin-left: 0 !important;
+  }
 }
 
 /* --- Hero Right Rotary Dial (Maxima Therapy Style) --- */
@@ -1150,7 +1162,7 @@ body.theme-dark .rotary-node::after {
 
 @media (max-width: 768px) {
   .hero-left { grid-column: span 12; order: 2; gap: 24px; min-height: auto; }
-  .hero-right { grid-column: span 12; order: 1; margin-bottom: 50px; }
+  .hero-right { grid-column: span 12; order: 1; margin-bottom: 28px; display: flex; justify-content: center; }
 }
 
 /* --- Buttons (Premium Rounded) --- */
