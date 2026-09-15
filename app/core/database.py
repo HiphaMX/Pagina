@@ -6,14 +6,33 @@ from app.core.config import settings
 
 from sqlalchemy.pool import NullPool
 
-db_uri = os.environ.get("DATABASE_URL") or settings.SQLALCHEMY_DATABASE_URI
+def _resolve_db_uri() -> str:
+    candidate_keys = [
+        "DATABASE_URL",
+        "POSTGRES_URL",
+        "POSTGRES_PRISMA_URL",
+        "POSTGRES_URL_NON_POOLING",
+        "DATABASE_URL_UNPOOLED",
+        "STORAGE_URL",
+        "STORAGE_DATABASE_URL",
+        "STORAGE_POSTGRES_URL",
+        "NEON_DATABASE_URL"
+    ]
+    for key in candidate_keys:
+        val = os.environ.get(key)
+        if val and val.strip():
+            print(f"✓ Conectando a base de datos externa mediante variable '{key}'")
+            return val.strip()
+
+    if os.environ.get("VERCEL") == "1":
+        return "sqlite:////tmp/database.db"
+
+    return settings.SQLALCHEMY_DATABASE_URI
+
+db_uri = _resolve_db_uri()
 if db_uri and db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 
-# En Vercel, el sistema de archivos raíz es de solo lectura.
-# Redirigimos la base de datos SQLite a /tmp si no hay base de datos externa.
-if not os.environ.get("DATABASE_URL") and os.environ.get("VERCEL") == "1":
-    db_uri = "sqlite:////tmp/database.db"
 
 if "sqlite" in db_uri:
     engine = create_engine(

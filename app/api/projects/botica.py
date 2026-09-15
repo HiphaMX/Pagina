@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 # Catálogo inicial con todos los productos y variantes de Botica Silvestre
 DEFAULT_BOTICA_CATALOG = [
     # Soul Shine
-    {"slug": "focus-tintura", "base_name": "Focus", "format": "Tintura", "display_name": "Focus - Tintura", "category": "Soul Shine", "price": 490.0, "stock": 10, "image_url": "assets/images/Product Shots/Focus 01.webp"},
-    {"slug": "focus-oleato", "base_name": "Focus", "format": "Oleato", "display_name": "Focus - Oleato", "category": "Soul Shine", "price": 490.0, "stock": 10, "image_url": "assets/images/Product Shots/Focus 01.webp"},
+    {"slug": "focus-tintura", "base_name": "Focus", "format": "Tintura", "display_name": "Focus - Tintura", "category": "Soul Shine", "price": 490.0, "stock": 0, "image_url": "assets/images/Product Shots/Focus 01.webp"},
+    {"slug": "focus-oleato", "base_name": "Focus", "format": "Oleato", "display_name": "Focus - Oleato", "category": "Soul Shine", "price": 490.0, "stock": 0, "image_url": "assets/images/Product Shots/Focus 01.webp"},
     {"slug": "balance-tintura", "base_name": "Balance", "format": "Tintura", "display_name": "Balance - Tintura", "category": "Soul Shine", "price": 490.0, "stock": 10, "image_url": "assets/images/Product Shots/Balance 01.webp"},
     {"slug": "balance-oleato", "base_name": "Balance", "format": "Oleato", "display_name": "Balance - Oleato", "category": "Soul Shine", "price": 490.0, "stock": 10, "image_url": "assets/images/Product Shots/Balance 01.webp"},
     {"slug": "energy-tintura", "base_name": "Energy+", "format": "Tintura", "display_name": "Energy+ - Tintura", "category": "Soul Shine", "price": 490.0, "stock": 10, "image_url": "assets/images/Product Shots/Energy 01.webp"},
@@ -24,8 +24,8 @@ DEFAULT_BOTICA_CATALOG = [
     {"slug": "mindii-tintura", "base_name": "Mindii", "format": "Tintura", "display_name": "Mindii - Tintura", "category": "Soul Shine", "price": 490.0, "stock": 10, "image_url": "assets/images/Product Shots/Mindii 01.webp"},
     {"slug": "smile-tintura", "base_name": "Smile", "format": "Tintura", "display_name": "Smile - Tintura", "category": "Soul Shine", "price": 690.0, "stock": 10, "image_url": "assets/images/Product Shots/Smile 01.webp"},
     {"slug": "smile-oleato", "base_name": "Smile", "format": "Oleato", "display_name": "Smile - Oleato", "category": "Soul Shine", "price": 690.0, "stock": 10, "image_url": "assets/images/Product Shots/Smile 01.webp"},
-    {"slug": "mystic-tintura", "base_name": "Mystic", "format": "Tintura", "display_name": "Mystic - Tintura", "category": "Soul Shine", "price": 990.0, "stock": 10, "image_url": "assets/images/Product Shots/Mystic 01.webp"},
-    {"slug": "mystic-oleato", "base_name": "Mystic", "format": "Oleato", "display_name": "Mystic - Oleato", "category": "Soul Shine", "price": 990.0, "stock": 10, "image_url": "assets/images/Product Shots/Mystic 01.webp"},
+    {"slug": "mystic-tintura", "base_name": "Mystic", "format": "Tintura", "display_name": "Mystic - Tintura", "category": "Soul Shine", "price": 990.0, "stock": 0, "image_url": "assets/images/Product Shots/Mystic 01.webp"},
+    {"slug": "mystic-oleato", "base_name": "Mystic", "format": "Oleato", "display_name": "Mystic - Oleato", "category": "Soul Shine", "price": 990.0, "stock": 0, "image_url": "assets/images/Product Shots/Mystic 01.webp"},
     {"slug": "armonizador-spray", "base_name": "Armonizador", "format": "Spray", "display_name": "Armonizador - Spray", "category": "Soul Shine", "price": 59.0, "stock": 10, "image_url": "assets/images/Product Shots/Armonizador1.webp"},
 
     # Sabina
@@ -36,11 +36,11 @@ DEFAULT_BOTICA_CATALOG = [
     {"slug": "suena-tintura", "base_name": "Sueña", "format": "Tintura", "display_name": "Sueña - Tintura", "category": "Sabina", "price": 390.0, "stock": 10, "image_url": "assets/images/Product Shots/Sabina/Suena 01.webp"},
 
     # Pomadas
-    {"slug": "colita-de-rana-pomada", "base_name": "Colita de Rana", "format": "Pomada", "display_name": "Colita de Rana - Pomada", "category": "Pomadas", "price": 190.0, "stock": 10, "image_url": "assets/images/Product Shots/Colita de rana1.webp"},
-    {"slug": "abacho-pomada", "base_name": "Abacho", "format": "Pomada", "display_name": "Abacho - Pomada", "category": "Pomadas", "price": 190.0, "stock": 10, "image_url": "assets/images/Product Shots/Abacho1.webp"},
-    {"slug": "descansa-pomada", "base_name": "Descansa (Pomada)", "format": "Pomada", "display_name": "Descansa (Pomada) - Pomada", "category": "Pomadas", "price": 190.0, "stock": 10, "image_url": "assets/images/Product Shots/Descansa1.webp"},
-    {"slug": "piel-silvestre-pomada", "base_name": "Piel Silvestre", "format": "Pomada", "display_name": "Piel Silvestre - Pomada", "category": "Pomadas", "price": 250.0, "stock": 10, "image_url": "assets/images/Product Shots/PielSilvestre1.webp"},
-    {"slug": "fluye-pomada", "base_name": "Fluye", "format": "Pomada", "display_name": "Fluye - Pomada", "category": "Pomadas", "price": 190.0, "stock": 10, "image_url": "assets/images/Product Shots/Fluye1.webp"},
+    {"slug": "colita-de-rana-pomada", "base_name": "Colita de Rana", "format": "Pomada", "display_name": "Colita de Rana - Pomada", "category": "Pomadas", "price": 190.0, "stock": 0, "image_url": "assets/images/Product Shots/Colita de rana1.webp"},
+    {"slug": "abacho-pomada", "base_name": "Abacho", "format": "Pomada", "display_name": "Abacho - Pomada", "category": "Pomadas", "price": 190.0, "stock": 0, "image_url": "assets/images/Product Shots/Abacho1.webp"},
+    {"slug": "descansa-pomada", "base_name": "Descansa (Pomada)", "format": "Pomada", "display_name": "Descansa (Pomada) - Pomada", "category": "Pomadas", "price": 190.0, "stock": 0, "image_url": "assets/images/Product Shots/Descansa1.webp"},
+    {"slug": "piel-silvestre-pomada", "base_name": "Piel Silvestre", "format": "Pomada", "display_name": "Piel Silvestre - Pomada", "category": "Pomadas", "price": 250.0, "stock": 0, "image_url": "assets/images/Product Shots/PielSilvestre1.webp"},
+    {"slug": "fluye-pomada", "base_name": "Fluye", "format": "Pomada", "display_name": "Fluye - Pomada", "category": "Pomadas", "price": 190.0, "stock": 0, "image_url": "assets/images/Product Shots/Fluye1.webp"},
 ]
 
 def seed_botica_catalog(db: Session):
@@ -133,10 +133,12 @@ def get_botica_stock(db: Session = Depends(get_db)):
             "price": p.price
         }
 
+    db_engine_name = "postgresql" if "postgresql" in str(engine.url) else "sqlite"
     return {
         "success": True,
         "items": items_data,
-        "stock_map": stock_map
+        "stock_map": stock_map,
+        "db_engine": db_engine_name
     }
 
 @router.post("/admin/login")

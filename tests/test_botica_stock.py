@@ -34,7 +34,8 @@ def test_get_stock_auto_seeds():
     assert data["success"] is True
     assert len(data["items"]) >= 24
     assert "Focus - Tintura" in data["stock_map"]
-    assert data["stock_map"]["Focus - Tintura"]["stock"] == 10
+    assert data["stock_map"]["Focus - Tintura"]["stock"] == 0
+    assert data["stock_map"]["Balance - Tintura"]["stock"] == 10
 
 def test_admin_login_invalid():
     client = TestClient(app)
@@ -73,7 +74,7 @@ def test_deduct_stock():
     try:
         cart_items = [
             {"name": "Focus - Tintura", "quantity": 2},
-            {"name": "Colita de Rana - Pomada", "quantity": 1}
+            {"name": "Balance - Tintura", "quantity": 1}
         ]
         result = deduct_botica_stock(db, cart_items)
         assert len(result["deducted"]) == 2
@@ -81,8 +82,8 @@ def test_deduct_stock():
         prod = db.query(BoticaProduct).filter(BoticaProduct.slug == "focus-tintura").first()
         assert prod.stock == 1
 
-        pomada = db.query(BoticaProduct).filter(BoticaProduct.slug == "colita-de-rana-pomada").first()
-        assert pomada.stock == 9
+        balance = db.query(BoticaProduct).filter(BoticaProduct.slug == "balance-tintura").first()
+        assert balance.stock == 9
     finally:
         db.close()
 
