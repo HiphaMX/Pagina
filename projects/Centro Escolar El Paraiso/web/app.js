@@ -856,9 +856,11 @@ function initRotaryHero() {
       displayBenefit.textContent = program.benefit;
       
       // Update accent highlights
-      primaryBtn.style.backgroundColor = program.color;
-      primaryBtn.style.borderColor = program.color;
-      primaryBtn.style.boxShadow = `0 4px 14px rgba(${hexToRgb(program.color)}, 0.25)`;
+      if (primaryBtn) {
+        primaryBtn.style.backgroundColor = program.color;
+        primaryBtn.style.borderColor = program.color;
+        primaryBtn.style.boxShadow = `0 4px 14px rgba(${hexToRgb(program.color)}, 0.25)`;
+      }
       
       const benefitTextContainer = document.getElementById('hero-display-benefit');
       if (benefitTextContainer) {
