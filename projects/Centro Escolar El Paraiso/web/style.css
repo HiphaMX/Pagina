@@ -624,6 +624,8 @@ body.theme-dark .logo-light {
   position: relative;
   width: 500px;
   height: 500px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -638,8 +640,8 @@ body.theme-dark .logo-light {
 }
 @media (max-width: 480px) {
   .rotary-dial-container {
-    width: 320px;
-    height: 320px;
+    width: min(320px, 90vw);
+    height: min(320px, 90vw);
   }
 }
 
@@ -3690,6 +3692,8 @@ body.theme-dark .announcement-arch-container {
 /* --- SECCIÓN INSTALACIONES: FONDO BLANCO Y COLORES DE MARCA --- */
 #instalaciones {
   background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
 }
 
 body.theme-dark #instalaciones {
@@ -3702,7 +3706,7 @@ body.theme-dark #instalaciones {
   justify-content: center;
   align-items: center;
   gap: 36px;
-  padding: 36px 0 20px 0;
+  padding: 40px 0 24px 0;
   position: relative;
   max-width: 1240px;
   margin: 0 auto;
@@ -3726,7 +3730,7 @@ body.theme-dark #instalaciones {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px;
+  padding: 26px 22px;
   overflow: hidden;
   cursor: pointer;
   background-color: #ffffff;
@@ -3738,6 +3742,7 @@ body.theme-dark #instalaciones {
               border-color 0.4s ease,
               border-radius 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, border-radius;
+  box-sizing: border-box;
 }
 
 /* Ocultar capas oscuras en el círculo para garantizar blanco puro */
@@ -3755,6 +3760,9 @@ body.theme-dark #instalaciones {
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
 }
 
 .circle-number {
@@ -3785,23 +3793,26 @@ body.theme-dark #instalaciones {
   margin: 0;
   max-width: 185px;
   text-shadow: none;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
-/* Hover Dynamics */
-.imperfect-circle:hover,
-.imperfect-circle:focus-visible {
-  transform: translateY(-16px) scale(1.06) !important;
-  z-index: 10;
-  outline: none;
-}
-
-.imperfect-circle:hover .circle-number {
-  transform: scale(1.08);
+/* Hover Dynamics en Escritorio */
+@media (hover: hover) {
+  .imperfect-circle:hover,
+  .imperfect-circle:focus-visible {
+    transform: translateY(-16px) scale(1.06) !important;
+    z-index: 10;
+    outline: none;
+  }
+  .imperfect-circle:hover .circle-number {
+    transform: scale(1.08);
+  }
 }
 
 /* --- COLORES DE LA PÁGINA (BRAND IDENTITY EL PARAÍSO) --- */
 
-/* 01. Verde Institucional / Deep Forest (Logo Oficial) */
+/* 01. Verde Institucional / Deep Forest */
 .circle-brand-green,
 .circle-forest,
 .circle-cyan {
@@ -3813,7 +3824,7 @@ body.theme-dark #instalaciones {
 .circle-brand-green .circle-number,
 .circle-forest .circle-number,
 .circle-cyan .circle-number {
-  color: var(--color-accent); /* #0b5d36 */
+  color: var(--color-accent);
 }
 .circle-brand-green:hover,
 .circle-forest:hover,
@@ -3823,7 +3834,7 @@ body.theme-dark #instalaciones {
   border-radius: 50% 50% 46% 54% / 54% 50% 50% 46%;
 }
 
-/* 02. Azul Oxford / Deep Navy (Bilingüe / Rigor Oxford) */
+/* 02. Azul Oxford / Deep Navy */
 .circle-brand-navy,
 .circle-navy,
 .circle-magenta {
@@ -3836,7 +3847,7 @@ body.theme-dark #instalaciones {
 .circle-brand-navy .circle-number,
 .circle-navy .circle-number,
 .circle-magenta .circle-number {
-  color: var(--color-accent-blue); /* #233e5b */
+  color: var(--color-accent-blue);
 }
 .circle-brand-navy:hover,
 .circle-navy:hover,
@@ -3862,7 +3873,7 @@ body.theme-dark #instalaciones {
 .circle-brand-sage .circle-number,
 .circle-sage .circle-number,
 .circle-purple .circle-number {
-  color: var(--color-accent-green); /* #348a58 */
+  color: var(--color-accent-green);
 }
 .circle-brand-sage:hover,
 .circle-sage:hover,
@@ -3872,7 +3883,7 @@ body.theme-dark #instalaciones {
   border-radius: 48% 52% 54% 46% / 52% 48% 52% 48%;
 }
 
-/* 04. Verde Bosque / Forest Green (Campus Deportivo & Natural) */
+/* 04. Verde Bosque / Forest Green */
 .circle-brand-forest,
 .circle-forest-alt,
 .circle-emerald {
@@ -3885,7 +3896,7 @@ body.theme-dark #instalaciones {
 .circle-brand-forest .circle-number,
 .circle-forest-alt .circle-number,
 .circle-emerald .circle-number {
-  color: var(--color-accent); /* #0b5d36 */
+  color: var(--color-accent);
 }
 .circle-brand-forest:hover,
 .circle-forest-alt:hover,
@@ -3895,7 +3906,7 @@ body.theme-dark #instalaciones {
   border-radius: 54% 46% 48% 52% / 48% 52% 50% 50%;
 }
 
-/* Float Keyframes */
+/* Desktop Float Keyframes */
 @keyframes floatCircle1 {
   0%, 100% { transform: translateY(0px) rotate(-1deg); }
   50% { transform: translateY(-16px) rotate(1.2deg); }
@@ -3913,10 +3924,42 @@ body.theme-dark #instalaciones {
   50% { transform: translateY(-18px) rotate(-1.5deg); }
 }
 
+/* Synchronized, serene floating animation for mobile carousel */
+@keyframes floatCircleMobile {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+/* Mobile Nav Dots */
+.circles-carousel-nav {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 100px;
+  background-color: var(--color-border-active);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.carousel-dot.active {
+  width: 28px;
+  background-color: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(11, 93, 54, 0.28);
+}
+
 /* Gallery Hint */
 .circles-gallery-hint {
   text-align: center;
-  margin-top: 32px;
+  margin-top: 28px;
   font-size: 0.78rem;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -3925,6 +3968,12 @@ body.theme-dark #instalaciones {
 }
 .circles-gallery-hint:hover {
   color: var(--color-accent);
+}
+.hint-mobile {
+  display: none;
+}
+.hint-desktop {
+  display: inline;
 }
 
 /* Dark theme overrides */
@@ -3940,78 +3989,185 @@ body.theme-dark .circle-desc {
 body.theme-dark .circles-gallery-hint {
   color: #8aa093;
 }
+body.theme-dark .carousel-dot {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+body.theme-dark .carousel-dot.active {
+  background-color: var(--color-accent-green);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+}
 
-/* Responsive Adaptation */
+/* --- RESPONSIVE EDITORIAL DESIGN (TABLET & MOBILE) --- */
 @media (max-width: 1024px) {
   .floating-circles-gallery {
     gap: 20px;
+    padding: 30px 0 20px 0;
   }
   .imperfect-circle {
-    width: 220px;
-    height: 220px;
-    padding: 16px;
+    width: 225px;
+    height: 225px;
+    padding: 20px 16px;
   }
   .circle-brand-sage,
   .circle-sage,
   .circle-purple {
-    width: 235px;
-    height: 235px;
+    width: 238px;
+    height: 238px;
   }
   .circle-number {
-    font-size: 2.3rem;
+    font-size: 2.4rem;
+    margin-bottom: 8px;
+  }
+  .circle-title {
+    font-size: 1.08rem;
+  }
+  .circle-desc {
+    font-size: 0.75rem;
+    max-width: 175px;
+  }
+}
+
+/* Luxury Touch Carousel on Mobile (<768px) */
+@media (max-width: 768px) {
+  #instalaciones {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  #instalaciones .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100%;
+  }
+  #instalaciones .section-header-wrap,
+  #instalaciones .circles-gallery-hint,
+  #instalaciones .circles-carousel-nav {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .floating-circles-gallery {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 20px;
+    padding: 28px 24px 22px 24px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .floating-circles-gallery::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Each Circle as a Luxurious, Full-Sized Portal with Snap Alignment */
+  .imperfect-circle,
+  .circle-brand-sage,
+  .circle-sage,
+  .circle-purple {
+    flex: 0 0 260px;
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
+    height: 260px;
+    aspect-ratio: 1 / 1;
+    scroll-snap-align: center;
+    padding: 28px 22px;
+    margin: 0;
+    box-sizing: border-box;
+    /* Harmonious synchronized float on mobile */
+    animation: floatCircleMobile 5s ease-in-out infinite !important;
+  }
+
+  .circle-brand-navy,
+  .circle-navy,
+  .circle-magenta {
+    animation-delay: -1.25s !important;
+  }
+  .circle-brand-sage,
+  .circle-sage,
+  .circle-purple {
+    animation-delay: -2.5s !important;
+  }
+  .circle-brand-forest,
+  .circle-forest-alt,
+  .circle-emerald {
+    animation-delay: -3.75s !important;
+  }
+
+  .imperfect-circle:active {
+    transform: scale(0.97) !important;
+    transition: transform 0.15s ease;
+  }
+
+  .circle-content {
+    max-width: 200px;
+  }
+  .circle-number {
+    font-size: 2.65rem;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .circle-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .circle-desc {
+    font-size: 0.78rem;
+    line-height: 1.4;
+    max-width: 190px;
+  }
+
+  .circles-carousel-nav {
+    display: flex;
+  }
+  .hint-desktop {
+    display: none;
+  }
+  .hint-mobile {
+    display: inline;
+  }
+  .circles-gallery-hint {
+    margin-top: 14px;
+    font-size: 0.72rem;
+  }
+}
+
+/* Extra Compact Phones (<380px) */
+@media (max-width: 380px) {
+  .imperfect-circle,
+  .circle-brand-sage,
+  .circle-sage,
+  .circle-purple {
+    flex: 0 0 240px;
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    height: 240px;
+    padding: 24px 18px;
+  }
+  .circle-content {
+    max-width: 180px;
+  }
+  .circle-number {
+    font-size: 2.35rem;
+    margin-bottom: 6px;
   }
   .circle-title {
     font-size: 1.05rem;
   }
   .circle-desc {
     font-size: 0.74rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .floating-circles-gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 460px;
-    gap: 24px 18px;
-    padding: 24px 0 16px 0;
-  }
-  .imperfect-circle,
-  .circle-brand-sage,
-  .circle-sage,
-  .circle-purple {
-    width: 100%;
-    max-width: 220px;
-    height: 210px;
-  }
-  .circle-desc {
-    max-width: 160px;
-  }
-}
-
-@media (max-width: 440px) {
-  .floating-circles-gallery {
-    gap: 16px 12px;
-  }
-  .imperfect-circle,
-  .circle-brand-sage,
-  .circle-sage,
-  .circle-purple {
-    height: 180px;
-    padding: 12px 8px;
-  }
-  .circle-number {
-    font-size: 1.9rem;
-    margin-bottom: 6px;
-  }
-  .circle-title {
-    font-size: 0.95rem;
-    margin-bottom: 4px;
-  }
-  .circle-desc {
-    font-size: 0.68rem;
-    line-height: 1.25;
-    max-width: 140px;
+    max-width: 175px;
   }
 }
 

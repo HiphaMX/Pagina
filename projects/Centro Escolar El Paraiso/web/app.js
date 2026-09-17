@@ -1724,4 +1724,48 @@ function initFacilitiesGalleryLightbox() {
       }
     }
   }, { passive: true });
+
+  // Mobile Carousel Navigation Dots Synchronization
+  const galleryTrack = document.getElementById('floating-circles-gallery');
+  const dotsNav = document.getElementById('circles-carousel-nav');
+  if (galleryTrack && dotsNav) {
+    const dots = dotsNav.querySelectorAll('.carousel-dot');
+    const circles = galleryTrack.querySelectorAll('.imperfect-circle');
+
+    dots.forEach((dot, dotIdx) => {
+      dot.addEventListener('click', () => {
+        if (circles[dotIdx]) {
+          circles[dotIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    });
+
+    let isScrollTicking = false;
+    galleryTrack.addEventListener('scroll', () => {
+      if (!isScrollTicking) {
+        window.requestAnimationFrame(() => {
+          const trackRect = galleryTrack.getBoundingClientRect();
+          const trackCenter = trackRect.left + trackRect.width / 2;
+          let closestIdx = 0;
+          let minDistance = Infinity;
+
+          circles.forEach((c, i) => {
+            const rect = c.getBoundingClientRect();
+            const circleCenter = rect.left + rect.width / 2;
+            const dist = Math.abs(trackCenter - circleCenter);
+            if (dist < minDistance) {
+              minDistance = dist;
+              closestIdx = i;
+            }
+          });
+
+          dots.forEach((d, i) => {
+            d.classList.toggle('active', i === closestIdx);
+          });
+          isScrollTicking = false;
+        });
+        isScrollTicking = true;
+      }
+    }, { passive: true });
+  }
 }
