@@ -1507,7 +1507,12 @@ function initFacilitiesGalleryLightbox() {
   ];
 
   let currentIndex = 0;
+  let isCoverMode = true; // Por defecto expandido en toda la pantalla (100vw x 100vh)
+  let idleTimer = null;
+
   const imgEl = document.getElementById('lightbox-img');
+  const ambientEl = document.getElementById('lightbox-ambient');
+  const viewportEl = document.getElementById('lightbox-viewport');
   const counterEl = document.getElementById('lightbox-counter');
   const badgeEl = document.getElementById('lightbox-badge');
   const titleEl = document.getElementById('lightbox-title');
@@ -1516,6 +1521,9 @@ function initFacilitiesGalleryLightbox() {
   const closeBtn = document.getElementById('lightbox-close-btn');
   const prevBtn = document.getElementById('lightbox-prev-btn');
   const nextBtn = document.getElementById('lightbox-next-btn');
+  const fitToggleBtn = document.getElementById('lightbox-fit-toggle');
+  const fitLabel = document.getElementById('lightbox-fit-label');
+  const fullscreenBtn = document.getElementById('lightbox-fullscreen-toggle');
   const backdrop = document.getElementById('lightbox-backdrop');
 
   // Build thumbnail buttons
@@ -1527,9 +1535,33 @@ function initFacilitiesGalleryLightbox() {
       btn.className = 'lightbox-thumb-btn';
       btn.setAttribute('aria-label', `Ver ${f.title}`);
       btn.innerHTML = `<img src="${f.src}" alt="${f.title}">`;
-      btn.addEventListener('click', () => showIndex(idx));
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showIndex(idx);
+      });
       thumbsContainer.appendChild(btn);
     });
+  }
+
+  function resetIdleTimer() {
+    modal.classList.remove('hud-dimmed');
+    clearTimeout(idleTimer);
+    if (modal.classList.contains('active')) {
+      idleTimer = setTimeout(() => {
+        modal.classList.add('hud-dimmed');
+      }, 3400);
+    }
+  }
+
+  function toggleCoverMode() {
+    isCoverMode = !isCoverMode;
+    modal.classList.toggle('is-cover', isCoverMode);
+    modal.classList.toggle('is-contain', !isCoverMode);
+    if (fitLabel) fitLabel.textContent = isCoverMode ? 'AJUSTAR' : 'EXPANDIR';
+    if (fitToggleBtn) {
+      fitToggleBtn.setAttribute('title', isCoverMode ? 'Ajustar encuadre completo (Tecla F)' : 'Llenar pantalla completa (Tecla F)');
+    }
+    resetIdleTimer();
   }
 
   function showIndex(idx, transitionDirection = 0) {
@@ -1539,13 +1571,17 @@ function initFacilitiesGalleryLightbox() {
     // Smooth transition
     if (imgEl) {
       imgEl.style.opacity = '0';
-      imgEl.style.transform = transitionDirection > 0 ? 'translateX(25px) scale(0.97)' : transitionDirection < 0 ? 'translateX(-25px) scale(0.97)' : 'scale(0.95)';
+      imgEl.style.transform = transitionDirection > 0 ? 'translateX(30px) scale(0.98)' : transitionDirection < 0 ? 'translateX(-30px) scale(0.98)' : 'scale(0.96)';
       setTimeout(() => {
         imgEl.src = f.src;
         imgEl.alt = f.title;
         imgEl.style.opacity = '1';
         imgEl.style.transform = 'translateX(0) scale(1)';
       }, 150);
+    }
+
+    if (ambientEl) {
+      ambientEl.style.backgroundImage = `url('${f.src}')`;
     }
 
     if (counterEl) counterEl.textContent = `[ 0${currentIndex + 1} / 0${facilities.length} ]`;
@@ -1560,20 +1596,31 @@ function initFacilitiesGalleryLightbox() {
         t.classList.toggle('active', i === currentIndex);
       });
     }
+
+    resetIdleTimer();
   }
 
   function openLightbox(idx) {
+    // Asegurar estado cover inicial expandido
+    isCoverMode = true;
+    modal.classList.add('is-cover');
+    modal.classList.remove('is-contain');
+    if (fitLabel) fitLabel.textContent = 'AJUSTAR';
+
     showIndex(idx);
     modal.classList.add('active');
     if (typeof modal.showModal === 'function') {
       try { modal.showModal(); } catch (e) {}
     }
     document.body.style.overflow = 'hidden';
+    resetIdleTimer();
     if (closeBtn) closeBtn.focus();
   }
 
   function closeLightbox() {
+    clearTimeout(idleTimer);
     modal.classList.remove('active');
+    modal.classList.remove('hud-dimmed');
     if (typeof modal.close === 'function') {
       try { modal.close(); } catch (e) {}
     }
@@ -1596,14 +1643,52 @@ function initFacilitiesGalleryLightbox() {
   });
 
   // Controls listeners
-  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
   if (backdrop) backdrop.addEventListener('click', closeLightbox);
-  if (prevBtn) prevBtn.addEventListener('click', () => showIndex(currentIndex - 1, -1));
-  if (nextBtn) nextBtn.addEventListener('click', () => showIndex(currentIndex + 1, 1));
+  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showIndex(currentIndex - 1, -1); });
+  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showIndex(currentIndex + 1, 1); });
+
+  // Viewport / Image click to toggle between fill screen and contain
+  if (viewportEl) {
+    viewportEl.addEventListener('click', (e) => {
+      toggleCoverMode();
+    });
+  }
+
+  // Mode Toggle Button
+  if (fitToggleBtn) {
+    fitToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleCoverMode();
+    });
+  }
+
+  // Native Fullscreen Toggle
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) {
+        if (modal.requestFullscreen) {
+          modal.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    });
+  }
+
+  // Mouse / Touch idle events for Zen HUD auto-dimming
+  modal.addEventListener('mousemove', resetIdleTimer);
+  modal.addEventListener('click', resetIdleTimer);
 
   // Global Keyboard Navigation
   document.addEventListener('keydown', (e) => {
     if (!modal.classList.contains('active')) return;
+    resetIdleTimer();
     if (e.key === 'Escape') {
       e.preventDefault();
       closeLightbox();
@@ -1613,29 +1698,30 @@ function initFacilitiesGalleryLightbox() {
     } else if (e.key === 'ArrowRight') {
       e.preventDefault();
       showIndex(currentIndex + 1, 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      toggleCoverMode();
     }
   });
 
   // Mobile Touch Swipe Navigation
   let touchStartX = 0;
   let touchStartY = 0;
-  const stage = modal.querySelector('.lightbox-stage');
-  if (stage) {
-    stage.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
+  modal.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+    resetIdleTimer();
+  }, { passive: true });
 
-    stage.addEventListener('touchend', (e) => {
-      const diffX = e.changedTouches[0].screenX - touchStartX;
-      const diffY = e.changedTouches[0].screenY - touchStartY;
-      if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
-        if (diffX > 0) {
-          showIndex(currentIndex - 1, -1);
-        } else {
-          showIndex(currentIndex + 1, 1);
-        }
+  modal.addEventListener('touchend', (e) => {
+    const diffX = e.changedTouches[0].screenX - touchStartX;
+    const diffY = e.changedTouches[0].screenY - touchStartY;
+    if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        showIndex(currentIndex - 1, -1);
+      } else {
+        showIndex(currentIndex + 1, 1);
       }
-    }, { passive: true });
-  }
+    }
+  }, { passive: true });
 }

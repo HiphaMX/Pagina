@@ -11,7 +11,7 @@
   <meta name="author" content="HiphaMX">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -465,50 +465,56 @@
       </div>
     </section>
 
-    <!-- --- MODAL LIGHTBOX DE INSTALACIONES (FULLSCREEN VIEWER) --- -->
-    <dialog id="facilities-lightbox" class="facilities-lightbox-modal" aria-label="Galería ampliada de instalaciones">
+    <!-- --- MODAL LIGHTBOX DE INSTALACIONES (EXPANDED FULLSCREEN VIEWER) --- -->
+    <dialog id="facilities-lightbox" class="facilities-lightbox-modal is-cover" aria-label="Galería ampliada de instalaciones">
+      <!-- Resplandor dinámico de fondo con el color de la fotografía -->
+      <div class="lightbox-ambient" id="lightbox-ambient"></div>
       <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
-      <div class="lightbox-container">
-        
-        <!-- Header / Telemetría y Cierre -->
-        <div class="lightbox-header">
-          <div class="lightbox-meta">
-            <span class="lightbox-counter text-mono text-accent-green" id="lightbox-counter">[ 01 / 06 ]</span>
-            <span class="lightbox-badge text-mono" id="lightbox-badge">// MAKERSPACE</span>
-          </div>
-          <button type="button" class="lightbox-close-btn" id="lightbox-close-btn" aria-label="Cerrar visor de instalaciones">
+
+      <!-- Stage del visor ocupando el 100% de la pantalla (Edge-to-Edge) -->
+      <div class="lightbox-viewport" id="lightbox-viewport" title="Clic para alternar entre llenar pantalla o ajustar encuadre">
+        <img src="robotics_bg_v2.png" alt="Instalaciones del Campus" class="lightbox-img" id="lightbox-img">
+      </div>
+
+      <!-- Flechas de navegación flotantes -->
+      <button type="button" class="lightbox-nav-btn prev" id="lightbox-prev-btn" aria-label="Instalación anterior" title="Anterior (Flecha izquierda)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button type="button" class="lightbox-nav-btn next" id="lightbox-next-btn" aria-label="Siguiente instalación" title="Siguiente (Flecha derecha)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <!-- HUD Superior Flotante con Gradiente Traslúcido -->
+      <div class="lightbox-header-hud" id="lightbox-header-hud">
+        <div class="lightbox-meta">
+          <span class="lightbox-counter text-mono text-accent-green" id="lightbox-counter">[ 01 / 06 ]</span>
+          <span class="lightbox-badge text-mono" id="lightbox-badge">// MAKERSPACE</span>
+        </div>
+        <div class="lightbox-actions">
+          <button type="button" class="lightbox-hud-btn" id="lightbox-fit-toggle" aria-label="Alternar modo de ajuste o pantalla completa" title="Alternar entre llenar pantalla o ajustar encuadre (Tecla F)">
+            <svg class="icon-shrink" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
+            <svg class="icon-expand" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span class="hud-label text-mono" id="lightbox-fit-label">AJUSTAR</span>
+          </button>
+          <button type="button" class="lightbox-hud-btn" id="lightbox-fullscreen-toggle" aria-label="Pantalla completa del navegador" title="Pantalla completa del monitor">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </button>
+          <button type="button" class="lightbox-hud-btn close" id="lightbox-close-btn" aria-label="Cerrar visor de instalaciones" title="Cerrar (ESC)">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span class="close-label text-mono">ESC</span>
+            <span class="hud-label text-mono">ESC</span>
           </button>
         </div>
+      </div>
 
-        <!-- Visor Principal con Controles de Navegación -->
-        <div class="lightbox-stage">
-          <button type="button" class="lightbox-nav-btn prev" id="lightbox-prev-btn" aria-label="Instalación anterior">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-
-          <div class="lightbox-frame">
-            <img src="robotics_bg_v2.png" alt="Instalaciones del Campus" class="lightbox-img" id="lightbox-img">
-          </div>
-
-          <button type="button" class="lightbox-nav-btn next" id="lightbox-next-btn" aria-label="Siguiente instalación">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
+      <!-- HUD Inferior Flotante con Gradiente Traslúcido -->
+      <div class="lightbox-footer-hud" id="lightbox-footer-hud">
+        <div class="lightbox-info">
+          <h3 class="lightbox-title" id="lightbox-title">Laboratorio Maker y Robótica</h3>
+          <p class="lightbox-desc" id="lightbox-desc">Espacio equipado para el desarrollo del pensamiento lógico, diseño de circuitos y prototipado físico constructivista.</p>
         </div>
-
-        <!-- Ficha de Información y Tira de Miniaturas -->
-        <div class="lightbox-footer">
-          <div class="lightbox-info">
-            <h3 class="lightbox-title" id="lightbox-title">Laboratorio Maker y Robótica</h3>
-            <p class="lightbox-desc" id="lightbox-desc">Espacio equipado para el desarrollo del pensamiento lógico, diseño de circuitos y prototipado físico constructivista.</p>
-          </div>
-
-          <div class="lightbox-thumbs" id="lightbox-thumbs">
-            <!-- Renderizado dinámico desde app.js -->
-          </div>
+        <div class="lightbox-thumbs" id="lightbox-thumbs">
+          <!-- Renderizado dinámico desde app.js -->
         </div>
-
       </div>
     </dialog>
 
@@ -1516,6 +1522,6 @@
   </dialog>
 
   <!-- --- JAVASCRIPT LOGIC --- -->
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
