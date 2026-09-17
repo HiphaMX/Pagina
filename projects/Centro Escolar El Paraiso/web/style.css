@@ -3687,179 +3687,224 @@ body.theme-dark .announcement-arch-container {
   }
 }
 
-/* --- CAMPUS FACILITIES (MOSAICO BENTO & LIGHTBOX GALLERY) --- */
-.facilities-mosaic {
+/* --- CAMPUS FACILITIES (ARTISTIC NON-GEOMETRIC MOSAIC GALLERY) --- */
+.facilities-mosaic.artistic-gallery-flow {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 20px;
-}
-
-.mosaic-item {
+  gap: 32px 26px;
   position: relative;
-  border-radius: var(--radius-md);
+  padding: 24px 0 48px 0;
+}
+
+/* Dynamic Ambient Aurora Behind the Canvases */
+.facilities-mosaic.artistic-gallery-flow::before {
+  content: '';
+  position: absolute;
+  inset: -15% -8%;
+  background: radial-gradient(ellipse 65% 50% at 20% 30%, rgba(16, 185, 129, 0.12) 0%, transparent 68%),
+              radial-gradient(ellipse 60% 45% at 80% 65%, rgba(5, 150, 105, 0.1) 0%, transparent 68%),
+              radial-gradient(ellipse 50% 35% at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Base Art Canvas (Zero Geometric Borders, Organic Silhouettes) */
+.art-canvas {
+  position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
-  border: 1px solid var(--color-border);
   cursor: pointer;
-  background-color: #0c1b12;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.4s ease;
+  background-color: #030a05;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 24px 50px -12px rgba(2, 8, 4, 0.55), 0 0 35px -10px rgba(16, 185, 129, 0.15);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s ease,
+              border-radius 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, border-radius;
+  z-index: 1;
 }
 
-.mosaic-span-7 {
-  grid-column: span 7;
-  min-height: 420px;
-}
-
-.mosaic-span-5 {
-  grid-column: span 5;
-  min-height: 420px;
-}
-
-.mosaic-span-4 {
-  grid-column: span 4;
-  min-height: 320px;
-}
-
-.mosaic-span-12 {
-  grid-column: span 12;
-  min-height: 320px;
-}
-
-.mosaic-item:hover,
-.mosaic-item:focus-visible {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.18);
+.art-canvas:hover,
+.art-canvas:focus-visible {
+  transform: translateY(-14px) rotate(0deg) scale(1.035) !important;
+  box-shadow: 0 36px 85px -15px rgba(0, 0, 0, 0.7), 0 0 55px rgba(16, 185, 129, 0.4);
   border-color: var(--color-accent-green);
+  z-index: 10;
   outline: none;
 }
 
-.mosaic-img {
+/* Individual Organic Sculpted Silhouettes (Non-geometric curves and asymmetric flow) */
+.art-canvas-1 {
+  grid-column: span 7;
+  height: 480px;
+  border-radius: 65px 150px 55px 120px / 120px 55px 140px 65px;
+  transform: rotate(-1.5deg);
+}
+.art-canvas-1:hover {
+  border-radius: 85px 120px 75px 100px / 100px 75px 120px 85px;
+}
+
+.art-canvas-2 {
+  grid-column: span 5;
+  height: 520px;
+  border-radius: 140px 60px 150px 50px / 60px 130px 55px 140px;
+  transform: rotate(1.8deg) translateY(26px);
+}
+.art-canvas-2:hover {
+  border-radius: 95px 80px 120px 75px / 75px 115px 75px 115px;
+}
+
+.art-canvas-3 {
+  grid-column: span 4;
+  height: 390px;
+  border-radius: 60px 130px 50px 105px / 105px 50px 125px 60px;
+  transform: rotate(1.4deg) translateY(-14px);
+}
+.art-canvas-3:hover {
+  border-radius: 80px 105px 70px 90px / 90px 70px 105px 80px;
+}
+
+.art-canvas-4 {
+  grid-column: span 4;
+  height: 430px;
+  border-radius: 125px 55px 135px 65px / 60px 125px 65px 135px;
+  transform: rotate(-1.8deg) translateY(20px);
+}
+.art-canvas-4:hover {
+  border-radius: 85px 75px 105px 80px / 75px 105px 80px 90px;
+}
+
+.art-canvas-5 {
+  grid-column: span 4;
+  height: 400px;
+  border-radius: 65px 115px 55px 140px / 135px 55px 115px 65px;
+  transform: rotate(1.5deg) translateY(-8px);
+}
+.art-canvas-5:hover {
+  border-radius: 85px 95px 75px 105px / 105px 75px 95px 85px;
+}
+
+.art-canvas-6 {
+  grid-column: span 12;
+  height: 430px;
+  border-radius: 105px 175px 85px 155px / 130px 85px 145px 95px;
+  transform: rotate(-0.8deg) translateY(14px);
+}
+.art-canvas-6:hover {
+  border-radius: 120px 140px 105px 125px / 110px 105px 125px 110px;
+}
+
+/* Pure Art Photography (No Text Distractions) */
+.art-canvas .mosaic-img {
   position: absolute;
-  inset: 0;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
   background-size: cover;
   background-position: center;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  filter: saturate(1.06) contrast(1.02);
 }
 
-.mosaic-item:hover .mosaic-img {
-  transform: scale(1.06);
+.art-canvas:hover .mosaic-img {
+  transform: scale(1.08);
+  filter: saturate(1.18) contrast(1.05);
 }
 
-.mosaic-overlay {
+/* Subtle Atmospheric Glaze */
+.artistic-glaze {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(7, 19, 11, 0.1) 0%, rgba(7, 19, 11, 0.45) 45%, rgba(7, 19, 11, 0.92) 100%);
-  transition: background 0.4s ease;
+  background: radial-gradient(circle at 50% 100%, rgba(2, 6, 4, 0.25) 0%, transparent 65%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
-.mosaic-item:hover .mosaic-overlay {
-  background: linear-gradient(180deg, rgba(7, 19, 11, 0.05) 0%, rgba(7, 19, 11, 0.3) 35%, rgba(7, 19, 11, 0.95) 100%);
+.art-canvas:hover .artistic-glaze {
+  opacity: 0.08;
 }
 
-.mosaic-expand-badge {
+/* Sleek Diagonal Light Sweep on Hover */
+.artistic-shine {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  z-index: 3;
+  top: 0;
+  left: -130%;
+  width: 90%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent 25%, rgba(255, 255, 255, 0.24) 50%, transparent 75%);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: left 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.art-canvas:hover .artistic-shine {
+  left: 145%;
+}
+
+/* Minimalist Floating Aperture Lens Indicator */
+.artistic-lens {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.65);
+  opacity: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(6, 18, 11, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(16, 185, 129, 0.7);
+  color: var(--color-accent-green);
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: rgba(7, 19, 11, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  opacity: 0.85;
+  justify-content: center;
+  pointer-events: none;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 28px rgba(16, 185, 129, 0.45);
 }
 
-.mosaic-item:hover .mosaic-expand-badge {
+.art-canvas:hover .artistic-lens {
   opacity: 1;
-  background: rgba(16, 185, 129, 0.25);
-  border-color: var(--color-accent-green);
-  color: var(--color-accent-green);
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transform: translate(-50%, -50%) scale(1);
 }
 
-.mosaic-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 28px;
-  z-index: 2;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mosaic-tag {
-  font-size: 0.72rem;
-  color: var(--color-accent-green);
-  letter-spacing: 0.1em;
-  font-weight: 700;
-}
-
-.mosaic-title {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1.15;
-  margin: 0;
-  color: #ffffff;
-}
-
-.mosaic-span-7 .mosaic-title {
-  font-size: 1.75rem;
-}
-
-.mosaic-span-12 .mosaic-title {
-  font-size: 1.75rem;
-}
-
-.mosaic-desc {
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.75);
-  margin: 0;
-  max-width: 580px;
-}
-
+/* Responsive Art Flow */
 @media (max-width: 1024px) {
-  .mosaic-span-7 { grid-column: span 12; min-height: 360px; }
-  .mosaic-span-5 { grid-column: span 12; min-height: 340px; }
-  .mosaic-span-4 { grid-column: span 6; min-height: 300px; }
-  .mosaic-span-12 { grid-column: span 12; min-height: 280px; }
+  .facilities-mosaic.artistic-gallery-flow {
+    gap: 26px;
+  }
+  .art-canvas-1 { grid-column: span 12; height: 390px; transform: rotate(-1deg); }
+  .art-canvas-2 { grid-column: span 12; height: 390px; transform: rotate(1deg) translateY(0); }
+  .art-canvas-3 { grid-column: span 6; height: 350px; transform: rotate(1deg) translateY(0); }
+  .art-canvas-4 { grid-column: span 6; height: 350px; transform: rotate(-1deg) translateY(0); }
+  .art-canvas-5 { grid-column: span 12; height: 370px; transform: rotate(0.8deg) translateY(0); }
+  .art-canvas-6 { grid-column: span 12; height: 370px; transform: rotate(-0.5deg) translateY(0); }
 }
 
 @media (max-width: 640px) {
-  .facilities-mosaic {
-    gap: 16px;
+  .facilities-mosaic.artistic-gallery-flow {
+    gap: 22px;
+    padding: 10px 0 28px 0;
   }
-  .mosaic-span-7,
-  .mosaic-span-5,
-  .mosaic-span-4,
-  .mosaic-span-12 {
-    grid-column: span 12;
-    min-height: 270px;
+  .art-canvas {
+    grid-column: span 12 !important;
+    height: 290px !important;
   }
-  .mosaic-content {
-    padding: 20px;
+  .art-canvas-1 { border-radius: 48px 90px 38px 75px / 75px 38px 85px 48px; transform: rotate(-0.8deg); }
+  .art-canvas-2 { border-radius: 85px 44px 90px 38px / 38px 80px 38px 85px; transform: rotate(0.8deg); }
+  .art-canvas-3 { border-radius: 38px 80px 38px 70px / 70px 38px 80px 38px; transform: rotate(-0.6deg); }
+  .art-canvas-4 { border-radius: 80px 38px 80px 44px / 38px 80px 44px 80px; transform: rotate(0.6deg); }
+  .art-canvas-5 { border-radius: 44px 75px 38px 85px / 85px 38px 75px 44px; transform: rotate(-0.7deg); }
+  .art-canvas-6 { border-radius: 70px 105px 55px 90px / 80px 55px 90px 60px; transform: rotate(0.5deg); }
+  .art-canvas:hover {
+    transform: translateY(-6px) scale(1.02) !important;
   }
-  .mosaic-title,
-  .mosaic-span-7 .mosaic-title,
-  .mosaic-span-12 .mosaic-title {
-    font-size: 1.35rem;
+  .artistic-lens {
+    width: 46px;
+    height: 46px;
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0.9);
   }
 }
 
