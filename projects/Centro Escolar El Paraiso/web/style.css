@@ -3687,32 +3687,33 @@ body.theme-dark .announcement-arch-container {
   }
 }
 
+/* --- SECCIÓN INSTALACIONES: FONDO BLANCO Y COLORES DE MARCA --- */
+#instalaciones {
+  background-color: #ffffff;
+}
+
+body.theme-dark #instalaciones {
+  background-color: var(--color-bg);
+}
+
 /* --- 4 CÍRCULOS FLOTANTES IMPERFECTOS (PORTALES A LA GALERÍA) --- */
 .floating-circles-gallery {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 36px;
-  padding: 40px 0 24px 0;
+  padding: 36px 0 20px 0;
   position: relative;
   max-width: 1240px;
   margin: 0 auto;
 }
 
-/* Ambient glow in background */
+/* Sin degradados en el fondo general */
 .floating-circles-gallery::before {
-  content: '';
-  position: absolute;
-  inset: -25% -10%;
-  background: radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.09) 0%, transparent 55%),
-              radial-gradient(circle at 38% 50%, rgba(244, 63, 94, 0.08) 0%, transparent 55%),
-              radial-gradient(circle at 62% 50%, rgba(168, 85, 247, 0.09) 0%, transparent 55%),
-              radial-gradient(circle at 85% 50%, rgba(16, 185, 129, 0.09) 0%, transparent 55%);
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
-/* Base Imperfect Circle */
+/* Base Imperfect Circle: Fondo Blanco Sólido y Elevación Suave */
 .imperfect-circle {
   position: relative;
   flex: 1 1 0;
@@ -3728,45 +3729,27 @@ body.theme-dark .announcement-arch-container {
   padding: 24px;
   overflow: hidden;
   cursor: pointer;
-  background-color: #03080e;
+  background-color: #ffffff;
   user-select: none;
   -webkit-user-select: none;
   z-index: 1;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s ease,
               border-radius 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, border-radius;
 }
 
-/* Photo Inside Circle */
-.imperfect-circle .circle-photo {
-  position: absolute;
-  inset: -6%;
-  width: 112%;
-  height: 112%;
-  background-size: cover;
-  background-position: center;
-  filter: saturate(1.1) brightness(0.42);
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
-  z-index: 1;
-}
-
-/* Glass Tint & Atmosphere */
-.circle-glass-tint {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(5, 12, 18, 0.7) 0%, rgba(2, 6, 10, 0.9) 100%);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: background 0.4s ease, backdrop-filter 0.4s ease;
-  z-index: 2;
+/* Ocultar capas oscuras en el círculo para garantizar blanco puro */
+.imperfect-circle .circle-photo,
+.imperfect-circle .circle-glass-tint {
+  display: none !important;
 }
 
 /* Content */
 .circle-content {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3785,120 +3768,130 @@ body.theme-dark .announcement-arch-container {
 
 .circle-title {
   font-family: var(--font-display);
-  font-size: 1.18rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-fg);
   margin: 0 0 6px 0;
-  line-height: 1.2;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  line-height: 1.25;
+  text-shadow: none;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .circle-desc {
+  font-family: var(--font-sans);
   font-size: 0.78rem;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.4;
+  color: var(--color-fg-muted);
   margin: 0;
   max-width: 185px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
 }
 
 /* Hover Dynamics */
 .imperfect-circle:hover,
 .imperfect-circle:focus-visible {
-  transform: translateY(-22px) scale(1.08) !important;
+  transform: translateY(-16px) scale(1.06) !important;
   z-index: 10;
   outline: none;
-}
-
-.imperfect-circle:hover .circle-photo {
-  transform: scale(1.1);
-  filter: saturate(1.25) brightness(0.8);
-}
-
-.imperfect-circle:hover .circle-glass-tint {
-  background: radial-gradient(circle at center, rgba(5, 12, 18, 0.32) 0%, rgba(2, 6, 10, 0.7) 100%);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
 }
 
 .imperfect-circle:hover .circle-number {
   transform: scale(1.08);
 }
 
-/* --- INDIVIDUAL ORGANIC CIRCLES (INSPIRADAS EN LA REFERENCIA) --- */
+/* --- COLORES DE LA PÁGINA (BRAND IDENTITY EL PARAÍSO) --- */
 
-/* 01. Cyan Circle */
+/* 01. Verde Institucional / Deep Forest (Logo Oficial) */
+.circle-brand-green,
+.circle-forest,
 .circle-cyan {
   border-radius: 54% 46% 42% 58% / 58% 52% 48% 42%;
-  border: 1.5px solid rgba(56, 189, 248, 0.65);
-  box-shadow: 0 0 32px rgba(56, 189, 248, 0.22), inset 0 0 24px rgba(56, 189, 248, 0.12);
+  border: 2px solid rgba(11, 93, 54, 0.32);
+  box-shadow: 0 12px 30px -8px rgba(11, 93, 54, 0.12), 0 2px 6px rgba(11, 93, 54, 0.04);
   animation: floatCircle1 6.5s ease-in-out infinite;
 }
+.circle-brand-green .circle-number,
+.circle-forest .circle-number,
 .circle-cyan .circle-number {
-  color: #38bdf8;
-  text-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
+  color: var(--color-accent); /* #0b5d36 */
 }
+.circle-brand-green:hover,
+.circle-forest:hover,
 .circle-cyan:hover {
-  border-color: #38bdf8;
-  box-shadow: 0 0 55px rgba(56, 189, 248, 0.5), inset 0 0 30px rgba(56, 189, 248, 0.25);
+  border-color: var(--color-accent);
+  box-shadow: 0 22px 46px -8px rgba(11, 93, 54, 0.22), 0 0 0 1px rgba(11, 93, 54, 0.15);
   border-radius: 50% 50% 46% 54% / 54% 50% 50% 46%;
 }
 
-/* 02. Magenta / Rose Circle */
+/* 02. Azul Oxford / Deep Navy (Bilingüe / Rigor Oxford) */
+.circle-brand-navy,
+.circle-navy,
 .circle-magenta {
   border-radius: 46% 54% 58% 42% / 48% 60% 40% 52%;
-  border: 1.5px solid rgba(244, 63, 94, 0.65);
-  box-shadow: 0 0 32px rgba(244, 63, 94, 0.22), inset 0 0 24px rgba(244, 63, 94, 0.12);
+  border: 2px solid rgba(35, 62, 91, 0.32);
+  box-shadow: 0 12px 30px -8px rgba(35, 62, 91, 0.12), 0 2px 6px rgba(35, 62, 91, 0.04);
   animation: floatCircle2 7.2s ease-in-out infinite;
   animation-delay: -1.8s;
 }
+.circle-brand-navy .circle-number,
+.circle-navy .circle-number,
 .circle-magenta .circle-number {
-  color: #fb7185;
-  text-shadow: 0 0 25px rgba(244, 63, 94, 0.7);
+  color: var(--color-accent-blue); /* #233e5b */
 }
+.circle-brand-navy:hover,
+.circle-navy:hover,
 .circle-magenta:hover {
-  border-color: #f43f5e;
-  box-shadow: 0 0 55px rgba(244, 63, 94, 0.5), inset 0 0 30px rgba(244, 63, 94, 0.25);
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 22px 46px -8px rgba(35, 62, 91, 0.22), 0 0 0 1px rgba(35, 62, 91, 0.15);
   border-radius: 52% 48% 50% 50% / 46% 54% 46% 54%;
 }
 
-/* 03. Purple / Violet Circle (Slightly larger like reference) */
+/* 03. Verde Activo / Sage Green (Naturaleza / Ecuestre - escala superior como referencia) */
+.circle-brand-sage,
+.circle-sage,
 .circle-purple {
   width: 275px;
   max-width: 290px;
   height: 275px;
   border-radius: 52% 48% 46% 54% / 60% 48% 52% 40%;
-  border: 1.5px solid rgba(168, 85, 247, 0.7);
-  box-shadow: 0 0 36px rgba(168, 85, 247, 0.26), inset 0 0 26px rgba(168, 85, 247, 0.15);
+  border: 2px solid rgba(52, 138, 88, 0.35);
+  box-shadow: 0 14px 34px -8px rgba(52, 138, 88, 0.14), 0 2px 6px rgba(52, 138, 88, 0.04);
   animation: floatCircle3 6.8s ease-in-out infinite;
   animation-delay: -3.2s;
 }
+.circle-brand-sage .circle-number,
+.circle-sage .circle-number,
 .circle-purple .circle-number {
-  color: #c084fc;
-  text-shadow: 0 0 25px rgba(168, 85, 247, 0.7);
+  color: var(--color-accent-green); /* #348a58 */
 }
+.circle-brand-sage:hover,
+.circle-sage:hover,
 .circle-purple:hover {
-  border-color: #a855f7;
-  box-shadow: 0 0 60px rgba(168, 85, 247, 0.55), inset 0 0 35px rgba(168, 85, 247, 0.3);
+  border-color: var(--color-accent-green);
+  box-shadow: 0 24px 50px -8px rgba(52, 138, 88, 0.25), 0 0 0 1px rgba(52, 138, 88, 0.15);
   border-radius: 48% 52% 54% 46% / 52% 48% 52% 48%;
 }
 
-/* 04. Emerald Circle */
+/* 04. Verde Bosque / Forest Green (Campus Deportivo & Natural) */
+.circle-brand-forest,
+.circle-forest-alt,
 .circle-emerald {
   border-radius: 48% 52% 60% 40% / 52% 42% 58% 48%;
-  border: 1.5px solid rgba(16, 185, 129, 0.7);
-  box-shadow: 0 0 32px rgba(16, 185, 129, 0.24), inset 0 0 24px rgba(16, 185, 129, 0.14);
+  border: 2px solid rgba(11, 93, 54, 0.32);
+  box-shadow: 0 12px 30px -8px rgba(11, 93, 54, 0.12), 0 2px 6px rgba(11, 93, 54, 0.04);
   animation: floatCircle4 7.6s ease-in-out infinite;
   animation-delay: -4.5s;
 }
+.circle-brand-forest .circle-number,
+.circle-forest-alt .circle-number,
 .circle-emerald .circle-number {
-  color: #34d399;
-  text-shadow: 0 0 25px rgba(16, 185, 129, 0.7);
+  color: var(--color-accent); /* #0b5d36 */
 }
+.circle-brand-forest:hover,
+.circle-forest-alt:hover,
 .circle-emerald:hover {
-  border-color: #10b981;
-  box-shadow: 0 0 55px rgba(16, 185, 129, 0.55), inset 0 0 30px rgba(16, 185, 129, 0.3);
+  border-color: var(--color-accent);
+  box-shadow: 0 22px 46px -8px rgba(11, 93, 54, 0.22), 0 0 0 1px rgba(11, 93, 54, 0.15);
   border-radius: 54% 46% 48% 52% / 48% 52% 50% 50%;
 }
 
@@ -3923,10 +3916,29 @@ body.theme-dark .announcement-arch-container {
 /* Gallery Hint */
 .circles-gallery-hint {
   text-align: center;
-  margin-top: 28px;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
+  margin-top: 32px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--color-fg-muted);
+  transition: color var(--transition-fast);
+}
+.circles-gallery-hint:hover {
+  color: var(--color-accent);
+}
+
+/* Dark theme overrides */
+body.theme-dark .imperfect-circle {
+  background-color: #12281a;
+}
+body.theme-dark .circle-title {
+  color: #faf9f6;
+}
+body.theme-dark .circle-desc {
+  color: #8aa093;
+}
+body.theme-dark .circles-gallery-hint {
+  color: #8aa093;
 }
 
 /* Responsive Adaptation */
@@ -3939,6 +3951,8 @@ body.theme-dark .announcement-arch-container {
     height: 220px;
     padding: 16px;
   }
+  .circle-brand-sage,
+  .circle-sage,
   .circle-purple {
     width: 235px;
     height: 235px;
@@ -3963,6 +3977,8 @@ body.theme-dark .announcement-arch-container {
     padding: 24px 0 16px 0;
   }
   .imperfect-circle,
+  .circle-brand-sage,
+  .circle-sage,
   .circle-purple {
     width: 100%;
     max-width: 220px;
@@ -3978,6 +3994,8 @@ body.theme-dark .announcement-arch-container {
     gap: 16px 12px;
   }
   .imperfect-circle,
+  .circle-brand-sage,
+  .circle-sage,
   .circle-purple {
     height: 180px;
     padding: 12px 8px;

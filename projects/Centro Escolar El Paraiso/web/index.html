@@ -11,7 +11,7 @@
   <meta name="author" content="HiphaMX">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 
@@ -363,65 +363,59 @@
       </div>
     </section>
 
-    <!-- --- INSTALACIONES DEL CAMPUS (MOSAICO BENTO & LIGHTBOX) --- -->
-    <section class="py-large container" id="instalaciones" style="border-top: 1px solid var(--color-border);">
-      <div class="section-header-wrap">
-        <span class="text-mono text-accent-green">[ 02 / INSTALACIONES DEL CAMPUS ]</span>
-        <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Descubre las instalaciones</h2>
-      </div>
-
-      <!-- --- 4 CÍRCULOS FLOTANTES IMPERFECTOS (PORTALES A LA GALERÍA) --- -->
-      <div class="floating-circles-gallery" id="floating-circles-gallery">
-        
-        <!-- Círculo 01: Robótica & Maker (Cyan Neon Glow) -->
-        <div class="imperfect-circle circle-cyan" data-facility-index="0" role="button" tabindex="0" aria-label="Explorar Laboratorio Maker y Robótica">
-          <div class="circle-photo" style="background-image: url('robotics_bg_v2.png');"></div>
-          <div class="circle-glass-tint"></div>
-          <div class="circle-content">
-            <span class="circle-number text-mono">01</span>
-            <h3 class="circle-title">Robótica & Maker</h3>
-            <p class="circle-desc">Circuitos electrónicos y prototipado activo</p>
-          </div>
+    <!-- --- INSTALACIONES DEL CAMPUS (PORTALES FLOTANTES & LIGHTBOX FULLSCREEN) --- -->
+    <section class="py-large" id="instalaciones" style="background-color: #ffffff; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+      <div class="container">
+        <div class="section-header-wrap">
+          <span class="text-mono text-accent-green">[ 02 / INSTALACIONES DEL CAMPUS ]</span>
+          <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Descubre las instalaciones</h2>
         </div>
 
-        <!-- Círculo 02: Matemáticas CIME (Magenta/Rose Neon Glow) -->
-        <div class="imperfect-circle circle-magenta" data-facility-index="1" role="button" tabindex="0" aria-label="Explorar Aulas de Matemáticas CIME">
-          <div class="circle-photo" style="background-image: url('cime_bg_v2.png');"></div>
-          <div class="circle-glass-tint"></div>
-          <div class="circle-content">
-            <span class="circle-number text-mono">02</span>
-            <h3 class="circle-title">Matemáticas CIME</h3>
-            <p class="circle-desc">Material estructurado y razonamiento tangible</p>
+        <!-- --- 4 CÍRCULOS FLOTANTES IMPERFECTOS (PORTALES A LA GALERÍA) --- -->
+        <div class="floating-circles-gallery" id="floating-circles-gallery">
+          
+          <!-- Círculo 01: Robótica & Maker (Verde Institucional / Deep Forest) -->
+          <div class="imperfect-circle circle-brand-green circle-forest circle-cyan" data-facility-index="0" role="button" tabindex="0" aria-label="Explorar Laboratorio Maker y Robótica">
+            <div class="circle-content">
+              <span class="circle-number text-mono">01</span>
+              <h3 class="circle-title">Robótica & Maker</h3>
+              <p class="circle-desc">Circuitos electrónicos y prototipado activo</p>
+            </div>
           </div>
+
+          <!-- Círculo 02: Matemáticas CIME (Azul Oxford / Deep Navy) -->
+          <div class="imperfect-circle circle-brand-navy circle-navy circle-magenta" data-facility-index="1" role="button" tabindex="0" aria-label="Explorar Aulas de Matemáticas CIME">
+            <div class="circle-content">
+              <span class="circle-number text-mono">02</span>
+              <h3 class="circle-title">Matemáticas CIME</h3>
+              <p class="circle-desc">Material estructurado y razonamiento tangible</p>
+            </div>
+          </div>
+
+          <!-- Círculo 03: Pistas Ecuestres (Verde Activo / Sage Green) -->
+          <div class="imperfect-circle circle-brand-sage circle-sage circle-purple" data-facility-index="2" role="button" tabindex="0" aria-label="Explorar Pistas Ecuestres y Artes">
+            <div class="circle-content">
+              <span class="circle-number text-mono">03</span>
+              <h3 class="circle-title">Pistas Ecuestres</h3>
+              <p class="circle-desc">Desarrollo postural, templanza y vínculo animal</p>
+            </div>
+          </div>
+
+          <!-- Círculo 04: Campus Natural (Verde Bosque / Forest Green) -->
+          <div class="imperfect-circle circle-brand-forest circle-forest-alt circle-emerald" data-facility-index="5" role="button" tabindex="0" aria-label="Explorar Campus Natural y Deportes">
+            <div class="circle-content">
+              <span class="circle-number text-mono">04</span>
+              <h3 class="circle-title">Campus Natural</h3>
+              <p class="circle-desc">Hectáreas de áreas verdes y deporte al aire libre</p>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Círculo 03: Pistas Ecuestres (Purple/Violet Neon Glow) -->
-        <div class="imperfect-circle circle-purple" data-facility-index="2" role="button" tabindex="0" aria-label="Explorar Pistas Ecuestres y Artes">
-          <div class="circle-photo" style="background-image: url('equitation_bg_v2.png');"></div>
-          <div class="circle-glass-tint"></div>
-          <div class="circle-content">
-            <span class="circle-number text-mono">03</span>
-            <h3 class="circle-title">Pistas Ecuestres</h3>
-            <p class="circle-desc">Desarrollo postural, templanza y vínculo animal</p>
-          </div>
+        <!-- Hint Minimalista de Interacción -->
+        <div class="circles-gallery-hint">
+          <span class="text-mono">[ HAZ CLIC EN CUALQUIER CÍRCULO PARA EXPLORAR LA GALERÍA COMPLETA ]</span>
         </div>
-
-        <!-- Círculo 04: Campus Natural (Emerald Green Neon Glow) -->
-        <div class="imperfect-circle circle-emerald" data-facility-index="5" role="button" tabindex="0" aria-label="Explorar Campus Natural y Deportes">
-          <div class="circle-photo" style="background-image: url('hero_v2.png');"></div>
-          <div class="circle-glass-tint"></div>
-          <div class="circle-content">
-            <span class="circle-number text-mono">04</span>
-            <h3 class="circle-title">Campus Natural</h3>
-            <p class="circle-desc">Hectáreas de áreas verdes y deporte al aire libre</p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Hint Minimalista de Interacción -->
-      <div class="circles-gallery-hint">
-        <span class="text-mono">[ HAZ CLIC EN CUALQUIER CÍRCULO PARA EXPLORAR LA GALERÍA COMPLETA ]</span>
       </div>
     </section>
 
@@ -1482,6 +1476,6 @@
   </dialog>
 
   <!-- --- JAVASCRIPT LOGIC --- -->
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>
