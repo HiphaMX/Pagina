@@ -1464,7 +1464,7 @@ function initContactModal() {
    ========================================================================== */
 function initFacilitiesGalleryLightbox() {
   const modal = document.getElementById('facilities-lightbox');
-  const items = document.querySelectorAll('.facilities-mosaic .mosaic-item');
+  const items = document.querySelectorAll('.imperfect-circle, .facilities-mosaic .mosaic-item');
   if (!modal || items.length === 0) return;
 
   const facilities = [

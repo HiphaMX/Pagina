@@ -3687,224 +3687,313 @@ body.theme-dark .announcement-arch-container {
   }
 }
 
-/* --- CAMPUS FACILITIES (ARTISTIC NON-GEOMETRIC MOSAIC GALLERY) --- */
-.facilities-mosaic.artistic-gallery-flow {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 32px 26px;
+/* --- 4 CÍRCULOS FLOTANTES IMPERFECTOS (PORTALES A LA GALERÍA) --- */
+.floating-circles-gallery {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+  padding: 40px 0 24px 0;
   position: relative;
-  padding: 24px 0 48px 0;
+  max-width: 1240px;
+  margin: 0 auto;
 }
 
-/* Dynamic Ambient Aurora Behind the Canvases */
-.facilities-mosaic.artistic-gallery-flow::before {
+/* Ambient glow in background */
+.floating-circles-gallery::before {
   content: '';
   position: absolute;
-  inset: -15% -8%;
-  background: radial-gradient(ellipse 65% 50% at 20% 30%, rgba(16, 185, 129, 0.12) 0%, transparent 68%),
-              radial-gradient(ellipse 60% 45% at 80% 65%, rgba(5, 150, 105, 0.1) 0%, transparent 68%),
-              radial-gradient(ellipse 50% 35% at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  inset: -25% -10%;
+  background: radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.09) 0%, transparent 55%),
+              radial-gradient(circle at 38% 50%, rgba(244, 63, 94, 0.08) 0%, transparent 55%),
+              radial-gradient(circle at 62% 50%, rgba(168, 85, 247, 0.09) 0%, transparent 55%),
+              radial-gradient(circle at 85% 50%, rgba(16, 185, 129, 0.09) 0%, transparent 55%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Base Art Canvas (Zero Geometric Borders, Organic Silhouettes) */
-.art-canvas {
+/* Base Imperfect Circle */
+.imperfect-circle {
   position: relative;
+  flex: 1 1 0;
+  width: 260px;
+  max-width: 275px;
+  height: 260px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
   overflow: hidden;
   cursor: pointer;
-  background-color: #030a05;
-  border: 1.5px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 24px 50px -12px rgba(2, 8, 4, 0.55), 0 0 35px -10px rgba(16, 185, 129, 0.15);
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+  background-color: #03080e;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 1;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s ease,
               border-radius 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, border-radius;
-  z-index: 1;
 }
 
-.art-canvas:hover,
-.art-canvas:focus-visible {
-  transform: translateY(-14px) rotate(0deg) scale(1.035) !important;
-  box-shadow: 0 36px 85px -15px rgba(0, 0, 0, 0.7), 0 0 55px rgba(16, 185, 129, 0.4);
-  border-color: var(--color-accent-green);
-  z-index: 10;
-  outline: none;
-}
-
-/* Individual Organic Sculpted Silhouettes (Non-geometric curves and asymmetric flow) */
-.art-canvas-1 {
-  grid-column: span 7;
-  height: 480px;
-  border-radius: 65px 150px 55px 120px / 120px 55px 140px 65px;
-  transform: rotate(-1.5deg);
-}
-.art-canvas-1:hover {
-  border-radius: 85px 120px 75px 100px / 100px 75px 120px 85px;
-}
-
-.art-canvas-2 {
-  grid-column: span 5;
-  height: 520px;
-  border-radius: 140px 60px 150px 50px / 60px 130px 55px 140px;
-  transform: rotate(1.8deg) translateY(26px);
-}
-.art-canvas-2:hover {
-  border-radius: 95px 80px 120px 75px / 75px 115px 75px 115px;
-}
-
-.art-canvas-3 {
-  grid-column: span 4;
-  height: 390px;
-  border-radius: 60px 130px 50px 105px / 105px 50px 125px 60px;
-  transform: rotate(1.4deg) translateY(-14px);
-}
-.art-canvas-3:hover {
-  border-radius: 80px 105px 70px 90px / 90px 70px 105px 80px;
-}
-
-.art-canvas-4 {
-  grid-column: span 4;
-  height: 430px;
-  border-radius: 125px 55px 135px 65px / 60px 125px 65px 135px;
-  transform: rotate(-1.8deg) translateY(20px);
-}
-.art-canvas-4:hover {
-  border-radius: 85px 75px 105px 80px / 75px 105px 80px 90px;
-}
-
-.art-canvas-5 {
-  grid-column: span 4;
-  height: 400px;
-  border-radius: 65px 115px 55px 140px / 135px 55px 115px 65px;
-  transform: rotate(1.5deg) translateY(-8px);
-}
-.art-canvas-5:hover {
-  border-radius: 85px 95px 75px 105px / 105px 75px 95px 85px;
-}
-
-.art-canvas-6 {
-  grid-column: span 12;
-  height: 430px;
-  border-radius: 105px 175px 85px 155px / 130px 85px 145px 95px;
-  transform: rotate(-0.8deg) translateY(14px);
-}
-.art-canvas-6:hover {
-  border-radius: 120px 140px 105px 125px / 110px 105px 125px 110px;
-}
-
-/* Pure Art Photography (No Text Distractions) */
-.art-canvas .mosaic-img {
+/* Photo Inside Circle */
+.imperfect-circle .circle-photo {
   position: absolute;
   inset: -6%;
   width: 112%;
   height: 112%;
   background-size: cover;
   background-position: center;
-  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
-  filter: saturate(1.06) contrast(1.02);
+  filter: saturate(1.1) brightness(0.42);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  z-index: 1;
 }
 
-.art-canvas:hover .mosaic-img {
-  transform: scale(1.08);
-  filter: saturate(1.18) contrast(1.05);
-}
-
-/* Subtle Atmospheric Glaze */
-.artistic-glaze {
+/* Glass Tint & Atmosphere */
+.circle-glass-tint {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 100%, rgba(2, 6, 4, 0.25) 0%, transparent 65%);
-  pointer-events: none;
-  transition: opacity 0.4s ease;
+  background: radial-gradient(circle at center, rgba(5, 12, 18, 0.7) 0%, rgba(2, 6, 10, 0.9) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+  z-index: 2;
 }
 
-.art-canvas:hover .artistic-glaze {
-  opacity: 0.08;
-}
-
-/* Sleek Diagonal Light Sweep on Hover */
-.artistic-shine {
-  position: absolute;
-  top: 0;
-  left: -130%;
-  width: 90%;
-  height: 100%;
-  background: linear-gradient(105deg, transparent 25%, rgba(255, 255, 255, 0.24) 50%, transparent 75%);
-  transform: skewX(-20deg);
-  pointer-events: none;
-  transition: left 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.art-canvas:hover .artistic-shine {
-  left: 145%;
-}
-
-/* Minimalist Floating Aperture Lens Indicator */
-.artistic-lens {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.65);
-  opacity: 0;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: rgba(6, 18, 11, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(16, 185, 129, 0.7);
-  color: var(--color-accent-green);
+/* Content */
+.circle-content {
+  position: relative;
+  z-index: 3;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 28px rgba(16, 185, 129, 0.45);
 }
 
-.art-canvas:hover .artistic-lens {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+.circle-number {
+  font-family: var(--font-display);
+  font-size: 2.85rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 10px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Responsive Art Flow */
+.circle-title {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.circle-desc {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+  max-width: 185px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Hover Dynamics */
+.imperfect-circle:hover,
+.imperfect-circle:focus-visible {
+  transform: translateY(-22px) scale(1.08) !important;
+  z-index: 10;
+  outline: none;
+}
+
+.imperfect-circle:hover .circle-photo {
+  transform: scale(1.1);
+  filter: saturate(1.25) brightness(0.8);
+}
+
+.imperfect-circle:hover .circle-glass-tint {
+  background: radial-gradient(circle at center, rgba(5, 12, 18, 0.32) 0%, rgba(2, 6, 10, 0.7) 100%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.imperfect-circle:hover .circle-number {
+  transform: scale(1.08);
+}
+
+/* --- INDIVIDUAL ORGANIC CIRCLES (INSPIRADAS EN LA REFERENCIA) --- */
+
+/* 01. Cyan Circle */
+.circle-cyan {
+  border-radius: 54% 46% 42% 58% / 58% 52% 48% 42%;
+  border: 1.5px solid rgba(56, 189, 248, 0.65);
+  box-shadow: 0 0 32px rgba(56, 189, 248, 0.22), inset 0 0 24px rgba(56, 189, 248, 0.12);
+  animation: floatCircle1 6.5s ease-in-out infinite;
+}
+.circle-cyan .circle-number {
+  color: #38bdf8;
+  text-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
+}
+.circle-cyan:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 0 55px rgba(56, 189, 248, 0.5), inset 0 0 30px rgba(56, 189, 248, 0.25);
+  border-radius: 50% 50% 46% 54% / 54% 50% 50% 46%;
+}
+
+/* 02. Magenta / Rose Circle */
+.circle-magenta {
+  border-radius: 46% 54% 58% 42% / 48% 60% 40% 52%;
+  border: 1.5px solid rgba(244, 63, 94, 0.65);
+  box-shadow: 0 0 32px rgba(244, 63, 94, 0.22), inset 0 0 24px rgba(244, 63, 94, 0.12);
+  animation: floatCircle2 7.2s ease-in-out infinite;
+  animation-delay: -1.8s;
+}
+.circle-magenta .circle-number {
+  color: #fb7185;
+  text-shadow: 0 0 25px rgba(244, 63, 94, 0.7);
+}
+.circle-magenta:hover {
+  border-color: #f43f5e;
+  box-shadow: 0 0 55px rgba(244, 63, 94, 0.5), inset 0 0 30px rgba(244, 63, 94, 0.25);
+  border-radius: 52% 48% 50% 50% / 46% 54% 46% 54%;
+}
+
+/* 03. Purple / Violet Circle (Slightly larger like reference) */
+.circle-purple {
+  width: 275px;
+  max-width: 290px;
+  height: 275px;
+  border-radius: 52% 48% 46% 54% / 60% 48% 52% 40%;
+  border: 1.5px solid rgba(168, 85, 247, 0.7);
+  box-shadow: 0 0 36px rgba(168, 85, 247, 0.26), inset 0 0 26px rgba(168, 85, 247, 0.15);
+  animation: floatCircle3 6.8s ease-in-out infinite;
+  animation-delay: -3.2s;
+}
+.circle-purple .circle-number {
+  color: #c084fc;
+  text-shadow: 0 0 25px rgba(168, 85, 247, 0.7);
+}
+.circle-purple:hover {
+  border-color: #a855f7;
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.55), inset 0 0 35px rgba(168, 85, 247, 0.3);
+  border-radius: 48% 52% 54% 46% / 52% 48% 52% 48%;
+}
+
+/* 04. Emerald Circle */
+.circle-emerald {
+  border-radius: 48% 52% 60% 40% / 52% 42% 58% 48%;
+  border: 1.5px solid rgba(16, 185, 129, 0.7);
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.24), inset 0 0 24px rgba(16, 185, 129, 0.14);
+  animation: floatCircle4 7.6s ease-in-out infinite;
+  animation-delay: -4.5s;
+}
+.circle-emerald .circle-number {
+  color: #34d399;
+  text-shadow: 0 0 25px rgba(16, 185, 129, 0.7);
+}
+.circle-emerald:hover {
+  border-color: #10b981;
+  box-shadow: 0 0 55px rgba(16, 185, 129, 0.55), inset 0 0 30px rgba(16, 185, 129, 0.3);
+  border-radius: 54% 46% 48% 52% / 48% 52% 50% 50%;
+}
+
+/* Float Keyframes */
+@keyframes floatCircle1 {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-16px) rotate(1.2deg); }
+}
+@keyframes floatCircle2 {
+  0%, 100% { transform: translateY(0px) rotate(1.5deg); }
+  50% { transform: translateY(-20px) rotate(-1.2deg); }
+}
+@keyframes floatCircle3 {
+  0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+  50% { transform: translateY(-15px) rotate(1deg); }
+}
+@keyframes floatCircle4 {
+  0%, 100% { transform: translateY(0px) rotate(1deg); }
+  50% { transform: translateY(-18px) rotate(-1.5deg); }
+}
+
+/* Gallery Hint */
+.circles-gallery-hint {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Adaptation */
 @media (max-width: 1024px) {
-  .facilities-mosaic.artistic-gallery-flow {
-    gap: 26px;
+  .floating-circles-gallery {
+    gap: 20px;
   }
-  .art-canvas-1 { grid-column: span 12; height: 390px; transform: rotate(-1deg); }
-  .art-canvas-2 { grid-column: span 12; height: 390px; transform: rotate(1deg) translateY(0); }
-  .art-canvas-3 { grid-column: span 6; height: 350px; transform: rotate(1deg) translateY(0); }
-  .art-canvas-4 { grid-column: span 6; height: 350px; transform: rotate(-1deg) translateY(0); }
-  .art-canvas-5 { grid-column: span 12; height: 370px; transform: rotate(0.8deg) translateY(0); }
-  .art-canvas-6 { grid-column: span 12; height: 370px; transform: rotate(-0.5deg) translateY(0); }
+  .imperfect-circle {
+    width: 220px;
+    height: 220px;
+    padding: 16px;
+  }
+  .circle-purple {
+    width: 235px;
+    height: 235px;
+  }
+  .circle-number {
+    font-size: 2.3rem;
+  }
+  .circle-title {
+    font-size: 1.05rem;
+  }
+  .circle-desc {
+    font-size: 0.74rem;
+  }
 }
 
-@media (max-width: 640px) {
-  .facilities-mosaic.artistic-gallery-flow {
-    gap: 22px;
-    padding: 10px 0 28px 0;
+@media (max-width: 768px) {
+  .floating-circles-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 460px;
+    gap: 24px 18px;
+    padding: 24px 0 16px 0;
   }
-  .art-canvas {
-    grid-column: span 12 !important;
-    height: 290px !important;
+  .imperfect-circle,
+  .circle-purple {
+    width: 100%;
+    max-width: 220px;
+    height: 210px;
   }
-  .art-canvas-1 { border-radius: 48px 90px 38px 75px / 75px 38px 85px 48px; transform: rotate(-0.8deg); }
-  .art-canvas-2 { border-radius: 85px 44px 90px 38px / 38px 80px 38px 85px; transform: rotate(0.8deg); }
-  .art-canvas-3 { border-radius: 38px 80px 38px 70px / 70px 38px 80px 38px; transform: rotate(-0.6deg); }
-  .art-canvas-4 { border-radius: 80px 38px 80px 44px / 38px 80px 44px 80px; transform: rotate(0.6deg); }
-  .art-canvas-5 { border-radius: 44px 75px 38px 85px / 85px 38px 75px 44px; transform: rotate(-0.7deg); }
-  .art-canvas-6 { border-radius: 70px 105px 55px 90px / 80px 55px 90px 60px; transform: rotate(0.5deg); }
-  .art-canvas:hover {
-    transform: translateY(-6px) scale(1.02) !important;
+  .circle-desc {
+    max-width: 160px;
   }
-  .artistic-lens {
-    width: 46px;
-    height: 46px;
-    opacity: 0.85;
-    transform: translate(-50%, -50%) scale(0.9);
+}
+
+@media (max-width: 440px) {
+  .floating-circles-gallery {
+    gap: 16px 12px;
+  }
+  .imperfect-circle,
+  .circle-purple {
+    height: 180px;
+    padding: 12px 8px;
+  }
+  .circle-number {
+    font-size: 1.9rem;
+    margin-bottom: 6px;
+  }
+  .circle-title {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+  .circle-desc {
+    font-size: 0.68rem;
+    line-height: 1.25;
+    max-width: 140px;
   }
 }
 
