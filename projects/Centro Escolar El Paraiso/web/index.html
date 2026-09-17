@@ -11,7 +11,7 @@
   <meta name="author" content="HiphaMX">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -363,83 +363,154 @@
       </div>
     </section>
 
-    <!-- --- INSTALACIONES DEL CAMPUS --- -->
+    <!-- --- INSTALACIONES DEL CAMPUS (MOSAICO BENTO & LIGHTBOX) --- -->
     <section class="py-large container" id="instalaciones" style="border-top: 1px solid var(--color-border);">
       <div class="section-header-wrap">
         <span class="text-mono text-accent-green">[ 02 / INSTALACIONES DEL CAMPUS ]</span>
         <h2 class="text-heading" style="margin-top: 12px;" data-split-scroll>Descubre las instalaciones</h2>
       </div>
 
-      <div class="grid-12">
+      <div class="facilities-mosaic">
         
-        <!-- Instalación 1: Aulas CIME -->
-        <div class="facility-card" style="grid-column: span 4;" data-index="0">
-          <div class="facility-image-wrapper" style="background-image: url('cime_bg_v2.png');">
-            <div class="facility-overlay"></div>
-            <div class="facility-content">
-              <span class="text-mono facility-tag">[ AULAS ACTIVAS ]</span>
-              <h3 class="facility-title">Aulas de Aprendizaje Activo</h3>
-            </div>
+        <!-- Mosaico 1: Robótica & Maker Lab (Hero Principal, span 7) -->
+        <div class="mosaic-item mosaic-span-7" data-facility-index="0" role="button" tabindex="0" aria-label="Ampliar Laboratorio de Robótica">
+          <div class="mosaic-img" style="background-image: url('robotics_bg_v2.png');"></div>
+          <div class="mosaic-overlay"></div>
+          <div class="mosaic-expand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span>Explorar</span>
+          </div>
+          <div class="mosaic-content">
+            <span class="text-mono mosaic-tag">[ 01 // MAKERSPACE & ROBÓTICA ]</span>
+            <h3 class="mosaic-title">Laboratorio Maker y Robótica</h3>
+            <p class="mosaic-desc">Diseño de circuitos electrónicos, lógica de programación y prototipado físico constructivista.</p>
           </div>
         </div>
 
-        <!-- Instalación 2: Robótica -->
-        <div class="facility-card" style="grid-column: span 4;" data-index="1">
-          <div class="facility-image-wrapper" style="background-image: url('robotics_bg_v2.png');">
-            <div class="facility-overlay"></div>
-            <div class="facility-content">
-              <span class="text-mono facility-tag">[ MAKER SPACE ]</span>
-              <h3 class="facility-title">Laboratorio de Robótica</h3>
-            </div>
+        <!-- Mosaico 2: Aulas CIME (Vertical Complementaria, span 5) -->
+        <div class="mosaic-item mosaic-span-5" data-facility-index="1" role="button" tabindex="0" aria-label="Ampliar Aulas de Matemáticas CIME">
+          <div class="mosaic-img" style="background-image: url('cime_bg_v2.png');"></div>
+          <div class="mosaic-overlay"></div>
+          <div class="mosaic-expand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span>Explorar</span>
+          </div>
+          <div class="mosaic-content">
+            <span class="text-mono mosaic-tag">[ 02 // MATEMÁTICAS CIME ]</span>
+            <h3 class="mosaic-title">Aulas de Aprendizaje Activo</h3>
+            <p class="mosaic-desc">Matemáticas conceptuales con regletas numéricas y material estructurado para razonamiento tangible.</p>
           </div>
         </div>
 
-        <!-- Instalación 3: Equitación -->
-        <div class="facility-card" style="grid-column: span 4;" data-index="2">
-          <div class="facility-image-wrapper" style="background-image: url('equitation_bg_v2.png');">
-            <div class="facility-overlay"></div>
-            <div class="facility-content">
-              <span class="text-mono facility-tag">[ PISTAS ECUESTRES ]</span>
-              <h3 class="facility-title">Instalaciones de Equitación</h3>
-            </div>
+        <!-- Mosaico 3: Equitación (Tríada 1, span 4) -->
+        <div class="mosaic-item mosaic-span-4" data-facility-index="2" role="button" tabindex="0" aria-label="Ampliar Pistas Ecuestres y Equitación">
+          <div class="mosaic-img" style="background-image: url('equitation_bg_v2.png');"></div>
+          <div class="mosaic-overlay"></div>
+          <div class="mosaic-expand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span>Explorar</span>
+          </div>
+          <div class="mosaic-content">
+            <span class="text-mono mosaic-tag">[ 03 // PISTAS ECUESTRES ]</span>
+            <h3 class="mosaic-title">Instalaciones de Equitación</h3>
+            <p class="mosaic-desc">Pistas ecuestres para entrenamiento formativo, desarrollo postural y equilibrio emocional.</p>
           </div>
         </div>
 
-        <!-- Instalación 4: Campos Verdes -->
-        <div class="facility-card" style="grid-column: span 4;" data-index="3">
-          <div class="facility-image-wrapper" style="background-image: url('hero_v2.png');">
-            <div class="facility-overlay"></div>
-            <div class="facility-content">
-              <span class="text-mono facility-tag">[ CAMPUS NATURAL ]</span>
-              <h3 class="facility-title">Campos Deportivos y Áreas Verdes</h3>
-            </div>
+        <!-- Mosaico 4: Arte (Tríada 2, span 4) -->
+        <div class="mosaic-item mosaic-span-4" data-facility-index="3" role="button" tabindex="0" aria-label="Ampliar Taller de Expresión Artística">
+          <div class="mosaic-img" style="background-image: url('art_bg_v2.png');"></div>
+          <div class="mosaic-overlay"></div>
+          <div class="mosaic-expand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span>Explorar</span>
+          </div>
+          <div class="mosaic-content">
+            <span class="text-mono mosaic-tag">[ 04 // EXPRESIÓN ARTÍSTICA ]</span>
+            <h3 class="mosaic-title">Taller de Expresión Plástica</h3>
+            <p class="mosaic-desc">Estudio con luz natural para artes plásticas, escultura y pensamiento divergente.</p>
           </div>
         </div>
 
-        <!-- Instalación 5: Arte -->
-        <div class="facility-card" style="grid-column: span 4;" data-index="4">
-          <div class="facility-image-wrapper" style="background-image: url('art_bg_v2.png');">
-            <div class="facility-overlay"></div>
-            <div class="facility-content">
-              <span class="text-mono facility-tag">[ ARTE & CREATIVIDAD ]</span>
-              <h3 class="facility-title">Taller de Expresión Artística</h3>
-            </div>
+        <!-- Mosaico 5: Inglés Oxford (Tríada 3, span 4) -->
+        <div class="mosaic-item mosaic-span-4" data-facility-index="4" role="button" tabindex="0" aria-label="Ampliar Aulas de Idiomas Oxford">
+          <div class="mosaic-img" style="background-image: url('english_bg_v2.png');"></div>
+          <div class="mosaic-overlay"></div>
+          <div class="mosaic-expand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span>Explorar</span>
+          </div>
+          <div class="mosaic-content">
+            <span class="text-mono mosaic-tag">[ 05 // INGLÉS OXFORD ]</span>
+            <h3 class="mosaic-title">Aulas de Idiomas y Auditorio</h3>
+            <p class="mosaic-desc">Inmersión lingüística con preparación directa para certificaciones Oxford OTE.</p>
           </div>
         </div>
 
-        <!-- Instalación 6: Auditorio -->
-        <div class="facility-card" style="grid-column: span 4;" data-index="5">
-          <div class="facility-image-wrapper" style="background-image: url('english_bg_v2.png');">
-            <div class="facility-overlay"></div>
-            <div class="facility-content">
-              <span class="text-mono facility-tag">[ AUDITORIO ]</span>
-              <h3 class="facility-title">Espacio para compartir</h3>
-            </div>
+        <!-- Mosaico 6: Campus Natural (Panorámica Inferior, span 12) -->
+        <div class="mosaic-item mosaic-span-12" data-facility-index="5" role="button" tabindex="0" aria-label="Ampliar Campos Deportivos y Áreas Verdes">
+          <div class="mosaic-img" style="background-image: url('hero_v2.png');"></div>
+          <div class="mosaic-overlay"></div>
+          <div class="mosaic-expand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <span>Explorar</span>
+          </div>
+          <div class="mosaic-content">
+            <span class="text-mono mosaic-tag">[ 06 // CAMPUS NATURAL ]</span>
+            <h3 class="mosaic-title">Campos Deportivos y Ecosistema Natural</h3>
+            <p class="mosaic-desc">Hectáreas de áreas verdes al aire libre diseñadas para la actividad física, recreación y sintonía con el entorno ecológico.</p>
           </div>
         </div>
 
       </div>
     </section>
+
+    <!-- --- MODAL LIGHTBOX DE INSTALACIONES (FULLSCREEN VIEWER) --- -->
+    <dialog id="facilities-lightbox" class="facilities-lightbox-modal" aria-label="Galería ampliada de instalaciones">
+      <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+      <div class="lightbox-container">
+        
+        <!-- Header / Telemetría y Cierre -->
+        <div class="lightbox-header">
+          <div class="lightbox-meta">
+            <span class="lightbox-counter text-mono text-accent-green" id="lightbox-counter">[ 01 / 06 ]</span>
+            <span class="lightbox-badge text-mono" id="lightbox-badge">// MAKERSPACE</span>
+          </div>
+          <button type="button" class="lightbox-close-btn" id="lightbox-close-btn" aria-label="Cerrar visor de instalaciones">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span class="close-label text-mono">ESC</span>
+          </button>
+        </div>
+
+        <!-- Visor Principal con Controles de Navegación -->
+        <div class="lightbox-stage">
+          <button type="button" class="lightbox-nav-btn prev" id="lightbox-prev-btn" aria-label="Instalación anterior">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+
+          <div class="lightbox-frame">
+            <img src="robotics_bg_v2.png" alt="Instalaciones del Campus" class="lightbox-img" id="lightbox-img">
+          </div>
+
+          <button type="button" class="lightbox-nav-btn next" id="lightbox-next-btn" aria-label="Siguiente instalación">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- Ficha de Información y Tira de Miniaturas -->
+        <div class="lightbox-footer">
+          <div class="lightbox-info">
+            <h3 class="lightbox-title" id="lightbox-title">Laboratorio Maker y Robótica</h3>
+            <p class="lightbox-desc" id="lightbox-desc">Espacio equipado para el desarrollo del pensamiento lógico, diseño de circuitos y prototipado físico constructivista.</p>
+          </div>
+
+          <div class="lightbox-thumbs" id="lightbox-thumbs">
+            <!-- Renderizado dinámico desde app.js -->
+          </div>
+        </div>
+
+      </div>
+    </dialog>
 
     <!-- --- TRAYECTORIA Y CIFRAS (LOKALAPPS STATS STYLE) --- -->
     <section class="section_stats container" id="trayectoria-cifras" style="border-top: 1px solid var(--color-border);">
@@ -1445,6 +1516,6 @@
   </dialog>
 
   <!-- --- JAVASCRIPT LOGIC --- -->
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

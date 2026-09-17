@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initRotaryHero();
   initOverlayMenu();
   initInteractiveAdmissions();
+  initFacilitiesGalleryLightbox();
   initContactModal();
 });
 
@@ -1454,5 +1455,187 @@ function initContactModal() {
       }
     }
     return isValid;
+  }
+}
+
+
+/* ==========================================================================
+   12. FACILITIES MOSAIC GALLERY & FULLSCREEN LIGHTBOX VIEWER
+   ========================================================================== */
+function initFacilitiesGalleryLightbox() {
+  const modal = document.getElementById('facilities-lightbox');
+  const items = document.querySelectorAll('.facilities-mosaic .mosaic-item');
+  if (!modal || items.length === 0) return;
+
+  const facilities = [
+    {
+      src: 'robotics_bg_v2.png',
+      tag: '[ 01 // MAKERSPACE & ROBÓTICA ]',
+      title: 'Laboratorio Maker y Robótica',
+      desc: 'Espacio equipado para el desarrollo del pensamiento computacional, diseño de circuitos electrónicos, programación y prototipado físico con metodología activa constructivista.'
+    },
+    {
+      src: 'cime_bg_v2.png',
+      tag: '[ 02 // MATEMÁTICAS CIME ]',
+      title: 'Aulas de Matemáticas Constructivistas CIME',
+      desc: 'Aulas especializadas con regletas numéricas, geoplanos y material estructurado que transforman los conceptos matemáticos en razonamientos tangibles y estimulantes.'
+    },
+    {
+      src: 'equitation_bg_v2.png',
+      tag: '[ 03 // PISTAS ECUESTRES ]',
+      title: 'Pistas Ecuestres y Centro de Equitación',
+      desc: 'Instalaciones para la práctica ecuestre integrada en el horario escolar, fortaleciendo el desarrollo postural, la coordinación motriz, la templanza y el vínculo con los caballos.'
+    },
+    {
+      src: 'art_bg_v2.png',
+      tag: '[ 04 // EXPRESIÓN ARTÍSTICA ]',
+      title: 'Taller de Expresión Artística y Plástica',
+      desc: 'Estudio de luz natural con materiales multidisciplinarios donde los estudiantes exploran pintura, modelado, escultura y apreciación artística libre de patrones rígidos.'
+    },
+    {
+      src: 'english_bg_v2.png',
+      tag: '[ 05 // INGLÉS OXFORD ]',
+      title: 'Aulas de Inmersión Lingüística Oxford OTE',
+      desc: 'Aulas multimedia para la comunicación interactiva en inglés y preparación para las certificaciones de la Universidad de Oxford, fomentando el bilingüismo natural.'
+    },
+    {
+      src: 'hero_v2.png',
+      tag: '[ 06 // CAMPUS NATURAL ]',
+      title: 'Campos Deportivos y Ecosistema Natural',
+      desc: 'Amplias hectáreas verdes, pistas de atletismo y canchas polideportivas para el acondicionamiento físico, juego libre y conexión permanente con la naturaleza.'
+    }
+  ];
+
+  let currentIndex = 0;
+  const imgEl = document.getElementById('lightbox-img');
+  const counterEl = document.getElementById('lightbox-counter');
+  const badgeEl = document.getElementById('lightbox-badge');
+  const titleEl = document.getElementById('lightbox-title');
+  const descEl = document.getElementById('lightbox-desc');
+  const thumbsContainer = document.getElementById('lightbox-thumbs');
+  const closeBtn = document.getElementById('lightbox-close-btn');
+  const prevBtn = document.getElementById('lightbox-prev-btn');
+  const nextBtn = document.getElementById('lightbox-next-btn');
+  const backdrop = document.getElementById('lightbox-backdrop');
+
+  // Build thumbnail buttons
+  if (thumbsContainer) {
+    thumbsContainer.innerHTML = '';
+    facilities.forEach((f, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lightbox-thumb-btn';
+      btn.setAttribute('aria-label', `Ver ${f.title}`);
+      btn.innerHTML = `<img src="${f.src}" alt="${f.title}">`;
+      btn.addEventListener('click', () => showIndex(idx));
+      thumbsContainer.appendChild(btn);
+    });
+  }
+
+  function showIndex(idx, transitionDirection = 0) {
+    currentIndex = (idx + facilities.length) % facilities.length;
+    const f = facilities[currentIndex];
+
+    // Smooth transition
+    if (imgEl) {
+      imgEl.style.opacity = '0';
+      imgEl.style.transform = transitionDirection > 0 ? 'translateX(25px) scale(0.97)' : transitionDirection < 0 ? 'translateX(-25px) scale(0.97)' : 'scale(0.95)';
+      setTimeout(() => {
+        imgEl.src = f.src;
+        imgEl.alt = f.title;
+        imgEl.style.opacity = '1';
+        imgEl.style.transform = 'translateX(0) scale(1)';
+      }, 150);
+    }
+
+    if (counterEl) counterEl.textContent = `[ 0${currentIndex + 1} / 0${facilities.length} ]`;
+    if (badgeEl) badgeEl.textContent = f.tag;
+    if (titleEl) titleEl.textContent = f.title;
+    if (descEl) descEl.textContent = f.desc;
+
+    // Update active thumb
+    if (thumbsContainer) {
+      const thumbs = thumbsContainer.querySelectorAll('.lightbox-thumb-btn');
+      thumbs.forEach((t, i) => {
+        t.classList.toggle('active', i === currentIndex);
+      });
+    }
+  }
+
+  function openLightbox(idx) {
+    showIndex(idx);
+    modal.classList.add('active');
+    if (typeof modal.showModal === 'function') {
+      try { modal.showModal(); } catch (e) {}
+    }
+    document.body.style.overflow = 'hidden';
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeLightbox() {
+    modal.classList.remove('active');
+    if (typeof modal.close === 'function') {
+      try { modal.close(); } catch (e) {}
+    }
+    document.body.style.overflow = '';
+  }
+
+  // Click & Keydown listeners on mosaic items
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      const idx = parseInt(item.getAttribute('data-facility-index') || '0', 10);
+      openLightbox(idx);
+    });
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const idx = parseInt(item.getAttribute('data-facility-index') || '0', 10);
+        openLightbox(idx);
+      }
+    });
+  });
+
+  // Controls listeners
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  if (backdrop) backdrop.addEventListener('click', closeLightbox);
+  if (prevBtn) prevBtn.addEventListener('click', () => showIndex(currentIndex - 1, -1));
+  if (nextBtn) nextBtn.addEventListener('click', () => showIndex(currentIndex + 1, 1));
+
+  // Global Keyboard Navigation
+  document.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('active')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showIndex(currentIndex - 1, -1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      showIndex(currentIndex + 1, 1);
+    }
+  });
+
+  // Mobile Touch Swipe Navigation
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const stage = modal.querySelector('.lightbox-stage');
+  if (stage) {
+    stage.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+          showIndex(currentIndex - 1, -1);
+        } else {
+          showIndex(currentIndex + 1, 1);
+        }
+      }
+    }, { passive: true });
   }
 }
