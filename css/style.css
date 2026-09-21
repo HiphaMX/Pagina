@@ -659,3 +659,30 @@ html:not(.dark) .pricing-details-details table tbody tr.bg-slate-900\/40 {
 html:not(.dark) .pricing-details-details table tbody tr.bg-slate-900\/40 td {
     color: #475569 !important;
 }
+
+/* ─── Card Deep-link Highlight Pulse ─────────────────────────────────── */
+.card-highlight-pulse {
+    animation: highlightCardGlow 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes highlightCardGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+    }
+    20% {
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.8), 0 0 35px rgba(6, 182, 212, 0.35);
+        transform: translateY(-4px);
+    }
+    50% {
+        box-shadow: 0 0 0 3px rgba(192, 38, 211, 0.8), 0 0 40px rgba(192, 38, 211, 0.4);
+        transform: translateY(-4px);
+    }
+    80% {
+        box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.4), 0 0 25px rgba(6, 182, 212, 0.2);
+    }
+    100% {
+        box-shadow: none;
+        transform: translateY(0);
+    }
+}
+

@@ -51,7 +51,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
-    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body class="relative min-h-screen overflow-x-hidden w-full antialiased selection:bg-fuchsia-500 selection:text-white">
 
@@ -85,7 +85,7 @@
                 <a href="#soluciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Ecosistema de Soluciones</a>
                 <a href="#suscripciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Suscripciones</a>
                 <a href="#about" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Nuestra Raíz</a>
-                <button onclick="toggleModal('contact-modal')" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
+                <button onclick="openGeneralContact()" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
                     Conecta con Nosotros
                 </button>
             </div>
@@ -113,7 +113,7 @@
             <a href="#suscripciones" class="mobile-nav-link" onclick="closeMobileMenu()">Suscripciones</a>
             <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Nuestra Raíz</a>
             <a href="#valores" class="mobile-nav-link" onclick="closeMobileMenu()">Filosofía</a>
-            <button onclick="toggleModal('contact-modal'); closeMobileMenu();" class="mobile-nav-cta">
+            <button onclick="openGeneralContact(); closeMobileMenu();" class="mobile-nav-cta">
                 Conecta con Nosotros
                 <i class="ph-bold ph-arrow-right"></i>
             </button>
@@ -139,7 +139,7 @@
                 Somos la red de talentos de marketing que trabaja como <strong class="text-white">tu equipo propio</strong> — sin que tengas que contratar uno. Nutrimos el crecimiento de tu marca desde adentro, como lo hace el micelio en la naturaleza.
             </p>
             <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-3 md:gap-4 pt-2">
-                <button id="hero-cta-primary" onclick="toggleModal('contact-modal')" aria-label="Quiero que me conozcan" class="bg-white text-slate-900 font-semibold px-8 py-4 rounded-full hover:bg-slate-100 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center justify-center gap-2 group focus:ring-4 focus:ring-primary-500/50">
+                <button id="hero-cta-primary" onclick="openGeneralContact()" aria-label="Quiero que me conozcan" class="bg-white text-slate-900 font-semibold px-8 py-4 rounded-full hover:bg-slate-100 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center justify-center gap-2 group focus:ring-4 focus:ring-primary-500/50">
                     Quiero que me conozcan
                     <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
                 </button>
@@ -513,7 +513,7 @@
 
 
         <div class="flex justify-center mt-10">
-            <button onclick="toggleModal('contact-modal')"
+            <button onclick="openGeneralContact()"
                 class="glass-panel text-white font-medium px-8 py-4 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-2 focus:ring-4 focus:ring-white/30">
                 ¿Tu marca aún no está aquí? &nbsp;<span class="font-bold">Hablemos →</span>
             </button>
@@ -747,9 +747,14 @@
             <!-- Pricing Cards Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 <!-- Card WEB -->
-                <div class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-cyan-500 relative group hover:-translate-y-2 transition-transform duration-300">
+                <div id="plan-web" class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-cyan-500 relative group hover:-translate-y-2 transition-transform duration-300 scroll-mt-28">
                     <div>
-                        <div class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Plan Web</div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Plan Web</div>
+                            <button type="button" onclick="shareCard('Plan Web', 'Plan Web Hipha: Diseño y desarrollo web, tienda en línea y SEO básico por $770/mes.', 'plan-web', this)" class="text-slate-400 hover:text-cyan-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Plan Web" aria-label="Compartir Plan Web">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
+                        </div>
                         
                         <!-- Toggle de Facturación Local en Card -->
                         <div class="mb-4 bg-slate-950/60 p-1 rounded-xl flex border border-white/5">
@@ -788,10 +793,15 @@
                 </div>
 
                 <!-- Card DESIGN (Destacada) -->
-                <div class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-fuchsia-500 relative group hover:-translate-y-2 transition-transform duration-300 md:scale-105 shadow-[0_0_30px_rgba(240,79,215,0.15)] border border-fuchsia-500/30">
+                <div id="plan-design" class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-fuchsia-500 relative group hover:-translate-y-2 transition-transform duration-300 md:scale-105 shadow-[0_0_30px_rgba(240,79,215,0.15)] border border-fuchsia-500/30 scroll-mt-28">
                     <div class="absolute -top-3.5 right-6 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">Más Popular</div>
                     <div>
-                        <div class="text-xs font-bold text-fuchsia-400 uppercase tracking-widest mb-2">Plan Design</div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="text-xs font-bold text-fuchsia-400 uppercase tracking-widest">Plan Design</div>
+                            <button type="button" onclick="shareCard('Plan Design', 'Plan Design Hipha: Solicitudes ilimitadas de diseño gráfico y branding por $2,770/mes sin plazos forzosos.', 'plan-design', this)" class="text-slate-400 hover:text-fuchsia-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Plan Design" aria-label="Compartir Plan Design">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
+                        </div>
                         <div class="text-4xl font-extrabold text-white mb-1">$2,770 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
                         <div class="text-xs font-semibold text-fuchsia-400/80 mb-4 flex items-center gap-1.5"><i class="ph-bold ph-hands-clapping"></i> Sin plazos forzosos</div>
                         <p class="text-slate-400 text-sm mb-6">Perfecto para marcas que requieren branding constante y contenido en redes.</p>
@@ -814,9 +824,14 @@
                 </div>
 
                 <!-- Card MKT -->
-                <div class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-purple-500 relative group hover:-translate-y-2 transition-transform duration-300">
+                <div id="plan-mkt" class="glass-panel rounded-3xl p-8 flex flex-col justify-between border-t-4 border-t-purple-500 relative group hover:-translate-y-2 transition-transform duration-300 scroll-mt-28">
                     <div>
-                        <div class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Plan MKT</div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="text-xs font-bold text-purple-400 uppercase tracking-widest">Plan MKT</div>
+                            <button type="button" onclick="shareCard('Plan MKT', 'Plan MKT Hipha: Tu departamento de marketing externo completo (Web + Design + Correos) por $7,760/mes.', 'plan-mkt', this)" class="text-slate-400 hover:text-purple-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Plan MKT" aria-label="Compartir Plan MKT">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
+                        </div>
                         <div class="text-4xl font-extrabold text-white mb-1">$7,760 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
                         <div class="text-xs font-semibold text-purple-400/80 mb-4 flex items-center gap-1.5"><i class="ph-bold ph-hands-clapping"></i> Sin plazos forzosos</div>
                         <p class="text-slate-400 text-sm mb-6">Tu departamento de marketing externo completo y a máxima velocidad.</p>
@@ -1079,10 +1094,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 
                 <!-- 1. IDENTIDAD GRÁFICA -->
-                <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-cyan-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg">
+                <div id="servicio-identidad" class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-cyan-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg scroll-mt-28 relative">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-                            <i class="ph-bold ph-fingerprint text-2xl"></i>
+                        <div class="flex items-start justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-fingerprint text-2xl"></i>
+                            </div>
+                            <button type="button" onclick="shareCard('Identidad Gráfica', 'Servicio de Identidad Gráfica Hipha: Logotipo / ADN de marca y Manual de uso de marca por $3,770 +IVA.', 'servicio-identidad', this)" class="text-slate-400 hover:text-cyan-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Identidad Gráfica" aria-label="Compartir Identidad Gráfica">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
                         </div>
                         <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-1">Branding</div>
                         <h3 class="text-xl font-bold text-white mb-4">Identidad Gráfica</h3>
@@ -1107,17 +1127,22 @@
                                 <span class="text-[10px] text-slate-400 font-normal"> +IVA</span>
                             </div>
                         </div>
-                        <button onclick="toggleModal('contact-modal')" class="w-full bg-white/5 hover:bg-cyan-500 hover:text-slate-950 text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-cyan-400 flex items-center justify-center gap-1.5">
+                        <button onclick="selectServiceOrPlan('Identidad Gráfica', 'Hola Hipha, me interesa cotizar el servicio de Identidad Gráfica ($3,770 +IVA). Quisiera conocer los pasos para iniciar.')" class="w-full bg-white/5 hover:bg-cyan-500 hover:text-slate-950 text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-cyan-400 flex items-center justify-center gap-1.5">
                             Solicitar Identidad <i class="ph-bold ph-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- 2. DISEÑO GRÁFICO -->
-                <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-fuchsia-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg">
+                <div id="servicio-diseno" class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-fuchsia-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg scroll-mt-28 relative">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-fuchsia-400 mb-5 group-hover:scale-110 transition-transform">
-                            <i class="ph-bold ph-pen-nib text-2xl"></i>
+                        <div class="flex items-start justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-fuchsia-400 group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-pen-nib text-2xl"></i>
+                            </div>
+                            <button type="button" onclick="shareCard('Diseño Gráfico', 'Servicio de Diseño Gráfico Hipha: Piezas para identidad y herramientas comerciales ($770 base + $770/hr adicional +IVA).', 'servicio-diseno', this)" class="text-slate-400 hover:text-fuchsia-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Diseño Gráfico" aria-label="Compartir Diseño Gráfico">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
                         </div>
                         <div class="text-xs font-bold text-fuchsia-400 uppercase tracking-wider mb-1">Bajo Demanda</div>
                         <h3 class="text-xl font-bold text-white mb-4">Diseño Gráfico</h3>
@@ -1142,17 +1167,22 @@
                                 <div class="text-[11px] text-slate-400 font-normal">+ $770/hr adicional +IVA</div>
                             </div>
                         </div>
-                        <button onclick="toggleModal('contact-modal')" class="w-full bg-white/5 hover:bg-fuchsia-500 hover:text-white text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-fuchsia-400 flex items-center justify-center gap-1.5">
+                        <button onclick="selectServiceOrPlan('Diseño Gráfico', 'Hola Hipha, me interesa cotizar horas de Diseño Gráfico ($770 base + $770/hr adicional +IVA).')" class="w-full bg-white/5 hover:bg-fuchsia-500 hover:text-white text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-fuchsia-400 flex items-center justify-center gap-1.5">
                             Solicitar Horas <i class="ph-bold ph-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- 3. PRODUCT SHOT -->
-                <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg">
+                <div id="servicio-product-shot" class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-amber-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg scroll-mt-28 relative">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-110 transition-transform">
-                            <i class="ph-bold ph-camera text-2xl"></i>
+                        <div class="flex items-start justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-camera text-2xl"></i>
+                            </div>
+                            <button type="button" onclick="shareCard('Product Shot', 'Servicio Product Shot Hipha: Fotografía profesional de producto para aplicaciones comerciales por $470/pz +IVA.', 'servicio-product-shot', this)" class="text-slate-400 hover:text-amber-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Product Shot" aria-label="Compartir Product Shot">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
                         </div>
                         <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">E-commerce / Catálogo</div>
                         <h3 class="text-xl font-bold text-white mb-4">Product Shot</h3>
@@ -1181,17 +1211,22 @@
                                 <span class="text-[10px] text-slate-400 font-normal"> /pz +IVA</span>
                             </div>
                         </div>
-                        <button onclick="toggleModal('contact-modal')" class="w-full bg-white/5 hover:bg-amber-500 hover:text-slate-950 text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-amber-400 flex items-center justify-center gap-1.5">
+                        <button onclick="selectServiceOrPlan('Product Shot', 'Hola Hipha, me interesa cotizar el servicio de Fotografía de Producto / Product Shot ($470/pz +IVA).')" class="w-full bg-white/5 hover:bg-amber-500 hover:text-slate-950 text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-amber-400 flex items-center justify-center gap-1.5">
                             Cotizar Productos <i class="ph-bold ph-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- 4. REGISTRO FOTOGRÁFICO -->
-                <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-purple-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg">
+                <div id="servicio-registro-fotografico" class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-purple-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg scroll-mt-28 relative">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-110 transition-transform">
-                            <i class="ph-bold ph-aperture text-2xl"></i>
+                        <div class="flex items-start justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-aperture text-2xl"></i>
+                            </div>
+                            <button type="button" onclick="shareCard('Registro Fotográfico', 'Servicio Registro Fotográfico Hipha: Sesión profesional de espacios, estilo de vida o producto en uso por $2,770 +IVA.', 'servicio-registro-fotografico', this)" class="text-slate-400 hover:text-purple-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Registro Fotográfico" aria-label="Compartir Registro Fotográfico">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
                         </div>
                         <div class="text-xs font-bold text-purple-400 uppercase tracking-wider mb-1">Sesión Profesional</div>
                         <h3 class="text-xl font-bold text-white mb-4">Registro Fotográfico</h3>
@@ -1216,17 +1251,22 @@
                                 <span class="text-[10px] text-slate-400 font-normal"> +IVA</span>
                             </div>
                         </div>
-                        <button onclick="toggleModal('contact-modal')" class="w-full bg-white/5 hover:bg-purple-500 hover:text-white text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-purple-400 flex items-center justify-center gap-1.5">
+                        <button onclick="selectServiceOrPlan('Registro Fotográfico', 'Hola Hipha, me interesa agendar una sesión de Registro Fotográfico ($2,770 +IVA). Quisiera checar fechas disponibles.')" class="w-full bg-white/5 hover:bg-purple-500 hover:text-white text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-purple-400 flex items-center justify-center gap-1.5">
                             Agendar Sesión <i class="ph-bold ph-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- 5. VIDEO IA -->
-                <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-rose-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg">
+                <div id="servicio-video-ia" class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-rose-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg scroll-mt-28 relative">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-5 group-hover:scale-110 transition-transform">
-                            <i class="ph-bold ph-film-slate text-2xl"></i>
+                        <div class="flex items-start justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-film-slate text-2xl"></i>
+                            </div>
+                            <button type="button" onclick="shareCard('Video IA', 'Servicio Video IA Hipha: Generación y edición realista de video con IA (máx. 60 seg.) por $770 x video +IVA.', 'servicio-video-ia', this)" class="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir Video IA" aria-label="Compartir Video IA">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
                         </div>
                         <div class="text-xs font-bold text-rose-400 uppercase tracking-wider mb-1">Contenido Audiovisual</div>
                         <h3 class="text-xl font-bold text-white mb-4">Video IA</h3>
@@ -1251,17 +1291,22 @@
                                 <span class="text-[10px] text-slate-400 font-normal"> x video +IVA</span>
                             </div>
                         </div>
-                        <button onclick="toggleModal('contact-modal')" class="w-full bg-white/5 hover:bg-rose-500 hover:text-white text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-rose-400 flex items-center justify-center gap-1.5">
+                        <button onclick="selectServiceOrPlan('Video IA', 'Hola Hipha, me interesa el servicio de Video IA ($770 x video +IVA). Quisiera cotizar contenido audiovisual.')" class="w-full bg-white/5 hover:bg-rose-500 hover:text-white text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-rose-400 flex items-center justify-center gap-1.5">
                             Solicitar Video IA <i class="ph-bold ph-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- 6. E-MAIL EMPRENDE -->
-                <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-teal-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg">
+                <div id="servicio-email-emprende" class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-teal-500/40 hover:-translate-y-1.5 transition-all duration-300 group shadow-lg scroll-mt-28 relative">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-5 group-hover:scale-110 transition-transform">
-                            <i class="ph-bold ph-envelope-simple-open text-2xl"></i>
+                        <div class="flex items-start justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-envelope-simple-open text-2xl"></i>
+                            </div>
+                            <button type="button" onclick="shareCard('E-mail Emprende', 'Servicio E-mail Emprende Hipha: 5 cuentas de correo corporativo para clientes web por $770 x servicio +IVA.', 'servicio-email-emprende', this)" class="text-slate-400 hover:text-teal-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors" title="Compartir E-mail Emprende" aria-label="Compartir E-mail Emprende">
+                                <i class="ph-bold ph-share-network text-lg"></i>
+                            </button>
                         </div>
                         <div class="text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">Cuentas Corporativas</div>
                         <h3 class="text-xl font-bold text-white mb-4">E-mail Emprende</h3>
@@ -1286,7 +1331,7 @@
                                 <span class="text-[10px] text-slate-400 font-normal"> x servicio +IVA</span>
                             </div>
                         </div>
-                        <button onclick="toggleModal('contact-modal')" class="w-full bg-white/5 hover:bg-teal-500 hover:text-slate-950 text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-teal-400 flex items-center justify-center gap-1.5">
+                        <button onclick="selectServiceOrPlan('E-mail Emprende', 'Hola Hipha, me interesa contratar el servicio de E-mail Emprende (5 cuentas, $770 +IVA).')" class="w-full bg-white/5 hover:bg-teal-500 hover:text-slate-950 text-white text-xs font-bold py-2.5 rounded-xl transition-all border border-white/10 hover:border-teal-400 flex items-center justify-center gap-1.5">
                             Contratar E-mail <i class="ph-bold ph-arrow-right text-xs"></i>
                         </button>
                     </div>
@@ -1472,6 +1517,20 @@
                     <label for="website_url">Do not fill this field</label>
                     <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
                 </div>
+                <!-- Servicio o Plan de Interés -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Servicio o Plan de Interés
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ph ph-tag text-slate-400"></i>
+                        </div>
+                        <input type="text" name="servicio_interes" id="contact-service-field"
+                            class="w-full bg-slate-800/50 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all placeholder:text-slate-500"
+                            placeholder="Ej. Plan Web / Identidad Gráfica / General">
+                    </div>
+                </div>
                 <!-- Nombre -->
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">
@@ -1545,7 +1604,7 @@
     </div>
 
     <!-- MAIN JAVASCRIPT LOGIC -->
-    <script src="js/app.js?v=5"></script>
+    <script src="js/app.js?v=6"></script>
     <script>
 // ═══ Hipha — Core Logic ════════════════════════════════════════════════
 
@@ -1767,11 +1826,18 @@ async function submitContactForm(event) {
     btnIcon.classList.add('animate-spin');
 
     const formData = new FormData(form);
+    const serviceInteres = (formData.get('servicio_interes') || '').trim();
+    let mensaje = (formData.get('mensaje') || '').trim();
+    if (serviceInteres && !mensaje.toLowerCase().includes(serviceInteres.toLowerCase())) {
+        mensaje = `[Servicio/Plan de Interés: ${serviceInteres}]\n\n${mensaje}`;
+    }
+
     const data = {
         nombre: formData.get('nombre'),
         email: formData.get('email'),
         telefono: formData.get('telefono'),
-        mensaje: formData.get('mensaje') || '',
+        plan_contratado: serviceInteres,
+        mensaje: mensaje,
         honeypot: formData.get('website_url')
     };
 
@@ -1866,7 +1932,7 @@ async function submitNewsletterForm(event) {
 
     <!-- Floating Mobile CTA -->
     <div class="mobile-float-cta md:hidden" role="complementary" aria-label="Llamada a la acción">
-        <button onclick="toggleModal('contact-modal')" class="mobile-float-btn">
+        <button onclick="openGeneralContact()" class="mobile-float-btn">
             Quiero que me conozcan
             <i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
         </button>

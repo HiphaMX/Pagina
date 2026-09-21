@@ -242,6 +242,10 @@ async def send_lead_notification_to_team(form_data):
     from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
     
     mensaje_formatted = form_data.mensaje.replace('\n', '<br>') if form_data.mensaje else ''
+    plan_info = getattr(form_data, 'plan_contratado', None)
+    plan_html = f"<p><strong>Plan o Servicio de Interés:</strong> {plan_info}</p>" if plan_info else ""
+    subject_plan = f" ({plan_info})" if plan_info else ""
+
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
@@ -249,6 +253,7 @@ async def send_lead_notification_to_team(form_data):
         <p><strong>Nombre:</strong> {form_data.nombre}</p>
         <p><strong>Email:</strong> {form_data.email}</p>
         <p><strong>Teléfono:</strong> {form_data.telefono}</p>
+        {plan_html}
         <p><strong>Mensaje / Detalles:</strong></p>
         <div style="background: #f4f4f4; padding: 15px; border-radius: 5px; line-height: 1.5;">
             {mensaje_formatted}
@@ -261,7 +266,7 @@ async def send_lead_notification_to_team(form_data):
         from_name=from_name,
         from_email=from_email,
         to_email=settings.EMAILS_FROM_EMAIL,
-        subject=f"Nuevo Lead de HiphaMX: {form_data.nombre}",
+        subject=f"Nuevo Lead de HiphaMX: {form_data.nombre}{subject_plan}",
         html_content=html_content,
         domain="hipha.mx"
     )

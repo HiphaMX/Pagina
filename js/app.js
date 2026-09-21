@@ -474,14 +474,191 @@ function closeMobileMenu() {
 // Close menu on Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
 
-// Lógica para preselección de planes de suscripción
-function selectSubscriptionPlan(planName) {
+// Lógica para apertura general del modal de contacto (limpia selecciones previas)
+function openGeneralContact() {
+    const serviceField = document.getElementById('contact-service-field');
+    if (serviceField) {
+        serviceField.value = '';
+    }
     const messageTextarea = document.querySelector('#contact-modal textarea[name="mensaje"]');
-    if (messageTextarea) {
-        messageTextarea.value = `Hola Hipha, estoy interesado en contratar el Plan de Suscripción ${planName}.`;
+    if (messageTextarea && (
+        messageTextarea.value.startsWith('Hola Hipha, me interesa') ||
+        messageTextarea.value.startsWith('Hola Hipha, estoy interesado')
+    )) {
+        messageTextarea.value = '';
     }
     toggleModal('contact-modal');
 }
+
+// Preselección de cualquier servicio o plan en el modal de contacto
+function selectServiceOrPlan(serviceName, defaultMessage) {
+    const serviceField = document.getElementById('contact-service-field');
+    if (serviceField) {
+        serviceField.value = serviceName || '';
+    }
+    const messageTextarea = document.querySelector('#contact-modal textarea[name="mensaje"]');
+    if (messageTextarea && defaultMessage) {
+        messageTextarea.value = defaultMessage;
+    }
+    toggleModal('contact-modal');
+}
+
+// Lógica para preselección de planes de suscripción
+function selectSubscriptionPlan(planKey) {
+    let displayName = 'Plan Web';
+    let defaultMsg = 'Hola Hipha, me interesa contratar el Plan Web. Quisiera más información sobre el proceso.';
+
+    if (planKey === 'WEB') {
+        displayName = 'Plan Web (Mensual)';
+        defaultMsg = 'Hola Hipha, me interesa contratar el Plan Web (pago mensual $770/mes). Quisiera más información sobre el proceso.';
+    } else if (planKey === 'WEB ANUAL') {
+        displayName = 'Plan Web (Anual)';
+        defaultMsg = 'Hola Hipha, me interesa contratar el Plan Web (pago anual $7,760/año con descuento). Quisiera más información sobre el proceso.';
+    } else if (planKey === 'DESIGN') {
+        displayName = 'Plan Design';
+        defaultMsg = 'Hola Hipha, me interesa contratar el Plan Design ($2,770/mes sin plazos forzosos). Quisiera más información.';
+    } else if (planKey === 'MKT') {
+        displayName = 'Plan MKT';
+        defaultMsg = 'Hola Hipha, me interesa contratar el Plan MKT ($7,760/mes). Quisiera agendar una llamada de seguimiento comercial.';
+    } else if (planKey) {
+        displayName = planKey;
+        defaultMsg = `Hola Hipha, estoy interesado en contratar ${planKey}.`;
+    }
+
+    selectServiceOrPlan(displayName, defaultMsg);
+}
+
+// ─── Toast de notificación al compartir ──────────────────────────────────
+function showShareToast(message) {
+    let toast = document.getElementById('share-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'share-toast';
+        toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-slate-900/90 backdrop-blur-md border border-cyan-500/30 text-white text-xs font-semibold shadow-2xl flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none translate-y-4';
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<i class="ph-bold ph-check text-green-400 text-sm"></i> <span>${message}</span>`;
+    toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+    toast.classList.add('opacity-100', 'translate-y-0');
+    
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+    }, 2800);
+}
+
+// ─── Fallback tradicional de copiado al portapapeles ─────────────────────
+function fallbackCopyText(text, onSuccess) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            if (onSuccess) onSuccess();
+            showShareToast('¡Enlace copiado al portapapeles!');
+        }
+    } catch (err) {
+        prompt('Copia este enlace directo:', text);
+    }
+    document.body.removeChild(textArea);
+}
+
+// ─── Compartir servicio o plan (Web Share API + Copia al portapapeles) ───
+async function shareCard(title, text, anchorId, btnEl) {
+    const url = `${window.location.origin}${window.location.pathname}#${anchorId}`;
+    
+    // Feedback visual en el botón
+    const icon = btnEl ? btnEl.querySelector('i') : null;
+    const originalClass = icon ? icon.className : '';
+    const setSuccessFeedback = () => {
+        if (icon) {
+            icon.className = 'ph-bold ph-check text-green-400 text-lg';
+            setTimeout(() => {
+                icon.className = originalClass;
+            }, 2200);
+        }
+    };
+
+    // Intentar Web Share API nativo en dispositivos táctiles / móviles
+    if (navigator.share && window.matchMedia('(max-width: 768px)').matches) {
+        try {
+            await navigator.share({
+                title: `${title} | Hipha`,
+                text: `${text}\n\nConoce los detalles aquí:`,
+                url: url
+            });
+            setSuccessFeedback();
+            return;
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                return; // Cancelado por el usuario
+            }
+        }
+    }
+
+    // Copiar al portapapeles
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(url);
+            setSuccessFeedback();
+            showShareToast('¡Enlace copiado al portapapeles!');
+        } catch (err) {
+            fallbackCopyText(url, setSuccessFeedback);
+        }
+    } else {
+        fallbackCopyText(url, setSuccessFeedback);
+    }
+}
+
+// ─── Resaltado visual al llegar a un Anchor/Hash ────────────────────────
+function highlightCardElement(element) {
+    if (!element) return;
+    element.classList.remove('card-highlight-pulse');
+    // Forzar reflow para reiniciar animación si ya estaba aplicada
+    void element.offsetWidth;
+    element.classList.add('card-highlight-pulse');
+    setTimeout(() => {
+        element.classList.remove('card-highlight-pulse');
+    }, 2800);
+}
+
+function checkAndHighlightHash() {
+    if (window.location.hash) {
+        const rawHash = window.location.hash.substring(1);
+        const targetEl = document.getElementById(rawHash);
+        if (targetEl) {
+            setTimeout(() => {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                highlightCardElement(targetEl);
+            }, 500);
+        }
+    }
+}
+
+window.addEventListener('hashchange', () => {
+    if (window.location.hash) {
+        const rawHash = window.location.hash.substring(1);
+        const targetEl = document.getElementById(rawHash);
+        if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            highlightCardElement(targetEl);
+        }
+    }
+});
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAndHighlightHash);
+} else {
+    checkAndHighlightHash();
+}
+
 
 // Lógica para colapsar y desplegar subfilas en la tabla comparativa
 function toggleTableSubrows(className, element) {

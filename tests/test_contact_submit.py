@@ -97,5 +97,21 @@ def test_qa_validate_smtp():
     assert "report" in data
     assert len(data["report"]) > 0
 
+@pytest.mark.anyio
+async def test_send_lead_notification_to_team_with_plan():
+    from app.core.mailer import send_lead_notification_to_team
+    from app.api.projects.hipha import ContactForm
+
+    form = ContactForm(
+        nombre="Cliente Interesado",
+        email="cliente@test.com",
+        telefono="5512345678",
+        mensaje="Quisiera información sobre el servicio",
+        plan_contratado="Identidad Gráfica"
+    )
+    result = await send_lead_notification_to_team(form)
+    assert result is True
+
+
 
 
