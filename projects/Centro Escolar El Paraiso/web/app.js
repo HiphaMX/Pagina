@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFacilitiesGalleryLightbox();
   initContactModal();
   initParentOpinionPoll();
+  initAnnouncementDetailModal();
 });
 
 /* ==========================================================================
@@ -148,6 +149,19 @@ function initAnnouncementsSlider() {
       startAutoPlay();
     }
   }
+
+  window.pauseAnnouncementsAutoPlay = function() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  };
+
+  window.resumeAnnouncementsAutoPlay = function() {
+    if (!intervalId) {
+      startAutoPlay();
+    }
+  };
 
   startAutoPlay();
 }
@@ -2066,4 +2080,240 @@ function initParentOpinionPoll() {
   }
 
   renderDashboard(false);
+}
+
+/* ==========================================================================
+   15. ANNOUNCEMENTS DETAIL POPUP MODAL (DEMO DINÁMICO)
+   ========================================================================== */
+const ANNOUNCEMENTS_DATA = [
+  {
+    tag: '[ PROCESO DE ADMISIÓN 2026 - 2027 ]',
+    title: 'Inscripciones abiertas para el ciclo escolar 2026-2027',
+    image: 'hero_v2.png',
+    chips: [
+      { icon: 'calendar', label: 'Ciclo 2026 - 2027' },
+      { icon: 'users', label: 'Maternal, Preescolar & Primaria' },
+      { icon: 'shield', label: 'Cupos Limitados por Aula' }
+    ],
+    lead: 'Inicia el camino formativo de tu familia en Centro Escolar El Paraíso. Nuestro modelo constructivista integra estimulación lógica temprana, regletas CIME, robótica y desarrollo socioemocional ecuestre en un entorno seguro y rodeado de naturaleza.',
+    sections: [
+      {
+        title: 'Requisitos y Etapas de Ingreso',
+        items: [
+          '1. Recorrido guiado personalizado por las instalaciones del campus.',
+          '2. Valoración diagnóstica y psicopedagógica orientada a conocer el perfil del alumno (sin exámenes punitivos).',
+          '3. Entrevista familiar con la Dirección Pedagógica.',
+          '4. Documentación básica: Acta de nacimiento, CURP actualizado, cartilla de vacunación y boleta del grado anterior (si aplica).'
+        ]
+      },
+      {
+        title: 'Ventajas de Nuestro Ecosistema Escolar',
+        items: [
+          'Grupos reducidos con máximo 15 a 18 alumnos por aula para garantizar seguimiento individual.',
+          'Laboratorio Maker Space de robótica, programación y circuitos desde preescolar.',
+          'Pista ecuestre reglamentaria integrada dentro de la formación extracurricular semanal.',
+          'Metodología activa CIME: aprendizaje de conceptos matemáticos mediante manipulación de material tangible.',
+          'Enfoque bilingüe intensivo con preparación para certificaciones Oxford OTE.'
+        ]
+      }
+    ],
+    ctaText: 'Solicitar Ficha de Admisión vía WhatsApp',
+    whatsappMessage: 'Hola, me gustaría recibir la información completa y solicitar ficha de admisión para el ciclo escolar 2026-2027 en Centro Escolar El Paraíso.'
+  },
+  {
+    tag: '[ TALLER & HACKATÓN DE VERANO ]',
+    title: 'Hackatón de verano y programación activa en Julio',
+    image: 'robotics_bg_v2.png',
+    chips: [
+      { icon: 'calendar', label: '13 al 24 de Julio 2026' },
+      { icon: 'clock', label: 'Lunes a Viernes · 9:00 a 13:30 hrs' },
+      { icon: 'users', label: 'Edades: 5 a 12 años' }
+    ],
+    lead: 'Una inmersión práctica de dos semanas donde los alumnos transforman su curiosidad en soluciones tangibles. Diseñado para desarrollar pensamiento algorítmico, trabajo colaborativo, electrónica básica y creación de robots funcionales.',
+    sections: [
+      {
+        title: 'Plan de Actividades por Semanas',
+        items: [
+          'Semana 1: Lógica computacional desconectada, retos de pensamiento algorítmico y primeros scripts en Scratch / Blockly.',
+          'Semana 1 (tarde): Circuitos en protoboard, sensores ultrasónicos, fotoresistencias y luces LED interactivas.',
+          'Semana 2: Mecánica y ensamblaje de chasis robóticos móviles con control por bluetooth o mando a distancia.',
+          'Viernes de Cierre: Feria Demostrativa "Maker Day" con exhibición de prototipos ante padres de familia y premiación.'
+        ]
+      },
+      {
+        title: '¿Qué incluye la inscripción?',
+        items: [
+          'Kit individual de componentes electrónicos y piezas robóticas que el alumno conserva al concluir el curso.',
+          'Lunch saludable diario supervisado por el área de nutrición del colegio.',
+          'Playera conmemorativa del Hackatón y credencial de Maker Junior.',
+          'Diploma de aprovechamiento emitido por el Laboratorio de Tecnología Educativa.'
+        ]
+      }
+    ],
+    ctaText: 'Apartar Lugar en el Hackatón vía WhatsApp',
+    whatsappMessage: 'Hola, deseo apartar un lugar y recibir detalles sobre costos y horarios para el Hackatón de Verano de Robótica en Julio.'
+  },
+  {
+    tag: '[ EXHIBICIÓN DEPORTIVA ECUESTRE ]',
+    title: 'Gran exhibición de equitación y salto en pista escolar',
+    image: 'equitation_bg_v2.png',
+    chips: [
+      { icon: 'calendar', label: 'Sábado 28 de Marzo 2026' },
+      { icon: 'clock', label: '10:00 a 14:00 hrs' },
+      { icon: 'map', label: 'Pista Ecuestre Campus El Paraíso' }
+    ],
+    lead: 'Celebramos el talento, la disciplina y la conexión emocional de nuestros alumnos con los caballos. Un evento abierto a toda nuestra comunidad escolar y familias interesadas en conocer de cerca la formación ecuestre integral.',
+    sections: [
+      {
+        title: 'Cronograma de la Jornada',
+        items: [
+          '10:00 AM: Recepción y apertura de pista con honores.',
+          '10:30 AM: Demostración de postura, monta inicial y manejo de riendas por alumnos de preescolar y 1° de primaria.',
+          '11:30 AM: Rutina de doma formativa y ejercicios de equilibrio y autorregulación emocional.',
+          '12:30 PM: Circuito de salto ecuestre y destreza en pista con el equipo de primaria alta.',
+          '01:30 PM: Convivencia campestre familiar, área de alimentos saludables y recorrido por caballerizas.'
+        ]
+      },
+      {
+        title: 'Recomendaciones para Asistentes',
+        items: [
+          'Entrada libre para familias del colegio y familias visitantes con registro previo.',
+          'Se sugiere asistir con calzado cerrado deportivo o botas, sombrero o gorra y bloqueador solar.',
+          'Área de estacionamiento interno habilitada con acceso por la puerta poniente del campus.',
+          'Módulos de admisiones activos durante todo el evento para resolver dudas sobre el ciclo escolar.'
+        ]
+      }
+    ],
+    ctaText: 'Confirmar Asistencia Familiar vía WhatsApp',
+    whatsappMessage: 'Hola, me gustaría confirmar asistencia de mi familia a la Gran Exhibición de Equitación y Salto del 28 de Marzo.'
+  }
+];
+
+function getChipIcon(icon) {
+  switch (icon) {
+    case 'calendar':
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+    case 'clock':
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+    case 'users':
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+    case 'shield':
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+    case 'map':
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+    default:
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
+  }
+}
+
+function initAnnouncementDetailModal() {
+  const dialog = document.getElementById('announcement-modal');
+  const triggerBtns = document.querySelectorAll('.ann-popup-trigger');
+  const closeBtn = document.getElementById('announcement-modal-close-btn');
+  const closeActionBtn = document.getElementById('ann-modal-close-action');
+
+  if (!dialog || triggerBtns.length === 0) return;
+
+  const heroEl = document.getElementById('ann-modal-hero');
+  const tagEl = document.getElementById('ann-modal-tag');
+  const titleEl = document.getElementById('ann-modal-title');
+  const chipsEl = document.getElementById('ann-modal-chips');
+  const leadEl = document.getElementById('ann-modal-lead');
+  const sectionsEl = document.getElementById('ann-modal-sections');
+  const ctaWhatsappEl = document.getElementById('ann-modal-cta-whatsapp');
+  const ctaTextEl = document.getElementById('ann-modal-cta-text');
+
+  function openAnnouncementModal(idx) {
+    const data = ANNOUNCEMENTS_DATA[idx];
+    if (!data) return;
+
+    // Pause announcements slider while modal is open
+    if (typeof window.pauseAnnouncementsAutoPlay === 'function') {
+      window.pauseAnnouncementsAutoPlay();
+    }
+
+    // Populate Hero & Header
+    if (heroEl) {
+      heroEl.style.backgroundImage = `url('${data.image}')`;
+    }
+    if (tagEl) tagEl.textContent = data.tag;
+    if (titleEl) titleEl.textContent = data.title;
+
+    // Populate Chips
+    if (chipsEl) {
+      chipsEl.innerHTML = data.chips.map(chip => `
+        <span class="ann-chip">
+          ${getChipIcon(chip.icon)}
+          <span>${chip.label}</span>
+        </span>
+      `).join('');
+    }
+
+    // Populate Lead Text
+    if (leadEl) {
+      leadEl.textContent = data.lead;
+    }
+
+    // Populate Sections Grid
+    if (sectionsEl) {
+      sectionsEl.innerHTML = data.sections.map(sec => `
+        <div class="ann-modal-section-card">
+          <h4 class="ann-modal-section-title">${sec.title}</h4>
+          <ul class="ann-modal-items-list">
+            ${sec.items.map(item => `<li class="ann-modal-item">${item}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    // Populate WhatsApp CTA
+    if (ctaWhatsappEl) {
+      const encodedMsg = encodeURIComponent(data.whatsappMessage);
+      ctaWhatsappEl.href = `https://wa.me/523315679811?text=${encodedMsg}`;
+    }
+    if (ctaTextEl) {
+      ctaTextEl.textContent = data.ctaText;
+    }
+
+    document.body.classList.add('body-no-scroll');
+    dialog.showModal();
+  }
+
+  function closeAnnouncementModal() {
+    dialog.classList.add('closing');
+    setTimeout(() => {
+      dialog.close();
+      dialog.classList.remove('closing');
+      document.body.classList.remove('body-no-scroll');
+
+      // Resume slider autoplay
+      if (typeof window.resumeAnnouncementsAutoPlay === 'function') {
+        window.resumeAnnouncementsAutoPlay();
+      }
+    }, 350);
+  }
+
+  triggerBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-announcement-idx'), 10) || 0;
+      openAnnouncementModal(idx);
+    });
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeAnnouncementModal);
+  if (closeActionBtn) closeActionBtn.addEventListener('click', closeAnnouncementModal);
+
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      closeAnnouncementModal();
+    }
+  });
+
+  dialog.addEventListener('cancel', () => {
+    document.body.classList.remove('body-no-scroll');
+    if (typeof window.resumeAnnouncementsAutoPlay === 'function') {
+      window.resumeAnnouncementsAutoPlay();
+    }
+  });
 }
