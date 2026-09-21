@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initInteractiveAdmissions();
   initFacilitiesGalleryLightbox();
   initContactModal();
+  initParentOpinionPoll();
 });
 
 /* ==========================================================================
@@ -1768,4 +1769,301 @@ function initFacilitiesGalleryLightbox() {
       }
     }, { passive: true });
   }
+}
+
+/* ==========================================================================
+   14. PARENT OPINION POLL & REAL-TIME VISUALIZATION DASHBOARD
+   ========================================================================== */
+function initParentOpinionPoll() {
+  const pollSection = document.getElementById('opinion-padres');
+  if (!pollSection) return;
+
+  const form = document.getElementById('parent-poll-form');
+  if (!form) return;
+
+  const radioInputs = form.querySelectorAll('input[name="parent_poll_choice"]');
+  const optionLabels = form.querySelectorAll('.poll-option-label');
+  const submitBtn = document.getElementById('poll-submit-btn');
+  const changeBtn = document.getElementById('poll-change-btn');
+  const totalVotesEl = document.getElementById('poll-total-votes');
+  const leaderEl = document.getElementById('poll-donut-leader');
+  const leaderPctEl = document.getElementById('poll-donut-leader-pct');
+
+  const STORAGE_VOTE_KEY = 'ceep_parent_poll_user_vote';
+  const STORAGE_COUNTS_KEY = 'ceep_parent_poll_counts';
+
+  // Baseline community votes
+  const defaultCounts = {
+    robotics: 198,
+    cime: 164,
+    equitation: 128,
+    oxford: 94
+  };
+
+  const pillarNames = {
+    robotics: 'Robótica',
+    cime: 'Matemáticas',
+    equitation: 'Equitación',
+    oxford: 'Bilingüismo'
+  };
+
+  // Load persisted data or default
+  let counts = { ...defaultCounts };
+  try {
+    const savedCounts = localStorage.getItem(STORAGE_COUNTS_KEY);
+    if (savedCounts) {
+      const parsed = JSON.parse(savedCounts);
+      if (parsed && typeof parsed.robotics === 'number') {
+        counts = parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('LocalStorage error:', e);
+  }
+
+  let userVote = null;
+  try {
+    userVote = localStorage.getItem(STORAGE_VOTE_KEY);
+  } catch (e) {
+    console.warn('LocalStorage error:', e);
+  }
+
+  // Circumference of SVG donut with r=76: 2 * Math.PI * 76 = 477.522
+  const CIRCUMFERENCE = 477.522;
+
+  // Highlight option visually when changed
+  function updateOptionHighlight(selectedVal) {
+    optionLabels.forEach(label => {
+      const isCurrent = label.getAttribute('data-pillar') === selectedVal;
+      label.classList.toggle('is-selected', isCurrent);
+      const radio = label.querySelector('.poll-radio-input');
+      if (radio) {
+        radio.checked = isCurrent;
+      }
+    });
+  }
+
+  optionLabels.forEach(label => {
+    label.addEventListener('click', (e) => {
+      const radio = label.querySelector('.poll-radio-input');
+      if (radio && !radio.disabled) {
+        radio.checked = true;
+        updateOptionHighlight(radio.value);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+      }
+    });
+  });
+
+  radioInputs.forEach(radio => {
+    radio.addEventListener('change', () => {
+      updateOptionHighlight(radio.value);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+      }
+    });
+  });
+
+  // Calculate percentages and update SVG Donut + progress bars
+  function renderDashboard(animateNumbers = true) {
+    const total = counts.robotics + counts.cime + counts.equitation + counts.oxford;
+
+    const pcts = {
+      robotics: total > 0 ? (counts.robotics / total) * 100 : 0,
+      cime: total > 0 ? (counts.cime / total) * 100 : 0,
+      equitation: total > 0 ? (counts.equitation / total) * 100 : 0,
+      oxford: total > 0 ? (counts.oxford / total) * 100 : 0
+    };
+
+    // Determine leading pillar
+    let leaderKey = 'robotics';
+    let maxPct = -1;
+    ['robotics', 'cime', 'equitation', 'oxford'].forEach(k => {
+      if (pcts[k] > maxPct) {
+        maxPct = pcts[k];
+        leaderKey = k;
+      }
+    });
+
+    if (leaderEl) leaderEl.textContent = pillarNames[leaderKey];
+    if (leaderPctEl) leaderPctEl.textContent = `${Math.round(maxPct)}%`;
+
+    // Animate total counter
+    if (totalVotesEl) {
+      if (animateNumbers) {
+        const currentVal = parseInt(totalVotesEl.textContent.replace(/\D/g, '')) || total;
+        animateValue(totalVotesEl, currentVal, total, 700);
+      } else {
+        totalVotesEl.textContent = total.toLocaleString();
+      }
+    }
+
+    // Update progress bars & badges
+    ['robotics', 'cime', 'equitation', 'oxford'].forEach(k => {
+      const pctRound = Math.round(pcts[k]);
+      const barEl = document.getElementById(`bar-${k}`);
+      const pctEl = document.getElementById(`pct-${k}`);
+      const votesEl = document.getElementById(`votes-${k}`);
+      const breakdownItem = document.getElementById(`breakdown-item-${k}`);
+      const tagEl = document.getElementById(`tag-${k}`);
+
+      if (barEl) {
+        barEl.style.width = `${pctRound}%`;
+      }
+      if (pctEl) {
+        pctEl.textContent = `${pctRound}%`;
+      }
+      if (votesEl) {
+        votesEl.textContent = `(${counts[k]} familias)`;
+      }
+      if (breakdownItem) {
+        breakdownItem.classList.toggle('highlight-voted', userVote === k);
+      }
+      if (tagEl) {
+        tagEl.style.display = (userVote === k) ? 'inline-block' : 'none';
+      }
+    });
+
+    // Compute Donut SVG stroke offsets
+    // Order: robotics -> cime -> equitation -> oxford
+    let accumulatedOffset = 0;
+    const order = ['robotics', 'cime', 'equitation', 'oxford'];
+    order.forEach(k => {
+      const segEl = document.getElementById(`donut-segment-${k}`);
+      if (segEl) {
+        const fraction = total > 0 ? counts[k] / total : 0;
+        const arcLength = Math.max(0, fraction * CIRCUMFERENCE);
+        segEl.style.strokeDasharray = `${arcLength.toFixed(2)} ${(CIRCUMFERENCE - arcLength).toFixed(2)}`;
+        segEl.style.strokeDashoffset = `-${accumulatedOffset.toFixed(2)}`;
+        accumulatedOffset += arcLength;
+      }
+    });
+  }
+
+  // Smooth integer number animation using requestAnimationFrame
+  function animateValue(obj, start, end, duration) {
+    if (start === end) {
+      obj.textContent = end.toLocaleString();
+      return;
+    }
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      // easeOutCubic
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(ease * (end - start) + start);
+      obj.textContent = current.toLocaleString();
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      } else {
+        obj.textContent = end.toLocaleString();
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  // Set visual state when user has voted
+  function setVotedState(votedPillar) {
+    userVote = votedPillar;
+    updateOptionHighlight(votedPillar);
+
+    // Disable radios
+    radioInputs.forEach(r => {
+      r.disabled = true;
+    });
+
+    if (submitBtn) {
+      submitBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        <span>Opinión Registrada</span>
+      `;
+      submitBtn.disabled = true;
+      submitBtn.style.cursor = 'default';
+    }
+
+    if (changeBtn) {
+      changeBtn.style.display = 'inline-block';
+    }
+  }
+
+  // "Cambiar Selección" button handler
+  if (changeBtn) {
+    changeBtn.addEventListener('click', () => {
+      radioInputs.forEach(r => {
+        r.disabled = false;
+      });
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <span>Actualizar Mi Opinión</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        `;
+        submitBtn.style.cursor = 'pointer';
+      }
+      changeBtn.style.display = 'none';
+
+      // Focus the currently selected radio
+      const checkedRadio = form.querySelector('input[name="parent_poll_choice"]:checked');
+      if (checkedRadio) {
+        checkedRadio.focus();
+      }
+    });
+  }
+
+  // Form submit handler
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const selected = form.querySelector('input[name="parent_poll_choice"]:checked');
+    if (!selected) {
+      alert('Por favor selecciona un pilar pedagógico antes de registrar tu opinión.');
+      return;
+    }
+
+    const newChoice = selected.value;
+
+    if (userVote) {
+      if (userVote !== newChoice) {
+        counts[userVote] = Math.max(0, counts[userVote] - 1);
+        counts[newChoice] = (counts[newChoice] || 0) + 1;
+      }
+    } else {
+      counts[newChoice] = (counts[newChoice] || 0) + 1;
+    }
+
+    userVote = newChoice;
+
+    // Save to localStorage
+    try {
+      localStorage.setItem(STORAGE_VOTE_KEY, userVote);
+      localStorage.setItem(STORAGE_COUNTS_KEY, JSON.stringify(counts));
+    } catch (err) {
+      console.warn('Could not save to localStorage:', err);
+    }
+
+    setVotedState(userVote);
+    renderDashboard(true);
+
+    // Subtle scale feedback on newly chosen option
+    const chosenLabel = form.querySelector(`.poll-option-label[data-pillar="${newChoice}"]`);
+    if (chosenLabel) {
+      chosenLabel.style.transform = 'scale(1.02)';
+      setTimeout(() => {
+        chosenLabel.style.transform = '';
+      }, 350);
+    }
+  });
+
+  // Initial State Setup
+  if (userVote && counts[userVote] !== undefined) {
+    setVotedState(userVote);
+  } else {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+    }
+  }
+
+  renderDashboard(false);
 }

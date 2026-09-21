@@ -11,7 +11,7 @@
   <meta name="author" content="HiphaMX">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 
@@ -1050,12 +1050,256 @@
       </div>
     </section>
 
+    <!-- --- SECCIÓN INTERACTIVA: OPINIÓN DE PADRES DE FAMILIA --- -->
+    <section class="py-large poll-section" id="opinion-padres">
+      <div class="container">
+        <div class="poll-header-wrapper" style="text-align: center; max-width: 760px; margin: 0 auto 48px;">
+          <span class="text-mono text-accent-green">[ 06 / PULSO COMUNITARIO // VOZ DE LAS FAMILIAS ]</span>
+          <h2 class="text-heading" style="margin-top: 14px; margin-bottom: 16px;">
+            Monitoreo de Opinión Familiar
+          </h2>
+          <p class="text-body">
+            La experiencia de cada familia retroalimenta directamente la evolución continua de nuestro modelo constructivista. Participa en nuestra consulta comunitaria y observa la tendencia en tiempo real.
+          </p>
+        </div>
+
+        <div class="poll-bento-grid">
+          <!-- Columna Izquierda: Formulario Interactivo de Votación -->
+          <div class="poll-card poll-voting-card">
+            <div class="poll-card-badge">
+              <span class="pulse-dot"></span> Consulta Activa del Mes
+            </div>
+            <h3 class="poll-question-title">
+              ¿Qué pilar pedagógico consideras más transformador en el desarrollo integral de tu hijo/a?
+            </h3>
+            <p class="poll-question-sub">Selecciona una opción para sumar tu perspectiva a la muestra comunitaria:</p>
+
+            <form id="parent-poll-form" class="poll-form">
+              <div class="poll-options-group" role="radiogroup" aria-label="Pilares pedagógicos">
+                <!-- Opción 1: Robótica -->
+                <label class="poll-option-label" for="poll-opt-robotics" data-pillar="robotics">
+                  <input type="radio" name="parent_poll_choice" id="poll-opt-robotics" value="robotics" class="poll-radio-input" required>
+                  <div class="poll-option-indicator">
+                    <span class="poll-option-check"></span>
+                  </div>
+                  <div class="poll-option-content">
+                    <div class="poll-option-heading">
+                      <span class="poll-option-badge badge-robotics">Robótica & Lógica</span>
+                      <span class="poll-your-vote-tag" id="tag-robotics" style="display: none;">Tu voto actual</span>
+                    </div>
+                    <div class="poll-option-name">Robótica Educativa & Pensamiento Computacional</div>
+                    <p class="poll-option-desc">Algoritmos, programación por bloques, ensamblaje de circuitos y resolución lógica tangible.</p>
+                  </div>
+                </label>
+
+                <!-- Opción 2: CIME -->
+                <label class="poll-option-label" for="poll-opt-cime" data-pillar="cime">
+                  <input type="radio" name="parent_poll_choice" id="poll-opt-cime" value="cime" class="poll-radio-input">
+                  <div class="poll-option-indicator">
+                    <span class="poll-option-check"></span>
+                  </div>
+                  <div class="poll-option-content">
+                    <div class="poll-option-heading">
+                      <span class="poll-option-badge badge-cime">CIME Matemáticas</span>
+                      <span class="poll-your-vote-tag" id="tag-cime" style="display: none;">Tu voto actual</span>
+                    </div>
+                    <div class="poll-option-name">Matemáticas Constructivistas CIME</div>
+                    <p class="poll-option-desc">Manipulación táctil con regletas geoplano, razonamiento matemático profundo y sin memorización ciega.</p>
+                  </div>
+                </label>
+
+                <!-- Opción 3: Equitación -->
+                <label class="poll-option-label" for="poll-opt-equitation" data-pillar="equitation">
+                  <input type="radio" name="parent_poll_choice" id="poll-opt-equitation" value="equitation" class="poll-radio-input">
+                  <div class="poll-option-indicator">
+                    <span class="poll-option-check"></span>
+                  </div>
+                  <div class="poll-option-content">
+                    <div class="poll-option-heading">
+                      <span class="poll-option-badge badge-equitation">Equitación Escolar</span>
+                      <span class="poll-your-vote-tag" id="tag-equitation" style="display: none;">Tu voto actual</span>
+                    </div>
+                    <div class="poll-option-name">Equitación & Inteligencia Emocional</div>
+                    <p class="poll-option-desc">Pista ecuestre en campus: postura corporal, autorregulación, respeto animal y confianza personal.</p>
+                  </div>
+                </label>
+
+                <!-- Opción 4: Oxford -->
+                <label class="poll-option-label" for="poll-opt-oxford" data-pillar="oxford">
+                  <input type="radio" name="parent_poll_choice" id="poll-opt-oxford" value="oxford" class="poll-radio-input">
+                  <div class="poll-option-indicator">
+                    <span class="poll-option-check"></span>
+                  </div>
+                  <div class="poll-option-content">
+                    <div class="poll-option-heading">
+                      <span class="poll-option-badge badge-oxford">Inglés Oxford OTE</span>
+                      <span class="poll-your-vote-tag" id="tag-oxford" style="display: none;">Tu voto actual</span>
+                    </div>
+                    <div class="poll-option-name">Inmersión Bilingüe & Certificación Oxford</div>
+                    <p class="poll-option-desc">Dominio conversacional fluido mediante indagación activa y aval internacional oficial.</p>
+                  </div>
+                </label>
+              </div>
+
+              <div class="poll-action-bar">
+                <button type="submit" class="btn poll-submit-btn" id="poll-submit-btn">
+                  <span>Registrar Mi Opinión</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <button type="button" class="poll-change-btn" id="poll-change-btn" style="display: none;">
+                  Cambiar Selección
+                </button>
+              </div>
+              <div class="poll-privacy-note">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Registro 100% anónimo. Actualización inmediata del tablero de resultados.</span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Columna Derecha: Dashboard y Gráfica en Tiempo Real -->
+          <div class="poll-card poll-chart-card">
+            <div class="poll-chart-header">
+              <div>
+                <span class="poll-status-indicator"><span class="status-live-pulse"></span> TRANSMISIÓN DE DATOS EN VIVO</span>
+                <h4 class="poll-chart-title">Distribución de Preferencias</h4>
+              </div>
+              <div class="poll-total-counter-pill">
+                <span class="poll-counter-num" id="poll-total-votes">584</span>
+                <span class="poll-counter-label">familias participantes</span>
+              </div>
+            </div>
+
+            <!-- Visualizador Gráfico: SVG Donut Anular Dinámico -->
+            <div class="poll-visual-donut-wrapper">
+              <div class="poll-donut-container">
+                <svg class="poll-donut-svg" viewBox="0 0 200 200" width="200" height="200" aria-hidden="true">
+                  <!-- Círculo base de fondo -->
+                  <circle cx="100" cy="100" r="76" class="poll-donut-bg-circle" />
+                  <!-- 4 Segmentos dinámicos calculados por app.js -->
+                  <circle id="donut-segment-robotics" cx="100" cy="100" r="76" class="poll-donut-segment segment-robotics" stroke-dasharray="0 477.52" stroke-dashoffset="0" />
+                  <circle id="donut-segment-cime" cx="100" cy="100" r="76" class="poll-donut-segment segment-cime" stroke-dasharray="0 477.52" stroke-dashoffset="0" />
+                  <circle id="donut-segment-equitation" cx="100" cy="100" r="76" class="poll-donut-segment segment-equitation" stroke-dasharray="0 477.52" stroke-dashoffset="0" />
+                  <circle id="donut-segment-oxford" cx="100" cy="100" r="76" class="poll-donut-segment segment-oxford" stroke-dasharray="0 477.52" stroke-dashoffset="0" />
+                </svg>
+                <div class="poll-donut-center-info">
+                  <span class="poll-donut-subtext">Pilar Líder</span>
+                  <span class="poll-donut-leader" id="poll-donut-leader">Robótica</span>
+                  <span class="poll-donut-pct" id="poll-donut-leader-pct">34%</span>
+                </div>
+              </div>
+
+              <!-- Leyenda compacta de colores -->
+              <div class="poll-legend-grid">
+                <div class="poll-legend-item">
+                  <span class="legend-swatch swatch-robotics"></span>
+                  <span class="legend-name">Robótica</span>
+                </div>
+                <div class="poll-legend-item">
+                  <span class="legend-swatch swatch-cime"></span>
+                  <span class="legend-name">CIME</span>
+                </div>
+                <div class="poll-legend-item">
+                  <span class="legend-swatch swatch-equitation"></span>
+                  <span class="legend-name">Equitación</span>
+                </div>
+                <div class="poll-legend-item">
+                  <span class="legend-swatch swatch-oxford"></span>
+                  <span class="legend-name">Oxford</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Desglose Porcentual con Barras de Progreso Dinámicas -->
+            <div class="poll-breakdown-list">
+              <!-- Item Robótica -->
+              <div class="poll-breakdown-item" id="breakdown-item-robotics">
+                <div class="poll-breakdown-meta">
+                  <span class="poll-breakdown-name">
+                    <span class="breakdown-color-dot swatch-robotics"></span>
+                    Robótica Educativa & Lógica
+                  </span>
+                  <span class="poll-breakdown-stats">
+                    <strong class="poll-breakdown-pct" id="pct-robotics">34%</strong>
+                    <span class="poll-breakdown-votes" id="votes-robotics">(198 familias)</span>
+                  </span>
+                </div>
+                <div class="poll-progress-track">
+                  <div class="poll-progress-fill bar-robotics" id="bar-robotics" style="width: 34%;"></div>
+                </div>
+              </div>
+
+              <!-- Item CIME -->
+              <div class="poll-breakdown-item" id="breakdown-item-cime">
+                <div class="poll-breakdown-meta">
+                  <span class="poll-breakdown-name">
+                    <span class="breakdown-color-dot swatch-cime"></span>
+                    Matemáticas CIME
+                  </span>
+                  <span class="poll-breakdown-stats">
+                    <strong class="poll-breakdown-pct" id="pct-cime">28%</strong>
+                    <span class="poll-breakdown-votes" id="votes-cime">(164 familias)</span>
+                  </span>
+                </div>
+                <div class="poll-progress-track">
+                  <div class="poll-progress-fill bar-cime" id="bar-cime" style="width: 28%;"></div>
+                </div>
+              </div>
+
+              <!-- Item Equitación -->
+              <div class="poll-breakdown-item" id="breakdown-item-equitation">
+                <div class="poll-breakdown-meta">
+                  <span class="poll-breakdown-name">
+                    <span class="breakdown-color-dot swatch-equitation"></span>
+                    Equitación Escolar & Emocional
+                  </span>
+                  <span class="poll-breakdown-stats">
+                    <strong class="poll-breakdown-pct" id="pct-equitation">22%</strong>
+                    <span class="poll-breakdown-votes" id="votes-equitation">(128 familias)</span>
+                  </span>
+                </div>
+                <div class="poll-progress-track">
+                  <div class="poll-progress-fill bar-equitation" id="bar-equitation" style="width: 22%;"></div>
+                </div>
+              </div>
+
+              <!-- Item Oxford -->
+              <div class="poll-breakdown-item" id="breakdown-item-oxford">
+                <div class="poll-breakdown-meta">
+                  <span class="poll-breakdown-name">
+                    <span class="breakdown-color-dot swatch-oxford"></span>
+                    Inmersión Bilingüe Oxford
+                  </span>
+                  <span class="poll-breakdown-stats">
+                    <strong class="poll-breakdown-pct" id="pct-oxford">16%</strong>
+                    <span class="poll-breakdown-votes" id="votes-oxford">(94 familias)</span>
+                  </span>
+                </div>
+                <div class="poll-progress-track">
+                  <div class="poll-progress-fill bar-oxford" id="bar-oxford" style="width: 16%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer de la Tarjeta Gráfica -->
+            <div class="poll-chart-footer">
+              <span class="poll-footer-sync">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Muestra viva 2026 · Ciclo Escolar Actual
+              </span>
+              <span class="poll-footer-note">Actualizado tras cada voto registrado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- --- LEAD MAGNET SECTION --- -->
     <section class="lead-section container" id="lead-magnet">
       <div class="lead-grid">
         <div class="lead-info-panel">
           <div>
-            <span class="text-mono text-accent-green">[ 06 / GUÍA GRATUITA ]</span>
+            <span class="text-mono text-accent-green">[ 07 / GUÍA GRATUITA ]</span>
             <h2 class="text-heading" style="margin-top: 16px; margin-bottom: 24px;">¿Cómo se come el<br>constructivismo?</h2>
             <p class="text-body">
               Conozca a detalle esta metodología pedagógica activa, valide su compatibilidad con el estilo de aprendizaje de su hijo y descubra si nuestro ecosistema escolar se adapta a las necesidades de su familia.
@@ -1192,7 +1436,7 @@
     <section class="py-large" id="contacto" style="border-top: 1px solid var(--color-border);">
       <div class="container">
         <div class="section-header-wrap">
-          <span class="text-mono text-accent-green">[ 07 / CONTACTO Y UBICACIÓN ]</span>
+          <span class="text-mono text-accent-green">[ 08 / CONTACTO Y UBICACIÓN ]</span>
           <h2 class="text-heading" style="margin-top: 12px;">Contacto</h2>
         </div>
 
@@ -1382,6 +1626,9 @@
                     <a href="#blog" class="nav-menu_link-anchor">Blog Educativo</a>
                   </li>
                   <li class="nav-menu_link-item">
+                    <a href="#opinion-padres" class="nav-menu_link-anchor">Opinión Familiar</a>
+                  </li>
+                  <li class="nav-menu_link-item">
                     <a href="portal.html" class="nav-menu_link-anchor">Portal para Familias</a>
                   </li>
                 </ul>
@@ -1485,6 +1732,6 @@
   </dialog>
 
   <!-- --- JAVASCRIPT LOGIC --- -->
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
