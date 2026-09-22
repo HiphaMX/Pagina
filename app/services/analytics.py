@@ -10,7 +10,7 @@ from google.analytics.data_v1beta.types import (
     RunReportRequest,
 )
 
-# Diccionario de clientes y sus IDs de propiedad
+# Diccionario de clientes y sus IDs de propiedad (Fallback estático completo)
 CLIENTS = {
     "Botica Silvestre": "536773153",
     "Uro Oncology": "449411973",
@@ -18,10 +18,15 @@ CLIENTS = {
     "Hipha": "536740396",
     "HealthyIce": "537288803",
     "AMDI": "274628817",
-    "Dr Jairo Dominguez": "274579082",
+    "Dr. Jairo Domínguez": "274579082",
     "Centro de Urología Avanzada": "274665439",
     "DAM Pisos": "527686536",
-    "El Ofertón del Piso": "527662743"
+    "El Ofertón del Piso": "527662743",
+    "El Chile Chillón": "544057625",
+    "Jessica Mendoza": "547488396",
+    "Letrerama": "555315028",
+    "Grupo Gari": "555407699",
+    "Valencia Servicios": "555402565",
 }
 
 def get_ga4_credentials():
@@ -68,8 +73,8 @@ def get_ga4_client():
 
 def get_discovered_clients():
     """
-    Intenta descubrir dinámicamente todas las propiedades de GA4 usando la Admin API.
-    Si la API no está habilitada o falla, retorna el diccionario estático CLIENTS como fallback.
+    Descubre dinámicamente todas las propiedades de GA4 usando la Admin API.
+    Si la API no está disponible o falla, retorna el diccionario estático CLIENTS como fallback.
     """
     try:
         creds = get_ga4_credentials()
@@ -80,7 +85,7 @@ def get_discovered_clients():
         resp = requests.get(
             "https://analyticsadmin.googleapis.com/v1beta/accountSummaries",
             headers={"Authorization": f"Bearer {creds.token}"},
-            timeout=5
+            timeout=8
         )
         if resp.status_code == 200:
             data = resp.json()
@@ -88,7 +93,20 @@ def get_discovered_clients():
             for acc in data.get("accountSummaries", []):
                 for prop in acc.get("propertySummaries", []):
                     prop_id = prop.get("property", "").replace("properties/", "")
+                    # Omitir propiedad de prueba inactiva
+                    if prop_id == "437684943":
+                        continue
                     display_name = prop.get("displayName", f"Propiedad {prop_id}")
+                    # Normalizar nombres limpios
+                    display_name = display_name.replace(" - GA4", "").strip()
+                    if display_name == "Jessica Mendoza Bienes Raices":
+                        display_name = "Jessica Mendoza"
+                    elif display_name == "EL OFERTON DEL PISO":
+                        display_name = "El Ofertón del Piso"
+                    elif display_name == "DAM PISOS":
+                        display_name = "DAM Pisos"
+                    elif display_name == "Dr Jairo Dominguez":
+                        display_name = "Dr. Jairo Domínguez"
                     if prop_id:
                         discovered[display_name] = prop_id
             if discovered:

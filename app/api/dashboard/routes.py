@@ -49,7 +49,7 @@ def get_dashboard_overview(
             "trend": data.get("trend", [])
         }
 
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         overview_data = list(executor.map(fetch_client, clients.items()))
         
     # Ordenar por nuevos usuarios de mayor a menor
