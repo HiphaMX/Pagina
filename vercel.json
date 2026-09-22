@@ -342,12 +342,11 @@
     },
     {
       "src": "/dashboard",
-      "status": 308,
-      "headers": { "Location": "/dashboard/" }
+      "dest": "/projects/HiphaMX/dashboard/"
     },
     {
       "src": "/dashboard/",
-      "dest": "/projects/HiphaMX/dashboard/index.html"
+      "dest": "/projects/HiphaMX/dashboard/"
     },
     {
       "src": "/dashboard/(.*)",
