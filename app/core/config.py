@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///./database.db"
     SECRET_KEY: str = "fallback-secret-key-for-dev"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080
 
     WEBFLOW_API_TOKEN: str = ""
     WEBFLOW_SITE_ID: str = ""

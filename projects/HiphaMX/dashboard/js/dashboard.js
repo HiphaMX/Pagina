@@ -52,6 +52,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loginForm.addEventListener('submit', handleLogin);
 
+    // Eventos de Cerrar Sesión
+    const logoutHandler = (e) => {
+        if (e) e.preventDefault();
+        localStorage.removeItem('dashboard_token');
+        showLogin();
+    };
+
+    const navLinkLogout = document.getElementById('navLinkLogout');
+    if (navLinkLogout) navLinkLogout.addEventListener('click', logoutHandler);
+
+    const btnTopLogout = document.getElementById('btnTopLogout');
+    if (btnTopLogout) btnTopLogout.addEventListener('click', logoutHandler);
+
+    // Botón Refrescar
+    const btnReloadOverview = document.getElementById('btnReloadOverview');
+    if (btnReloadOverview) {
+        btnReloadOverview.addEventListener('click', (e) => {
+            e.preventDefault();
+            loadOverviewData();
+            const activeClient = document.querySelector('.client-item.active');
+            if (activeClient) {
+                loadClientDetails(activeClient.dataset.id, activeClient.dataset.name);
+            }
+        });
+    }
+
     dateSelect.addEventListener('change', () => {
         loadOverviewData();
         // Si hay un cliente seleccionado, recargarlo también
@@ -149,32 +175,40 @@ function getAuthHeaders() {
 async function loadOverviewData() {
     clientListContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Sincronizando con Google Analytics...</p></div>';
     
-    const range = dateSelect.value;
+    const range = dateSelect ? dateSelect.value : '30daysAgo';
     try {
         const response = await fetch(`${API_BASE}/metrics/overview?start_date=${range}`, {
             headers: getAuthHeaders()
         });
 
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
             // Token expirado o inválido, redirigir a login
             localStorage.removeItem('dashboard_token');
             showLogin();
             return;
         }
 
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.detail || `Error del servidor (${response.status})`);
+        }
+
         const result = await response.json();
         renderClientList(result.data);
     } catch (error) {
         console.error("Error al cargar overview:", error);
-        clientListContainer.innerHTML = '<p style="color: #ff4444; text-align:center;">Error de conexión con el servidor.</p>';
+        clientListContainer.innerHTML = `<div style="padding:1.5rem; text-align:center;">
+            <p style="color: #ff5555; margin-bottom: 0.8rem; font-size: 0.9rem;">⚠️ ${error.message || 'Error de conexión con el servidor.'}</p>
+            <button onclick="localStorage.removeItem('dashboard_token'); showLogin();" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.4rem 0.8rem; border-radius:6px; cursor:pointer; font-size:0.8rem; font-weight:600;">Re-iniciar Sesión</button>
+        </div>`;
     }
 }
 
 function renderClientList(clients) {
     clientListContainer.innerHTML = '';
     
-    if(!clients || clients.length === 0) {
-        clientListContainer.innerHTML = '<p>No hay datos disponibles.</p>';
+    if(!clients || !Array.isArray(clients) || clients.length === 0) {
+        clientListContainer.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);"><p>No se encontraron cuentas con métricas para este rango.</p></div>';
         return;
     }
 
@@ -231,17 +265,22 @@ async function loadClientDetails(propertyId, clientName) {
             headers: getAuthHeaders()
         });
 
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
             localStorage.removeItem('dashboard_token');
             showLogin();
             return;
+        }
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.detail || `Error del servidor (${response.status})`);
         }
 
         const data = await response.json();
         renderDetails(data);
     } catch (error) {
         console.error("Error cargando detalles", error);
-        elClientName.textContent = "Error al cargar datos";
+        elClientName.textContent = error.message || "Error al cargar datos";
     }
 }
 
@@ -513,7 +552,7 @@ async function loadSatAccounts() {
             headers: getAuthHeaders()
         });
         
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
             localStorage.removeItem('dashboard_token');
             showLogin();
             return;
@@ -591,7 +630,7 @@ async function loadSatInvoices() {
             headers: getAuthHeaders()
         });
         
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
             localStorage.removeItem('dashboard_token');
             showLogin();
             return;
