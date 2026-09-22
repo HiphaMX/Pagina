@@ -1,5 +1,7 @@
 import os
+import json
 from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
     DateRange,
@@ -23,19 +25,40 @@ CLIENTS = {
 }
 
 def get_ga4_client():
-    """Inicializa y retorna el cliente de GA4 usando el token guardado."""
-    if os.environ.get("VERCEL") == "1":
-        secrets_dir = "/tmp/.secrets"
-    else:
-        secrets_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.secrets')
-        
-    token_file = os.path.join(secrets_dir, 'token.json')
-    client_secrets_file = os.path.join(secrets_dir, 'client_secret.json')
-    
-    if not os.path.exists(token_file):
-        raise FileNotFoundError(f"No se encontró el token de acceso en {token_file}")
+    """Inicializa y retorna el cliente de GA4 usando el token en memoria (env var) o archivo."""
+    creds = None
 
-    creds = Credentials.from_authorized_user_file(token_file)
+    # 1. Intentar cargar directamente desde variable de entorno (Vercel Serverless)
+    ga_token_env = os.environ.get("GA_TOKEN_JSON")
+    if ga_token_env:
+        try:
+            token_data = json.loads(ga_token_env)
+            creds = Credentials.from_authorized_user_info(token_data)
+        except Exception as e:
+            print(f"Error parseando GA_TOKEN_JSON desde variable de entorno: {e}")
+            creds = None
+
+    # 2. Si no viene en env var, buscar en filesystem local o /tmp
+    if not creds:
+        if os.environ.get("VERCEL") == "1":
+            secrets_dir = "/tmp/.secrets"
+        else:
+            secrets_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.secrets')
+            
+        token_file = os.path.join(secrets_dir, 'token.json')
+        if os.path.exists(token_file):
+            creds = Credentials.from_authorized_user_file(token_file)
+
+    if not creds:
+        raise FileNotFoundError("No se encontró el token de acceso de Google Analytics (ni en GA_TOKEN_JSON ni en token.json)")
+
+    # 3. Refrescar token automáticamente si ha expirado
+    if creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+        except Exception as e:
+            print(f"Error refrescando credenciales de Google Analytics: {e}")
+
     return BetaAnalyticsDataClient(credentials=creds)
 
 def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date: str = "today"):

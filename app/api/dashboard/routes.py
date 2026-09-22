@@ -18,6 +18,8 @@ def list_clients(current_user: UserSchema = Depends(get_current_active_user)):
     """Devuelve la lista de clientes disponibles para el dashboard."""
     return [{"name": name, "property_id": prop_id} for name, prop_id in CLIENTS.items()]
 
+from concurrent.futures import ThreadPoolExecutor
+
 @router.get("/metrics/overview")
 def get_dashboard_overview(
     start_date: str = "30daysAgo", 
@@ -26,20 +28,20 @@ def get_dashboard_overview(
 ):
     """
     Recorre todos los clientes para obtener su resumen general.
-    Ideal para llenar la tabla principal del dashboard.
-    (Nota: En producción, esto podría ser lento si hay muchos clientes, 
-    lo ideal es cachear esta respuesta).
+    Ejecuta las llamadas a Google Analytics en paralelo para respuesta ultra-rápida.
     """
-    overview_data = []
-    
-    for client_name, prop_id in CLIENTS.items():
+    def fetch_client(item):
+        client_name, prop_id = item
         data = get_basic_metrics(prop_id, start_date, end_date)
-        overview_data.append({
+        return {
             "name": client_name,
             "property_id": prop_id,
             "summary": data.get("summary", {}),
             "trend": data.get("trend", [])
-        })
+        }
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        overview_data = list(executor.map(fetch_client, CLIENTS.items()))
         
     # Ordenar por nuevos usuarios de mayor a menor
     overview_data.sort(key=lambda x: x["summary"].get("newUsers", 0), reverse=True)

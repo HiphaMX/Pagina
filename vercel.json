@@ -3,7 +3,8 @@
   "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama)/'",
   "functions": {
     "api/**/*.py": {
-      "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}"
+      "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}",
+      "maxDuration": 30
     }
   },
   "headers": [
@@ -341,7 +342,16 @@
     },
     {
       "src": "/dashboard",
-      "dest": "/projects/HiphaMX/dashboard"
+      "status": 308,
+      "headers": { "Location": "/dashboard/" }
+    },
+    {
+      "src": "/dashboard/",
+      "dest": "/projects/HiphaMX/dashboard/index.html"
+    },
+    {
+      "src": "/dashboard/(.*)",
+      "dest": "/projects/HiphaMX/dashboard/$1"
     },
     {
       "src": "/(terminos-y-condiciones|aviso-de-privacidad)\\.html",
