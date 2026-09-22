@@ -342,11 +342,11 @@
     },
     {
       "src": "/dashboard",
-      "dest": "/projects/HiphaMX/dashboard/"
+      "dest": "/projects/HiphaMX/dashboard"
     },
     {
       "src": "/dashboard/",
-      "dest": "/projects/HiphaMX/dashboard/"
+      "dest": "/projects/HiphaMX/dashboard"
     },
     {
       "src": "/dashboard/(.*)",
