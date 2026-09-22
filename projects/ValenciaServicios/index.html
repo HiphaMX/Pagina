@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F7R0E68PDX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-F7R0E68PDX');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valencia Servicios | Fontanería, Electricidad, Gas e Impermeabilización en Zapopan</title>
@@ -2064,6 +2073,15 @@
             // 3. Reset form and show success feedback in current page
             document.getElementById('serviceForm').reset();
             showFeedback('¡Solicitud enviada! Se ha abierto WhatsApp para continuar tu cotización.', 'success');
+
+            // 3.1 Disparar evento de conversión en Google Analytics
+            if (typeof gtag === 'function') {
+                gtag('event', 'generate_lead', {
+                    event_category: 'Contacto',
+                    event_label: servicio || 'Cotización Valencia Servicios',
+                    value: 1
+                });
+            }
 
             // 4. Submit to FastAPI backend in the background (with keepalive to guarantee delivery on page unload)
             fetch('/api/contact/valencia-servicios', {
