@@ -24,8 +24,8 @@ CLIENTS = {
     "El Ofertón del Piso": "527662743"
 }
 
-def get_ga4_client():
-    """Inicializa y retorna el cliente de GA4 usando el token en memoria (env var) o archivo."""
+def get_ga4_credentials():
+    """Inicializa y retorna las credenciales de Google OAuth usando el token en memoria (env var) o archivo."""
     creds = None
 
     # 1. Intentar cargar directamente desde variable de entorno (Vercel Serverless)
@@ -59,7 +59,44 @@ def get_ga4_client():
         except Exception as e:
             print(f"Error refrescando credenciales de Google Analytics: {e}")
 
+    return creds
+
+def get_ga4_client():
+    """Inicializa y retorna el cliente de GA4 usando credenciales autenticadas."""
+    creds = get_ga4_credentials()
     return BetaAnalyticsDataClient(credentials=creds)
+
+def get_discovered_clients():
+    """
+    Intenta descubrir dinámicamente todas las propiedades de GA4 usando la Admin API.
+    Si la API no está habilitada o falla, retorna el diccionario estático CLIENTS como fallback.
+    """
+    try:
+        creds = get_ga4_credentials()
+        if not creds.valid and creds.refresh_token:
+            creds.refresh(Request())
+
+        import requests
+        resp = requests.get(
+            "https://analyticsadmin.googleapis.com/v1beta/accountSummaries",
+            headers={"Authorization": f"Bearer {creds.token}"},
+            timeout=5
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            discovered = {}
+            for acc in data.get("accountSummaries", []):
+                for prop in acc.get("propertySummaries", []):
+                    prop_id = prop.get("property", "").replace("properties/", "")
+                    display_name = prop.get("displayName", f"Propiedad {prop_id}")
+                    if prop_id:
+                        discovered[display_name] = prop_id
+            if discovered:
+                return discovered
+    except Exception as e:
+        print(f"Info: Usando fallback estático de clientes (Admin API no disponible: {e})")
+
+    return CLIENTS
 
 def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date: str = "today"):
     """Obtiene métricas básicas (nuevos usuarios, total usuarios, vistas) para un periodo dado."""

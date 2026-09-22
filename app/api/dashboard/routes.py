@@ -5,7 +5,13 @@ from sqlalchemy.orm import Session
 import io
 import csv
 
-from app.services.analytics import get_basic_metrics, get_top_sections, get_traffic_sources, CLIENTS
+from app.services.analytics import (
+    get_basic_metrics,
+    get_top_sections,
+    get_traffic_sources,
+    get_discovered_clients,
+    CLIENTS
+)
 from app.api.deps import get_current_active_user
 from app.schemas.user import User as UserSchema
 from app.core.database import get_db
@@ -16,7 +22,8 @@ router = APIRouter()
 @router.get("/clients")
 def list_clients(current_user: UserSchema = Depends(get_current_active_user)):
     """Devuelve la lista de clientes disponibles para el dashboard."""
-    return [{"name": name, "property_id": prop_id} for name, prop_id in CLIENTS.items()]
+    clients = get_discovered_clients()
+    return [{"name": name, "property_id": prop_id} for name, prop_id in clients.items()]
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -30,6 +37,8 @@ def get_dashboard_overview(
     Recorre todos los clientes para obtener su resumen general.
     Ejecuta las llamadas a Google Analytics en paralelo para respuesta ultra-rápida.
     """
+    clients = get_discovered_clients()
+
     def fetch_client(item):
         client_name, prop_id = item
         data = get_basic_metrics(prop_id, start_date, end_date)
@@ -41,7 +50,7 @@ def get_dashboard_overview(
         }
 
     with ThreadPoolExecutor(max_workers=5) as executor:
-        overview_data = list(executor.map(fetch_client, CLIENTS.items()))
+        overview_data = list(executor.map(fetch_client, clients.items()))
         
     # Ordenar por nuevos usuarios de mayor a menor
     overview_data.sort(key=lambda x: x["summary"].get("newUsers", 0), reverse=True)
@@ -56,7 +65,8 @@ def get_client_details(
 ):
     """Obtiene el detalle completo para un solo cliente."""
     # Buscar el nombre del cliente
-    client_name = next((name for name, pid in CLIENTS.items() if pid == property_id), "Desconocido")
+    clients = get_discovered_clients()
+    client_name = next((name for name, pid in clients.items() if pid == property_id), "Desconocido")
     
     metrics_data = get_basic_metrics(property_id, start_date, end_date)
     top_sections = get_top_sections(property_id, start_date, end_date)
