@@ -1225,10 +1225,10 @@ async def send_healthyice_contract_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce al equipo")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     
     # Enviar notificaciones individualmente a cada miembro del equipo
-    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    recipients = ["contacto@healthyice.mx"]
     if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
         config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
         if config_email and config_email not in recipients:
@@ -1289,6 +1289,14 @@ async def send_healthyice_contract_team(form_data):
     """
     
     success = False
+    try:
+        pdf_bytes = generate_healthyice_contract_pdf(form_data)
+        safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
+    except Exception as e:
+        logger.error(f"Error al generar PDF en send_healthyice_contract_team: {e}")
+        pdf_bytes = None
+        safe_name = "Contrato"
+
     for recipient in recipients:
         message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
             project_prefix="HEALTHYICE",
@@ -1302,20 +1310,17 @@ async def send_healthyice_contract_team(form_data):
         del message['Reply-To']
         message['Reply-To'] = form_data.email
 
-    try:
-        pdf_bytes = generate_healthyice_contract_pdf(form_data)
-        safe_name = form_data.razon_social.replace(' ', '_').replace('/', '_')
-        message.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename=f"Contrato_HealthyIce_{safe_name}.pdf")
-    except Exception as e:
-        logger.error(f"Error al generar o adjuntar PDF en send_healthyice_contract_team: {e}")
-        
-    try:
-        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
-        logger.info("Notificacion de contrato HealthyIce enviada al equipo")
-        return True
-    except Exception as e:
-        logger.error(f"Fallo al enviar notificacion de contrato HealthyIce al equipo: {str(e)}")
-        return False
+        if pdf_bytes:
+            message.add_attachment(pdf_bytes, maintype='application', subtype='pdf', filename=f"Contrato_HealthyIce_{safe_name}.pdf")
+
+        try:
+            await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+            logger.info(f"Notificacion de contrato HealthyIce enviada al equipo ({recipient})")
+            success = True
+        except Exception as e:
+            logger.error(f"Fallo al enviar notificacion de contrato HealthyIce al equipo ({recipient}): {str(e)}")
+
+    return success
 
 
 async def send_whiteclean_confirmation_email(form_data):
