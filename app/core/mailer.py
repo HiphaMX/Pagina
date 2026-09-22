@@ -594,10 +594,10 @@ async def send_healthyice_order_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío a equipo HealthyIce")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     
     # Enviar notificaciones individualmente a cada miembro del equipo
-    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    recipients = ["hola@hipha.mx", "contacto@healthyice.mx"]
     if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
         config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
         if config_email and config_email not in recipients:
@@ -706,10 +706,10 @@ async def send_healthyice_payment_team(payer_name: str, payer_email: str, payer_
         logger.warning(f"SMTP no configurado. Simulando envío a equipo HealthyIce")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     
     # Enviar notificaciones individualmente a cada miembro del equipo
-    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    recipients = ["hola@hipha.mx", "contacto@healthyice.mx"]
     if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
         config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
         if config_email and config_email not in recipients:
@@ -1225,10 +1225,10 @@ async def send_healthyice_contract_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envio de contrato HealthyIce al equipo")
         return True
 
-    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "hola@healthyice.mx"
+    from_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL if settings.HEALTHYICE_EMAILS_FROM_EMAIL else "contacto@healthyice.mx"
     
     # Enviar notificaciones individualmente a cada miembro del equipo
-    recipients = ["hola@healthyice.mx", "contacto@healthyice.mx"]
+    recipients = ["hola@hipha.mx", "contacto@healthyice.mx"]
     if settings.HEALTHYICE_EMAILS_FROM_EMAIL:
         config_email = settings.HEALTHYICE_EMAILS_FROM_EMAIL.strip()
         if config_email and config_email not in recipients:
