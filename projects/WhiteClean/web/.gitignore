@@ -3,3 +3,5 @@ raw_scraped/
 .DS_Store
 *.py
 .vercel/
+.vercel
+.env*.local
