@@ -71,6 +71,16 @@
       }
     },
     {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?amdi\\.mx$"
+        }
+      ],
+      "dest": "/projects/AMDI/$1"
+    },
+    {
       "src": "/(css|js|fonts|images|blog|proyectos|topic|arte-y-decoracion)/(.*)",
       "has": [
         {
@@ -111,14 +121,14 @@
       "dest": "/projects/urologia-avanzada/$1/$2"
     },
     {
-      "src": "/llms.txt",
+      "src": "/(llms\\.txt|robots\\.txt)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?urologia-avanzada\\.com\\.mx$"
         }
       ],
-      "dest": "/projects/urologia-avanzada/llms.txt"
+      "dest": "/projects/urologia-avanzada/$1"
     },
     {
       "src": "/(blog|diagnostico|equipo-medico|pacientes|tipos-de-cirugia|preguntas-frecuentes-centro-de-urologia-avanzada|aviso-de-privacidad-centro-de-urologia-avanzada|index)(.html|)",
@@ -139,6 +149,16 @@
         }
       ],
       "dest": "/projects/urologia-avanzada/index.html"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        }
+      ],
+      "dest": "/projects/JessicaMendoza/$1"
     },
     {
       "src": "/(Assets|js)/(.*)",
@@ -181,14 +201,14 @@
       "dest": "/projects/GrupoGari/web/$1/$2"
     },
     {
-      "src": "/llms.txt",
+      "src": "/(llms\\.txt|robots\\.txt)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?grupo-gari\\.com$"
         }
       ],
-      "dest": "/projects/GrupoGari/web/llms.txt"
+      "dest": "/projects/GrupoGari/web/$1"
     },
     {
       "src": "/(blog)(.html|)",
@@ -308,6 +328,106 @@
         }
       ],
       "dest": "/projects/Letrerama/web/index.html"
+    },
+    {
+      "src": "/(Assets)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?valenciaservicios\\.mx$"
+        }
+      ],
+      "dest": "/projects/ValenciaServicios/Assets/$2"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?valenciaservicios\\.mx$"
+        }
+      ],
+      "dest": "/projects/ValenciaServicios/$1"
+    },
+    {
+      "src": "/(index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?valenciaservicios\\.mx$"
+        }
+      ],
+      "dest": "/projects/ValenciaServicios/index.html"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?valenciaservicios\\.mx$"
+        }
+      ],
+      "dest": "/projects/ValenciaServicios/index.html"
+    },
+    {
+      "src": "/(assets|css|js|post)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?whiteclean\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/WhiteClean/web/$1/$2"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?whiteclean\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/WhiteClean/web/$1"
+    },
+    {
+      "src": "/(Assets|css|js)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?elchilechillon\\.mx$"
+        }
+      ],
+      "dest": "/projects/ChileChillon/web/$1/$2"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt|sitemap\\.xml)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?elchilechillon\\.mx$"
+        }
+      ],
+      "dest": "/projects/ChileChillon/web/$1"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?healthyice\\.mx$"
+        }
+      ],
+      "dest": "/projects/HealthyIce/public/$1"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?uro-oncology\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/uro-oncology/public/$1"
     },
     {
       "src": "/amdi",

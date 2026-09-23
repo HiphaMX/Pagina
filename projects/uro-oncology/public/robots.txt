@@ -19,5 +19,5 @@ User-agent: Google-Extended
 Disallow: /
 
 # Documentación de Web Agéntica y Sitemap
-# llms-txt: https://elchilechillon.mx/llms.txt
-Sitemap: https://elchilechillon.mx/sitemap.xml
+# llms-txt: https://www.uro-oncology.com.mx/llms.txt
+Sitemap: https://www.uro-oncology.com.mx/sitemap.xml
