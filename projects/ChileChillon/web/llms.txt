@@ -1,5 +1,5 @@
-# El Chile Chillón — Salsas Artesanales Gourmet y Botanitas Mexicanas
-> El Chile Chillón es una marca mexicana de salsas artesanales gourmet premium y botanas artesanales, elaboradas con chiles seleccionados del campo mexicano, técnicas tradicionales de tatemado y recetas balanceadas sin conservadores artificiales agresivos. Hechas en Jalisco para elevar carnes asadas, mariscos, tacos y botanas.
+# El Chile Chillón — Salsas Gourmet y Botanitas Mexicanas
+> El Chile Chillón es una marca mexicana de salsas gourmet premium y botanas selectas, elaboradas con chiles seleccionados del campo mexicano, técnicas tradicionales de tatemado y recetas balanceadas sin conservadores artificiales agresivos. Hechas en Jalisco para elevar carnes asadas, mariscos, tacos y botanas.
 
 ## Información de la Marca
 - **Sitio Web Oficial:** [elchilechillon.mx](https://elchilechillon.mx)
@@ -11,9 +11,9 @@
 
 ## Catálogo de Salsas y Botanas
 
-### 1. Salsa de Árbol Artesanal
+### 1. Salsa de Árbol
 - **Perfil de Picor:** Alto / Intenso.
-- **Descripción:** La clásica salsa mexicana elaborada con chile de árbol dorado en aceite vegetal, ajo tostado y sal de grano. Ideal para tacos de barbacoa, carnes asadas y antojitos tradicionales.
+- **Descripción:** Nuestra salsa chile de Árbol está elaborada con chiles de árbol selectos y la receta tradicional de la casa que ha maximizado la sazón de nuestros clientes por más de 10 años. Ofrece un picor vibrante y equilibrado para maximizar el sabor de tus comidas y botanas.
 - **Enlace:** [Ver Salsa de Árbol](https://elchilechillon.mx/salsa-de-arbol)
 
 ### 2. Salsa Habanero Clásica
@@ -37,7 +37,7 @@
 - **Enlace:** [Ver Salsa Serrano](https://elchilechillon.mx/salsa-serrano)
 
 ### 6. Semillas Enchiladas Premium
-- **Descripción:** Mezcla crujiente de semillas de calabaza, cacahuates y pepitas tostadas artesanalmente con la mezcla de chiles de la casa. La botana mexicana definitiva para reuniones y maridaje con cerveza o tequila.
+- **Descripción:** Mezcla crujiente de semillas de calabaza, cacahuates y pepitas tostadas con la mezcla de chiles de la casa. La botana mexicana definitiva para reuniones y maridaje con cerveza o tequila.
 - **Enlace:** [Ver Semillas Enchiladas](https://elchilechillon.mx/semillas-enchiladas)
 
 ---
