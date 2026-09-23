@@ -731,6 +731,7 @@ function initCart() {
       price: 40,
       spicy: "🌶️🌶️",
       image: "Assets/Salsas/serrano.jpg",
+      available: false,
       filterClass: ""
     },
     semillas_enchiladas: {
@@ -766,7 +767,7 @@ function initCart() {
   try {
     const saved = localStorage.getItem("chilechillon-cart");
     if (saved) {
-      cart = JSON.parse(saved);
+      cart = JSON.parse(saved).filter(item => item.id !== "serrano");
     }
   } catch (e) {
     cart = [];
@@ -974,6 +975,10 @@ function initCart() {
 
   // Funciones de Estado
   const addToCart = (productId) => {
+    if (productId === "serrano" || (products[productId] && products[productId].available === false)) {
+      showToast("Próximamente", "Salsa Serrano estará disponible muy pronto.", "info");
+      return;
+    }
     const existing = cart.find(item => item.id === productId);
     const prod = products[productId];
     if (!prod) return;

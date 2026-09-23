@@ -431,16 +431,21 @@
 
         <!-- Producto 5: Serrano -->
         <div class="glass-panel rounded-[40px] overflow-hidden flex flex-col sm:flex-row group transition-all duration-300 hover:-translate-y-2 hover:shadow-xl bg-white interactive-card p-6 gap-6 border border-slate-100">
-          <a href="/salsa-serrano" class="relative w-full sm:w-5/12 h-64 bg-white rounded-3xl overflow-hidden flex justify-center items-center border border-slate-100 flex-shrink-0">
-            <img src="Assets/Salsas/serrano.jpg" alt="Chile Chillón Serrano" class="h-56 w-auto object-contain relative z-10 transition-transform duration-500 group-hover:scale-110 mix-blend-multiply">
+          <a href="/salsa-serrano" class="relative w-full sm:w-5/12 h-64 bg-[#6c6328] rounded-3xl overflow-hidden flex justify-center items-center border border-[#6c6328]/20 flex-shrink-0">
+            <img src="Assets/Salsas/serrano.jpg" alt="Chile Chillón Serrano - Próximamente" class="h-56 w-auto object-contain relative z-10 transition-transform duration-500 group-hover:scale-105">
           </a>
           
           <div class="w-full sm:w-7/12 flex flex-col justify-between py-2">
             <div>
               <div class="flex items-center justify-between mb-3">
-                <span class="px-3.5 py-1.5 bg-[#00A859]/10 text-[#00A859] border border-[#00A859]/20 text-xs font-bold tracking-widest uppercase rounded-full">
-                  🌶️🌶️
-                </span>
+                <div class="flex items-center gap-2">
+                  <span class="px-3.5 py-1.5 bg-[#00A859]/10 text-[#00A859] border border-[#00A859]/20 text-xs font-bold tracking-widest uppercase rounded-full">
+                    🌶️🌶️
+                  </span>
+                  <span class="px-3 py-1 bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold tracking-wider uppercase rounded-full">
+                    Próximamente
+                  </span>
+                </div>
                 <a href="/salsa-serrano" class="text-xs font-bold text-[#D30611] hover:underline flex items-center gap-1">
                   Ver detalle <i class="ph-bold ph-arrow-right"></i>
                 </a>
@@ -459,8 +464,9 @@
                 <a href="/salsa-serrano" class="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-full hover:bg-slate-200 transition-colors">
                   Ver más
                 </a>
-                <button data-add-to-cart="serrano" class="w-12 h-12 rounded-full bg-[#D30611] hover:bg-[#D30611]/90 text-white flex justify-center items-center transition-all shadow-md active:scale-90 hover:scale-110">
-                  <i class="ph-bold ph-shopping-cart-simple text-xl"></i>
+                <button disabled class="px-4 py-2 rounded-full bg-slate-100 text-slate-400 text-xs font-bold cursor-not-allowed border border-slate-200 flex items-center gap-1.5 shadow-none" title="Próximamente disponible">
+                  <i class="ph-bold ph-clock text-sm"></i>
+                  Próximamente
                 </button>
               </div>
             </div>
