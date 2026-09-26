@@ -88,6 +88,10 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: #94A3B8;
     }
+    /* Estilo limpio para los tiles del mapa */
+    .leaflet-tile {
+      filter: saturate(0.85) contrast(1.02);
+    }
   </style>
 </head>
 <body class="bg-[#FAF9F6] text-slate-800 min-h-screen relative antialiased overflow-x-hidden selection:bg-[#D30611] selection:text-white">
@@ -801,11 +805,10 @@
       // Control de zoom en la esquina superior derecha
       L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // TileLayer claro de CartoDB (Positron)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
+      // TileLayer de OpenStreetMap (100% libre sin API keys ni marcas de agua)
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
       }).addTo(map);
 
       markersGroup = L.featureGroup().addTo(map);

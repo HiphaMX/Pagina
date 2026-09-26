@@ -1729,6 +1729,10 @@
       90% { transform: translate(2px, 1px) rotate(0deg); }
       100% { transform: translate(0px, 0px) rotate(0deg); }
     }
+    /* Estilo limpio para los tiles del mapa */
+    .leaflet-tile {
+      filter: saturate(0.85) contrast(1.02);
+    }
   </style>
 
   <script>
@@ -1779,11 +1783,10 @@
       // Control de Zoom en la esquina superior derecha
       L.control.zoom({ position: 'topright' }).addTo(factoryMap);
       
-      // Capa de mapa (CartoDB Light)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
+      // Capa de mapa (OpenStreetMap libre sin API key)
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
       }).addTo(factoryMap);
       
       // Marcador personalizado con pulso (Estilo picante Chile Chillón)
