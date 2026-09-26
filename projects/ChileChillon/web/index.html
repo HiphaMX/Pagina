@@ -668,12 +668,12 @@
             <!-- Controles de cantidad -->
             <div class="flex items-center gap-4">
               <button onclick="changeQty('calc-semillas', -1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-bold flex justify-center items-center active:scale-95 transition-all">-</button>
-              <input type="number" id="calc-semillas" min="0" max="200" value="5" oninput="calcularROI()" class="flex-1 h-12 text-center font-rubik font-black text-xl text-slate-900 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#D30611] bg-slate-50/50">
+              <input type="number" id="calc-semillas" min="5" max="200" value="5" oninput="calcularROI()" class="flex-1 h-12 text-center font-rubik font-black text-xl text-slate-900 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#D30611] bg-slate-50/50">
               <button onclick="changeQty('calc-semillas', 1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xl font-bold flex justify-center items-center active:scale-95 transition-all">+</button>
             </div>
             
             <!-- Slider -->
-            <input type="range" id="calc-semillas-slider" min="0" max="100" value="5" oninput="syncInputs('calc-semillas', this.value)" class="w-full accent-[#D30611] cursor-pointer mt-2">
+            <input type="range" id="calc-semillas-slider" min="5" max="100" value="5" oninput="syncInputs('calc-semillas', this.value)" class="w-full accent-[#D30611] cursor-pointer mt-2">
             <div class="flex justify-between text-[9px] font-bold text-slate-400 px-1">
               <span>5 cajas (Mínimo)</span>
               <span>24+ cajas (Descuento Max)</span>
@@ -748,15 +748,9 @@
   <script>
     function changeQty(id, delta) {
       const input = document.getElementById(id);
-      let val = (parseInt(input.value) || 0) + delta;
-      if (id === 'calc-semillas') {
-        if (delta < 0 && val < 5) val = 0; // si disminuye de 5, va a 0 (sin semillas)
-        else if (delta > 0 && val < 5) val = 5; // si sube desde 0, salta directamente al mínimo de 5
-        if (val < 0) val = 0;
-      } else {
-        const minVal = parseInt(input.getAttribute('min')) || 0;
-        if (val < minVal) val = minVal;
-      }
+      const minVal = parseInt(input.getAttribute('min')) || 0;
+      let val = (parseInt(input.value) || minVal) + delta;
+      if (val < minVal) val = minVal;
       input.value = val;
       
       // Sincronizar el slider correspondiente
@@ -767,11 +761,11 @@
     }
 
     function syncInputs(id, val) {
-      let parsedVal = parseInt(val) || 0;
-      if (id === 'calc-semillas' && parsedVal > 0 && parsedVal < 5) {
-        parsedVal = 5;
-      }
-      document.getElementById(id).value = parsedVal;
+      const input = document.getElementById(id);
+      const minVal = parseInt(input.getAttribute('min')) || 0;
+      let parsedVal = parseInt(val) || minVal;
+      if (parsedVal < minVal) parsedVal = minVal;
+      input.value = parsedVal;
       const slider = document.getElementById(id + '-slider');
       if (slider) slider.value = Math.min(parsedVal, 100);
       calcularROI();
@@ -786,13 +780,9 @@
       
       const minSalsas = parseInt(inputSalsas.getAttribute('min')) || 10;
       if (cajasSalsas < minSalsas) { cajasSalsas = minSalsas; inputSalsas.value = minSalsas; }
-      if (cajasSemillas > 0 && cajasSemillas < 5) {
-        cajasSemillas = 5;
-        inputSemillas.value = 5;
-      } else if (cajasSemillas < 0) {
-        cajasSemillas = 0;
-        inputSemillas.value = 0;
-      }
+
+      const minSemillas = parseInt(inputSemillas.getAttribute('min')) || 5;
+      if (cajasSemillas < minSemillas) { cajasSemillas = minSemillas; inputSemillas.value = minSemillas; }
 
       // 1. Calcular precio de Salsa
       let precioCajaSalsas = 480;
@@ -803,8 +793,6 @@
       } else if (cajasSalsas >= 12) {
         precioCajaSalsas = 432;
         nivelSalsas = "Emprendedor 12-23 cajas ($18.00 c/u) 🌶️";
-      } else if (cajasSalsas === 0) {
-        nivelSalsas = "Elige cantidad de cajas (24 pz)";
       } else {
         nivelSalsas = `Si quieres comenzar a vender nuestros productos con una cantidad menor a 10 cajas, <a href="https://wa.me/523921097809" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-all font-black text-[9px] uppercase tracking-wider ml-2 shadow-sm">contáctanos <i class="ph-bold ph-whatsapp-logo text-sm"></i></a>`;
       }
@@ -818,8 +806,6 @@
       } else if (cajasSemillas >= 12) {
         precioCajaSemillas = 636;
         nivelSemillas = "Emprendedor 12-23 cajas ($53.00 c/u) 🌶️";
-      } else if (cajasSemillas === 0) {
-        nivelSemillas = "0 cajas (Sin semillas seleccionadas)";
       } else {
         nivelSemillas = "Distribuidor Inicial 5-11 cajas ($55.00 c/u)";
       }
