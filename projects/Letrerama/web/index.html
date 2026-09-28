@@ -4498,7 +4498,7 @@
 
   <!-- Interactive Category Filter Bar -->
   <div class="projects-filter-bar">
-    <button class="projects-filter-btn active" onclick="filterProjects('all', this)">Todos (8)</button>
+    <button class="projects-filter-btn active" onclick="filterProjects('all', this)">Todos (9)</button>
     <button class="projects-filter-btn" onclick="filterProjects('3d', this)">3D & Corpóreos</button>
     <button class="projects-filter-btn" onclick="filterProjects('cajas', this)">Cajas de Luz</button>
     <button class="projects-filter-btn" onclick="filterProjects('acrilico', this)">Letrero Acrílico</button>
@@ -4507,6 +4507,7 @@
     <button class="projects-filter-btn" onclick="filterProjects('banderolas', this)">Banderola</button>
     <button class="projects-filter-btn" onclick="filterProjects('trofeos', this)">Grabado & Corte Láser</button>
     <button class="projects-filter-btn" onclick="filterProjects('impresion3d', this)">Impresión 3D</button>
+    <button class="projects-filter-btn" onclick="filterProjects('textil', this)">DTF + Vinil Textil</button>
   </div>
 
   <!-- Responsive Projects Grid -->
@@ -4696,6 +4697,29 @@
       </div>
     </article>
 
+    <!-- 09: DTF + Vinil Textil -->
+    <article class="project-card" data-category="textil">
+      <div class="project-card-media" onclick="openProjectGallery('09')">
+        <img src="assets/work_textil_1.webp" alt="DTF + Vinil Textil" class="project-card-img" loading="lazy" decoding="async" width="1200" height="800">
+        <div class="project-card-overlay">
+          <button class="project-card-view-btn" aria-label="Ver galería de fotos">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span>Ver Fotos (4)</span>
+          </button>
+        </div>
+      </div>
+      <div class="project-card-body">
+        <div>
+          <h3 class="project-card-title">DTF + Vinil Textil</h3>
+          <p class="project-card-desc">Estampado y personalización textil de alta durabilidad con técnicas de DTF fotorrealista y vinil térmico.</p>
+        </div>
+        <div class="project-card-footer">
+          <div class="project-spec-pill"><span></span> DTF & Vinil · Alta Fijación</div>
+          <a href="#cotizar" class="project-card-cotizar-link" onclick="quoteProject('09', event)" title="Cotizar proyecto similar">Cotizar &rarr;</a>
+        </div>
+      </div>
+    </article>
+
   </div>
 </div>
 
@@ -4780,6 +4804,7 @@
             <option value="Bastidor 3D y acanalado">Bastidor 3D y Acanalado (Fachada)</option>
             <option value="Banderola">Banderola Comercial (Doble Cara)</option>
             <option value="Impresión 3D y aluminio">Impresión 3D y Aluminio Rolado</option>
+            <option value="DTF y vinil textil">DTF + Vinil Textil (Personalización Textil)</option>
             <option value="Otro / Proyecto Especial">Otro / Proyecto Especial a Medida</option>
           </select>
         </div>
@@ -5644,6 +5669,16 @@
       suggestedIluminacion: "Retroiluminado",
       suggestedMaterial: "Polímero / Impresión 3D"
     },
+    "DTF y vinil textil": {
+      id: "09",
+      name: "DTF + Vinil Textil",
+      desc: "Estampado y personalización textil de alta durabilidad con técnicas de DTF fotorrealista y vinil térmico.",
+      image: "assets/work_textil_1.webp",
+      hasCanto: false,
+      defaultCanto: null,
+      suggestedIluminacion: "Sin iluminación",
+      suggestedMaterial: "Textil / Algodón"
+    },
     "Otro / Proyecto Especial": {
       id: null,
       name: "Proyecto Especial a Medida",
@@ -5664,7 +5699,8 @@
     "05": "Letrero acrílico retro iluminado",
     "06": "Bastidor 3D y acanalado",
     "07": "Banderola",
-    "08": "Impresión 3D y aluminio"
+    "08": "Impresión 3D y aluminio",
+    "09": "DTF y vinil textil"
   };
 
   let activeExampleProjectId = "01";
@@ -5988,6 +6024,16 @@
         "assets/work_mentha_1.webp",
         "assets/work_mentha_2.webp",
         "assets/work_impresion_3d_3.webp"
+      ]
+    },
+    "09": {
+      title: "DTF + Vinil Textil",
+      desc: "Estampado y personalización textil de alta durabilidad con técnicas de DTF fotorrealista y vinil térmico.",
+      images: [
+        "assets/work_textil_1.webp",
+        "assets/work_textil_2.webp",
+        "assets/work_textil_3.webp",
+        "assets/work_textil_4.webp"
       ]
     }
   };
