@@ -370,7 +370,7 @@
       "dest": "/projects/ValenciaServicios/index.html"
     },
     {
-      "src": "/(assets|css|js|post)/(.*)",
+      "src": "/(assets|css|js|post|LogoSubfooter|subfooter)/(.*)",
       "has": [
         {
           "type": "host",
