@@ -1980,12 +1980,6 @@
     -webkit-backdrop-filter: blur(16px);
   }
 
-  .project-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(51, 241, 255, 0.35);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(51, 241, 255, 0.2);
-  }
-
   .project-card.is-hidden {
     display: none !important;
   }
@@ -2006,10 +2000,6 @@
     object-fit: cover;
     display: block;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .project-card:hover .project-card-img {
-    transform: scale(1.08);
   }
 
   .project-card-badge {
@@ -2036,15 +2026,11 @@
     inset: 0;
     background: linear-gradient(to top, rgba(2, 2, 4, 0.85) 0%, rgba(2, 2, 4, 0.2) 60%, transparent 100%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 3;
-  }
-
-  .project-card:hover .project-card-overlay {
-    opacity: 1;
   }
 
   .project-card-view-btn {
@@ -2064,10 +2050,33 @@
     align-items: center;
     gap: 0.45rem;
     transform: translateY(10px);
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
   }
 
-  .project-card:hover .project-card-view-btn {
+  /* Desktop hover interaction (mouse/touchpad) */
+  @media (hover: hover) and (pointer: fine) {
+    .project-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(51, 241, 255, 0.35);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(51, 241, 255, 0.2);
+    }
+    .project-card:hover .project-card-img {
+      transform: scale(1.08);
+    }
+    .project-card:hover .project-card-overlay {
+      opacity: 1;
+    }
+    .project-card:hover .project-card-view-btn {
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile scroll reveal state (~3s tras presentarse en viewport por scroll) */
+  .project-card.is-revealed .project-card-overlay {
+    opacity: 1;
+  }
+
+  .project-card.is-revealed .project-card-view-btn {
     transform: translateY(0);
   }
 
@@ -6148,9 +6157,63 @@
     }
   });
 
-  // Initialize category reference example card on page load
+  // ─── Mobile Scroll Auto-Reveal for Project Gallery Buttons ───
+  function initMobileGalleryButtonReveal() {
+    const isMobileOrTouch = () => {
+      return window.innerWidth <= 950 || window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    };
+
+    const cardTimers = new Map();
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!isMobileOrTouch()) return;
+
+      entries.forEach(entry => {
+        const media = entry.target;
+        const card = media.closest('.project-card');
+        if (!card) return;
+
+        if (entry.isIntersecting) {
+          // Si no está revelado y no tiene timer pendiente, programar aparición a los ~3 segundos de verse
+          if (!card.classList.contains('is-revealed') && !cardTimers.has(card)) {
+            const timer = setTimeout(() => {
+              card.classList.add('is-revealed');
+              cardTimers.delete(card);
+            }, 3000);
+            cardTimers.set(card, timer);
+          }
+        } else {
+          // Si sale del viewport antes de los 3s o después, limpiar timer y resetear
+          if (cardTimers.has(card)) {
+            clearTimeout(cardTimers.get(card));
+            cardTimers.delete(card);
+          }
+          card.classList.remove('is-revealed');
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.35
+    });
+
+    document.querySelectorAll('.project-card-media').forEach(media => {
+      observer.observe(media);
+    });
+
+    window.addEventListener('resize', () => {
+      if (!isMobileOrTouch()) {
+        document.querySelectorAll('.project-card.is-revealed').forEach(c => c.classList.remove('is-revealed'));
+        cardTimers.forEach(t => clearTimeout(t));
+        cardTimers.clear();
+      }
+    });
+  }
+
+  // Initialize category reference example card and mobile scroll reveal on page load
   document.addEventListener('DOMContentLoaded', () => {
     updateCategoryExample();
+    initMobileGalleryButtonReveal();
   });
 </script>
 </body>
