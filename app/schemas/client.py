@@ -1,0 +1,52 @@
+from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, ConfigDict
+
+
+class AgencyClientBase(BaseModel):
+    name: str
+    contact_name: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    service_type: Optional[str] = "design"  # "design", "web_design", "seo_ads", "complete"
+    billing_day: Optional[int] = 1
+    monthly_fee: Optional[float] = 0.0
+    start_date: Optional[str] = None
+    status: Optional[str] = "active"
+    website_url: Optional[str] = None
+    ga4_property_id: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class AgencyClientCreate(AgencyClientBase):
+    pass
+
+
+class AgencyClientUpdate(BaseModel):
+    name: Optional[str] = None
+    contact_name: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    service_type: Optional[str] = None
+    billing_day: Optional[int] = None
+    monthly_fee: Optional[float] = None
+    start_date: Optional[str] = None
+    status: Optional[str] = None
+    website_url: Optional[str] = None
+    ga4_property_id: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class AgencyClient(AgencyClientBase):
+    id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SendAgencyEmailRequest(BaseModel):
+    to_email: str
+    subject: str
+    message: str
+    client_name: Optional[str] = ""

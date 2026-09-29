@@ -17,6 +17,7 @@ from app.schemas.user import User as UserSchema
 from app.core.database import get_db
 from app.models.chilechillon_lead import ChileChillonLead
 from app.models.workflow_task import WorkflowTask
+from app.models.client import AgencyClient
 from app.schemas.workflow import (
     WorkflowTask as WorkflowTaskSchema,
     WorkflowTaskCreate,
@@ -26,6 +27,13 @@ from app.schemas.workflow import (
     WorkflowMonthlyReport,
     WorkflowMonthlyClientSummary
 )
+from app.schemas.client import (
+    AgencyClient as AgencyClientSchema,
+    AgencyClientCreate,
+    AgencyClientUpdate,
+    SendAgencyEmailRequest
+)
+from app.core.mailer import send_custom_agency_email
 import datetime
 
 def _derive_month_id(week_id: Optional[str]) -> str:
@@ -60,10 +68,32 @@ def _derive_task_date(week_id: Optional[str], day: Optional[str]) -> str:
 router = APIRouter()
 
 @router.get("/clients")
-def list_clients(current_user: UserSchema = Depends(get_current_active_user)):
-    """Devuelve la lista de clientes disponibles para el dashboard."""
+def list_clients(
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Devuelve la lista unificada de clientes disponibles para el dashboard."""
     clients = get_discovered_clients()
-    return [{"name": name, "property_id": prop_id} for name, prop_id in clients.items()]
+    combined = {name: {"name": name, "property_id": prop_id, "source": "ga4"} for name, prop_id in clients.items()}
+    
+    try:
+        db_clients = db.query(AgencyClient).filter(AgencyClient.status == "active").all()
+        for c in db_clients:
+            if c.name not in combined:
+                combined[c.name] = {
+                    "name": c.name,
+                    "property_id": c.ga4_property_id or "",
+                    "source": "database",
+                    "client_id": c.id
+                }
+            else:
+                combined[c.name]["client_id"] = c.id
+                if c.ga4_property_id:
+                    combined[c.name]["property_id"] = c.ga4_property_id
+    except Exception as e:
+        print(f"Warning: could not merge db clients in list_clients: {e}")
+
+    return list(combined.values())
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -426,4 +456,118 @@ def get_workflow_monthly_report(
     )
 
 
+# --- Endpoints de Gestión de Clientes, Fechas de Corte y Cobros ---
 
+@router.get("/clients/directory", response_model=List[AgencyClientSchema])
+def get_clients_directory(
+    status: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Retorna el listado completo de clientes registrados con sus fechas de corte y montos."""
+    query = db.query(AgencyClient)
+    if status and status != "all":
+        query = query.filter(AgencyClient.status == status)
+    return query.order_by(AgencyClient.name.asc()).all()
+
+
+@router.post("/clients/directory", response_model=AgencyClientSchema)
+def create_agency_client(
+    client_in: AgencyClientCreate,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Da de alta un nuevo cliente de la agencia."""
+    existing = db.query(AgencyClient).filter(AgencyClient.name.ilike(client_in.name.strip())).first()
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Ya existe un cliente registrado con el nombre '{client_in.name}'."
+        )
+
+    db_client = AgencyClient(
+        name=client_in.name.strip(),
+        contact_name=client_in.contact_name,
+        contact_email=client_in.contact_email,
+        contact_phone=client_in.contact_phone,
+        service_type=client_in.service_type or "design",
+        billing_day=client_in.billing_day or 1,
+        monthly_fee=float(client_in.monthly_fee or 0.0),
+        start_date=client_in.start_date,
+        status=client_in.status or "active",
+        website_url=client_in.website_url,
+        ga4_property_id=client_in.ga4_property_id,
+        notes=client_in.notes
+    )
+    db.add(db_client)
+    db.commit()
+    db.refresh(db_client)
+    return db_client
+
+
+@router.put("/clients/directory/{client_id}", response_model=AgencyClientSchema)
+def update_agency_client(
+    client_id: int,
+    client_in: AgencyClientUpdate,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Actualiza la información, fecha de corte o cuota mensual de un cliente."""
+    client = db.query(AgencyClient).filter(AgencyClient.id == client_id).first()
+    if not client:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    update_data = client_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        if field == "name" and value:
+            value = value.strip()
+        setattr(client, field, value)
+
+    db.commit()
+    db.refresh(client)
+    return client
+
+
+@router.delete("/clients/directory/{client_id}")
+def delete_agency_client(
+    client_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Elimina o da de baja un cliente."""
+    client = db.query(AgencyClient).filter(AgencyClient.id == client_id).first()
+    if not client:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    db.delete(client)
+    db.commit()
+    return {"success": True, "detail": f"Cliente '{client.name}' eliminado con éxito"}
+
+
+@router.post("/clients/send-email")
+async def send_email_to_client(
+    email_req: SendAgencyEmailRequest,
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Envía un correo directamente desde hola@hipha.mx hacia el cliente con diseño institucional."""
+    if not email_req.to_email or "@" not in email_req.to_email:
+        raise HTTPException(status_code=400, detail="Dirección de correo electrónico inválida")
+    if not email_req.subject.strip():
+        raise HTTPException(status_code=400, detail="El asunto del correo no puede estar vacío")
+    if not email_req.message.strip():
+        raise HTTPException(status_code=400, detail="El mensaje no puede estar vacío")
+
+    try:
+        success = await send_custom_agency_email(
+            to_email=email_req.to_email.strip(),
+            subject=email_req.subject.strip(),
+            message_body=email_req.message.strip(),
+            client_name=email_req.client_name or ""
+        )
+        if success:
+            return {"success": True, "detail": f"Correo enviado exitosamente a {email_req.to_email}"}
+        else:
+            raise HTTPException(status_code=500, detail="No se pudo entregar el correo electrónico")
+    except Exception as e:
+        print(f"Error enviando correo institucional: {e}")
+        raise HTTPException(status_code=500, detail=f"Error en el servidor de correo: {str(e)}")

@@ -64,6 +64,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
                     <span class="nav-text">Flujo Semanal</span>
                 </a>
+                <a href="#" class="nav-link" id="navLinkClients" title="Directorio de Clientes & Retainers">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span class="nav-text">Clientes & Retainers</span>
+                </a>
                 <a href="#" class="nav-link" id="navLinkTraffic" title="Resumen de Tráfico">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                     <span class="nav-text">Resumen Tráfico</span>
@@ -357,6 +361,74 @@
 
                 </div>
             </div>
+
+            <!-- Sección de Directorio de Clientes & Retainers -->
+            <div class="clients-section-container hidden" id="clientsSection">
+                
+                <!-- Barra Superior con KPIs y Controles -->
+                <div class="clients-toolbar glass-panel">
+                    <div class="clients-kpis-row">
+                        <div class="client-kpi-card">
+                            <span class="kpi-label">👥 Clientes Activos</span>
+                            <div class="kpi-num" id="kpiActiveClientsCount">0</div>
+                        </div>
+                        <div class="client-kpi-card mrr-card">
+                            <span class="kpi-label">💰 MRR Retainers</span>
+                            <div class="kpi-num" id="kpiTotalMrr">$0 MXN</div>
+                        </div>
+                        <div class="client-kpi-card alert-card">
+                            <span class="kpi-label">⚡ Cortes Próximos (7d)</span>
+                            <div class="kpi-num" id="kpiUpcomingCutoffsCount">0</div>
+                        </div>
+                        <div class="client-kpi-card">
+                            <span class="kpi-label">🎨 Solo Diseño</span>
+                            <div class="kpi-num" id="kpiDesignOnlyCount">0</div>
+                        </div>
+                    </div>
+
+                    <div class="clients-actions-bar">
+                        <div class="clients-filters-group">
+                            <div class="search-input-box">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" id="clientSearchInput" placeholder="Buscar por marca, contacto o correo...">
+                            </div>
+                            <select id="clientFilterStatus" class="filter-select">
+                                <option value="all">Todos los estatus</option>
+                                <option value="active" selected>🟢 Activos</option>
+                                <option value="paused">🟡 Pausados</option>
+                                <option value="inactive">🔴 Inactivos</option>
+                            </select>
+                            <select id="clientFilterService" class="filter-select">
+                                <option value="all">Todos los servicios</option>
+                                <option value="design">🎨 Solo Diseño</option>
+                                <option value="web_ads">🌐 Web & Publicidad</option>
+                                <option value="consulting">📱 Asesoría & Redes</option>
+                                <option value="integral">🚀 Retainer Integral</option>
+                            </select>
+                        </div>
+
+                        <div class="clients-btn-group">
+                            <button type="button" id="btnOpenSendEmailGlobal" class="btn-secondary-mini" style="display:flex; align-items:center; gap:0.4rem; padding:0.55rem 0.9rem; font-weight:600; font-size:0.85rem; border-color:var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); border-radius:8px; cursor:pointer;" title="Redactar correo oficial desde hola@hipha.mx">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <span>✉️ Enviar Correo</span>
+                            </button>
+                            <button type="button" id="btnOpenNewClientModal" class="btn-sync" style="margin-top:0; padding:0.55rem 1rem;" title="Dar de alta nuevo cliente">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                <span>+ Alta de Cliente</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla / Directorio de Clientes -->
+                <div class="clients-table-container glass-panel" id="clientsTableContainer">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Cargando directorio de clientes...</p>
+                    </div>
+                </div>
+
+            </div>
             
         </main>
     </div>
@@ -548,6 +620,159 @@
             <div id="rptTableContainer" style="flex:1; overflow-y:auto; border:1px solid var(--border-color); border-radius:10px; background:rgba(15,23,42,0.5); min-height:180px;">
                 <!-- Inyectado dinámicamente por JS -->
             </div>
+        </div>
+    </div>
+
+    <!-- Modal para Dar de Alta / Editar Cliente -->
+    <div id="clientModal" class="modal-overlay hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <div class="login-box glass-panel" style="width:620px; max-width:94vw; max-height:92vh; overflow-y:auto; padding:2rem; border:1px solid var(--border-color); border-radius:16px;">
+            <div class="login-header" style="margin-bottom:1.5rem; text-align:left; display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h2 id="modalClientHeading" style="font-size:1.35rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">+ Alta de Cliente</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Registra clientes de diseño o retainers integrales para control de cortes y flujos</p>
+                </div>
+                <button type="button" id="btnCloseClientModalX" style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; padding:0 0.3rem; line-height:1;">&times;</button>
+            </div>
+            
+            <form id="clientForm" style="display:flex; flex-direction:column; gap:1rem;">
+                <input type="hidden" id="clientInputId" value="">
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="clientInputName" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Nombre del Cliente / Marca *</label>
+                    <input type="text" id="clientInputName" required placeholder="Ej. Tukipa Fitness, Mueblería Del Prado, etc." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.8rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputContactName" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Persona de Contacto</label>
+                        <input type="text" id="clientInputContactName" placeholder="Ej. Carlos Mendoza" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputContactEmail" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Correo Electrónico</label>
+                        <input type="email" id="clientInputContactEmail" placeholder="contacto@cliente.com" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.8rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputContactPhone" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">WhatsApp / Teléfono</label>
+                        <input type="tel" id="clientInputContactPhone" placeholder="Ej. 33 1234 5678" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputServiceType" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Tipo de Servicio *</label>
+                        <select id="clientInputServiceType" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                            <option value="design" selected>🎨 Solo Diseño Gráfico</option>
+                            <option value="web_ads">🌐 Web & Publicidad</option>
+                            <option value="consulting">📱 Asesoría & Redes</option>
+                            <option value="integral">🚀 Retainer Integral</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.8rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputBillingDay" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Día de Corte (1-31) *</label>
+                        <input type="number" id="clientInputBillingDay" min="1" max="31" required placeholder="Ej. 22" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputMonthlyFee" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Cuota Mensual (MXN)</label>
+                        <input type="number" id="clientInputMonthlyFee" min="0" step="100" placeholder="Ej. 6500" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputStartDate" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Fecha de Inicio</label>
+                        <input type="date" id="clientInputStartDate" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.8rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputStatus" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Estatus de Cuenta</label>
+                        <select id="clientInputStatus" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                            <option value="active" selected>🟢 Activo (Trabajando)</option>
+                            <option value="paused">🟡 Pausado temporalmente</option>
+                            <option value="inactive">🔴 Inactivo / Cerrado</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="clientInputWebsite" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Sitio Web (Opcional)</label>
+                        <input type="text" id="clientInputWebsite" placeholder="https://cliente.com" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="clientInputNotes" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Notas de Cuenta / Acuerdos Especiales</label>
+                    <textarea id="clientInputNotes" rows="2" placeholder="Detalles de facturación, especificaciones del servicio, carpetas..." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem; border-radius:8px; outline:none; font-size:0.85rem; resize:vertical; font-family:inherit;"></textarea>
+                </div>
+
+                <div style="display:flex; gap:0.8rem; justify-content:space-between; align-items:center; margin-top:0.8rem;">
+                    <button type="button" id="btnDeleteClient" class="btn-danger-mini hidden" style="background:rgba(239, 68, 68, 0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:0.6rem 1rem; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:500;">Eliminar Cliente</button>
+                    <div style="display:flex; gap:0.8rem; margin-left:auto;">
+                        <button type="button" id="btnCancelClientModal" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Cancelar</button>
+                        <button type="submit" id="btnSaveClientSubmit" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.3rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Guardar Cliente</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Redactar y Enviar Correo Oficial (hola@hipha.mx) -->
+    <div id="sendAgencyEmailModal" class="modal-overlay hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <div class="login-box glass-panel" style="width:680px; max-width:94vw; max-height:92vh; overflow-y:auto; padding:2rem; border:1px solid var(--border-color); border-radius:16px;">
+            <div class="login-header" style="margin-bottom:1.2rem; text-align:left; display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h2 style="font-size:1.35rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">✉️ Redactar Correo Oficial</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Enviado directamente desde <strong>hola@hipha.mx</strong> con diseño corporativo</p>
+                </div>
+                <button type="button" id="btnCloseSendEmailModalX" style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; padding:0 0.3rem; line-height:1;">&times;</button>
+            </div>
+
+            <!-- Plantillas Rápidas con 1 Click -->
+            <div style="margin-bottom:1.2rem;">
+                <label style="font-size:0.78rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.4rem; display:block;">Plantillas Rápidas (1 Clic):</label>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                    <button type="button" id="btnTplBillingReminder" class="btn-template-chip">📅 Aviso de Corte / Pago Mensual</button>
+                    <button type="button" id="btnTplDelivery" class="btn-template-chip">🎨 Entrega de Diseños / Piezas</button>
+                    <button type="button" id="btnTplFeedback" class="btn-template-chip">🔄 Solicitud de Feedback</button>
+                </div>
+            </div>
+
+            <form id="sendAgencyEmailForm" style="display:flex; flex-direction:column; gap:1rem;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.8rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="emailInputClientName" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Nombre del Cliente / Marca</label>
+                        <input type="text" id="emailInputClientName" placeholder="Ej. Letrerama" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="emailInputTo" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Correo Destinatario *</label>
+                        <input type="email" id="emailInputTo" required placeholder="correo@cliente.com" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="emailInputSubject" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Asunto *</label>
+                    <input type="text" id="emailInputSubject" required placeholder="Ej. Aviso de fecha de corte y renovación mensual • Hipha" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="emailInputBody" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Mensaje * (Soporta saltos de línea)</label>
+                    <textarea id="emailInputBody" required rows="7" placeholder="Escribe el cuerpo del mensaje..." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.75rem; border-radius:8px; outline:none; font-size:0.88rem; line-height:1.5; resize:vertical; font-family:inherit;"></textarea>
+                </div>
+
+                <div style="background:rgba(0, 229, 255, 0.05); border:1px solid rgba(0,229,255,0.15); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.78rem; color:var(--text-muted); display:flex; align-items:center; gap:0.5rem;">
+                    <span style="font-size:1rem;">🛡️</span>
+                    <span>Remitente oficial autenticado: <strong style="color:var(--accent-cyan)">hola@hipha.mx</strong> con plantilla HTML de alta conversión.</span>
+                </div>
+
+                <div id="emailSendingFeedback" class="hidden" style="font-size:0.85rem; padding:0.6rem; border-radius:8px; text-align:center;"></div>
+
+                <div style="display:flex; gap:0.8rem; justify-content:flex-end; align-items:center; margin-top:0.6rem;">
+                    <button type="button" id="btnCancelSendEmailModal" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Cancelar</button>
+                    <button type="submit" id="btnSubmitSendEmail" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.4rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem; display:flex; align-items:center; gap:0.4rem;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        <span>Enviar Correo</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

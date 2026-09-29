@@ -27,8 +27,10 @@ const detailsContent = document.getElementById('detailsContent');
 // Elementos de Navegación de Pestañas
 const navLinkTraffic = document.getElementById('navLinkTraffic');
 const navLinkWorkflow = document.getElementById('navLinkWorkflow');
+const navLinkClients = document.getElementById('navLinkClients');
 const trafficSection = document.getElementById('trafficSection');
 const workflowSection = document.getElementById('workflowSection');
+const clientsSection = document.getElementById('clientsSection');
 const headerTitle = document.getElementById('headerTitle');
 const headerSubtitle = document.getElementById('headerSubtitle');
 const trafficDateSelector = document.getElementById('trafficDateSelector');
@@ -102,6 +104,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (navLinkClients) {
+        navLinkClients.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveTab(navLinkClients, clientsSection);
+            headerTitle.textContent = "Directorio de Clientes & Retainers";
+            headerSubtitle.textContent = "Control de suscripciones, fechas de corte y comunicación directa";
+            if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            initClientsDirectoryModule();
+            loadClientsDirectory();
+        });
+    }
+
     if (navLinkTraffic) {
         navLinkTraffic.addEventListener('click', (e) => {
             e.preventDefault();
@@ -126,6 +140,8 @@ function showDashboard() {
     headerSubtitle.textContent = "Agenda de entregas de diseño • Jornada 9:00 AM a 1:00 PM (4h / día)";
     if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
     
+    initClientsDirectoryModule();
+    loadClientsDirectory(); // Carga en background para sincronizar los selectores de clientes
     initWorkflowModule();
 }
 
@@ -473,6 +489,7 @@ function setActiveTab(activeLink, activeSection) {
     
     if (trafficSection) trafficSection.classList.add('hidden');
     if (workflowSection) workflowSection.classList.add('hidden');
+    if (clientsSection) clientsSection.classList.add('hidden');
     
     if (activeSection) {
         activeSection.classList.remove('hidden');
@@ -967,10 +984,19 @@ function updateClientFilterOptions() {
     // Lista base
     ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
     
+    // Clientes del directorio de la agencia
+    if (Array.isArray(clientsDirectoryData)) {
+        clientsDirectoryData.forEach(c => {
+            if (c.name && c.status !== 'inactive') clientsSet.add(c.name.trim());
+        });
+    }
+
     // Clientes de las tareas existentes
-    workflowTasks.forEach(t => {
-        if (t.client_name) clientsSet.add(t.client_name.trim());
-    });
+    if (Array.isArray(workflowTasks)) {
+        workflowTasks.forEach(t => {
+            if (t.client_name) clientsSet.add(t.client_name.trim());
+        });
+    }
 
     filterSelect.innerHTML = '<option value="all">Todos los clientes</option>';
     Array.from(clientsSet).sort().forEach(c => {
@@ -980,6 +1006,64 @@ function updateClientFilterOptions() {
         if (c === currentVal) opt.selected = true;
         filterSelect.appendChild(opt);
     });
+}
+
+function syncAllClientsDropdowns() {
+    const clientsSet = new Set();
+    // Clientes base
+    ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+
+    // Clientes del directorio de la agencia
+    if (Array.isArray(clientsDirectoryData)) {
+        clientsDirectoryData.forEach(c => {
+            if (c.name && c.status !== 'inactive') clientsSet.add(c.name.trim());
+        });
+    }
+
+    // Clientes en tareas
+    if (Array.isArray(workflowTasks)) {
+        workflowTasks.forEach(t => {
+            if (t.client_name) clientsSet.add(t.client_name.trim());
+        });
+    }
+
+    const sortedClients = Array.from(clientsSet).sort();
+
+    // 1. Selector en modal de nueva tarea (#taskInputClient)
+    const taskClientSelect = document.getElementById('taskInputClient');
+    if (taskClientSelect) {
+        const curVal = taskClientSelect.value;
+        taskClientSelect.innerHTML = '';
+        sortedClients.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            if (c === curVal) opt.selected = true;
+            taskClientSelect.appendChild(opt);
+        });
+        const optOtro = document.createElement('option');
+        optOtro.value = 'otro';
+        optOtro.textContent = '+ Otro cliente...';
+        if (curVal === 'otro') optOtro.selected = true;
+        taskClientSelect.appendChild(optOtro);
+    }
+
+    // 2. Filtro en barra de flujo semanal (#wfClientFilter)
+    updateClientFilterOptions();
+
+    // 3. Selector en modal de reporte mensual (#rptSelectClient)
+    const rptClientSelect = document.getElementById('rptSelectClient');
+    if (rptClientSelect) {
+        const curRpt = rptClientSelect.value || 'all';
+        rptClientSelect.innerHTML = '<option value="all">Todos los clientes</option>';
+        sortedClients.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            if (c === curRpt) opt.selected = true;
+            rptClientSelect.appendChild(opt);
+        });
+    }
 }
 
 function renderWorkflowBoard() {
@@ -2072,6 +2156,831 @@ async function copyMonthlyReportToClipboard() {
     }
 }
 
+// ==========================================================================
+// MÓDULO: DIRECTORIO DE CLIENTES, RETAINERS Y CORREOS OFICIALES
+// ==========================================================================
+
+let clientsDirectoryData = [];
+let clientSearchTerm = '';
+let clientStatusFilter = 'active';
+let clientServiceFilter = 'all';
+let currentEmailTargetClient = null;
+
+function initClientsDirectoryModule() {
+    const searchInput = document.getElementById('clientSearchInput');
+    const statusSelect = document.getElementById('clientFilterStatus');
+    const serviceSelect = document.getElementById('clientFilterService');
+    const btnNewClient = document.getElementById('btnOpenNewClientModal');
+    const btnSendEmailGlobal = document.getElementById('btnOpenSendEmailGlobal');
+    
+    // Botones del Modal de Cliente
+    const btnCloseClientX = document.getElementById('btnCloseClientModalX');
+    const btnCancelClient = document.getElementById('btnCancelClientModal');
+    const clientForm = document.getElementById('clientForm');
+    const btnDeleteClient = document.getElementById('btnDeleteClient');
+
+    // Botones del Modal de Envío de Correo
+    const btnCloseEmailX = document.getElementById('btnCloseSendEmailModalX');
+    const btnCancelEmail = document.getElementById('btnCancelSendEmailModal');
+    const sendEmailForm = document.getElementById('sendAgencyEmailForm');
+    
+    // Plantillas rápidas
+    const btnTplBilling = document.getElementById('btnTplBillingReminder');
+    const btnTplDelivery = document.getElementById('btnTplDelivery');
+    const btnTplFeedback = document.getElementById('btnTplFeedback');
+
+    if (searchInput && !searchInput.dataset.bound) {
+        searchInput.dataset.bound = 'true';
+        searchInput.addEventListener('input', (e) => {
+            clientSearchTerm = (e.target.value || '').trim().toLowerCase();
+            renderClientsDirectory();
+        });
+    }
+
+    if (statusSelect && !statusSelect.dataset.bound) {
+        statusSelect.dataset.bound = 'true';
+        statusSelect.addEventListener('change', (e) => {
+            clientStatusFilter = e.target.value;
+            renderClientsDirectory();
+        });
+    }
+
+    if (serviceSelect && !serviceSelect.dataset.bound) {
+        serviceSelect.dataset.bound = 'true';
+        serviceSelect.addEventListener('change', (e) => {
+            clientServiceFilter = e.target.value;
+            renderClientsDirectory();
+        });
+    }
+
+    if (btnNewClient && !btnNewClient.dataset.bound) {
+        btnNewClient.dataset.bound = 'true';
+        btnNewClient.addEventListener('click', () => openClientModal());
+    }
+
+    if (btnSendEmailGlobal && !btnSendEmailGlobal.dataset.bound) {
+        btnSendEmailGlobal.dataset.bound = 'true';
+        btnSendEmailGlobal.addEventListener('click', () => openSendAgencyEmailModal());
+    }
+
+    if (btnCloseClientX && !btnCloseClientX.dataset.bound) {
+        btnCloseClientX.dataset.bound = 'true';
+        btnCloseClientX.addEventListener('click', closeClientModal);
+    }
+
+    if (btnCancelClient && !btnCancelClient.dataset.bound) {
+        btnCancelClient.dataset.bound = 'true';
+        btnCancelClient.addEventListener('click', closeClientModal);
+    }
+
+    if (clientForm && !clientForm.dataset.bound) {
+        clientForm.dataset.bound = 'true';
+        clientForm.addEventListener('submit', handleSaveClient);
+    }
+
+    if (btnDeleteClient && !btnDeleteClient.dataset.bound) {
+        btnDeleteClient.dataset.bound = 'true';
+        btnDeleteClient.addEventListener('click', () => {
+            const id = document.getElementById('clientInputId').value;
+            if (id) handleDeleteClient(id);
+        });
+    }
+
+    if (btnCloseEmailX && !btnCloseEmailX.dataset.bound) {
+        btnCloseEmailX.dataset.bound = 'true';
+        btnCloseEmailX.addEventListener('click', closeSendAgencyEmailModal);
+    }
+
+    if (btnCancelEmail && !btnCancelEmail.dataset.bound) {
+        btnCancelEmail.dataset.bound = 'true';
+        btnCancelEmail.addEventListener('click', closeSendAgencyEmailModal);
+    }
+
+    if (sendEmailForm && !sendEmailForm.dataset.bound) {
+        sendEmailForm.dataset.bound = 'true';
+        sendEmailForm.addEventListener('submit', handleSendAgencyEmail);
+    }
+
+    if (btnTplBilling && !btnTplBilling.dataset.bound) {
+        btnTplBilling.dataset.bound = 'true';
+        btnTplBilling.addEventListener('click', () => applyEmailTemplate('billing'));
+    }
+
+    if (btnTplDelivery && !btnTplDelivery.dataset.bound) {
+        btnTplDelivery.dataset.bound = 'true';
+        btnTplDelivery.addEventListener('click', () => applyEmailTemplate('delivery'));
+    }
+
+    if (btnTplFeedback && !btnTplFeedback.dataset.bound) {
+        btnTplFeedback.dataset.bound = 'true';
+        btnTplFeedback.addEventListener('click', () => applyEmailTemplate('feedback'));
+    }
+}
+
+async function loadClientsDirectory() {
+    try {
+        const res = await fetch(`${API_BASE}/clients/directory`, {
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                clientsDirectoryData = data;
+                localStorage.setItem('hipha_clients_directory_cache', JSON.stringify(clientsDirectoryData));
+            }
+        } else {
+            console.warn("No se pudo cargar directorio de clientes desde API, recurriendo a cache local");
+            const cached = localStorage.getItem('hipha_clients_directory_cache');
+            if (cached) clientsDirectoryData = JSON.parse(cached);
+        }
+    } catch (err) {
+        console.warn("Error de conexión al cargar directorio de clientes:", err);
+        const cached = localStorage.getItem('hipha_clients_directory_cache');
+        if (cached) {
+            try { clientsDirectoryData = JSON.parse(cached); } catch(e) {}
+        }
+    }
+
+    syncAllClientsDropdowns();
+    renderClientsDirectory();
+}
+
+function getNextCutoffInfo(billingDay) {
+    const day = parseInt(billingDay);
+    if (!day || day < 1 || day > 31) {
+        return { label: 'Sin corte fijo', daysUntil: 999, class: 'cutoff-normal', subtext: '' };
+    }
+    const now = new Date();
+    const curYear = now.getFullYear();
+    const curMonth = now.getMonth();
+    const curDate = now.getDate();
+
+    if (day === curDate) {
+        return {
+            label: `Día ${day}`,
+            daysUntil: 0,
+            class: 'cutoff-urgent',
+            subtext: '¡Corte Hoy! (Cobro por adelantado)'
+        };
+    }
+
+    let nextCutoff;
+    if (day > curDate) {
+        nextCutoff = new Date(curYear, curMonth, day);
+    } else {
+        nextCutoff = new Date(curYear, curMonth + 1, day);
+    }
+
+    const diffMs = nextCutoff.getTime() - now.getTime();
+    const daysUntil = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+    if (daysUntil <= 3) {
+        return {
+            label: `Día ${day}`,
+            daysUntil,
+            class: 'cutoff-urgent',
+            subtext: `En ${daysUntil} ${daysUntil === 1 ? 'día' : 'días'} (¡Renovación!)`
+        };
+    } else if (daysUntil <= 7) {
+        return {
+            label: `Día ${day}`,
+            daysUntil,
+            class: 'cutoff-soon',
+            subtext: `En ${daysUntil} días (Próximo)`
+        };
+    } else {
+        return {
+            label: `Día ${day}`,
+            daysUntil,
+            class: 'cutoff-normal',
+            subtext: `Cada día ${day}`
+        };
+    }
+}
+
+function getServiceTypeBadge(type) {
+    switch (type) {
+        case 'design':
+            return '<span class="badge-service design">🎨 Solo Diseño</span>';
+        case 'web_ads':
+            return '<span class="badge-service web_ads">🌐 Web & Publicidad</span>';
+        case 'consulting':
+            return '<span class="badge-service consulting">📱 Asesoría & Redes</span>';
+        case 'integral':
+            return '<span class="badge-service integral">🚀 Retainer Integral</span>';
+        default:
+            return `<span class="badge-service design">${escapeHtml(type || 'Diseño')}</span>`;
+    }
+}
+
+function formatClientTenure(startDateStr) {
+    if (!startDateStr) return '<span style="color:var(--text-muted)">--</span>';
+    try {
+        const parts = startDateStr.split('-');
+        if (parts.length === 3) {
+            const start = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            const now = new Date();
+            const monthsDiff = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            if (monthsDiff >= 12) {
+                const years = Math.floor(monthsDiff / 12);
+                const rem = monthsDiff % 12;
+                const tenure = rem > 0 ? `${years}a ${rem}m` : `${years} ${years === 1 ? 'año' : 'años'}`;
+                return `<span style="font-weight:600; color:var(--text-main);">${formattedDate}</span><div style="font-size:0.72rem; color:var(--text-muted);">${tenure} con Hipha</div>`;
+            } else if (monthsDiff > 0) {
+                return `<span style="font-weight:600; color:var(--text-main);">${formattedDate}</span><div style="font-size:0.72rem; color:var(--text-muted);">${monthsDiff} ${monthsDiff === 1 ? 'mes' : 'meses'} con Hipha</div>`;
+            } else {
+                return `<span style="font-weight:600; color:var(--text-main);">${formattedDate}</span><div style="font-size:0.72rem; color:#34d399;">Nuevo ingreso</div>`;
+            }
+        }
+    } catch (e) {}
+    return `<span>${escapeHtml(startDateStr)}</span>`;
+}
+
+function formatCurrencyMXN(amount) {
+    const val = parseFloat(amount) || 0;
+    return `$${val.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MXN`;
+}
+
+function renderClientsDirectory() {
+    const container = document.getElementById('clientsTableContainer');
+    if (!container) return;
+
+    // Calcular KPIs
+    let activeCount = 0;
+    let totalMrr = 0.0;
+    let upcomingCutoffs = 0;
+    let designOnlyCount = 0;
+
+    clientsDirectoryData.forEach(c => {
+        const isActive = (c.status || 'active') === 'active';
+        if (isActive) {
+            activeCount++;
+            totalMrr += (parseFloat(c.monthly_fee) || 0);
+            if (c.service_type === 'design') {
+                designOnlyCount++;
+            }
+            const cutInfo = getNextCutoffInfo(c.billing_day);
+            if (cutInfo.daysUntil <= 7) {
+                upcomingCutoffs++;
+            }
+        }
+    });
+
+    // Actualizar tarjetas de KPI
+    const elKpiActive = document.getElementById('kpiActiveClientsCount');
+    const elKpiMrr = document.getElementById('kpiTotalMrr');
+    const elKpiCutoffs = document.getElementById('kpiUpcomingCutoffsCount');
+    const elKpiDesign = document.getElementById('kpiDesignOnlyCount');
+
+    if (elKpiActive) elKpiActive.textContent = activeCount;
+    if (elKpiMrr) elKpiMrr.textContent = formatCurrencyMXN(totalMrr);
+    if (elKpiCutoffs) elKpiCutoffs.textContent = upcomingCutoffs;
+    if (elKpiDesign) elKpiDesign.textContent = designOnlyCount;
+
+    // Filtrar lista
+    const filtered = clientsDirectoryData.filter(c => {
+        // Filtro por estatus
+        if (clientStatusFilter !== 'all' && (c.status || 'active') !== clientStatusFilter) {
+            return false;
+        }
+        // Filtro por servicio
+        if (clientServiceFilter !== 'all' && (c.service_type || 'design') !== clientServiceFilter) {
+            return false;
+        }
+        // Búsqueda en texto
+        if (clientSearchTerm) {
+            const matchName = (c.name || '').toLowerCase().includes(clientSearchTerm);
+            const matchContact = (c.contact_name || '').toLowerCase().includes(clientSearchTerm);
+            const matchEmail = (c.contact_email || '').toLowerCase().includes(clientSearchTerm);
+            const matchPhone = (c.contact_phone || '').toLowerCase().includes(clientSearchTerm);
+            if (!matchName && !matchContact && !matchEmail && !matchPhone) {
+                return false;
+            }
+        }
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">👥</div>
+                <h3 style="color: var(--text-main); font-size: 1.15rem; margin-bottom: 0.5rem;">No se encontraron clientes</h3>
+                <p style="font-size: 0.85rem; max-width: 420px; margin: 0 auto 1.25rem auto;">
+                    ${clientSearchTerm || clientStatusFilter !== 'all' || clientServiceFilter !== 'all' 
+                        ? 'No hay registros que coincidan con los filtros aplicados. Intenta modificar los criterios de búsqueda.' 
+                        : 'Aún no tienes clientes registrados en este módulo. Da de alta tu primer cliente para comenzar a dar seguimiento a sus fechas de corte y entregas.'}
+                </p>
+                <button type="button" class="btn-sync" onclick="openClientModal()" style="margin: 0 auto; display: inline-flex;">
+                    + Alta de Cliente
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    const rowsHtml = filtered.map(c => {
+        const cutInfo = getNextCutoffInfo(c.billing_day);
+        const serviceBadge = getServiceTypeBadge(c.service_type);
+        const tenureHtml = formatClientTenure(c.start_date);
+        const feeHtml = `<strong style="color:${(c.status || 'active') === 'active' ? '#34d399' : 'var(--text-muted)'}; font-size:0.95rem;">${formatCurrencyMXN(c.monthly_fee)}</strong>`;
+
+        let statusClass = 'active';
+        let statusLabel = 'Activo';
+        if (c.status === 'paused') {
+            statusClass = 'paused';
+            statusLabel = 'Pausado';
+        } else if (c.status === 'inactive') {
+            statusClass = 'inactive';
+            statusLabel = 'Inactivo';
+        }
+
+        // Enlace WhatsApp si hay teléfono
+        let phoneHtml = `<span style="color:var(--text-muted); font-size:0.75rem;">Sin teléfono</span>`;
+        if (c.contact_phone) {
+            const cleanPhone = c.contact_phone.replace(/\D/g, '');
+            const waPhone = cleanPhone.startsWith('52') ? cleanPhone : (cleanPhone.length === 10 ? '52' + cleanPhone : cleanPhone);
+            phoneHtml = `
+                <a href="https://wa.me/${waPhone}" target="_blank" rel="noopener noreferrer" class="btn-action-icon action-whatsapp" title="Escribir por WhatsApp (${escapeHtml(c.contact_phone)})">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                </a>
+            `;
+        }
+
+        // Correo
+        let emailHtml = `<span style="color:var(--text-muted); font-size:0.75rem;">Sin correo</span>`;
+        if (c.contact_email) {
+            emailHtml = `
+                <button type="button" class="btn-action-icon action-email" onclick="openSendAgencyEmailModal('${escapeHtml(c.contact_email)}', '${escapeHtml(c.name)}')" title="Redactar correo a ${escapeHtml(c.contact_email)} desde hola@hipha.mx">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </button>
+            `;
+        }
+
+        // Web Link
+        let webLink = '';
+        if (c.website_url) {
+            const href = c.website_url.startsWith('http') ? c.website_url : `https://${c.website_url}`;
+            webLink = `
+                <a href="${href}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-cyan); display:inline-flex; align-items:center; margin-left:4px;" title="Visitar sitio web">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+            `;
+        }
+
+        return `
+            <tr>
+                <td>
+                    <div style="display:flex; align-items:center; gap:0.25rem;">
+                        <strong style="color:var(--text-main); font-size:0.95rem;">${escapeHtml(c.name)}</strong>
+                        ${webLink}
+                    </div>
+                    ${c.contact_name ? `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">👤 ${escapeHtml(c.contact_name)}</div>` : ''}
+                    ${c.notes ? `<div style="font-size:0.72rem; color:var(--text-muted); margin-top:3px; max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(c.notes)}">📝 ${escapeHtml(c.notes)}</div>` : ''}
+                </td>
+                <td>
+                    ${serviceBadge}
+                </td>
+                <td>
+                    <div class="badge-cutoff ${cutInfo.class}">
+                        <span>${cutInfo.label}</span>
+                        ${cutInfo.subtext ? `<span class="cutoff-subtext">${cutInfo.subtext}</span>` : ''}
+                    </div>
+                    <div style="font-size:0.68rem; color:var(--text-muted); margin-top:3px;">Mes por adelantado</div>
+                </td>
+                <td>
+                    ${feeHtml}
+                    <div style="font-size:0.7rem; color:var(--text-muted);">Suscripción Mensual</div>
+                </td>
+                <td>
+                    ${tenureHtml}
+                </td>
+                <td>
+                    <div style="display:flex; flex-direction:column; gap:3px;">
+                        ${c.contact_email ? `<span style="font-size:0.8rem; color:var(--text-main);">${escapeHtml(c.contact_email)}</span>` : ''}
+                        ${c.contact_phone ? `<span style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(c.contact_phone)}</span>` : ''}
+                    </div>
+                </td>
+                <td>
+                    <span class="badge-client-status ${statusClass}">
+                        ${statusLabel}
+                    </span>
+                </td>
+                <td>
+                    <div class="client-actions-cell">
+                        ${emailHtml}
+                        ${phoneHtml}
+                        <button type="button" class="btn-action-icon" onclick="openClientModal(${c.id})" title="Editar datos del cliente">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </button>
+                        <button type="button" class="btn-action-icon action-delete" onclick="handleDeleteClient(${c.id})" title="Eliminar cliente">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <table class="clients-table">
+            <thead>
+                <tr>
+                    <th>Cliente / Marca</th>
+                    <th>Servicio</th>
+                    <th>Fecha de Corte</th>
+                    <th>Inversión Mensual</th>
+                    <th>Inicio / Antigüedad</th>
+                    <th>Contacto</th>
+                    <th>Estatus</th>
+                    <th style="text-align:center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rowsHtml}
+            </tbody>
+        </table>
+    `;
+}
+
+function openClientModal(clientId = null) {
+    const modal = document.getElementById('clientModal');
+    const heading = document.getElementById('modalClientHeading');
+    const btnDelete = document.getElementById('btnDeleteClient');
+
+    const inputId = document.getElementById('clientInputId');
+    const inputName = document.getElementById('clientInputName');
+    const inputContact = document.getElementById('clientInputContactName');
+    const inputEmail = document.getElementById('clientInputContactEmail');
+    const inputPhone = document.getElementById('clientInputContactPhone');
+    const selectService = document.getElementById('clientInputServiceType');
+    const inputBilling = document.getElementById('clientInputBillingDay');
+    const inputFee = document.getElementById('clientInputMonthlyFee');
+    const inputStart = document.getElementById('clientInputStartDate');
+    const selectStatus = document.getElementById('clientInputStatus');
+    const inputWeb = document.getElementById('clientInputWebsite');
+    const inputNotes = document.getElementById('clientInputNotes');
+
+    if (clientId) {
+        const client = clientsDirectoryData.find(c => String(c.id) === String(clientId));
+        if (client) {
+            heading.textContent = `Editar Cliente: ${client.name}`;
+            inputId.value = String(client.id);
+            inputName.value = client.name || '';
+            inputContact.value = client.contact_name || '';
+            inputEmail.value = client.contact_email || '';
+            inputPhone.value = client.contact_phone || '';
+            selectService.value = client.service_type || 'design';
+            inputBilling.value = client.billing_day || 1;
+            inputFee.value = client.monthly_fee || 0;
+            inputStart.value = client.start_date || '';
+            selectStatus.value = client.status || 'active';
+            inputWeb.value = client.website_url || '';
+            inputNotes.value = client.notes || '';
+            if (btnDelete) btnDelete.classList.remove('hidden');
+        }
+    } else {
+        heading.textContent = "+ Alta de Cliente";
+        inputId.value = '';
+        inputName.value = '';
+        inputContact.value = '';
+        inputEmail.value = '';
+        inputPhone.value = '';
+        selectService.value = 'design';
+        inputBilling.value = 1;
+        inputFee.value = '';
+        inputStart.value = new Date().toISOString().split('T')[0];
+        selectStatus.value = 'active';
+        inputWeb.value = '';
+        inputNotes.value = '';
+        if (btnDelete) btnDelete.classList.add('hidden');
+    }
+
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeClientModal() {
+    const modal = document.getElementById('clientModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function handleSaveClient(e) {
+    e.preventDefault();
+    const id = document.getElementById('clientInputId').value;
+    const name = (document.getElementById('clientInputName').value || '').trim();
+    const contact_name = (document.getElementById('clientInputContactName').value || '').trim();
+    const contact_email = (document.getElementById('clientInputContactEmail').value || '').trim();
+    const contact_phone = (document.getElementById('clientInputContactPhone').value || '').trim();
+    const service_type = document.getElementById('clientInputServiceType').value || 'design';
+    const billing_day = parseInt(document.getElementById('clientInputBillingDay').value) || 1;
+    const monthly_fee = parseFloat(document.getElementById('clientInputMonthlyFee').value) || 0.0;
+    const start_date = document.getElementById('clientInputStartDate').value || null;
+    const status = document.getElementById('clientInputStatus').value || 'active';
+    const website_url = (document.getElementById('clientInputWebsite').value || '').trim();
+    const notes = (document.getElementById('clientInputNotes').value || '').trim();
+
+    if (!name) {
+        alert("Por favor ingresa el nombre de la empresa o cliente.");
+        return;
+    }
+
+    const payload = {
+        name,
+        contact_name: contact_name || null,
+        contact_email: contact_email || null,
+        contact_phone: contact_phone || null,
+        service_type,
+        billing_day,
+        monthly_fee,
+        start_date: start_date || null,
+        status,
+        website_url: website_url || null,
+        notes: notes || null
+    };
+
+    const btnSubmit = document.getElementById('btnSaveClientSubmit');
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = "Guardando...";
+    }
+
+    try {
+        let url = `${API_BASE}/clients/directory`;
+        let method = 'POST';
+        if (id) {
+            url = `${API_BASE}/clients/directory/${id}`;
+            method = 'PUT';
+        }
+
+        const response = await fetch(url, {
+            method,
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            closeClientModal();
+            await loadClientsDirectory();
+        } else {
+            const errData = await response.json().catch(() => ({}));
+            alert(errData.detail || "Error al guardar el cliente.");
+        }
+    } catch (err) {
+        console.error("Error al guardar cliente:", err);
+        // Fallback local en caso de desconexión
+        if (id) {
+            const idx = clientsDirectoryData.findIndex(c => String(c.id) === String(id));
+            if (idx !== -1) {
+                clientsDirectoryData[idx] = { ...clientsDirectoryData[idx], ...payload, updated_at: new Date().toISOString() };
+            }
+        } else {
+            const newClient = {
+                id: Date.now(),
+                ...payload,
+                created_at: new Date().toISOString()
+            };
+            clientsDirectoryData.unshift(newClient);
+        }
+        localStorage.setItem('hipha_clients_directory_cache', JSON.stringify(clientsDirectoryData));
+        syncAllClientsDropdowns();
+        renderClientsDirectory();
+        closeClientModal();
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = "Guardar Cliente";
+        }
+    }
+}
+
+async function handleDeleteClient(clientId) {
+    const client = clientsDirectoryData.find(c => String(c.id) === String(clientId));
+    const clientName = client ? client.name : 'este cliente';
+    if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${clientName}" del directorio de la agencia?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/clients/directory/${clientId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            closeClientModal();
+            await loadClientsDirectory();
+        } else {
+            const errData = await response.json().catch(() => ({}));
+            alert(errData.detail || "No se pudo eliminar el cliente.");
+        }
+    } catch (err) {
+        console.error("Error eliminando cliente:", err);
+        clientsDirectoryData = clientsDirectoryData.filter(c => String(c.id) !== String(clientId));
+        localStorage.setItem('hipha_clients_directory_cache', JSON.stringify(clientsDirectoryData));
+        syncAllClientsDropdowns();
+        renderClientsDirectory();
+        closeClientModal();
+    }
+}
+
+function openSendAgencyEmailModal(clientEmail = '', clientName = '', templateType = null) {
+    const modal = document.getElementById('sendAgencyEmailModal');
+    const inputTo = document.getElementById('emailInputTo');
+    const inputClient = document.getElementById('emailInputClientName');
+    const inputSubject = document.getElementById('emailInputSubject');
+    const inputBody = document.getElementById('emailInputBody');
+    const feedback = document.getElementById('emailSendingFeedback');
+
+    if (feedback) feedback.classList.add('hidden');
+
+    currentEmailTargetClient = clientsDirectoryData.find(c => 
+        (clientEmail && (c.contact_email || '').toLowerCase() === clientEmail.toLowerCase()) ||
+        (clientName && (c.name || '').toLowerCase() === clientName.toLowerCase())
+    ) || null;
+
+    if (inputTo) inputTo.value = clientEmail || (currentEmailTargetClient ? currentEmailTargetClient.contact_email || '' : '');
+    if (inputClient) inputClient.value = clientName || (currentEmailTargetClient ? currentEmailTargetClient.name || '' : '');
+
+    if (templateType) {
+        applyEmailTemplate(templateType);
+    } else {
+        if (inputSubject) inputSubject.value = '';
+        if (inputBody) inputBody.value = '';
+    }
+
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeSendAgencyEmailModal() {
+    const modal = document.getElementById('sendAgencyEmailModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function applyEmailTemplate(type) {
+    const inputTo = document.getElementById('emailInputTo');
+    const inputClient = document.getElementById('emailInputClientName');
+    const inputSubject = document.getElementById('emailInputSubject');
+    const inputBody = document.getElementById('emailInputBody');
+
+    const clientName = (inputClient && inputClient.value) ? inputClient.value.trim() : (currentEmailTargetClient ? currentEmailTargetClient.name : 'Cliente');
+    const client = currentEmailTargetClient || clientsDirectoryData.find(c => (c.name || '').toLowerCase() === clientName.toLowerCase());
+    const contactName = client ? (client.contact_name || client.name) : clientName;
+    const billingDay = client && client.billing_day ? client.billing_day : '22';
+    const feeStr = client && client.monthly_fee ? formatCurrencyMXN(client.monthly_fee) : '$6,500 MXN';
+
+    if (type === 'billing') {
+        if (inputSubject) inputSubject.value = `Aviso de fecha de corte y renovación mensual (${clientName}) • Hipha`;
+        if (inputBody) {
+            inputBody.value = 
+`Hola ${contactName},
+
+Esperamos que te encuentres excelente.
+
+Te saludamos de Hipha MX para compartirte el aviso de renovación de tu retainer correspondiente al siguiente período mensual.
+
+📋 DETALLE DE SUSCRIPCIÓN:
+• Cuenta: ${clientName}
+• Fecha de corte: Día ${billingDay} del mes en curso
+• Inversión mensual: ${feeStr}
+• Esquema: Mes por adelantado (para reserva garantizada de capacidad y agenda de diseño)
+
+Si requieres que te emitamos la factura con anticipación o tienes alguna duda o solicitud especial respecto a los entregables del ciclo, con gusto estamos a tu disposición.
+
+¡Agradecemos mucho tu confianza y seguimos creando juntos!
+
+Saludos cordiales,
+Equipo Hipha MX
+hola@hipha.mx`;
+        }
+    } else if (type === 'delivery') {
+        if (inputSubject) inputSubject.value = `Entrega de piezas y avances de diseño (${clientName}) • Hipha`;
+        if (inputBody) {
+            inputBody.value = 
+`Hola ${contactName},
+
+¡Esperamos que estés teniendo un excelente día!
+
+Te compartimos que hemos concluido la preparación de las piezas de diseño programadas en el flujo de trabajo de esta semana para ${clientName}.
+
+📂 ENLACE DE REVISIÓN Y DESCARGA:
+[Pega aquí el enlace de Google Drive, Figma o Cloud]
+
+Por favor revisa el material y si consideras necesario algún ajuste o ronda de refinamiento, avísanos con toda confianza para incluirlo de inmediato en el flujo.
+
+¡Quedamos atentos a tus comentarios!
+
+Saludos cordiales,
+Equipo Hipha MX
+hola@hipha.mx`;
+        }
+    } else if (type === 'feedback') {
+        if (inputSubject) inputSubject.value = `Piezas en revisión: Solicitud de retroalimentación (${clientName}) • Hipha`;
+        if (inputBody) {
+            inputBody.value = 
+`Hola ${contactName},
+
+Te escribimos para dar seguimiento a los entregables de diseño que tenemos en revisión para ${clientName}.
+
+¿Pudiste revisar las propuestas que te compartimos? Nos gustaría conocer tus observaciones para continuar con la agenda semanal y asegurar los tiempos de entrega programados.
+
+Quedamos al pendiente de tu respuesta para apoyarte con cualquier detalle.
+
+¡Excelente jornada!
+
+Saludos cordiales,
+Equipo Hipha MX
+hola@hipha.mx`;
+        }
+    }
+}
+
+async function handleSendAgencyEmail(e) {
+    e.preventDefault();
+    const btnSubmit = document.getElementById('btnSubmitSendEmail');
+    const feedback = document.getElementById('emailSendingFeedback');
+    const inputTo = document.getElementById('emailInputTo');
+    const inputSubject = document.getElementById('emailInputSubject');
+    const inputBody = document.getElementById('emailInputBody');
+    const inputClient = document.getElementById('emailInputClientName');
+
+    const to_email = (inputTo ? inputTo.value : '').trim();
+    const subject = (inputSubject ? inputSubject.value : '').trim();
+    const message_body = (inputBody ? inputBody.value : '').trim();
+    const client_name = (inputClient ? inputClient.value : '').trim();
+
+    if (!to_email || !subject || !message_body) {
+        alert("Por favor completa el destinatario, asunto y mensaje.");
+        return;
+    }
+
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = `<span class="spinner" style="width:14px; height:14px; border-width:2px; display:inline-block; margin-right:6px;"></span> Enviando desde hola@hipha.mx...`;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/clients/send-email`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                to_email,
+                subject,
+                message_body,
+                client_name
+            })
+        });
+
+        if (response.ok) {
+            if (feedback) {
+                feedback.className = '';
+                feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+                feedback.style.color = '#34d399';
+                feedback.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+                feedback.innerHTML = `✅ <strong>¡Correo enviado con éxito!</strong> Entregado desde <strong>hola@hipha.mx</strong> a <strong>${escapeHtml(to_email)}</strong>.`;
+                feedback.classList.remove('hidden');
+            }
+            setTimeout(() => {
+                closeSendAgencyEmailModal();
+                if (feedback) feedback.classList.add('hidden');
+            }, 2000);
+        } else {
+            const errData = await response.json().catch(() => ({}));
+            const errMsg = errData.detail || "Error al enviar el correo. Por favor verifica los datos o la configuración SMTP.";
+            if (feedback) {
+                feedback.className = '';
+                feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+                feedback.style.color = '#f87171';
+                feedback.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                feedback.innerHTML = `⚠️ <strong>Fallo en el envío:</strong> ${escapeHtml(errMsg)}`;
+                feedback.classList.remove('hidden');
+            }
+        }
+    } catch (err) {
+        console.error("Error enviando correo:", err);
+        if (feedback) {
+            feedback.className = '';
+            feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+            feedback.style.color = '#f87171';
+            feedback.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            feedback.innerHTML = `⚠️ Error de conexión con el servidor. Revisa tu red.`;
+            feedback.classList.remove('hidden');
+        }
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = `
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span>Enviar Correo</span>
+            `;
+        }
+    }
+}
+
 // Exposición global para interacción directa y consola
 window.openWorkflowTaskModal = openWorkflowTaskModal;
 window.closeWorkflowTaskModal = closeWorkflowTaskModal;
@@ -2080,5 +2989,11 @@ window.cycleWorkflowTaskStatus = cycleWorkflowTaskStatus;
 window.openMonthlyReportModal = openMonthlyReportModal;
 window.closeMonthlyReportModal = closeMonthlyReportModal;
 window.addTaskRevision = addTaskRevision;
+window.openClientModal = openClientModal;
+window.closeClientModal = closeClientModal;
+window.handleDeleteClient = handleDeleteClient;
+window.openSendAgencyEmailModal = openSendAgencyEmailModal;
+window.closeSendAgencyEmailModal = closeSendAgencyEmailModal;
+window.applyEmailTemplate = applyEmailTemplate;
 
 

@@ -1360,6 +1360,338 @@ select {
     }
 }
 
+/* ==========================================================================
+   MÓDULO: DIRECTORIO DE CLIENTES, RETAINERS Y CORREOS OFICIALES
+   ========================================================================== */
+
+.clients-section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.clients-toolbar {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border-radius: 16px;
+}
+
+.clients-kpis-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.client-kpi-card {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.client-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 229, 255, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.client-kpi-card .kpi-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.client-kpi-card .kpi-num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.client-kpi-card.mrr-card .kpi-num {
+    color: #34d399;
+    text-shadow: 0 0 16px rgba(52, 211, 153, 0.25);
+}
+
+.client-kpi-card.alert-card .kpi-num {
+    color: #fbbf24;
+}
+
+.clients-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.clients-filters-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.search-input-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    min-width: 250px;
+    max-width: 380px;
+    flex: 1;
+    color: var(--text-muted);
+    transition: border-color 0.2s ease;
+}
+
+.search-input-box:focus-within {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.search-input-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-main);
+    font-size: 0.88rem;
+    width: 100%;
+    font-family: inherit;
+}
+
+.clients-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.clients-table-container {
+    border-radius: 16px;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    background: rgba(15, 23, 42, 0.6);
+    min-height: 280px;
+}
+
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.clients-table th {
+    padding: 0.95rem 1.15rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: rgba(15, 23, 42, 0.9);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.clients-table td {
+    padding: 1rem 1.15rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    font-size: 0.88rem;
+    vertical-align: middle;
+}
+
+.clients-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.clients-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badges de Servicio */
+.badge-service {
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+
+.badge-service.design {
+    background: rgba(179, 136, 255, 0.15);
+    color: #d8b4fe;
+    border: 1px solid rgba(179, 136, 255, 0.35);
+}
+
+.badge-service.web_ads {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.badge-service.consulting {
+    background: rgba(236, 72, 153, 0.15);
+    color: #f472b6;
+    border: 1px solid rgba(236, 72, 153, 0.35);
+}
+
+.badge-service.integral {
+    background: rgba(0, 229, 255, 0.15);
+    color: #67e8f9;
+    border: 1px solid rgba(0, 229, 255, 0.35);
+}
+
+/* Badges de Corte de Facturación */
+.badge-cutoff {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    white-space: nowrap;
+}
+
+.badge-cutoff.cutoff-urgent {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    font-weight: 700;
+}
+
+.badge-cutoff.cutoff-soon {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    font-weight: 600;
+}
+
+.badge-cutoff.cutoff-normal {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.cutoff-subtext {
+    font-size: 0.7rem;
+    opacity: 0.85;
+}
+
+/* Badges de Estatus */
+.badge-client-status {
+    padding: 0.22rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+.badge-client-status.active {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-client-status.paused {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-client-status.inactive {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Botones de Acción en Fila */
+.client-actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.btn-action-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-action-icon:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-action-icon.action-email:hover {
+    background: rgba(0, 229, 255, 0.15);
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.btn-action-icon.action-whatsapp:hover {
+    background: rgba(37, 211, 102, 0.15);
+    color: #25d366;
+    border-color: #25d366;
+}
+
+.btn-action-icon.action-delete:hover {
+    background: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+/* Plantillas de Correo (Chips) */
+.btn-template-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.45rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-template-chip:hover {
+    background: rgba(0, 229, 255, 0.12);
+    border-color: rgba(0, 229, 255, 0.4);
+    color: var(--accent-cyan);
+    transform: translateY(-1px);
+}
+
 /* Dispositivos Móviles (< 768px) */
 @media (max-width: 768px) {
     .dashboard-layout {
@@ -1502,9 +1834,55 @@ select {
         padding: 1.5rem 1.25rem !important;
     }
 
-    /* Contenedor de Reportes con Scroll */
-    #rptTableContainer {
-        overflow-x: auto;
+    /* Adaptación Móvil de Clientes & Retainers */
+    .clients-toolbar {
+        padding: 1.1rem;
+        gap: 1rem;
+    }
+
+    .clients-kpis-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+    }
+
+    .client-kpi-card {
+        padding: 0.75rem 0.9rem;
+    }
+
+    .client-kpi-card .kpi-num {
+        font-size: 1.3rem;
+    }
+
+    .clients-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .clients-filters-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.6rem;
+    }
+
+    .search-input-box {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .clients-filters-group select {
+        width: 100%;
+    }
+
+    .clients-btn-group {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .clients-btn-group button {
+        width: 100%;
+        justify-content: center;
     }
 }
 

@@ -13,6 +13,7 @@ from app.models.chilechillon_lead import ChileChillonLead
 from app.models.chilechillon_match import ChileChillonMatch
 from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
 from app.models.workflow_task import WorkflowTask
+from app.models.client import AgencyClient
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")
@@ -94,6 +95,37 @@ def startup_db_setup():
             db.close()
     except Exception as e:
         print(f"❌ Error durante la siembra de base de datos: {str(e)}")
+
+    # Sembrar clientes de agencia iniciales si la tabla está vacía
+    try:
+        db = SessionLocal()
+        try:
+            client_count = db.query(AgencyClient).count()
+            if client_count == 0:
+                print("Sembrando clientes iniciales de agencia...")
+                initial_clients = [
+                    {"name": "Letrerama", "service_type": "web_design", "billing_day": 22, "monthly_fee": 6500.0, "start_date": "2024-01-15", "contact_email": "contacto@letrerama.com"},
+                    {"name": "HealthyIce", "service_type": "web_design", "billing_day": 1, "monthly_fee": 7000.0, "start_date": "2024-02-01", "contact_email": "ventas@healthyice.mx"},
+                    {"name": "Grupo Gari", "service_type": "complete", "billing_day": 28, "monthly_fee": 12000.0, "start_date": "2023-11-01", "contact_email": "contacto@grupo-gari.com"},
+                    {"name": "AMDI", "service_type": "web_design", "billing_day": 15, "monthly_fee": 5500.0, "start_date": "2024-03-01", "contact_email": "adrianamedina@amdi.mx"},
+                    {"name": "Jessica Mendoza", "service_type": "web_design", "billing_day": 10, "monthly_fee": 6000.0, "start_date": "2024-01-10", "contact_email": "jessica@jessicamendozabienesraices.com"},
+                    {"name": "El Chile Chillón", "service_type": "web_design", "billing_day": 5, "monthly_fee": 5000.0, "start_date": "2024-04-01", "contact_email": "contacto@chilechillon.com"},
+                    {"name": "Valencia Servicios", "service_type": "complete", "billing_day": 20, "monthly_fee": 8500.0, "start_date": "2023-09-15", "contact_email": "contacto@valenciaservicios.com"},
+                    {"name": "White Clean", "service_type": "web_design", "billing_day": 3, "monthly_fee": 5500.0, "start_date": "2024-02-15", "contact_email": "contacto@whiteclean.mx"},
+                    {"name": "Uro-Oncology", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2023-08-01", "contact_email": "info@uro-oncology.com"},
+                    {"name": "Centro de Urología Avanzada", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2023-08-01", "contact_email": "drjairo@urologia-avanzada.com.mx"},
+                    {"name": "Botica Silvestre", "service_type": "web_design", "billing_day": 1, "monthly_fee": 6000.0, "start_date": "2024-05-01", "contact_email": "contacto@boticasilvestre.com"},
+                    {"name": "DAM Pisos", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "info@dampisos.com"},
+                    {"name": "El Ofertón del Piso", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "contacto@ofertondelpiso.com"}
+                ]
+                for ic in initial_clients:
+                    db.add(AgencyClient(**ic))
+                db.commit()
+                print(f"✓ {len(initial_clients)} clientes de agencia sembrados con éxito.")
+        finally:
+            db.close()
+    except Exception as ce:
+        print(f"Nota: Siembra de clientes iniciales omitida o error: {ce}")
 
     # Escribir secretos de Google Analytics si estamos en Vercel
     try:

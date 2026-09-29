@@ -2826,3 +2826,72 @@ async def send_letrerama_quote_notification_team(form_data):
     except Exception as e:
         logger.error(f"Fallo al enviar correo de cotización al equipo Letrerama: {str(e)}")
         return False
+
+async def send_custom_agency_email(to_email: str, subject: str, message_body: str, client_name: str = "") -> bool:
+    """
+    Envía un correo personalizado directamente desde hola@hipha.mx hacia un cliente o prospecto.
+    Utiliza el servidor SMTP autenticado de HiphaMX con fallback y protección SPF/DKIM.
+    """
+    from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
+    from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
+
+    formatted_body = message_body.replace("\n", "<br>")
+    greeting_html = f'<p style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #ffffff;">Hola {client_name},</p>' if client_name else ""
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0b0f19; margin: 0; padding: 24px; color: #e2e8f0; }}
+            .container {{ max-width: 600px; margin: 0 auto; background-color: #121827; border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }}
+            .header {{ background: linear-gradient(135deg, #050810 0%, #151b2e 100%); padding: 28px 24px; text-align: center; border-bottom: 1px solid rgba(0, 229, 255, 0.15); }}
+            .content {{ padding: 32px 28px; line-height: 1.65; font-size: 15px; color: #cbd5e1; }}
+            .message-box {{ background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 18px 20px; margin: 16px 0; color: #f1f5f9; }}
+            .footer {{ margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 13px; color: #94a3b8; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <img src="https://hipha.mx/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="HiphaMX Logo" style="height: 36px; margin: 0 auto; display: block;">
+                <p style="color: #00e5ff; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin: 8px 0 0 0; font-weight: 600;">Agencia Creativa & Estrategia Digital</p>
+            </div>
+            <div class="content">
+                {greeting_html}
+                <div class="message-box">
+                    {formatted_body}
+                </div>
+                <div class="footer">
+                    <p style="margin: 0;">Atentamente,</p>
+                    <p style="margin: 4px 0 0 0; font-weight: 600; color: #00e5ff;">Equipo HiphaMX</p>
+                    <p style="margin: 4px 0 0 0;">
+                        <a href="mailto:hola@hipha.mx" style="color: #94a3b8; text-decoration: none;">hola@hipha.mx</a> · 
+                        <a href="https://hipha.mx" style="color: #00e5ff; text-decoration: none;">hipha.mx</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="HIPHA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=to_email,
+        subject=subject,
+        html_content=html_content,
+        domain="hipha.mx"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Correo custom enviado exitosamente desde hola@hipha.mx a {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar correo custom a {to_email}: {str(e)}")
+        raise e
+

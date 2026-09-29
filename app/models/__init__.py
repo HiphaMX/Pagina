@@ -3,7 +3,8 @@ from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
 from app.models.healthyice_order import HealthyIceOrder
 from app.models.botica_product import BoticaProduct
 from app.models.workflow_task import WorkflowTask
+from app.models.client import AgencyClient
 
-__all__ = ["User", "SatAccount", "SatInvoice", "SatDownloadRequest", "HealthyIceOrder", "BoticaProduct", "WorkflowTask"]
+__all__ = ["User", "SatAccount", "SatInvoice", "SatDownloadRequest", "HealthyIceOrder", "BoticaProduct", "WorkflowTask", "AgencyClient"]
 
 
