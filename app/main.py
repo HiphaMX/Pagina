@@ -7,7 +7,7 @@ import os
 from app.api import contact, mercadopago, auth, sat, qa, visual_generator
 from app.api.projects import botica as botica_project
 from app.api.dashboard import routes as dashboard_routes
-from app.core.database import Base, engine, SessionLocal
+from app.core.database import Base, engine, SessionLocal, ensure_db_initialized
 from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
 from app.models.chilechillon_match import ChileChillonMatch
@@ -33,7 +33,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     traceback.print_exc()
     return JSONResponse(
         status_code=500,
-        content={"detail": "Error interno del servidor", "error": str(exc)}
+        content={"detail": f"Error del servidor: {str(exc)}", "error": str(exc)}
     )
 
 @app.get("/api/health")
@@ -44,19 +44,15 @@ def health_check():
 @app.on_event("startup")
 def startup_db_setup():
     print("Iniciando base de datos y tablas...")
-    # Crear tablas si no existen de forma protegida
-    try:
-        Base.metadata.create_all(bind=engine)
-        print("✓ Tablas de base de datos verificadas/creadas.")
-    except Exception as edb:
-        print(f"⚠️ Advertencia inicializando tablas de base de datos: {edb}")
+    ensure_db_initialized()
     
-    # Auto-migración segura de columnas adicionales para workflow_tasks
+    # Auto-migración segura de columnas adicionales para workflow_tasks y agency_clients
     try:
         from sqlalchemy import inspect, text
-        with engine.connect() as conn:
+        with engine.begin() as conn:
             inspector = inspect(engine)
-            if "workflow_tasks" in inspector.get_table_names():
+            tables = inspector.get_table_names()
+            if "workflow_tasks" in tables:
                 cols = [c["name"] for c in inspector.get_columns("workflow_tasks")]
                 if "revision_hours" not in cols:
                     conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN revision_hours FLOAT DEFAULT 0.0"))
@@ -66,9 +62,19 @@ def startup_db_setup():
                     conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN month_id VARCHAR DEFAULT NULL"))
                 if "task_date" not in cols:
                     conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN task_date VARCHAR DEFAULT NULL"))
-                conn.commit()
+
+            if "agency_clients" in tables:
+                c_cols = [c["name"] for c in inspector.get_columns("agency_clients")]
+                if "billing_period" not in c_cols:
+                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'"))
+                if "requires_invoice" not in c_cols:
+                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT FALSE"))
+                if "apply_tax_retention" not in c_cols:
+                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT FALSE"))
+                if "tax_retention_rate" not in c_cols:
+                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25"))
     except Exception as em:
-        print(f"Nota: Auto-migración de workflow_tasks omitida o completada: {em}")
+        print(f"Nota: Auto-migración de tablas omitida o completada: {em}")
     
     # Sembrar usuario administrador por defecto
     try:
