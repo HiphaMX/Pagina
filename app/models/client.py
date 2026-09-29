@@ -10,9 +10,10 @@ class AgencyClient(Base):
     contact_name = Column(String, nullable=True)
     contact_email = Column(String, nullable=True)
     contact_phone = Column(String, nullable=True)
-    service_type = Column(String, default="design")  # "design", "web_design", "seo_ads", "complete"
+    service_type = Column(String, default="design_subscription")  # "design_subscription", "web_subscription", "marketing_subscription", "single_service"
+    billing_period = Column(String, default="monthly", nullable=True)  # "monthly", "annual"
     billing_day = Column(Integer, nullable=True, default=1)  # 1 al 31 día de corte / pago adelantado
-    monthly_fee = Column(Float, nullable=True, default=0.0)  # Monto de suscripción en MXN
+    monthly_fee = Column(Float, nullable=True, default=0.0)  # Monto de suscripción en MXN (mensual o anual según billing_period)
     start_date = Column(String(10), nullable=True)  # YYYY-MM-DD
     status = Column(String, default="active")  # "active", "paused", "inactive"
     website_url = Column(String, nullable=True)

@@ -1531,28 +1531,57 @@ select {
     white-space: nowrap;
 }
 
+.badge-service.design_subscription,
 .badge-service.design {
     background: rgba(179, 136, 255, 0.15);
     color: #d8b4fe;
     border: 1px solid rgba(179, 136, 255, 0.35);
 }
 
+.badge-service.web_subscription,
 .badge-service.web_ads {
     background: rgba(59, 130, 246, 0.15);
     color: #93c5fd;
     border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
+.badge-service.marketing_subscription,
 .badge-service.consulting {
-    background: rgba(236, 72, 153, 0.15);
-    color: #f472b6;
-    border: 1px solid rgba(236, 72, 153, 0.35);
+    background: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
+.badge-service.single_service,
 .badge-service.integral {
     background: rgba(0, 229, 255, 0.15);
     color: #67e8f9;
     border: 1px solid rgba(0, 229, 255, 0.35);
+}
+
+/* Badge de Modalidad de Pago (Mensual vs Anual) */
+.badge-period {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+.badge-period.monthly {
+    background: rgba(59, 130, 246, 0.12);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.badge-period.annual {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
 /* Badges de Corte de Facturación */
@@ -1692,6 +1721,152 @@ select {
     transform: translateY(-1px);
 }
 
+/* ==========================================================================
+   SISTEMA DE MODALES Y VENTANAS EMERGENTES (POP-UPS)
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(10, 15, 30, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+}
+
+.modal-overlay.hidden {
+    display: none !important;
+}
+
+.modal-dialog {
+    width: 100%;
+    max-height: calc(100vh - 3rem);
+    max-height: calc(100dvh - 3rem);
+    display: flex;
+    flex-direction: column;
+    background: #141c33;
+    background: linear-gradient(165deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 229, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+    animation: modalPopAnim 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPopAnim {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-dialog.modal-sm { max-width: 480px; }
+.modal-dialog.modal-md { max-width: 540px; }
+.modal-dialog.modal-lg { max-width: 660px; }
+.modal-dialog.modal-xl { max-width: 880px; }
+
+.modal-header {
+    padding: 1.25rem 1.6rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-shrink: 0;
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.modal-header h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.modal-header p {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.modal-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.65rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.4rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close-btn:hover {
+    color: var(--text-main);
+    transform: scale(1.15);
+}
+
+.modal-body {
+    padding: 1.5rem 1.6rem;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-body::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+}
+.modal-body::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.25);
+    border-radius: 4px;
+}
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-cyan);
+}
+
+.modal-footer {
+    padding: 1rem 1.6rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+    background: rgba(15, 23, 42, 0.9);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 0.8rem;
+    z-index: 10;
+}
+
+.modal-footer .modal-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-left: auto;
+}
+
 /* Dispositivos Móviles (< 768px) */
 @media (max-width: 768px) {
     .dashboard-layout {
@@ -1819,18 +1994,54 @@ select {
         margin-bottom: 0;
     }
 
-    /* Modales en Móvil */
+    /* Modales en Móvil como Bottom Sheet */
     .modal-overlay {
-        padding: 0;
-        align-items: flex-end;
+        padding: 0 !important;
+        align-items: flex-end !important;
+    }
+
+    .modal-dialog {
+        max-width: 100% !important;
+        width: 100% !important;
+        max-height: 90vh !important;
+        max-height: 90dvh !important;
+        border-radius: 20px 20px 0 0 !important;
+        border-bottom: none !important;
+        margin: 0 !important;
+        animation: modalMobileSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    @keyframes modalMobileSlideUp {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        padding: 1.1rem 1.25rem !important;
+    }
+
+    .modal-body {
+        padding: 1.1rem 1.25rem !important;
+        gap: 0.85rem !important;
+    }
+
+    .modal-footer {
+        padding: 0.85rem 1.25rem !important;
+        padding-bottom: max(0.85rem, env(safe-area-inset-bottom)) !important;
     }
 
     .modal-overlay .login-box {
         width: 100% !important;
         max-width: 100% !important;
-        max-height: 88vh;
+        max-height: 90vh !important;
+        max-height: 90dvh !important;
         border-radius: 20px 20px 0 0 !important;
-        overflow-y: auto;
+        border-bottom: none !important;
+        overflow-y: auto !important;
         padding: 1.5rem 1.25rem !important;
     }
 

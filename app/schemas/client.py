@@ -8,7 +8,8 @@ class AgencyClientBase(BaseModel):
     contact_name: Optional[str] = None
     contact_email: Optional[str] = None
     contact_phone: Optional[str] = None
-    service_type: Optional[str] = "design"  # "design", "web_design", "seo_ads", "complete"
+    service_type: Optional[str] = "design_subscription"  # "design_subscription", "web_subscription", "marketing_subscription", "single_service"
+    billing_period: Optional[str] = "monthly"  # "monthly", "annual"
     billing_day: Optional[int] = 1
     monthly_fee: Optional[float] = 0.0
     start_date: Optional[str] = None
@@ -28,6 +29,7 @@ class AgencyClientUpdate(BaseModel):
     contact_email: Optional[str] = None
     contact_phone: Optional[str] = None
     service_type: Optional[str] = None
+    billing_period: Optional[str] = None
     billing_day: Optional[int] = None
     monthly_fee: Optional[float] = None
     start_date: Optional[str] = None

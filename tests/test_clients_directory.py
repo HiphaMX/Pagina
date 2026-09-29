@@ -33,7 +33,8 @@ def test_clients_directory_crud():
         "contact_name": "Carlos Diseñador",
         "contact_email": "carlos@testcreativo.com",
         "contact_phone": "3331234567",
-        "service_type": "design",
+        "service_type": "design_subscription",
+        "billing_period": "monthly",
         "billing_day": 22,
         "monthly_fee": 8500.0,
         "start_date": "2024-05-15",
@@ -45,6 +46,8 @@ def test_clients_directory_crud():
     assert create_resp.status_code == 200, create_resp.text
     data = create_resp.json()
     assert data["name"] == "Cliente Test Creativo"
+    assert data["service_type"] == "design_subscription"
+    assert data["billing_period"] == "monthly"
     assert data["billing_day"] == 22
     assert data["monthly_fee"] == 8500.0
     client_id = data["id"]
@@ -56,15 +59,17 @@ def test_clients_directory_crud():
     names = [c["name"] for c in all_clients]
     assert "Cliente Test Creativo" in names
 
-    # 3. Actualizar cliente
+    # 3. Actualizar cliente a modalidad anual
     update_payload = {
-        "monthly_fee": 9500.0,
+        "monthly_fee": 95000.0,
+        "billing_period": "annual",
         "billing_day": 28
     }
     put_resp = client.put(f"/api/dashboard/clients/directory/{client_id}", json=update_payload)
     assert put_resp.status_code == 200
     updated_data = put_resp.json()
-    assert updated_data["monthly_fee"] == 9500.0
+    assert updated_data["monthly_fee"] == 95000.0
+    assert updated_data["billing_period"] == "annual"
     assert updated_data["billing_day"] == 28
 
     # 4. Eliminar cliente

@@ -77,6 +77,14 @@ def ensure_db_initialized():
     if not _tables_created:
         try:
             Base.metadata.create_all(bind=engine)
+            # Migración defensiva para columna billing_period si la tabla ya existía
+            try:
+                from sqlalchemy import text
+                with engine.connect() as conn:
+                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'"))
+                    conn.commit()
+            except Exception:
+                pass
             _tables_created = True
         except Exception as e:
             print(f"Warning: could not auto-create tables: {e}")

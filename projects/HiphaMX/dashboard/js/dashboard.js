@@ -767,6 +767,11 @@ function setupWorkflowElements() {
         });
     }
 
+    const btnCloseTaskModalX = document.getElementById('btnCloseTaskModalX');
+    if (btnCloseTaskModalX) {
+        btnCloseTaskModalX.addEventListener('click', closeWorkflowTaskModal);
+    }
+
     if (btnCancelTaskModal) {
         btnCancelTaskModal.addEventListener('click', closeWorkflowTaskModal);
     }
@@ -798,6 +803,7 @@ function setupWorkflowElements() {
     // Modal de Reporte Mensual / Por Rango de Fechas
     const btnOpenMonthlyReport = document.getElementById('btnOpenMonthlyReport');
     const btnCloseMonthlyReport = document.getElementById('btnCloseMonthlyReport');
+    const btnCloseMonthlyReportFooter = document.getElementById('btnCloseMonthlyReportFooter');
     const monthlyReportModal = document.getElementById('workflowMonthlyReportModal');
     const rptCutPreset = document.getElementById('rptCutPreset');
     const rptStartDate = document.getElementById('rptStartDate');
@@ -811,9 +817,34 @@ function setupWorkflowElements() {
     if (btnCloseMonthlyReport) {
         btnCloseMonthlyReport.addEventListener('click', closeMonthlyReportModal);
     }
+    if (btnCloseMonthlyReportFooter) {
+        btnCloseMonthlyReportFooter.addEventListener('click', closeMonthlyReportModal);
+    }
     if (monthlyReportModal) {
         monthlyReportModal.addEventListener('click', (e) => {
             if (e.target === monthlyReportModal) closeMonthlyReportModal();
+        });
+    }
+
+    // Manejador global de tecla Escape para cerrar cualquier modal abierto
+    if (!window._modalEscapeBound) {
+        window._modalEscapeBound = true;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModals = [
+                    { id: 'workflowTaskModal', close: closeWorkflowTaskModal },
+                    { id: 'workflowMonthlyReportModal', close: closeMonthlyReportModal },
+                    { id: 'clientModal', close: closeClientModal },
+                    { id: 'sendAgencyEmailModal', close: closeSendAgencyEmailModal }
+                ];
+                for (const m of openModals) {
+                    const el = document.getElementById(m.id);
+                    if (el && !el.classList.contains('hidden')) {
+                        m.close();
+                        break;
+                    }
+                }
+            }
         });
     }
     if (rptCutPreset) {
@@ -2164,12 +2195,29 @@ let clientsDirectoryData = [];
 let clientSearchTerm = '';
 let clientStatusFilter = 'active';
 let clientServiceFilter = 'all';
+let clientPeriodFilter = 'all';
 let currentEmailTargetClient = null;
+
+function updateClientModalBillingLabels() {
+    const selectPeriod = document.getElementById('clientInputBillingPeriod');
+    const lblFee = document.getElementById('lblClientFee');
+    const lblDay = document.getElementById('lblClientBillingDay');
+    const period = selectPeriod ? selectPeriod.value : 'monthly';
+
+    if (period === 'annual') {
+        if (lblFee) lblFee.textContent = 'Inversión Anual Total (MXN) *';
+        if (lblDay) lblDay.textContent = 'Día de Corte / Renovación (1-31) *';
+    } else {
+        if (lblFee) lblFee.textContent = 'Inversión Acordada (MXN) *';
+        if (lblDay) lblDay.textContent = 'Día de Corte (1-31) *';
+    }
+}
 
 function initClientsDirectoryModule() {
     const searchInput = document.getElementById('clientSearchInput');
     const statusSelect = document.getElementById('clientFilterStatus');
     const serviceSelect = document.getElementById('clientFilterService');
+    const periodSelect = document.getElementById('clientFilterPeriod');
     const btnNewClient = document.getElementById('btnOpenNewClientModal');
     const btnSendEmailGlobal = document.getElementById('btnOpenSendEmailGlobal');
     
@@ -2178,6 +2226,7 @@ function initClientsDirectoryModule() {
     const btnCancelClient = document.getElementById('btnCancelClientModal');
     const clientForm = document.getElementById('clientForm');
     const btnDeleteClient = document.getElementById('btnDeleteClient');
+    const selectBillingPeriod = document.getElementById('clientInputBillingPeriod');
 
     // Botones del Modal de Envío de Correo
     const btnCloseEmailX = document.getElementById('btnCloseSendEmailModalX');
@@ -2213,6 +2262,14 @@ function initClientsDirectoryModule() {
         });
     }
 
+    if (periodSelect && !periodSelect.dataset.bound) {
+        periodSelect.dataset.bound = 'true';
+        periodSelect.addEventListener('change', (e) => {
+            clientPeriodFilter = e.target.value;
+            renderClientsDirectory();
+        });
+    }
+
     if (btnNewClient && !btnNewClient.dataset.bound) {
         btnNewClient.dataset.bound = 'true';
         btnNewClient.addEventListener('click', () => openClientModal());
@@ -2238,6 +2295,20 @@ function initClientsDirectoryModule() {
         clientForm.addEventListener('submit', handleSaveClient);
     }
 
+    if (selectBillingPeriod && !selectBillingPeriod.dataset.bound) {
+        selectBillingPeriod.dataset.bound = 'true';
+        selectBillingPeriod.addEventListener('change', updateClientModalBillingLabels);
+    }
+
+    // Cerrar modal de cliente haciendo clic en el backdrop
+    const clientModalOverlay = document.getElementById('clientModal');
+    if (clientModalOverlay && !clientModalOverlay.dataset.bound) {
+        clientModalOverlay.dataset.bound = 'true';
+        clientModalOverlay.addEventListener('click', (e) => {
+            if (e.target === clientModalOverlay) closeClientModal();
+        });
+    }
+
     if (btnDeleteClient && !btnDeleteClient.dataset.bound) {
         btnDeleteClient.dataset.bound = 'true';
         btnDeleteClient.addEventListener('click', () => {
@@ -2254,6 +2325,15 @@ function initClientsDirectoryModule() {
     if (btnCancelEmail && !btnCancelEmail.dataset.bound) {
         btnCancelEmail.dataset.bound = 'true';
         btnCancelEmail.addEventListener('click', closeSendAgencyEmailModal);
+    }
+
+    // Cerrar modal de correo haciendo clic en el backdrop
+    const sendEmailOverlay = document.getElementById('sendAgencyEmailModal');
+    if (sendEmailOverlay && !sendEmailOverlay.dataset.bound) {
+        sendEmailOverlay.dataset.bound = 'true';
+        sendEmailOverlay.addEventListener('click', (e) => {
+            if (e.target === sendEmailOverlay) closeSendAgencyEmailModal();
+        });
     }
 
     if (sendEmailForm && !sendEmailForm.dataset.bound) {
@@ -2305,12 +2385,62 @@ async function loadClientsDirectory() {
     renderClientsDirectory();
 }
 
-function getNextCutoffInfo(billingDay) {
+function getNextCutoffInfo(billingDay, billingPeriod = 'monthly', startDateStr = null) {
     const day = parseInt(billingDay);
     if (!day || day < 1 || day > 31) {
         return { label: 'Sin corte fijo', daysUntil: 999, class: 'cutoff-normal', subtext: '' };
     }
     const now = new Date();
+    
+    // Modalidad Anual: Cálculo basado en aniversario de renovación
+    if (billingPeriod === 'annual') {
+        let renewalDate;
+        if (startDateStr && startDateStr.includes('-')) {
+            const parts = startDateStr.split('-');
+            const sMonth = parseInt(parts[1]) - 1;
+            const sDay = parseInt(parts[2]) || day;
+            const curYear = now.getFullYear();
+            renewalDate = new Date(curYear, sMonth, sDay);
+            if (renewalDate < now) {
+                renewalDate = new Date(curYear + 1, sMonth, sDay);
+            }
+        } else {
+            const curYear = now.getFullYear();
+            renewalDate = new Date(curYear, now.getMonth(), day);
+            if (renewalDate < now) {
+                renewalDate = new Date(curYear + 1, now.getMonth(), day);
+            }
+        }
+        
+        const diffMs = renewalDate.getTime() - now.getTime();
+        const daysUntil = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        const formattedRenewal = `${renewalDate.getDate()}/${renewalDate.getMonth() + 1}/${renewalDate.getFullYear()}`;
+        
+        if (daysUntil <= 7) {
+            return {
+                label: `🗓️ Renueva: ${formattedRenewal}`,
+                daysUntil,
+                class: 'cutoff-urgent',
+                subtext: daysUntil === 0 ? '¡Corte Anual Hoy!' : `¡Renovación en ${daysUntil} días!`
+            };
+        } else if (daysUntil <= 30) {
+            return {
+                label: `🗓️ Renueva: ${formattedRenewal}`,
+                daysUntil,
+                class: 'cutoff-soon',
+                subtext: `En ${daysUntil} días (Corte Anual)`
+            };
+        } else {
+            return {
+                label: `🗓️ Renueva: ${formattedRenewal}`,
+                daysUntil,
+                class: 'cutoff-normal',
+                subtext: `En ~${Math.round(daysUntil / 30)} meses`
+            };
+        }
+    }
+
+    // Modalidad Mensual recurrente
     const curYear = now.getFullYear();
     const curMonth = now.getMonth();
     const curDate = now.getDate();
@@ -2353,23 +2483,31 @@ function getNextCutoffInfo(billingDay) {
             label: `Día ${day}`,
             daysUntil,
             class: 'cutoff-normal',
-            subtext: `Cada día ${day}`
+            subtext: `Cada día ${day} del mes`
         };
     }
 }
 
 function getServiceTypeBadge(type) {
     switch (type) {
+        case 'design_subscription':
         case 'design':
-            return '<span class="badge-service design">🎨 Solo Diseño</span>';
+            return '<span class="badge-service design_subscription">🎨 Diseño / Suscripción</span>';
+        case 'web_subscription':
         case 'web_ads':
-            return '<span class="badge-service web_ads">🌐 Web & Publicidad</span>';
+        case 'web_design':
+            return '<span class="badge-service web_subscription">🌐 Web / Suscripción</span>';
+        case 'marketing_subscription':
         case 'consulting':
-            return '<span class="badge-service consulting">📱 Asesoría & Redes</span>';
+        case 'seo_ads':
+            return '<span class="badge-service marketing_subscription">📈 Marketing / Suscripción</span>';
+        case 'single_service':
         case 'integral':
-            return '<span class="badge-service integral">🚀 Retainer Integral</span>';
+        case 'one_time':
+        case 'other':
+            return '<span class="badge-service single_service">⚡ Otro / Servicio individual</span>';
         default:
-            return `<span class="badge-service design">${escapeHtml(type || 'Diseño')}</span>`;
+            return `<span class="badge-service single_service">${escapeHtml(type || 'Servicio')}</span>`;
     }
 }
 
@@ -2416,11 +2554,19 @@ function renderClientsDirectory() {
         const isActive = (c.status || 'active') === 'active';
         if (isActive) {
             activeCount++;
-            totalMrr += (parseFloat(c.monthly_fee) || 0);
-            if (c.service_type === 'design') {
+            const fee = parseFloat(c.monthly_fee) || 0;
+            // Prorrateo si es anual para MRR exacto
+            if (c.billing_period === 'annual') {
+                totalMrr += (fee / 12.0);
+            } else {
+                totalMrr += fee;
+            }
+
+            const sType = c.service_type || 'design_subscription';
+            if (sType === 'design_subscription' || sType === 'design') {
                 designOnlyCount++;
             }
-            const cutInfo = getNextCutoffInfo(c.billing_day);
+            const cutInfo = getNextCutoffInfo(c.billing_day, c.billing_period, c.start_date);
             if (cutInfo.daysUntil <= 7) {
                 upcomingCutoffs++;
             }
@@ -2444,9 +2590,21 @@ function renderClientsDirectory() {
         if (clientStatusFilter !== 'all' && (c.status || 'active') !== clientStatusFilter) {
             return false;
         }
-        // Filtro por servicio
-        if (clientServiceFilter !== 'all' && (c.service_type || 'design') !== clientServiceFilter) {
-            return false;
+        // Filtro por servicio con homologación
+        if (clientServiceFilter !== 'all') {
+            const rawType = c.service_type || 'design_subscription';
+            let normType = rawType;
+            if (rawType === 'design') normType = 'design_subscription';
+            else if (rawType === 'web_ads' || rawType === 'web_design') normType = 'web_subscription';
+            else if (rawType === 'consulting' || rawType === 'seo_ads') normType = 'marketing_subscription';
+            else if (rawType === 'integral' || rawType === 'one_time') normType = 'single_service';
+            
+            if (normType !== clientServiceFilter) return false;
+        }
+        // Filtro por modalidad de pago (Mensual vs Anual)
+        if (clientPeriodFilter !== 'all') {
+            const period = c.billing_period || 'monthly';
+            if (period !== clientPeriodFilter) return false;
         }
         // Búsqueda en texto
         if (clientSearchTerm) {
@@ -2467,7 +2625,7 @@ function renderClientsDirectory() {
                 <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">👥</div>
                 <h3 style="color: var(--text-main); font-size: 1.15rem; margin-bottom: 0.5rem;">No se encontraron clientes</h3>
                 <p style="font-size: 0.85rem; max-width: 420px; margin: 0 auto 1.25rem auto;">
-                    ${clientSearchTerm || clientStatusFilter !== 'all' || clientServiceFilter !== 'all' 
+                    ${clientSearchTerm || clientStatusFilter !== 'all' || clientServiceFilter !== 'all' || clientPeriodFilter !== 'all'
                         ? 'No hay registros que coincidan con los filtros aplicados. Intenta modificar los criterios de búsqueda.' 
                         : 'Aún no tienes clientes registrados en este módulo. Da de alta tu primer cliente para comenzar a dar seguimiento a sus fechas de corte y entregas.'}
                 </p>
@@ -2480,10 +2638,37 @@ function renderClientsDirectory() {
     }
 
     const rowsHtml = filtered.map(c => {
-        const cutInfo = getNextCutoffInfo(c.billing_day);
+        const cutInfo = getNextCutoffInfo(c.billing_day, c.billing_period, c.start_date);
         const serviceBadge = getServiceTypeBadge(c.service_type);
         const tenureHtml = formatClientTenure(c.start_date);
-        const feeHtml = `<strong style="color:${(c.status || 'active') === 'active' ? '#34d399' : 'var(--text-muted)'}; font-size:0.95rem;">${formatCurrencyMXN(c.monthly_fee)}</strong>`;
+        const feeVal = parseFloat(c.monthly_fee) || 0;
+        const feeColor = (c.status || 'active') === 'active' ? '#34d399' : 'var(--text-muted)';
+        const isAnnual = (c.billing_period === 'annual');
+
+        let feeDisplayHtml = '';
+        if (isAnnual) {
+            const monthlyEquiv = Math.round(feeVal / 12);
+            feeDisplayHtml = `
+                <div>
+                    <strong style="color:${feeColor}; font-size:0.95rem;">${formatCurrencyMXN(feeVal)}</strong>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">/ año</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.35rem; margin-top:3px;">
+                    <span class="badge-period annual">🗓️ Anual</span>
+                    <span style="font-size:0.7rem; color:var(--text-muted);">~$${monthlyEquiv.toLocaleString('es-MX')}/mes</span>
+                </div>
+            `;
+        } else {
+            feeDisplayHtml = `
+                <div>
+                    <strong style="color:${feeColor}; font-size:0.95rem;">${formatCurrencyMXN(feeVal)}</strong>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">/ mes</span>
+                </div>
+                <div style="margin-top:3px;">
+                    <span class="badge-period monthly">📅 Mensual</span>
+                </div>
+            `;
+        }
 
         let statusClass = 'active';
         let statusLabel = 'Activo';
@@ -2546,11 +2731,10 @@ function renderClientsDirectory() {
                         <span>${cutInfo.label}</span>
                         ${cutInfo.subtext ? `<span class="cutoff-subtext">${cutInfo.subtext}</span>` : ''}
                     </div>
-                    <div style="font-size:0.68rem; color:var(--text-muted); margin-top:3px;">Mes por adelantado</div>
+                    <div style="font-size:0.68rem; color:var(--text-muted); margin-top:3px;">${isAnnual ? 'Renovación anual' : 'Mes por adelantado'}</div>
                 </td>
                 <td>
-                    ${feeHtml}
-                    <div style="font-size:0.7rem; color:var(--text-muted);">Suscripción Mensual</div>
+                    ${feeDisplayHtml}
                 </td>
                 <td>
                     ${tenureHtml}
@@ -2588,8 +2772,8 @@ function renderClientsDirectory() {
                 <tr>
                     <th>Cliente / Marca</th>
                     <th>Servicio</th>
-                    <th>Fecha de Corte</th>
-                    <th>Inversión Mensual</th>
+                    <th>Fecha de Corte / Renovación</th>
+                    <th>Inversión & Modalidad</th>
                     <th>Inicio / Antigüedad</th>
                     <th>Contacto</th>
                     <th>Estatus</th>
@@ -2614,6 +2798,7 @@ function openClientModal(clientId = null) {
     const inputEmail = document.getElementById('clientInputContactEmail');
     const inputPhone = document.getElementById('clientInputContactPhone');
     const selectService = document.getElementById('clientInputServiceType');
+    const selectPeriod = document.getElementById('clientInputBillingPeriod');
     const inputBilling = document.getElementById('clientInputBillingDay');
     const inputFee = document.getElementById('clientInputMonthlyFee');
     const inputStart = document.getElementById('clientInputStartDate');
@@ -2630,7 +2815,16 @@ function openClientModal(clientId = null) {
             inputContact.value = client.contact_name || '';
             inputEmail.value = client.contact_email || '';
             inputPhone.value = client.contact_phone || '';
-            selectService.value = client.service_type || 'design';
+            
+            // Homologación de servicio
+            let sType = client.service_type || 'design_subscription';
+            if (sType === 'design') sType = 'design_subscription';
+            else if (sType === 'web_ads' || sType === 'web_design') sType = 'web_subscription';
+            else if (sType === 'consulting' || sType === 'seo_ads') sType = 'marketing_subscription';
+            else if (sType === 'integral' || sType === 'one_time') sType = 'single_service';
+            selectService.value = sType;
+
+            if (selectPeriod) selectPeriod.value = client.billing_period || 'monthly';
             inputBilling.value = client.billing_day || 1;
             inputFee.value = client.monthly_fee || 0;
             inputStart.value = client.start_date || '';
@@ -2646,7 +2840,8 @@ function openClientModal(clientId = null) {
         inputContact.value = '';
         inputEmail.value = '';
         inputPhone.value = '';
-        selectService.value = 'design';
+        selectService.value = 'design_subscription';
+        if (selectPeriod) selectPeriod.value = 'monthly';
         inputBilling.value = 1;
         inputFee.value = '';
         inputStart.value = new Date().toISOString().split('T')[0];
@@ -2656,6 +2851,7 @@ function openClientModal(clientId = null) {
         if (btnDelete) btnDelete.classList.add('hidden');
     }
 
+    updateClientModalBillingLabels();
     if (modal) modal.classList.remove('hidden');
 }
 
@@ -2671,7 +2867,8 @@ async function handleSaveClient(e) {
     const contact_name = (document.getElementById('clientInputContactName').value || '').trim();
     const contact_email = (document.getElementById('clientInputContactEmail').value || '').trim();
     const contact_phone = (document.getElementById('clientInputContactPhone').value || '').trim();
-    const service_type = document.getElementById('clientInputServiceType').value || 'design';
+    const service_type = document.getElementById('clientInputServiceType').value || 'design_subscription';
+    const billing_period = document.getElementById('clientInputBillingPeriod') ? document.getElementById('clientInputBillingPeriod').value : 'monthly';
     const billing_day = parseInt(document.getElementById('clientInputBillingDay').value) || 1;
     const monthly_fee = parseFloat(document.getElementById('clientInputMonthlyFee').value) || 0.0;
     const start_date = document.getElementById('clientInputStartDate').value || null;
@@ -2690,6 +2887,7 @@ async function handleSaveClient(e) {
         contact_email: contact_email || null,
         contact_phone: contact_phone || null,
         service_type,
+        billing_period,
         billing_day,
         monthly_fee,
         start_date: start_date || null,
@@ -2831,17 +3029,45 @@ function applyEmailTemplate(type) {
     const feeStr = client && client.monthly_fee ? formatCurrencyMXN(client.monthly_fee) : '$6,500 MXN';
 
     if (type === 'billing') {
-        if (inputSubject) inputSubject.value = `Aviso de fecha de corte y renovación mensual (${clientName}) • Hipha`;
-        if (inputBody) {
-            inputBody.value = 
+        const isAnnual = client && client.billing_period === 'annual';
+        if (isAnnual) {
+            if (inputSubject) inputSubject.value = `Aviso de renovación de suscripción anual (${clientName}) • Hipha`;
+            if (inputBody) {
+                inputBody.value = 
 `Hola ${contactName},
 
 Esperamos que te encuentres excelente.
 
-Te saludamos de Hipha MX para compartirte el aviso de renovación de tu retainer correspondiente al siguiente período mensual.
+Te saludamos de Hipha MX para compartirte el aviso de renovación correspondiente a la suscripción anual de ${clientName}.
+
+📋 DETALLE DE SUSCRIPCIÓN ANUAL:
+• Cuenta: ${clientName}
+• Modalidad: Anual (Pago único anual / cobertura por 12 meses)
+• Fecha de corte / renovación: Día ${billingDay}
+• Inversión acordada: ${feeStr}
+• Esquema: Pago anual por adelantado (para reserva garantizada de capacidad y agenda preferente)
+
+Si requieres que te emitamos la factura con anticipación o deseas revisar los objetivos y requerimientos para este nuevo ciclo, con gusto estamos a tu entera disposición.
+
+¡Agradecemos mucho tu confianza y nos entusiasma seguir colaborando juntos!
+
+Saludos cordiales,
+Equipo Hipha MX
+hola@hipha.mx`;
+            }
+        } else {
+            if (inputSubject) inputSubject.value = `Aviso de fecha de corte y renovación mensual (${clientName}) • Hipha`;
+            if (inputBody) {
+                inputBody.value = 
+`Hola ${contactName},
+
+Esperamos que te encuentres excelente.
+
+Te saludamos de Hipha MX para compartirte el aviso de renovación de tu suscripción mensual correspondiente al siguiente período.
 
 📋 DETALLE DE SUSCRIPCIÓN:
 • Cuenta: ${clientName}
+• Modalidad: Mensual recurrente
 • Fecha de corte: Día ${billingDay} del mes en curso
 • Inversión mensual: ${feeStr}
 • Esquema: Mes por adelantado (para reserva garantizada de capacidad y agenda de diseño)
@@ -2853,6 +3079,7 @@ Si requieres que te emitamos la factura con anticipación o tienes alguna duda o
 Saludos cordiales,
 Equipo Hipha MX
 hola@hipha.mx`;
+            }
         }
     } else if (type === 'delivery') {
         if (inputSubject) inputSubject.value = `Entrega de piezas y avances de diseño (${clientName}) • Hipha`;
