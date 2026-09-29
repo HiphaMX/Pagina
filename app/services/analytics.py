@@ -118,19 +118,18 @@ def get_discovered_clients():
 
 def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date: str = "today"):
     """Obtiene métricas básicas (nuevos usuarios, total usuarios, vistas) para un periodo dado."""
-    client = get_ga4_client()
-    request = RunReportRequest(
-        property=f"properties/{property_id}",
-        dimensions=[Dimension(name="date")],
-        metrics=[
-            Metric(name="newUsers"),
-            Metric(name="activeUsers"),
-            Metric(name="screenPageViews")
-        ],
-        date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
-    )
-    
     try:
+        client = get_ga4_client()
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            dimensions=[Dimension(name="date")],
+            metrics=[
+                Metric(name="newUsers"),
+                Metric(name="activeUsers"),
+                Metric(name="screenPageViews")
+            ],
+            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+        )
         response = client.run_report(request)
         
         # Procesar resultados para gráficas
@@ -173,16 +172,15 @@ def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date:
 
 def get_top_sections(property_id: str, start_date: str = "30daysAgo", end_date: str = "today", limit: int = 10):
     """Obtiene las 10 secciones más visitadas."""
-    client = get_ga4_client()
-    request = RunReportRequest(
-        property=f"properties/{property_id}",
-        dimensions=[Dimension(name="pageTitle"), Dimension(name="pagePath")],
-        metrics=[Metric(name="screenPageViews")],
-        date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
-        limit=limit
-    )
-    
     try:
+        client = get_ga4_client()
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            dimensions=[Dimension(name="pageTitle"), Dimension(name="pagePath")],
+            metrics=[Metric(name="screenPageViews")],
+            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+            limit=limit
+        )
         response = client.run_report(request)
         results = []
         for row in response.rows:
@@ -193,21 +191,20 @@ def get_top_sections(property_id: str, start_date: str = "30daysAgo", end_date: 
             })
         return results
     except Exception as e:
-         print(f"Error fetching top sections for property {property_id}: {str(e)}")
-         return []
+        print(f"Error fetching top sections for property {property_id}: {str(e)}")
+        return []
 
 def get_traffic_sources(property_id: str, start_date: str = "30daysAgo", end_date: str = "today", limit: int = 5):
     """Obtiene los orígenes de tráfico principales."""
-    client = get_ga4_client()
-    request = RunReportRequest(
-        property=f"properties/{property_id}",
-        dimensions=[Dimension(name="sessionSource")],
-        metrics=[Metric(name="screenPageViews")],
-        date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
-        limit=limit
-    )
-    
     try:
+        client = get_ga4_client()
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            dimensions=[Dimension(name="sessionSource")],
+            metrics=[Metric(name="screenPageViews")],
+            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+            limit=limit
+        )
         response = client.run_report(request)
         results = []
         for row in response.rows:
@@ -220,5 +217,5 @@ def get_traffic_sources(property_id: str, start_date: str = "30daysAgo", end_dat
             })
         return results
     except Exception as e:
-         print(f"Error fetching traffic sources for property {property_id}: {str(e)}")
-         return []
+        print(f"Error fetching traffic sources for property {property_id}: {str(e)}")
+        return []

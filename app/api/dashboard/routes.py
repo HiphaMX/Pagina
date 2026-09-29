@@ -77,24 +77,38 @@ def get_dashboard_overview(
     Recorre todos los clientes para obtener su resumen general.
     Ejecuta las llamadas a Google Analytics en paralelo para respuesta ultra-rápida.
     """
-    clients = get_discovered_clients()
+    try:
+        clients = get_discovered_clients()
 
-    def fetch_client(item):
-        client_name, prop_id = item
-        data = get_basic_metrics(prop_id, start_date, end_date)
-        return {
-            "name": client_name,
-            "property_id": prop_id,
-            "summary": data.get("summary", {}),
-            "trend": data.get("trend", [])
-        }
+        def fetch_client(item):
+            client_name, prop_id = item
+            try:
+                data = get_basic_metrics(prop_id, start_date, end_date)
+                return {
+                    "name": client_name,
+                    "property_id": prop_id,
+                    "summary": data.get("summary", {"newUsers": 0, "activeUsers": 0, "views": 0}),
+                    "trend": data.get("trend", [])
+                }
+            except Exception as e:
+                print(f"Error procesando cliente {client_name} ({prop_id}): {e}")
+                return {
+                    "name": client_name,
+                    "property_id": prop_id,
+                    "summary": {"newUsers": 0, "activeUsers": 0, "views": 0},
+                    "trend": [],
+                    "error": str(e)
+                }
 
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        overview_data = list(executor.map(fetch_client, clients.items()))
-        
-    # Ordenar por nuevos usuarios de mayor a menor
-    overview_data.sort(key=lambda x: x["summary"].get("newUsers", 0), reverse=True)
-    return {"data": overview_data}
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            overview_data = list(executor.map(fetch_client, clients.items()))
+            
+        # Ordenar por nuevos usuarios de mayor a menor
+        overview_data.sort(key=lambda x: x.get("summary", {}).get("newUsers", 0), reverse=True)
+        return {"data": overview_data}
+    except Exception as e:
+        print(f"Error general en get_dashboard_overview: {e}")
+        return {"data": [], "error": str(e)}
 
 @router.get("/metrics/client/{property_id}")
 def get_client_details(
@@ -104,28 +118,37 @@ def get_client_details(
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """Obtiene el detalle completo para un solo cliente."""
-    # Buscar el nombre del cliente
-    clients = get_discovered_clients()
-    client_name = next((name for name, pid in clients.items() if pid == property_id), "Desconocido")
-    
-    metrics_data = get_basic_metrics(property_id, start_date, end_date)
-    top_sections = get_top_sections(property_id, start_date, end_date)
-    traffic_sources = get_traffic_sources(property_id, start_date, end_date)
-    
-    return {
-        "client": {
-            "name": client_name,
-            "property_id": property_id
-        },
-        "period": {
-            "start": start_date,
-            "end": end_date
-        },
-        "metrics": metrics_data,
-        "top_sections": top_sections,
-        "traffic_sources": traffic_sources
-        # Aquí después agregaremos eventos de FB/IG y clics a botones
-    }
+    try:
+        clients = get_discovered_clients()
+        client_name = next((name for name, pid in clients.items() if pid == property_id), "Desconocido")
+        
+        metrics_data = get_basic_metrics(property_id, start_date, end_date)
+        top_sections = get_top_sections(property_id, start_date, end_date)
+        traffic_sources = get_traffic_sources(property_id, start_date, end_date)
+        
+        return {
+            "client": {
+                "name": client_name,
+                "property_id": property_id
+            },
+            "period": {
+                "start": start_date,
+                "end": end_date
+            },
+            "metrics": metrics_data,
+            "top_sections": top_sections,
+            "traffic_sources": traffic_sources
+        }
+    except Exception as e:
+        print(f"Error general en get_client_details para {property_id}: {e}")
+        return {
+            "client": {"name": "Desconocido", "property_id": property_id},
+            "period": {"start": start_date, "end": end_date},
+            "metrics": {"summary": {"newUsers": 0, "activeUsers": 0, "views": 0}, "trend": []},
+            "top_sections": [],
+            "traffic_sources": [],
+            "error": str(e)
+        }
 
 @router.get("/chilechillon/quiniela/export")
 def export_chilechillon_leads(db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_active_user)):

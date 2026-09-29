@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
@@ -25,12 +25,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    print(f"❌ Excepción no manejada en {request.method} {request.url.path}: {exc}")
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Error interno del servidor", "error": str(exc)}
+    )
+
+@app.get("/api/health")
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "hiphamx-fastapi"}
 
 @app.on_event("startup")
 def startup_db_setup():
     print("Iniciando base de datos y tablas...")
-    # Crear tablas si no existen
-    Base.metadata.create_all(bind=engine)
+    # Crear tablas si no existen de forma protegida
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✓ Tablas de base de datos verificadas/creadas.")
+    except Exception as edb:
+        print(f"⚠️ Advertencia inicializando tablas de base de datos: {edb}")
     
     # Auto-migración segura de columnas adicionales para workflow_tasks
     try:
@@ -52,54 +70,57 @@ def startup_db_setup():
         print(f"Nota: Auto-migración de workflow_tasks omitida o completada: {em}")
     
     # Sembrar usuario administrador por defecto
-    db = SessionLocal()
     try:
-        admin_email = "hola@hipha.mx"
-        admin_user = db.query(User).filter(User.email == admin_email).first()
-        if not admin_user:
-            print("Sembrando usuario administrador por defecto...")
-            admin_password = os.environ.get("ADMIN_PASSWORD", "Celi@ThePug2026")
-            hashed_password = get_password_hash(admin_password)
-            new_admin = User(
-                email=admin_email,
-                hashed_password=hashed_password,
-                full_name="Administrador Hipha",
-                is_active=True
-            )
-            db.add(new_admin)
-            db.commit()
-            print("✓ Usuario administrador sembrado con éxito.")
-        else:
-            print("✓ El usuario administrador ya existe.")
+        db = SessionLocal()
+        try:
+            admin_email = "hola@hipha.mx"
+            admin_user = db.query(User).filter(User.email == admin_email).first()
+            if not admin_user:
+                print("Sembrando usuario administrador por defecto...")
+                admin_password = os.environ.get("ADMIN_PASSWORD", "Celi@ThePug2026")
+                hashed_password = get_password_hash(admin_password)
+                new_admin = User(
+                    email=admin_email,
+                    hashed_password=hashed_password,
+                    full_name="Administrador Hipha",
+                    is_active=True
+                )
+                db.add(new_admin)
+                db.commit()
+                print("✓ Usuario administrador sembrado con éxito.")
+            else:
+                print("✓ El usuario administrador ya existe.")
+        finally:
+            db.close()
     except Exception as e:
         print(f"❌ Error durante la siembra de base de datos: {str(e)}")
-        db.rollback()
-    finally:
-        db.close()
 
     # Escribir secretos de Google Analytics si estamos en Vercel
-    if os.environ.get("VERCEL") == "1":
-        print("Configurando secretos de Google Analytics en /tmp...")
-        secrets_dir = "/tmp/.secrets"
-        os.makedirs(secrets_dir, exist_ok=True)
-        
-        # Leer el contenido de las variables de entorno
-        ga_token = os.environ.get("GA_TOKEN_JSON")
-        ga_client_secret = os.environ.get("GA_CLIENT_SECRET_JSON")
-        
-        if ga_token:
-            with open(os.path.join(secrets_dir, "token.json"), "w") as f:
-                f.write(ga_token)
-            print("✓ token.json configurado con éxito en /tmp.")
-        else:
-            print("⚠️ Advertencia: GA_TOKEN_JSON no está configurado en las variables de entorno.")
+    try:
+        if os.environ.get("VERCEL") == "1":
+            print("Configurando secretos de Google Analytics en /tmp...")
+            secrets_dir = "/tmp/.secrets"
+            os.makedirs(secrets_dir, exist_ok=True)
             
-        if ga_client_secret:
-            with open(os.path.join(secrets_dir, "client_secret.json"), "w") as f:
-                f.write(ga_client_secret)
-            print("✓ client_secret.json configurado con éxito en /tmp.")
-        else:
-            print("⚠️ Advertencia: GA_CLIENT_SECRET_JSON no está configurado en las variables de entorno.")
+            # Leer el contenido de las variables de entorno
+            ga_token = os.environ.get("GA_TOKEN_JSON")
+            ga_client_secret = os.environ.get("GA_CLIENT_SECRET_JSON")
+            
+            if ga_token:
+                with open(os.path.join(secrets_dir, "token.json"), "w") as f:
+                    f.write(ga_token)
+                print("✓ token.json configurado con éxito en /tmp.")
+            else:
+                print("⚠️ Advertencia: GA_TOKEN_JSON no está configurado en las variables de entorno.")
+                
+            if ga_client_secret:
+                with open(os.path.join(secrets_dir, "client_secret.json"), "w") as f:
+                    f.write(ga_client_secret)
+                print("✓ client_secret.json configurado con éxito en /tmp.")
+            else:
+                print("⚠️ Advertencia: GA_CLIENT_SECRET_JSON no está configurado en las variables de entorno.")
+    except Exception as e:
+        print(f"⚠️ Error configurando secretos en /tmp: {e}")
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
