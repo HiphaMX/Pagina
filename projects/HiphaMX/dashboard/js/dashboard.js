@@ -2738,7 +2738,6 @@ function renderClientsDirectory() {
     const rowsHtml = filtered.map(c => {
         const cutInfo = getNextCutoffInfo(c.billing_day, c.billing_period, c.start_date);
         const serviceBadge = getServiceTypeBadge(c.service_type);
-        const tenureHtml = formatClientTenure(c.start_date);
         const feeVal = parseFloat(c.monthly_fee) || 0;
         const feeColor = (c.status || 'active') === 'active' ? '#34d399' : 'var(--text-muted)';
         const isAnnual = (c.billing_period === 'annual');
@@ -2866,15 +2865,6 @@ function renderClientsDirectory() {
                     ${feeDisplayHtml}
                 </td>
                 <td>
-                    ${tenureHtml}
-                </td>
-                <td>
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        ${c.contact_email ? `<span style="font-size:0.8rem; color:var(--text-main);">${escapeHtml(c.contact_email)}</span>` : ''}
-                        ${c.contact_phone ? `<span style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(c.contact_phone)}</span>` : ''}
-                    </div>
-                </td>
-                <td>
                     <span class="badge-client-status ${statusClass}">
                         ${statusLabel}
                     </span>
@@ -2903,8 +2893,6 @@ function renderClientsDirectory() {
                     <th>Servicio</th>
                     <th>Fecha de Corte / Renovación</th>
                     <th>Inversión & Modalidad</th>
-                    <th>Inicio / Antigüedad</th>
-                    <th>Contacto</th>
                     <th>Estatus</th>
                     <th style="text-align:center;">Acciones</th>
                 </tr>
