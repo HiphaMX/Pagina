@@ -410,6 +410,11 @@
                                 <option value="monthly">📅 Mensual</option>
                                 <option value="annual">🗓️ Anual</option>
                             </select>
+                            <select id="clientFilterInvoice" class="filter-select">
+                                <option value="all">Todas las facturaciones</option>
+                                <option value="invoice">📄 Con Factura (+IVA)</option>
+                                <option value="no_invoice">🚫 Sin Factura</option>
+                            </select>
                         </div>
 
                         <div class="clients-btn-group">
@@ -700,6 +705,65 @@
                     <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
                         <label id="lblClientFee" for="clientInputMonthlyFee" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Inversión Acordada (MXN) *</label>
                         <input type="number" id="clientInputMonthlyFee" min="0" step="100" placeholder="Ej. 6500" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    </div>
+                </div>
+
+                <!-- Configuración Fiscal y Facturación CFDI -->
+                <div class="client-fiscal-box" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:0.85rem; margin-top:0.1rem;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
+                        <div>
+                            <span style="font-size:0.85rem; font-weight:600; color:var(--text-main); display:flex; align-items:center; gap:0.4rem;">
+                                <span>🧾 Régimen de Facturación</span>
+                            </span>
+                            <span style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:1px;">¿El cliente requiere CFDI para deducibilidad?</span>
+                        </div>
+                        <div style="display:inline-flex; border:1px solid var(--border-color); border-radius:8px; overflow:hidden; background:var(--bg-panel);">
+                            <button type="button" id="btnInvoiceNo" class="btn-invoice-toggle active" onclick="setClientInvoiceRequired(false)">
+                                🚫 No requiere
+                            </button>
+                            <button type="button" id="btnInvoiceYes" class="btn-invoice-toggle" onclick="setClientInvoiceRequired(true)">
+                                📄 Sí requiere (+16% IVA)
+                            </button>
+                        </div>
+                        <input type="hidden" id="clientInputRequiresInvoice" value="false">
+                    </div>
+
+                    <!-- Opciones adicionales de retención ISR (si requiere factura) -->
+                    <div id="clientTaxOptionsContainer" class="hidden" style="border-top:1px dashed var(--border-color); padding-top:0.65rem; margin-top:0.6rem;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
+                            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.82rem; color:var(--text-main); user-select:none;">
+                                <input type="checkbox" id="clientInputApplyTaxRetention" style="width:16px; height:16px; accent-color:var(--accent-cyan); cursor:pointer;">
+                                <span>Aplica <strong>Retención de ISR</strong> (Persona Moral)</span>
+                            </label>
+                            <div id="retentionRateWrapper" class="hidden" style="display:inline-flex; align-items:center; gap:0.35rem;">
+                                <span style="font-size:0.75rem; color:var(--text-muted);">Tasa ISR:</span>
+                                <input type="number" id="clientInputTaxRetentionRate" value="1.25" min="0" max="35" step="0.05" style="width:75px; background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.35rem 0.5rem; border-radius:6px; font-size:0.8rem; text-align:right;">
+                                <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">%</span>
+                            </div>
+                        </div>
+                        <p style="font-size:0.72rem; color:var(--text-muted); margin-top:0.35rem; margin-bottom:0;">
+                            💡 Personas Morales que pagan a Personas Físicas (RESICO): retienen el 1.25% de ISR sobre el monto base.
+                        </p>
+                    </div>
+
+                    <!-- Desglose de Facturación e Ingreso Neto -->
+                    <div id="clientTaxBreakdownCard" style="background:rgba(0,0,0,0.25); border-radius:8px; padding:0.65rem 0.85rem; margin-top:0.65rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:0.6rem; font-size:0.78rem;">
+                        <div>
+                            <span style="color:var(--text-muted); display:block; font-size:0.7rem;">Subtotal Base:</span>
+                            <strong id="taxPreviewBase" style="color:var(--text-main); font-size:0.9rem;">$0 MXN</strong>
+                        </div>
+                        <div>
+                            <span style="color:var(--text-muted); display:block; font-size:0.7rem;">(+) IVA (16%):</span>
+                            <strong id="taxPreviewIva" style="color:#60a5fa; font-size:0.9rem;">$0 MXN</strong>
+                        </div>
+                        <div>
+                            <span style="color:var(--text-muted); display:block; font-size:0.7rem;">(-) Ret. ISR:</span>
+                            <strong id="taxPreviewIsr" style="color:#f87171; font-size:0.9rem;">$0 MXN</strong>
+                        </div>
+                        <div>
+                            <span style="color:var(--text-muted); display:block; font-size:0.7rem;">(=) Total a Cobrar:</span>
+                            <strong id="taxPreviewTotal" style="color:#34d399; font-size:0.95rem;">$0 MXN</strong>
+                        </div>
                     </div>
                 </div>
 

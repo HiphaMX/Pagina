@@ -1584,6 +1584,59 @@ select {
     border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
+/* Toggle de Facturación en Modal de Cliente */
+.btn-invoice-toggle {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.btn-invoice-toggle:hover {
+    color: var(--text-main);
+}
+
+.btn-invoice-toggle.active {
+    background: var(--accent-cyan);
+    color: #101729;
+    font-weight: 600;
+}
+
+/* Badges Fiscales de Facturación en Tabla */
+.badge-invoice {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-invoice.invoice-yes {
+    background: rgba(96, 165, 250, 0.12);
+    color: #93c5fd;
+    border: 1px solid rgba(96, 165, 250, 0.25);
+}
+
+.badge-invoice.invoice-pm {
+    background: rgba(168, 85, 247, 0.14);
+    color: #d8b4fe;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.badge-invoice.invoice-no {
+    background: rgba(148, 163, 184, 0.1);
+    color: var(--text-muted);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
 /* Badges de Corte de Facturación */
 .badge-cutoff {
     padding: 0.35rem 0.75rem;

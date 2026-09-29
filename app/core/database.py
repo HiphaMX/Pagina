@@ -77,11 +77,30 @@ def ensure_db_initialized():
     if not _tables_created:
         try:
             Base.metadata.create_all(bind=engine)
-            # Migración defensiva para columna billing_period si la tabla ya existía
+            # Migración defensiva para columnas adicionales si la tabla ya existía
             try:
                 from sqlalchemy import text
                 with engine.connect() as conn:
-                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'"))
+                    # billing_period
+                    try:
+                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'"))
+                    except Exception:
+                        pass
+                    # requires_invoice
+                    try:
+                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT 0"))
+                    except Exception:
+                        pass
+                    # apply_tax_retention
+                    try:
+                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT 0"))
+                    except Exception:
+                        pass
+                    # tax_retention_rate
+                    try:
+                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25"))
+                    except Exception:
+                        pass
                     conn.commit()
             except Exception:
                 pass

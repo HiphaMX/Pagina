@@ -12,6 +12,9 @@ class AgencyClientBase(BaseModel):
     billing_period: Optional[str] = "monthly"  # "monthly", "annual"
     billing_day: Optional[int] = 1
     monthly_fee: Optional[float] = 0.0
+    requires_invoice: Optional[bool] = False
+    apply_tax_retention: Optional[bool] = False
+    tax_retention_rate: Optional[float] = 1.25
     start_date: Optional[str] = None
     status: Optional[str] = "active"
     website_url: Optional[str] = None
@@ -32,6 +35,9 @@ class AgencyClientUpdate(BaseModel):
     billing_period: Optional[str] = None
     billing_day: Optional[int] = None
     monthly_fee: Optional[float] = None
+    requires_invoice: Optional[bool] = None
+    apply_tax_retention: Optional[bool] = None
+    tax_retention_rate: Optional[float] = None
     start_date: Optional[str] = None
     status: Optional[str] = None
     website_url: Optional[str] = None

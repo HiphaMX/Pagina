@@ -27,7 +27,7 @@ def setup_db_and_auth():
 
 
 def test_clients_directory_crud():
-    # 1. Crear nuevo cliente
+    # 1. Crear nuevo cliente con requerimiento de factura e ISR
     payload = {
         "name": "Cliente Test Creativo",
         "contact_name": "Carlos Diseñador",
@@ -37,6 +37,9 @@ def test_clients_directory_crud():
         "billing_period": "monthly",
         "billing_day": 22,
         "monthly_fee": 8500.0,
+        "requires_invoice": True,
+        "apply_tax_retention": True,
+        "tax_retention_rate": 1.25,
         "start_date": "2024-05-15",
         "status": "active",
         "notes": "Cliente solo de diseño mensual, corte día 22"
@@ -50,6 +53,9 @@ def test_clients_directory_crud():
     assert data["billing_period"] == "monthly"
     assert data["billing_day"] == 22
     assert data["monthly_fee"] == 8500.0
+    assert data["requires_invoice"] is True
+    assert data["apply_tax_retention"] is True
+    assert data["tax_retention_rate"] == 1.25
     client_id = data["id"]
 
     # 2. Listar clientes y verificar que aparezca
@@ -59,11 +65,13 @@ def test_clients_directory_crud():
     names = [c["name"] for c in all_clients]
     assert "Cliente Test Creativo" in names
 
-    # 3. Actualizar cliente a modalidad anual
+    # 3. Actualizar cliente a modalidad anual y sin retención
     update_payload = {
         "monthly_fee": 95000.0,
         "billing_period": "annual",
-        "billing_day": 28
+        "billing_day": 28,
+        "requires_invoice": False,
+        "apply_tax_retention": False
     }
     put_resp = client.put(f"/api/dashboard/clients/directory/{client_id}", json=update_payload)
     assert put_resp.status_code == 200
@@ -71,6 +79,8 @@ def test_clients_directory_crud():
     assert updated_data["monthly_fee"] == 95000.0
     assert updated_data["billing_period"] == "annual"
     assert updated_data["billing_day"] == 28
+    assert updated_data["requires_invoice"] is False
+    assert updated_data["apply_tax_retention"] is False
 
     # 4. Eliminar cliente
     del_resp = client.delete(f"/api/dashboard/clients/directory/{client_id}")

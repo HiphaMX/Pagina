@@ -2196,6 +2196,7 @@ let clientSearchTerm = '';
 let clientStatusFilter = 'active';
 let clientServiceFilter = 'all';
 let clientPeriodFilter = 'all';
+let clientInvoiceFilter = 'all';
 let currentEmailTargetClient = null;
 
 function updateClientModalBillingLabels() {
@@ -2213,11 +2214,69 @@ function updateClientModalBillingLabels() {
     }
 }
 
+function setClientInvoiceRequired(required) {
+    const inputHidden = document.getElementById('clientInputRequiresInvoice');
+    const btnNo = document.getElementById('btnInvoiceNo');
+    const btnYes = document.getElementById('btnInvoiceYes');
+    const taxOptions = document.getElementById('clientTaxOptionsContainer');
+
+    if (inputHidden) inputHidden.value = required ? 'true' : 'false';
+
+    if (btnNo && btnYes) {
+        if (required) {
+            btnYes.classList.add('active');
+            btnNo.classList.remove('active');
+            if (taxOptions) taxOptions.classList.remove('hidden');
+        } else {
+            btnNo.classList.add('active');
+            btnYes.classList.remove('active');
+            if (taxOptions) taxOptions.classList.add('hidden');
+        }
+    }
+
+    updateClientTaxBreakdown();
+}
+
+function updateClientTaxBreakdown() {
+    const inputFee = document.getElementById('clientInputMonthlyFee');
+    const inputHidden = document.getElementById('clientInputRequiresInvoice');
+    const chkRetention = document.getElementById('clientInputApplyTaxRetention');
+    const inputRate = document.getElementById('clientInputTaxRetentionRate');
+
+    const previewBase = document.getElementById('taxPreviewBase');
+    const previewIva = document.getElementById('taxPreviewIva');
+    const previewIsr = document.getElementById('taxPreviewIsr');
+    const previewTotal = document.getElementById('taxPreviewTotal');
+
+    const fee = parseFloat(inputFee ? inputFee.value : 0) || 0;
+    const requiresInvoice = inputHidden ? inputHidden.value === 'true' : false;
+    const applyRetention = chkRetention ? chkRetention.checked : false;
+    const retentionRate = parseFloat(inputRate ? inputRate.value : 1.25) || 0;
+
+    let iva = 0;
+    let isrRetention = 0;
+    let total = fee;
+
+    if (requiresInvoice) {
+        iva = Math.round(fee * 0.16 * 100) / 100;
+        if (applyRetention) {
+            isrRetention = Math.round(fee * (retentionRate / 100.0) * 100) / 100;
+        }
+        total = Math.round((fee + iva - isrRetention) * 100) / 100;
+    }
+
+    if (previewBase) previewBase.textContent = formatCurrencyMXN(fee);
+    if (previewIva) previewIva.textContent = requiresInvoice ? `+${formatCurrencyMXN(iva)} (16%)` : '$0 MXN (0%)';
+    if (previewIsr) previewIsr.textContent = (requiresInvoice && applyRetention) ? `-${formatCurrencyMXN(isrRetention)} (${retentionRate}%)` : '$0 MXN';
+    if (previewTotal) previewTotal.textContent = formatCurrencyMXN(total);
+}
+
 function initClientsDirectoryModule() {
     const searchInput = document.getElementById('clientSearchInput');
     const statusSelect = document.getElementById('clientFilterStatus');
     const serviceSelect = document.getElementById('clientFilterService');
     const periodSelect = document.getElementById('clientFilterPeriod');
+    const invoiceSelect = document.getElementById('clientFilterInvoice');
     const btnNewClient = document.getElementById('btnOpenNewClientModal');
     const btnSendEmailGlobal = document.getElementById('btnOpenSendEmailGlobal');
     
@@ -2227,6 +2286,9 @@ function initClientsDirectoryModule() {
     const clientForm = document.getElementById('clientForm');
     const btnDeleteClient = document.getElementById('btnDeleteClient');
     const selectBillingPeriod = document.getElementById('clientInputBillingPeriod');
+    const inputFee = document.getElementById('clientInputMonthlyFee');
+    const chkRetention = document.getElementById('clientInputApplyTaxRetention');
+    const inputRate = document.getElementById('clientInputTaxRetentionRate');
 
     // Botones del Modal de Envío de Correo
     const btnCloseEmailX = document.getElementById('btnCloseSendEmailModalX');
@@ -2270,6 +2332,14 @@ function initClientsDirectoryModule() {
         });
     }
 
+    if (invoiceSelect && !invoiceSelect.dataset.bound) {
+        invoiceSelect.dataset.bound = 'true';
+        invoiceSelect.addEventListener('change', (e) => {
+            clientInvoiceFilter = e.target.value;
+            renderClientsDirectory();
+        });
+    }
+
     if (btnNewClient && !btnNewClient.dataset.bound) {
         btnNewClient.dataset.bound = 'true';
         btnNewClient.addEventListener('click', () => openClientModal());
@@ -2298,6 +2368,28 @@ function initClientsDirectoryModule() {
     if (selectBillingPeriod && !selectBillingPeriod.dataset.bound) {
         selectBillingPeriod.dataset.bound = 'true';
         selectBillingPeriod.addEventListener('change', updateClientModalBillingLabels);
+    }
+
+    if (inputFee && !inputFee.dataset.taxBound) {
+        inputFee.dataset.taxBound = 'true';
+        inputFee.addEventListener('input', updateClientTaxBreakdown);
+    }
+
+    if (chkRetention && !chkRetention.dataset.taxBound) {
+        chkRetention.dataset.taxBound = 'true';
+        chkRetention.addEventListener('change', () => {
+            const wrapper = document.getElementById('retentionRateWrapper');
+            if (wrapper) {
+                if (chkRetention.checked) wrapper.classList.remove('hidden');
+                else wrapper.classList.add('hidden');
+            }
+            updateClientTaxBreakdown();
+        });
+    }
+
+    if (inputRate && !inputRate.dataset.taxBound) {
+        inputRate.dataset.taxBound = 'true';
+        inputRate.addEventListener('input', updateClientTaxBreakdown);
     }
 
     // Cerrar modal de cliente haciendo clic en el backdrop
@@ -2606,6 +2698,12 @@ function renderClientsDirectory() {
             const period = c.billing_period || 'monthly';
             if (period !== clientPeriodFilter) return false;
         }
+        // Filtro por facturación (Con Factura vs Sin Factura)
+        if (clientInvoiceFilter !== 'all') {
+            const hasInvoice = Boolean(c.requires_invoice);
+            if (clientInvoiceFilter === 'invoice' && !hasInvoice) return false;
+            if (clientInvoiceFilter === 'no_invoice' && hasInvoice) return false;
+        }
         // Búsqueda en texto
         if (clientSearchTerm) {
             const matchName = (c.name || '').toLowerCase().includes(clientSearchTerm);
@@ -2625,7 +2723,7 @@ function renderClientsDirectory() {
                 <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">👥</div>
                 <h3 style="color: var(--text-main); font-size: 1.15rem; margin-bottom: 0.5rem;">No se encontraron clientes</h3>
                 <p style="font-size: 0.85rem; max-width: 420px; margin: 0 auto 1.25rem auto;">
-                    ${clientSearchTerm || clientStatusFilter !== 'all' || clientServiceFilter !== 'all' || clientPeriodFilter !== 'all'
+                    ${clientSearchTerm || clientStatusFilter !== 'all' || clientServiceFilter !== 'all' || clientPeriodFilter !== 'all' || clientInvoiceFilter !== 'all'
                         ? 'No hay registros que coincidan con los filtros aplicados. Intenta modificar los criterios de búsqueda.' 
                         : 'Aún no tienes clientes registrados en este módulo. Da de alta tu primer cliente para comenzar a dar seguimiento a sus fechas de corte y entregas.'}
                 </p>
@@ -2645,27 +2743,58 @@ function renderClientsDirectory() {
         const feeColor = (c.status || 'active') === 'active' ? '#34d399' : 'var(--text-muted)';
         const isAnnual = (c.billing_period === 'annual');
 
+        const reqInvoice = Boolean(c.requires_invoice);
+        const applyRet = Boolean(c.apply_tax_retention);
+        const retRate = parseFloat(c.tax_retention_rate != null ? c.tax_retention_rate : 1.25) || 1.25;
+
+        // Cálculos fiscales
+        let ivaAmt = 0;
+        let isrAmt = 0;
+        let totalAmt = feeVal;
+        if (reqInvoice) {
+            ivaAmt = feeVal * 0.16;
+            if (applyRet) {
+                isrAmt = feeVal * (retRate / 100.0);
+            }
+            totalAmt = feeVal + ivaAmt - isrAmt;
+        }
+
+        let invoiceBadgeHtml = '';
+        if (reqInvoice) {
+            if (applyRet) {
+                invoiceBadgeHtml = `<span class="badge-invoice invoice-pm" title="Factura con retención ISR (-${retRate}%) para Persona Moral">📄 Factura PM (-${retRate}%)</span>`;
+            } else {
+                invoiceBadgeHtml = `<span class="badge-invoice invoice-yes" title="Requiere factura fiscal (+16% IVA)">📄 Factura (+16% IVA)</span>`;
+            }
+        } else {
+            invoiceBadgeHtml = `<span class="badge-invoice invoice-no" title="Sin requerimiento de factura fiscal">🚫 Sin factura</span>`;
+        }
+
         let feeDisplayHtml = '';
         if (isAnnual) {
             const monthlyEquiv = Math.round(feeVal / 12);
+            const totalDisplay = reqInvoice ? ` <span style="font-size:0.75rem; color:#34d399; font-weight:600;" title="Total a transferir con impuestos">(${formatCurrencyMXN(totalAmt)} total)</span>` : '';
             feeDisplayHtml = `
                 <div>
                     <strong style="color:${feeColor}; font-size:0.95rem;">${formatCurrencyMXN(feeVal)}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted);">/ año</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">/ año</span>${totalDisplay}
                 </div>
-                <div style="display:flex; align-items:center; gap:0.35rem; margin-top:3px;">
+                <div style="display:flex; align-items:center; gap:0.35rem; margin-top:3px; flex-wrap:wrap;">
                     <span class="badge-period annual">🗓️ Anual</span>
                     <span style="font-size:0.7rem; color:var(--text-muted);">~$${monthlyEquiv.toLocaleString('es-MX')}/mes</span>
+                    ${invoiceBadgeHtml}
                 </div>
             `;
         } else {
+            const totalDisplay = reqInvoice ? ` <span style="font-size:0.75rem; color:#34d399; font-weight:600;" title="Total mensual a transferir con impuestos">(${formatCurrencyMXN(totalAmt)} total)</span>` : '';
             feeDisplayHtml = `
                 <div>
                     <strong style="color:${feeColor}; font-size:0.95rem;">${formatCurrencyMXN(feeVal)}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted);">/ mes</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">/ mes</span>${totalDisplay}
                 </div>
-                <div style="margin-top:3px;">
+                <div style="display:flex; align-items:center; gap:0.35rem; margin-top:3px; flex-wrap:wrap;">
                     <span class="badge-period monthly">📅 Mensual</span>
+                    ${invoiceBadgeHtml}
                 </div>
             `;
         }
@@ -2831,6 +2960,20 @@ function openClientModal(clientId = null) {
             selectStatus.value = client.status || 'active';
             inputWeb.value = client.website_url || '';
             inputNotes.value = client.notes || '';
+
+            // Configuración fiscal e ISR
+            const reqInvoice = Boolean(client.requires_invoice);
+            setClientInvoiceRequired(reqInvoice);
+            const chkRetention = document.getElementById('clientInputApplyTaxRetention');
+            const inputRate = document.getElementById('clientInputTaxRetentionRate');
+            const wrapper = document.getElementById('retentionRateWrapper');
+            if (chkRetention) chkRetention.checked = Boolean(client.apply_tax_retention);
+            if (inputRate) inputRate.value = client.tax_retention_rate != null ? client.tax_retention_rate : 1.25;
+            if (wrapper) {
+                if (client.apply_tax_retention) wrapper.classList.remove('hidden');
+                else wrapper.classList.add('hidden');
+            }
+
             if (btnDelete) btnDelete.classList.remove('hidden');
         }
     } else {
@@ -2848,10 +2991,21 @@ function openClientModal(clientId = null) {
         selectStatus.value = 'active';
         inputWeb.value = '';
         inputNotes.value = '';
+
+        // Reset fiscal
+        setClientInvoiceRequired(false);
+        const chkRetention = document.getElementById('clientInputApplyTaxRetention');
+        const inputRate = document.getElementById('clientInputTaxRetentionRate');
+        const wrapper = document.getElementById('retentionRateWrapper');
+        if (chkRetention) chkRetention.checked = false;
+        if (inputRate) inputRate.value = 1.25;
+        if (wrapper) wrapper.classList.add('hidden');
+
         if (btnDelete) btnDelete.classList.add('hidden');
     }
 
     updateClientModalBillingLabels();
+    updateClientTaxBreakdown();
     if (modal) modal.classList.remove('hidden');
 }
 
@@ -2871,6 +3025,9 @@ async function handleSaveClient(e) {
     const billing_period = document.getElementById('clientInputBillingPeriod') ? document.getElementById('clientInputBillingPeriod').value : 'monthly';
     const billing_day = parseInt(document.getElementById('clientInputBillingDay').value) || 1;
     const monthly_fee = parseFloat(document.getElementById('clientInputMonthlyFee').value) || 0.0;
+    const requires_invoice = document.getElementById('clientInputRequiresInvoice') ? document.getElementById('clientInputRequiresInvoice').value === 'true' : false;
+    const apply_tax_retention = document.getElementById('clientInputApplyTaxRetention') ? document.getElementById('clientInputApplyTaxRetention').checked : false;
+    const tax_retention_rate = parseFloat(document.getElementById('clientInputTaxRetentionRate') ? document.getElementById('clientInputTaxRetentionRate').value : 1.25) || 1.25;
     const start_date = document.getElementById('clientInputStartDate').value || null;
     const status = document.getElementById('clientInputStatus').value || 'active';
     const website_url = (document.getElementById('clientInputWebsite').value || '').trim();
@@ -2890,6 +3047,9 @@ async function handleSaveClient(e) {
         billing_period,
         billing_day,
         monthly_fee,
+        requires_invoice,
+        apply_tax_retention,
+        tax_retention_rate,
         start_date: start_date || null,
         status,
         website_url: website_url || null,
@@ -3030,6 +3190,29 @@ function applyEmailTemplate(type) {
 
     if (type === 'billing') {
         const isAnnual = client && client.billing_period === 'annual';
+        const reqInvoice = client && Boolean(client.requires_invoice);
+        const applyRet = client && Boolean(client.apply_tax_retention);
+        const retRate = (client && parseFloat(client.tax_retention_rate != null ? client.tax_retention_rate : 1.25)) || 1.25;
+        const feeVal = (client && parseFloat(client.monthly_fee)) || 0;
+
+        let fiscalDetailsText = '';
+        if (reqInvoice) {
+            const ivaVal = Math.round(feeVal * 0.16 * 100) / 100;
+            const isrVal = applyRet ? Math.round(feeVal * (retRate / 100.0) * 100) / 100 : 0;
+            const totalVal = Math.round((feeVal + ivaVal - isrVal) * 100) / 100;
+
+            fiscalDetailsText = 
+`• Régimen: Requiere Factura Fiscal (CFDI)
+• Subtotal Base: ${formatCurrencyMXN(feeVal)}
+• IVA Trasladado (16%): +${formatCurrencyMXN(ivaVal)}
+${applyRet ? `• Retención de ISR (${retRate}% Persona Moral): -${formatCurrencyMXN(isrVal)}\n` : ''}• Total a Transferir: ${formatCurrencyMXN(totalVal)} MXN
+• Emisión CFDI: Una vez confirmada tu transferencia, te compartiremos los archivos oficiales XML y PDF.`;
+        } else {
+            fiscalDetailsText = 
+`• Inversión acordada: ${feeStr}
+• Régimen: Sin requerimiento de factura fiscal (Neto a transferir: ${feeStr})`;
+        }
+
         if (isAnnual) {
             if (inputSubject) inputSubject.value = `Aviso de renovación de suscripción anual (${clientName}) • Hipha`;
             if (inputBody) {
@@ -3044,10 +3227,10 @@ Te saludamos de Hipha MX para compartirte el aviso de renovación correspondient
 • Cuenta: ${clientName}
 • Modalidad: Anual (Pago único anual / cobertura por 12 meses)
 • Fecha de corte / renovación: Día ${billingDay}
-• Inversión acordada: ${feeStr}
+${fiscalDetailsText}
 • Esquema: Pago anual por adelantado (para reserva garantizada de capacidad y agenda preferente)
 
-Si requieres que te emitamos la factura con anticipación o deseas revisar los objetivos y requerimientos para este nuevo ciclo, con gusto estamos a tu entera disposición.
+Si tienes alguna duda o deseas revisar los objetivos y requerimientos para este nuevo ciclo, con gusto estamos a tu entera disposición.
 
 ¡Agradecemos mucho tu confianza y nos entusiasma seguir colaborando juntos!
 
@@ -3069,10 +3252,10 @@ Te saludamos de Hipha MX para compartirte el aviso de renovación de tu suscripc
 • Cuenta: ${clientName}
 • Modalidad: Mensual recurrente
 • Fecha de corte: Día ${billingDay} del mes en curso
-• Inversión mensual: ${feeStr}
+${fiscalDetailsText}
 • Esquema: Mes por adelantado (para reserva garantizada de capacidad y agenda de diseño)
 
-Si requieres que te emitamos la factura con anticipación o tienes alguna duda o solicitud especial respecto a los entregables del ciclo, con gusto estamos a tu disposición.
+Si requieres algún ajuste o tienes alguna solicitud especial respecto a los entregables del ciclo, con gusto estamos a tu disposición.
 
 ¡Agradecemos mucho tu confianza y seguimos creando juntos!
 
