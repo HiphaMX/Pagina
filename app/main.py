@@ -25,6 +25,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal Server Error",
+            "detail": str(exc),
+            "traceback": traceback.format_exc()
+        }
+    )
+
+
 @app.on_event("startup")
 def startup_db_setup():
     print("Iniciando base de datos y tablas...")
