@@ -465,10 +465,25 @@ def get_clients_directory(
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """Retorna el listado completo de clientes registrados con sus fechas de corte y montos."""
-    query = db.query(AgencyClient)
-    if status and status != "all":
-        query = query.filter(AgencyClient.status == status)
-    return query.order_by(AgencyClient.name.asc()).all()
+    try:
+        query = db.query(AgencyClient)
+        if status and status != "all":
+            query = query.filter(AgencyClient.status == status)
+        return query.order_by(AgencyClient.name.asc()).all()
+    except Exception as e:
+        print(f"Error querying clients directory: {e}")
+        # En caso de columna faltante en base de datos externa, forzar inicialización y reintentar
+        try:
+            from app.core.database import ensure_db_initialized
+            db.rollback()
+            ensure_db_initialized()
+            query = db.query(AgencyClient)
+            if status and status != "all":
+                query = query.filter(AgencyClient.status == status)
+            return query.order_by(AgencyClient.name.asc()).all()
+        except Exception as e2:
+            print(f"Error fatal consultando clientes: {e2}")
+            raise HTTPException(status_code=500, detail=f"Error al consultar clientes: {str(e2)}")
 
 
 @router.post("/clients/directory", response_model=AgencyClientSchema)
@@ -485,28 +500,62 @@ def create_agency_client(
             detail=f"Ya existe un cliente registrado con el nombre '{client_in.name}'."
         )
 
-    db_client = AgencyClient(
-        name=client_in.name.strip(),
-        contact_name=client_in.contact_name,
-        contact_email=client_in.contact_email,
-        contact_phone=client_in.contact_phone,
-        service_type=client_in.service_type or "design_subscription",
-        billing_period=client_in.billing_period or "monthly",
-        billing_day=client_in.billing_day or 1,
-        monthly_fee=float(client_in.monthly_fee or 0.0),
-        requires_invoice=bool(client_in.requires_invoice),
-        apply_tax_retention=bool(client_in.apply_tax_retention),
-        tax_retention_rate=float(client_in.tax_retention_rate if client_in.tax_retention_rate is not None else 1.25),
-        start_date=client_in.start_date,
-        status=client_in.status or "active",
-        website_url=client_in.website_url,
-        ga4_property_id=client_in.ga4_property_id,
-        notes=client_in.notes
-    )
-    db.add(db_client)
-    db.commit()
-    db.refresh(db_client)
-    return db_client
+    try:
+        db_client = AgencyClient(
+            name=client_in.name.strip(),
+            contact_name=client_in.contact_name,
+            contact_email=client_in.contact_email,
+            contact_phone=client_in.contact_phone,
+            service_type=client_in.service_type or "design_subscription",
+            billing_period=client_in.billing_period or "monthly",
+            billing_day=client_in.billing_day or 1,
+            monthly_fee=float(client_in.monthly_fee or 0.0),
+            requires_invoice=bool(client_in.requires_invoice),
+            apply_tax_retention=bool(client_in.apply_tax_retention),
+            tax_retention_rate=float(client_in.tax_retention_rate if client_in.tax_retention_rate is not None else 1.25),
+            start_date=client_in.start_date,
+            status=client_in.status or "active",
+            website_url=client_in.website_url,
+            ga4_property_id=client_in.ga4_property_id,
+            notes=client_in.notes
+        )
+        db.add(db_client)
+        db.commit()
+        db.refresh(db_client)
+        return db_client
+    except Exception as e:
+        db.rollback()
+        print(f"Error creando cliente: {e}")
+        # Reintentar asegurando migración si fue error de esquema
+        try:
+            from app.core.database import ensure_db_initialized
+            ensure_db_initialized()
+            db_client = AgencyClient(
+                name=client_in.name.strip(),
+                contact_name=client_in.contact_name,
+                contact_email=client_in.contact_email,
+                contact_phone=client_in.contact_phone,
+                service_type=client_in.service_type or "design_subscription",
+                billing_period=client_in.billing_period or "monthly",
+                billing_day=client_in.billing_day or 1,
+                monthly_fee=float(client_in.monthly_fee or 0.0),
+                requires_invoice=bool(client_in.requires_invoice),
+                apply_tax_retention=bool(client_in.apply_tax_retention),
+                tax_retention_rate=float(client_in.tax_retention_rate if client_in.tax_retention_rate is not None else 1.25),
+                start_date=client_in.start_date,
+                status=client_in.status or "active",
+                website_url=client_in.website_url,
+                ga4_property_id=client_in.ga4_property_id,
+                notes=client_in.notes
+            )
+            db.add(db_client)
+            db.commit()
+            db.refresh(db_client)
+            return db_client
+        except Exception as e2:
+            db.rollback()
+            print(f"Error fatal guardando cliente: {e2}")
+            raise HTTPException(status_code=500, detail=f"Error al guardar cliente: {str(e2)}")
 
 
 @router.put("/clients/directory/{client_id}", response_model=AgencyClientSchema)
@@ -521,15 +570,34 @@ def update_agency_client(
     if not client:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
 
-    update_data = client_in.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        if field == "name" and value:
-            value = value.strip()
-        setattr(client, field, value)
+    try:
+        update_data = client_in.model_dump(exclude_unset=True)
+        for field, value in update_data.items():
+            if field == "name" and value:
+                value = value.strip()
+            setattr(client, field, value)
 
-    db.commit()
-    db.refresh(client)
-    return client
+        db.commit()
+        db.refresh(client)
+        return client
+    except Exception as e:
+        db.rollback()
+        print(f"Error actualizando cliente: {e}")
+        try:
+            from app.core.database import ensure_db_initialized
+            ensure_db_initialized()
+            update_data = client_in.model_dump(exclude_unset=True)
+            for field, value in update_data.items():
+                if field == "name" and value:
+                    value = value.strip()
+                setattr(client, field, value)
+            db.commit()
+            db.refresh(client)
+            return client
+        except Exception as e2:
+            db.rollback()
+            print(f"Error fatal actualizando cliente: {e2}")
+            raise HTTPException(status_code=500, detail=f"Error al actualizar cliente: {str(e2)}")
 
 
 @router.delete("/clients/directory/{client_id}")

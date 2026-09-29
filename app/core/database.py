@@ -80,30 +80,31 @@ def ensure_db_initialized():
             # Migración defensiva para columnas adicionales si la tabla ya existía
             try:
                 from sqlalchemy import text
-                with engine.connect() as conn:
-                    # billing_period
+                is_pg = ("postgres" in str(engine.url).lower())
+                
+                if is_pg:
+                    migration_stmts = [
+                        "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS billing_period VARCHAR DEFAULT 'monthly'",
+                        "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS requires_invoice BOOLEAN DEFAULT FALSE",
+                        "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS apply_tax_retention BOOLEAN DEFAULT FALSE",
+                        "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS tax_retention_rate FLOAT DEFAULT 1.25",
+                    ]
+                else:
+                    migration_stmts = [
+                        "ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'",
+                        "ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT 0",
+                        "ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT 0",
+                        "ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25",
+                    ]
+
+                for stmt in migration_stmts:
                     try:
-                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'"))
+                        with engine.begin() as conn:
+                            conn.execute(text(stmt))
                     except Exception:
                         pass
-                    # requires_invoice
-                    try:
-                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT 0"))
-                    except Exception:
-                        pass
-                    # apply_tax_retention
-                    try:
-                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT 0"))
-                    except Exception:
-                        pass
-                    # tax_retention_rate
-                    try:
-                        conn.execute(text("ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25"))
-                    except Exception:
-                        pass
-                    conn.commit()
-            except Exception:
-                pass
+            except Exception as e_mig:
+                print(f"Nota en proceso de migración: {e_mig}")
             _tables_created = True
         except Exception as e:
             print(f"Warning: could not auto-create tables: {e}")
