@@ -2629,7 +2629,8 @@ function formatClientTenure(startDateStr) {
 
 function formatCurrencyMXN(amount) {
     const val = parseFloat(amount) || 0;
-    return `$${val.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MXN`;
+    const hasDecimals = (val % 1 !== 0);
+    return `$${val.toLocaleString('es-MX', { minimumFractionDigits: hasDecimals ? 2 : 0, maximumFractionDigits: 2 })} MXN`;
 }
 
 function renderClientsDirectory() {
