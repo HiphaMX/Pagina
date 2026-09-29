@@ -330,25 +330,8 @@
                     </div>
                 </div>
 
-                <!-- Tablero Semanal de Columnas (Backlog + Lunes a Viernes) -->
+                <!-- Tablero Semanal de Columnas (Lunes a Viernes) -->
                 <div class="workflow-board-grid">
-                    
-                    <!-- Columna: Pendientes / Backlog -->
-                    <div class="workflow-col backlog-col" data-day="backlog">
-                        <div class="workflow-col-header">
-                            <div class="col-title-group">
-                                <h3>📦 Pendientes</h3>
-                                <span class="col-subtitle">Por Programar</span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:0.4rem;">
-                                <span class="day-hours-pill" id="hoursBacklog">0.0h</span>
-                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('backlog')" title="Agregar entrega a Pendientes">+</button>
-                            </div>
-                        </div>
-                        <div class="workflow-task-list" id="taskListBacklog" data-day="backlog">
-                            <!-- Inyectado por JS -->
-                        </div>
-                    </div>
 
                     <!-- Columna: Lunes -->
                     <div class="workflow-col" data-day="monday">
@@ -523,8 +506,7 @@
                     <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
                         <label for="taskInputDay" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Día Asignado</label>
                         <select id="taskInputDay" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
-                            <option value="backlog">📦 Pendientes (Backlog)</option>
-                            <option value="monday">Lunes</option>
+                            <option value="monday" selected>Lunes</option>
                             <option value="tuesday">Martes</option>
                             <option value="wednesday">Miércoles</option>
                             <option value="thursday">Jueves</option>
@@ -611,10 +593,24 @@
             <div style="display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.03); padding:0.75rem 1rem; border-radius:10px; border:1px solid var(--border-color);">
                 <div style="display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap;">
                     <div style="display:flex; align-items:center; gap:0.4rem;">
-                        <label for="rptSelectMonth" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Mes:</label>
-                        <select id="rptSelectMonth" class="filter-select" style="padding:0.45rem 0.8rem; font-size:0.85rem;">
-                            <!-- Inyectado dinámicamente -->
+                        <label for="rptCutPreset" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Período / Corte:</label>
+                        <select id="rptCutPreset" class="filter-select" style="padding:0.45rem 0.8rem; font-size:0.85rem;">
+                            <option value="current_month" selected>📅 Mes actual (1 al fin)</option>
+                            <option value="cut_22">✂️ Corte día 22 (del 23 al 22)</option>
+                            <option value="cut_28">✂️ Corte día 28 (del 29 al 28)</option>
+                            <option value="cut_3">✂️ Corte día 3 (del 4 al 3)</option>
+                            <option value="last_month">⏮️ Mes anterior</option>
+                            <option value="last_30">🕒 Últimos 30 días</option>
+                            <option value="custom">⚙️ Personalizado (Elegir fechas)</option>
                         </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.35rem;">
+                        <label for="rptStartDate" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Desde:</label>
+                        <input type="date" id="rptStartDate" class="filter-select" style="padding:0.4rem 0.6rem; font-size:0.85rem; color:var(--text-main); background:var(--bg-panel); border:1px solid var(--border-color); border-radius:8px;">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.35rem;">
+                        <label for="rptEndDate" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Hasta:</label>
+                        <input type="date" id="rptEndDate" class="filter-select" style="padding:0.4rem 0.6rem; font-size:0.85rem; color:var(--text-main); background:var(--bg-panel); border:1px solid var(--border-color); border-radius:8px;">
                     </div>
                     <div style="display:flex; align-items:center; gap:0.4rem;">
                         <label for="rptSelectClient" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Cliente:</label>
@@ -630,10 +626,10 @@
                 </button>
             </div>
 
-            <!-- Tarjetas KPI del Mes -->
+            <!-- Tarjetas KPI del Período -->
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:0.8rem;">
                 <div class="kpi-card" style="padding:0.85rem 1rem; border-radius:10px; background:rgba(15,23,42,0.6); border:1px solid var(--border-color);">
-                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Total Horas Mes</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Total Horas Período</span>
                     <h3 id="rptKpiTotalHours" style="font-size:1.5rem; font-weight:700; color:var(--accent-cyan); margin-top:0.25rem;">0.0h</h3>
                 </div>
                 <div class="kpi-card" style="padding:0.85rem 1rem; border-radius:10px; background:rgba(15,23,42,0.6); border:1px solid var(--border-color);">

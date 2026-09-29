@@ -32,6 +32,25 @@ def startup_db_setup():
     # Crear tablas si no existen
     Base.metadata.create_all(bind=engine)
     
+    # Auto-migración segura de columnas adicionales para workflow_tasks
+    try:
+        from sqlalchemy import inspect, text
+        with engine.connect() as conn:
+            inspector = inspect(engine)
+            if "workflow_tasks" in inspector.get_table_names():
+                cols = [c["name"] for c in inspector.get_columns("workflow_tasks")]
+                if "revision_hours" not in cols:
+                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN revision_hours FLOAT DEFAULT 0.0"))
+                if "revisions_count" not in cols:
+                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN revisions_count INTEGER DEFAULT 0"))
+                if "month_id" not in cols:
+                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN month_id VARCHAR DEFAULT NULL"))
+                if "task_date" not in cols:
+                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN task_date VARCHAR DEFAULT NULL"))
+                conn.commit()
+    except Exception as em:
+        print(f"Nota: Auto-migración de workflow_tasks omitida o completada: {em}")
+    
     # Sembrar usuario administrador por defecto
     db = SessionLocal()
     try:

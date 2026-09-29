@@ -7,13 +7,14 @@ class WorkflowTask(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     week_id = Column(String, index=True, nullable=False)  # ej. "2026-W40"
-    day = Column(String, nullable=False, default="backlog")  # "backlog", "monday", "tuesday", "wednesday", "thursday", "friday"
+    day = Column(String, nullable=False, default="monday")  # "monday", "tuesday", "wednesday", "thursday", "friday"
     client_name = Column(String, nullable=False)
     title = Column(String, nullable=False)
     estimated_hours = Column(Float, default=1.0)
     revision_hours = Column(Float, default=0.0)
     revisions_count = Column(Integer, default=0)
     month_id = Column(String, index=True, nullable=True)  # ej. "2026-09"
+    task_date = Column(String(10), index=True, nullable=True)  # ej. "2026-09-29"
     status = Column(String, default="pending")  # "pending", "in_progress", "review", "completed"
     notes = Column(Text, nullable=True)
     order_index = Column(Integer, default=0)

@@ -5,13 +5,14 @@ from pydantic import BaseModel, ConfigDict
 
 class WorkflowTaskBase(BaseModel):
     week_id: str  # e.g. "2026-W40"
-    day: str  # "backlog", "monday", "tuesday", "wednesday", "thursday", "friday"
+    day: str  # "monday", "tuesday", "wednesday", "thursday", "friday"
     client_name: str
     title: str
     estimated_hours: float = 1.0
     revision_hours: float = 0.0
     revisions_count: int = 0
     month_id: Optional[str] = None  # e.g. "2026-09"
+    task_date: Optional[str] = None  # e.g. "2026-09-29"
     status: str = "pending"  # "pending", "in_progress", "review", "completed"
     notes: Optional[str] = None
     order_index: int = 0
@@ -30,6 +31,7 @@ class WorkflowTaskUpdate(BaseModel):
     revision_hours: Optional[float] = None
     revisions_count: Optional[int] = None
     month_id: Optional[str] = None
+    task_date: Optional[str] = None
     status: Optional[str] = None
     notes: Optional[str] = None
     order_index: Optional[int] = None
@@ -65,6 +67,8 @@ class WorkflowMonthlyClientSummary(BaseModel):
 
 class WorkflowMonthlyReport(BaseModel):
     month: str
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
     total_hours: float
     base_hours: float
     revision_hours: float

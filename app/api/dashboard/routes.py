@@ -41,6 +41,22 @@ def _derive_month_id(week_id: Optional[str]) -> str:
     return datetime.datetime.now().strftime("%Y-%m")
 
 
+def _derive_task_date(week_id: Optional[str], day: Optional[str]) -> str:
+    day_map = {"monday": 1, "tuesday": 2, "wednesday": 3, "thursday": 4, "friday": 5}
+    if week_id and "-W" in week_id:
+        try:
+            parts = week_id.split("-W")
+            year = int(parts[0])
+            week = int(parts[1])
+            day_num = day_map.get((day or "").lower(), 1)
+            d = datetime.date.fromisocalendar(year, week, day_num)
+            return d.strftime("%Y-%m-%d")
+        except Exception:
+            pass
+    return datetime.date.today().strftime("%Y-%m-%d")
+
+
+
 router = APIRouter()
 
 @router.get("/clients")
@@ -166,6 +182,7 @@ def create_workflow_task(
 ):
     """Crea una nueva tarea de diseño en el flujo semanal."""
     m_id = task_in.month_id or _derive_month_id(task_in.week_id)
+    t_date = task_in.task_date or _derive_task_date(task_in.week_id, task_in.day)
     task = WorkflowTask(
         week_id=task_in.week_id,
         day=task_in.day,
@@ -175,6 +192,7 @@ def create_workflow_task(
         revision_hours=task_in.revision_hours or 0.0,
         revisions_count=task_in.revisions_count or 0,
         month_id=m_id,
+        task_date=t_date,
         status=task_in.status,
         notes=task_in.notes,
         order_index=task_in.order_index
@@ -202,6 +220,8 @@ def update_workflow_task(
         
     if not task.month_id and task.week_id:
         task.month_id = _derive_month_id(task.week_id)
+    if not task.task_date and task.week_id:
+        task.task_date = _derive_task_date(task.week_id, task.day)
 
     db.commit()
     db.refresh(task)
@@ -247,12 +267,13 @@ def move_workflow_task(
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
-    """Mueve rápidamente una tarea entre días o en el backlog."""
+    """Mueve rápidamente una tarea entre días."""
     task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
     
     task.day = move_data.target_day
+    task.task_date = _derive_task_date(task.week_id, task.day)
     if move_data.target_order_index is not None:
         task.order_index = move_data.target_order_index
         
@@ -279,30 +300,56 @@ def delete_workflow_task(
 
 @router.get("/workflow/monthly-report", response_model=WorkflowMonthlyReport)
 def get_workflow_monthly_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
     month: Optional[str] = None,
     client: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
-    """Genera el reporte mensual consolidado de horas trabajadas por cliente."""
-    target_month = month if (month and month != "all") else datetime.datetime.now().strftime("%Y-%m")
-    
+    """Genera el reporte consolidado de horas trabajadas por cliente para un rango de fechas o mes."""
+    import calendar
+
+    # Resolver rango de fechas
+    if not start_date or not end_date:
+        target_month = month if (month and month != "all") else datetime.datetime.now().strftime("%Y-%m")
+        try:
+            year, m = map(int, target_month.split("-"))
+            first_day = datetime.date(year, m, 1)
+            _, last_day_num = calendar.monthrange(year, m)
+            last_day = datetime.date(year, m, last_day_num)
+            s_date = first_day.strftime("%Y-%m-%d")
+            e_date = last_day.strftime("%Y-%m-%d")
+        except Exception:
+            s_date = datetime.date.today().replace(day=1).strftime("%Y-%m-%d")
+            e_date = datetime.date.today().strftime("%Y-%m-%d")
+    else:
+        s_date = start_date
+        e_date = end_date
+        target_month = s_date[:7]
+
     query = db.query(WorkflowTask)
-    # Filtrar por mes: por month_id o por semana derivada
-    query = query.filter(WorkflowTask.month_id == target_month)
     if client and client != "all":
         query = query.filter(WorkflowTask.client_name == client)
 
-    tasks = query.order_by(WorkflowTask.id.desc()).all()
+    all_tasks = query.order_by(WorkflowTask.id.desc()).all()
+
+    # Filtrar por rango de fechas
+    filtered_tasks = []
+    for t in all_tasks:
+        d_str = t.task_date or _derive_task_date(t.week_id, t.day)
+        if s_date <= d_str <= e_date:
+            t.task_date = d_str
+            filtered_tasks.append(t)
 
     # Agrupar por cliente
     client_map = {}
-    total_month_hours = 0.0
+    total_period_hours = 0.0
     total_base_hours = 0.0
     total_rev_hours = 0.0
     completed_tasks_count = 0
 
-    for t in tasks:
+    for t in filtered_tasks:
         c_name = t.client_name or "General"
         if c_name not in client_map:
             client_map[c_name] = {
@@ -324,7 +371,7 @@ def get_workflow_monthly_report(
 
         total_base_hours += b_hours
         total_rev_hours += r_hours
-        total_month_hours += t_hours
+        total_period_hours += t_hours
 
         if t.status == "completed":
             client_map[c_name]["completed_count"] += 1
@@ -344,13 +391,15 @@ def get_workflow_monthly_report(
 
     return WorkflowMonthlyReport(
         month=target_month,
-        total_hours=round(total_month_hours, 2),
+        start_date=s_date,
+        end_date=e_date,
+        total_hours=round(total_period_hours, 2),
         base_hours=round(total_base_hours, 2),
         revision_hours=round(total_rev_hours, 2),
-        total_tasks=len(tasks),
+        total_tasks=len(filtered_tasks),
         completed_tasks=completed_tasks_count,
         clients=clients_list,
-        tasks=tasks
+        tasks=filtered_tasks
     )
 
 

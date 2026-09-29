@@ -976,7 +976,7 @@ let currentWeekMonday = null;
 let workflowTasks = [];
 let currentWfClientFilter = 'all';
 
-const WORKFLOW_DAYS = ['backlog', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+const WORKFLOW_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const WORKFLOW_DAILY_LIMIT = 4.0; // 9:00 AM a 1:00 PM = 4 horas
 const WORKFLOW_WEEKLY_LIMIT = 20.0; // 5 días x 4 horas
 
@@ -1105,11 +1105,13 @@ function setupWorkflowElements() {
         taskInputHours.addEventListener('change', updateModalRevisionSummary);
     }
 
-    // Modal de Reporte Mensual
+    // Modal de Reporte Mensual / Por Rango de Fechas
     const btnOpenMonthlyReport = document.getElementById('btnOpenMonthlyReport');
     const btnCloseMonthlyReport = document.getElementById('btnCloseMonthlyReport');
     const monthlyReportModal = document.getElementById('workflowMonthlyReportModal');
-    const rptSelectMonth = document.getElementById('rptSelectMonth');
+    const rptCutPreset = document.getElementById('rptCutPreset');
+    const rptStartDate = document.getElementById('rptStartDate');
+    const rptEndDate = document.getElementById('rptEndDate');
     const rptSelectClient = document.getElementById('rptSelectClient');
     const btnCopyMonthlyReport = document.getElementById('btnCopyMonthlyReport');
 
@@ -1124,8 +1126,28 @@ function setupWorkflowElements() {
             if (e.target === monthlyReportModal) closeMonthlyReportModal();
         });
     }
-    if (rptSelectMonth) {
-        rptSelectMonth.addEventListener('change', () => loadAndRenderMonthlyReport());
+    if (rptCutPreset) {
+        rptCutPreset.addEventListener('change', (e) => {
+            const preset = e.target.value;
+            if (preset !== 'custom') {
+                const dates = computePresetDates(preset);
+                if (rptStartDate) rptStartDate.value = dates.startDate;
+                if (rptEndDate) rptEndDate.value = dates.endDate;
+                loadAndRenderMonthlyReport();
+            }
+        });
+    }
+    if (rptStartDate) {
+        rptStartDate.addEventListener('change', () => {
+            if (rptCutPreset) rptCutPreset.value = 'custom';
+            loadAndRenderMonthlyReport();
+        });
+    }
+    if (rptEndDate) {
+        rptEndDate.addEventListener('change', () => {
+            if (rptCutPreset) rptCutPreset.value = 'custom';
+            loadAndRenderMonthlyReport();
+        });
     }
     if (rptSelectClient) {
         rptSelectClient.addEventListener('change', () => renderMonthlyReportView());
@@ -1331,7 +1353,7 @@ function renderWorkflowBoard() {
     });
 
     let totalWeekHours = 0;
-    const dailyHours = { backlog: 0, monday: 0, tuesday: 0, wednesday: 0, thursday: 0, friday: 0 };
+    const dailyHours = { monday: 0, tuesday: 0, wednesday: 0, thursday: 0, friday: 0 };
 
     // Filtrar tareas por cliente si aplica
     const filteredTasks = workflowTasks.filter(task => {
@@ -1341,19 +1363,17 @@ function renderWorkflowBoard() {
 
     // Renderizar cada tarjeta
     filteredTasks.forEach(task => {
-        const day = (task.day || 'backlog').toLowerCase();
+        let day = (task.day || 'monday').toLowerCase();
+        if (day === 'backlog' || !dailyHours.hasOwnProperty(day)) {
+            day = 'monday';
+        }
         const listEl = document.getElementById(`taskList${capitalize(day)}`);
         const baseH = parseFloat(task.estimated_hours) || 0;
         const revH = parseFloat(task.revision_hours) || 0;
         const totalH = baseH + revH;
 
-        if (dailyHours.hasOwnProperty(day)) {
-            dailyHours[day] += totalH;
-        }
-
-        if (day !== 'backlog') {
-            totalWeekHours += totalH;
-        }
+        dailyHours[day] += totalH;
+        totalWeekHours += totalH;
 
         if (listEl) {
             const card = createWorkflowTaskCard(task);
@@ -1361,14 +1381,7 @@ function renderWorkflowBoard() {
         }
     });
 
-    // Actualizar medidores de horas por día
-    // Backlog
-    const hoursBacklogEl = document.getElementById('hoursBacklog');
-    if (hoursBacklogEl) {
-        hoursBacklogEl.textContent = `${dailyHours.backlog.toFixed(1)}h`;
-    }
-
-    // L-V Semáforo y Barras de Capacidad
+    // L-V Semáforo y Barras de Capacidad (9:00 AM a 1:00 PM = 4 horas diarias)
     ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
         const hours = dailyHours[day];
         const pillEl = document.getElementById(`hours${capitalize(day)}`);
@@ -1609,6 +1622,7 @@ function setupWorkflowDragAndDrop() {
 
 // Modal CRUD de Tarea
 function openWorkflowTaskModal(day = 'monday') {
+    if (day === 'backlog' || !day) day = 'monday';
     const modal = document.getElementById('workflowTaskModal');
     const heading = document.getElementById('modalTaskHeading');
     const btnDelete = document.getElementById('btnDeleteTask');
@@ -1737,7 +1751,7 @@ function editWorkflowTask(taskId) {
     }
 
     document.getElementById('taskInputTitle').value = task.title || '';
-    document.getElementById('taskInputDay').value = task.day || 'monday';
+    document.getElementById('taskInputDay').value = (task.day === 'backlog' ? 'monday' : (task.day || 'monday'));
 
     // Ajustar valor de horas base con 1 decimal
     const numHours = parseFloat(task.estimated_hours) || 1.0;
@@ -1804,6 +1818,7 @@ async function handleWorkflowTaskSubmit(e) {
             task.revisions_count = revCount;
             task.status = status;
             task.notes = notes;
+            task.task_date = getTaskExactDate(task);
             syncTaskWithApi(task, 'PUT');
         }
     } else {
@@ -1818,7 +1833,8 @@ async function handleWorkflowTaskSubmit(e) {
             revision_hours: revHours,
             revisions_count: revCount,
             status: status,
-            notes: notes
+            notes: notes,
+            task_date: getTaskExactDate({ week_id: currentWeekId, day: day })
         };
         workflowTasks.push(newTask);
         syncTaskWithApi(newTask, 'POST');
@@ -1938,10 +1954,9 @@ function escapeHtml(text) {
 }
 
 // ========================================================
-// MÓDULO DE REPORTE MENSUAL DE HORAS Y RETAINERS
+// MÓDULO DE REPORTE MENSUAL / RANGO DE CORTE DE HORAS Y RETAINERS
 // ========================================================
 
-let currentReportMonth = '';
 let monthlyReportTasks = [];
 
 function deriveMonthIdFromWeek(weekId) {
@@ -1964,40 +1979,118 @@ function deriveMonthIdFromWeek(weekId) {
     }
 }
 
+function getTaskExactDate(task) {
+    if (task && task.task_date) return task.task_date;
+    const dayMap = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5 };
+    const dayKey = (task && task.day ? task.day : 'monday').toLowerCase();
+    const dayNum = dayMap[dayKey] || 1;
+
+    if (task && task.week_id && task.week_id.includes('-W')) {
+        try {
+            const parts = task.week_id.split('-W');
+            const year = parseInt(parts[0], 10);
+            const week = parseInt(parts[1], 10);
+            
+            // ISO week Monday calculation
+            const simple = new Date(Date.UTC(year, 0, 1 + (week - 1) * 7));
+            const dow = simple.getUTCDay();
+            const ISOweekStart = new Date(simple);
+            if (dow <= 4) {
+                ISOweekStart.setUTCDate(simple.getUTCDate() - simple.getUTCDay() + 1);
+            } else {
+                ISOweekStart.setUTCDate(simple.getUTCDate() + 8 - simple.getUTCDay());
+            }
+            const target = new Date(ISOweekStart);
+            target.setUTCDate(ISOweekStart.getUTCDate() + (dayNum - 1));
+            return target.toISOString().slice(0, 10);
+        } catch (e) {
+            console.warn('Error derivando fecha de tarea:', e);
+        }
+    }
+    if (task && task.created_at) {
+        return String(task.created_at).slice(0, 10);
+    }
+    const today = new Date();
+    return today.toISOString().slice(0, 10);
+}
+
+function computePresetDates(preset) {
+    const today = new Date();
+    const curYear = today.getFullYear();
+    const curMonth = today.getMonth(); // 0-indexed
+    const curDay = today.getDate();
+
+    function formatYMD(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    if (preset === 'current_month') {
+        const start = new Date(curYear, curMonth, 1);
+        const end = new Date(curYear, curMonth + 1, 0);
+        return { startDate: formatYMD(start), endDate: formatYMD(end) };
+    }
+
+    if (preset === 'last_month') {
+        const start = new Date(curYear, curMonth - 1, 1);
+        const end = new Date(curYear, curMonth, 0);
+        return { startDate: formatYMD(start), endDate: formatYMD(end) };
+    }
+
+    if (preset === 'last_30') {
+        const end = new Date(today);
+        const start = new Date(today);
+        start.setDate(today.getDate() - 30);
+        return { startDate: formatYMD(start), endDate: formatYMD(end) };
+    }
+
+    // Cortes específicos por día de mes (ej. día 22, día 28, día 3)
+    if (preset === 'cut_22' || preset === 'cut_28' || preset === 'cut_3') {
+        const cutDay = preset === 'cut_22' ? 22 : (preset === 'cut_28' ? 28 : 3);
+        let start, end;
+        if (curDay > cutDay) {
+            // El corte de este mes ya pasó. Período: desde día (cutDay + 1) al cutDay del mes siguiente
+            start = new Date(curYear, curMonth, cutDay + 1);
+            end = new Date(curYear, curMonth + 1, cutDay);
+        } else {
+            // Aún no llega el día de corte de este mes. Período: desde día (cutDay + 1) del mes anterior al cutDay de este mes
+            start = new Date(curYear, curMonth - 1, cutDay + 1);
+            end = new Date(curYear, curMonth, cutDay);
+        }
+        return { startDate: formatYMD(start), endDate: formatYMD(end) };
+    }
+
+    // Default: mes actual
+    const start = new Date(curYear, curMonth, 1);
+    const end = new Date(curYear, curMonth + 1, 0);
+    return { startDate: formatYMD(start), endDate: formatYMD(end) };
+}
+
 function openMonthlyReportModal() {
     const modal = document.getElementById('workflowMonthlyReportModal');
     if (!modal) return;
 
-    const selectMonth = document.getElementById('rptSelectMonth');
+    const selectPreset = document.getElementById('rptCutPreset');
+    const inputStart = document.getElementById('rptStartDate');
+    const inputEnd = document.getElementById('rptEndDate');
     const selectClient = document.getElementById('rptSelectClient');
 
-    // Inicializar mes por defecto (mes de la semana activa o actual)
-    currentReportMonth = deriveMonthIdFromWeek(currentWeekId);
-
-    // Poblar meses (Mes actual y 5 meses anteriores)
-    if (selectMonth) {
-        selectMonth.innerHTML = '';
-        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        const now = new Date();
-
-        for (let i = 0; i < 6; i++) {
-            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-            const opt = document.createElement('option');
-            opt.value = val;
-            opt.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-            if (val === currentReportMonth) opt.selected = true;
-            selectMonth.appendChild(opt);
-        }
+    // Inicializar fechas si están vacías
+    if (inputStart && inputEnd && (!inputStart.value || !inputEnd.value)) {
+        if (selectPreset) selectPreset.value = 'current_month';
+        const dates = computePresetDates('current_month');
+        inputStart.value = dates.startDate;
+        inputEnd.value = dates.endDate;
     }
 
-    // Poblar clientes
-    if (selectClient) {
+    // Poblar clientes en el select si está vacío
+    if (selectClient && selectClient.options.length <= 1) {
         selectClient.innerHTML = '<option value="all">Todos los clientes</option>';
         const clientsSet = new Set();
         ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
         
-        // Incluir clientes de las tareas en memoria
         workflowTasks.forEach(t => {
             if (t.client_name) clientsSet.add(t.client_name.trim());
         });
@@ -2009,7 +2102,6 @@ function openMonthlyReportModal() {
             selectClient.appendChild(opt);
         });
 
-        // Si hay un filtro activo en el tablero, preseleccionarlo
         if (currentWfClientFilter && currentWfClientFilter !== 'all') {
             selectClient.value = currentWfClientFilter;
         }
@@ -2025,17 +2117,22 @@ function closeMonthlyReportModal() {
 }
 
 async function loadAndRenderMonthlyReport() {
-    const selectMonth = document.getElementById('rptSelectMonth');
-    const selectedMonth = selectMonth ? selectMonth.value : currentReportMonth;
-    currentReportMonth = selectedMonth;
+    const inputStart = document.getElementById('rptStartDate');
+    const inputEnd = document.getElementById('rptEndDate');
+    const selectClient = document.getElementById('rptSelectClient');
+
+    const startDate = inputStart ? inputStart.value : '';
+    const endDate = inputEnd ? inputEnd.value : '';
+    const selectedClient = selectClient ? selectClient.value : 'all';
 
     let loadedFromApi = false;
     monthlyReportTasks = [];
 
     try {
         const token = localStorage.getItem('dashboard_token');
-        if (token) {
-            const res = await fetch(`${API_BASE}/workflow/monthly-report?month=${selectedMonth}`, {
+        if (token && startDate && endDate) {
+            const clientParam = selectedClient !== 'all' ? `&client=${encodeURIComponent(selectedClient)}` : '';
+            const res = await fetch(`${API_BASE}/workflow/monthly-report?start_date=${startDate}&end_date=${endDate}${clientParam}`, {
                 headers: getAuthHeaders()
             });
             if (res.ok) {
@@ -2050,15 +2147,15 @@ async function loadAndRenderMonthlyReport() {
         console.warn("No se pudo obtener reporte mensual de API, usando almacenamiento local:", err);
     }
 
-    // Fallback: Si no viene de API o estamos offline, recopilar de localStorage todas las semanas de ese mes
+    // Fallback: Si no viene de API o estamos offline, recopilar de localStorage dentro del rango
     if (!loadedFromApi) {
         const allTasksMap = new Map();
 
         // 1. Tareas de la semana activa actual
         workflowTasks.forEach(t => {
-            const mId = t.month_id || deriveMonthIdFromWeek(t.week_id);
-            if (mId === selectedMonth) {
-                allTasksMap.set(String(t.id), t);
+            const tDate = getTaskExactDate(t);
+            if ((!startDate || tDate >= startDate) && (!endDate || tDate <= endDate)) {
+                allTasksMap.set(String(t.id), { ...t, task_date: tDate });
             }
         });
 
@@ -2070,9 +2167,11 @@ async function loadAndRenderMonthlyReport() {
                     const parsed = JSON.parse(localStorage.getItem(key));
                     if (Array.isArray(parsed)) {
                         parsed.forEach(t => {
-                            const mId = t.month_id || deriveMonthIdFromWeek(t.week_id);
-                            if (mId === selectedMonth && !allTasksMap.has(String(t.id))) {
-                                allTasksMap.set(String(t.id), t);
+                            const tDate = getTaskExactDate(t);
+                            if ((!startDate || tDate >= startDate) && (!endDate || tDate <= endDate)) {
+                                if (!allTasksMap.has(String(t.id))) {
+                                    allTasksMap.set(String(t.id), { ...t, task_date: tDate });
+                                }
                             }
                         });
                     }
@@ -2126,8 +2225,8 @@ function renderMonthlyReportView() {
     if (tasks.length === 0) {
         container.innerHTML = `
             <div style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
-                <p style="font-size: 1.1rem; margin-bottom: 0.3rem;">📭 No hay entregables registrados para este periodo</p>
-                <p style="font-size: 0.8rem;">Selecciona otro mes o cliente para visualizar el tiempo invertido.</p>
+                <p style="font-size: 1.1rem; margin-bottom: 0.3rem;">📭 No hay entregables registrados para este periodo o rango de fechas</p>
+                <p style="font-size: 0.8rem;">Selecciona otro período de corte o ajusta las fechas de inicio y fin.</p>
             </div>
         `;
         return;
@@ -2212,11 +2311,13 @@ function renderMonthlyReportView() {
             const r = parseFloat(t.revision_hours) || 0;
             const tot = b + r;
             const statusInfo = getStatusInfo(t.status);
+            const dStr = t.task_date || getTaskExactDate(t);
 
             return `
                 <tr>
-                    <td style="white-space:nowrap; color:var(--text-muted); font-size:0.75rem;">
-                        ${escapeHtml(t.week_id || 'Semana')} • ${capitalize(t.day || 'backlog')}
+                    <td style="white-space:nowrap; font-size:0.8rem;">
+                        <span style="color:var(--text-main); font-weight:600;">${dStr}</span>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">${escapeHtml(t.week_id || '')} • ${capitalize(t.day || 'lunes')}</div>
                     </td>
                     <td>
                         <strong style="color:var(--text-main); font-size:0.85rem;">${escapeHtml(t.title || 'Sin título')}</strong>
@@ -2271,9 +2372,12 @@ function renderMonthlyReportView() {
 }
 
 async function copyMonthlyReportToClipboard() {
-    const selectMonth = document.getElementById('rptSelectMonth');
+    const inputStart = document.getElementById('rptStartDate');
+    const inputEnd = document.getElementById('rptEndDate');
     const selectClient = document.getElementById('rptSelectClient');
-    const monthText = selectMonth ? selectMonth.options[selectMonth.selectedIndex].text : currentReportMonth;
+
+    const startDate = inputStart ? inputStart.value : '';
+    const endDate = inputEnd ? inputEnd.value : '';
     const selectedClient = selectClient ? selectClient.value : 'all';
 
     const tasks = monthlyReportTasks.filter(t => {
@@ -2294,7 +2398,7 @@ async function copyMonthlyReportToClipboard() {
     const grandTotal = totalBase + totalRev;
 
     let text = `📊 REPORTE DE HORAS Y ENTREGABLES • HIPHA MX\n`;
-    text += `🗓️ Periodo: ${monthText}\n`;
+    text += `🗓️ Período de Corte: ${startDate} al ${endDate}\n`;
     text += `👤 Cuenta / Cliente: ${selectedClient === 'all' ? 'Consolidado General' : selectedClient}\n`;
     text += `--------------------------------------------------\n`;
     text += `⏱️ Total Horas Invertidas: ${grandTotal.toFixed(1)} horas\n`;
@@ -2310,7 +2414,8 @@ async function copyMonthlyReportToClipboard() {
         const tot = (parseFloat(b) + parseFloat(r)).toFixed(1);
         const st = t.status === 'completed' ? '✅ Terminado' : (t.status === 'review' ? '👀 En Revisión' : '🎨 En Proceso');
         const c = selectedClient === 'all' ? `[${t.client_name}] ` : '';
-        text += `${idx + 1}. ${c}${t.title} — ${tot}h (${b}h base + ${r}h cambios) [${st}]\n`;
+        const d = t.task_date || getTaskExactDate(t);
+        text += `${idx + 1}. ${c}${t.title} (${d}) — ${tot}h (${b}h base + ${r}h cambios) [${st}]\n`;
     });
 
     text += `\nGenerado automáticamente por HiphaMX Dashboard`;

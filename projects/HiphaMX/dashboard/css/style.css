@@ -560,10 +560,10 @@ select {
     cursor: pointer;
 }
 
-/* Tablero de Columnas Semanales */
+/* Tablero de Columnas Semanales (Lunes a Viernes) */
 .workflow-board-grid {
     display: grid;
-    grid-template-columns: minmax(220px, 0.85fr) repeat(5, minmax(210px, 1fr));
+    grid-template-columns: repeat(5, minmax(220px, 1fr));
     gap: 1rem;
     overflow-x: auto;
     padding-bottom: 1rem;
