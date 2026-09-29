@@ -59,6 +59,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                     Resumen Tráfico
                 </a>
+                <a href="#" class="nav-link" id="navLinkWorkflow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+                    Flujo Semanal
+                </a>
                 <a href="#" class="nav-link" id="navLinkSocial">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     Redes Sociales
@@ -276,6 +280,165 @@
                 </div>
 
             </div>
+
+            <!-- Grid Layout para Flujo Semanal de Trabajo (L-V) -->
+            <div class="workflow-section-container hidden" id="workflowSection">
+                
+                <!-- Barra Superior de Control de la Semana -->
+                <div class="workflow-toolbar glass-panel">
+                    <div class="workflow-nav-controls">
+                        <button id="btnPrevWeek" class="btn-tool-mini" title="Semana Anterior">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <div class="week-title-badge">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span id="workflowWeekLabel">Cargando semana...</span>
+                        </div>
+                        <button id="btnNextWeek" class="btn-tool-mini" title="Semana Siguiente">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button id="btnCurrentWeek" class="btn-secondary-mini">Semana Actual</button>
+                    </div>
+
+                    <!-- Indicador Global de Capacidad Semanal (Horario 9:00 AM a 1:00 PM = 4h/día = 20h/semana) -->
+                    <div class="workflow-capacity-summary">
+                        <div class="capacity-text-group">
+                            <span class="schedule-pill">⏰ 9:00 AM - 1:00 PM</span>
+                            <span class="capacity-stat">Capacidad Semanal: <strong id="wfTotalHours">0.0h</strong> / 20.0h</span>
+                        </div>
+                        <div class="global-progress-track" title="Porcentaje ocupado de la semana">
+                            <div id="wfGlobalProgressBar" class="global-progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones Rápidas y Filtro -->
+                    <div class="workflow-action-controls">
+                        <select id="wfClientFilter" class="filter-select">
+                            <option value="all">Todos los clientes</option>
+                            <!-- Inyectado dinámicamente -->
+                        </select>
+
+                        <button id="btnOpenNewTaskModal" class="btn-sync" style="margin-top: 0; padding: 0.55rem 1rem;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>+ Nueva Entrega</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tablero Semanal de Columnas (Backlog + Lunes a Viernes) -->
+                <div class="workflow-board-grid">
+                    
+                    <!-- Columna: Pendientes / Backlog -->
+                    <div class="workflow-col backlog-col" data-day="backlog">
+                        <div class="workflow-col-header">
+                            <div class="col-title-group">
+                                <h3>📦 Pendientes</h3>
+                                <span class="col-subtitle">Por Programar</span>
+                            </div>
+                            <span class="day-hours-pill" id="hoursBacklog">0.0h</span>
+                        </div>
+                        <div class="workflow-task-list" id="taskListBacklog" data-day="backlog">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Columna: Lunes -->
+                    <div class="workflow-col" data-day="monday">
+                        <div class="workflow-col-header">
+                            <div class="col-title-group">
+                                <h3>Lunes</h3>
+                                <span class="col-subtitle" id="dateMonday">--</span>
+                            </div>
+                            <div class="day-capacity-badge">
+                                <span class="day-hours-pill" id="hoursMonday">0.0h / 4h</span>
+                            </div>
+                        </div>
+                        <div class="day-progress-track">
+                            <div class="day-progress-bar" id="barMonday" style="width: 0%;"></div>
+                        </div>
+                        <div class="workflow-task-list" id="taskListMonday" data-day="monday">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Columna: Martes -->
+                    <div class="workflow-col" data-day="tuesday">
+                        <div class="workflow-col-header">
+                            <div class="col-title-group">
+                                <h3>Martes</h3>
+                                <span class="col-subtitle" id="dateTuesday">--</span>
+                            </div>
+                            <div class="day-capacity-badge">
+                                <span class="day-hours-pill" id="hoursTuesday">0.0h / 4h</span>
+                            </div>
+                        </div>
+                        <div class="day-progress-track">
+                            <div class="day-progress-bar" id="barTuesday" style="width: 0%;"></div>
+                        </div>
+                        <div class="workflow-task-list" id="taskListTuesday" data-day="tuesday">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Columna: Miércoles -->
+                    <div class="workflow-col" data-day="wednesday">
+                        <div class="workflow-col-header">
+                            <div class="col-title-group">
+                                <h3>Miércoles</h3>
+                                <span class="col-subtitle" id="dateWednesday">--</span>
+                            </div>
+                            <div class="day-capacity-badge">
+                                <span class="day-hours-pill" id="hoursWednesday">0.0h / 4h</span>
+                            </div>
+                        </div>
+                        <div class="day-progress-track">
+                            <div class="day-progress-bar" id="barWednesday" style="width: 0%;"></div>
+                        </div>
+                        <div class="workflow-task-list" id="taskListWednesday" data-day="wednesday">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Columna: Jueves -->
+                    <div class="workflow-col" data-day="thursday">
+                        <div class="workflow-col-header">
+                            <div class="col-title-group">
+                                <h3>Jueves</h3>
+                                <span class="col-subtitle" id="dateThursday">--</span>
+                            </div>
+                            <div class="day-capacity-badge">
+                                <span class="day-hours-pill" id="hoursThursday">0.0h / 4h</span>
+                            </div>
+                        </div>
+                        <div class="day-progress-track">
+                            <div class="day-progress-bar" id="barThursday" style="width: 0%;"></div>
+                        </div>
+                        <div class="workflow-task-list" id="taskListThursday" data-day="thursday">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Columna: Viernes -->
+                    <div class="workflow-col" data-day="friday">
+                        <div class="workflow-col-header">
+                            <div class="col-title-group">
+                                <h3>Viernes</h3>
+                                <span class="col-subtitle" id="dateFriday">--</span>
+                            </div>
+                            <div class="day-capacity-badge">
+                                <span class="day-hours-pill" id="hoursFriday">0.0h / 4h</span>
+                            </div>
+                        </div>
+                        <div class="day-progress-track">
+                            <div class="day-progress-bar" id="barFriday" style="width: 0%;"></div>
+                        </div>
+                        <div class="workflow-task-list" id="taskListFriday" data-day="friday">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             
         </main>
     </div>
@@ -299,6 +462,97 @@
                 <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1rem;">
                     <button type="button" id="btnCancelSatAccount" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Cancelar</button>
                     <button type="submit" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Guardar</button>
+                </div>
+            </form>
+    </div>
+
+    <!-- Modal para Crear / Editar Tarea de Flujo Semanal -->
+    <div id="workflowTaskModal" class="modal-overlay hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <div class="login-box glass-panel" style="width:480px; max-width:92vw; padding:2rem; border:1px solid var(--border-color); border-radius:16px;">
+            <div class="login-header" style="margin-bottom:1.5rem; text-align:center;">
+                <h2 id="modalTaskHeading" style="font-size:1.4rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">Nueva Entrega de Diseño</h2>
+                <p style="font-size:0.85rem; color:var(--text-muted);">Programa el entregable y dimensiona el tiempo de trabajo</p>
+            </div>
+            <form id="workflowTaskForm" style="display:flex; flex-direction:column; gap:1rem;">
+                <input type="hidden" id="taskInputId" value="">
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="taskInputClient" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Cliente / Marca</label>
+                    <select id="taskInputClient" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                        <option value="Letrerama">Letrerama</option>
+                        <option value="HealthyIce">HealthyIce</option>
+                        <option value="Grupo Gari">Grupo Gari</option>
+                        <option value="AMDI">AMDI</option>
+                        <option value="Jessica Mendoza">Jessica Mendoza</option>
+                        <option value="Chile Chillón">Chile Chillón</option>
+                        <option value="Valencia Servicios">Valencia Servicios</option>
+                        <option value="White Clean">White Clean</option>
+                        <option value="Uro-Oncology">Uro-Oncology</option>
+                        <option value="Urología Avanzada">Urología Avanzada</option>
+                        <option value="Botica Silvestre">Botica Silvestre</option>
+                        <option value="Hipha">Hipha (Interno)</option>
+                        <option value="otro">+ Otro cliente...</option>
+                    </select>
+                </div>
+
+                <div id="taskCustomClientGroup" class="form-group hidden" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="taskInputCustomClient" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Nombre del Cliente Personalizado</label>
+                    <input type="text" id="taskInputCustomClient" placeholder="Escribe el nombre del cliente" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="taskInputTitle" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Entregable / Pieza de Diseño</label>
+                    <input type="text" id="taskInputTitle" required placeholder="Ej. 3 Carruseles Instagram, Flyer, Landing Page" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.8rem;">
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="taskInputDay" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Día Asignado</label>
+                        <select id="taskInputDay" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                            <option value="backlog">📦 Pendientes (Backlog)</option>
+                            <option value="monday">Lunes</option>
+                            <option value="tuesday">Martes</option>
+                            <option value="wednesday">Miércoles</option>
+                            <option value="thursday">Jueves</option>
+                            <option value="friday">Viernes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                        <label for="taskInputHours" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Estimación de Tiempo</label>
+                        <select id="taskInputHours" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                            <option value="0.5">⏱️ 0.5h (30 min)</option>
+                            <option value="1.0" selected>⏱️ 1.0h (1 hora)</option>
+                            <option value="1.5">⏱️ 1.5h (1 hora y media)</option>
+                            <option value="2.0">⏱️ 2.0h (2 horas)</option>
+                            <option value="2.5">⏱️ 2.5h (2 horas y media)</option>
+                            <option value="3.0">⏱️ 3.0h (3 horas)</option>
+                            <option value="4.0">⏱️ 4.0h (Jornada completa)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="taskInputStatus" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Estatus de Diseño</label>
+                    <select id="taskInputStatus" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                        <option value="pending">⏳ Por Iniciar</option>
+                        <option value="in_progress">🎨 En Diseño</option>
+                        <option value="review">👀 En Revisión con Cliente</option>
+                        <option value="completed">✅ Aprobado / Terminado</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
+                    <label for="taskInputNotes" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Notas o Enlace a Carpeta (Opcional)</label>
+                    <textarea id="taskInputNotes" rows="2" placeholder="Brief, especificaciones, enlace de Drive o Figma..." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem; border-radius:8px; outline:none; font-size:0.85rem; resize:vertical; font-family:inherit;"></textarea>
+                </div>
+
+                <div style="display:flex; gap:0.8rem; justify-content:space-between; align-items:center; margin-top:0.8rem;">
+                    <button type="button" id="btnDeleteTask" class="btn-danger-mini hidden" style="background:rgba(239, 68, 68, 0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:0.6rem 1rem; border-radius:8px; cursor:pointer; font-size:0.85rem; font-weight:500;">Eliminar</button>
+                    <div style="display:flex; gap:0.8rem; margin-left:auto;">
+                        <button type="button" id="btnCancelTaskModal" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Cancelar</button>
+                        <button type="submit" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.3rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Guardar Tarea</button>
+                    </div>
                 </div>
             </form>
         </div>

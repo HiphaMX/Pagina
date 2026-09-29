@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
-from typing import Optional
+from typing import Optional, List
 from sqlalchemy.orm import Session
 import io
 import csv
@@ -16,6 +16,13 @@ from app.api.deps import get_current_active_user
 from app.schemas.user import User as UserSchema
 from app.core.database import get_db
 from app.models.chilechillon_lead import ChileChillonLead
+from app.models.workflow_task import WorkflowTask
+from app.schemas.workflow import (
+    WorkflowTask as WorkflowTaskSchema,
+    WorkflowTaskCreate,
+    WorkflowTaskUpdate,
+    WorkflowMoveRequest
+)
 
 router = APIRouter()
 
@@ -111,4 +118,100 @@ def export_chilechillon_leads(db: Session = Depends(get_db), current_user: UserS
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=chilechillon_quiniela_leads.csv"}
     )
+
+
+# --- Endpoints de Flujo de Trabajo Semanal (Workflow) ---
+
+@router.get("/workflow/tasks", response_model=List[WorkflowTaskSchema])
+def get_workflow_tasks(
+    week: str = "current",
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Obtiene las tareas de diseño para una semana específica o todas."""
+    query = db.query(WorkflowTask)
+    if week and week != "all":
+        query = query.filter(WorkflowTask.week_id == week)
+    return query.order_by(WorkflowTask.order_index.asc(), WorkflowTask.id.asc()).all()
+
+
+@router.post("/workflow/tasks", response_model=WorkflowTaskSchema)
+def create_workflow_task(
+    task_in: WorkflowTaskCreate,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Crea una nueva tarea de diseño en el flujo semanal."""
+    task = WorkflowTask(
+        week_id=task_in.week_id,
+        day=task_in.day,
+        client_name=task_in.client_name,
+        title=task_in.title,
+        estimated_hours=task_in.estimated_hours,
+        status=task_in.status,
+        notes=task_in.notes,
+        order_index=task_in.order_index
+    )
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.put("/workflow/tasks/{task_id}", response_model=WorkflowTaskSchema)
+def update_workflow_task(
+    task_id: int,
+    task_in: WorkflowTaskUpdate,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Actualiza una tarea existente."""
+    task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarea no encontrada")
+    
+    for field, val in task_in.model_dump(exclude_unset=True).items():
+        setattr(task, field, val)
+        
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.patch("/workflow/tasks/{task_id}/move", response_model=WorkflowTaskSchema)
+def move_workflow_task(
+    task_id: int,
+    move_data: WorkflowMoveRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Mueve rápidamente una tarea entre días o en el backlog."""
+    task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarea no encontrada")
+    
+    task.day = move_data.target_day
+    if move_data.target_order_index is not None:
+        task.order_index = move_data.target_order_index
+        
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.delete("/workflow/tasks/{task_id}")
+def delete_workflow_task(
+    task_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Elimina una tarea del flujo semanal."""
+    task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarea no encontrada")
+    
+    db.delete(task)
+    db.commit()
+    return {"ok": True, "message": "Tarea eliminada exitosamente"}
+
 

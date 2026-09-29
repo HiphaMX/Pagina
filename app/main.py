@@ -12,6 +12,7 @@ from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
 from app.models.chilechillon_match import ChileChillonMatch
 from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
+from app.models.workflow_task import WorkflowTask
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")

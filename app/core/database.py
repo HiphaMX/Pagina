@@ -49,10 +49,23 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+_tables_created = False
+
+def ensure_db_initialized():
+    global _tables_created
+    if not _tables_created:
+        try:
+            Base.metadata.create_all(bind=engine)
+            _tables_created = True
+        except Exception as e:
+            print(f"Warning: could not auto-create tables: {e}")
+
 
 def get_db():
+    ensure_db_initialized()
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+

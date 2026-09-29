@@ -7,6 +7,7 @@
 ║  Uso directo:                                        ║
 ║    python3 agents.py             → menú interactivo  ║
 ║    python3 agents.py kam         → ir a KAM          ║
+║    python3 agents.py flowcast    → ir a FlowCast     ║
 ║    python3 agents.py branding    → ir a BrandMind    ║
 ║    python3 agents.py design      → ir a DesignFlow   ║
 ║    python3 agents.py --list      → listar agentes    ║
@@ -369,6 +370,35 @@ Tu tarea:
 3. Sugerir las directivas adecuadas para robots.txt.
 4. Diseñar la estrategia de control/monetización si se requiere.""",
     },
+    {
+        "id": 12,
+        "key": "flowcast",
+        "name": "FlowCast",
+        "icon": "🎙️",
+        "color": C.fg(249, 115, 22),       # Orange / Amber podcast
+        "role": "Video Podcast Director & Google Flow (Veo 3.1) Specialist",
+        "file": "AGENT_FLOWCAST.md",
+        "badge": "Google Flow & Veo 3.1",
+        "tags": ["podcast", "google flow", "veo", "avatar", "video", "shotlist", "cinematografia", "continuidad"],
+        "when_to_use": [
+            "Crear o dirigir un video podcast generado con avatares en Google Flow",
+            "Garantizar la continuidad visual de tu avatar y escenario de referencia",
+            "Desglosar un guion o audio en beats cinematográficos de 5 a 8 segundos",
+            "Generar prompts precisos en inglés con la fórmula de 5 partes de Veo 3.1",
+            "Alternar planos de cámara (Medium Shot 50mm, Close-up 85mm, B-roll) sin saltos bruscos",
+        ],
+        "activation": """Actúa como FLOWCAST, el agente director de video podcast y especialista en Google Flow (Veo 3.1) de HiphaMX.
+
+Proyecto / Episodio: [nombre o tema del episodio]
+Guion / Texto: [pega aquí tu guion o ideas]
+Duración estimada: [ej: 30 segundos / 1 minuto / 5 minutos]
+
+Tu tarea:
+1. Respetar mis anclas de avatar y estudio (flowcast/avatar_profile.md y flowcast/studio_profile.md).
+2. Segmentar el guion en tomas (beats) de 5 a 8 segundos.
+3. Generar la shotlist multi-cámara completa con los prompts estructurados de Veo 3.1 en inglés y negative prompts.
+4. Asegurar que las tomas tengan dinamismo visual profesional evitando deformaciones.""",
+    },
 ]
 
 # ─── Helper functions ────────────────────────────────────────────────────────
@@ -491,6 +521,7 @@ def wizard():
         ("Necesito analizar datos (CSV/Excel) o investigar tendencias.",      ["datos"]),
         ("Necesito probar formularios, pagos, correos SMTP, PDFs o UX.",      ["sitesentinel"]),
         ("Necesito optimizar mi web para agentes de IA (GEO, llms.txt).",     ["geopilot"]),
+        ("Quiero crear o dirigir un video podcast con mi avatar en Google Flow.", ["flowcast"]),
         ("No sé bien, muéstrame todos los agentes.",                          None),
     ]
 
