@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function showDashboard() {
     loginScreen.classList.add('hidden');
     dashboardLayout.classList.remove('hidden');
+    setupWorkflowElements();
     loadOverviewData();
 }
 
@@ -1378,49 +1379,69 @@ function createWorkflowTaskCard(task) {
     const clientStyle = getClientStyle(task.client_name);
     const statusInfo = getStatusInfo(task.status);
     const hours = Math.max(0.5, parseFloat(task.estimated_hours) || 1.0);
+    const isCompleted = task.status === 'completed';
 
-    // Dimensionamiento proporcional estilo Google Calendar (Jornada 9:00 AM - 1:00 PM)
-    // 0.5h (30 min)  -> 60px
-    // 1.0h (1 hora)  -> 100px
-    // 1.5h (1.5 hrs) -> 140px
-    // 2.0h (2 horas) -> 180px
-    // 2.5h (2.5 hrs) -> 220px
-    // 3.0h (3 horas) -> 260px
-    // 4.0h (4 horas) -> 340px (llena la mañana)
-    const cardHeight = Math.round(60 + (hours - 0.5) * 80);
-    card.style.minHeight = `${cardHeight}px`;
-    card.style.borderLeft = `4px solid ${clientStyle.text || '#00e5ff'}`;
-    card.style.background = `linear-gradient(90deg, ${clientStyle.bg} 0%, rgba(15, 23, 42, 0.88) 35%)`;
-
-    if (hours <= 0.5) {
-        card.classList.add('is-compact');
-    } else if (hours >= 3.0) {
-        card.classList.add('is-extended');
-    }
-
-    card.innerHTML = `
-        <div class="card-top-row">
-            <div class="card-meta-left">
-                <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border};">
+    if (isCompleted) {
+        card.classList.add('is-completed');
+        card.title = `${task.client_name || 'General'} - ${task.title || 'Sin título'} (${hours.toFixed(1)}h) • Clic para editar`;
+        card.innerHTML = `
+            <div class="card-completed-row">
+                <span class="status-chip completed" title="✅ Terminado • Clic para reactivar">✓</span>
+                <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border}; flex-shrink: 0;">
                     ${escapeHtml(task.client_name || 'General')}
                 </span>
-                <span class="hours-chip">⏱️ ${hours.toFixed(1)}h</span>
+                <span class="card-title-completed" title="${escapeHtml(task.title || 'Sin título')}">
+                    ${escapeHtml(task.title || 'Sin título')}
+                </span>
+                <button class="card-actions-btn" type="button" title="Editar o eliminar entrega" aria-label="Editar entrega">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
             </div>
-            <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </button>
-        </div>
-        <div class="card-main-content">
-            <div class="card-title">${escapeHtml(task.title || 'Sin título')}</div>
-            ${task.notes ? `<div class="card-notes" title="${escapeHtml(task.notes)}">📝 ${escapeHtml(task.notes)}</div>` : ''}
-        </div>
-        <div class="card-bottom-row">
-            <span class="status-chip ${task.status || 'pending'}" title="Haz clic para avanzar estatus">
-                ${statusInfo.label}
-            </span>
-            <span class="drag-handle-hint" title="Arrastra para mover a otro día">⋮⋮</span>
-        </div>
-    `;
+        `;
+    } else {
+        // Dimensionamiento proporcional estilo Google Calendar (Jornada 9:00 AM - 1:00 PM)
+        // 0.5h (30 min)  -> 60px
+        // 1.0h (1 hora)  -> 100px
+        // 1.5h (1.5 hrs) -> 140px
+        // 2.0h (2 horas) -> 180px
+        // 2.5h (2.5 hrs) -> 220px
+        // 3.0h (3 horas) -> 260px
+        // 4.0h (4 horas) -> 340px (llena la mañana)
+        const cardHeight = Math.round(60 + (hours - 0.5) * 80);
+        card.style.minHeight = `${cardHeight}px`;
+        card.style.borderLeft = `4px solid ${clientStyle.text || '#00e5ff'}`;
+        card.style.background = `linear-gradient(90deg, ${clientStyle.bg} 0%, rgba(15, 23, 42, 0.88) 35%)`;
+
+        if (hours <= 0.5) {
+            card.classList.add('is-compact');
+        } else if (hours >= 3.0) {
+            card.classList.add('is-extended');
+        }
+
+        card.innerHTML = `
+            <div class="card-top-row">
+                <div class="card-meta-left">
+                    <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border};">
+                        ${escapeHtml(task.client_name || 'General')}
+                    </span>
+                    <span class="hours-chip">⏱️ ${hours.toFixed(1)}h</span>
+                </div>
+                <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
+            </div>
+            <div class="card-main-content">
+                <div class="card-title">${escapeHtml(task.title || 'Sin título')}</div>
+                ${task.notes ? `<div class="card-notes" title="${escapeHtml(task.notes)}">📝 ${escapeHtml(task.notes)}</div>` : ''}
+            </div>
+            <div class="card-bottom-row">
+                <span class="status-chip ${task.status || 'pending'}" title="Haz clic para avanzar estatus">
+                    ${statusInfo.label}
+                </span>
+                <span class="drag-handle-hint" title="Arrastra para mover a otro día">⋮⋮</span>
+            </div>
+        `;
+    }
 
     // Click específico en botón editar
     const editBtn = card.querySelector('.card-actions-btn');
@@ -1442,7 +1463,7 @@ function createWorkflowTaskCard(task) {
 
     // Click en cualquier otra área de la tarjeta abre el editor
     card.addEventListener('click', (e) => {
-        if (e.target.closest('.status-chip')) return;
+        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn')) return;
         editWorkflowTask(task.id);
     });
 

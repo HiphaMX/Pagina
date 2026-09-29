@@ -335,7 +335,10 @@
                                 <h3>📦 Pendientes</h3>
                                 <span class="col-subtitle">Por Programar</span>
                             </div>
-                            <span class="day-hours-pill" id="hoursBacklog">0.0h</span>
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span class="day-hours-pill" id="hoursBacklog">0.0h</span>
+                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('backlog')" title="Agregar entrega a Pendientes">+</button>
+                            </div>
                         </div>
                         <div class="workflow-task-list" id="taskListBacklog" data-day="backlog">
                             <!-- Inyectado por JS -->
@@ -351,6 +354,7 @@
                             </div>
                             <div class="day-capacity-badge">
                                 <span class="day-hours-pill" id="hoursMonday">0.0h / 4h</span>
+                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('monday')" title="Agregar entrega al Lunes">+</button>
                             </div>
                         </div>
                         <div class="day-progress-track">
@@ -370,6 +374,7 @@
                             </div>
                             <div class="day-capacity-badge">
                                 <span class="day-hours-pill" id="hoursTuesday">0.0h / 4h</span>
+                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('tuesday')" title="Agregar entrega al Martes">+</button>
                             </div>
                         </div>
                         <div class="day-progress-track">
@@ -389,6 +394,7 @@
                             </div>
                             <div class="day-capacity-badge">
                                 <span class="day-hours-pill" id="hoursWednesday">0.0h / 4h</span>
+                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('wednesday')" title="Agregar entrega al Miércoles">+</button>
                             </div>
                         </div>
                         <div class="day-progress-track">
@@ -408,6 +414,7 @@
                             </div>
                             <div class="day-capacity-badge">
                                 <span class="day-hours-pill" id="hoursThursday">0.0h / 4h</span>
+                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('thursday')" title="Agregar entrega al Jueves">+</button>
                             </div>
                         </div>
                         <div class="day-progress-track">
@@ -427,6 +434,7 @@
                             </div>
                             <div class="day-capacity-badge">
                                 <span class="day-hours-pill" id="hoursFriday">0.0h / 4h</span>
+                                <button type="button" class="btn-col-add" onclick="openWorkflowTaskModal('friday')" title="Agregar entrega al Viernes">+</button>
                             </div>
                         </div>
                         <div class="day-progress-track">
@@ -464,6 +472,7 @@
                     <button type="submit" style="background:var(--accent-cyan); color:#101729; border:none; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem;">Guardar</button>
                 </div>
             </form>
+        </div>
     </div>
 
     <!-- Modal para Crear / Editar Tarea de Flujo Semanal -->

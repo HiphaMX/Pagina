@@ -893,4 +893,99 @@ select {
     transform: scale(1.05);
 }
 
+/* Botón de Añadir Rápido en Cabecera de Columna */
+.btn-col-add {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.btn-col-add:hover {
+    background: var(--accent-cyan);
+    color: #101729;
+    border-color: var(--accent-cyan);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+/* Tarjeta Minimizada para Tareas Terminadas */
+.workflow-card.is-completed {
+    min-height: 40px !important;
+    max-height: 46px !important;
+    padding: 0.35rem 0.65rem !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.5rem !important;
+    background: rgba(16, 185, 129, 0.08) !important;
+    border: 1px solid rgba(16, 185, 129, 0.28) !important;
+    border-left: 4px solid #10b981 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    opacity: 0.88;
+}
+
+.workflow-card.is-completed:hover {
+    opacity: 1;
+    border-color: rgba(16, 185, 129, 0.55) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2), -2px 0 8px rgba(16, 185, 129, 0.3) !important;
+    transform: translateY(-1px);
+}
+
+.card-completed-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.workflow-card.is-completed .status-chip.completed {
+    padding: 0.15rem 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background: rgba(16, 185, 129, 0.25);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.card-title-completed {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.workflow-card.is-completed .card-actions-btn {
+    opacity: 0.55;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    padding: 0.15rem;
+}
+
+.workflow-card.is-completed:hover .card-actions-btn {
+    opacity: 1;
+}
+
+
 
