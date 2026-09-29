@@ -33,17 +33,38 @@ db_uri = _resolve_db_uri()
 if db_uri and db_uri.startswith("postgres://"):
     db_uri = db_uri.replace("postgres://", "postgresql://", 1)
 
-
-if "sqlite" in db_uri:
+try:
+    if "sqlite" in db_uri:
+        engine = create_engine(
+            db_uri, connect_args={"check_same_thread": False}
+        )
+    else:
+        try:
+            engine = create_engine(
+                db_uri,
+                poolclass=NullPool,
+                pool_pre_ping=True
+            )
+        except Exception as e_drv:
+            # Fallback entre psycopg y psycopg2 si alguno no está disponible
+            if "psycopg" in str(e_drv):
+                if db_uri.startswith("postgresql://"):
+                    alt_uri = db_uri.replace("postgresql://", "postgresql+psycopg2://", 1)
+                    engine = create_engine(alt_uri, poolclass=NullPool, pool_pre_ping=True)
+                elif db_uri.startswith("postgresql+psycopg://"):
+                    alt_uri = db_uri.replace("postgresql+psycopg://", "postgresql+psycopg2://", 1)
+                    engine = create_engine(alt_uri, poolclass=NullPool, pool_pre_ping=True)
+                else:
+                    raise e_drv
+            else:
+                raise e_drv
+except Exception as e_engine:
+    print(f"⚠️ Error inicializando base de datos externa ({e_engine}), usando fallback SQLite en /tmp/database.db")
+    db_uri = "sqlite:////tmp/database.db"
     engine = create_engine(
         db_uri, connect_args={"check_same_thread": False}
     )
-else:
-    engine = create_engine(
-        db_uri,
-        poolclass=NullPool,
-        pool_pre_ping=True
-    )
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
