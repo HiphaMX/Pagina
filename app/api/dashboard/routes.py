@@ -21,8 +21,25 @@ from app.schemas.workflow import (
     WorkflowTask as WorkflowTaskSchema,
     WorkflowTaskCreate,
     WorkflowTaskUpdate,
-    WorkflowMoveRequest
+    WorkflowMoveRequest,
+    WorkflowAddRevisionRequest,
+    WorkflowMonthlyReport,
+    WorkflowMonthlyClientSummary
 )
+import datetime
+
+def _derive_month_id(week_id: Optional[str]) -> str:
+    if week_id and "-W" in week_id:
+        try:
+            parts = week_id.split("-W")
+            year = int(parts[0])
+            week = int(parts[1])
+            d = datetime.date.fromisocalendar(year, week, 1)
+            return d.strftime("%Y-%m")
+        except Exception:
+            pass
+    return datetime.datetime.now().strftime("%Y-%m")
+
 
 router = APIRouter()
 
@@ -124,14 +141,20 @@ def export_chilechillon_leads(db: Session = Depends(get_db), current_user: UserS
 
 @router.get("/workflow/tasks", response_model=List[WorkflowTaskSchema])
 def get_workflow_tasks(
-    week: str = "current",
+    week: Optional[str] = "current",
+    month: Optional[str] = None,
+    client: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
-    """Obtiene las tareas de diseño para una semana específica o todas."""
+    """Obtiene las tareas de diseño filtradas por semana, mes o cliente."""
     query = db.query(WorkflowTask)
     if week and week != "all":
         query = query.filter(WorkflowTask.week_id == week)
+    if month and month != "all":
+        query = query.filter(WorkflowTask.month_id == month)
+    if client and client != "all":
+        query = query.filter(WorkflowTask.client_name == client)
     return query.order_by(WorkflowTask.order_index.asc(), WorkflowTask.id.asc()).all()
 
 
@@ -142,12 +165,16 @@ def create_workflow_task(
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """Crea una nueva tarea de diseño en el flujo semanal."""
+    m_id = task_in.month_id or _derive_month_id(task_in.week_id)
     task = WorkflowTask(
         week_id=task_in.week_id,
         day=task_in.day,
         client_name=task_in.client_name,
         title=task_in.title,
         estimated_hours=task_in.estimated_hours,
+        revision_hours=task_in.revision_hours or 0.0,
+        revisions_count=task_in.revisions_count or 0,
+        month_id=m_id,
         status=task_in.status,
         notes=task_in.notes,
         order_index=task_in.order_index
@@ -173,6 +200,41 @@ def update_workflow_task(
     for field, val in task_in.model_dump(exclude_unset=True).items():
         setattr(task, field, val)
         
+    if not task.month_id and task.week_id:
+        task.month_id = _derive_month_id(task.week_id)
+
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.post("/workflow/tasks/{task_id}/add-revision", response_model=WorkflowTaskSchema)
+def add_revision_to_task(
+    task_id: int,
+    revision_in: WorkflowAddRevisionRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Añade tiempo de cambios/revisiones en lapsos de media hora (+0.5h)."""
+    task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarea no encontrada")
+
+    delta = float(revision_in.delta_hours or 0.5)
+    current_rev = float(task.revision_hours or 0.0)
+    task.revision_hours = max(0.0, current_rev + delta)
+
+    if delta > 0:
+        task.revisions_count = (task.revisions_count or 0) + 1
+    elif delta < 0 and task.revisions_count and task.revisions_count > 0:
+        task.revisions_count = max(0, task.revisions_count - 1)
+
+    if revision_in.note:
+        clean_note = revision_in.note.strip()
+        timestamp = datetime.datetime.now().strftime("%d/%m %H:%M")
+        addition = f"\n[Ajuste +{delta:.1f}h - {timestamp}]: {clean_note}"
+        task.notes = (task.notes or "") + addition
+
     db.commit()
     db.refresh(task)
     return task
@@ -213,5 +275,83 @@ def delete_workflow_task(
     db.delete(task)
     db.commit()
     return {"ok": True, "message": "Tarea eliminada exitosamente"}
+
+
+@router.get("/workflow/monthly-report", response_model=WorkflowMonthlyReport)
+def get_workflow_monthly_report(
+    month: Optional[str] = None,
+    client: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Genera el reporte mensual consolidado de horas trabajadas por cliente."""
+    target_month = month if (month and month != "all") else datetime.datetime.now().strftime("%Y-%m")
+    
+    query = db.query(WorkflowTask)
+    # Filtrar por mes: por month_id o por semana derivada
+    query = query.filter(WorkflowTask.month_id == target_month)
+    if client and client != "all":
+        query = query.filter(WorkflowTask.client_name == client)
+
+    tasks = query.order_by(WorkflowTask.id.desc()).all()
+
+    # Agrupar por cliente
+    client_map = {}
+    total_month_hours = 0.0
+    total_base_hours = 0.0
+    total_rev_hours = 0.0
+    completed_tasks_count = 0
+
+    for t in tasks:
+        c_name = t.client_name or "General"
+        if c_name not in client_map:
+            client_map[c_name] = {
+                "client_name": c_name,
+                "base_hours": 0.0,
+                "revision_hours": 0.0,
+                "total_hours": 0.0,
+                "tasks_count": 0,
+                "completed_count": 0
+            }
+        b_hours = float(t.estimated_hours or 0.0)
+        r_hours = float(t.revision_hours or 0.0)
+        t_hours = b_hours + r_hours
+
+        client_map[c_name]["base_hours"] += b_hours
+        client_map[c_name]["revision_hours"] += r_hours
+        client_map[c_name]["total_hours"] += t_hours
+        client_map[c_name]["tasks_count"] += 1
+
+        total_base_hours += b_hours
+        total_rev_hours += r_hours
+        total_month_hours += t_hours
+
+        if t.status == "completed":
+            client_map[c_name]["completed_count"] += 1
+            completed_tasks_count += 1
+
+    clients_list = [
+        WorkflowMonthlyClientSummary(
+            client_name=data["client_name"],
+            total_hours=round(data["total_hours"], 2),
+            base_hours=round(data["base_hours"], 2),
+            revision_hours=round(data["revision_hours"], 2),
+            tasks_count=data["tasks_count"],
+            completed_count=data["completed_count"]
+        )
+        for data in sorted(client_map.values(), key=lambda x: x["total_hours"], reverse=True)
+    ]
+
+    return WorkflowMonthlyReport(
+        month=target_month,
+        total_hours=round(total_month_hours, 2),
+        base_hours=round(total_base_hours, 2),
+        revision_hours=round(total_rev_hours, 2),
+        total_tasks=len(tasks),
+        completed_tasks=completed_tasks_count,
+        clients=clients_list,
+        tasks=tasks
+    )
+
 
 

@@ -11,8 +11,12 @@ class WorkflowTask(Base):
     client_name = Column(String, nullable=False)
     title = Column(String, nullable=False)
     estimated_hours = Column(Float, default=1.0)
+    revision_hours = Column(Float, default=0.0)
+    revisions_count = Column(Integer, default=0)
+    month_id = Column(String, index=True, nullable=True)  # ej. "2026-09"
     status = Column(String, default="pending")  # "pending", "in_progress", "review", "completed"
     notes = Column(Text, nullable=True)
     order_index = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
+

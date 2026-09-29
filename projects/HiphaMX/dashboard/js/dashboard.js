@@ -1090,9 +1090,54 @@ function setupWorkflowElements() {
         });
     }
 
+    // Botones de ajuste de media hora (+0.5h / -0.5h) en modal de tarea
+    const btnMinusRevision = document.getElementById('btnMinusRevision');
+    const btnAddRevision = document.getElementById('btnAddRevision');
+    const taskInputHours = document.getElementById('taskInputHours');
+
+    if (btnMinusRevision) {
+        btnMinusRevision.addEventListener('click', () => adjustRevisionHours(-0.5));
+    }
+    if (btnAddRevision) {
+        btnAddRevision.addEventListener('click', () => adjustRevisionHours(0.5));
+    }
+    if (taskInputHours) {
+        taskInputHours.addEventListener('change', updateModalRevisionSummary);
+    }
+
+    // Modal de Reporte Mensual
+    const btnOpenMonthlyReport = document.getElementById('btnOpenMonthlyReport');
+    const btnCloseMonthlyReport = document.getElementById('btnCloseMonthlyReport');
+    const monthlyReportModal = document.getElementById('workflowMonthlyReportModal');
+    const rptSelectMonth = document.getElementById('rptSelectMonth');
+    const rptSelectClient = document.getElementById('rptSelectClient');
+    const btnCopyMonthlyReport = document.getElementById('btnCopyMonthlyReport');
+
+    if (btnOpenMonthlyReport) {
+        btnOpenMonthlyReport.addEventListener('click', () => openMonthlyReportModal());
+    }
+    if (btnCloseMonthlyReport) {
+        btnCloseMonthlyReport.addEventListener('click', closeMonthlyReportModal);
+    }
+    if (monthlyReportModal) {
+        monthlyReportModal.addEventListener('click', (e) => {
+            if (e.target === monthlyReportModal) closeMonthlyReportModal();
+        });
+    }
+    if (rptSelectMonth) {
+        rptSelectMonth.addEventListener('change', () => loadAndRenderMonthlyReport());
+    }
+    if (rptSelectClient) {
+        rptSelectClient.addEventListener('change', () => renderMonthlyReportView());
+    }
+    if (btnCopyMonthlyReport) {
+        btnCopyMonthlyReport.addEventListener('click', copyMonthlyReportToClipboard);
+    }
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeWorkflowTaskModal();
+            closeMonthlyReportModal();
         }
     });
 
@@ -1298,14 +1343,16 @@ function renderWorkflowBoard() {
     filteredTasks.forEach(task => {
         const day = (task.day || 'backlog').toLowerCase();
         const listEl = document.getElementById(`taskList${capitalize(day)}`);
-        const hours = parseFloat(task.estimated_hours) || 0;
+        const baseH = parseFloat(task.estimated_hours) || 0;
+        const revH = parseFloat(task.revision_hours) || 0;
+        const totalH = baseH + revH;
 
         if (dailyHours.hasOwnProperty(day)) {
-            dailyHours[day] += hours;
+            dailyHours[day] += totalH;
         }
 
         if (day !== 'backlog') {
-            totalWeekHours += hours;
+            totalWeekHours += totalH;
         }
 
         if (listEl) {
@@ -1378,12 +1425,18 @@ function createWorkflowTaskCard(task) {
 
     const clientStyle = getClientStyle(task.client_name);
     const statusInfo = getStatusInfo(task.status);
-    const hours = Math.max(0.5, parseFloat(task.estimated_hours) || 1.0);
+    const baseHours = Math.max(0.5, parseFloat(task.estimated_hours) || 1.0);
+    const revHours = Math.max(0.0, parseFloat(task.revision_hours) || 0.0);
+    const totalHours = baseHours + revHours;
     const isCompleted = task.status === 'completed';
 
     if (isCompleted) {
         card.classList.add('is-completed');
-        card.title = `${task.client_name || 'General'} - ${task.title || 'Sin título'} (${hours.toFixed(1)}h) • Clic para editar`;
+        const tooltipHours = revHours > 0 
+            ? `Total invertido: ${totalHours.toFixed(1)}h (${baseHours.toFixed(1)}h base + ${revHours.toFixed(1)}h cambios)`
+            : `Total invertido: ${totalHours.toFixed(1)}h`;
+
+        card.title = `${task.client_name || 'General'} - ${task.title || 'Sin título'} (${tooltipHours}) • Clic para editar`;
         card.innerHTML = `
             <div class="card-completed-row">
                 <span class="status-chip completed" title="✅ Terminado • Clic para reactivar">✓</span>
@@ -1393,6 +1446,9 @@ function createWorkflowTaskCard(task) {
                 <span class="card-title-completed" title="${escapeHtml(task.title || 'Sin título')}">
                     ${escapeHtml(task.title || 'Sin título')}
                 </span>
+                <span class="completed-hours-pill" title="${tooltipHours}">
+                    ⏱️ ${totalHours.toFixed(1)}h
+                </span>
                 <button class="card-actions-btn" type="button" title="Editar o eliminar entrega" aria-label="Editar entrega">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 </button>
@@ -1400,23 +1456,24 @@ function createWorkflowTaskCard(task) {
         `;
     } else {
         // Dimensionamiento proporcional estilo Google Calendar (Jornada 9:00 AM - 1:00 PM)
-        // 0.5h (30 min)  -> 60px
-        // 1.0h (1 hora)  -> 100px
-        // 1.5h (1.5 hrs) -> 140px
-        // 2.0h (2 horas) -> 180px
-        // 2.5h (2.5 hrs) -> 220px
-        // 3.0h (3 horas) -> 260px
-        // 4.0h (4 horas) -> 340px (llena la mañana)
-        const cardHeight = Math.round(60 + (hours - 0.5) * 80);
+        const cardHeight = Math.round(60 + (totalHours - 0.5) * 80);
         card.style.minHeight = `${cardHeight}px`;
         card.style.borderLeft = `4px solid ${clientStyle.text || '#00e5ff'}`;
         card.style.background = `linear-gradient(90deg, ${clientStyle.bg} 0%, rgba(15, 23, 42, 0.88) 35%)`;
 
-        if (hours <= 0.5) {
+        if (totalHours <= 0.5) {
             card.classList.add('is-compact');
-        } else if (hours >= 3.0) {
+        } else if (totalHours >= 3.0) {
             card.classList.add('is-extended');
         }
+
+        const revBadgeHtml = revHours > 0 
+            ? `<span class="hours-revision-badge" title="Horas acumuladas por cambios">+${revHours.toFixed(1)}h cambios</span>`
+            : '';
+
+        const quickAddRevHtml = (task.status === 'review' || task.status === 'in_progress')
+            ? `<button type="button" class="btn-quick-revision" title="Sumar +30 min por cambios solicitados por el cliente">+0.5h cambio</button>`
+            : '';
 
         card.innerHTML = `
             <div class="card-top-row">
@@ -1424,7 +1481,8 @@ function createWorkflowTaskCard(task) {
                     <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border};">
                         ${escapeHtml(task.client_name || 'General')}
                     </span>
-                    <span class="hours-chip">⏱️ ${hours.toFixed(1)}h</span>
+                    <span class="hours-chip">⏱️ ${baseHours.toFixed(1)}h</span>
+                    ${revBadgeHtml}
                 </div>
                 <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -1435,9 +1493,12 @@ function createWorkflowTaskCard(task) {
                 ${task.notes ? `<div class="card-notes" title="${escapeHtml(task.notes)}">📝 ${escapeHtml(task.notes)}</div>` : ''}
             </div>
             <div class="card-bottom-row">
-                <span class="status-chip ${task.status || 'pending'}" title="Haz clic para avanzar estatus">
-                    ${statusInfo.label}
-                </span>
+                <div style="display:flex; align-items:center; gap:0.4rem;">
+                    <span class="status-chip ${task.status || 'pending'}" title="Haz clic para avanzar estatus">
+                        ${statusInfo.label}
+                    </span>
+                    ${quickAddRevHtml}
+                </div>
                 <span class="drag-handle-hint" title="Arrastra para mover a otro día">⋮⋮</span>
             </div>
         `;
@@ -1461,9 +1522,18 @@ function createWorkflowTaskCard(task) {
         });
     }
 
+    // Click específico en botón rápido de cambios (+0.5h)
+    const quickRevBtn = card.querySelector('.btn-quick-revision');
+    if (quickRevBtn) {
+        quickRevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            addTaskRevision(task.id, 0.5);
+        });
+    }
+
     // Click en cualquier otra área de la tarjeta abre el editor
     card.addEventListener('click', (e) => {
-        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn')) return;
+        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision')) return;
         editWorkflowTask(task.id);
     });
 
@@ -1550,13 +1620,86 @@ function openWorkflowTaskModal(day = 'monday') {
     document.getElementById('taskInputTitle').value = '';
     document.getElementById('taskInputDay').value = day;
     document.getElementById('taskInputHours').value = '1.0';
+    document.getElementById('taskInputRevisionHours').value = '0.0';
+    document.getElementById('taskInputRevisionsCount').value = '0';
     document.getElementById('taskInputStatus').value = 'pending';
     document.getElementById('taskInputNotes').value = '';
+
+    updateModalRevisionSummary();
 
     heading.textContent = 'Nueva Entrega de Diseño';
     btnDelete.classList.add('hidden');
     modal.classList.remove('hidden');
     document.getElementById('taskInputTitle').focus();
+}
+
+function updateModalRevisionSummary() {
+    const hoursSelect = document.getElementById('taskInputHours');
+    const baseHours = parseFloat(hoursSelect ? hoursSelect.value : 1.0) || 1.0;
+    const revInput = document.getElementById('taskInputRevisionHours');
+    const revHours = parseFloat(revInput ? revInput.value : 0.0) || 0.0;
+    const grandTotal = baseHours + revHours;
+
+    const badgeRevision = document.getElementById('badgeRevisionHours');
+    const lblBase = document.getElementById('lblBaseHours');
+    const lblChanges = document.getElementById('lblChangesHours');
+    const lblGrand = document.getElementById('lblGrandTotalHours');
+
+    if (badgeRevision) badgeRevision.textContent = `+${revHours.toFixed(1)}h`;
+    if (lblBase) lblBase.textContent = `${baseHours.toFixed(1)}h`;
+    if (lblChanges) lblChanges.textContent = `+${revHours.toFixed(1)}h`;
+    if (lblGrand) lblGrand.textContent = `${grandTotal.toFixed(1)}h`;
+}
+
+function adjustRevisionHours(delta) {
+    const revInput = document.getElementById('taskInputRevisionHours');
+    const countInput = document.getElementById('taskInputRevisionsCount');
+    if (!revInput || !countInput) return;
+
+    let currentRev = parseFloat(revInput.value) || 0.0;
+    let currentCount = parseInt(countInput.value) || 0;
+
+    currentRev = Math.max(0.0, currentRev + delta);
+    if (delta > 0) {
+        currentCount += 1;
+    } else if (delta < 0 && currentCount > 0) {
+        currentCount -= 1;
+    }
+
+    revInput.value = currentRev.toFixed(1);
+    countInput.value = String(currentCount);
+    updateModalRevisionSummary();
+}
+
+async function addTaskRevision(taskId, delta = 0.5) {
+    const task = workflowTasks.find(t => String(t.id) === String(taskId));
+    if (!task) return;
+
+    task.revision_hours = Math.max(0.0, (parseFloat(task.revision_hours) || 0.0) + delta);
+    if (delta > 0) {
+        task.revisions_count = (task.revisions_count || 0) + 1;
+    } else if (delta < 0 && task.revisions_count && task.revisions_count > 0) {
+        task.revisions_count = Math.max(0, task.revisions_count - 1);
+    }
+    saveWorkflowState();
+    renderWorkflowBoard();
+
+    // Sincronizar con API
+    try {
+        const token = localStorage.getItem('dashboard_token');
+        if (token) {
+            await fetch(`${API_BASE}/workflow/tasks/${taskId}/add-revision`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ delta_hours: delta })
+            });
+        }
+    } catch (err) {
+        console.warn("Error enviando adición de revisión a API:", err);
+    }
 }
 
 function editWorkflowTask(taskId) {
@@ -1596,7 +1739,7 @@ function editWorkflowTask(taskId) {
     document.getElementById('taskInputTitle').value = task.title || '';
     document.getElementById('taskInputDay').value = task.day || 'monday';
 
-    // Ajustar valor de horas con 1 decimal para que coincida con las opciones (ej. "2.0")
+    // Ajustar valor de horas base con 1 decimal
     const numHours = parseFloat(task.estimated_hours) || 1.0;
     const hoursStr = numHours.toFixed(1);
     const hoursSelect = document.getElementById('taskInputHours');
@@ -1612,8 +1755,15 @@ function editWorkflowTask(taskId) {
         hoursSelect.value = '1.0';
     }
 
+    const revH = parseFloat(task.revision_hours) || 0.0;
+    const revC = parseInt(task.revisions_count) || 0;
+    document.getElementById('taskInputRevisionHours').value = revH.toFixed(1);
+    document.getElementById('taskInputRevisionsCount').value = String(revC);
+
     document.getElementById('taskInputStatus').value = task.status || 'pending';
     document.getElementById('taskInputNotes').value = task.notes || '';
+
+    updateModalRevisionSummary();
 
     heading.textContent = 'Editar Entrega de Diseño';
     btnDelete.classList.remove('hidden');
@@ -1635,6 +1785,8 @@ async function handleWorkflowTaskSubmit(e) {
     const title = document.getElementById('taskInputTitle').value.trim();
     const day = document.getElementById('taskInputDay').value;
     const hours = parseFloat(document.getElementById('taskInputHours').value) || 1.0;
+    const revHours = parseFloat(document.getElementById('taskInputRevisionHours').value) || 0.0;
+    const revCount = parseInt(document.getElementById('taskInputRevisionsCount').value) || 0;
     const status = document.getElementById('taskInputStatus').value;
     const notes = document.getElementById('taskInputNotes').value.trim();
 
@@ -1648,6 +1800,8 @@ async function handleWorkflowTaskSubmit(e) {
             task.title = title;
             task.day = day;
             task.estimated_hours = hours;
+            task.revision_hours = revHours;
+            task.revisions_count = revCount;
             task.status = status;
             task.notes = notes;
             syncTaskWithApi(task, 'PUT');
@@ -1661,6 +1815,8 @@ async function handleWorkflowTaskSubmit(e) {
             client_name: finalClient,
             title: title,
             estimated_hours: hours,
+            revision_hours: revHours,
+            revisions_count: revCount,
             status: status,
             notes: notes
         };
@@ -1717,6 +1873,8 @@ async function syncTaskWithApi(task, method = 'POST') {
             client_name: task.client_name,
             title: task.title,
             estimated_hours: task.estimated_hours,
+            revision_hours: task.revision_hours || 0.0,
+            revisions_count: task.revisions_count || 0,
             status: task.status,
             notes: task.notes || ''
         };
@@ -1779,9 +1937,406 @@ function escapeHtml(text) {
         .replace(/'/g, '&#039;');
 }
 
+// ========================================================
+// MÓDULO DE REPORTE MENSUAL DE HORAS Y RETAINERS
+// ========================================================
+
+let currentReportMonth = '';
+let monthlyReportTasks = [];
+
+function deriveMonthIdFromWeek(weekId) {
+    if (!weekId || !weekId.includes('-W')) {
+        const now = new Date();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        return `${now.getFullYear()}-${m}`;
+    }
+    try {
+        const [yearStr, weekStr] = weekId.split('-W');
+        const year = parseInt(yearStr);
+        const week = parseInt(weekStr);
+        const simple = new Date(year, 0, 1 + (week - 1) * 7);
+        const m = String(simple.getMonth() + 1).padStart(2, '0');
+        return `${year}-${m}`;
+    } catch (e) {
+        const now = new Date();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        return `${now.getFullYear()}-${m}`;
+    }
+}
+
+function openMonthlyReportModal() {
+    const modal = document.getElementById('workflowMonthlyReportModal');
+    if (!modal) return;
+
+    const selectMonth = document.getElementById('rptSelectMonth');
+    const selectClient = document.getElementById('rptSelectClient');
+
+    // Inicializar mes por defecto (mes de la semana activa o actual)
+    currentReportMonth = deriveMonthIdFromWeek(currentWeekId);
+
+    // Poblar meses (Mes actual y 5 meses anteriores)
+    if (selectMonth) {
+        selectMonth.innerHTML = '';
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        const now = new Date();
+
+        for (let i = 0; i < 6; i++) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+            if (val === currentReportMonth) opt.selected = true;
+            selectMonth.appendChild(opt);
+        }
+    }
+
+    // Poblar clientes
+    if (selectClient) {
+        selectClient.innerHTML = '<option value="all">Todos los clientes</option>';
+        const clientsSet = new Set();
+        ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+        
+        // Incluir clientes de las tareas en memoria
+        workflowTasks.forEach(t => {
+            if (t.client_name) clientsSet.add(t.client_name.trim());
+        });
+
+        Array.from(clientsSet).sort().forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            selectClient.appendChild(opt);
+        });
+
+        // Si hay un filtro activo en el tablero, preseleccionarlo
+        if (currentWfClientFilter && currentWfClientFilter !== 'all') {
+            selectClient.value = currentWfClientFilter;
+        }
+    }
+
+    modal.classList.remove('hidden');
+    loadAndRenderMonthlyReport();
+}
+
+function closeMonthlyReportModal() {
+    const modal = document.getElementById('workflowMonthlyReportModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function loadAndRenderMonthlyReport() {
+    const selectMonth = document.getElementById('rptSelectMonth');
+    const selectedMonth = selectMonth ? selectMonth.value : currentReportMonth;
+    currentReportMonth = selectedMonth;
+
+    let loadedFromApi = false;
+    monthlyReportTasks = [];
+
+    try {
+        const token = localStorage.getItem('dashboard_token');
+        if (token) {
+            const res = await fetch(`${API_BASE}/workflow/monthly-report?month=${selectedMonth}`, {
+                headers: getAuthHeaders()
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && Array.isArray(data.tasks)) {
+                    monthlyReportTasks = data.tasks;
+                    loadedFromApi = true;
+                }
+            }
+        }
+    } catch (err) {
+        console.warn("No se pudo obtener reporte mensual de API, usando almacenamiento local:", err);
+    }
+
+    // Fallback: Si no viene de API o estamos offline, recopilar de localStorage todas las semanas de ese mes
+    if (!loadedFromApi) {
+        const allTasksMap = new Map();
+
+        // 1. Tareas de la semana activa actual
+        workflowTasks.forEach(t => {
+            const mId = t.month_id || deriveMonthIdFromWeek(t.week_id);
+            if (mId === selectedMonth) {
+                allTasksMap.set(String(t.id), t);
+            }
+        });
+
+        // 2. Tareas en todas las claves de localStorage
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('hipha_wf_tasks_')) {
+                try {
+                    const parsed = JSON.parse(localStorage.getItem(key));
+                    if (Array.isArray(parsed)) {
+                        parsed.forEach(t => {
+                            const mId = t.month_id || deriveMonthIdFromWeek(t.week_id);
+                            if (mId === selectedMonth && !allTasksMap.has(String(t.id))) {
+                                allTasksMap.set(String(t.id), t);
+                            }
+                        });
+                    }
+                } catch (e) {}
+            }
+        }
+
+        monthlyReportTasks = Array.from(allTasksMap.values());
+    }
+
+    renderMonthlyReportView();
+}
+
+function renderMonthlyReportView() {
+    const selectClient = document.getElementById('rptSelectClient');
+    const selectedClient = selectClient ? selectClient.value : 'all';
+
+    const kpiTotal = document.getElementById('rptKpiTotalHours');
+    const kpiBase = document.getElementById('rptKpiBaseHours');
+    const kpiRev = document.getElementById('rptKpiRevisionHours');
+    const kpiTasks = document.getElementById('rptKpiTotalTasks');
+    const container = document.getElementById('rptTableContainer');
+
+    // Filtrar tareas por cliente
+    const tasks = monthlyReportTasks.filter(t => {
+        if (selectedClient === 'all') return true;
+        return (t.client_name || '').toLowerCase() === selectedClient.toLowerCase();
+    });
+
+    let totalBase = 0.0;
+    let totalRev = 0.0;
+    let completedCount = 0;
+
+    tasks.forEach(t => {
+        const b = parseFloat(t.estimated_hours) || 0.0;
+        const r = parseFloat(t.revision_hours) || 0.0;
+        totalBase += b;
+        totalRev += r;
+        if (t.status === 'completed') completedCount++;
+    });
+
+    const grandTotal = totalBase + totalRev;
+
+    if (kpiTotal) kpiTotal.textContent = `${grandTotal.toFixed(1)}h`;
+    if (kpiBase) kpiBase.textContent = `${totalBase.toFixed(1)}h`;
+    if (kpiRev) kpiRev.textContent = `+${totalRev.toFixed(1)}h`;
+    if (kpiTasks) kpiTasks.textContent = `${tasks.length} piezas`;
+
+    if (!container) return;
+
+    if (tasks.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                <p style="font-size: 1.1rem; margin-bottom: 0.3rem;">📭 No hay entregables registrados para este periodo</p>
+                <p style="font-size: 0.8rem;">Selecciona otro mes o cliente para visualizar el tiempo invertido.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Si seleccionó "Todos los clientes", mostrar tabla comparativa agrupada por cliente
+    if (selectedClient === 'all') {
+        const clientGroups = {};
+        tasks.forEach(t => {
+            const c = t.client_name || 'General';
+            if (!clientGroups[c]) {
+                clientGroups[c] = { base: 0, rev: 0, count: 0, completed: 0 };
+            }
+            clientGroups[c].base += (parseFloat(t.estimated_hours) || 0);
+            clientGroups[c].rev += (parseFloat(t.revision_hours) || 0);
+            clientGroups[c].count++;
+            if (t.status === 'completed') clientGroups[c].completed++;
+        });
+
+        const rowsHtml = Object.entries(clientGroups)
+            .sort((a, b) => (b[1].base + b[1].rev) - (a[1].base + a[1].rev))
+            .map(([cName, stats]) => {
+                const cStyle = getClientStyle(cName);
+                const cTotal = stats.base + stats.rev;
+                const percent = grandTotal > 0 ? Math.round((cTotal / grandTotal) * 100) : 0;
+
+                return `
+                    <tr class="monthly-row-client" data-client="${escapeHtml(cName)}" title="Haz clic para ver las piezas de ${escapeHtml(cName)}">
+                        <td>
+                            <span class="client-badge" style="background:${cStyle.bg}; color:${cStyle.text}; border-color:${cStyle.border};">
+                                ${escapeHtml(cName)}
+                            </span>
+                        </td>
+                        <td><strong>${stats.count}</strong> (${stats.completed} concluidas)</td>
+                        <td>${stats.base.toFixed(1)}h</td>
+                        <td style="color:var(--accent-purple)">+${stats.rev.toFixed(1)}h</td>
+                        <td><strong style="color:var(--accent-cyan); font-size:0.95rem;">${cTotal.toFixed(1)}h</strong></td>
+                        <td style="width: 140px;">
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <div style="flex:1; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+                                    <div style="width:${percent}%; height:100%; background:var(--accent-cyan);"></div>
+                                </div>
+                                <span style="font-size:0.75rem; color:var(--text-muted); min-width:28px;">${percent}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+        container.innerHTML = `
+            <table class="monthly-table">
+                <thead>
+                    <tr>
+                        <th>Cliente / Cuenta</th>
+                        <th>Entregables</th>
+                        <th>Diseño Base</th>
+                        <th>Cambios (+0.5h)</th>
+                        <th>Total Horas</th>
+                        <th>% Retainer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rowsHtml}
+                </tbody>
+            </table>
+        `;
+
+        // Permitir clic en la fila del cliente para filtrar directamente
+        container.querySelectorAll('.monthly-row-client').forEach(tr => {
+            tr.addEventListener('click', () => {
+                const clientName = tr.dataset.client;
+                if (selectClient && clientName) {
+                    selectClient.value = clientName;
+                    renderMonthlyReportView();
+                }
+            });
+        });
+    } else {
+        // Vista detallada de piezas de un cliente específico
+        const rowsHtml = tasks.map(t => {
+            const b = parseFloat(t.estimated_hours) || 0;
+            const r = parseFloat(t.revision_hours) || 0;
+            const tot = b + r;
+            const statusInfo = getStatusInfo(t.status);
+
+            return `
+                <tr>
+                    <td style="white-space:nowrap; color:var(--text-muted); font-size:0.75rem;">
+                        ${escapeHtml(t.week_id || 'Semana')} • ${capitalize(t.day || 'backlog')}
+                    </td>
+                    <td>
+                        <strong style="color:var(--text-main); font-size:0.85rem;">${escapeHtml(t.title || 'Sin título')}</strong>
+                        ${t.notes ? `<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">📝 ${escapeHtml(t.notes)}</div>` : ''}
+                    </td>
+                    <td>
+                        <span class="status-chip ${t.status || 'pending'}">
+                            ${statusInfo.label}
+                        </span>
+                    </td>
+                    <td>${b.toFixed(1)}h</td>
+                    <td style="color:var(--accent-purple)">${r > 0 ? `+${r.toFixed(1)}h (${t.revisions_count || 1}r)` : '0.0h'}</td>
+                    <td><strong style="color:var(--accent-cyan); font-size:0.95rem;">${tot.toFixed(1)}h</strong></td>
+                </tr>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <div style="padding:0.6rem 1rem; background:rgba(0,229,255,0.06); border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.8rem; color:var(--text-muted);">
+                    Mostrando piezas de <strong>${escapeHtml(selectedClient)}</strong>
+                </span>
+                <button type="button" id="btnBackToAllClients" style="background:transparent; border:none; color:var(--accent-cyan); font-size:0.75rem; cursor:pointer; text-decoration:underline;">
+                    ← Ver todos los clientes
+                </button>
+            </div>
+            <table class="monthly-table">
+                <thead>
+                    <tr>
+                        <th>Fecha / Día</th>
+                        <th>Entregable / Pieza</th>
+                        <th>Estatus</th>
+                        <th>Base</th>
+                        <th>Cambios</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rowsHtml}
+                </tbody>
+            </table>
+        `;
+
+        const btnBack = document.getElementById('btnBackToAllClients');
+        if (btnBack && selectClient) {
+            btnBack.addEventListener('click', () => {
+                selectClient.value = 'all';
+                renderMonthlyReportView();
+            });
+        }
+    }
+}
+
+async function copyMonthlyReportToClipboard() {
+    const selectMonth = document.getElementById('rptSelectMonth');
+    const selectClient = document.getElementById('rptSelectClient');
+    const monthText = selectMonth ? selectMonth.options[selectMonth.selectedIndex].text : currentReportMonth;
+    const selectedClient = selectClient ? selectClient.value : 'all';
+
+    const tasks = monthlyReportTasks.filter(t => {
+        if (selectedClient === 'all') return true;
+        return (t.client_name || '').toLowerCase() === selectedClient.toLowerCase();
+    });
+
+    let totalBase = 0.0;
+    let totalRev = 0.0;
+    let completedCount = 0;
+
+    tasks.forEach(t => {
+        totalBase += (parseFloat(t.estimated_hours) || 0);
+        totalRev += (parseFloat(t.revision_hours) || 0);
+        if (t.status === 'completed') completedCount++;
+    });
+
+    const grandTotal = totalBase + totalRev;
+
+    let text = `📊 REPORTE DE HORAS Y ENTREGABLES • HIPHA MX\n`;
+    text += `🗓️ Periodo: ${monthText}\n`;
+    text += `👤 Cuenta / Cliente: ${selectedClient === 'all' ? 'Consolidado General' : selectedClient}\n`;
+    text += `--------------------------------------------------\n`;
+    text += `⏱️ Total Horas Invertidas: ${grandTotal.toFixed(1)} horas\n`;
+    text += `   • Diseño Base Presupuestado: ${totalBase.toFixed(1)}h\n`;
+    text += `   • Rondas de Ajustes / Cambios: +${totalRev.toFixed(1)}h\n`;
+    text += `📦 Piezas Trabajadas: ${tasks.length} (${completedCount} aprobadas/terminadas)\n`;
+    text += `--------------------------------------------------\n`;
+    text += `DETALLE DE ENTREGABLES:\n`;
+
+    tasks.forEach((t, idx) => {
+        const b = (parseFloat(t.estimated_hours) || 0).toFixed(1);
+        const r = (parseFloat(t.revision_hours) || 0).toFixed(1);
+        const tot = (parseFloat(b) + parseFloat(r)).toFixed(1);
+        const st = t.status === 'completed' ? '✅ Terminado' : (t.status === 'review' ? '👀 En Revisión' : '🎨 En Proceso');
+        const c = selectedClient === 'all' ? `[${t.client_name}] ` : '';
+        text += `${idx + 1}. ${c}${t.title} — ${tot}h (${b}h base + ${r}h cambios) [${st}]\n`;
+    });
+
+    text += `\nGenerado automáticamente por HiphaMX Dashboard`;
+
+    try {
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById('btnCopyMonthlyReport');
+        if (btn) {
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<span>✅ ¡Copiado al portapapeles!</span>`;
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 2500);
+        }
+    } catch (e) {
+        alert("No se pudo copiar automáticamente. Por favor copia el texto manualmente.");
+    }
+}
+
 // Exposición global para interacción directa y consola
 window.openWorkflowTaskModal = openWorkflowTaskModal;
 window.closeWorkflowTaskModal = closeWorkflowTaskModal;
 window.editWorkflowTask = editWorkflowTask;
 window.cycleWorkflowTaskStatus = cycleWorkflowTaskStatus;
+window.openMonthlyReportModal = openMonthlyReportModal;
+window.closeMonthlyReportModal = closeMonthlyReportModal;
+window.addTaskRevision = addTaskRevision;
+
 

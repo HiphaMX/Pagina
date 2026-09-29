@@ -987,5 +987,124 @@ select {
     opacity: 1;
 }
 
+/* Botones de Pasos de Tiempo (+0.5h / -0.5h) */
+.btn-time-step {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.btn-time-step:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-time-step.active {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.5);
+    color: #c084fc;
+}
+
+.btn-time-step.active:hover {
+    background: rgba(168, 85, 247, 0.35);
+    transform: scale(1.04);
+}
+
+/* Botón Rápido de +0.5h Cambios en Tarjetas */
+.btn-quick-revision {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    color: #c084fc;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.btn-quick-revision:hover {
+    background: rgba(168, 85, 247, 0.3);
+    border-color: #c084fc;
+    transform: scale(1.05);
+}
+
+/* Píldora de Horas Totales en Tarjetas */
+.completed-hours-pill {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    white-space: nowrap;
+    margin-left: auto;
+    margin-right: 0.3rem;
+}
+
+.hours-revision-badge {
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.15);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    white-space: nowrap;
+}
+
+/* Estilos de Tabla de Reporte Mensual */
+.monthly-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+}
+
+.monthly-table th {
+    background: rgba(30, 41, 59, 0.85);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.monthly-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    color: var(--text-main);
+}
+
+.monthly-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.monthly-row-client {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.monthly-row-client:hover td {
+    background: rgba(0, 229, 255, 0.05) !important;
+}
+
+
 
 

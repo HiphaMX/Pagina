@@ -9,6 +9,9 @@ class WorkflowTaskBase(BaseModel):
     client_name: str
     title: str
     estimated_hours: float = 1.0
+    revision_hours: float = 0.0
+    revisions_count: int = 0
+    month_id: Optional[str] = None  # e.g. "2026-09"
     status: str = "pending"  # "pending", "in_progress", "review", "completed"
     notes: Optional[str] = None
     order_index: int = 0
@@ -24,6 +27,9 @@ class WorkflowTaskUpdate(BaseModel):
     client_name: Optional[str] = None
     title: Optional[str] = None
     estimated_hours: Optional[float] = None
+    revision_hours: Optional[float] = None
+    revisions_count: Optional[int] = None
+    month_id: Optional[str] = None
     status: Optional[str] = None
     notes: Optional[str] = None
     order_index: Optional[int] = None
@@ -41,3 +47,29 @@ class WorkflowMoveRequest(BaseModel):
     task_id: int
     target_day: str
     target_order_index: Optional[int] = 0
+
+
+class WorkflowAddRevisionRequest(BaseModel):
+    delta_hours: float = 0.5
+    note: Optional[str] = None
+
+
+class WorkflowMonthlyClientSummary(BaseModel):
+    client_name: str
+    total_hours: float
+    base_hours: float
+    revision_hours: float
+    tasks_count: int
+    completed_count: int
+
+
+class WorkflowMonthlyReport(BaseModel):
+    month: str
+    total_hours: float
+    base_hours: float
+    revision_hours: float
+    total_tasks: int
+    completed_tasks: int
+    clients: List[WorkflowMonthlyClientSummary]
+    tasks: List[WorkflowTask]
+

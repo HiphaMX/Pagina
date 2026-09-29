@@ -318,6 +318,11 @@
                             <!-- Inyectado dinámicamente -->
                         </select>
 
+                        <button id="btnOpenMonthlyReport" class="btn-secondary-mini" style="display:flex; align-items:center; gap:0.4rem; padding:0.55rem 0.9rem; font-weight:600; font-size:0.85rem; border-color:var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); border-radius:8px; cursor:pointer;" title="Ver total de horas acumuladas por cliente en el mes">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span>📊 Reporte Mensual</span>
+                        </button>
+
                         <button id="btnOpenNewTaskModal" class="btn-sync" style="margin-top: 0; padding: 0.55rem 1rem;">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                             <span>+ Nueva Entrega</span>
@@ -528,7 +533,7 @@
                     </div>
 
                     <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
-                        <label for="taskInputHours" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Estimación de Tiempo</label>
+                        <label for="taskInputHours" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Estimación de Tiempo Base</label>
                         <select id="taskInputHours" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
                             <option value="0.5">⏱️ 0.5h (30 min)</option>
                             <option value="1.0" selected>⏱️ 1.0h (1 hora)</option>
@@ -538,6 +543,30 @@
                             <option value="3.0">⏱️ 3.0h (3 horas)</option>
                             <option value="4.0">⏱️ 4.0h (Jornada completa)</option>
                         </select>
+                    </div>
+                </div>
+
+                <!-- Control de Rondas de Cambios (+0.5h) -->
+                <input type="hidden" id="taskInputRevisionHours" value="0.0">
+                <input type="hidden" id="taskInputRevisionsCount" value="0">
+                
+                <div class="revision-control-panel" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:0.85rem; display:flex; flex-direction:column; gap:0.6rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-size:0.82rem; font-weight:600; color:var(--text-main);">🔄 Rondas de Cambios / Ajustes</span>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Añade tiempo en lapsos de media hora (+0.5h)</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.4rem;">
+                            <button type="button" id="btnMinusRevision" class="btn-time-step" title="Restar 0.5h de cambios">- 0.5h</button>
+                            <span id="badgeRevisionHours" style="font-size:0.85rem; font-weight:700; color:var(--accent-purple); min-width:48px; text-align:center;">+0.0h</span>
+                            <button type="button" id="btnAddRevision" class="btn-time-step active" title="Sumar 0.5h de cambios">+ 0.5h</button>
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); border-radius:6px; padding:0.45rem 0.75rem; font-size:0.8rem;">
+                        <span style="color:var(--text-muted);">Base: <strong id="lblBaseHours" style="color:var(--text-main)">1.0h</strong></span>
+                        <span style="color:var(--text-muted);">Cambios: <strong id="lblChangesHours" style="color:var(--accent-purple)">+0.0h</strong></span>
+                        <span style="color:var(--accent-cyan); font-weight:600;">Total Invertido: <strong id="lblGrandTotalHours" style="font-size:0.95rem; color:var(--accent-cyan)">1.0h</strong></span>
                     </div>
                 </div>
 
@@ -564,6 +593,67 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal de Reporte Mensual de Horas por Cliente -->
+    <div id="workflowMonthlyReportModal" class="modal-overlay hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.85); backdrop-filter:blur(6px); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <div class="login-box glass-panel" style="width:840px; max-width:95vw; max-height:92vh; padding:2rem; border:1px solid var(--border-color); border-radius:16px; display:flex; flex-direction:column; gap:1.2rem; overflow:hidden;">
+            <div class="login-header" style="margin-bottom:0; text-align:left; display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h2 style="font-size:1.4rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">📊 Reporte Mensual de Flujo y Retainers</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Consolidado de tiempo invertido (diseño base + cambios) para conciliación de cobro mensual</p>
+                </div>
+                <button type="button" id="btnCloseMonthlyReport" style="background:transparent; border:none; color:var(--text-muted); font-size:1.6rem; cursor:pointer; padding:0 0.4rem; line-height:1;">&times;</button>
+            </div>
+
+            <!-- Filtros de Reporte -->
+            <div style="display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.03); padding:0.75rem 1rem; border-radius:10px; border:1px solid var(--border-color);">
+                <div style="display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:0.4rem;">
+                        <label for="rptSelectMonth" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Mes:</label>
+                        <select id="rptSelectMonth" class="filter-select" style="padding:0.45rem 0.8rem; font-size:0.85rem;">
+                            <!-- Inyectado dinámicamente -->
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.4rem;">
+                        <label for="rptSelectClient" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Cliente:</label>
+                        <select id="rptSelectClient" class="filter-select" style="padding:0.45rem 0.8rem; font-size:0.85rem;">
+                            <option value="all">Todos los clientes</option>
+                            <!-- Inyectado dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+                <button type="button" id="btnCopyMonthlyReport" class="btn-secondary-mini" style="display:flex; align-items:center; gap:0.4rem; padding:0.5rem 0.9rem; font-weight:600; font-size:0.8rem; border-radius:6px; cursor:pointer; background:rgba(0, 229, 255, 0.1); border-color:rgba(0, 229, 255, 0.3); color:var(--accent-cyan);" title="Copiar resumen estructurado para WhatsApp o Email">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>📋 Copiar Resumen</span>
+                </button>
+            </div>
+
+            <!-- Tarjetas KPI del Mes -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:0.8rem;">
+                <div class="kpi-card" style="padding:0.85rem 1rem; border-radius:10px; background:rgba(15,23,42,0.6); border:1px solid var(--border-color);">
+                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Total Horas Mes</span>
+                    <h3 id="rptKpiTotalHours" style="font-size:1.5rem; font-weight:700; color:var(--accent-cyan); margin-top:0.25rem;">0.0h</h3>
+                </div>
+                <div class="kpi-card" style="padding:0.85rem 1rem; border-radius:10px; background:rgba(15,23,42,0.6); border:1px solid var(--border-color);">
+                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Diseño Base</span>
+                    <h3 id="rptKpiBaseHours" style="font-size:1.5rem; font-weight:700; color:var(--text-main); margin-top:0.25rem;">0.0h</h3>
+                </div>
+                <div class="kpi-card" style="padding:0.85rem 1rem; border-radius:10px; background:rgba(15,23,42,0.6); border:1px solid var(--border-color);">
+                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Ajustes / Cambios</span>
+                    <h3 id="rptKpiRevisionHours" style="font-size:1.5rem; font-weight:700; color:var(--accent-purple); margin-top:0.25rem;">+0.0h</h3>
+                </div>
+                <div class="kpi-card" style="padding:0.85rem 1rem; border-radius:10px; background:rgba(15,23,42,0.6); border:1px solid var(--border-color);">
+                    <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Entregables</span>
+                    <h3 id="rptKpiTotalTasks" style="font-size:1.5rem; font-weight:700; color:#34d399; margin-top:0.25rem;">0 piezas</h3>
+                </div>
+            </div>
+
+            <!-- Tabla Detallada con Scroll -->
+            <div id="rptTableContainer" style="flex:1; overflow-y:auto; border:1px solid var(--border-color); border-radius:10px; background:rgba(15,23,42,0.5); min-height:180px;">
+                <!-- Inyectado dinámicamente por JS -->
+            </div>
         </div>
     </div>
 
