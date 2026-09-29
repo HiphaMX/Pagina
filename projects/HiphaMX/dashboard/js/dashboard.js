@@ -1080,6 +1080,21 @@ function setupWorkflowElements() {
         btnCancelTaskModal.addEventListener('click', closeWorkflowTaskModal);
     }
 
+    const taskModalOverlay = document.getElementById('workflowTaskModal');
+    if (taskModalOverlay) {
+        taskModalOverlay.addEventListener('click', (e) => {
+            if (e.target === taskModalOverlay) {
+                closeWorkflowTaskModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeWorkflowTaskModal();
+        }
+    });
+
     if (btnDeleteTask) {
         btnDeleteTask.addEventListener('click', handleWorkflowTaskDelete);
     }
@@ -1358,36 +1373,80 @@ function createWorkflowTaskCard(task) {
     const card = document.createElement('div');
     card.className = 'workflow-card';
     card.draggable = true;
-    card.dataset.id = task.id;
+    card.dataset.id = String(task.id);
 
     const clientStyle = getClientStyle(task.client_name);
     const statusInfo = getStatusInfo(task.status);
+    const hours = Math.max(0.5, parseFloat(task.estimated_hours) || 1.0);
+
+    // Dimensionamiento proporcional estilo Google Calendar (Jornada 9:00 AM - 1:00 PM)
+    // 0.5h (30 min)  -> 60px
+    // 1.0h (1 hora)  -> 100px
+    // 1.5h (1.5 hrs) -> 140px
+    // 2.0h (2 horas) -> 180px
+    // 2.5h (2.5 hrs) -> 220px
+    // 3.0h (3 horas) -> 260px
+    // 4.0h (4 horas) -> 340px (llena la mañana)
+    const cardHeight = Math.round(60 + (hours - 0.5) * 80);
+    card.style.minHeight = `${cardHeight}px`;
+    card.style.borderLeft = `4px solid ${clientStyle.text || '#00e5ff'}`;
+    card.style.background = `linear-gradient(90deg, ${clientStyle.bg} 0%, rgba(15, 23, 42, 0.88) 35%)`;
+
+    if (hours <= 0.5) {
+        card.classList.add('is-compact');
+    } else if (hours >= 3.0) {
+        card.classList.add('is-extended');
+    }
 
     card.innerHTML = `
         <div class="card-top-row">
-            <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border};">
-                ${escapeHtml(task.client_name || 'General')}
-            </span>
-            <button class="card-actions-btn" title="Editar tarea" onclick="event.stopPropagation(); editWorkflowTask(${task.id})">
+            <div class="card-meta-left">
+                <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border};">
+                    ${escapeHtml(task.client_name || 'General')}
+                </span>
+                <span class="hours-chip">⏱️ ${hours.toFixed(1)}h</span>
+            </div>
+            <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </button>
         </div>
-        <div class="card-title">${escapeHtml(task.title || 'Sin título')}</div>
-        ${task.notes ? `<div class="card-notes" title="${escapeHtml(task.notes)}">📝 ${escapeHtml(task.notes)}</div>` : ''}
+        <div class="card-main-content">
+            <div class="card-title">${escapeHtml(task.title || 'Sin título')}</div>
+            ${task.notes ? `<div class="card-notes" title="${escapeHtml(task.notes)}">📝 ${escapeHtml(task.notes)}</div>` : ''}
+        </div>
         <div class="card-bottom-row">
-            <span class="hours-chip">⏱️ ${parseFloat(task.estimated_hours || 1).toFixed(1)}h</span>
-            <span class="status-chip ${task.status || 'pending'}" title="Haz clic para avanzar estatus" onclick="event.stopPropagation(); cycleWorkflowTaskStatus(${task.id})">
+            <span class="status-chip ${task.status || 'pending'}" title="Haz clic para avanzar estatus">
                 ${statusInfo.label}
             </span>
+            <span class="drag-handle-hint" title="Arrastra para mover a otro día">⋮⋮</span>
         </div>
     `;
 
-    // Click en la tarjeta para editar
-    card.addEventListener('click', () => {
+    // Click específico en botón editar
+    const editBtn = card.querySelector('.card-actions-btn');
+    if (editBtn) {
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            editWorkflowTask(task.id);
+        });
+    }
+
+    // Click específico en chip de estatus (avanza ciclo)
+    const statusChip = card.querySelector('.status-chip');
+    if (statusChip) {
+        statusChip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cycleWorkflowTaskStatus(task.id);
+        });
+    }
+
+    // Click en cualquier otra área de la tarjeta abre el editor
+    card.addEventListener('click', (e) => {
+        if (e.target.closest('.status-chip')) return;
         editWorkflowTask(task.id);
     });
 
-    // Eventos Drag
+    // Eventos Drag & Drop
     card.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', String(task.id));
         card.classList.add('dragging');
@@ -1411,7 +1470,7 @@ function getStatusInfo(statusKey) {
 }
 
 function cycleWorkflowTaskStatus(taskId) {
-    const task = workflowTasks.find(t => t.id === taskId);
+    const task = workflowTasks.find(t => String(t.id) === String(taskId));
     if (!task) return;
     const current = getStatusInfo(task.status);
     task.status = current.next;
@@ -1442,17 +1501,16 @@ function setupWorkflowDragAndDrop() {
             e.preventDefault();
             listEl.classList.remove('drag-over');
             const taskIdStr = e.dataTransfer.getData('text/plain');
-            const taskId = parseInt(taskIdStr, 10);
-            if (!taskId) return;
+            if (!taskIdStr) return;
 
-            const task = workflowTasks.find(t => t.id === taskId);
+            const task = workflowTasks.find(t => String(t.id) === String(taskIdStr));
             if (task && task.day !== day) {
                 task.day = day;
                 saveWorkflowState();
                 renderWorkflowBoard();
 
                 // Notificar API
-                syncTaskMoveWithApi(taskId, day);
+                syncTaskMoveWithApi(task.id, day);
             }
         });
     });
@@ -1481,8 +1539,11 @@ function openWorkflowTaskModal(day = 'monday') {
 }
 
 function editWorkflowTask(taskId) {
-    const task = workflowTasks.find(t => t.id === taskId);
-    if (!task) return;
+    const task = workflowTasks.find(t => String(t.id) === String(taskId));
+    if (!task) {
+        console.warn("Tarea no encontrada para editar:", taskId);
+        return;
+    }
 
     const modal = document.getElementById('workflowTaskModal');
     const heading = document.getElementById('modalTaskHeading');
@@ -1491,7 +1552,7 @@ function editWorkflowTask(taskId) {
     const customGroup = document.getElementById('taskCustomClientGroup');
     const customInput = document.getElementById('taskInputCustomClient');
 
-    document.getElementById('taskInputId').value = task.id;
+    document.getElementById('taskInputId').value = String(task.id);
     
     // Verificar si el cliente existe en el select
     let found = false;
@@ -1513,7 +1574,23 @@ function editWorkflowTask(taskId) {
 
     document.getElementById('taskInputTitle').value = task.title || '';
     document.getElementById('taskInputDay').value = task.day || 'monday';
-    document.getElementById('taskInputHours').value = String(task.estimated_hours || '1.0');
+
+    // Ajustar valor de horas con 1 decimal para que coincida con las opciones (ej. "2.0")
+    const numHours = parseFloat(task.estimated_hours) || 1.0;
+    const hoursStr = numHours.toFixed(1);
+    const hoursSelect = document.getElementById('taskInputHours');
+    let hoursFound = false;
+    for (let opt of hoursSelect.options) {
+        if (opt.value === hoursStr || parseFloat(opt.value) === numHours) {
+            hoursSelect.value = opt.value;
+            hoursFound = true;
+            break;
+        }
+    }
+    if (!hoursFound) {
+        hoursSelect.value = '1.0';
+    }
+
     document.getElementById('taskInputStatus').value = task.status || 'pending';
     document.getElementById('taskInputNotes').value = task.notes || '';
 
@@ -1544,8 +1621,7 @@ async function handleWorkflowTaskSubmit(e) {
 
     if (idVal) {
         // Actualizar tarea existente
-        const taskId = parseInt(idVal, 10);
-        const task = workflowTasks.find(t => t.id === taskId);
+        const task = workflowTasks.find(t => String(t.id) === String(idVal));
         if (task) {
             task.client_name = finalClient;
             task.title = title;
@@ -1580,10 +1656,9 @@ async function handleWorkflowTaskSubmit(e) {
 async function handleWorkflowTaskDelete() {
     const idVal = document.getElementById('taskInputId').value;
     if (!idVal) return;
-    const taskId = parseInt(idVal, 10);
 
     if (confirm('¿Eliminar esta entrega del tablero semanal?')) {
-        workflowTasks = workflowTasks.filter(t => t.id !== taskId);
+        workflowTasks = workflowTasks.filter(t => String(t.id) !== String(idVal));
         saveWorkflowState();
         updateClientFilterOptions();
         renderWorkflowBoard();
@@ -1593,7 +1668,7 @@ async function handleWorkflowTaskDelete() {
         try {
             const token = localStorage.getItem('dashboard_token');
             if (token) {
-                await fetch(`${API_BASE}/workflow/tasks/${taskId}`, {
+                await fetch(`${API_BASE}/workflow/tasks/${idVal}`, {
                     method: 'DELETE',
                     headers: getAuthHeaders()
                 });
@@ -1682,4 +1757,10 @@ function escapeHtml(text) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
+// Exposición global para interacción directa y consola
+window.openWorkflowTaskModal = openWorkflowTaskModal;
+window.closeWorkflowTaskModal = closeWorkflowTaskModal;
+window.editWorkflowTask = editWorkflowTask;
+window.cycleWorkflowTaskStatus = cycleWorkflowTaskStatus;
 
