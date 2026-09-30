@@ -293,12 +293,38 @@ function getSelectedTrafficDates() {
         const endInput = document.getElementById('trafficCustomEndDate');
         const start = (startInput && startInput.value) ? startInput.value : '365daysAgo';
         const end = (endInput && endInput.value) ? endInput.value : 'today';
+
+        let diffDays = 365;
+        try {
+            const d1 = new Date(start);
+            const d2 = (end === 'today' || !end) ? new Date() : new Date(end);
+            diffDays = Math.max(1, Math.round(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)));
+        } catch (e) {
+            diffDays = 365;
+        }
+
+        let badge = 'INFORME EJECUTIVO ANUAL';
+        if (diffDays <= 14) {
+            badge = 'INFORME EJECUTIVO SEMANAL';
+        } else if (diffDays <= 45) {
+            badge = 'INFORME EJECUTIVO MENSUAL';
+        } else if (diffDays <= 135) {
+            badge = 'INFORME EJECUTIVO TRIMESTRAL';
+        } else if (diffDays <= 270) {
+            badge = 'INFORME EJECUTIVO SEMESTRAL';
+        } else {
+            badge = 'INFORME EJECUTIVO ANUAL';
+        }
+
         return {
             start: start,
             end: end,
-            label: `Del ${start} al ${end}`
+            label: `Del ${start} al ${end}`,
+            badge: badge,
+            diffDays: diffDays
         };
     }
+
     const labelMap = {
         '7daysAgo': 'Últimos 7 días',
         '30daysAgo': 'Últimos 30 días',
@@ -306,10 +332,20 @@ function getSelectedTrafficDates() {
         '180daysAgo': 'Últimos 6 meses',
         '365daysAgo': 'Último año (12 meses)'
     };
+
+    const badgeMap = {
+        '7daysAgo': 'INFORME EJECUTIVO SEMANAL',
+        '30daysAgo': 'INFORME EJECUTIVO MENSUAL',
+        '90daysAgo': 'INFORME EJECUTIVO TRIMESTRAL',
+        '180daysAgo': 'INFORME EJECUTIVO SEMESTRAL',
+        '365daysAgo': 'INFORME EJECUTIVO ANUAL'
+    };
+
     return {
         start: val,
         end: 'today',
-        label: labelMap[val] || val
+        label: labelMap[val] || val,
+        badge: badgeMap[val] || 'INFORME EJECUTIVO ANUAL'
     };
 }
 
@@ -612,10 +648,12 @@ function openClientReportModal() {
     const reportPeriodText = document.getElementById('reportPeriodText');
     const reportSelectedPeriodLabel = document.getElementById('reportSelectedPeriodLabel');
     const reportDateEmission = document.getElementById('reportDateEmission');
+    const reportBadgeDoc = document.getElementById('reportBadgeDoc');
     
     if (reportClientHeading) reportClientHeading.textContent = clientName;
     if (reportPeriodText) reportPeriodText.textContent = dates.label;
     if (reportSelectedPeriodLabel) reportSelectedPeriodLabel.textContent = dates.label;
+    if (reportBadgeDoc) reportBadgeDoc.textContent = dates.badge || 'INFORME EJECUTIVO ANUAL';
     if (reportDateEmission) {
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -890,8 +928,9 @@ function closeClientReportModal() {
 function printClientReport() {
     if (!currentClientDetailsData) return;
     const clientName = currentClientDetailsData.client?.name || 'Cliente';
+    const dates = getSelectedTrafficDates();
     const originalTitle = document.title;
-    document.title = `Reporte Desempeño Web - ${clientName} - Hipha`;
+    document.title = `${dates.badge || 'Reporte Desempeño Web'} - ${clientName} - Hipha`;
 
     // 1. Refrescar imágenes de alta resolución de las gráficas
     try {
@@ -966,7 +1005,7 @@ function copyExecutiveReportSummary() {
         ? `• 📱 Dispositivo Predominante: ${data.audience.devices[0].device} (${Math.round((data.audience.devices[0].users / (data.audience.devices.reduce((a, b) => a + b.users, 0) || 1)) * 100)}%)\n`
         : '';
 
-    const summaryText = `📊 *REPORTE DE DESEMPEÑO WEB • HIPHA*\n` +
+    const summaryText = `📊 *${dates.badge || 'REPORTE DE DESEMPEÑO WEB'} • HIPHA*\n` +
         `🏢 *Cliente:* ${clientName}\n` +
         `🗓️ *Período:* ${dates.label}\n\n` +
         `📈 *Métricas Clave de Rendimiento:*\n` +
@@ -1020,8 +1059,8 @@ function shareReportViaEmail() {
         }
     }
 
-    const emailSubject = `Reporte de Rendimiento y Tráfico Web (${dates.label}) • Hipha`;
-    const emailBody = `Hola,\n\nEsperamos que te encuentres muy bien. Te compartimos el reporte oficial de rendimiento y analíticas web correspondiente a ${dates.label} para ${clientName}:\n\n` +
+    const emailSubject = `${dates.badge || 'Reporte de Rendimiento Web'} (${dates.label}) • Hipha`;
+    const emailBody = `Hola,\n\nEsperamos que te encuentres muy bien. Te compartimos el ${dates.badge || 'informe oficial de rendimiento y analíticas web'} correspondiente a ${dates.label} para ${clientName}:\n\n` +
         `• Nuevos Usuarios: +${newUsers.toLocaleString()}\n` +
         `• Usuarios Activos: ${activeUsers.toLocaleString()}\n` +
         `• Vistas Totales de Página: ${views.toLocaleString()}\n` +

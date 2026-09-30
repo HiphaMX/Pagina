@@ -3222,7 +3222,7 @@ select {
     }
 
     @page {
-        size: legal portrait;
+        size: letter portrait;
         margin: 10mm;
     }
 }
