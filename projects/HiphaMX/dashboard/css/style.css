@@ -2373,14 +2373,14 @@ select {
     background: #ffffff;
     color: #0f172a;
     border-radius: 14px;
-    padding: 1.8rem 2.1rem;
+    padding: 1.5rem 1.8rem;
     box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4);
     max-width: 860px;
     margin: 0 auto;
     font-family: 'Outfit', sans-serif;
     display: flex;
     flex-direction: column;
-    gap: 1.05rem;
+    gap: 0.85rem;
 }
 
 .report-header {
@@ -2971,7 +2971,9 @@ select {
     }
 
     #printableReportContainer {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
         position: static !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -2982,21 +2984,23 @@ select {
         border: none !important;
         border-radius: 0 !important;
         color: #0f172a !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     .report-header {
         background: #0f172a !important;
         color: #ffffff !important;
         border-radius: 8px !important;
-        padding: 0.9rem 1.3rem !important;
-        border-bottom: 3px solid #00e5ff !important;
-        margin-bottom: 0.7rem !important;
+        padding: 0.65rem 1rem !important;
+        border-bottom: 2.5px solid #00e5ff !important;
+        margin-bottom: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
     .report-brand-logo {
-        height: 30px !important;
+        height: 26px !important;
         width: auto !important;
         display: block !important;
     }
@@ -3005,40 +3009,63 @@ select {
         background: rgba(0, 229, 255, 0.15) !important;
         color: #00e5ff !important;
         border: 1px solid rgba(0, 229, 255, 0.4) !important;
+        font-size: 0.64rem !important;
+        padding: 0.15rem 0.5rem !important;
+    }
+
+    .report-emission-date {
         font-size: 0.68rem !important;
-        padding: 0.2rem 0.55rem !important;
     }
 
     .report-client-banner {
         background: #f8fafc !important;
         border: 1px solid #cbd5e1 !important;
-        border-left: 6px solid #0284c7 !important;
+        border-left: 5px solid #0284c7 !important;
         border-radius: 8px !important;
-        padding: 0.75rem 1.15rem !important;
-        margin-bottom: 0.7rem !important;
+        padding: 0.55rem 0.95rem !important;
+        margin-bottom: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
     .report-client-heading {
-        font-size: 1.4rem !important;
+        font-size: 1.25rem !important;
+        margin: 0.1rem 0 !important;
+    }
+
+    .report-label-pre {
+        font-size: 0.62rem !important;
+    }
+
+    .report-period-text {
+        font-size: 0.74rem !important;
     }
 
     .report-kpi-grid {
         display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
-        gap: 0.6rem !important;
-        margin-bottom: 0.75rem !important;
+        gap: 0.5rem !important;
+        margin-bottom: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
     .report-kpi-card {
-        padding: 0.65rem 0.75rem !important;
+        padding: 0.45rem 0.65rem !important;
+        border-radius: 6px !important;
+    }
+
+    .report-kpi-label {
+        font-size: 0.62rem !important;
     }
 
     .report-kpi-val {
-        font-size: 1.35rem !important;
+        font-size: 1.15rem !important;
+        margin: 0.1rem 0 !important;
+    }
+
+    .report-kpi-sub {
+        font-size: 0.62rem !important;
     }
 
     .report-kpi-card:nth-child(1) {
@@ -3069,27 +3096,32 @@ select {
         background: #0f172a !important;
         border: 1px solid #1e293b !important;
         border-radius: 8px !important;
-        padding: 0.75rem 0.95rem !important;
-        margin-bottom: 0.75rem !important;
+        padding: 0.55rem 0.85rem !important;
+        margin-bottom: 0 !important;
         color: #ffffff !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
+    .report-box-title {
+        font-size: 0.78rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
     .report-main-chart-wrapper {
-        min-height: 155px !important;
+        min-height: 125px !important;
         background: #0f172a !important;
     }
 
     .report-main-chart-wrapper .report-chart-img {
-        max-height: 160px !important;
+        max-height: 130px !important;
         display: block !important;
     }
 
     .report-subcharts-grid {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 0.6rem !important;
+        gap: 0.5rem !important;
         margin-bottom: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
@@ -3099,51 +3131,65 @@ select {
         background: #0f172a !important;
         border: 1px solid #1e293b !important;
         border-radius: 8px !important;
-        padding: 0.65rem 0.75rem !important;
+        padding: 0.5rem 0.65rem !important;
         color: #ffffff !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
     .report-subchart-wrapper {
-        min-height: 100px !important;
+        min-height: 80px !important;
         background: #0f172a !important;
     }
 
     .report-subchart-wrapper .report-chart-img {
-        max-height: 105px !important;
+        max-height: 85px !important;
         display: block !important;
     }
 
-    /* Salto limpio a Página 2 */
-    .report-page-2-start {
-        page-break-before: always !important;
-        break-before: page !important;
-        margin-top: 0 !important;
+    .report-mini-legend {
+        font-size: 0.64rem !important;
+        gap: 0.15rem !important;
+    }
+
+    .report-audience-content {
+        gap: 0.3rem !important;
+        font-size: 0.66rem !important;
     }
 
     .report-table-box {
         background: #ffffff !important;
         border: 1px solid #cbd5e1 !important;
         border-radius: 8px !important;
-        padding: 0.85rem 1.05rem !important;
-        margin-bottom: 0.85rem !important;
+        padding: 0.55rem 0.85rem !important;
+        margin-bottom: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+    }
+
+    .report-table-header {
+        margin-bottom: 0.35rem !important;
+        padding-bottom: 0.25rem !important;
     }
 
     .report-table th {
         background: #f1f5f9 !important;
         color: #475569 !important;
-        padding: 0.45rem 0.6rem !important;
+        padding: 0.35rem 0.5rem !important;
+        font-size: 0.66rem !important;
     }
 
     .report-table td {
-        padding: 0.45rem 0.6rem !important;
+        padding: 0.35rem 0.5rem !important;
+        font-size: 0.72rem !important;
     }
 
     .report-table tbody tr:nth-child(even) {
         background: #f8fafc !important;
+    }
+
+    .report-path-sub {
+        font-size: 0.65rem !important;
     }
 
     .report-insights-box {
@@ -3151,21 +3197,32 @@ select {
         border: 1px solid #a7f3d0 !important;
         border-left: 5px solid #10b981 !important;
         border-radius: 8px !important;
-        padding: 0.85rem 1.15rem !important;
-        margin-bottom: 0.75rem !important;
+        padding: 0.55rem 0.85rem !important;
+        margin-bottom: 0 !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
+    .insights-header h4 {
+        font-size: 0.82rem !important;
+    }
+
+    .insights-content {
+        font-size: 0.71rem !important;
+        line-height: 1.4 !important;
+    }
+
     .report-footer {
-        border-top: 2px solid #e2e8f0 !important;
-        padding-top: 0.65rem !important;
+        border-top: 1.5px solid #e2e8f0 !important;
+        padding-top: 0.4rem !important;
+        margin-top: 0 !important;
+        font-size: 0.68rem !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
 
     @page {
-        size: A4 portrait;
+        size: legal portrait;
         margin: 10mm;
     }
 }
