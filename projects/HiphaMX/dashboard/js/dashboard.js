@@ -10,6 +10,7 @@ const SAT_API_BASE = isLocal ? 'http://localhost:8000/api/sat' : '/api/sat';
 
 let trendChartInstance = null;
 let sourceChartInstance = null;
+let currentClientDetailsData = null;
 
 // Elementos del DOM
 const loginScreen = document.getElementById('loginScreen');
@@ -21,6 +22,10 @@ const dashboardLayout = document.getElementById('dashboardLayout');
 
 const clientListContainer = document.getElementById('clientListContainer');
 const dateSelect = document.getElementById('dateRangeSelect');
+const trafficCustomDatesContainer = document.getElementById('trafficCustomDatesContainer');
+const trafficCustomStartDate = document.getElementById('trafficCustomStartDate');
+const trafficCustomEndDate = document.getElementById('trafficCustomEndDate');
+const btnApplyTrafficCustomDates = document.getElementById('btnApplyTrafficCustomDates');
 const detailsEmptyState = document.getElementById('detailsEmptyState');
 const detailsContent = document.getElementById('detailsContent');
 
@@ -83,7 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    initTrafficCustomDateDefaults();
+
     dateSelect.addEventListener('change', () => {
+        const customContainer = document.getElementById('trafficCustomDatesContainer');
+        if (dateSelect.value === 'custom') {
+            if (customContainer) customContainer.classList.remove('hidden');
+            initTrafficCustomDateDefaults();
+            return;
+        } else {
+            if (customContainer) customContainer.classList.add('hidden');
+        }
+
         loadOverviewData();
         // Si hay un cliente seleccionado, recargarlo también
         const activeClient = document.querySelector('.client-item.active');
@@ -91,6 +107,61 @@ document.addEventListener('DOMContentLoaded', () => {
             loadClientDetails(activeClient.dataset.id, activeClient.dataset.name);
         }
     });
+
+    const btnApplyDates = document.getElementById('btnApplyTrafficCustomDates');
+    if (btnApplyDates) {
+        btnApplyDates.addEventListener('click', (e) => {
+            e.preventDefault();
+            loadOverviewData();
+            const activeClient = document.querySelector('.client-item.active');
+            if (activeClient) {
+                loadClientDetails(activeClient.dataset.id, activeClient.dataset.name);
+            }
+        });
+    }
+
+    // Eventos del Modal de Reporte Ejecutivo PDF
+    const btnOpenReport = document.getElementById('btnOpenClientReportModal');
+    if (btnOpenReport) {
+        btnOpenReport.addEventListener('click', (e) => {
+            e.preventDefault();
+            openClientReportModal();
+        });
+    }
+
+    const btnCloseReportX = document.getElementById('btnCloseReportModalX');
+    if (btnCloseReportX) {
+        btnCloseReportX.addEventListener('click', () => closeClientReportModal());
+    }
+
+    const btnCloseReportFooter = document.getElementById('btnCloseReportModalFooter');
+    if (btnCloseReportFooter) {
+        btnCloseReportFooter.addEventListener('click', () => closeClientReportModal());
+    }
+
+    const btnPrintPdf = document.getElementById('btnPrintReportPdf');
+    if (btnPrintPdf) {
+        btnPrintPdf.addEventListener('click', (e) => {
+            e.preventDefault();
+            printClientReport();
+        });
+    }
+
+    const btnCopySummary = document.getElementById('btnCopyReportSummary');
+    if (btnCopySummary) {
+        btnCopySummary.addEventListener('click', (e) => {
+            e.preventDefault();
+            copyExecutiveReportSummary();
+        });
+    }
+
+    const btnEmailRep = document.getElementById('btnEmailReport');
+    if (btnEmailRep) {
+        btnEmailRep.addEventListener('click', (e) => {
+            e.preventDefault();
+            shareReportViaEmail();
+        });
+    }
 
     // Control de Navegación de Pestañas
     if (navLinkWorkflow) {
@@ -213,13 +284,54 @@ function getAuthHeaders() {
     };
 }
 
+// Funciones de gestión de fechas de tráfico
+function getSelectedTrafficDates() {
+    const val = dateSelect ? dateSelect.value : '30daysAgo';
+    if (val === 'custom') {
+        const startInput = document.getElementById('trafficCustomStartDate');
+        const endInput = document.getElementById('trafficCustomEndDate');
+        const start = (startInput && startInput.value) ? startInput.value : '365daysAgo';
+        const end = (endInput && endInput.value) ? endInput.value : 'today';
+        return {
+            start: start,
+            end: end,
+            label: `Del ${start} al ${end}`
+        };
+    }
+    const labelMap = {
+        '7daysAgo': 'Últimos 7 días',
+        '30daysAgo': 'Últimos 30 días',
+        '90daysAgo': 'Últimos 90 días',
+        '180daysAgo': 'Últimos 6 meses',
+        '365daysAgo': 'Último año (12 meses)'
+    };
+    return {
+        start: val,
+        end: 'today',
+        label: labelMap[val] || val
+    };
+}
+
+function initTrafficCustomDateDefaults() {
+    const startInput = document.getElementById('trafficCustomStartDate');
+    const endInput = document.getElementById('trafficCustomEndDate');
+    if (startInput && !startInput.value) {
+        const d = new Date();
+        d.setFullYear(d.getFullYear() - 1);
+        startInput.value = d.toISOString().split('T')[0];
+    }
+    if (endInput && !endInput.value) {
+        endInput.value = new Date().toISOString().split('T')[0];
+    }
+}
+
 // Función para cargar el listado general
 async function loadOverviewData() {
     clientListContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Sincronizando con Google Analytics...</p></div>';
     
-    const range = dateSelect ? dateSelect.value : '30daysAgo';
+    const dates = getSelectedTrafficDates();
     try {
-        const response = await fetch(`${API_BASE}/metrics/overview?start_date=${range}`, {
+        const response = await fetch(`${API_BASE}/metrics/overview?start_date=${encodeURIComponent(dates.start)}&end_date=${encodeURIComponent(dates.end)}`, {
             headers: getAuthHeaders()
         });
 
@@ -300,10 +412,10 @@ async function loadClientDetails(propertyId, clientName) {
         trendChartInstance.destroy();
     }
 
-    const range = dateSelect.value;
+    const dates = getSelectedTrafficDates();
     
     try {
-        const response = await fetch(`${API_BASE}/metrics/client/${propertyId}?start_date=${range}`, {
+        const response = await fetch(`${API_BASE}/metrics/client/${propertyId}?start_date=${encodeURIComponent(dates.start)}&end_date=${encodeURIComponent(dates.end)}`, {
             headers: getAuthHeaders()
         });
 
@@ -328,6 +440,7 @@ async function loadClientDetails(propertyId, clientName) {
 
 
 function renderDetails(data) {
+    currentClientDetailsData = data;
     elClientName.textContent = data.client.name;
     
     // KPIs
@@ -426,7 +539,7 @@ function renderChart(trendData) {
             scales: {
                 x: {
                     grid: { color: 'rgba(148, 163, 184, 0.1)', drawBorder: false },
-                    ticks: { color: '#94a3b8', maxTicksLimit: 7 }
+                    ticks: { color: '#94a3b8', maxTicksLimit: 12 }
                 },
                 y: {
                     grid: { color: 'rgba(148, 163, 184, 0.1)', drawBorder: false },
@@ -480,6 +593,242 @@ function renderSourceChart(sourceData) {
             cutout: '70%'
         }
     });
+}
+
+// --- Módulo de Reporte Ejecutivo PDF Branded Hipha ---
+function openClientReportModal() {
+    if (!currentClientDetailsData) {
+        alert("Por favor selecciona un cliente de la lista para exportar su reporte.");
+        return;
+    }
+
+    const data = currentClientDetailsData;
+    const clientName = data.client?.name || 'Cliente';
+    const dates = getSelectedTrafficDates();
+    
+    // 1. Títulos y fechas
+    const reportClientHeading = document.getElementById('reportClientHeading');
+    const reportPeriodText = document.getElementById('reportPeriodText');
+    const reportSelectedPeriodLabel = document.getElementById('reportSelectedPeriodLabel');
+    const reportDateEmission = document.getElementById('reportDateEmission');
+    
+    if (reportClientHeading) reportClientHeading.textContent = clientName;
+    if (reportPeriodText) reportPeriodText.textContent = dates.label;
+    if (reportSelectedPeriodLabel) reportSelectedPeriodLabel.textContent = dates.label;
+    if (reportDateEmission) {
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        reportDateEmission.textContent = today.toLocaleDateString('es-MX', options);
+    }
+
+    // 2. KPIs
+    const newUsers = data.metrics?.summary?.newUsers || 0;
+    const activeUsers = data.metrics?.summary?.activeUsers || 0;
+    const views = data.metrics?.summary?.views || 0;
+
+    const elReportKpiNewUsers = document.getElementById('reportKpiNewUsers');
+    const elReportKpiActiveUsers = document.getElementById('reportKpiActiveUsers');
+    const elReportKpiViews = document.getElementById('reportKpiViews');
+    const elReportKpiDailyAvg = document.getElementById('reportKpiDailyAvg');
+
+    if (elReportKpiNewUsers) elReportKpiNewUsers.textContent = newUsers.toLocaleString();
+    if (elReportKpiActiveUsers) elReportKpiActiveUsers.textContent = activeUsers.toLocaleString();
+    if (elReportKpiViews) elReportKpiViews.textContent = views.toLocaleString();
+
+    // Calcular días para el promedio diario
+    const trendDays = (data.metrics?.trend && data.metrics.trend.length > 0) ? data.metrics.trend.length : 30;
+    const dailyAvg = Math.round(views / Math.max(1, trendDays));
+    if (elReportKpiDailyAvg) elReportKpiDailyAvg.textContent = dailyAvg.toLocaleString();
+
+    // 3. Gráficas exportadas como imágenes estáticas para impresión 100% fiel
+    const reportTrendImg = document.getElementById('reportTrendImg');
+    if (reportTrendImg) {
+        if (trendChartInstance) {
+            try {
+                reportTrendImg.src = trendChartInstance.toBase64Image('image/png', 1);
+                reportTrendImg.style.display = 'block';
+            } catch(e) {
+                console.warn("No se pudo exportar imagen de tendencia:", e);
+                reportTrendImg.style.display = 'none';
+            }
+        } else {
+            reportTrendImg.style.display = 'none';
+        }
+    }
+
+    const reportSourceImg = document.getElementById('reportSourceImg');
+    if (reportSourceImg) {
+        if (sourceChartInstance) {
+            try {
+                reportSourceImg.src = sourceChartInstance.toBase64Image('image/png', 1);
+                reportSourceImg.style.display = 'block';
+            } catch(e) {
+                console.warn("No se pudo exportar imagen de fuentes:", e);
+                reportSourceImg.style.display = 'none';
+            }
+        } else {
+            reportSourceImg.style.display = 'none';
+        }
+    }
+
+    // 4. Tabla Top Secciones con porcentajes de tracción
+    const reportTableBody = document.getElementById('reportTableBody');
+    if (reportTableBody) {
+        reportTableBody.innerHTML = '';
+        const topSections = data.top_sections || [];
+        const maxViews = topSections.length > 0 ? topSections[0].views : 1;
+
+        if (topSections.length === 0) {
+            reportTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.2rem; color:#64748b;">No hay secciones registradas para este período.</td></tr>';
+        } else {
+            topSections.slice(0, 10).forEach((sec, idx) => {
+                const tr = document.createElement('tr');
+                const percent = Math.min(100, Math.max(1, Math.round((sec.views / Math.max(1, maxViews)) * 100)));
+                
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:#64748b;">#${idx + 1}</td>
+                    <td>
+                        <strong style="color:#0f172a; font-size:0.83rem;">${escapeHtml(sec.title || sec.path)}</strong>
+                        <span class="report-path-sub">${escapeHtml(sec.path)}</span>
+                    </td>
+                    <td style="text-align:right; font-weight:700; color:#0f172a;">
+                        ${sec.views.toLocaleString()}
+                    </td>
+                    <td style="text-align:right;">
+                        <div class="traction-bar-container">
+                            <div class="traction-bar-track">
+                                <div class="traction-bar-fill" style="width: ${percent}%;"></div>
+                            </div>
+                            <span style="font-size:0.75rem; font-weight:700; color:#0284c7; min-width:32px;">${percent}%</span>
+                        </div>
+                    </td>
+                `;
+                reportTableBody.appendChild(tr);
+            });
+        }
+    }
+
+    // 5. Diagnóstico Ejecutivo Hipha
+    const reportInsightsSummary = document.getElementById('reportInsightsSummary');
+    if (reportInsightsSummary) {
+        const topSource = (data.traffic_sources && data.traffic_sources.length > 0) ? data.traffic_sources[0].source : 'Búsqueda Orgánica / Directo';
+        const topSection = (data.top_sections && data.top_sections.length > 0) ? data.top_sections[0] : null;
+        const topSectionName = topSection ? (topSection.title || topSection.path) : 'la página principal';
+        const topSectionViews = topSection ? topSection.views.toLocaleString() : '0';
+
+        reportInsightsSummary.innerHTML = `Durante el período analizado (<strong>${escapeHtml(dates.label)}</strong>), el sitio web de <strong>${escapeHtml(clientName)}</strong> registró una sólida presencia digital, alcanzando <strong>${newUsers.toLocaleString()} nuevos usuarios</strong> y acumulando <strong>${views.toLocaleString()} vistas totales</strong> con un ritmo de interacción estimado en <strong>~${dailyAvg.toLocaleString()} vistas por día</strong>.<br><br>
+        El canal con mayor efectividad para la adquisición fue <strong>${escapeHtml(topSource)}</strong>, mientras que el contenido con mayor tracción e interés fue <strong>"${escapeHtml(topSectionName)}"</strong> (${topSectionViews} vistas), consolidándose como el principal activo de conversión y visibilidad del portal.`;
+    }
+
+    const modal = document.getElementById('clientReportModal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeClientReportModal() {
+    const modal = document.getElementById('clientReportModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function printClientReport() {
+    if (!currentClientDetailsData) return;
+    const clientName = currentClientDetailsData.client?.name || 'Cliente';
+    const originalTitle = document.title;
+    document.title = `Reporte Desempeño Web - ${clientName} - Hipha`;
+    window.print();
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 1500);
+}
+
+function copyExecutiveReportSummary() {
+    if (!currentClientDetailsData) return;
+    const data = currentClientDetailsData;
+    const clientName = data.client?.name || 'Cliente';
+    const dates = getSelectedTrafficDates();
+    const newUsers = data.metrics?.summary?.newUsers || 0;
+    const activeUsers = data.metrics?.summary?.activeUsers || 0;
+    const views = data.metrics?.summary?.views || 0;
+    const trendDays = (data.metrics?.trend && data.metrics.trend.length > 0) ? data.metrics.trend.length : 30;
+    const dailyAvg = Math.round(views / Math.max(1, trendDays));
+
+    const topSections = data.top_sections || [];
+    let top3Str = '';
+    topSections.slice(0, 3).forEach((sec, idx) => {
+        top3Str += `  ${idx + 1}. ${sec.title || sec.path} (${sec.views.toLocaleString()} vistas)\n`;
+    });
+    if (!top3Str) top3Str = '  Sin páginas registradas\n';
+
+    const topSource = (data.traffic_sources && data.traffic_sources.length > 0) ? data.traffic_sources[0].source : 'Orgánico / Directo';
+
+    const summaryText = `📊 *REPORTE DE DESEMPEÑO WEB • HIPHA*\n` +
+        `🏢 *Cliente:* ${clientName}\n` +
+        `🗓️ *Período:* ${dates.label}\n\n` +
+        `📈 *Métricas Clave de Rendimiento:*\n` +
+        `• 👥 Nuevos Usuarios: +${newUsers.toLocaleString()}\n` +
+        `• 🌐 Usuarios Activos: ${activeUsers.toLocaleString()}\n` +
+        `• 👁️ Vistas de Página: ${views.toLocaleString()}\n` +
+        `• ⚡ Promedio Diario: ~${dailyAvg.toLocaleString()} vistas/día\n\n` +
+        `🏆 *Top Secciones Más Visitadas:*\n${top3Str}\n` +
+        `🥧 *Canal Principal de Captación:* ${topSource}\n\n` +
+        `✅ _Reporte verificado con Google Analytics 4 API_\n` +
+        `🚀 *Equipo Hipha* • https://hipha.mx`;
+
+    navigator.clipboard.writeText(summaryText).then(() => {
+        const btn = document.getElementById('btnCopyReportSummary');
+        if (btn) {
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<span>✅ ¡Resumen Copiado!</span>';
+            btn.style.color = '#34d399';
+            setTimeout(() => {
+                btn.innerHTML = origHtml;
+                btn.style.color = '';
+            }, 2500);
+        }
+    }).catch(err => {
+        console.error("Error al copiar al portapapeles:", err);
+        alert("No se pudo copiar automáticamente. Por favor inténtalo de nuevo.");
+    });
+}
+
+function shareReportViaEmail() {
+    if (!currentClientDetailsData) return;
+    const data = currentClientDetailsData;
+    const clientName = data.client?.name || 'Cliente';
+    const dates = getSelectedTrafficDates();
+    const newUsers = data.metrics?.summary?.newUsers || 0;
+    const activeUsers = data.metrics?.summary?.activeUsers || 0;
+    const views = data.metrics?.summary?.views || 0;
+    const trendDays = (data.metrics?.trend && data.metrics.trend.length > 0) ? data.metrics.trend.length : 30;
+    const dailyAvg = Math.round(views / Math.max(1, trendDays));
+
+    // Cerrar modal de reporte
+    closeClientReportModal();
+
+    // Buscar si existe el cliente en clientsDirectoryData para prellenar su email
+    let clientEmail = '';
+    if (typeof clientsDirectoryData !== 'undefined' && Array.isArray(clientsDirectoryData)) {
+        const found = clientsDirectoryData.find(c => (c.name || '').toLowerCase() === clientName.toLowerCase());
+        if (found && found.contact_email) {
+            clientEmail = found.contact_email;
+        }
+    }
+
+    const emailSubject = `Reporte de Rendimiento y Tráfico Web (${dates.label}) • Hipha`;
+    const emailBody = `Hola,\n\nEsperamos que te encuentres muy bien. Te compartimos el reporte oficial de rendimiento y analíticas web correspondiente a ${dates.label} para ${clientName}:\n\n` +
+        `• Nuevos Usuarios: +${newUsers.toLocaleString()}\n` +
+        `• Usuarios Activos: ${activeUsers.toLocaleString()}\n` +
+        `• Vistas Totales de Página: ${views.toLocaleString()}\n` +
+        `• Promedio Diario Estimado: ~${dailyAvg.toLocaleString()} vistas/día\n\n` +
+        `El sitio web mantiene un monitoreo continuo en tiempo real para optimizar la velocidad y la tasa de conversión.\n\nCualquier duda o comentario sobre este desempeño, quedamos a tu completa disposición.\n\nSaludos cordiales,\nEquipo Hipha\nhola@hipha.mx`;
+
+    // Abrir modal de correo
+    if (typeof openSendAgencyEmailModal === 'function') {
+        openSendAgencyEmailModal(clientEmail, clientName);
+        const inputSubject = document.getElementById('emailInputSubject');
+        const inputBody = document.getElementById('emailInputBody');
+        if (inputSubject) inputSubject.value = emailSubject;
+        if (inputBody) inputBody.value = emailBody;
+    }
 }
 
 // --- Control General de Pestañas ---

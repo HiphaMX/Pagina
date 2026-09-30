@@ -329,7 +329,45 @@ select {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 2rem;
+}
+
+.details-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.details-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.btn-report-export {
+    background: rgba(0, 229, 255, 0.12);
+    border: 1px solid rgba(0, 229, 255, 0.35);
+    color: var(--accent-cyan);
+    padding: 0.55rem 1.05rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.btn-report-export:hover {
+    background: rgba(0, 229, 255, 0.22);
+    border-color: var(--accent-cyan);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 229, 255, 0.2);
 }
 
 .status-badge {
@@ -2179,6 +2217,574 @@ select {
     .clients-btn-group button {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   Selector de Fechas Personalizadas de Tráfico
+   ========================================================================== */
+.traffic-custom-dates-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.traffic-custom-dates-box input[type="date"] {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    outline: none;
+}
+
+.traffic-custom-dates-box input[type="date"]:focus {
+    border-color: var(--accent-cyan);
+}
+
+.custom-dates-sep {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.btn-apply-dates {
+    background: var(--accent-cyan);
+    color: #0f172a;
+    border: none;
+    border-radius: 6px;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-apply-dates:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Reporte Ejecutivo PDF con Branding de Hipha
+   ========================================================================== */
+.report-modal-dialog {
+    max-width: 950px;
+    width: 95%;
+}
+
+.report-modal-header {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.report-icon-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(0, 229, 255, 0.12);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.report-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 0.85rem 1.5rem;
+    background: rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.report-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-tool-action {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.btn-tool-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--accent-cyan);
+    border-color: rgba(0, 229, 255, 0.4);
+}
+
+.btn-primary-action {
+    background: var(--accent-cyan);
+    border: none;
+    color: #0f172a;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    box-shadow: 0 4px 14px rgba(0, 229, 255, 0.25);
+}
+
+.btn-primary-action:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 229, 255, 0.35);
+}
+
+.report-modal-body {
+    background: #0b1120;
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: calc(85vh - 140px);
+}
+
+/* Hoja de papel del reporte (Estilo Ejecutivo Hipha) */
+.report-paper {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    padding: 2.2rem 2.4rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    max-width: 860px;
+    margin: 0 auto;
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 1.1rem;
+}
+
+.report-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.report-brand-logo {
+    height: 34px;
+    width: auto;
+    filter: invert(1) brightness(0.2);
+}
+
+.report-tagline {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: #64748b;
+    font-weight: 700;
+}
+
+.report-meta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+}
+
+.report-badge-doc {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    background: #0f172a;
+    color: #00e5ff;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+}
+
+.report-emission-date {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.report-client-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #0284c7;
+    border-radius: 8px;
+    padding: 1.1rem 1.4rem;
+}
+
+.report-label-pre {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #0284c7;
+    text-transform: uppercase;
+}
+
+.report-client-heading {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0.15rem 0 0.25rem 0;
+}
+
+.report-period-text {
+    font-size: 0.85rem;
+    color: #475569;
+    margin: 0;
+}
+
+.report-verified-stamp {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.report-verified-stamp .stamp-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #0284c7;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.stamp-title {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.stamp-sub {
+    display: block;
+    font-size: 0.68rem;
+    color: #64748b;
+}
+
+/* KPI Cards en Reporte */
+.report-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.9rem;
+}
+
+.report-kpi-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: left;
+}
+
+.report-kpi-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+}
+
+.report-kpi-val {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0.3rem 0 0.15rem 0;
+}
+
+.report-kpi-sub {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    display: block;
+}
+
+/* Visualizaciones Gráficas */
+.report-charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.1fr;
+    gap: 1.2rem;
+}
+
+.report-chart-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.report-box-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+}
+
+.report-chart-wrapper {
+    width: 100%;
+    min-height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-chart-img {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* Tabla de Contenidos Más Visitados */
+.report-table-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+}
+
+.report-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.45rem;
+}
+
+.report-table-header .report-box-title {
+    margin-bottom: 0;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.report-table th {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.report-table td {
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.report-table tr:last-child td {
+    border-bottom: none;
+}
+
+.report-path-sub {
+    display: block;
+    font-size: 0.72rem;
+    color: #64748b;
+    font-family: monospace;
+}
+
+.traction-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    justify-content: flex-end;
+}
+
+.traction-bar-track {
+    width: 70px;
+    height: 7px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.traction-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0284c7, #00e5ff);
+    border-radius: 4px;
+}
+
+/* Diagnóstico Ejecutivo */
+.report-insights-box {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid #10b981;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+}
+
+.insights-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.35rem;
+}
+
+.insights-header h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #065f46;
+    margin: 0;
+}
+
+.insights-content {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* Footer del Reporte */
+.report-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 0.9rem;
+    font-size: 0.74rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+.report-footer strong {
+    color: #0f172a;
+}
+
+.report-footer-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: #0284c7;
+}
+
+/* ==========================================================================
+   Reglas de Impresión (@media print) para Descarga Limpia de PDF
+   ========================================================================== */
+@media print {
+    /* Ocultar toda la interfaz de la web y el dashboard */
+    body, html {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    /* Mostrar únicamente la hoja de reporte */
+    #printableReportContainer,
+    #printableReportContainer * {
+        visibility: visible !important;
+    }
+
+    #clientReportModal {
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    .report-modal-dialog {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .report-modal-body {
+        padding: 0 !important;
+        background: transparent !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    #printableReportContainer {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .report-kpi-card,
+    .report-chart-box,
+    .report-table-box,
+    .report-insights-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
     }
 }
 
