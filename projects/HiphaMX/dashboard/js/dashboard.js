@@ -645,6 +645,8 @@ function openClientReportModal() {
     if (reportTrendImg) {
         if (trendChartInstance) {
             try {
+                trendChartInstance.stop();
+                trendChartInstance.render();
                 reportTrendImg.src = trendChartInstance.toBase64Image('image/png', 1);
                 reportTrendImg.style.display = 'block';
             } catch(e) {
@@ -660,6 +662,8 @@ function openClientReportModal() {
     if (reportSourceImg) {
         if (sourceChartInstance) {
             try {
+                sourceChartInstance.stop();
+                sourceChartInstance.render();
                 reportSourceImg.src = sourceChartInstance.toBase64Image('image/png', 1);
                 reportSourceImg.style.display = 'block';
             } catch(e) {
@@ -734,10 +738,46 @@ function printClientReport() {
     const clientName = currentClientDetailsData.client?.name || 'Cliente';
     const originalTitle = document.title;
     document.title = `Reporte Desempeño Web - ${clientName} - Hipha`;
-    window.print();
-    setTimeout(() => {
+
+    // 1. Refrescar imágenes de alta resolución de las gráficas
+    try {
+        if (trendChartInstance) {
+            trendChartInstance.stop();
+            trendChartInstance.render();
+            const reportTrendImg = document.getElementById('reportTrendImg');
+            if (reportTrendImg) {
+                reportTrendImg.src = trendChartInstance.toBase64Image('image/png', 1);
+                reportTrendImg.style.display = 'block';
+            }
+        }
+        if (sourceChartInstance) {
+            sourceChartInstance.stop();
+            sourceChartInstance.render();
+            const reportSourceImg = document.getElementById('reportSourceImg');
+            if (reportSourceImg) {
+                reportSourceImg.src = sourceChartInstance.toBase64Image('image/png', 1);
+                reportSourceImg.style.display = 'block';
+            }
+        }
+    } catch (err) {
+        console.warn("Error refrescando gráficas para PDF:", err);
+    }
+
+    // 2. Activar clase de impresión para compatibilidad total
+    document.body.classList.add('is-printing-report');
+
+    const cleanUpPrint = () => {
+        document.body.classList.remove('is-printing-report');
         document.title = originalTitle;
-    }, 1500);
+        window.removeEventListener('afterprint', cleanUpPrint);
+    };
+    window.addEventListener('afterprint', cleanUpPrint);
+
+    // Micro-pausa (150ms) para garantizar que el navegador haya decodificado el bitmap antes de congelar para imprimir
+    setTimeout(() => {
+        window.print();
+        setTimeout(cleanUpPrint, 1200);
+    }, 150);
 }
 
 function copyExecutiveReportSummary() {
