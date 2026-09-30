@@ -1,5 +1,6 @@
+import asyncio
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from app.core.config import settings
@@ -23,8 +24,23 @@ class WhiteCleanForm(BaseModel):
     honeypot: Optional[str] = None
     recaptcha_token: Optional[str] = None
 
+async def dispatch_whiteclean_emails(form_data: WhiteCleanForm):
+    """
+    Despacha los correos de confirmación al cliente y aviso al equipo
+    en paralelo y en segundo plano sin demorar la respuesta de la web.
+    """
+    try:
+        await asyncio.gather(
+            send_whiteclean_confirmation_email(form_data),
+            send_whiteclean_notification_team(form_data),
+            return_exceptions=True
+        )
+        logger.info(f"Correos de WhiteClean despachados en background con éxito para {form_data.email}")
+    except Exception as e:
+        logger.error(f"Error despachando correos en background para WhiteClean ({form_data.email}): {e}")
+
 @router.post("/whiteclean")
-async def submit_whiteclean_form(form_data: WhiteCleanForm):
+async def submit_whiteclean_form(form_data: WhiteCleanForm, background_tasks: BackgroundTasks):
     if form_data.honeypot:
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for WhiteClean (email: {form_data.email}).")
         return {"message": "Formulario recibido correctamente"}
@@ -39,14 +55,8 @@ async def submit_whiteclean_form(form_data: WhiteCleanForm):
     else:
         logger.info(f"[SECURITY INFO] No reCAPTCHA token provided for WhiteClean (email: {form_data.email}). Proceeding with submission.")
 
-    # Enviar correo de confirmación al prospecto
-    customer_email_sent = await send_whiteclean_confirmation_email(form_data)
-    
-    # Enviar aviso con los detalles de la solicitud al equipo
-    team_email_sent = await send_whiteclean_notification_team(form_data)
-    
-    if not customer_email_sent and not team_email_sent:
-        raise HTTPException(status_code=500, detail="Error al enviar correos")
+    # Enviar correos en background de forma asíncrona e inmediata
+    background_tasks.add_task(dispatch_whiteclean_emails, form_data)
         
     return {"message": "Formulario recibido correctamente"}
 

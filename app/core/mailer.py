@@ -26,6 +26,7 @@ async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, sm
 
     use_tls = (port == 465)
     start_tls = (port != 465)
+    primary_timeout = 2.5 if (host != settings.SMTP_HOST and settings.SMTP_HOST) else 6.0
     try:
         await aiosmtplib.send(
             message,
@@ -35,7 +36,7 @@ async def _send_smtp(message, smtp_host=None, smtp_port=None, smtp_user=None, sm
             password=password,
             use_tls=use_tls,
             start_tls=start_tls,
-            timeout=8.0
+            timeout=primary_timeout
         )
     except Exception as primary_err:
         # Si falló un SMTP de cliente y tenemos el SMTP de la agencia configurado, aplicar fallback automático
@@ -1483,9 +1484,8 @@ async def send_whiteclean_notification_team(form_data):
     </html>
     """
     recipients = ["clientes@whiteclean.com.mx", "whiteclean1@hotmail.com"]
-    success_any = False
 
-    for recipient in recipients:
+    async def _send_single_team(recipient):
         message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
             project_prefix="WHITECLEAN",
             from_name="WhiteClean Web",
@@ -1501,11 +1501,13 @@ async def send_whiteclean_notification_team(form_data):
         try:
             await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
             logger.info(f"Notificación de lead WhiteClean enviada con éxito a {recipient}.")
-            success_any = True
+            return True
         except Exception as e:
             logger.error(f"Fallo al enviar notificación WhiteClean al equipo ({recipient}): {str(e)}")
+            return False
 
-    return success_any
+    results = await asyncio.gather(*[_send_single_team(r) for r in recipients], return_exceptions=True)
+    return any(r is True for r in results)
 
 
 async def send_chilechillon_confirmation_email(form_data):
