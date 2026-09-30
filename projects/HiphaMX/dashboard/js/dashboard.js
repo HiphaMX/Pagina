@@ -2297,6 +2297,7 @@ function initClientsDirectoryModule() {
     
     // Plantillas rápidas
     const btnTplBilling = document.getElementById('btnTplBillingReminder');
+    const btnTplPaymentThanks = document.getElementById('btnTplPaymentThanks');
     const btnTplDelivery = document.getElementById('btnTplDelivery');
     const btnTplFeedback = document.getElementById('btnTplFeedback');
 
@@ -2436,6 +2437,11 @@ function initClientsDirectoryModule() {
     if (btnTplBilling && !btnTplBilling.dataset.bound) {
         btnTplBilling.dataset.bound = 'true';
         btnTplBilling.addEventListener('click', () => applyEmailTemplate('billing'));
+    }
+
+    if (btnTplPaymentThanks && !btnTplPaymentThanks.dataset.bound) {
+        btnTplPaymentThanks.dataset.bound = 'true';
+        btnTplPaymentThanks.addEventListener('click', () => applyEmailTemplate('payment_thanks'));
     }
 
     if (btnTplDelivery && !btnTplDelivery.dataset.bound) {
@@ -3252,6 +3258,61 @@ Saludos cordiales,
 Equipo Hipha MX
 hola@hipha.mx`;
             }
+        }
+    } else if (type === 'payment_thanks') {
+        const isAnnual = client && client.billing_period === 'annual';
+        const reqInvoice = client && Boolean(client.requires_invoice);
+        const applyRet = client && Boolean(client.apply_tax_retention);
+        const retRate = (client && parseFloat(client.tax_retention_rate != null ? client.tax_retention_rate : 1.25)) || 1.25;
+        const feeVal = (client && parseFloat(client.monthly_fee)) || 0;
+
+        let totalPayText = feeStr;
+        let invoiceMention = '';
+        if (reqInvoice) {
+            const ivaVal = Math.round(feeVal * 0.16 * 100) / 100;
+            const isrVal = applyRet ? Math.round(feeVal * (retRate / 100.0) * 100) / 100 : 0;
+            const totalVal = Math.round((feeVal + ivaVal - isrVal) * 100) / 100;
+            totalPayText = `${formatCurrencyMXN(totalVal)} MXN`;
+            invoiceMention = `\n• Facturación (CFDI): Te compartimos adjuntos tus archivos fiscales oficiales (XML y PDF) correspondientes a este periodo.`;
+        }
+
+        let serviceDesc = 'Servicios digitales y creatividad';
+        if (client && client.service_type) {
+            const st = client.service_type;
+            if (st.includes('design')) serviceDesc = 'Suscripción de Diseño';
+            else if (st.includes('web')) serviceDesc = isAnnual ? 'Renovación Anual de Sitio Web' : 'Suscripción Web y Presencia Digital';
+            else if (st.includes('marketing') || st.includes('ads') || st.includes('seo')) serviceDesc = 'Suscripción de Marketing y Estrategia Digital';
+            else serviceDesc = 'Servicio acordado de diseño y desarrollo';
+        }
+
+        const periodCoverage = isAnnual ? 'Ciclo Anual (cobertura por 12 meses)' : 'Mensualidad corriente (cobertura por mes adelantado)';
+
+        if (inputSubject) inputSubject.value = `¡Confirmación de pago recibido! Muchas gracias (${clientName}) • Hipha`;
+        if (inputBody) {
+            inputBody.value = 
+`Hola ${contactName},
+
+Esperamos que te encuentres excelente.
+
+Te escribimos para confirmarte que hemos registrado con éxito la recepción de tu pago correspondiente a ${clientName}. ¡Muchísimas gracias por tu pago y por seguir confiando en Hipha MX!
+
+💳 RESUMEN DEL PAGO REGISTRADO:
+• Cliente / Cuenta: ${clientName}
+• Concepto: ${serviceDesc}
+• Modalidad: ${isAnnual ? 'Suscripción Anual' : 'Suscripción Mensual'}
+• Cobertura: ${periodCoverage}
+• Monto registrado: ${totalPayText}
+• Estatus de cuenta: Al corriente y activa${invoiceMention}
+
+Tu cuenta se encuentra totalmente al corriente y nuestro equipo continúa al 100% trabajando en los entregables, diseños y proyectos programados para tu marca.
+
+Cualquier duda, solicitud adicional o nuevo requerimiento que tengas para este ciclo, seguimos siempre a tu entera disposición.
+
+¡Muchas gracias por hacer equipo con nosotros!
+
+Saludos cordiales,
+Equipo Hipha MX
+hola@hipha.mx`;
         }
     } else if (type === 'delivery') {
         if (inputSubject) inputSubject.value = `Entrega de piezas y avances de diseño (${clientName}) • Hipha`;
