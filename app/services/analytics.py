@@ -219,3 +219,97 @@ def get_traffic_sources(property_id: str, start_date: str = "30daysAgo", end_dat
     except Exception as e:
         print(f"Error fetching traffic sources for property {property_id}: {str(e)}")
         return []
+
+def get_audience_breakdown(property_id: str, start_date: str = "30daysAgo", end_date: str = "today"):
+    """Obtiene el desglose de dispositivos, demografía (género y edad) y principales ubicaciones."""
+    results = {
+        "devices": [],
+        "demographics": {
+            "gender": [],
+            "age": []
+        },
+        "locations": []
+    }
+    try:
+        client = get_ga4_client()
+
+        # 1. Dispositivos (Móvil vs Desktop vs Tablet)
+        try:
+            req_dev = RunReportRequest(
+                property=f"properties/{property_id}",
+                dimensions=[Dimension(name="deviceCategory")],
+                metrics=[Metric(name="activeUsers")],
+                date_ranges=[DateRange(start_date=start_date, end_date=end_date)]
+            )
+            res_dev = client.run_report(req_dev)
+            for row in res_dev.rows:
+                cat = row.dimension_values[0].value
+                label = "Móvil" if cat == "mobile" else ("Escritorio" if cat == "desktop" else "Tablet")
+                results["devices"].append({
+                    "device": label,
+                    "raw": cat,
+                    "users": int(row.metric_values[0].value)
+                })
+        except Exception as ed:
+            print(f"Error fetching devices for property {property_id}: {ed}")
+
+        # 2. Demografía (Género y Edad)
+        try:
+            req_gen = RunReportRequest(
+                property=f"properties/{property_id}",
+                dimensions=[Dimension(name="userGender")],
+                metrics=[Metric(name="activeUsers")],
+                date_ranges=[DateRange(start_date=start_date, end_date=end_date)]
+            )
+            res_gen = client.run_report(req_gen)
+            for row in res_gen.rows:
+                g = row.dimension_values[0].value
+                label_g = "Mujer" if g == "female" else ("Hombre" if g == "male" else g.capitalize())
+                results["demographics"]["gender"].append({
+                    "gender": label_g,
+                    "users": int(row.metric_values[0].value)
+                })
+        except Exception as eg:
+            print(f"Error fetching gender for property {property_id}: {eg}")
+
+        try:
+            req_age = RunReportRequest(
+                property=f"properties/{property_id}",
+                dimensions=[Dimension(name="userAgeBracket")],
+                metrics=[Metric(name="activeUsers")],
+                date_ranges=[DateRange(start_date=start_date, end_date=end_date)]
+            )
+            res_age = client.run_report(req_age)
+            for row in res_age.rows:
+                results["demographics"]["age"].append({
+                    "bracket": row.dimension_values[0].value,
+                    "users": int(row.metric_values[0].value)
+                })
+        except Exception as ea:
+            print(f"Error fetching age for property {property_id}: {ea}")
+
+        # 3. Principales Ciudades / Ubicaciones
+        try:
+            req_city = RunReportRequest(
+                property=f"properties/{property_id}",
+                dimensions=[Dimension(name="city")],
+                metrics=[Metric(name="activeUsers")],
+                date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+                limit=6
+            )
+            res_city = client.run_report(req_city)
+            for row in res_city.rows:
+                city_name = row.dimension_values[0].value
+                if city_name and city_name != "(not set)":
+                    results["locations"].append({
+                        "city": city_name,
+                        "users": int(row.metric_values[0].value)
+                    })
+        except Exception as ec:
+            print(f"Error fetching locations for property {property_id}: {ec}")
+
+        return results
+    except Exception as e:
+        print(f"Error general en get_audience_breakdown para {property_id}: {e}")
+        return results
+

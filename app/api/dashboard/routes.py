@@ -9,6 +9,7 @@ from app.services.analytics import (
     get_basic_metrics,
     get_top_sections,
     get_traffic_sources,
+    get_audience_breakdown,
     get_discovered_clients,
     CLIENTS
 )
@@ -181,6 +182,7 @@ def get_client_details(
         metrics_data = get_basic_metrics(property_id, start_date, end_date)
         top_sections = get_top_sections(property_id, start_date, end_date)
         traffic_sources = get_traffic_sources(property_id, start_date, end_date)
+        audience_data = get_audience_breakdown(property_id, start_date, end_date)
         
         return {
             "client": {
@@ -193,7 +195,8 @@ def get_client_details(
             },
             "metrics": metrics_data,
             "top_sections": top_sections,
-            "traffic_sources": traffic_sources
+            "traffic_sources": traffic_sources,
+            "audience": audience_data
         }
     except Exception as e:
         print(f"Error general en get_client_details para {property_id}: {e}")
@@ -203,6 +206,7 @@ def get_client_details(
             "metrics": {"summary": {"newUsers": 0, "activeUsers": 0, "views": 0}, "trend": []},
             "top_sections": [],
             "traffic_sources": [],
+            "audience": {"devices": [], "demographics": {"gender": [], "age": []}, "locations": []},
             "error": str(e)
         }
 

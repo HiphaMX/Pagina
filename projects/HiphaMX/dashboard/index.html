@@ -912,6 +912,9 @@
                 </div>
             </div>
 
+            <!-- Canvas oculto para gráfica de dispositivos -->
+            <canvas id="deviceChartCanvas" width="360" height="240" style="display:none; position:fixed; left:-9999px; top:-9999px;"></canvas>
+
             <!-- Hoja Imprimible / Visible del Documento Ejecutivo -->
             <div class="modal-body report-modal-body">
                 <div id="printableReportContainer" class="report-paper">
@@ -919,7 +922,6 @@
                     <div class="report-header">
                         <div class="report-brand">
                             <img src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha" class="report-brand-logo" onerror="this.src='https://via.placeholder.com/140x45/101729/00e5ff?text=HIPHA'">
-                            <span class="report-tagline">DIGITAL PERFORMANCE & TECHNOLOGY</span>
                         </div>
                         <div class="report-meta">
                             <span class="report-badge-doc">INFORME EJECUTIVO ANUAL</span>
@@ -967,35 +969,70 @@
                         </div>
                     </div>
 
-                    <!-- Visualizaciones Gráficas -->
-                    <div class="report-charts-grid">
-                        <div class="report-chart-box">
-                            <h3 class="report-box-title">📊 Evolución del Tráfico</h3>
-                            <div class="report-chart-wrapper">
-                                <img id="reportTrendImg" class="report-chart-img" alt="Gráfica de tendencia">
+                    <!-- Visualizaciones Gráficas Página 1 -->
+                    <!-- 1. Gráfica Principal: Evolución del Tráfico -->
+                    <div class="report-main-chart-box">
+                        <div class="report-box-header">
+                            <h3 class="report-box-title">📊 Evolución del Tráfico Web</h3>
+                            <span class="report-box-sub">Vistas de página y nuevos usuarios</span>
+                        </div>
+                        <div class="report-chart-wrapper report-main-chart-wrapper">
+                            <img id="reportTrendImg" class="report-chart-img" alt="Gráfica de tendencia">
+                        </div>
+                    </div>
+
+                    <!-- 2. Fila de 3 Widgets Analíticos Complementarios -->
+                    <div class="report-subcharts-grid">
+                        <!-- Widget 1: Canales de Captación -->
+                        <div class="report-subchart-box">
+                            <h3 class="report-box-title">🥧 Canales de Tráfico</h3>
+                            <div class="report-subchart-content">
+                                <div class="report-chart-wrapper report-subchart-wrapper">
+                                    <img id="reportSourceImg" class="report-chart-img" alt="Canales de captación">
+                                </div>
+                                <div id="reportSourceBreakdown" class="report-mini-legend">
+                                    <!-- Dinámico: chips de canales -->
+                                </div>
                             </div>
                         </div>
-                        <div class="report-chart-box">
-                            <h3 class="report-box-title">🥧 Origen & Canales de Captación</h3>
-                            <div class="report-chart-wrapper">
-                                <img id="reportSourceImg" class="report-chart-img" alt="Gráfica de orígenes">
+
+                        <!-- Widget 2: Dispositivos de Acceso -->
+                        <div class="report-subchart-box">
+                            <h3 class="report-box-title">📱 Dispositivos de Acceso</h3>
+                            <div class="report-subchart-content">
+                                <div class="report-chart-wrapper report-subchart-wrapper">
+                                    <img id="reportDeviceImg" class="report-chart-img" alt="Dispositivos de acceso">
+                                </div>
+                                <div id="reportDeviceBreakdown" class="report-mini-legend">
+                                    <!-- Dinámico: Móvil / Desktop / Tablet -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Widget 3: Perfil de Audiencia (Demografía / Ubicación) -->
+                        <div class="report-subchart-box">
+                            <h3 class="report-box-title" id="reportAudienceTitle">👥 Perfil de Audiencia</h3>
+                            <div id="reportAudienceContent" class="report-audience-content">
+                                <!-- Dinámico: Género y Edad o Top Ubicaciones -->
                             </div>
                         </div>
                     </div>
 
-                    <!-- Top Páginas y Contenidos Más Visitados -->
-                    <div class="report-table-box">
+                    <!-- Top Páginas y Contenidos Más Visitados (Página 2) -->
+                    <div class="report-table-box report-page-2-start">
                         <div class="report-table-header">
-                            <h3 class="report-box-title">🏆 Top Secciones & Contenido Más Consultado</h3>
-                            <span style="font-size:0.75rem; color:#64748b;">Rendimiento de URLs y páginas clave</span>
+                            <div>
+                                <h3 class="report-box-title">🏆 Top Secciones & Contenido Más Consultado</h3>
+                                <span style="font-size:0.72rem; color:#64748b;">Rendimiento de URLs y páginas clave del portal</span>
+                            </div>
                         </div>
                         <table class="report-table">
                             <thead>
                                 <tr>
-                                    <th style="width:45px;">#</th>
+                                    <th style="width:40px;">#</th>
                                     <th>Página / Sección</th>
-                                    <th style="width:130px; text-align:right;">Vistas Totales</th>
-                                    <th style="width:160px; text-align:right;">Tracción Web</th>
+                                    <th style="width:120px; text-align:right;">Vistas Totales</th>
+                                    <th style="width:150px; text-align:right;">Tracción Web</th>
                                 </tr>
                             </thead>
                             <tbody id="reportTableBody">
@@ -1015,11 +1052,11 @@
                         </p>
                     </div>
 
-                    <!-- Footer Corporativo Oficial -->
+                    <!-- Footer Corporativo Oficial Actualizado -->
                     <div class="report-footer">
                         <div>
-                            <strong>HIPHA MEDIA & TECHNOLOGY</strong>
-                            <p>Estrategia, diseño y desarrollo web de alta conversión • Guadalajara, Jalisco, México</p>
+                            <strong>HIPHA</strong>
+                            <p>Estrategia, diseño y desarrollo web de alta conversión</p>
                         </div>
                         <div class="report-footer-contact">
                             <span>hola@hipha.mx</span>

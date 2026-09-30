@@ -10,6 +10,7 @@ const SAT_API_BASE = isLocal ? 'http://localhost:8000/api/sat' : '/api/sat';
 
 let trendChartInstance = null;
 let sourceChartInstance = null;
+let deviceChartInstance = null;
 let currentClientDetailsData = null;
 
 // Elementos del DOM
@@ -640,7 +641,8 @@ function openClientReportModal() {
     const dailyAvg = Math.round(views / Math.max(1, trendDays));
     if (elReportKpiDailyAvg) elReportKpiDailyAvg.textContent = dailyAvg.toLocaleString();
 
-    // 3. Gráficas exportadas como imágenes estáticas para impresión 100% fiel
+    // 3. Gráficas y Widgets Analíticos de la Primera Página
+    // 3.1 Gráfica de Tendencia (Línea de Tráfico)
     const reportTrendImg = document.getElementById('reportTrendImg');
     if (reportTrendImg) {
         if (trendChartInstance) {
@@ -658,6 +660,7 @@ function openClientReportModal() {
         }
     }
 
+    // 3.2 Gráfica de Canales de Captación
     const reportSourceImg = document.getElementById('reportSourceImg');
     if (reportSourceImg) {
         if (sourceChartInstance) {
@@ -675,7 +678,157 @@ function openClientReportModal() {
         }
     }
 
-    // 4. Tabla Top Secciones con porcentajes de tracción
+    const reportSourceBreakdown = document.getElementById('reportSourceBreakdown');
+    if (reportSourceBreakdown && data.traffic_sources && data.traffic_sources.length > 0) {
+        const totalSourceViews = data.traffic_sources.reduce((acc, s) => acc + s.views, 0) || 1;
+        const srcColors = ['#00e5ff', '#b388ff', '#3b82f6', '#f43f5e', '#f59e0b', '#10b981'];
+        reportSourceBreakdown.innerHTML = data.traffic_sources.slice(0, 3).map((s, idx) => {
+            const pct = Math.round((s.views / totalSourceViews) * 100);
+            return `
+                <div class="legend-item-row">
+                    <span><span class="legend-color-dot" style="background:${srcColors[idx % srcColors.length]};"></span>${escapeHtml(s.source)}</span>
+                    <strong style="color:#ffffff;">${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${s.views.toLocaleString()})</span></strong>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // 3.3 Gráfica y Desglose de Dispositivos de Acceso
+    const deviceData = data.audience?.devices || [];
+    const reportDeviceImg = document.getElementById('reportDeviceImg');
+    const reportDeviceBreakdown = document.getElementById('reportDeviceBreakdown');
+
+    if (deviceData.length > 0) {
+        const totalDevUsers = deviceData.reduce((acc, d) => acc + d.users, 0) || 1;
+        const devCanvas = document.getElementById('deviceChartCanvas');
+        if (devCanvas) {
+            const ctxDev = devCanvas.getContext('2d');
+            if (deviceChartInstance) {
+                deviceChartInstance.destroy();
+            }
+            deviceChartInstance = new Chart(ctxDev, {
+                type: 'doughnut',
+                data: {
+                    labels: deviceData.map(d => d.device),
+                    datasets: [{
+                        data: deviceData.map(d => d.users),
+                        backgroundColor: ['#00e5ff', '#3b82f6', '#b388ff', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    animation: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '62%'
+                }
+            });
+            if (reportDeviceImg) {
+                reportDeviceImg.src = deviceChartInstance.toBase64Image('image/png', 1);
+                reportDeviceImg.style.display = 'block';
+            }
+        }
+
+        if (reportDeviceBreakdown) {
+            const devColors = ['#00e5ff', '#3b82f6', '#b388ff'];
+            reportDeviceBreakdown.innerHTML = deviceData.slice(0, 3).map((d, i) => {
+                const pct = Math.round((d.users / totalDevUsers) * 100);
+                const icon = d.device.toLowerCase().includes('móvil') ? '📱' : (d.device.toLowerCase().includes('escritorio') ? '💻' : '📟');
+                return `
+                    <div class="legend-item-row">
+                        <span><span class="legend-color-dot" style="background:${devColors[i % devColors.length]};"></span>${icon} ${d.device}</span>
+                        <strong style="color:#ffffff;">${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${d.users.toLocaleString()})</span></strong>
+                    </div>
+                `;
+            }).join('');
+        }
+    } else {
+        if (reportDeviceImg) reportDeviceImg.style.display = 'none';
+        if (reportDeviceBreakdown) reportDeviceBreakdown.innerHTML = '<span style="color:#64748b; font-size:0.7rem;">Sin datos de dispositivos</span>';
+    }
+
+    // 3.4 Perfil de Audiencia (Demografía de Género/Edad o Ubicaciones Geográficas)
+    const reportAudienceTitle = document.getElementById('reportAudienceTitle');
+    const reportAudienceContent = document.getElementById('reportAudienceContent');
+    const genderData = data.audience?.demographics?.gender || [];
+    const ageData = data.audience?.demographics?.age || [];
+    const locationData = data.audience?.locations || [];
+
+    if (reportAudienceContent) {
+        reportAudienceContent.innerHTML = '';
+        if (genderData.length > 0 || ageData.length > 0) {
+            if (reportAudienceTitle) reportAudienceTitle.textContent = '👥 Demografía de Audiencia';
+            let html = '';
+            if (genderData.length > 0) {
+                const totalGender = genderData.reduce((acc, g) => acc + g.users, 0) || 1;
+                html += '<div style="margin-bottom:0.35rem;">';
+                genderData.forEach(g => {
+                    const pct = Math.round((g.users / totalGender) * 100);
+                    const color = g.gender.toLowerCase().includes('mujer') ? '#f43f5e' : '#00e5ff';
+                    html += `
+                        <div class="audience-metric-item" style="margin-bottom:0.25rem;">
+                            <div class="audience-metric-labels">
+                                <span>${g.gender}</span>
+                                <strong>${pct}%</strong>
+                            </div>
+                            <div class="audience-bar-track">
+                                <div class="audience-bar-fill" style="width:${pct}%; background:${color};"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            if (ageData.length > 0) {
+                const totalAge = ageData.reduce((acc, a) => acc + a.users, 0) || 1;
+                html += '<div style="display:flex; flex-direction:column; gap:0.25rem;">';
+                ageData.slice(0, 3).forEach(a => {
+                    const pct = Math.round((a.users / totalAge) * 100);
+                    html += `
+                        <div class="audience-metric-item">
+                            <div class="audience-metric-labels">
+                                <span>Edad ${a.bracket}</span>
+                                <strong>${pct}%</strong>
+                            </div>
+                            <div class="audience-bar-track">
+                                <div class="audience-bar-fill" style="width:${pct}%; background:linear-gradient(90deg, #3b82f6, #00e5ff);"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            reportAudienceContent.innerHTML = html;
+        } else if (locationData.length > 0) {
+            if (reportAudienceTitle) reportAudienceTitle.textContent = '📍 Top Ciudades & Región';
+            const totalLoc = locationData.reduce((acc, l) => acc + l.users, 0) || 1;
+            let html = '<div style="display:flex; flex-direction:column; gap:0.35rem;">';
+            const locColors = ['#00e5ff', '#3b82f6', '#b388ff', '#10b981'];
+            locationData.slice(0, 4).forEach((loc, idx) => {
+                const pct = Math.round((loc.users / totalLoc) * 100);
+                html += `
+                    <div class="audience-metric-item">
+                        <div class="audience-metric-labels">
+                            <span>#${idx + 1} ${escapeHtml(loc.city)}</span>
+                            <strong>${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${loc.users.toLocaleString()})</span></strong>
+                        </div>
+                        <div class="audience-bar-track">
+                            <div class="audience-bar-fill" style="width:${pct}%; background:${locColors[idx % locColors.length]};"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            reportAudienceContent.innerHTML = html;
+        } else {
+            if (reportAudienceTitle) reportAudienceTitle.textContent = '👥 Perfil de Audiencia';
+            reportAudienceContent.innerHTML = '<span style="color:#64748b; font-size:0.72rem; text-align:center; padding:0.8rem 0;">Audiencia consolidada en tráfico directo y orgánico nacional.</span>';
+        }
+    }
+
+    // 4. Tabla Top Secciones con porcentajes de tracción (Página 2)
     const reportTableBody = document.getElementById('reportTableBody');
     if (reportTableBody) {
         reportTableBody.innerHTML = '';
@@ -719,9 +872,10 @@ function openClientReportModal() {
         const topSection = (data.top_sections && data.top_sections.length > 0) ? data.top_sections[0] : null;
         const topSectionName = topSection ? (topSection.title || topSection.path) : 'la página principal';
         const topSectionViews = topSection ? topSection.views.toLocaleString() : '0';
+        const topDevice = (deviceData.length > 0) ? `dispositivos <strong>${deviceData[0].device}</strong>` : 'dispositivos móviles y de escritorio';
 
         reportInsightsSummary.innerHTML = `Durante el período analizado (<strong>${escapeHtml(dates.label)}</strong>), el sitio web de <strong>${escapeHtml(clientName)}</strong> registró una sólida presencia digital, alcanzando <strong>${newUsers.toLocaleString()} nuevos usuarios</strong> y acumulando <strong>${views.toLocaleString()} vistas totales</strong> con un ritmo de interacción estimado en <strong>~${dailyAvg.toLocaleString()} vistas por día</strong>.<br><br>
-        El canal con mayor efectividad para la adquisición fue <strong>${escapeHtml(topSource)}</strong>, mientras que el contenido con mayor tracción e interés fue <strong>"${escapeHtml(topSectionName)}"</strong> (${topSectionViews} vistas), consolidándose como el principal activo de conversión y visibilidad del portal.`;
+        El canal con mayor efectividad para la adquisición fue <strong>${escapeHtml(topSource)}</strong> con navegación predominante en ${topDevice}, mientras que el contenido con mayor tracción e interés fue <strong>"${escapeHtml(topSectionName)}"</strong> (${topSectionViews} vistas), consolidándose como el principal activo de conversión y visibilidad del portal.`;
     }
 
     const modal = document.getElementById('clientReportModal');
@@ -757,6 +911,15 @@ function printClientReport() {
             if (reportSourceImg) {
                 reportSourceImg.src = sourceChartInstance.toBase64Image('image/png', 1);
                 reportSourceImg.style.display = 'block';
+            }
+        }
+        if (deviceChartInstance) {
+            deviceChartInstance.stop();
+            deviceChartInstance.render();
+            const reportDeviceImg = document.getElementById('reportDeviceImg');
+            if (reportDeviceImg) {
+                reportDeviceImg.src = deviceChartInstance.toBase64Image('image/png', 1);
+                reportDeviceImg.style.display = 'block';
             }
         }
     } catch (err) {
@@ -799,6 +962,9 @@ function copyExecutiveReportSummary() {
     if (!top3Str) top3Str = '  Sin páginas registradas\n';
 
     const topSource = (data.traffic_sources && data.traffic_sources.length > 0) ? data.traffic_sources[0].source : 'Orgánico / Directo';
+    const deviceStr = (data.audience?.devices && data.audience.devices.length > 0)
+        ? `• 📱 Dispositivo Predominante: ${data.audience.devices[0].device} (${Math.round((data.audience.devices[0].users / (data.audience.devices.reduce((a, b) => a + b.users, 0) || 1)) * 100)}%)\n`
+        : '';
 
     const summaryText = `📊 *REPORTE DE DESEMPEÑO WEB • HIPHA*\n` +
         `🏢 *Cliente:* ${clientName}\n` +
@@ -807,7 +973,8 @@ function copyExecutiveReportSummary() {
         `• 👥 Nuevos Usuarios: +${newUsers.toLocaleString()}\n` +
         `• 🌐 Usuarios Activos: ${activeUsers.toLocaleString()}\n` +
         `• 👁️ Vistas de Página: ${views.toLocaleString()}\n` +
-        `• ⚡ Promedio Diario: ~${dailyAvg.toLocaleString()} vistas/día\n\n` +
+        `• ⚡ Promedio Diario: ~${dailyAvg.toLocaleString()} vistas/día\n` +
+        deviceStr + `\n` +
         `🏆 *Top Secciones Más Visitadas:*\n${top3Str}\n` +
         `🥧 *Canal Principal de Captación:* ${topSource}\n\n` +
         `✅ _Reporte verificado con Google Analytics 4 API_\n` +
