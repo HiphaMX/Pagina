@@ -626,14 +626,15 @@ async def send_email_to_client(
         raise HTTPException(status_code=400, detail="Dirección de correo electrónico inválida")
     if not email_req.subject.strip():
         raise HTTPException(status_code=400, detail="El asunto del correo no puede estar vacío")
-    if not email_req.message.strip():
+    msg_content = (email_req.message or email_req.message_body or "").strip()
+    if not msg_content:
         raise HTTPException(status_code=400, detail="El mensaje no puede estar vacío")
 
     try:
         success = await send_custom_agency_email(
             to_email=email_req.to_email.strip(),
             subject=email_req.subject.strip(),
-            message_body=email_req.message.strip(),
+            message_body=msg_content,
             client_name=email_req.client_name or ""
         )
         if success:

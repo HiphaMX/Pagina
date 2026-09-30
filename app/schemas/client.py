@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class AgencyClientBase(BaseModel):
@@ -56,5 +56,14 @@ class AgencyClient(AgencyClientBase):
 class SendAgencyEmailRequest(BaseModel):
     to_email: str
     subject: str
-    message: str
+    message: Optional[str] = None
+    message_body: Optional[str] = None
     client_name: Optional[str] = ""
+
+    @model_validator(mode="after")
+    def validate_message(self):
+        msg = self.message or self.message_body
+        if not msg or not msg.strip():
+            raise ValueError("El mensaje no puede estar vacío")
+        self.message = msg
+        return self

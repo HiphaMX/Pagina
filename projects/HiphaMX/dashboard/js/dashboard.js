@@ -2297,7 +2297,7 @@ function initClientsDirectoryModule() {
     
     // Plantillas rápidas
     const btnTplBilling = document.getElementById('btnTplBillingReminder');
-    const btnTplPaymentThanks = document.getElementById('btnTplPaymentThanks');
+    const btnTplPaymentSuccess = document.getElementById('btnTplPaymentSuccess') || document.getElementById('btnTplPaymentThanks');
     const btnTplDelivery = document.getElementById('btnTplDelivery');
     const btnTplFeedback = document.getElementById('btnTplFeedback');
 
@@ -2439,9 +2439,9 @@ function initClientsDirectoryModule() {
         btnTplBilling.addEventListener('click', () => applyEmailTemplate('billing'));
     }
 
-    if (btnTplPaymentThanks && !btnTplPaymentThanks.dataset.bound) {
-        btnTplPaymentThanks.dataset.bound = 'true';
-        btnTplPaymentThanks.addEventListener('click', () => applyEmailTemplate('payment_thanks'));
+    if (btnTplPaymentSuccess && !btnTplPaymentSuccess.dataset.bound) {
+        btnTplPaymentSuccess.dataset.bound = 'true';
+        btnTplPaymentSuccess.addEventListener('click', () => applyEmailTemplate('payment_success'));
     }
 
     if (btnTplDelivery && !btnTplDelivery.dataset.bound) {
@@ -3171,6 +3171,46 @@ function closeSendAgencyEmailModal() {
     if (modal) modal.classList.add('hidden');
 }
 
+function getFormattedNextCutoffDate(client) {
+    if (!client) return 'tu fecha de corte programada';
+    const bDay = parseInt(client.billing_day) || 1;
+    const isAnnual = client.billing_period === 'annual';
+    const now = new Date();
+    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    if (isAnnual && client.start_date) {
+        try {
+            const parts = client.start_date.split('-');
+            const sMonth = parseInt(parts[1]) - 1;
+            const sDay = parseInt(parts[2]);
+            let renYear = now.getFullYear();
+            let renDate = new Date(renYear, sMonth, sDay);
+            if (renDate < now) renYear++;
+            return `${sDay} de ${months[sMonth]} de ${renYear}`;
+        } catch (e) {}
+    }
+
+    let targetMonth = now.getMonth();
+    let targetYear = now.getFullYear();
+    if (bDay < now.getDate()) {
+        targetMonth++;
+        if (targetMonth > 11) {
+            targetMonth = 0;
+            targetYear++;
+        }
+    }
+    return `${bDay} de ${months[targetMonth]}`;
+}
+
+function getClientServiceDescription(client) {
+    if (!client || !client.service_type) return 'servicio';
+    const st = client.service_type;
+    if (st.includes('design')) return 'suscripción de diseño';
+    if (st.includes('web')) return client.billing_period === 'annual' ? 'renovación anual web' : 'suscripción web';
+    if (st.includes('marketing') || st.includes('ads') || st.includes('seo')) return 'suscripción de marketing';
+    return 'servicio contratado';
+}
+
 function applyEmailTemplate(type) {
     const inputTo = document.getElementById('emailInputTo');
     const inputClient = document.getElementById('emailInputClientName');
@@ -3180,7 +3220,6 @@ function applyEmailTemplate(type) {
     const clientName = (inputClient && inputClient.value) ? inputClient.value.trim() : (currentEmailTargetClient ? currentEmailTargetClient.name : 'Cliente');
     const client = currentEmailTargetClient || clientsDirectoryData.find(c => (c.name || '').toLowerCase() === clientName.toLowerCase());
     const contactName = client ? (client.contact_name || client.name) : clientName;
-    const billingDay = client && client.billing_day ? client.billing_day : '22';
     const feeStr = client && client.monthly_fee ? formatCurrencyMXN(client.monthly_fee) : '$6,500 MXN';
 
     if (type === 'billing') {
@@ -3189,130 +3228,55 @@ function applyEmailTemplate(type) {
         const applyRet = client && Boolean(client.apply_tax_retention);
         const retRate = (client && parseFloat(client.tax_retention_rate != null ? client.tax_retention_rate : 1.25)) || 1.25;
         const feeVal = (client && parseFloat(client.monthly_fee)) || 0;
+        const cutoffDateStr = getFormattedNextCutoffDate(client);
+        const serviceDesc = getClientServiceDescription(client);
 
-        let fiscalDetailsText = '';
+        let fiscalText = '';
+        let totalDisplay = feeStr;
         if (reqInvoice) {
             const ivaVal = Math.round(feeVal * 0.16 * 100) / 100;
             const isrVal = applyRet ? Math.round(feeVal * (retRate / 100.0) * 100) / 100 : 0;
             const totalVal = Math.round((feeVal + ivaVal - isrVal) * 100) / 100;
-
-            fiscalDetailsText = 
-`• Régimen: Requiere Factura Fiscal (CFDI)
-• Subtotal Base: ${formatCurrencyMXN(feeVal)}
-• IVA Trasladado (16%): +${formatCurrencyMXN(ivaVal)}
-${applyRet ? `• Retención de ISR (${retRate}% Persona Moral): -${formatCurrencyMXN(isrVal)}\n` : ''}• Total a Transferir: ${formatCurrencyMXN(totalVal)} MXN
-• Emisión CFDI: Una vez confirmada tu transferencia, te compartiremos los archivos oficiales XML y PDF.`;
-        } else {
-            fiscalDetailsText = 
-`• Inversión acordada: ${feeStr}
-• Régimen: Sin requerimiento de factura fiscal (Neto a transferir: ${feeStr})`;
+            totalDisplay = `${formatCurrencyMXN(totalVal)} MXN`;
+            fiscalText = `\n\n• Desglose fiscal: Subtotal ${formatCurrencyMXN(feeVal)} + IVA (16%) ${formatCurrencyMXN(ivaVal)}${applyRet ? ` - Ret. ISR (${retRate}%) ${formatCurrencyMXN(isrVal)}` : ''} = Total: ${formatCurrencyMXN(totalVal)} MXN\n• Al confirmar tu transferencia, te compartiremos los archivos oficiales CFDI (XML y PDF).`;
         }
 
-        if (isAnnual) {
-            if (inputSubject) inputSubject.value = `Aviso de renovación de suscripción anual (${clientName}) • Hipha`;
-            if (inputBody) {
-                inputBody.value = 
-`Hola ${contactName},
-
-Esperamos que te encuentres excelente.
-
-Te saludamos de Hipha MX para compartirte el aviso de renovación correspondiente a la suscripción anual de ${clientName}.
-
-📋 DETALLE DE SUSCRIPCIÓN ANUAL:
-• Cuenta: ${clientName}
-• Modalidad: Anual (Pago único anual / cobertura por 12 meses)
-• Fecha de corte / renovación: Día ${billingDay}
-${fiscalDetailsText}
-• Esquema: Pago anual por adelantado (para reserva garantizada de capacidad y agenda preferente)
-
-Si tienes alguna duda o deseas revisar los objetivos y requerimientos para este nuevo ciclo, con gusto estamos a tu entera disposición.
-
-¡Agradecemos mucho tu confianza y nos entusiasma seguir colaborando juntos!
-
-Saludos cordiales,
-Equipo Hipha MX
-hola@hipha.mx`;
-            }
-        } else {
-            if (inputSubject) inputSubject.value = `Aviso de fecha de corte y renovación mensual (${clientName}) • Hipha`;
-            if (inputBody) {
-                inputBody.value = 
-`Hola ${contactName},
-
-Esperamos que te encuentres excelente.
-
-Te saludamos de Hipha MX para compartirte el aviso de renovación de tu suscripción mensual correspondiente al siguiente período.
-
-📋 DETALLE DE SUSCRIPCIÓN:
-• Cuenta: ${clientName}
-• Modalidad: Mensual recurrente
-• Fecha de corte: Día ${billingDay} del mes en curso
-${fiscalDetailsText}
-• Esquema: Mes por adelantado (para reserva garantizada de capacidad y agenda de diseño)
-
-Si requieres algún ajuste o tienes alguna solicitud especial respecto a los entregables del ciclo, con gusto estamos a tu disposición.
-
-¡Agradecemos mucho tu confianza y seguimos creando juntos!
-
-Saludos cordiales,
-Equipo Hipha MX
-hola@hipha.mx`;
-            }
-        }
-    } else if (type === 'payment_thanks') {
-        const isAnnual = client && client.billing_period === 'annual';
-        const reqInvoice = client && Boolean(client.requires_invoice);
-        const applyRet = client && Boolean(client.apply_tax_retention);
-        const retRate = (client && parseFloat(client.tax_retention_rate != null ? client.tax_retention_rate : 1.25)) || 1.25;
-        const feeVal = (client && parseFloat(client.monthly_fee)) || 0;
-
-        let totalPayText = feeStr;
-        let invoiceMention = '';
-        if (reqInvoice) {
-            const ivaVal = Math.round(feeVal * 0.16 * 100) / 100;
-            const isrVal = applyRet ? Math.round(feeVal * (retRate / 100.0) * 100) / 100 : 0;
-            const totalVal = Math.round((feeVal + ivaVal - isrVal) * 100) / 100;
-            totalPayText = `${formatCurrencyMXN(totalVal)} MXN`;
-            invoiceMention = `\n• Facturación (CFDI): Te compartimos adjuntos tus archivos fiscales oficiales (XML y PDF) correspondientes a este periodo.`;
-        }
-
-        let serviceDesc = 'Servicios digitales y creatividad';
-        if (client && client.service_type) {
-            const st = client.service_type;
-            if (st.includes('design')) serviceDesc = 'Suscripción de Diseño';
-            else if (st.includes('web')) serviceDesc = isAnnual ? 'Renovación Anual de Sitio Web' : 'Suscripción Web y Presencia Digital';
-            else if (st.includes('marketing') || st.includes('ads') || st.includes('seo')) serviceDesc = 'Suscripción de Marketing y Estrategia Digital';
-            else serviceDesc = 'Servicio acordado de diseño y desarrollo';
-        }
-
-        const periodCoverage = isAnnual ? 'Ciclo Anual (cobertura por 12 meses)' : 'Mensualidad corriente (cobertura por mes adelantado)';
-
-        if (inputSubject) inputSubject.value = `¡Confirmación de pago recibido! Muchas gracias (${clientName}) • Hipha`;
+        if (inputSubject) inputSubject.value = `Aviso de renovación (${clientName}) • Hipha`;
         if (inputBody) {
             inputBody.value = 
 `Hola ${contactName},
 
-Esperamos que te encuentres excelente.
+Esperamos que te encuentres muy bien. Te escribimos para recordarte que tu fecha de corte para ${clientName} es el ${cutoffDateStr}.
+El monto correspondiente a tu ${serviceDesc} es de ${totalDisplay}.${fiscalText}`;
+        }
+    } else if (type === 'payment_success' || type === 'payment_thanks') {
+        const isAnnual = client && client.billing_period === 'annual';
+        const reqInvoice = client && Boolean(client.requires_invoice);
 
-Te escribimos para confirmarte que hemos registrado con éxito la recepción de tu pago correspondiente a ${clientName}. ¡Muchísimas gracias por tu pago y por seguir confiando en Hipha MX!
+        let serviceTarget = `el web ${clientName}`;
+        if (client && client.service_type) {
+            const st = client.service_type;
+            if (st.includes('design')) serviceTarget = `el diseño de ${clientName}`;
+            else if (st.includes('marketing')) serviceTarget = `el marketing de ${clientName}`;
+            else if (st.includes('web')) serviceTarget = `el web ${clientName}`;
+            else serviceTarget = `los servicios de ${clientName}`;
+        }
 
-💳 RESUMEN DEL PAGO REGISTRADO:
-• Cliente / Cuenta: ${clientName}
-• Concepto: ${serviceDesc}
-• Modalidad: ${isAnnual ? 'Suscripción Anual' : 'Suscripción Mensual'}
-• Cobertura: ${periodCoverage}
-• Monto registrado: ${totalPayText}
-• Estatus de cuenta: Al corriente y activa${invoiceMention}
+        const periodWord = isAnnual ? 'anual' : 'mensual';
+        let invoiceAttachNote = '';
+        if (reqInvoice) {
+            invoiceAttachNote = `\n\nTe adjuntamos tus archivos fiscales oficiales (XML y PDF) correspondientes a este periodo.`;
+        }
 
-Tu cuenta se encuentra totalmente al corriente y nuestro equipo continúa al 100% trabajando en los entregables, diseños y proyectos programados para tu marca.
+        if (inputSubject) inputSubject.value = `Pago recibido ${clientName} • Hipha`;
+        if (inputBody) {
+            inputBody.value = 
+`Hola ${contactName},
 
-Cualquier duda, solicitud adicional o nuevo requerimiento que tengas para este ciclo, seguimos siempre a tu entera disposición.
+Esperamos que te encuentres muy bien, te escribimos para confirmarte que recibimos el pago ${periodWord} para ${serviceTarget} correctamente.${invoiceAttachNote}
 
-¡Muchas gracias por hacer equipo con nosotros!
-
-Saludos cordiales,
-Equipo Hipha MX
-hola@hipha.mx`;
+Gracias por formar parte de la red,
+Equipo Hipha.`;
         }
     } else if (type === 'delivery') {
         if (inputSubject) inputSubject.value = `Entrega de piezas y avances de diseño (${clientName}) • Hipha`;
@@ -3390,7 +3354,8 @@ async function handleSendAgencyEmail(e) {
             body: JSON.stringify({
                 to_email,
                 subject,
-                message_body,
+                message: message_body,
+                message_body: message_body,
                 client_name
             })
         });
@@ -3407,10 +3372,17 @@ async function handleSendAgencyEmail(e) {
             setTimeout(() => {
                 closeSendAgencyEmailModal();
                 if (feedback) feedback.classList.add('hidden');
-            }, 2000);
+            }, 2500);
         } else {
             const errData = await response.json().catch(() => ({}));
-            const errMsg = errData.detail || "Error al enviar el correo. Por favor verifica los datos o la configuración SMTP.";
+            let errMsg = "Error al enviar el correo. Por favor verifica los datos o la configuración SMTP.";
+            if (typeof errData.detail === 'string') {
+                errMsg = errData.detail;
+            } else if (Array.isArray(errData.detail)) {
+                errMsg = errData.detail.map(e => e.msg || (e.loc ? `${e.loc.join('.')}: ${e.msg}` : JSON.stringify(e))).join(' | ');
+            } else if (errData.detail && typeof errData.detail === 'object') {
+                errMsg = JSON.stringify(errData.detail);
+            }
             if (feedback) {
                 feedback.className = '';
                 feedback.style.background = 'rgba(239, 68, 68, 0.15)';

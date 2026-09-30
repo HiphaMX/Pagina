@@ -2843,7 +2843,8 @@ async def send_custom_agency_email(to_email: str, subject: str, message_body: st
     from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
 
     formatted_body = message_body.replace("\n", "<br>")
-    greeting_html = f'<p style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #ffffff;">Hola {client_name},</p>' if client_name else ""
+    has_greeting = message_body.strip().lower().startswith("hola")
+    greeting_html = f'<p style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #ffffff;">Hola {client_name},</p>' if (client_name and not has_greeting) else ""
 
     html_content = f"""
     <!DOCTYPE html>
