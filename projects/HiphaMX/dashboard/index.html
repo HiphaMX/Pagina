@@ -240,6 +240,11 @@
                             <span>📊 Reporte Mensual</span>
                         </button>
 
+                        <button id="btnRolloverIncomplete" class="btn-secondary-mini btn-rollover" style="display:none; align-items:center; gap:0.45rem; padding:0.55rem 0.9rem; font-weight:600; font-size:0.85rem; border:1px solid rgba(56, 189, 248, 0.35); background:rgba(56, 189, 248, 0.1); color:#38bdf8; border-radius:8px; cursor:pointer;" title="Mover todas las entregas no completadas de esta semana al próximo lunes">
+                            <span>⏭️ Próximo lunes</span>
+                            <span id="incompleteTasksBadge" class="badge-count" style="background:#0284c7; color:#fff; font-size:0.75rem; padding:0.1rem 0.45rem; border-radius:10px; font-weight:700;">0</span>
+                        </button>
+
                         <button id="btnOpenNewTaskModal" class="btn-sync" style="margin-top: 0; padding: 0.55rem 1rem;">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                             <span>+ Nueva Entrega</span>
@@ -463,19 +468,12 @@
                 <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
                     <label for="taskInputClient" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Cliente / Marca</label>
                     <select id="taskInputClient" required style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem;">
-                        <option value="Letrerama">Letrerama</option>
-                        <option value="HealthyIce">HealthyIce</option>
-                        <option value="Grupo Gari">Grupo Gari</option>
-                        <option value="AMDI">AMDI</option>
-                        <option value="Jessica Mendoza">Jessica Mendoza</option>
-                        <option value="Chile Chillón">Chile Chillón</option>
-                        <option value="Valencia Servicios">Valencia Servicios</option>
-                        <option value="White Clean">White Clean</option>
-                        <option value="Uro-Oncology">Uro-Oncology</option>
-                        <option value="Urología Avanzada">Urología Avanzada</option>
+                        <option value="HealthyIce" selected>HealthyIce</option>
+                        <option value="Tukipa Fitness">Tukipa Fitness</option>
+                        <option value="El Chile Chillón">El Chile Chillón</option>
+                        <option value="DAM Pisos">DAM Pisos</option>
                         <option value="Botica Silvestre">Botica Silvestre</option>
-                        <option value="Hipha">Hipha (Interno)</option>
-                        <option value="otro">+ Otro cliente...</option>
+                        <option value="AMDI">AMDI</option>
                     </select>
                 </div>
 

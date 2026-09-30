@@ -1037,6 +1037,37 @@ select {
     box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
 }
 
+.btn-rollover {
+    transition: all 0.25s ease;
+}
+.btn-rollover:hover {
+    background: rgba(56, 189, 248, 0.22) !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-card-next-monday {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.18rem 0.45rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
+}
+.btn-card-next-monday:hover {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #ffffff;
+    transform: scale(1.04);
+}
+
 /* Tarjeta Minimizada para Tareas Terminadas */
 .workflow-card.is-completed {
     min-height: 40px !important;

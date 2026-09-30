@@ -77,3 +77,16 @@ class WorkflowMonthlyReport(BaseModel):
     clients: List[WorkflowMonthlyClientSummary]
     tasks: List[WorkflowTask]
 
+
+class WorkflowRolloverRequest(BaseModel):
+    from_week_id: Optional[str] = None
+    target_week_id: Optional[str] = None
+
+
+class WorkflowRolloverResponse(BaseModel):
+    ok: bool
+    from_week_id: str
+    target_week_id: str
+    moved_count: int
+    tasks: List[WorkflowTask]
+

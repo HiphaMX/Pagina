@@ -25,7 +25,9 @@ from app.schemas.workflow import (
     WorkflowMoveRequest,
     WorkflowAddRevisionRequest,
     WorkflowMonthlyReport,
-    WorkflowMonthlyClientSummary
+    WorkflowMonthlyClientSummary,
+    WorkflowRolloverRequest,
+    WorkflowRolloverResponse
 )
 from app.schemas.client import (
     AgencyClient as AgencyClientSchema,
@@ -35,6 +37,30 @@ from app.schemas.client import (
 )
 from app.core.mailer import send_custom_agency_email
 import datetime
+
+def _get_current_iso_week_id() -> str:
+    today = datetime.date.today()
+    iso_year, iso_week, _ = today.isocalendar()
+    return f"{iso_year}-W{iso_week:02d}"
+
+
+def _get_next_iso_week_id(week_id: Optional[str]) -> str:
+    if week_id and "-W" in week_id:
+        try:
+            parts = week_id.split("-W")
+            year = int(parts[0])
+            week = int(parts[1])
+            monday = datetime.date.fromisocalendar(year, week, 1)
+            next_monday = monday + datetime.timedelta(days=7)
+            iso_year, iso_week, _ = next_monday.isocalendar()
+            return f"{iso_year}-W{iso_week:02d}"
+        except Exception:
+            pass
+    today = datetime.date.today()
+    next_day = today + datetime.timedelta(days=7)
+    iso_year, iso_week, _ = next_day.isocalendar()
+    return f"{iso_year}-W{iso_week:02d}"
+
 
 def _derive_month_id(week_id: Optional[str]) -> str:
     if week_id and "-W" in week_id:
@@ -213,13 +239,34 @@ def get_workflow_tasks(
     week: Optional[str] = "current",
     month: Optional[str] = None,
     client: Optional[str] = None,
+    auto_rollover: bool = True,
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """Obtiene las tareas de diseño filtradas por semana, mes o cliente."""
+    resolved_week = week
+    curr_week_id = _get_current_iso_week_id()
+    if resolved_week == "current":
+        resolved_week = curr_week_id
+
+    # Regla: Cualquier diseño de semanas anteriores que no se haya marcado como completado
+    # se transfiere automáticamente al lunes de la semana actual al consultar la semana en curso
+    if auto_rollover and resolved_week == curr_week_id:
+        past_incomplete = db.query(WorkflowTask).filter(
+            WorkflowTask.week_id < curr_week_id,
+            WorkflowTask.status != "completed"
+        ).all()
+        if past_incomplete:
+            for t in past_incomplete:
+                t.week_id = curr_week_id
+                t.day = "monday"
+                t.task_date = _derive_task_date(curr_week_id, "monday")
+                t.month_id = _derive_month_id(curr_week_id)
+            db.commit()
+
     query = db.query(WorkflowTask)
-    if week and week != "all":
-        query = query.filter(WorkflowTask.week_id == week)
+    if resolved_week and resolved_week != "all":
+        query = query.filter(WorkflowTask.week_id == resolved_week)
     if month and month != "all":
         query = query.filter(WorkflowTask.month_id == month)
     if client and client != "all":
@@ -330,6 +377,64 @@ def move_workflow_task(
     if move_data.target_order_index is not None:
         task.order_index = move_data.target_order_index
         
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.post("/workflow/tasks/rollover", response_model=WorkflowRolloverResponse)
+def rollover_incomplete_workflow_tasks(
+    req: Optional[WorkflowRolloverRequest] = None,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Mueve todas las tareas de diseño no completadas de la semana origen al Lunes de la semana destino."""
+    from_week = (req.from_week_id if req and req.from_week_id else None) or _get_current_iso_week_id()
+    target_week = (req.target_week_id if req and req.target_week_id else None) or _get_next_iso_week_id(from_week)
+
+    incomplete_tasks = db.query(WorkflowTask).filter(
+        WorkflowTask.week_id == from_week,
+        WorkflowTask.status != "completed"
+    ).order_by(WorkflowTask.order_index.asc(), WorkflowTask.id.asc()).all()
+
+    moved_tasks = []
+    for t in incomplete_tasks:
+        t.week_id = target_week
+        t.day = "monday"
+        t.task_date = _derive_task_date(target_week, "monday")
+        t.month_id = _derive_month_id(target_week)
+        moved_tasks.append(t)
+
+    db.commit()
+    for t in moved_tasks:
+        db.refresh(t)
+
+    return WorkflowRolloverResponse(
+        ok=True,
+        from_week_id=from_week,
+        target_week_id=target_week,
+        moved_count=len(moved_tasks),
+        tasks=moved_tasks
+    )
+
+
+@router.patch("/workflow/tasks/{task_id}/move-to-next-monday", response_model=WorkflowTaskSchema)
+def move_task_to_next_monday(
+    task_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Mueve una tarea de diseño específica directamente al Lunes de la próxima semana."""
+    task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarea no encontrada")
+
+    target_week = _get_next_iso_week_id(task.week_id)
+    task.week_id = target_week
+    task.day = "monday"
+    task.task_date = _derive_task_date(target_week, "monday")
+    task.month_id = _derive_month_id(target_week)
+
     db.commit()
     db.refresh(task)
     return task

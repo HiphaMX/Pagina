@@ -670,19 +670,32 @@ const WORKFLOW_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const WORKFLOW_DAILY_LIMIT = 4.0; // 9:00 AM a 1:00 PM = 4 horas
 const WORKFLOW_WEEKLY_LIMIT = 20.0; // 5 días x 4 horas
 
+// Clientes exclusivos con iguala mensual para el flujo de trabajo semanal
+const WORKFLOW_MONTHLY_RETAINER_CLIENTS = [
+    'HealthyIce',
+    'Tukipa Fitness',
+    'El Chile Chillón',
+    'DAM Pisos',
+    'Botica Silvestre',
+    'AMDI'
+];
+
 const CLIENT_COLOR_PALETTE = {
-    'letrerama': { bg: 'rgba(0, 229, 255, 0.15)', text: '#00e5ff', border: 'rgba(0, 229, 255, 0.35)' },
     'healthyice': { bg: 'rgba(56, 189, 248, 0.15)', text: '#38bdf8', border: 'rgba(56, 189, 248, 0.35)' },
-    'grupo gari': { bg: 'rgba(168, 85, 247, 0.15)', text: '#c084fc', border: 'rgba(168, 85, 247, 0.35)' },
-    'amdi': { bg: 'rgba(245, 158, 11, 0.15)', text: '#fbbf24', border: 'rgba(245, 158, 11, 0.35)' },
-    'jessica mendoza': { bg: 'rgba(236, 72, 153, 0.15)', text: '#f472b6', border: 'rgba(236, 72, 153, 0.35)' },
+    'tukipa fitness': { bg: 'rgba(249, 115, 22, 0.15)', text: '#fb923c', border: 'rgba(249, 115, 22, 0.35)' },
+    'el chile chillón': { bg: 'rgba(239, 68, 68, 0.15)', text: '#f87171', border: 'rgba(239, 68, 68, 0.35)' },
     'chile chillón': { bg: 'rgba(239, 68, 68, 0.15)', text: '#f87171', border: 'rgba(239, 68, 68, 0.35)' },
     'chilechillon': { bg: 'rgba(239, 68, 68, 0.15)', text: '#f87171', border: 'rgba(239, 68, 68, 0.35)' },
+    'dam pisos': { bg: 'rgba(217, 119, 6, 0.15)', text: '#f59e0b', border: 'rgba(217, 119, 6, 0.35)' },
+    'botica silvestre': { bg: 'rgba(132, 204, 22, 0.15)', text: '#a3e635', border: 'rgba(132, 204, 22, 0.35)' },
+    'amdi': { bg: 'rgba(245, 158, 11, 0.15)', text: '#fbbf24', border: 'rgba(245, 158, 11, 0.35)' },
+    'letrerama': { bg: 'rgba(0, 229, 255, 0.15)', text: '#00e5ff', border: 'rgba(0, 229, 255, 0.35)' },
+    'grupo gari': { bg: 'rgba(168, 85, 247, 0.15)', text: '#c084fc', border: 'rgba(168, 85, 247, 0.35)' },
+    'jessica mendoza': { bg: 'rgba(236, 72, 153, 0.15)', text: '#f472b6', border: 'rgba(236, 72, 153, 0.35)' },
     'valencia servicios': { bg: 'rgba(16, 185, 129, 0.15)', text: '#34d399', border: 'rgba(16, 185, 129, 0.35)' },
     'white clean': { bg: 'rgba(226, 232, 240, 0.15)', text: '#e2e8f0', border: 'rgba(226, 232, 240, 0.35)' },
     'uro-oncology': { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.35)' },
     'urología avanzada': { bg: 'rgba(14, 165, 233, 0.15)', text: '#38bdf8', border: 'rgba(14, 165, 233, 0.35)' },
-    'botica silvestre': { bg: 'rgba(132, 204, 22, 0.15)', text: '#a3e635', border: 'rgba(132, 204, 22, 0.35)' },
     'hipha': { bg: 'rgba(0, 229, 255, 0.2)', text: '#00e5ff', border: 'rgba(0, 229, 255, 0.4)' }
 };
 
@@ -739,6 +752,12 @@ function setupWorkflowElements() {
             currentWfClientFilter = e.target.value;
             renderWorkflowBoard();
         });
+    }
+
+    // Botón de rollover masivo al próximo lunes
+    const btnRolloverIncomplete = document.getElementById('btnRolloverIncomplete');
+    if (btnRolloverIncomplete) {
+        btnRolloverIncomplete.addEventListener('click', handleRolloverIncompleteTasks);
     }
 
     // Botón abrir modal nueva tarea
@@ -1060,23 +1079,21 @@ function syncAllClientsDropdowns() {
 
     const sortedClients = Array.from(clientsSet).sort();
 
-    // 1. Selector en modal de nueva tarea (#taskInputClient)
+    // 1. Selector en modal de nueva tarea (#taskInputClient) - Exclusivo para Igualas Mensuales
     const taskClientSelect = document.getElementById('taskInputClient');
     if (taskClientSelect) {
         const curVal = taskClientSelect.value;
         taskClientSelect.innerHTML = '';
-        sortedClients.forEach(c => {
+        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c;
             opt.textContent = c;
             if (c === curVal) opt.selected = true;
             taskClientSelect.appendChild(opt);
         });
-        const optOtro = document.createElement('option');
-        optOtro.value = 'otro';
-        optOtro.textContent = '+ Otro cliente...';
-        if (curVal === 'otro') optOtro.selected = true;
-        taskClientSelect.appendChild(optOtro);
+        if (!taskClientSelect.value && WORKFLOW_MONTHLY_RETAINER_CLIENTS.length > 0) {
+            taskClientSelect.value = WORKFLOW_MONTHLY_RETAINER_CLIENTS[0];
+        }
     }
 
     // 2. Filtro en barra de flujo semanal (#wfClientFilter)
@@ -1180,6 +1197,20 @@ function renderWorkflowBoard() {
             wfGlobalProgressBar.style.background = 'linear-gradient(90deg, var(--accent-cyan), var(--accent-purple))';
         }
     }
+
+    // Actualizar botón de rollover para entregas no completadas de la semana
+    const incompleteTasks = (workflowTasks || []).filter(t => t.status !== 'completed');
+    const btnRollover = document.getElementById('btnRolloverIncomplete');
+    const badgeRollover = document.getElementById('incompleteTasksBadge');
+    if (btnRollover && badgeRollover) {
+        badgeRollover.textContent = String(incompleteTasks.length);
+        if (incompleteTasks.length > 0) {
+            btnRollover.style.display = 'inline-flex';
+            btnRollover.title = `Mover ${incompleteTasks.length} entrega${incompleteTasks.length > 1 ? 's' : ''} no completada${incompleteTasks.length > 1 ? 's' : ''} al próximo lunes`;
+        } else {
+            btnRollover.style.display = 'none';
+        }
+    }
 }
 
 function createWorkflowTaskCard(task) {
@@ -1249,9 +1280,14 @@ function createWorkflowTaskCard(task) {
                     <span class="hours-chip">⏱️ ${baseHours.toFixed(1)}h</span>
                     ${revBadgeHtml}
                 </div>
-                <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                </button>
+                <div style="display:flex; align-items:center; gap:0.35rem;">
+                    <button class="btn-card-next-monday" type="button" title="Mover entrega al próximo lunes" aria-label="Mover al próximo lunes">
+                        <span>⏭️ Lunes</span>
+                    </button>
+                    <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </button>
+                </div>
             </div>
             <div class="card-main-content">
                 <div class="card-title">${escapeHtml(task.title || 'Sin título')}</div>
@@ -1278,6 +1314,15 @@ function createWorkflowTaskCard(task) {
         });
     }
 
+    // Click específico en botón rápido de próximo lunes
+    const nextMondayBtn = card.querySelector('.btn-card-next-monday');
+    if (nextMondayBtn) {
+        nextMondayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            moveTaskToNextMonday(task.id);
+        });
+    }
+
     // Click específico en chip de estatus (avanza ciclo)
     const statusChip = card.querySelector('.status-chip');
     if (statusChip) {
@@ -1298,7 +1343,7 @@ function createWorkflowTaskCard(task) {
 
     // Click en cualquier otra área de la tarjeta abre el editor
     card.addEventListener('click', (e) => {
-        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision')) return;
+        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision') || e.target.closest('.btn-card-next-monday')) return;
         editWorkflowTask(task.id);
     });
 
@@ -1378,9 +1423,20 @@ function openWorkflowTaskModal(day = 'monday') {
     const modal = document.getElementById('workflowTaskModal');
     const heading = document.getElementById('modalTaskHeading');
     const btnDelete = document.getElementById('btnDeleteTask');
+    const clientSelect = document.getElementById('taskInputClient');
+
+    if (clientSelect) {
+        clientSelect.innerHTML = '';
+        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            clientSelect.appendChild(opt);
+        });
+        clientSelect.value = WORKFLOW_MONTHLY_RETAINER_CLIENTS[0] || 'HealthyIce';
+    }
 
     document.getElementById('taskInputId').value = '';
-    document.getElementById('taskInputClient').value = 'Letrerama';
     document.getElementById('taskCustomClientGroup').classList.add('hidden');
     document.getElementById('taskInputCustomClient').value = '';
     document.getElementById('taskInputTitle').value = '';
@@ -1484,6 +1540,17 @@ function editWorkflowTask(taskId) {
 
     document.getElementById('taskInputId').value = String(task.id);
     
+    // Asegurar que el selector contenga las igualas mensuales
+    if (clientSelect) {
+        clientSelect.innerHTML = '';
+        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            clientSelect.appendChild(opt);
+        });
+    }
+
     // Verificar si el cliente existe en el select
     let found = false;
     for (let opt of clientSelect.options) {
@@ -1493,14 +1560,15 @@ function editWorkflowTask(taskId) {
             break;
         }
     }
-    if (!found) {
-        clientSelect.value = 'otro';
-        customGroup.classList.remove('hidden');
-        customInput.value = task.client_name || '';
-    } else {
-        customGroup.classList.add('hidden');
-        customInput.value = '';
+    if (!found && task.client_name) {
+        const opt = document.createElement('option');
+        opt.value = task.client_name;
+        opt.textContent = task.client_name;
+        clientSelect.appendChild(opt);
+        clientSelect.value = task.client_name;
     }
+    customGroup.classList.add('hidden');
+    customInput.value = '';
 
     document.getElementById('taskInputTitle').value = task.title || '';
     document.getElementById('taskInputDay').value = (task.day === 'backlog' ? 'monday' : (task.day || 'monday'));
@@ -1688,6 +1756,111 @@ async function syncTaskMoveWithApi(taskId, targetDay) {
     } catch (err) {
         console.warn("Error enviando movimiento a API:", err);
     }
+}
+
+async function handleRolloverIncompleteTasks() {
+    const incompleteTasks = (workflowTasks || []).filter(t => t.status !== 'completed');
+    if (incompleteTasks.length === 0) {
+        alert('No hay entregas pendientes para mover en esta semana.');
+        return;
+    }
+
+    const count = incompleteTasks.length;
+    const confirmMsg = `¿Mover ${count} entrega${count > 1 ? 's' : ''} no completada${count > 1 ? 's' : ''} de esta semana al Lunes de la próxima semana?`;
+    if (!confirm(confirmMsg)) return;
+
+    const nextMonday = new Date(currentWeekMonday);
+    nextMonday.setDate(currentWeekMonday.getDate() + 7);
+    const nextWeekNum = getIsoWeekNumber(nextMonday);
+    const nextWeekId = `${nextMonday.getFullYear()}-W${String(nextWeekNum).padStart(2, '0')}`;
+
+    try {
+        const token = localStorage.getItem('dashboard_token');
+        if (token) {
+            const res = await fetch(`${API_BASE}/workflow/tasks/rollover`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from_week_id: currentWeekId,
+                    target_week_id: nextWeekId
+                })
+            });
+            if (res.ok) {
+                await loadWorkflowTasks();
+                return;
+            }
+        }
+    } catch (err) {
+        console.warn("Fallo al llamar endpoint de rollover en API, aplicando localmente:", err);
+    }
+
+    // Fallback local / offline
+    incompleteTasks.forEach(t => {
+        t.week_id = nextWeekId;
+        t.day = 'monday';
+        t.task_date = getTaskExactDate({ week_id: nextWeekId, day: 'monday' });
+    });
+    const nextStorageKey = `hipha_wf_tasks_${nextWeekId}`;
+    let nextWeekTasks = [];
+    try {
+        const existingNext = localStorage.getItem(nextStorageKey);
+        if (existingNext) nextWeekTasks = JSON.parse(existingNext);
+    } catch (e) {}
+    nextWeekTasks = [...nextWeekTasks, ...incompleteTasks];
+    localStorage.setItem(nextStorageKey, JSON.stringify(nextWeekTasks));
+
+    workflowTasks = workflowTasks.filter(t => t.status === 'completed');
+    saveWorkflowState();
+    renderWorkflowBoard();
+}
+
+async function moveTaskToNextMonday(taskId) {
+    const task = (workflowTasks || []).find(t => String(t.id) === String(taskId));
+    if (!task) return;
+
+    const nextMonday = new Date(currentWeekMonday);
+    nextMonday.setDate(currentWeekMonday.getDate() + 7);
+    const nextWeekNum = getIsoWeekNumber(nextMonday);
+    const nextWeekId = `${nextMonday.getFullYear()}-W${String(nextWeekNum).padStart(2, '0')}`;
+
+    try {
+        const token = localStorage.getItem('dashboard_token');
+        if (token) {
+            const res = await fetch(`${API_BASE}/workflow/tasks/${taskId}/move-to-next-monday`, {
+                method: 'PATCH',
+                headers: getAuthHeaders()
+            });
+            if (res.ok) {
+                workflowTasks = workflowTasks.filter(t => String(t.id) !== String(taskId));
+                saveWorkflowState();
+                renderWorkflowBoard();
+                return;
+            }
+        }
+    } catch (err) {
+        console.warn("Fallo al mover tarea en API, aplicando localmente:", err);
+    }
+
+    // Fallback local
+    task.week_id = nextWeekId;
+    task.day = 'monday';
+    task.task_date = getTaskExactDate({ week_id: nextWeekId, day: 'monday' });
+
+    const nextStorageKey = `hipha_wf_tasks_${nextWeekId}`;
+    let nextWeekTasks = [];
+    try {
+        const existingNext = localStorage.getItem(nextStorageKey);
+        if (existingNext) nextWeekTasks = JSON.parse(existingNext);
+    } catch (e) {}
+    nextWeekTasks.push(task);
+    localStorage.setItem(nextStorageKey, JSON.stringify(nextWeekTasks));
+
+    workflowTasks = workflowTasks.filter(t => String(t.id) !== String(taskId));
+    saveWorkflowState();
+    renderWorkflowBoard();
 }
 
 function capitalize(s) {
