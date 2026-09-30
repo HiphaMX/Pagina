@@ -2646,8 +2646,8 @@ function renderClientsDirectory() {
     // Calcular KPIs
     let activeCount = 0;
     let totalMrr = 0.0;
+    let totalMonthlyIva = 0.0;
     let upcomingCutoffs = 0;
-    let designOnlyCount = 0;
 
     clientsDirectoryData.forEach(c => {
         const isActive = (c.status || 'active') === 'active';
@@ -2655,16 +2655,14 @@ function renderClientsDirectory() {
             activeCount++;
             const fee = parseFloat(c.monthly_fee) || 0;
             // Prorrateo si es anual para MRR exacto
-            if (c.billing_period === 'annual') {
-                totalMrr += (fee / 12.0);
-            } else {
-                totalMrr += fee;
+            const monthlyEquivalent = (c.billing_period === 'annual') ? (fee / 12.0) : fee;
+            totalMrr += monthlyEquivalent;
+
+            // Acumulado de IVA en facturas del mes
+            if (c.requires_invoice) {
+                totalMonthlyIva += (monthlyEquivalent * 0.16);
             }
 
-            const sType = c.service_type || 'design_subscription';
-            if (sType === 'design_subscription' || sType === 'design') {
-                designOnlyCount++;
-            }
             const cutInfo = getNextCutoffInfo(c.billing_day, c.billing_period, c.start_date);
             if (cutInfo.daysUntil <= 7) {
                 upcomingCutoffs++;
@@ -2676,12 +2674,18 @@ function renderClientsDirectory() {
     const elKpiActive = document.getElementById('kpiActiveClientsCount');
     const elKpiMrr = document.getElementById('kpiTotalMrr');
     const elKpiCutoffs = document.getElementById('kpiUpcomingCutoffsCount');
+    const elKpiIvaBadge = document.getElementById('kpiTotalIvaBadge');
+    const elKpiIvaSub = document.getElementById('kpiTotalIvaSub');
+    const elKpiTotalWithIva = document.getElementById('kpiTotalWithIva');
     const elKpiDesign = document.getElementById('kpiDesignOnlyCount');
 
     if (elKpiActive) elKpiActive.textContent = activeCount;
     if (elKpiMrr) elKpiMrr.textContent = formatCurrencyMXN(totalMrr);
+    if (elKpiIvaBadge) elKpiIvaBadge.textContent = `+${formatCurrencyMXN(totalMonthlyIva)} IVA`;
+    if (elKpiIvaSub) elKpiIvaSub.textContent = `(+${formatCurrencyMXN(totalMonthlyIva)} IVA)`;
+    if (elKpiTotalWithIva) elKpiTotalWithIva.textContent = `Facturado total estimado: ${formatCurrencyMXN(totalMrr + totalMonthlyIva)}`;
     if (elKpiCutoffs) elKpiCutoffs.textContent = upcomingCutoffs;
-    if (elKpiDesign) elKpiDesign.textContent = designOnlyCount;
+    if (elKpiDesign) elKpiDesign.textContent = 0;
 
     // Filtrar lista
     const filtered = clientsDirectoryData.filter(c => {

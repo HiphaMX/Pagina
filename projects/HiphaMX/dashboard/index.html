@@ -373,16 +373,19 @@
                             <div class="kpi-num" id="kpiActiveClientsCount">0</div>
                         </div>
                         <div class="client-kpi-card mrr-card">
-                            <span class="kpi-label">💰 MRR Retainers</span>
-                            <div class="kpi-num" id="kpiTotalMrr">$0 MXN</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.25rem;">
+                                <span class="kpi-label">💰 MRR Retainers</span>
+                                <span id="kpiTotalIvaBadge" style="font-size:0.75rem; color:#60a5fa; background:rgba(96,165,250,0.12); border:1px solid rgba(96,165,250,0.25); padding:0.15rem 0.55rem; border-radius:9999px; font-weight:600;" title="Monto acumulado de IVA en facturas del mes">+ $0 IVA</span>
+                            </div>
+                            <div style="display:flex; align-items:baseline; gap:0.6rem; flex-wrap:wrap;">
+                                <div class="kpi-num" id="kpiTotalMrr">$0 MXN</div>
+                                <span id="kpiTotalIvaSub" style="font-size:0.95rem; color:#60a5fa; font-weight:700;" title="Monto acumulado de IVA en facturas del mes">(+ $0 IVA)</span>
+                            </div>
+                            <div id="kpiTotalWithIva" style="font-size:0.72rem; color:var(--text-muted); margin-top:1px;">Facturado total estimado: $0 MXN</div>
                         </div>
                         <div class="client-kpi-card alert-card">
                             <span class="kpi-label">⚡ Cortes Próximos (7d)</span>
                             <div class="kpi-num" id="kpiUpcomingCutoffsCount">0</div>
-                        </div>
-                        <div class="client-kpi-card">
-                            <span class="kpi-label">🎨 Diseño / Suscr.</span>
-                            <div class="kpi-num" id="kpiDesignOnlyCount">0</div>
                         </div>
                     </div>
 
