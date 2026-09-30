@@ -29,16 +29,15 @@ async def submit_whiteclean_form(form_data: WhiteCleanForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for WhiteClean (email: {form_data.email}).")
         return {"message": "Formulario recibido correctamente"}
 
-    # Validar reCAPTCHA v3 de forma estricta (no opcional)
-    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
-        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for WhiteClean (email: {form_data.email}).")
-        return {"message": "Formulario recibido correctamente"}
-
-    secret_key = settings.WHITECLEAN_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
-    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "WhiteClean")
-    if not is_human:
-        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for WhiteClean (email: {form_data.email}).")
-        return {"message": "Formulario recibido correctamente"}
+    # Validar reCAPTCHA v3 si el token está presente
+    if form_data.recaptcha_token and form_data.recaptcha_token.strip():
+        secret_key = settings.WHITECLEAN_RECAPTCHA_SECRET_KEY or settings.HIPHA_RECAPTCHA_SECRET_KEY
+        is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "WhiteClean")
+        if not is_human:
+            logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for WhiteClean (email: {form_data.email}).")
+            return {"message": "Formulario recibido correctamente"}
+    else:
+        logger.info(f"[SECURITY INFO] No reCAPTCHA token provided for WhiteClean (email: {form_data.email}). Proceeding with submission.")
 
     # Enviar correo de confirmación al prospecto
     customer_email_sent = await send_whiteclean_confirmation_email(form_data)

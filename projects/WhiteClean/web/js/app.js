@@ -121,19 +121,39 @@ document.addEventListener('DOMContentLoaded', () => {
     startReviewTimer();
   }
 
-  // ─── 4. COTIZADOR E INTEGRACIÓN CON WHATSAPP ───
+  // ─── 4. COTIZADOR E INTEGRACIÓN CON BACKEND FASTAPI ───
   const oldForm = document.getElementById('Contacto');
   const formSuccess = document.getElementById('form-success');
   const formError = document.getElementById('form-error');
 
   if (oldForm) {
-    // Clonar el formulario para limpiar cualquier event listener residual de Webflow/jQuery
+    // 1. Desvincular cualquier listener residual de jQuery/Webflow sobre el formulario
+    if (window.jQuery) {
+      try {
+        window.jQuery(document).off('submit', '#Contacto');
+        window.jQuery(document).off('submit', '.w-form form');
+        window.jQuery(oldForm).off('submit');
+      } catch (err) {
+        console.warn('jQuery unbind notice:', err);
+      }
+    }
+
+    // 2. Desactivar el auto-handler de Webflow estableciendo action y novalidate
+    oldForm.setAttribute('action', '/api/contact/whiteclean');
+    oldForm.setAttribute('method', 'POST');
+    oldForm.removeAttribute('data-name');
+    oldForm.setAttribute('novalidate', 'true');
+
+    // 3. Clonar el formulario para limpiar cualquier event listener directo residual
     const contactoForm = oldForm.cloneNode(true);
     oldForm.parentNode.replaceChild(contactoForm, oldForm);
 
     contactoForm.addEventListener('submit', function (e) {
       e.preventDefault();
       e.stopPropagation();
+      if (e.stopImmediatePropagation) {
+        e.stopImmediatePropagation();
+      }
 
       // Ocultar estados previos
       if (formSuccess) {
@@ -153,19 +173,22 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // select de servicio
       const servicioSelect = document.getElementById('Servicio-requerido');
-      const servicioVal = servicioSelect ? servicioSelect.options[servicioSelect.selectedIndex].value : '';
+      const servicioVal = servicioSelect ? (servicioSelect.value || (servicioSelect.selectedIndex >= 0 ? servicioSelect.options[servicioSelect.selectedIndex].value : '')) : '';
       
       // select de municipio
       const ubicacionSelect = document.getElementById('Ubicacion');
-      const ubicacionVal = ubicacionSelect ? ubicacionSelect.options[ubicacionSelect.selectedIndex].value : '';
+      const ubicacionVal = ubicacionSelect ? (ubicacionSelect.value || (ubicacionSelect.selectedIndex >= 0 ? ubicacionSelect.options[ubicacionSelect.selectedIndex].value : '')) : '';
       
       const mensajeVal = document.getElementById('Mensaje')?.value.trim() || '';
 
       // ─── VALIDACIÓN INTEGRAL Y DETALLADA ───
       let errorMsg = '';
       
-      // Sanitizar teléfono (quitar espacios, guiones, etc. para validar longitud de 10 dígitos)
-      const cleanPhone = telefonoVal.replace(/\D/g, '');
+      // Sanitizar teléfono: quitar caracteres no numéricos y prefijo 52 si fue autocompletado en móvil
+      let cleanPhone = telefonoVal.replace(/\D/g, '');
+      if (cleanPhone.length === 12 && cleanPhone.startsWith('52')) {
+        cleanPhone = cleanPhone.substring(2);
+      }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (!nombreVal) {
@@ -178,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorMsg = 'Por favor, ingresa tu teléfono de contacto.';
       } else if (cleanPhone.length !== 10) {
         errorMsg = 'El teléfono de contacto debe tener exactamente 10 dígitos numéricos.';
-      } else if (!servicioVal) {
+      } else if (!servicioVal || servicioVal === 'Elige tu servicio') {
         errorMsg = 'Por favor, selecciona un servicio requerido.';
       } else if (!ubicacionVal || ubicacionVal === 'Selecciona tu ubicación') {
         errorMsg = 'Por favor, selecciona un municipio/ubicación válida.';
@@ -199,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const submitBtn = contactoForm.querySelector('input[type="submit"]');
       const originalBtnVal = submitBtn ? submitBtn.value : 'Cotizar';
       if (submitBtn) {
-        submitBtn.value = submitBtn.getAttribute('data-wait') || 'Enviando...';
+        submitBtn.value = submitBtn.getAttribute('data-wait') || 'Por favor espere...';
         submitBtn.disabled = true;
       }
 
@@ -222,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       function sendWhiteCleanForm(recaptchaToken) {
-        // Enviar datos al backend para disparar los correos
         fetch('/api/contact/whiteclean', {
           method: 'POST',
           headers: {
@@ -232,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nombre: nombreVal,
             apellido: apellidoVal,
             email: emailVal,
-            telefono: telefonoVal,
+            telefono: cleanPhone,
             servicio: servicioVal,
             ubicacion: ubicacionVal,
             mensaje: mensajeVal,
@@ -240,39 +262,49 @@ document.addEventListener('DOMContentLoaded', () => {
             recaptcha_token: recaptchaToken
           })
         })
-        .then(res => {
+        .then(async res => {
           if (submitBtn) {
             submitBtn.value = originalBtnVal;
             submitBtn.disabled = false;
           }
 
-        if (res.ok) {
-          // Mostrar banner de éxito
-          if (formSuccess) {
-            formSuccess.classList.remove('hidden');
-            formSuccess.style.display = 'block';
-            formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          if (res.ok) {
+            // Mostrar banner de éxito
+            if (formSuccess) {
+              formSuccess.classList.remove('hidden');
+              formSuccess.style.display = 'block';
+              formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            if (formError) {
+              formError.classList.add('hidden');
+              formError.style.display = 'none';
+            }
+            // Reiniciar formulario
+            contactoForm.reset();
+          } else {
+            let errorDetail = 'Error del servidor al procesar la cotización';
+            try {
+              const data = await res.json();
+              if (data && data.detail) errorDetail = data.detail;
+            } catch (e) {}
+            throw new Error(errorDetail);
           }
-          // Reiniciar formulario
-          contactoForm.reset();
-        } else {
-          throw new Error('Server error');
-        }
-      })
-      .catch(err => {
-        console.error('Error al enviar contacto:', err);
-        if (submitBtn) {
-          submitBtn.value = originalBtnVal;
-          submitBtn.disabled = false;
-        }
-        if (formError) {
-          const errorTextDiv = formError.querySelector('.div-block-17') || formError;
-          errorTextDiv.textContent = 'Hubo un inconveniente al enviar tu solicitud de cotización por correo. Por favor, intenta de nuevo.';
-          formError.classList.remove('hidden');
-          formError.style.display = 'block';
-          formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      });
+        })
+        .catch(err => {
+          console.error('Error al enviar contacto:', err);
+          if (submitBtn) {
+            submitBtn.value = originalBtnVal;
+            submitBtn.disabled = false;
+          }
+          if (formError) {
+            const errorTextDiv = formError.querySelector('.div-block-17') || formError;
+            errorTextDiv.textContent = 'Hubo un inconveniente al enviar tu solicitud de cotización por correo. Por favor, intenta de nuevo o contáctanos por WhatsApp.';
+            formError.classList.remove('hidden');
+            formError.style.display = 'block';
+            formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
     });
   }
 

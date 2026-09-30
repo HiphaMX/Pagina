@@ -1482,25 +1482,30 @@ async def send_whiteclean_notification_team(form_data):
     </body>
     </html>
     """
-    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
-        project_prefix="WHITECLEAN",
-        from_name="WhiteClean Web",
-        from_email=from_email,
-        to_email="clientes@whiteclean.com.mx, whiteclean1@hotmail.com",
-        subject=f"🚨 NUEVA SOLICITUD WEB: {form_data.nombre} {form_data.apellido} - {form_data.servicio}",
-        html_content=html_content,
-        domain="whiteclean.com.mx"
-    )
-    del message['Reply-To']
-    message['Reply-To'] = form_data.email
+    recipients = ["clientes@whiteclean.com.mx", "whiteclean1@hotmail.com"]
+    success_any = False
 
-    try:
-        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
-        logger.info("Notificación de lead WhiteClean enviada con éxito al equipo y socio.")
-        return True
-    except Exception as e:
-        logger.error(f"Fallo al enviar notificación WhiteClean al equipo: {str(e)}")
-        return False
+    for recipient in recipients:
+        message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+            project_prefix="WHITECLEAN",
+            from_name="WhiteClean Web",
+            from_email=from_email,
+            to_email=recipient,
+            subject=f"🚨 NUEVA SOLICITUD WEB: {form_data.nombre} {form_data.apellido} - {form_data.servicio}",
+            html_content=html_content,
+            domain="whiteclean.com.mx"
+        )
+        del message['Reply-To']
+        message['Reply-To'] = form_data.email
+
+        try:
+            await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+            logger.info(f"Notificación de lead WhiteClean enviada con éxito a {recipient}.")
+            success_any = True
+        except Exception as e:
+            logger.error(f"Fallo al enviar notificación WhiteClean al equipo ({recipient}): {str(e)}")
+
+    return success_any
 
 
 async def send_chilechillon_confirmation_email(form_data):

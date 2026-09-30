@@ -15,7 +15,7 @@ async def validate_smtp_alignment():
         {"prefix": "HIPHA", "domain": "hipha.mx", "name": "HiphaMX Agency (Global)"},
         {"prefix": "AMDI", "domain": "amdi.mx", "name": "Adriana Medina Diseño Interior"},
         {"prefix": "CHILECHILLON", "domain": "chilechillon.com", "name": "El Chile Chillón"},
-        {"prefix": "WHITECLEAN", "domain": "whiteclean.mx", "name": "White Clean"},
+        {"prefix": "WHITECLEAN", "domain": "whiteclean.com.mx", "name": "White Clean"},
         {"prefix": "GRUPOGARI", "domain": "grupo-gari.com", "name": "Grupo Gari"},
         {"prefix": "VALENCIA", "domain": "valenciaservicios.com", "name": "Valencia Servicios"},
         {"prefix": "BOTICA", "domain": "boticasilvestre.com", "name": "Botica Silvestre"},
