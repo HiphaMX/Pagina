@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             setActiveTab(navLinkWorkflow, workflowSection);
             headerTitle.textContent = "Flujo de Trabajo Semanal (L-V)";
-            headerSubtitle.textContent = "Agenda de entregas de diseño • Jornada 9:00 AM a 1:00 PM (4h / día)";
+            headerSubtitle.textContent = "Agenda de entregas de diseño";
             if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
             initWorkflowModule();
         });
@@ -137,7 +137,7 @@ function showDashboard() {
     // Activar por defecto el Flujo Semanal
     setActiveTab(navLinkWorkflow, workflowSection);
     headerTitle.textContent = "Flujo de Trabajo Semanal (L-V)";
-    headerSubtitle.textContent = "Agenda de entregas de diseño • Jornada 9:00 AM a 1:00 PM (4h / día)";
+    headerSubtitle.textContent = "Agenda de entregas de diseño";
     if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
     
     initClientsDirectoryModule();
