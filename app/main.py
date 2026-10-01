@@ -80,6 +80,11 @@ def startup_db_setup():
                     conn.execute(text("ALTER TABLE social_accounts ALTER COLUMN avatar_url TYPE TEXT"))
                 except Exception:
                     pass
+                s_cols = [c["name"] for c in inspector.get_columns("social_accounts")]
+                if "initial_followers" not in s_cols:
+                    conn.execute(text("ALTER TABLE social_accounts ADD COLUMN initial_followers INTEGER DEFAULT 0"))
+                if "initial_date" not in s_cols:
+                    conn.execute(text("ALTER TABLE social_accounts ADD COLUMN initial_date TIMESTAMP WITH TIME ZONE DEFAULT NULL"))
     except Exception as em:
         print(f"Nota: Auto-migración de tablas omitida o completada: {em}")
     
@@ -139,6 +144,50 @@ def startup_db_setup():
             db.close()
     except Exception as ce:
         print(f"Nota: Siembra de clientes iniciales omitida o error: {ce}")
+
+    # Sembrar y ajustar líneas base históricas para cuentas monitoreadas
+    try:
+        import datetime
+        from sqlalchemy import asc
+        from app.models.social_tracker import SocialAccount, SocialSnapshot
+        db = SessionLocal()
+        try:
+            targets = [
+                {"pattern": "%elchilechillon%", "initial_followers": 567, "date": datetime.datetime(2026, 6, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)},
+                {"pattern": "%tukipa%", "initial_followers": 0, "date": datetime.datetime(2026, 9, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)},
+                {"pattern": "%dam_pisos%", "initial_followers": 0, "date": datetime.datetime(2026, 4, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)},
+                {"pattern": "%soul_shine%", "initial_followers": 401, "date": datetime.datetime(2026, 6, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)},
+            ]
+            for t in targets:
+                acc = db.query(SocialAccount).filter(SocialAccount.handle.ilike(t["pattern"])).first()
+                if acc:
+                    acc.initial_followers = t["initial_followers"]
+                    acc.initial_date = t["date"]
+                    oldest_snap = (
+                        db.query(SocialSnapshot)
+                        .filter(SocialSnapshot.account_id == acc.id)
+                        .order_by(asc(SocialSnapshot.recorded_at))
+                        .first()
+                    )
+                    now_utc = datetime.datetime.now(datetime.timezone.utc)
+                    if not oldest_snap or oldest_snap.recorded_at.date() >= now_utc.date():
+                        base_snap = SocialSnapshot(
+                            account_id=acc.id,
+                            followers=t["initial_followers"],
+                            growth_count=0,
+                            is_manual=True,
+                            recorded_at=t["date"]
+                        )
+                        db.add(base_snap)
+                    else:
+                        oldest_snap.followers = t["initial_followers"]
+                        oldest_snap.recorded_at = t["date"]
+            db.commit()
+            print("✓ Líneas base de monitoreo social actualizadas con éxito.")
+        finally:
+            db.close()
+    except Exception as se:
+        print(f"Nota: Siembra de líneas base de redes sociales: {se}")
 
     # Escribir secretos de Google Analytics si estamos en Vercel
     try:

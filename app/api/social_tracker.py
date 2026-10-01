@@ -41,14 +41,16 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
         .all()
     )
 
-    current_followers = snapshots[0].followers if snapshots else 0
-    initial_followers = snapshots[-1].followers if snapshots else 0
+    current_followers = snapshots[0].followers if snapshots else (account.initial_followers or 0)
+    initial_followers = account.initial_followers if account.initial_followers is not None else (snapshots[-1].followers if snapshots else 0)
     last_scanned = snapshots[0].recorded_at if snapshots else account.created_at
 
     growth_total = current_followers - initial_followers
     growth_pct = 0.0
     if initial_followers > 0:
         growth_pct = round((growth_total / initial_followers) * 100, 2)
+    elif initial_followers == 0 and current_followers > 0:
+        growth_pct = 100.0  # Cuenta nueva arrancada en 0
 
     # Crecimiento mensual (comparado con el registro más cercano a hace 30 días)
     now_utc = datetime.datetime.now(datetime.timezone.utc)
@@ -62,7 +64,9 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
 
     # Histórico de sparkline ordenado cronológicamente (máx 15 puntos)
     chronological = list(reversed(snapshots[:15]))
-    sparkline = [s.followers for s in chronological] if chronological else [current_followers]
+    sparkline = [s.followers for s in chronological] if chronological else [initial_followers, current_followers]
+    if len(sparkline) == 1 and initial_followers != current_followers:
+        sparkline = [initial_followers, current_followers]
 
     client_name = account.client.name if account.client else None
 
@@ -78,8 +82,9 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
         status=account.status,
         notes=account.notes,
         created_at=account.created_at,
-        current_followers=current_followers,
         initial_followers=initial_followers,
+        initial_date=account.initial_date,
+        current_followers=current_followers,
         growth_total=growth_total,
         growth_monthly=growth_monthly,
         growth_percentage=growth_pct,
@@ -155,10 +160,12 @@ def create_social_account(
 
     account_name = payload.name or meta.get("name") or handle
 
-    # Si la extracción en vivo devolvió 0 pero el usuario proporcionó seguidores iniciales
-    initial_count = meta.get("followers", 0)
-    if initial_count == 0 and payload.initial_followers is not None and payload.initial_followers > 0:
-        initial_count = payload.initial_followers
+    # Línea base inicial
+    initial_base = payload.initial_followers if payload.initial_followers is not None else meta.get("followers", 0)
+    init_date = payload.initial_date or datetime.datetime.now(datetime.timezone.utc)
+    current_count = meta.get("followers", 0)
+    if current_count == 0 and initial_base > 0:
+        current_count = initial_base
 
     # Validar cliente asignado si se proporcionó
     if payload.client_id:
@@ -175,19 +182,35 @@ def create_social_account(
         avatar_url=meta.get("avatar_url"),
         status="active",
         notes=payload.notes,
+        initial_followers=initial_base,
+        initial_date=init_date,
     )
     db.add(new_account)
     db.commit()
     db.refresh(new_account)
 
-    # Registrar snapshot inicial
-    initial_snapshot = SocialSnapshot(
+    # 1. Registrar snapshot de línea base (con la fecha de arranque)
+    base_snapshot = SocialSnapshot(
         account_id=new_account.id,
-        followers=initial_count,
+        followers=initial_base,
         growth_count=0,
-        is_manual=False,
+        is_manual=True,
+        recorded_at=init_date,
     )
-    db.add(initial_snapshot)
+    db.add(base_snapshot)
+
+    # 2. Si el conteo actual detectado difiere de la base inicial, registrar el snapshot actual
+    if current_count != initial_base:
+        now_dt = datetime.datetime.now(datetime.timezone.utc)
+        curr_snapshot = SocialSnapshot(
+            account_id=new_account.id,
+            followers=current_count,
+            growth_count=current_count - initial_base,
+            is_manual=False,
+            recorded_at=now_dt,
+        )
+        db.add(curr_snapshot)
+
     db.commit()
     db.refresh(new_account)
 
@@ -363,6 +386,12 @@ def add_manual_snapshot(
         prev_followers = last_snap.followers if last_snap else payload.followers
         growth_count = payload.followers - prev_followers
 
+    # Si se proporcionaron seguidores o fecha inicial, actualizar los campos de la cuenta
+    if payload.initial_followers is not None:
+        account.initial_followers = payload.initial_followers
+    if payload.initial_date is not None:
+        account.initial_date = payload.initial_date
+
     snap = SocialSnapshot(
         account_id=account.id,
         followers=payload.followers,
@@ -396,6 +425,33 @@ def update_social_account(
         account.status = payload.status
     if payload.notes is not None:
         account.notes = payload.notes
+    if payload.initial_followers is not None:
+        account.initial_followers = payload.initial_followers
+    if payload.initial_date is not None:
+        account.initial_date = payload.initial_date
+
+    # Sincronizar snapshot base más antiguo si se actualiza la línea base
+    if payload.initial_followers is not None or payload.initial_date is not None:
+        oldest_snap = (
+            db.query(SocialSnapshot)
+            .filter(SocialSnapshot.account_id == account.id)
+            .order_by(asc(SocialSnapshot.recorded_at))
+            .first()
+        )
+        if oldest_snap:
+            if payload.initial_followers is not None:
+                oldest_snap.followers = payload.initial_followers
+            if payload.initial_date is not None:
+                oldest_snap.recorded_at = payload.initial_date
+        else:
+            base_snap = SocialSnapshot(
+                account_id=account.id,
+                followers=account.initial_followers or 0,
+                growth_count=0,
+                is_manual=True,
+                recorded_at=account.initial_date or datetime.datetime.now(datetime.timezone.utc),
+            )
+            db.add(base_snap)
 
     db.commit()
     db.refresh(account)

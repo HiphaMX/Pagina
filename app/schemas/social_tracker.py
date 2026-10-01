@@ -20,6 +20,7 @@ class SocialAccountCreate(BaseModel):
     name: Optional[str] = None
     notes: Optional[str] = None
     initial_followers: Optional[int] = None
+    initial_date: Optional[datetime.datetime] = None
 
 
 class SocialAccountUpdate(BaseModel):
@@ -27,11 +28,15 @@ class SocialAccountUpdate(BaseModel):
     client_id: Optional[int] = None
     status: Optional[str] = None
     notes: Optional[str] = None
+    initial_followers: Optional[int] = None
+    initial_date: Optional[datetime.datetime] = None
 
 
 class ManualSnapshotCreate(BaseModel):
     followers: int
     recorded_at: Optional[datetime.datetime] = None
+    initial_followers: Optional[int] = None
+    initial_date: Optional[datetime.datetime] = None
 
 
 class SocialAccountResponse(BaseModel):
@@ -46,8 +51,9 @@ class SocialAccountResponse(BaseModel):
     status: str
     notes: Optional[str] = None
     created_at: datetime.datetime
-    current_followers: int = 0
     initial_followers: int = 0
+    initial_date: Optional[datetime.datetime] = None
+    current_followers: int = 0
     growth_total: int = 0
     growth_monthly: int = 0
     growth_percentage: float = 0.0

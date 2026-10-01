@@ -1156,9 +1156,14 @@
                 </div>
 
                 <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.8rem;">
-                    <label for="socialInputInitialFollowers" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Seguidores Iniciales (Opcional)</label>
-                    <input type="number" id="socialInputInitialFollowers" min="0" placeholder="Ej. 584 (deja vacío para extracción automática)" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
-                    <span style="font-size:0.75rem; color:var(--text-muted);">Si lo conoces, puedes ingresarlo como base inicial en caso de que la red limite la consulta en ese momento.</span>
+                    <label for="socialInputInitialFollowers" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Seguidores al Iniciar con Hipha (Línea Base)</label>
+                    <input type="number" id="socialInputInitialFollowers" min="0" value="0" placeholder="Ej. 567 (o 0 si es cuenta nueva)" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Seguidores con los que arrancó el cliente para medir el crecimiento acumulado real.</span>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.8rem;">
+                    <label for="socialInputInitialDate" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Fecha / Mes de Inicio con la Agencia</label>
+                    <input type="date" id="socialInputInitialDate" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
                 </div>
 
                 <div id="addSocialAlert" class="hidden" style="margin-top:1rem; padding:0.7rem; border-radius:8px; font-size:0.85rem;"></div>
@@ -1173,12 +1178,12 @@
         </form>
     </div>
 
-    <!-- Modal para Ajuste Manual de Seguidores -->
+    <!-- Modal para Ajuste Manual de Seguidores y Línea Base -->
     <div id="manualSnapshotModal" class="modal-overlay hidden">
-        <form id="manualSnapshotForm" class="modal-dialog modal-sm" style="max-width:420px;">
+        <form id="manualSnapshotForm" class="modal-dialog modal-sm" style="max-width:440px;">
             <div class="modal-header">
                 <div>
-                    <h2 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">Ajuste de Seguidores</h2>
+                    <h2 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">Ajuste de Seguidores y Línea Base</h2>
                     <p id="manualSnapshotAccountName" style="font-size:0.82rem; color:var(--accent-cyan);">Cuenta</p>
                 </div>
                 <button type="button" id="btnCloseManualSnapshotModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
@@ -1186,10 +1191,22 @@
             
             <div class="modal-body">
                 <input type="hidden" id="manualSnapshotAccountId" value="">
+                
                 <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
                     <label for="manualSnapshotFollowersInput" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Cantidad Actual de Seguidores</label>
-                    <input type="number" id="manualSnapshotFollowersInput" required min="0" placeholder="Ej. 1250" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem; border-radius:8px; outline:none; font-size:1.1rem; font-weight:700;">
-                    <span style="font-size:0.75rem; color:var(--text-muted);">Se guardará un snapshot con la fecha actual para mantener el cálculo de crecimiento.</span>
+                    <input type="number" id="manualSnapshotFollowersInput" required min="0" placeholder="Ej. 584" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem; border-radius:8px; outline:none; font-size:1.1rem; font-weight:700;">
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Lectura actual en vivo de la red social.</span>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.9rem;">
+                    <label for="manualSnapshotInitialFollowersInput" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Seguidores al Iniciar con Hipha (Línea Base)</label>
+                    <input type="number" id="manualSnapshotInitialFollowersInput" min="0" placeholder="Ej. 567" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.9rem; font-weight:600;">
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Punto de partida histórico para calcular el crecimiento acumulado.</span>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.9rem;">
+                    <label for="manualSnapshotInitialDateInput" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Fecha / Mes de Inicio de Trabajo</label>
+                    <input type="date" id="manualSnapshotInitialDateInput" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
                 </div>
             </div>
 

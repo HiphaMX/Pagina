@@ -15,6 +15,8 @@ class SocialAccount(Base):
     avatar_url = Column(Text, nullable=True)
     status = Column(String(20), default="active")  # "active", "paused", "archived"
     notes = Column(Text, nullable=True)
+    initial_followers = Column(Integer, nullable=True, default=0)  # Seguidores al iniciar con la agencia
+    initial_date = Column(DateTime(timezone=True), nullable=True)  # Fecha/mes en que arranca el monitoreo
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
 

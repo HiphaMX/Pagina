@@ -4434,17 +4434,23 @@ function filterAndRenderSocialGrid() {
             </span>
         ` : '';
 
-        // Formato de crecimiento
+        // Formato de crecimiento y línea base
         const growthVal = acc.growth_total || 0;
         let growthBadge = '';
         if (growthVal > 0) {
-            growthBadge = `<span class="social-growth-badge positive">+${growthVal.toLocaleString('es-MX')} (${acc.growth_percentage.toFixed(1)}%) ↗</span>`;
+            if (acc.initial_followers > 0) {
+                growthBadge = `<span class="social-growth-badge positive">+${growthVal.toLocaleString('es-MX')} (${acc.growth_percentage.toFixed(1)}%) ↗</span>`;
+            } else {
+                growthBadge = `<span class="social-growth-badge positive">+${growthVal.toLocaleString('es-MX')} (Cuenta nueva) ↗</span>`;
+            }
         } else if (growthVal < 0) {
             growthBadge = `<span class="social-growth-badge negative">${growthVal.toLocaleString('es-MX')} ↘</span>`;
         } else {
             growthBadge = `<span class="social-growth-badge neutral">Base inicial •</span>`;
         }
 
+        const baseDateText = formatInitialMonth(acc.initial_date);
+        const baseInfo = `Base: ${(acc.initial_followers || 0).toLocaleString('es-MX')}${baseDateText ? ' (' + baseDateText + ')' : ''}`;
         const scanTimeText = formatRelativeTime(acc.last_scanned_at || acc.created_at);
 
         return `
@@ -4484,6 +4490,9 @@ function filterAndRenderSocialGrid() {
                         <div style="text-align:right;">
                             <div class="social-metric-sub">Crecimiento</div>
                             ${growthBadge}
+                            <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem;" title="Seguidores al arrancar a trabajar con nosotros">
+                                ${baseInfo}
+                            </div>
                         </div>
                     </div>
 
@@ -4505,7 +4514,7 @@ function filterAndRenderSocialGrid() {
                             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                             <span>Escanear</span>
                         </button>
-                        <button type="button" class="btn-card-action" onclick="openManualSnapshotModal(${acc.id}, '${escapeHtml(acc.name)}', ${acc.current_followers})" title="Ajuste manual de seguidores">
+                        <button type="button" class="btn-card-action" onclick="openManualSnapshotModal(${acc.id}, '${escapeHtml(acc.name)}', ${acc.current_followers}, ${acc.initial_followers || 0}, '${acc.initial_date || ''}')" title="Ajuste manual y línea base de arranque">
                             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polygon points="14 2 18 6 7 17 3 17 3 13 14 2"/><line x1="14" y1="2" x2="18" y2="6"/></svg>
                         </button>
                         <button type="button" class="btn-card-action danger" onclick="deleteSocialAccount(${acc.id}, '${escapeHtml(acc.name)}')" title="Eliminar de monitoreo">
@@ -4611,6 +4620,18 @@ function formatRelativeTime(dateString) {
     }
 }
 
+function formatInitialMonth(dateStr) {
+    if (!dateStr) return '';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '';
+        const m = d.toLocaleDateString('es-MX', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+        return m.charAt(0).toUpperCase() + m.slice(1);
+    } catch (e) {
+        return '';
+    }
+}
+
 // Modal Agregar Cuenta
 function openAddSocialModal() {
     const modal = document.getElementById('addSocialModal');
@@ -4623,6 +4644,11 @@ function openAddSocialModal() {
         alertBox.classList.add('hidden');
         alertBox.innerHTML = '';
     }
+
+    const initDateInput = document.getElementById('socialInputInitialDate');
+    if (initDateInput) initDateInput.value = new Date().toISOString().split('T')[0];
+    const initFollowersInput = document.getElementById('socialInputInitialFollowers');
+    if (initFollowersInput) initFollowersInput.value = '0';
 
     if (clientSelect) {
         clientSelect.innerHTML = '<option value="">-- Cuenta Independiente (Sin vincular) --</option>';
@@ -4653,7 +4679,8 @@ async function handleAddSocialSubmit(e) {
     const clientIdVal = document.getElementById('socialInputClientSelect')?.value;
     const customName = (document.getElementById('socialInputCustomName')?.value || '').trim();
     const initFollowersVal = document.getElementById('socialInputInitialFollowers')?.value;
-    const initialFollowers = initFollowersVal !== '' && !isNaN(parseInt(initFollowersVal, 10)) ? parseInt(initFollowersVal, 10) : null;
+    const initialFollowers = initFollowersVal !== '' && !isNaN(parseInt(initFollowersVal, 10)) ? parseInt(initFollowersVal, 10) : 0;
+    const initDateVal = document.getElementById('socialInputInitialDate')?.value || null;
 
     if (!url) {
         if (alertBox) {
@@ -4676,7 +4703,8 @@ async function handleAddSocialSubmit(e) {
             url: url,
             client_id: clientIdVal ? parseInt(clientIdVal, 10) : null,
             name: customName || null,
-            initial_followers: initialFollowers
+            initial_followers: initialFollowers,
+            initial_date: initDateVal ? new Date(initDateVal).toISOString() : null
         };
 
         const res = await fetch(`${API_BASE}/social/accounts`, {
@@ -4719,11 +4747,13 @@ async function handleAddSocialSubmit(e) {
     }
 }
 
-// Modal Ajuste Manual
-function openManualSnapshotModal(accountId, accountName, currentFollowers) {
+// Modal Ajuste Manual y Línea Base
+function openManualSnapshotModal(accountId, accountName, currentFollowers, initialFollowers, initialDate) {
     const modal = document.getElementById('manualSnapshotModal');
     const inputId = document.getElementById('manualSnapshotAccountId');
     const inputFollowers = document.getElementById('manualSnapshotFollowersInput');
+    const inputInitFollowers = document.getElementById('manualSnapshotInitialFollowersInput');
+    const inputInitDate = document.getElementById('manualSnapshotInitialDateInput');
     const labelName = document.getElementById('manualSnapshotAccountName');
 
     if (inputId) inputId.value = accountId;
@@ -4731,6 +4761,12 @@ function openManualSnapshotModal(accountId, accountName, currentFollowers) {
     if (inputFollowers) {
         inputFollowers.value = currentFollowers || 0;
         inputFollowers.focus();
+    }
+    if (inputInitFollowers) {
+        inputInitFollowers.value = initialFollowers !== undefined && initialFollowers !== null ? initialFollowers : 0;
+    }
+    if (inputInitDate) {
+        inputInitDate.value = initialDate ? initialDate.split('T')[0] : '';
     }
 
     if (modal) modal.classList.remove('hidden');
@@ -4745,6 +4781,9 @@ async function handleManualSnapshotSubmit(e) {
     e.preventDefault();
     const accountId = document.getElementById('manualSnapshotAccountId')?.value;
     const followers = parseInt(document.getElementById('manualSnapshotFollowersInput')?.value || '0', 10);
+    const initFollowersVal = document.getElementById('manualSnapshotInitialFollowersInput')?.value;
+    const initFollowers = initFollowersVal !== '' && !isNaN(parseInt(initFollowersVal, 10)) ? parseInt(initFollowersVal, 10) : null;
+    const initDateVal = document.getElementById('manualSnapshotInitialDateInput')?.value || null;
     const btnSubmit = document.getElementById('btnSubmitManualSnapshot');
 
     if (!accountId) return;
@@ -4755,13 +4794,19 @@ async function handleManualSnapshotSubmit(e) {
     }
 
     try {
+        const payload = {
+            followers: followers,
+            initial_followers: initFollowers,
+            initial_date: initDateVal ? new Date(initDateVal).toISOString() : null
+        };
+
         const res = await fetch(`${API_BASE}/social/accounts/${accountId}/manual-snapshot`, {
             method: 'POST',
             headers: {
                 ...getAuthHeaders(),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ followers: followers })
+            body: JSON.stringify(payload)
         });
 
         if (res.ok) {
