@@ -876,14 +876,18 @@ function openClientReportModal() {
         if (topSections.length === 0) {
             reportTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.2rem; color:#64748b;">No hay secciones registradas para este período.</td></tr>';
         } else {
-            topSections.slice(0, 4).forEach((sec, idx) => {
+            topSections.slice(0, 10).forEach((sec, idx) => {
                 const tr = document.createElement('tr');
                 const percent = Math.min(100, Math.max(1, Math.round((sec.views / Math.max(1, maxViews)) * 100)));
+                let rawTitle = sec.title || sec.path || 'Página';
+                if (clientName && rawTitle.includes(` | ${clientName}`)) {
+                    rawTitle = rawTitle.replace(` | ${clientName}`, '').trim();
+                }
                 
                 tr.innerHTML = `
                     <td style="font-weight:700; color:#64748b;">#${idx + 1}</td>
                     <td>
-                        <strong style="color:#0f172a; font-size:0.78rem; line-height:1.2; display:block;">${escapeHtml(sec.title || sec.path)}</strong>
+                        <strong class="report-page-title">${escapeHtml(rawTitle)}</strong>
                         <span class="report-path-sub">${escapeHtml(sec.path)}</span>
                     </td>
                     <td style="text-align:right; font-weight:700; color:#0f172a;">
@@ -912,8 +916,7 @@ function openClientReportModal() {
         const topSectionViews = topSection ? topSection.views.toLocaleString() : '0';
         const topDevice = (deviceData.length > 0) ? `dispositivos <strong>${deviceData[0].device}</strong>` : 'dispositivos móviles y de escritorio';
 
-        reportInsightsSummary.innerHTML = `Durante el período analizado (<strong>${escapeHtml(dates.label)}</strong>), el sitio web de <strong>${escapeHtml(clientName)}</strong> registró una sólida presencia digital, alcanzando <strong>${newUsers.toLocaleString()} nuevos usuarios</strong> y acumulando <strong>${views.toLocaleString()} vistas totales</strong> con un ritmo de interacción estimado en <strong>~${dailyAvg.toLocaleString()} vistas por día</strong>.<br><br>
-        El canal con mayor efectividad para la adquisición fue <strong>${escapeHtml(topSource)}</strong> con navegación predominante en ${topDevice}, mientras que el contenido con mayor tracción e interés fue <strong>"${escapeHtml(topSectionName)}"</strong> (${topSectionViews} vistas), consolidándose como el principal activo de conversión y visibilidad del portal.`;
+        reportInsightsSummary.innerHTML = `Durante el período analizado (<strong>${escapeHtml(dates.label)}</strong>), el sitio web de <strong>${escapeHtml(clientName)}</strong> registró una sólida presencia digital, alcanzando <strong>${newUsers.toLocaleString()} nuevos usuarios</strong> y acumulando <strong>${views.toLocaleString()} vistas totales</strong> con un ritmo de interacción estimado en <strong>~${dailyAvg.toLocaleString()} vistas por día</strong>.<span class="insights-spacer" style="display:block; margin-top:0.25rem;"></span>El canal con mayor efectividad para la adquisición fue <strong>${escapeHtml(topSource)}</strong> con navegación predominante en ${topDevice}, mientras que el contenido con mayor tracción e interés fue <strong>"${escapeHtml(topSectionName)}"</strong> (${topSectionViews} vistas), consolidándose como el principal activo de conversión y visibilidad del portal.`;
     }
 
     const modal = document.getElementById('clientReportModal');
