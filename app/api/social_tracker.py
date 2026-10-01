@@ -97,6 +97,37 @@ def test_extractor(url: str = "https://www.instagram.com/elchilechillon/"):
         return {"error": str(e), "type": type(e).__name__}
 
 
+@router.get("/test-embed")
+def test_embed(handle: str = "elchilechillon"):
+    import ssl
+    import urllib.request
+    try:
+        clean_handle = handle.lstrip("@").strip()
+        embed_url = f"https://www.instagram.com/{clean_handle}/embed/"
+        req = urllib.request.Request(
+            embed_url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
+            },
+        )
+        ctx = ssl._create_unverified_context()
+        with urllib.request.urlopen(req, context=ctx, timeout=7) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+            m_f = re.search(r"followers_count[^\d]+(\d+)", raw)
+            return {
+                "status": resp.status,
+                "url": resp.geturl(),
+                "len": len(raw),
+                "followers_match": m_f.group(1) if m_f else None,
+                "has_followers_count": "followers_count" in raw,
+                "snippet": raw[:300]
+            }
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
+
+
 @router.get("/overview", response_model=SocialObservatoryOverview)
 def get_social_observatory_overview(
     db: Session = Depends(get_db),
