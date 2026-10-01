@@ -5,10 +5,13 @@ import urllib.parse
 import urllib.request
 from typing import Dict, Optional, Tuple
 
-CRAWLER_USER_AGENT = (
-    "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
-)
-FALLBACK_USER_AGENT = "Twitterbot/1.0"
+CRAWLER_USER_AGENTS = [
+    "Twitterbot/1.0",
+    "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)",
+    "WhatsApp/2.21.12.21 A",
+    "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (Applebot/0.1; +http://www.apple.com/bot.html)",
+]
 
 
 def normalize_social_url(raw_url: str) -> str:
@@ -74,63 +77,106 @@ def fetch_social_metadata(url: str, platform: Optional[str] = None) -> Dict:
         clean_url = normalize_social_url(url)
         _, handle, _ = detect_platform_and_handle(clean_url)
 
-    # Contexto SSL tolerante para entornos de ejecución heterogéneos
     try:
         ctx = ssl.create_default_context()
     except Exception:
         ctx = ssl._create_unverified_context()
 
-    # Si falla la validación de certificados local, usamos contexto unverified como fallback
-    def _fetch_content(target_url: str, user_agent: str) -> Tuple[int, str]:
+    html_content = ""
+    last_error = None
+
+    for ua in CRAWLER_USER_AGENTS:
         req = urllib.request.Request(
-            target_url,
+            clean_url,
             headers={
-                "User-Agent": user_agent,
+                "User-Agent": ua,
                 "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             },
         )
         try:
-            with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
-                return resp.status, resp.read().decode("utf-8", errors="ignore")
+            with urllib.request.urlopen(req, context=ctx, timeout=8) as resp:
+                final_url = resp.geturl()
+                if "login" in final_url.lower() or "checkpoint" in final_url.lower():
+                    # Si fue redirigido a login, este UA no logró ver el contenido público
+                    continue
+                raw_bytes = resp.read()
+                raw_decoded = raw_bytes.decode("utf-8", errors="ignore")
+                unescaped = html.unescape(raw_decoded)
+
+                # Si contiene mención a seguidores o imagen de og, es una respuesta válida
+                if (
+                    "seguidores" in unescaped.lower()
+                    or "followers" in unescaped.lower()
+                    or "og:image" in unescaped.lower()
+                    or "twitter:image" in unescaped.lower()
+                ):
+                    html_content = unescaped
+                    break
+                elif not html_content:
+                    html_content = unescaped
         except urllib.error.URLError:
-            unverified_ctx = ssl._create_unverified_context()
-            with urllib.request.urlopen(req, context=unverified_ctx, timeout=10) as resp:
-                return resp.status, resp.read().decode("utf-8", errors="ignore")
+            try:
+                unverified_ctx = ssl._create_unverified_context()
+                with urllib.request.urlopen(req, context=unverified_ctx, timeout=8) as resp:
+                    final_url = resp.geturl()
+                    if "login" in final_url.lower() or "checkpoint" in final_url.lower():
+                        continue
+                    unescaped = html.unescape(resp.read().decode("utf-8", errors="ignore"))
+                    if "seguidores" in unescaped.lower() or "followers" in unescaped.lower():
+                        html_content = unescaped
+                        break
+                    elif not html_content:
+                        html_content = unescaped
+            except Exception as ex:
+                last_error = ex
+                continue
+        except Exception as e:
+            last_error = e
+            continue
 
-    try:
-        status, html_content = _fetch_content(clean_url, CRAWLER_USER_AGENT)
-    except Exception as e_primary:
-        try:
-            status, html_content = _fetch_content(clean_url, FALLBACK_USER_AGENT)
-        except Exception as e_fallback:
-            raise RuntimeError(
-                f"No se pudo consultar el enlace público ({e_fallback or e_primary})"
-            )
+    if not html_content:
+        raise RuntimeError(
+            f"No se pudo consultar el enlace público de {clean_url} ({last_error or 'Acceso restringido por la red social'})"
+        )
 
-    # 1. Extraer og:image (Avatar / Foto de Perfil)
+    # 1. Extraer Avatar (og:image o twitter:image)
     avatar_url = None
-    og_img_matches = re.findall(
-        r'<meta[^>]*property=[\"\']og:image[\"\'][^>]*content=[\"\']([^\"\']*)[\"\']',
+    img_matches = re.findall(
+        r'<meta[^>]*(?:property|name)=[\"\'](?:og:image|twitter:image)[\"\'][^>]*content=[\"\']([^\"\']*)[\"\']',
         html_content,
         re.I,
     )
-    if og_img_matches:
-        avatar_url = html.unescape(og_img_matches[0])
+    if not img_matches:
+        img_matches = re.findall(
+            r'<meta[^>]*content=[\"\']([^\"\']*)[\"\'][^>]*(?:property|name)=[\"\'](?:og:image|twitter:image)[\"\']',
+            html_content,
+            re.I,
+        )
+    if img_matches:
+        avatar_url = img_matches[0].strip()
 
     # 2. Extraer Título / Nombre
     page_name = handle
-    og_title_matches = re.findall(
-        r'<meta[^>]*property=[\"\']og:title[\"\'][^>]*content=[\"\']([^\"\']*)[\"\']',
+    title_matches = re.findall(
+        r'<meta[^>]*(?:property|name)=[\"\'](?:og:title|twitter:title)[\"\'][^>]*content=[\"\']([^\"\']*)[\"\']',
         html_content,
         re.I,
     )
-    if og_title_matches:
-        raw_title = html.unescape(og_title_matches[0]).strip()
-        # Limpieza de títulos de Instagram ej "Nombre (@handle) • Fotos y videos"
+    if not title_matches:
+        title_matches = re.findall(
+            r'<meta[^>]*content=[\"\']([^\"\']*)[\"\'][^>]*(?:property|name)=[\"\'](?:og:title|twitter:title)[\"\']',
+            html_content,
+            re.I,
+        )
+    if not title_matches:
+        title_matches = re.findall(r'<title[^>]*>(.*?)</title>', html_content, re.I)
+
+    if title_matches:
+        raw_title = title_matches[0].strip()
         if platform == "instagram":
             raw_title = re.sub(r"\s*\(?@[\w\.-]+\)?\s*•.*", "", raw_title).strip()
-            raw_title = re.sub(r"\s*•\s*Instagram.*", "", raw_title).strip()
+            raw_title = re.sub(r"\s*•\s*(?:Instagram|Fotos y videos|Perfil).*$", "", raw_title, flags=re.I).strip()
         elif platform == "facebook":
             raw_title = re.sub(r"\s*\|\s*Facebook.*", "", raw_title).strip()
             if " | " in raw_title:
@@ -142,33 +188,25 @@ def fetch_social_metadata(url: str, platform: Optional[str] = None) -> Dict:
     followers = 0
     raw_snippet = ""
 
-    # Buscar en meta og:description y description
-    meta_descriptions = re.findall(
-        r'<meta[^>]*(?:name|property)=[\"\'](?:description|og:description)[\"\'][^>]*content=[\"\']([^\"\']*)[\"\']',
+    # Buscar en todo el HTML desescapado con regex amplio
+    m = re.search(
+        r"([\d\.,]+[kKmM]?)\s*(?:seguidores|personas siguen esto|Followers|likes|me gusta)",
         html_content,
-        re.I,
+        re.IGNORECASE,
     )
+    if m:
+        raw_snippet = m.group(0)
+        followers = parse_follower_number(m.group(1))
 
-    full_text = " ".join([html.unescape(m) for m in meta_descriptions])
-
-    if platform == "instagram":
-        # Formato: "11 Followers, 14 Following, 0 Posts..." o "29 seguidores, 0 seguidos..."
-        m_ig = re.search(
-            r"([\d\.,]+[kKmM]?)\s*(?:Followers|seguidores)", full_text, re.IGNORECASE
+    # Respaldo: buscar en JSON embebido de Instagram/Facebook
+    if followers == 0:
+        json_match = re.search(
+            r'\"(?:edge_followed_by|follower_count)\":\s*(?:\{\"count\":\s*)?(\d+)',
+            html_content,
         )
-        if m_ig:
-            raw_snippet = m_ig.group(0)
-            followers = parse_follower_number(m_ig.group(1))
-    elif platform == "facebook":
-        # Formato: "2.558 seguidores · 4 personas..." o "39.511.257 seguidores..." o "1.2K likes"
-        m_fb = re.search(
-            r"([\d\.,]+[kKmM]?)\s*(?:seguidores|personas siguen esto|Followers|likes|me gusta)",
-            full_text,
-            re.IGNORECASE,
-        )
-        if m_fb:
-            raw_snippet = m_fb.group(0)
-            followers = parse_follower_number(m_fb.group(1))
+        if json_match:
+            followers = int(json_match.group(1))
+            raw_snippet = f"{followers} seguidores (JSON)"
 
     return {
         "platform": platform,

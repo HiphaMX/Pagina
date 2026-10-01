@@ -89,57 +89,6 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
     )
 
 
-@router.get("/debug-inspect")
-def debug_inspect(url: str = "https://www.instagram.com/elchilechillon/"):
-    import urllib.request, ssl, re
-
-    uas = [
-        ("facebookexternalhit", "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"),
-        ("Googlebot", "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"),
-        ("Twitterbot", "Twitterbot/1.0"),
-        ("TelegramBot", "TelegramBot (like TwitterBot)"),
-        ("WhatsApp", "WhatsApp/2.21.12.21 A"),
-        ("Bingbot", "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"),
-        ("Applebot", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/bot.html)"),
-        ("Discordbot", "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"),
-        ("LinkedInBot", "LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)"),
-    ]
-
-    ctx = ssl._create_unverified_context()
-    results = {}
-
-    for name, ua in uas:
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": ua,
-                "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            },
-        )
-        try:
-            with urllib.request.urlopen(req, context=ctx, timeout=6) as resp:
-                final_url = resp.geturl()
-                content = resp.read().decode("utf-8", errors="ignore")
-                has_followers = bool(re.search(r"(\d+[\.,]?\d*[kKmM]?)\s*(?:followers|seguidores)", content, re.I))
-                is_login = "login" in final_url.lower()
-                # Find any follower count match
-                m = re.findall(r"(\d+[\.,]?\d*[kKmM]?)\s*(?:followers|seguidores)", content, re.I)
-                results[name] = {
-                    "final_url": final_url,
-                    "is_login": is_login,
-                    "has_followers": has_followers,
-                    "matches": m[:3],
-                    "content_len": len(content),
-                    "meta_tags": re.findall(r"<meta[^>]+>", content, re.I)[:15],
-                    "title": re.findall(r"<title[^>]*>(.*?)</title>", content, re.I),
-                }
-        except Exception as e:
-            results[name] = {"error": str(e)}
-
-    return results
-
-
 @router.get("/overview", response_model=SocialObservatoryOverview)
 def get_social_observatory_overview(
     db: Session = Depends(get_db),
@@ -258,15 +207,32 @@ def scan_social_account(
 
     new_followers = meta.get("followers", 0)
 
-    # Obtener el último conteo para calcular la diferencia neta
-    last_snap = (
+    # 1. Obtener todos los snapshots existentes para verificar el historial
+    existing_snaps = (
         db.query(SocialSnapshot)
         .filter(SocialSnapshot.account_id == account.id)
         .order_by(desc(SocialSnapshot.recorded_at))
-        .first()
+        .all()
     )
-    prev_followers = last_snap.followers if last_snap else new_followers
-    growth_count = new_followers - prev_followers
+
+    # 2. Si la cuenta solo tenía mediciones en 0 (debido a fallas iniciales de extracción),
+    # y ahora logramos extraer un conteo real positivo, normalizamos los ceros previos
+    # para que este valor sea su base inicial genuina y no un falso salto.
+    if new_followers > 0 and (not existing_snaps or all(s.followers == 0 for s in existing_snaps)):
+        for s in existing_snaps:
+            s.followers = new_followers
+            s.growth_count = 0
+        prev_followers = new_followers
+        growth_count = 0
+    else:
+        last_snap = existing_snaps[0] if existing_snaps else None
+        prev_followers = last_snap.followers if last_snap else new_followers
+        # Evitar sobreescribir un conteo válido previo con 0 si la red social falla momentáneamente
+        if new_followers == 0 and prev_followers > 0:
+            new_followers = prev_followers
+            growth_count = 0
+        else:
+            growth_count = new_followers - prev_followers
 
     # Actualizar avatar si se obtuvo uno más reciente
     if meta.get("avatar_url"):
@@ -306,17 +272,32 @@ def scan_all_social_accounts(
             meta = fetch_social_metadata(acc.url, acc.platform)
             new_followers = meta.get("followers", 0)
 
-            last_snap = (
+            existing_snaps = (
                 db.query(SocialSnapshot)
                 .filter(SocialSnapshot.account_id == acc.id)
                 .order_by(desc(SocialSnapshot.recorded_at))
-                .first()
+                .all()
             )
-            prev_followers = last_snap.followers if last_snap else new_followers
-            growth_count = new_followers - prev_followers
+
+            if new_followers > 0 and (not existing_snaps or all(s.followers == 0 for s in existing_snaps)):
+                for s in existing_snaps:
+                    s.followers = new_followers
+                    s.growth_count = 0
+                prev_followers = new_followers
+                growth_count = 0
+            else:
+                last_snap = existing_snaps[0] if existing_snaps else None
+                prev_followers = last_snap.followers if last_snap else new_followers
+                if new_followers == 0 and prev_followers > 0:
+                    new_followers = prev_followers
+                    growth_count = 0
+                else:
+                    growth_count = new_followers - prev_followers
 
             if meta.get("avatar_url"):
                 acc.avatar_url = meta.get("avatar_url")
+            if meta.get("name") and meta.get("name") != acc.handle:
+                acc.name = meta.get("name")
 
             snap = SocialSnapshot(
                 account_id=acc.id,
