@@ -89,6 +89,14 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
     )
 
 
+@router.get("/test-extractor")
+def test_extractor(url: str = "https://www.instagram.com/elchilechillon/"):
+    try:
+        return fetch_social_metadata(url)
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
+
+
 @router.get("/overview", response_model=SocialObservatoryOverview)
 def get_social_observatory_overview(
     db: Session = Depends(get_db),
