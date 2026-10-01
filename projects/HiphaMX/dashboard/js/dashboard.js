@@ -681,25 +681,7 @@ function openClientReportModal() {
     if (elReportKpiDailyAvg) elReportKpiDailyAvg.textContent = dailyAvg.toLocaleString();
 
     // 3. Gráficas y Widgets Analíticos de la Primera Página
-    // 3.1 Gráfica de Tendencia (Línea de Tráfico)
-    const reportTrendImg = document.getElementById('reportTrendImg');
-    if (reportTrendImg) {
-        if (trendChartInstance) {
-            try {
-                trendChartInstance.stop();
-                trendChartInstance.render();
-                reportTrendImg.src = trendChartInstance.toBase64Image('image/png', 1);
-                reportTrendImg.style.display = 'block';
-            } catch(e) {
-                console.warn("No se pudo exportar imagen de tendencia:", e);
-                reportTrendImg.style.display = 'none';
-            }
-        } else {
-            reportTrendImg.style.display = 'none';
-        }
-    }
-
-    // 3.2 Gráfica de Canales de Captación (Doughnut nítido dedicado sin leyenda embebida)
+    // 3.1 Gráfica de Canales de Captación (Doughnut nítido dedicado sin leyenda embebida)
     const reportSourceImg = document.getElementById('reportSourceImg');
     const sourceReportCanvas = document.getElementById('sourceChartCanvasReport');
     if (data.traffic_sources && data.traffic_sources.length > 0 && sourceReportCanvas) {
@@ -969,17 +951,8 @@ function printClientReport() {
     const originalTitle = document.title;
     document.title = `${dates.badge || 'Reporte Desempeño Web'} - ${clientName} - Hipha`;
 
-    // 1. Refrescar imágenes de alta resolución de las gráficas
+    // 1. Refrescar imágenes de alta resolución de las gráficas circulares
     try {
-        if (trendChartInstance) {
-            trendChartInstance.stop();
-            trendChartInstance.render();
-            const reportTrendImg = document.getElementById('reportTrendImg');
-            if (reportTrendImg) {
-                reportTrendImg.src = trendChartInstance.toBase64Image('image/png', 1);
-                reportTrendImg.style.display = 'block';
-            }
-        }
         if (sourceReportChartInstance) {
             sourceReportChartInstance.stop();
             sourceReportChartInstance.render();
