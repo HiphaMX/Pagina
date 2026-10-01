@@ -89,43 +89,6 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
     )
 
 
-@router.get("/test-extractor")
-def test_extractor(url: str = "https://www.instagram.com/elchilechillon/"):
-    try:
-        return fetch_social_metadata(url)
-    except Exception as e:
-        return {"error": str(e), "type": type(e).__name__}
-
-
-@router.get("/test-embed")
-def test_embed(handle: str = "elchilechillon"):
-    import ssl
-    import urllib.request
-    try:
-        clean_handle = handle.lstrip("@").strip()
-        embed_url = f"https://www.instagram.com/{clean_handle}/embed/"
-        req = urllib.request.Request(
-            embed_url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
-            },
-        )
-        ctx = ssl._create_unverified_context()
-        with urllib.request.urlopen(req, context=ctx, timeout=7) as resp:
-            raw = resp.read().decode("utf-8", errors="ignore")
-            m_f = re.search(r"followers_count[^\d]+(\d+)", raw)
-            return {
-                "status": resp.status,
-                "url": resp.geturl(),
-                "len": len(raw),
-                "followers_match": m_f.group(1) if m_f else None,
-                "has_followers_count": "followers_count" in raw,
-                "snippet": raw[:300]
-            }
-    except Exception as e:
-        return {"error": str(e), "type": type(e).__name__}
 
 
 @router.get("/overview", response_model=SocialObservatoryOverview)
@@ -367,23 +330,6 @@ def scan_all_social_accounts(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    return _do_scan_all(db)
-
-
-@router.get("/sync-all-now")
-def sync_all_now(
-    secret: str = "",
-    db: Session = Depends(get_db),
-):
-    if secret != "hipha-sync-2026":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    from app.core.database import engine
-    from sqlalchemy import text
-    try:
-        with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
-            conn.execute(text("ALTER TABLE social_accounts ALTER COLUMN avatar_url TYPE TEXT;"))
-    except Exception as e:
-        pass
     return _do_scan_all(db)
 
 
