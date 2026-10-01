@@ -131,6 +131,8 @@ def debug_inspect(url: str = "https://www.instagram.com/elchilechillon/"):
                     "has_followers": has_followers,
                     "matches": m[:3],
                     "content_len": len(content),
+                    "meta_tags": re.findall(r"<meta[^>]+>", content, re.I)[:15],
+                    "title": re.findall(r"<title[^>]*>(.*?)</title>", content, re.I),
                 }
         except Exception as e:
             results[name] = {"error": str(e)}
