@@ -11,6 +11,7 @@ const SAT_API_BASE = isLocal ? 'http://localhost:8000/api/sat' : '/api/sat';
 let trendChartInstance = null;
 let sourceChartInstance = null;
 let deviceChartInstance = null;
+let sourceReportChartInstance = null;
 let currentClientDetailsData = null;
 
 // Elementos del DOM
@@ -698,22 +699,42 @@ function openClientReportModal() {
         }
     }
 
-    // 3.2 Gráfica de Canales de Captación
+    // 3.2 Gráfica de Canales de Captación (Doughnut nítido dedicado sin leyenda embebida)
     const reportSourceImg = document.getElementById('reportSourceImg');
-    if (reportSourceImg) {
-        if (sourceChartInstance) {
-            try {
-                sourceChartInstance.stop();
-                sourceChartInstance.render();
-                reportSourceImg.src = sourceChartInstance.toBase64Image('image/png', 1);
-                reportSourceImg.style.display = 'block';
-            } catch(e) {
-                console.warn("No se pudo exportar imagen de fuentes:", e);
-                reportSourceImg.style.display = 'none';
-            }
-        } else {
-            reportSourceImg.style.display = 'none';
+    const sourceReportCanvas = document.getElementById('sourceChartCanvasReport');
+    if (data.traffic_sources && data.traffic_sources.length > 0 && sourceReportCanvas) {
+        const ctxSrc = sourceReportCanvas.getContext('2d');
+        if (sourceReportChartInstance) {
+            sourceReportChartInstance.destroy();
         }
+        sourceReportChartInstance = new Chart(ctxSrc, {
+            type: 'doughnut',
+            data: {
+                labels: data.traffic_sources.map(s => s.source),
+                datasets: [{
+                    data: data.traffic_sources.map(s => s.views),
+                    backgroundColor: ['#00e5ff', '#3b82f6', '#b388ff', '#f43f5e', '#f59e0b', '#10b981'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: false,
+                animation: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                cutout: '62%'
+            }
+        });
+        if (reportSourceImg) {
+            reportSourceImg.src = sourceReportChartInstance.toBase64Image('image/png', 1);
+            reportSourceImg.style.display = 'block';
+        }
+    } else if (sourceChartInstance && reportSourceImg) {
+        reportSourceImg.src = sourceChartInstance.toBase64Image('image/png', 1);
+        reportSourceImg.style.display = 'block';
+    } else if (reportSourceImg) {
+        reportSourceImg.style.display = 'none';
     }
 
     const reportSourceBreakdown = document.getElementById('reportSourceBreakdown');
@@ -879,18 +900,31 @@ function openClientReportModal() {
             topSections.slice(0, 10).forEach((sec, idx) => {
                 const tr = document.createElement('tr');
                 const percent = Math.min(100, Math.max(1, Math.round((sec.views / Math.max(1, maxViews)) * 100)));
-                let rawTitle = sec.title || sec.path || 'Página';
-                if (clientName && rawTitle.includes(` | ${clientName}`)) {
-                    rawTitle = rawTitle.replace(` | ${clientName}`, '').trim();
+                let rawTitle = (sec.title || sec.path || 'Página').trim();
+                
+                // Limpieza inteligente de sufijos repetitivos de marca / portal (ej. "Pisos y recubrimientos | Distribuidor Azulejero de México")
+                if (rawTitle.includes(' | ')) {
+                    const parts = rawTitle.split(' | ');
+                    if (parts[0].trim().length > 0) {
+                        rawTitle = parts[0].trim();
+                    }
+                } else if (rawTitle.includes(' - ')) {
+                    const parts = rawTitle.split(' - ');
+                    if (parts[0].trim().length > 0 && parts[1] && clientName && parts[1].toLowerCase().includes(clientName.toLowerCase())) {
+                        rawTitle = parts[0].trim();
+                    }
+                }
+                if (sec.path === '/' && rawTitle.toLowerCase().includes('distribuidor')) {
+                    rawTitle = 'Página Principal (Inicio)';
                 }
                 
                 tr.innerHTML = `
-                    <td style="font-weight:700; color:#64748b;">#${idx + 1}</td>
+                    <td class="report-rank-cell">#${idx + 1}</td>
                     <td>
-                        <strong class="report-page-title">${escapeHtml(rawTitle)}</strong>
+                        <strong class="report-page-title" title="${escapeHtml(sec.title || rawTitle)}">${escapeHtml(rawTitle)}</strong>
                         <span class="report-path-sub">${escapeHtml(sec.path)}</span>
                     </td>
-                    <td style="text-align:right; font-weight:700; color:#0f172a;">
+                    <td class="report-views-cell">
                         ${sec.views.toLocaleString()}
                     </td>
                     <td style="text-align:right;">
@@ -898,7 +932,7 @@ function openClientReportModal() {
                             <div class="traction-bar-track">
                                 <div class="traction-bar-fill" style="width: ${percent}%;"></div>
                             </div>
-                            <span style="font-size:0.75rem; font-weight:700; color:#0284c7; min-width:32px;">${percent}%</span>
+                            <span class="traction-bar-text">${percent}%</span>
                         </div>
                     </td>
                 `;
@@ -946,7 +980,15 @@ function printClientReport() {
                 reportTrendImg.style.display = 'block';
             }
         }
-        if (sourceChartInstance) {
+        if (sourceReportChartInstance) {
+            sourceReportChartInstance.stop();
+            sourceReportChartInstance.render();
+            const reportSourceImg = document.getElementById('reportSourceImg');
+            if (reportSourceImg) {
+                reportSourceImg.src = sourceReportChartInstance.toBase64Image('image/png', 1);
+                reportSourceImg.style.display = 'block';
+            }
+        } else if (sourceChartInstance) {
             sourceChartInstance.stop();
             sourceChartInstance.render();
             const reportSourceImg = document.getElementById('reportSourceImg');
