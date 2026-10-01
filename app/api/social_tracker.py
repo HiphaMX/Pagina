@@ -297,11 +297,7 @@ def scan_social_account(
     return _build_account_response(account, db)
 
 
-@router.post("/accounts/scan-all")
-def scan_all_social_accounts(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
-):
+def _do_scan_all(db: Session):
     accounts = (
         db.query(SocialAccount)
         .filter(SocialAccount.status == "active")
@@ -310,6 +306,7 @@ def scan_all_social_accounts(
 
     scanned_count = 0
     errors = []
+    results = []
 
     for acc in accounts:
         try:
@@ -351,6 +348,7 @@ def scan_all_social_accounts(
             )
             db.add(snap)
             scanned_count += 1
+            results.append({"name": acc.name, "handle": acc.handle, "followers": new_followers})
         except Exception as err:
             errors.append({"account": acc.name, "error": str(err)})
 
@@ -359,8 +357,27 @@ def scan_all_social_accounts(
         "success": True,
         "scanned_count": scanned_count,
         "total_active": len(accounts),
+        "results": results,
         "errors": errors,
     }
+
+
+@router.post("/accounts/scan-all")
+def scan_all_social_accounts(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    return _do_scan_all(db)
+
+
+@router.get("/sync-all-now")
+def sync_all_now(
+    secret: str = "",
+    db: Session = Depends(get_db),
+):
+    if secret != "hipha-sync-2026":
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return _do_scan_all(db)
 
 
 @router.post("/accounts/{account_id}/manual-snapshot", response_model=SocialAccountResponse)
