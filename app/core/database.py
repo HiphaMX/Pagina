@@ -88,6 +88,12 @@ def ensure_db_initialized():
                         "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS requires_invoice BOOLEAN DEFAULT FALSE",
                         "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS apply_tax_retention BOOLEAN DEFAULT FALSE",
                         "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS tax_retention_rate FLOAT DEFAULT 1.25",
+                        "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS revision_hours FLOAT DEFAULT 0.0",
+                        "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS revisions_count INTEGER DEFAULT 0",
+                        "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS month_id VARCHAR DEFAULT NULL",
+                        "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS task_date VARCHAR DEFAULT NULL",
+                        "ALTER TABLE social_accounts ADD COLUMN IF NOT EXISTS initial_followers INTEGER DEFAULT 0",
+                        "ALTER TABLE social_accounts ADD COLUMN IF NOT EXISTS initial_date TIMESTAMP WITH TIME ZONE DEFAULT NULL",
                     ]
                 else:
                     migration_stmts = [
@@ -95,6 +101,12 @@ def ensure_db_initialized():
                         "ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT 0",
                         "ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT 0",
                         "ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25",
+                        "ALTER TABLE workflow_tasks ADD COLUMN revision_hours FLOAT DEFAULT 0.0",
+                        "ALTER TABLE workflow_tasks ADD COLUMN revisions_count INTEGER DEFAULT 0",
+                        "ALTER TABLE workflow_tasks ADD COLUMN month_id VARCHAR DEFAULT NULL",
+                        "ALTER TABLE workflow_tasks ADD COLUMN task_date VARCHAR DEFAULT NULL",
+                        "ALTER TABLE social_accounts ADD COLUMN initial_followers INTEGER DEFAULT 0",
+                        "ALTER TABLE social_accounts ADD COLUMN initial_date TIMESTAMP WITH TIME ZONE DEFAULT NULL",
                     ]
 
                 for stmt in migration_stmts:

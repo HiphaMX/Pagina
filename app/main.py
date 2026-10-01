@@ -47,47 +47,6 @@ def startup_db_setup():
     print("Iniciando base de datos y tablas...")
     ensure_db_initialized()
     
-    # Auto-migración segura de columnas adicionales para workflow_tasks y agency_clients
-    try:
-        from sqlalchemy import inspect, text
-        with engine.begin() as conn:
-            inspector = inspect(engine)
-            tables = inspector.get_table_names()
-            if "workflow_tasks" in tables:
-                cols = [c["name"] for c in inspector.get_columns("workflow_tasks")]
-                if "revision_hours" not in cols:
-                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN revision_hours FLOAT DEFAULT 0.0"))
-                if "revisions_count" not in cols:
-                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN revisions_count INTEGER DEFAULT 0"))
-                if "month_id" not in cols:
-                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN month_id VARCHAR DEFAULT NULL"))
-                if "task_date" not in cols:
-                    conn.execute(text("ALTER TABLE workflow_tasks ADD COLUMN task_date VARCHAR DEFAULT NULL"))
-
-            if "agency_clients" in tables:
-                c_cols = [c["name"] for c in inspector.get_columns("agency_clients")]
-                if "billing_period" not in c_cols:
-                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN billing_period VARCHAR DEFAULT 'monthly'"))
-                if "requires_invoice" not in c_cols:
-                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT FALSE"))
-                if "apply_tax_retention" not in c_cols:
-                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT FALSE"))
-                if "tax_retention_rate" not in c_cols:
-                    conn.execute(text("ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25"))
-
-            if "social_accounts" in tables:
-                try:
-                    conn.execute(text("ALTER TABLE social_accounts ALTER COLUMN avatar_url TYPE TEXT"))
-                except Exception:
-                    pass
-                s_cols = [c["name"] for c in inspector.get_columns("social_accounts")]
-                if "initial_followers" not in s_cols:
-                    conn.execute(text("ALTER TABLE social_accounts ADD COLUMN initial_followers INTEGER DEFAULT 0"))
-                if "initial_date" not in s_cols:
-                    conn.execute(text("ALTER TABLE social_accounts ADD COLUMN initial_date TIMESTAMP WITH TIME ZONE DEFAULT NULL"))
-    except Exception as em:
-        print(f"Nota: Auto-migración de tablas omitida o completada: {em}")
-    
     # Sembrar usuario administrador por defecto
     try:
         db = SessionLocal()
@@ -163,14 +122,12 @@ def startup_db_setup():
                 if acc:
                     acc.initial_followers = t["initial_followers"]
                     acc.initial_date = t["date"]
-                    oldest_snap = (
+                    base_snap = (
                         db.query(SocialSnapshot)
-                        .filter(SocialSnapshot.account_id == acc.id)
-                        .order_by(asc(SocialSnapshot.recorded_at))
+                        .filter(SocialSnapshot.account_id == acc.id, SocialSnapshot.recorded_at <= t["date"])
                         .first()
                     )
-                    now_utc = datetime.datetime.now(datetime.timezone.utc)
-                    if not oldest_snap or oldest_snap.recorded_at.date() >= now_utc.date():
+                    if not base_snap:
                         base_snap = SocialSnapshot(
                             account_id=acc.id,
                             followers=t["initial_followers"],
@@ -180,8 +137,7 @@ def startup_db_setup():
                         )
                         db.add(base_snap)
                     else:
-                        oldest_snap.followers = t["initial_followers"]
-                        oldest_snap.recorded_at = t["date"]
+                        base_snap.followers = t["initial_followers"]
             db.commit()
             print("✓ Líneas base de monitoreo social actualizadas con éxito.")
         finally:
