@@ -92,31 +92,50 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
 @router.get("/debug-inspect")
 def debug_inspect(url: str = "https://www.instagram.com/elchilechillon/"):
     import urllib.request, ssl, re
+
+    uas = [
+        ("facebookexternalhit", "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"),
+        ("Googlebot", "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"),
+        ("Twitterbot", "Twitterbot/1.0"),
+        ("TelegramBot", "TelegramBot (like TwitterBot)"),
+        ("WhatsApp", "WhatsApp/2.21.12.21 A"),
+        ("Bingbot", "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"),
+        ("Applebot", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/bot.html)"),
+        ("Discordbot", "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"),
+        ("LinkedInBot", "LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)"),
+    ]
+
     ctx = ssl._create_unverified_context()
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
-            "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
-            final_url = resp.geturl()
-            status = resp.status
-            content = resp.read().decode("utf-8", errors="ignore")
-            # find all meta tags
-            meta_tags = re.findall(r"<meta[^>]+>", content, re.I)
-            return {
-                "status": status,
-                "final_url": final_url,
-                "content_len": len(content),
-                "meta_tags": meta_tags[:20],
-                "sample": content[:1500],
-            }
-    except Exception as e:
-        return {"error": str(e), "type": type(e).__name__}
+    results = {}
+
+    for name, ua in uas:
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": ua,
+                "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, context=ctx, timeout=6) as resp:
+                final_url = resp.geturl()
+                content = resp.read().decode("utf-8", errors="ignore")
+                has_followers = bool(re.search(r"(\d+[\.,]?\d*[kKmM]?)\s*(?:followers|seguidores)", content, re.I))
+                is_login = "login" in final_url.lower()
+                # Find any follower count match
+                m = re.findall(r"(\d+[\.,]?\d*[kKmM]?)\s*(?:followers|seguidores)", content, re.I)
+                results[name] = {
+                    "final_url": final_url,
+                    "is_login": is_login,
+                    "has_followers": has_followers,
+                    "matches": m[:3],
+                    "content_len": len(content),
+                }
+        except Exception as e:
+            results[name] = {"error": str(e)}
+
+    return results
 
 
 @router.get("/overview", response_model=SocialObservatoryOverview)
