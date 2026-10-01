@@ -91,7 +91,7 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
 
 @router.get("/debug-inspect")
 def debug_inspect(url: str = "https://www.instagram.com/elchilechillon/"):
-    import urllib.request, ssl
+    import urllib.request, ssl, re
     ctx = ssl._create_unverified_context()
     req = urllib.request.Request(
         url,
