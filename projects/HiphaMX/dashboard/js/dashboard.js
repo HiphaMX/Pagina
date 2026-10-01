@@ -876,14 +876,14 @@ function openClientReportModal() {
         if (topSections.length === 0) {
             reportTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.2rem; color:#64748b;">No hay secciones registradas para este período.</td></tr>';
         } else {
-            topSections.slice(0, 5).forEach((sec, idx) => {
+            topSections.slice(0, 4).forEach((sec, idx) => {
                 const tr = document.createElement('tr');
                 const percent = Math.min(100, Math.max(1, Math.round((sec.views / Math.max(1, maxViews)) * 100)));
                 
                 tr.innerHTML = `
                     <td style="font-weight:700; color:#64748b;">#${idx + 1}</td>
                     <td>
-                        <strong style="color:#0f172a; font-size:0.83rem;">${escapeHtml(sec.title || sec.path)}</strong>
+                        <strong style="color:#0f172a; font-size:0.78rem; line-height:1.2; display:block;">${escapeHtml(sec.title || sec.path)}</strong>
                         <span class="report-path-sub">${escapeHtml(sec.path)}</span>
                     </td>
                     <td style="text-align:right; font-weight:700; color:#0f172a;">
