@@ -377,6 +377,12 @@ def sync_all_now(
 ):
     if secret != "hipha-sync-2026":
         raise HTTPException(status_code=403, detail="Forbidden")
+    from sqlalchemy import text
+    try:
+        db.execute(text("ALTER TABLE social_accounts ALTER COLUMN avatar_url TYPE TEXT"))
+        db.commit()
+    except Exception:
+        db.rollback()
     return _do_scan_all(db)
 
 

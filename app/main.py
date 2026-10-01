@@ -74,6 +74,12 @@ def startup_db_setup():
                     conn.execute(text("ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT FALSE"))
                 if "tax_retention_rate" not in c_cols:
                     conn.execute(text("ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25"))
+
+            if "social_accounts" in tables:
+                try:
+                    conn.execute(text("ALTER TABLE social_accounts ALTER COLUMN avatar_url TYPE TEXT"))
+                except Exception:
+                    pass
     except Exception as em:
         print(f"Nota: Auto-migración de tablas omitida o completada: {em}")
     

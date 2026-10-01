@@ -12,7 +12,7 @@ class SocialAccount(Base):
     name = Column(String(100), nullable=False)
     handle = Column(String(100), nullable=True)  # ej. "@chilechillon"
     url = Column(String(255), nullable=False)
-    avatar_url = Column(String(500), nullable=True)
+    avatar_url = Column(Text, nullable=True)
     status = Column(String(20), default="active")  # "active", "paused", "archived"
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
