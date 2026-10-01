@@ -136,3 +136,49 @@ def test_social_account_lifecycle(monkeypatch):
     finally:
         app.dependency_overrides.pop(get_current_active_user, None)
 
+
+def test_initial_followers_and_zero_normalization(monkeypatch):
+    import random
+    from app.api.deps import get_current_active_user
+    from app.schemas.user import User as UserSchema
+    from app.core.database import Base, engine
+    import app.api.social_tracker as social_api
+
+    Base.metadata.create_all(bind=engine)
+
+    mock_user = UserSchema(id=1, email="admin@hipha.mx", is_active=True, is_superuser=True, full_name="Admin")
+    app.dependency_overrides[get_current_active_user] = lambda: mock_user
+
+    # Simular extractor que no encuentra seguidores (0)
+    monkeypatch.setattr(social_api, "fetch_social_metadata", lambda url, platform=None: {
+        "platform": "instagram",
+        "handle": "@zero_brand",
+        "name": "Zero Brand",
+        "url": url,
+        "avatar_url": None,
+        "followers": 0
+    })
+
+    random_id = random.randint(10000, 99999)
+    test_url = f"https://www.instagram.com/test_zero_{random_id}/"
+
+    try:
+        # 1. Crear cuenta pasando initial_followers=584
+        create_res = client.post("/api/dashboard/social/accounts", json={
+            "url": test_url,
+            "name": f"Zero Test {random_id}",
+            "initial_followers": 584
+        })
+        assert create_res.status_code == 200
+        acc = create_res.json()
+        acc_id = acc["id"]
+        assert acc["current_followers"] == 584
+        assert acc["initial_followers"] == 584
+        assert acc["growth_total"] == 0
+
+        # 2. Eliminar
+        client.delete(f"/api/dashboard/social/accounts/{acc_id}")
+    finally:
+        app.dependency_overrides.pop(get_current_active_user, None)
+
+

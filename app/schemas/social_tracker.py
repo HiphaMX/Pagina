@@ -19,6 +19,7 @@ class SocialAccountCreate(BaseModel):
     client_id: Optional[int] = None
     name: Optional[str] = None
     notes: Optional[str] = None
+    initial_followers: Optional[int] = None
 
 
 class SocialAccountUpdate(BaseModel):

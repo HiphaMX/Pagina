@@ -7,11 +7,92 @@ from typing import Dict, Optional, Tuple
 
 CRAWLER_USER_AGENTS = [
     "Twitterbot/1.0",
-    "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)",
-    "WhatsApp/2.21.12.21 A",
     "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (Applebot/0.1; +http://www.apple.com/bot.html)",
+    "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)",
 ]
+
+
+def _clean_unicode_escapes(s: str) -> str:
+    if not s:
+        return ""
+    res = s
+    for _ in range(2):
+        if "\\u" in res:
+            try:
+                res = res.encode("utf-8").decode("unicode_escape")
+            except Exception:
+                pass
+    return res
+
+
+def _extract_instagram_embed(clean_url: str, handle: str) -> Optional[Dict]:
+    """
+    Extrae seguidores, nombre y avatar directamente desde la página de embed
+    pública oficial de Instagram (https://www.instagram.com/{user}/embed/).
+    Este endpoint está optimizado para incrustación pública global y devuelve
+    metadatos pre-renderizados en JSON sin activar bloqueos ni muros de login.
+    """
+    clean_handle = handle.lstrip("@").strip()
+    if not clean_handle or clean_handle.lower() in ["instagram", "p", "explore", "reels"]:
+        return None
+
+    embed_url = f"https://www.instagram.com/{clean_handle}/embed/"
+    req = urllib.request.Request(
+        embed_url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
+        },
+    )
+
+    try:
+        ctx = ssl.create_default_context()
+    except Exception:
+        ctx = ssl._create_unverified_context()
+
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=7) as resp:
+            if resp.status != 200:
+                return None
+            html_raw = resp.read().decode("utf-8", errors="ignore")
+    except Exception:
+        return None
+
+    # 1. Seguidores
+    followers = 0
+    m_f = re.search(r"followers_count[^\d]+(\d+)", html_raw)
+    if not m_f:
+        m_f = re.search(r"edge_followed_by[^\d]+(\d+)", html_raw)
+    if m_f:
+        followers = int(m_f.group(1))
+
+    if followers <= 0:
+        return None
+
+    # 2. Nombre del perfil
+    page_name = clean_handle
+    m_name = re.search(r'full_name[\\]*":\s*[\\]*"([^"]+?)[\\]*",', html_raw)
+    if m_name:
+        page_name = _clean_unicode_escapes(m_name.group(1)).strip() or clean_handle
+
+    # 3. Avatar de perfil
+    avatar_url = None
+    m_avatar = re.search(r'profile_pic_url[\\]*":\s*[\\]*"(https:[^"\\]+)', html_raw)
+    if not m_avatar:
+        m_avatar = re.search(r'profile_pic_url[^\w]+(https:[^\"\'\s]+)', html_raw)
+    if m_avatar:
+        avatar_url = m_avatar.group(1).replace(r"\/", "/").replace("\\", "")
+
+    return {
+        "platform": "instagram",
+        "handle": f"@{clean_handle}",
+        "name": page_name,
+        "url": clean_url,
+        "avatar_url": avatar_url,
+        "followers": followers,
+        "raw_snippet": f"{followers} seguidores (Instagram Embed)",
+    }
 
 
 def normalize_social_url(raw_url: str) -> str:
@@ -77,6 +158,13 @@ def fetch_social_metadata(url: str, platform: Optional[str] = None) -> Dict:
         clean_url = normalize_social_url(url)
         _, handle, _ = detect_platform_and_handle(clean_url)
 
+    # 1. Prioridad para Instagram: Embed oficial público (alta fidelidad y sin bloqueos)
+    if platform == "instagram":
+        embed_data = _extract_instagram_embed(clean_url, handle)
+        if embed_data and embed_data.get("followers", 0) > 0:
+            return embed_data
+
+    # 2. Crawler para Facebook o como fallback de Instagram
     try:
         ctx = ssl.create_default_context()
     except Exception:
@@ -85,7 +173,13 @@ def fetch_social_metadata(url: str, platform: Optional[str] = None) -> Dict:
     html_content = ""
     last_error = None
 
-    for ua in CRAWLER_USER_AGENTS:
+    # Seleccionar user-agents adecuados según la red
+    user_agents_to_try = (
+        ["Twitterbot/1.0"] if platform == "instagram"
+        else ["facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)", "Twitterbot/1.0"]
+    )
+
+    for ua in user_agents_to_try:
         req = urllib.request.Request(
             clean_url,
             headers={
@@ -98,13 +192,11 @@ def fetch_social_metadata(url: str, platform: Optional[str] = None) -> Dict:
             with urllib.request.urlopen(req, context=ctx, timeout=8) as resp:
                 final_url = resp.geturl()
                 if "login" in final_url.lower() or "checkpoint" in final_url.lower():
-                    # Si fue redirigido a login, este UA no logró ver el contenido público
                     continue
                 raw_bytes = resp.read()
                 raw_decoded = raw_bytes.decode("utf-8", errors="ignore")
                 unescaped = html.unescape(raw_decoded)
 
-                # Si contiene mención a seguidores o imagen de og, es una respuesta válida
                 if (
                     "seguidores" in unescaped.lower()
                     or "followers" in unescaped.lower()

@@ -4652,6 +4652,8 @@ async function handleAddSocialSubmit(e) {
     const url = (document.getElementById('socialInputUrl')?.value || '').trim();
     const clientIdVal = document.getElementById('socialInputClientSelect')?.value;
     const customName = (document.getElementById('socialInputCustomName')?.value || '').trim();
+    const initFollowersVal = document.getElementById('socialInputInitialFollowers')?.value;
+    const initialFollowers = initFollowersVal !== '' && !isNaN(parseInt(initFollowersVal, 10)) ? parseInt(initFollowersVal, 10) : null;
 
     if (!url) {
         if (alertBox) {
@@ -4673,7 +4675,8 @@ async function handleAddSocialSubmit(e) {
         const payload = {
             url: url,
             client_id: clientIdVal ? parseInt(clientIdVal, 10) : null,
-            name: customName || null
+            name: customName || null,
+            initial_followers: initialFollowers
         };
 
         const res = await fetch(`${API_BASE}/social/accounts`, {

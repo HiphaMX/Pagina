@@ -149,17 +149,22 @@ def create_social_account(
     try:
         meta = fetch_social_metadata(clean_url, platform)
     except Exception as err:
-        # Si la extracción falla de inicio, creamos la cuenta con 0 y el usuario puede ajustarla
+        # Si la extracción falla de inicio, creamos la cuenta con datos mínimos y seguidores provistos
         meta = {
             "platform": platform,
             "handle": handle,
             "name": payload.name or handle,
             "url": clean_url,
             "avatar_url": None,
-            "followers": 0,
+            "followers": payload.initial_followers or 0,
         }
 
     account_name = payload.name or meta.get("name") or handle
+
+    # Si la extracción en vivo devolvió 0 pero el usuario proporcionó seguidores iniciales
+    initial_count = meta.get("followers", 0)
+    if initial_count == 0 and payload.initial_followers is not None and payload.initial_followers > 0:
+        initial_count = payload.initial_followers
 
     # Validar cliente asignado si se proporcionó
     if payload.client_id:
@@ -184,7 +189,7 @@ def create_social_account(
     # Registrar snapshot inicial
     initial_snapshot = SocialSnapshot(
         account_id=new_account.id,
-        followers=meta.get("followers", 0),
+        followers=initial_count,
         growth_count=0,
         is_manual=False,
     )
@@ -338,14 +343,24 @@ def add_manual_snapshot(
     if not account:
         raise HTTPException(status_code=404, detail="Cuenta no encontrada.")
 
-    last_snap = (
+    existing_snaps = (
         db.query(SocialSnapshot)
         .filter(SocialSnapshot.account_id == account.id)
         .order_by(desc(SocialSnapshot.recorded_at))
-        .first()
+        .all()
     )
-    prev_followers = last_snap.followers if last_snap else payload.followers
-    growth_count = payload.followers - prev_followers
+
+    # Si la cuenta solo tenía mediciones en 0, normalizar para que este conteo manual sea la base inicial
+    if payload.followers > 0 and (not existing_snaps or all(s.followers == 0 for s in existing_snaps)):
+        for s in existing_snaps:
+            s.followers = payload.followers
+            s.growth_count = 0
+        prev_followers = payload.followers
+        growth_count = 0
+    else:
+        last_snap = existing_snaps[0] if existing_snaps else None
+        prev_followers = last_snap.followers if last_snap else payload.followers
+        growth_count = payload.followers - prev_followers
 
     snap = SocialSnapshot(
         account_id=account.id,
