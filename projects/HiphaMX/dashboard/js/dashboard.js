@@ -35,9 +35,11 @@ const detailsContent = document.getElementById('detailsContent');
 const navLinkTraffic = document.getElementById('navLinkTraffic');
 const navLinkWorkflow = document.getElementById('navLinkWorkflow');
 const navLinkClients = document.getElementById('navLinkClients');
+const navLinkSocial = document.getElementById('navLinkSocial');
 const trafficSection = document.getElementById('trafficSection');
 const workflowSection = document.getElementById('workflowSection');
 const clientsSection = document.getElementById('clientsSection');
+const socialSection = document.getElementById('socialSection');
 const headerTitle = document.getElementById('headerTitle');
 const headerSubtitle = document.getElementById('headerSubtitle');
 const trafficDateSelector = document.getElementById('trafficDateSelector');
@@ -197,6 +199,18 @@ document.addEventListener('DOMContentLoaded', () => {
             headerSubtitle.textContent = "Clasificación de cuentas por volumen de usuarios nuevos";
             if (trafficDateSelector) trafficDateSelector.classList.remove('hidden');
             loadOverviewData();
+        });
+    }
+
+    if (navLinkSocial) {
+        navLinkSocial.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveTab(navLinkSocial, socialSection);
+            headerTitle.textContent = "Observatorio Social Media";
+            headerSubtitle.textContent = "Monitoreo y crecimiento de seguidores en Instagram y Facebook";
+            if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            initSocialObservatoryModule();
+            loadSocialObservatory();
         });
     }
 });
@@ -1103,6 +1117,7 @@ function setActiveTab(activeLink, activeSection) {
     if (trafficSection) trafficSection.classList.add('hidden');
     if (workflowSection) workflowSection.classList.add('hidden');
     if (clientsSection) clientsSection.classList.add('hidden');
+    if (socialSection) socialSection.classList.add('hidden');
     
     if (activeSection) {
         activeSection.classList.remove('hidden');
@@ -4217,5 +4232,653 @@ window.handleDeleteClient = handleDeleteClient;
 window.openSendAgencyEmailModal = openSendAgencyEmailModal;
 window.closeSendAgencyEmailModal = closeSendAgencyEmailModal;
 window.applyEmailTemplate = applyEmailTemplate;
+
+// ==========================================
+// MÓDULO: OBSERVATORIO SOCIAL MEDIA (INSTAGRAM & FACEBOOK)
+// ==========================================
+let socialObservatoryData = {
+    total_accounts: 0,
+    total_audience: 0,
+    total_monthly_growth: 0,
+    instagram_accounts: 0,
+    facebook_accounts: 0,
+    accounts: []
+};
+let socialSparklineInstances = {};
+let socialModuleInitialized = false;
+
+function initSocialObservatoryModule() {
+    if (socialModuleInitialized) return;
+    socialModuleInitialized = true;
+
+    const searchInput = document.getElementById('socialSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => filterAndRenderSocialGrid());
+    }
+
+    const platformFilter = document.getElementById('socialFilterPlatform');
+    if (platformFilter) {
+        platformFilter.addEventListener('change', () => filterAndRenderSocialGrid());
+    }
+
+    const btnScanAll = document.getElementById('btnScanAllSocial');
+    if (btnScanAll) {
+        btnScanAll.addEventListener('click', (e) => {
+            e.preventDefault();
+            scanAllSocialAccounts();
+        });
+    }
+
+    const btnOpenAdd = document.getElementById('btnOpenAddSocialModal');
+    if (btnOpenAdd) {
+        btnOpenAdd.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAddSocialModal();
+        });
+    }
+
+    const btnCloseAddX = document.getElementById('btnCloseAddSocialModalX');
+    if (btnCloseAddX) btnCloseAddX.addEventListener('click', () => closeAddSocialModal());
+
+    const btnCancelAdd = document.getElementById('btnCancelAddSocial');
+    if (btnCancelAdd) btnCancelAdd.addEventListener('click', () => closeAddSocialModal());
+
+    const addForm = document.getElementById('addSocialForm');
+    if (addForm) {
+        addForm.addEventListener('submit', (e) => handleAddSocialSubmit(e));
+    }
+
+    const btnCloseManualX = document.getElementById('btnCloseManualSnapshotModalX');
+    if (btnCloseManualX) btnCloseManualX.addEventListener('click', () => closeManualSnapshotModal());
+
+    const btnCancelManual = document.getElementById('btnCancelManualSnapshot');
+    if (btnCancelManual) btnCancelManual.addEventListener('click', () => closeManualSnapshotModal());
+
+    const manualForm = document.getElementById('manualSnapshotForm');
+    if (manualForm) {
+        manualForm.addEventListener('submit', (e) => handleManualSnapshotSubmit(e));
+    }
+}
+
+async function loadSocialObservatory() {
+    const gridContainer = document.getElementById('socialGridContainer');
+    if (!socialObservatoryData.accounts || socialObservatoryData.accounts.length === 0) {
+        if (gridContainer) {
+            gridContainer.innerHTML = `
+                <div class="loading-state" style="grid-column: 1 / -1; text-align:center; padding: 3rem 1rem;">
+                    <div class="spinner"></div>
+                    <p style="margin-top:0.75rem; color:var(--text-muted);">Sincronizando observatorio social media...</p>
+                </div>
+            `;
+        }
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/social/overview`, {
+            headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            socialObservatoryData = data;
+
+            // Actualizar KPIs
+            const kpiAccounts = document.getElementById('kpiSocialTotalAccounts');
+            const kpiBreakdown = document.getElementById('kpiSocialPlatformBreakdown');
+            const kpiAudience = document.getElementById('kpiSocialTotalAudience');
+            const kpiGrowth = document.getElementById('kpiSocialMonthlyGrowth');
+
+            if (kpiAccounts) kpiAccounts.textContent = data.total_accounts || 0;
+            if (kpiBreakdown) {
+                kpiBreakdown.textContent = `${data.instagram_accounts || 0} Instagram • ${data.facebook_accounts || 0} Facebook`;
+            }
+            if (kpiAudience) {
+                kpiAudience.textContent = (data.total_audience || 0).toLocaleString('es-MX');
+            }
+            if (kpiGrowth) {
+                const growthVal = data.total_monthly_growth || 0;
+                kpiGrowth.textContent = (growthVal >= 0 ? '+' : '') + growthVal.toLocaleString('es-MX');
+                kpiGrowth.style.color = growthVal > 0 ? '#10b981' : (growthVal < 0 ? '#ef4444' : 'var(--text-main)');
+            }
+
+            filterAndRenderSocialGrid();
+        } else if (res.status === 401) {
+            if (gridContainer) {
+                gridContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1; text-align:center; padding: 3rem 1rem;">
+                        <p style="color:#ef4444;">Sesión expirada. Por favor vuelve a iniciar sesión.</p>
+                    </div>
+                `;
+            }
+        }
+    } catch (err) {
+        console.error("Error al cargar observatorio social:", err);
+        if (gridContainer) {
+            gridContainer.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1; text-align:center; padding: 3rem 1rem;">
+                    <p style="color:#ef4444;">Error al consultar el observatorio social media. Intenta recargar.</p>
+                </div>
+            `;
+        }
+    }
+}
+
+function filterAndRenderSocialGrid() {
+    const gridContainer = document.getElementById('socialGridContainer');
+    if (!gridContainer) return;
+
+    // Destruir instancias previas de sparkline Chart.js para evitar fugas de memoria
+    Object.keys(socialSparklineInstances).forEach(id => {
+        if (socialSparklineInstances[id]) {
+            try { socialSparklineInstances[id].destroy(); } catch(e) {}
+        }
+    });
+    socialSparklineInstances = {};
+
+    const searchInput = document.getElementById('socialSearchInput');
+    const platformFilter = document.getElementById('socialFilterPlatform');
+
+    const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+    const platform = platformFilter ? platformFilter.value : 'all';
+
+    const allAccounts = socialObservatoryData.accounts || [];
+    const filtered = allAccounts.filter(acc => {
+        if (platform !== 'all' && acc.platform !== platform) return false;
+        if (!query) return true;
+        const nameMatch = (acc.name || '').toLowerCase().includes(query);
+        const handleMatch = (acc.handle || '').toLowerCase().includes(query);
+        const clientMatch = (acc.client_name || '').toLowerCase().includes(query);
+        const urlMatch = (acc.url || '').toLowerCase().includes(query);
+        return nameMatch || handleMatch || clientMatch || urlMatch;
+    });
+
+    if (filtered.length === 0) {
+        gridContainer.innerHTML = `
+            <div class="social-empty-state" style="grid-column: 1 / -1; text-align:center; padding: 4rem 1.5rem; background:rgba(255,255,255,0.02); border:1px dashed var(--border-color); border-radius:14px;">
+                <div style="font-size: 2.8rem; margin-bottom: 0.8rem;">📡</div>
+                <h3 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.4rem;">
+                    ${query || platform !== 'all' ? 'No se encontraron cuentas con esos filtros' : 'Aún no hay redes sociales en monitoreo'}
+                </h3>
+                <p style="color:var(--text-muted); font-size:0.9rem; max-width:440px; margin:0 auto 1.5rem;">
+                    ${query || platform !== 'all' ? 'Prueba con otros términos de búsqueda o selecciona todas las plataformas.' : 'Comienza agregando los enlaces públicos de Instagram o Facebook de la agencia o de tus clientes.'}
+                </p>
+                <button type="button" onclick="openAddSocialModal()" class="btn-create-task" style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.65rem 1.2rem; margin:0 auto;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>+ Monitorear Primer Enlace</span>
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    gridContainer.innerHTML = filtered.map(acc => {
+        const isInstagram = acc.platform === 'instagram';
+        const platformName = isInstagram ? 'Instagram' : 'Facebook';
+        const platformBadgeClass = isInstagram ? 'social-badge-ig' : 'social-badge-fb';
+        const platformIcon = isInstagram ? `
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        ` : `
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        `;
+
+        const avatarHtml = acc.avatar_url ? `
+            <img src="${escapeHtml(acc.avatar_url)}" alt="${escapeHtml(acc.name)}" class="social-avatar-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'social-avatar-fallback\\'>${escapeHtml(acc.name.charAt(0).toUpperCase())}</div>';">
+        ` : `
+            <div class="social-avatar-fallback">${escapeHtml(acc.name.charAt(0).toUpperCase())}</div>
+        `;
+
+        const clientHtml = acc.client_name ? `
+            <span class="social-client-tag" title="Cliente vinculado">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                ${escapeHtml(acc.client_name)}
+            </span>
+        ` : '';
+
+        // Formato de crecimiento
+        const growthVal = acc.growth_total || 0;
+        let growthBadge = '';
+        if (growthVal > 0) {
+            growthBadge = `<span class="social-growth-badge positive">+${growthVal.toLocaleString('es-MX')} (${acc.growth_percentage.toFixed(1)}%) ↗</span>`;
+        } else if (growthVal < 0) {
+            growthBadge = `<span class="social-growth-badge negative">${growthVal.toLocaleString('es-MX')} ↘</span>`;
+        } else {
+            growthBadge = `<span class="social-growth-badge neutral">Base inicial •</span>`;
+        }
+
+        const scanTimeText = formatRelativeTime(acc.last_scanned_at || acc.created_at);
+
+        return `
+            <div class="social-card glass-panel" id="socialCard_${acc.id}">
+                <!-- Header de Tarjeta -->
+                <div class="social-card-header">
+                    <div class="social-card-profile">
+                        <div class="social-avatar-wrap">
+                            ${avatarHtml}
+                        </div>
+                        <div class="social-title-box">
+                            <h4 class="social-profile-name" title="${escapeHtml(acc.name)}">${escapeHtml(acc.name)}</h4>
+                            <a href="${escapeHtml(acc.url)}" target="_blank" rel="noopener" class="social-profile-handle" title="Abrir perfil en ${platformName}">
+                                ${acc.handle ? '@' + escapeHtml(acc.handle) : 'Ver red social'}
+                                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.35rem;">
+                        <span class="social-platform-badge ${platformBadgeClass}">
+                            ${platformIcon}
+                            <span>${platformName}</span>
+                        </span>
+                        ${clientHtml}
+                    </div>
+                </div>
+
+                <!-- Métricas Principales -->
+                <div class="social-card-body">
+                    <div class="social-metrics-row">
+                        <div>
+                            <div class="social-metric-sub">Seguidores</div>
+                            <div class="social-metric-main">
+                                ${(acc.current_followers || 0).toLocaleString('es-MX')}
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="social-metric-sub">Crecimiento</div>
+                            ${growthBadge}
+                        </div>
+                    </div>
+
+                    <!-- Mini Gráfico Sparkline de Historial -->
+                    <div class="social-sparkline-wrapper">
+                        <canvas id="socialSparkline_${acc.id}" height="42"></canvas>
+                    </div>
+                </div>
+
+                <!-- Footer con fecha y acciones -->
+                <div class="social-card-footer">
+                    <span class="social-sync-time" title="Última lectura">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>${scanTimeText}</span>
+                    </span>
+
+                    <div class="social-card-actions">
+                        <button type="button" class="btn-card-action" onclick="scanSingleSocialAccount(${acc.id}, this)" title="Escanear y actualizar seguidores ahora">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            <span>Escanear</span>
+                        </button>
+                        <button type="button" class="btn-card-action" onclick="openManualSnapshotModal(${acc.id}, '${escapeHtml(acc.name)}', ${acc.current_followers})" title="Ajuste manual de seguidores">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polygon points="14 2 18 6 7 17 3 17 3 13 14 2"/><line x1="14" y1="2" x2="18" y2="6"/></svg>
+                        </button>
+                        <button type="button" class="btn-card-action danger" onclick="deleteSocialAccount(${acc.id}, '${escapeHtml(acc.name)}')" title="Eliminar de monitoreo">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Inicializar los mini gráficos con Chart.js
+    filtered.forEach(acc => {
+        initSocialSparkline(acc);
+    });
+}
+
+function initSocialSparkline(account) {
+    const canvas = document.getElementById(`socialSparkline_${account.id}`);
+    if (!canvas || !window.Chart) return;
+
+    let history = account.sparkline_history || [];
+    if (history.length === 0) {
+        history = [account.current_followers || 0];
+    }
+    if (history.length === 1) {
+        history = [history[0], history[0]];
+    }
+
+    const labels = history.map((_, i) => `T${i + 1}`);
+    const isInstagram = account.platform === 'instagram';
+    const primaryColor = isInstagram ? '#e1306c' : '#1877f2';
+    const bgGradient = isInstagram ? 'rgba(225, 48, 108, 0.12)' : 'rgba(24, 119, 242, 0.12)';
+
+    try {
+        const ctx = canvas.getContext('2d');
+        socialSparklineInstances[account.id] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: history,
+                    borderColor: primaryColor,
+                    backgroundColor: bgGradient,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    pointHoverBackgroundColor: primaryColor,
+                    pointHoverBorderColor: '#ffffff',
+                    pointHoverBorderWidth: 1.5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        displayColors: false,
+                        backgroundColor: 'rgba(16, 23, 41, 0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 6,
+                        callbacks: {
+                            title: () => '',
+                            label: (ctx) => `${Number(ctx.raw).toLocaleString('es-MX')} seguidores`
+                        }
+                    }
+                },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        display: false,
+                        grace: '5%'
+                    }
+                }
+            }
+        });
+    } catch (e) {
+        console.warn(`No se pudo inicializar sparkline para la cuenta ${account.id}:`, e);
+    }
+}
+
+function formatRelativeTime(dateString) {
+    if (!dateString) return 'Sin fecha';
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Reciente';
+        const now = new Date();
+        const diffSeconds = Math.floor((now - date) / 1000);
+
+        if (diffSeconds < 60) return 'Hace un momento';
+        if (diffSeconds < 3600) return `Hace ${Math.floor(diffSeconds / 60)} min`;
+        if (diffSeconds < 86400) return `Hace ${Math.floor(diffSeconds / 3600)} h`;
+        if (diffSeconds < 604800) return `Hace ${Math.floor(diffSeconds / 86400)} d`;
+
+        return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+    } catch (e) {
+        return 'Reciente';
+    }
+}
+
+// Modal Agregar Cuenta
+function openAddSocialModal() {
+    const modal = document.getElementById('addSocialModal');
+    const form = document.getElementById('addSocialForm');
+    const alertBox = document.getElementById('addSocialAlert');
+    const clientSelect = document.getElementById('socialInputClientSelect');
+
+    if (form) form.reset();
+    if (alertBox) {
+        alertBox.classList.add('hidden');
+        alertBox.innerHTML = '';
+    }
+
+    if (clientSelect) {
+        clientSelect.innerHTML = '<option value="">-- Cuenta Independiente (Sin vincular) --</option>';
+        if (typeof clientsDirectoryData !== 'undefined' && Array.isArray(clientsDirectoryData)) {
+            clientsDirectoryData.forEach(c => {
+                clientSelect.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)}</option>`;
+            });
+        }
+    }
+
+    if (modal) modal.classList.remove('hidden');
+    const urlInput = document.getElementById('socialInputUrl');
+    if (urlInput) urlInput.focus();
+}
+
+function closeAddSocialModal() {
+    const modal = document.getElementById('addSocialModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function handleAddSocialSubmit(e) {
+    e.preventDefault();
+    const alertBox = document.getElementById('addSocialAlert');
+    const btnSubmit = document.getElementById('btnSubmitAddSocial');
+    const btnText = document.getElementById('btnSubmitAddSocialText');
+
+    const url = (document.getElementById('socialInputUrl')?.value || '').trim();
+    const clientIdVal = document.getElementById('socialInputClientSelect')?.value;
+    const customName = (document.getElementById('socialInputCustomName')?.value || '').trim();
+
+    if (!url) {
+        if (alertBox) {
+            alertBox.className = '';
+            alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+            alertBox.style.color = '#f87171';
+            alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            alertBox.textContent = 'Por favor ingresa una URL válida de Instagram o Facebook.';
+            alertBox.classList.remove('hidden');
+        }
+        return;
+    }
+
+    if (btnSubmit) btnSubmit.disabled = true;
+    if (btnText) btnText.textContent = 'Analizando y extrayendo...';
+    if (alertBox) alertBox.classList.add('hidden');
+
+    try {
+        const payload = {
+            url: url,
+            client_id: clientIdVal ? parseInt(clientIdVal, 10) : null,
+            name: customName || null
+        };
+
+        const res = await fetch(`${API_BASE}/social/accounts`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            closeAddSocialModal();
+            loadSocialObservatory();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            const detailMsg = errData.detail || 'No se pudo registrar la cuenta. Verifica que la URL sea pública.';
+            if (alertBox) {
+                alertBox.className = '';
+                alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+                alertBox.style.color = '#f87171';
+                alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                alertBox.textContent = `⚠️ ${detailMsg}`;
+                alertBox.classList.remove('hidden');
+            }
+        }
+    } catch (err) {
+        console.error("Error al registrar cuenta social:", err);
+        if (alertBox) {
+            alertBox.className = '';
+            alertBox.style.background = 'rgba(239, 68, 68, 0.15)';
+            alertBox.style.color = '#f87171';
+            alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            alertBox.textContent = 'Error de conexión con el servidor. Intenta de nuevo.';
+            alertBox.classList.remove('hidden');
+        }
+    } finally {
+        if (btnSubmit) btnSubmit.disabled = false;
+        if (btnText) btnText.textContent = 'Verificar y Guardar';
+    }
+}
+
+// Modal Ajuste Manual
+function openManualSnapshotModal(accountId, accountName, currentFollowers) {
+    const modal = document.getElementById('manualSnapshotModal');
+    const inputId = document.getElementById('manualSnapshotAccountId');
+    const inputFollowers = document.getElementById('manualSnapshotFollowersInput');
+    const labelName = document.getElementById('manualSnapshotAccountName');
+
+    if (inputId) inputId.value = accountId;
+    if (labelName) labelName.textContent = accountName || 'Cuenta';
+    if (inputFollowers) {
+        inputFollowers.value = currentFollowers || 0;
+        inputFollowers.focus();
+    }
+
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeManualSnapshotModal() {
+    const modal = document.getElementById('manualSnapshotModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function handleManualSnapshotSubmit(e) {
+    e.preventDefault();
+    const accountId = document.getElementById('manualSnapshotAccountId')?.value;
+    const followers = parseInt(document.getElementById('manualSnapshotFollowersInput')?.value || '0', 10);
+    const btnSubmit = document.getElementById('btnSubmitManualSnapshot');
+
+    if (!accountId) return;
+
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Guardando...';
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/social/accounts/${accountId}/manual-snapshot`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ followers: followers })
+        });
+
+        if (res.ok) {
+            closeManualSnapshotModal();
+            loadSocialObservatory();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            alert(errData.detail || 'Error al guardar el ajuste de seguidores.');
+        }
+    } catch (err) {
+        console.error("Error al guardar ajuste manual:", err);
+        alert('Error de conexión al registrar ajuste manual.');
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Guardar Ajuste';
+        }
+    }
+}
+
+// Acciones de Escaneo y Eliminación
+async function scanSingleSocialAccount(accountId, btnElement) {
+    if (!accountId) return;
+    const originalHtml = btnElement ? btnElement.innerHTML : '';
+    if (btnElement) {
+        btnElement.disabled = true;
+        btnElement.innerHTML = `
+            <div class="spinner" style="width:12px; height:12px; border-width:2px;"></div>
+            <span>Escaneando...</span>
+        `;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/social/accounts/${accountId}/scan`, {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+            loadSocialObservatory();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            alert(errData.detail || 'No se pudo actualizar el conteo. La red social no respondió metadatos.');
+        }
+    } catch (err) {
+        console.error("Error al escanear cuenta:", err);
+        alert('Error de conexión al escanear la cuenta.');
+    } finally {
+        if (btnElement) {
+            btnElement.disabled = false;
+            btnElement.innerHTML = originalHtml;
+        }
+    }
+}
+
+async function scanAllSocialAccounts() {
+    const btnScanAll = document.getElementById('btnScanAllSocial');
+    const originalHtml = btnScanAll ? btnScanAll.innerHTML : '';
+
+    if (btnScanAll) {
+        btnScanAll.disabled = true;
+        btnScanAll.innerHTML = `
+            <div class="spinner" style="width:13px; height:13px; border-width:2px;"></div>
+            <span>Actualizando todas...</span>
+        `;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/social/accounts/scan-all`, {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+            loadSocialObservatory();
+        } else {
+            alert('Hubo un problema al sincronizar todas las cuentas.');
+        }
+    } catch (err) {
+        console.error("Error al actualizar todas las cuentas:", err);
+        alert('Error de comunicación con el servidor.');
+    } finally {
+        if (btnScanAll) {
+            btnScanAll.disabled = false;
+            btnScanAll.innerHTML = originalHtml;
+        }
+    }
+}
+
+async function deleteSocialAccount(accountId, accountName) {
+    if (!confirm(`¿Estás seguro de que deseas eliminar la cuenta "${accountName}" del observatorio social? Se borrará su historial de mediciones.`)) {
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/social/accounts/${accountId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+            loadSocialObservatory();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            alert(errData.detail || 'No se pudo eliminar la cuenta.');
+        }
+    } catch (err) {
+        console.error("Error eliminando cuenta social:", err);
+        alert('Error de conexión al eliminar la cuenta.');
+    }
+}
+
+// Exposición global para interacción directa y botones inline
+window.openAddSocialModal = openAddSocialModal;
+window.closeAddSocialModal = closeAddSocialModal;
+window.openManualSnapshotModal = openManualSnapshotModal;
+window.closeManualSnapshotModal = closeManualSnapshotModal;
+window.scanSingleSocialAccount = scanSingleSocialAccount;
+window.scanAllSocialAccounts = scanAllSocialAccounts;
+window.deleteSocialAccount = deleteSocialAccount;
+window.loadSocialObservatory = loadSocialObservatory;
 
 

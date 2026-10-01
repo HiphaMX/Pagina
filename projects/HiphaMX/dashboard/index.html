@@ -72,6 +72,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                     <span class="nav-text">Resumen Tráfico</span>
                 </a>
+                <a href="#" class="nav-link" id="navLinkSocial" title="Observatorio Social Media">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    <span class="nav-text">Observatorio Social</span>
+                </a>
             </nav>
 
             <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
@@ -449,6 +453,65 @@
                     <div class="loading-state">
                         <div class="spinner"></div>
                         <p>Cargando directorio de clientes...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sección de Observatorio Social Media -->
+            <div class="social-section-container hidden" id="socialSection">
+                
+                <!-- Barra Superior con KPIs y Controles -->
+                <div class="social-toolbar glass-panel">
+                    <div class="social-kpis-row">
+                        <div class="client-kpi-card">
+                            <span class="kpi-label">📡 Cuentas Monitoreadas</span>
+                            <div class="kpi-num" id="kpiSocialTotalAccounts">0</div>
+                            <div class="kpi-sub-text" id="kpiSocialPlatformBreakdown" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">0 Instagram • 0 Facebook</div>
+                        </div>
+                        <div class="client-kpi-card mrr-card">
+                            <span class="kpi-label">👥 Audiencia Acumulada Total</span>
+                            <div class="kpi-num" id="kpiSocialTotalAudience">0</div>
+                            <div class="kpi-sub-text" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Seguidores sumados en todas las redes</div>
+                        </div>
+                        <div class="client-kpi-card alert-card">
+                            <span class="kpi-label">🚀 Crecimiento del Mes</span>
+                            <div class="kpi-num" id="kpiSocialMonthlyGrowth">+0</div>
+                            <div class="kpi-sub-text" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Nuevos seguidores captados</div>
+                        </div>
+                    </div>
+
+                    <div class="social-actions-bar">
+                        <div class="social-filters-group">
+                            <div class="search-input-box">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" id="socialSearchInput" placeholder="Buscar por cuenta, handle o cliente...">
+                            </div>
+                            <select id="socialFilterPlatform" class="filter-select">
+                                <option value="all">Todas las plataformas</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="facebook">Facebook</option>
+                            </select>
+                        </div>
+
+                        <div class="social-btn-group">
+                            <button type="button" id="btnScanAllSocial" class="btn-secondary-mini" style="background:rgba(255,255,255,0.06); color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1rem; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:0.4rem;" title="Escanear y actualizar todas las cuentas ahora">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                <span>Actualizar Todo</span>
+                            </button>
+                            <button type="button" id="btnOpenAddSocialModal" class="btn-create-task" style="padding:0.6rem 1.1rem;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                <span>+ Monitorear Cuenta</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de Cuentas Social Media -->
+                <div class="social-grid-container" id="socialGridContainer">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Cargando observatorio social media...</p>
                     </div>
                 </div>
 
@@ -1060,6 +1123,75 @@
                 <button type="button" id="btnCloseReportModalFooter" class="btn-secondary-mini">Cerrar Vista Previa</button>
             </div>
         </div>
+    </div>
+
+    <!-- Modal para Agregar Cuenta de Red Social al Observatorio -->
+    <div id="addSocialModal" class="modal-overlay hidden">
+        <form id="addSocialForm" class="modal-dialog modal-md">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.3rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">+ Monitorear Red Social</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Pega el enlace público del perfil de Instagram o página de Facebook</p>
+                </div>
+                <button type="button" id="btnCloseAddSocialModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <label for="socialInputUrl" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Enlace Público de la Red Social *</label>
+                    <input type="url" id="socialInputUrl" required placeholder="https://www.instagram.com/nombre/ o https://facebook.com/pagina" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem; border-radius:8px; outline:none; font-size:0.9rem;">
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Detectaremos automáticamente si es Instagram o Facebook y su conteo actual.</span>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.8rem;">
+                    <label for="socialInputClientSelect" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Vincular a Cliente (Opcional)</label>
+                    <select id="socialInputClientSelect" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                        <option value="">-- Cuenta Independiente (Sin vincular) --</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.8rem;">
+                    <label for="socialInputCustomName" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Nombre Personalizado de la Cuenta (Opcional)</label>
+                    <input type="text" id="socialInputCustomName" placeholder="Dejar vacío para detectar nombre automáticamente" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                </div>
+
+                <div id="addSocialAlert" class="hidden" style="margin-top:1rem; padding:0.7rem; border-radius:8px; font-size:0.85rem;"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnCancelAddSocial" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
+                <button type="submit" id="btnSubmitAddSocial" class="btn-primary-mini" style="background:var(--accent-cyan); color:#000000; border:none; padding:0.6rem 1.4rem; border-radius:8px; cursor:pointer; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
+                    <span id="btnSubmitAddSocialText">Verificar y Guardar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal para Ajuste Manual de Seguidores -->
+    <div id="manualSnapshotModal" class="modal-overlay hidden">
+        <form id="manualSnapshotForm" class="modal-dialog modal-sm" style="max-width:420px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">Ajuste de Seguidores</h2>
+                    <p id="manualSnapshotAccountName" style="font-size:0.82rem; color:var(--accent-cyan);">Cuenta</p>
+                </div>
+                <button type="button" id="btnCloseManualSnapshotModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <input type="hidden" id="manualSnapshotAccountId" value="">
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <label for="manualSnapshotFollowersInput" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Cantidad Actual de Seguidores</label>
+                    <input type="number" id="manualSnapshotFollowersInput" required min="0" placeholder="Ej. 1250" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem; border-radius:8px; outline:none; font-size:1.1rem; font-weight:700;">
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Se guardará un snapshot con la fecha actual para mantener el cálculo de crecimiento.</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnCancelManualSnapshot" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
+                <button type="submit" id="btnSubmitManualSnapshot" class="btn-primary-mini" style="background:var(--accent-cyan); color:#000000; border:none; padding:0.55rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:700;">Guardar Ajuste</button>
+            </div>
+        </form>
     </div>
 
     <!-- Script de Lógica -->

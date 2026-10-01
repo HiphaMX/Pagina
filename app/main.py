@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from app.api import contact, mercadopago, auth, sat, qa, visual_generator
+from app.api import contact, mercadopago, auth, sat, qa, visual_generator, social_tracker
 from app.api.projects import botica as botica_project
 from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal, ensure_db_initialized
@@ -14,6 +14,7 @@ from app.models.chilechillon_match import ChileChillonMatch
 from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
 from app.models.workflow_task import WorkflowTask
 from app.models.client import AgencyClient
+from app.models.social_tracker import SocialAccount, SocialSnapshot
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")
@@ -164,6 +165,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(social_tracker.router, prefix="/api/dashboard/social", tags=["social-tracker"])
 app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
 app.include_router(qa.router, prefix="/api", tags=["qa"])
 app.include_router(visual_generator.router, prefix="/api/generator", tags=["generator"])

@@ -2929,6 +2929,290 @@ select {
 }
 
 /* ==========================================================================
+   Módulo de Observatorio Social Media (Instagram & Facebook)
+   ========================================================================== */
+.social-section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.social-toolbar {
+    padding: 1.2rem 1.4rem;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.social-kpis-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.social-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.social-filters-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.social-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.social-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.social-card {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 229, 255, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.social-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.social-card-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.social-card-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #1e293b;
+    background: #1e293b;
+    flex-shrink: 0;
+}
+
+.social-card-avatar-placeholder {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.social-avatar-ig {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #ffffff;
+}
+
+.social-avatar-fb {
+    background: #1877f2;
+    color: #ffffff;
+}
+
+.social-badge-platform {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.social-badge-platform.ig {
+    background: rgba(225, 48, 108, 0.15);
+    color: #f43f5e;
+    border: 1px solid rgba(225, 48, 108, 0.35);
+}
+
+.social-badge-platform.fb {
+    background: rgba(24, 119, 242, 0.15);
+    color: #3b82f6;
+    border: 1px solid rgba(24, 119, 242, 0.35);
+}
+
+.social-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.social-card-handle {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.15rem;
+    transition: color 0.15s ease;
+}
+
+.social-card-handle:hover {
+    color: var(--accent-cyan);
+}
+
+.social-card-client-tag {
+    font-size: 0.72rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 0.15rem 0.5rem;
+    border-radius: 5px;
+    margin-top: 0.3rem;
+    display: inline-block;
+}
+
+.social-metrics-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+}
+
+.social-followers-num {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.social-followers-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+}
+
+.social-growth-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+    border-radius: 6px;
+}
+
+.social-growth-pill.positive {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.social-growth-pill.neutral {
+    background: rgba(148, 163, 184, 0.12);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.social-growth-pill.negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.social-sparkline-container {
+    height: 40px;
+    width: 100%;
+    margin-top: 0.2rem;
+}
+
+.social-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.social-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-social-icon {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    border-radius: 6px;
+    padding: 0.35rem 0.55rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.15s ease;
+}
+
+.btn-social-icon:hover {
+    background: rgba(0, 229, 255, 0.12);
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.btn-social-icon.delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+@media (max-width: 768px) {
+    .social-kpis-row {
+        grid-template-columns: 1fr;
+    }
+    .social-grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
    Reglas de Impresión (@media print) para Descarga Limpia de PDF
    ========================================================================== */
 @media print {
