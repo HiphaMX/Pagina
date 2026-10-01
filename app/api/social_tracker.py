@@ -89,6 +89,36 @@ def _build_account_response(account: SocialAccount, db: Session) -> SocialAccoun
     )
 
 
+@router.get("/debug-inspect")
+def debug_inspect(url: str = "https://www.instagram.com/elchilechillon/"):
+    import urllib.request, ssl
+    ctx = ssl._create_unverified_context()
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+            "Accept-Language": "es-MX,es;q=0.9,en;q=0.8",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=10) as resp:
+            final_url = resp.geturl()
+            status = resp.status
+            content = resp.read().decode("utf-8", errors="ignore")
+            # find all meta tags
+            meta_tags = re.findall(r"<meta[^>]+>", content, re.I)
+            return {
+                "status": status,
+                "final_url": final_url,
+                "content_len": len(content),
+                "meta_tags": meta_tags[:20],
+                "sample": content[:1500],
+            }
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__}
+
+
 @router.get("/overview", response_model=SocialObservatoryOverview)
 def get_social_observatory_overview(
     db: Session = Depends(get_db),
