@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, model_validator
 
 
@@ -53,12 +53,20 @@ class AgencyClient(AgencyClientBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class EmailAttachmentPayload(BaseModel):
+    filename: str
+    content_base64: str
+    content_type: Optional[str] = "application/pdf"
+
+
 class SendAgencyEmailRequest(BaseModel):
     to_email: str
     subject: str
     message: Optional[str] = None
     message_body: Optional[str] = None
     client_name: Optional[str] = ""
+    client_id: Optional[int] = None
+    attachments: Optional[List[EmailAttachmentPayload]] = None
 
     @model_validator(mode="after")
     def validate_message(self):
@@ -67,3 +75,21 @@ class SendAgencyEmailRequest(BaseModel):
             raise ValueError("El mensaje no puede estar vacío")
         self.message = msg
         return self
+
+
+class SentEmailLogResponse(BaseModel):
+    id: int
+    client_id: Optional[int] = None
+    client_name: Optional[str] = None
+    to_email: str
+    subject: str
+    message_body: str
+    sender_email: Optional[str] = "hola@hipha.mx"
+    sent_by_user: Optional[str] = None
+    has_attachments: bool = False
+    attachment_names: Optional[str] = None
+    status: str = "sent"
+    error_message: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)

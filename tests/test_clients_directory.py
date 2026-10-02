@@ -103,4 +103,59 @@ async def test_send_email_to_client_endpoint():
         resp = client.post("/api/dashboard/clients/send-email", json=email_payload)
         assert resp.status_code == 200, resp.text
         assert resp.json()["success"] is True
+        assert "log_id" in resp.json()
         assert mock_send.called
+
+
+@pytest.mark.anyio
+async def test_send_email_with_pdf_attachment_and_history_logging():
+    import base64
+    fake_pdf = base64.b64encode(b"%PDF-1.4 Fake PDF Content").decode("utf-8")
+
+    with patch("app.core.mailer._send_smtp", new_callable=AsyncMock) as mock_send:
+        mock_send.return_value = True
+
+        email_payload = {
+            "to_email": "facturacion@cliente.com",
+            "subject": "Pago recibido y Factura CFDI - HiphaMX",
+            "message": "Hola, te adjuntamos tu factura CFDI en formato PDF.",
+            "client_name": "Cliente CFDI Test",
+            "attachments": [
+                {
+                    "filename": "Factura_F102.pdf",
+                    "content_base64": fake_pdf,
+                    "content_type": "application/pdf"
+                }
+            ]
+        }
+
+        # 1. Enviar correo con PDF adjunto
+        resp = client.post("/api/dashboard/clients/send-email", json=email_payload)
+        assert resp.status_code == 200, resp.text
+        data = resp.json()
+        assert data["success"] is True
+        log_id = data["log_id"]
+        assert log_id is not None
+        assert mock_send.called
+
+        # 2. Consultar historial de correos
+        history_resp = client.get("/api/dashboard/clients/email-history?search=Factura_F102")
+        assert history_resp.status_code == 200, history_resp.text
+        history_data = history_resp.json()
+        assert isinstance(history_data, list)
+        assert len(history_data) >= 1
+        
+        target_log = next((l for l in history_data if l["id"] == log_id), None)
+        assert target_log is not None
+        assert target_log["to_email"] == "facturacion@cliente.com"
+        assert target_log["has_attachments"] is True
+        assert "Factura_F102.pdf" in target_log["attachment_names"]
+        assert target_log["status"] == "sent"
+
+        # 3. Consultar detalle por ID
+        detail_resp = client.get(f"/api/dashboard/clients/email-history/{log_id}")
+        assert detail_resp.status_code == 200
+        detail_data = detail_resp.json()
+        assert detail_data["id"] == log_id
+        assert detail_data["subject"] == "Pago recibido y Factura CFDI - HiphaMX"
+        assert "te adjuntamos tu factura CFDI" in detail_data["message_body"]

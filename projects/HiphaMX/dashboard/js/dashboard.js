@@ -1482,7 +1482,8 @@ function setupWorkflowElements() {
                     { id: 'workflowTaskModal', close: closeWorkflowTaskModal },
                     { id: 'workflowMonthlyReportModal', close: closeMonthlyReportModal },
                     { id: 'clientModal', close: closeClientModal },
-                    { id: 'sendAgencyEmailModal', close: closeSendAgencyEmailModal }
+                    { id: 'sendAgencyEmailModal', close: closeSendAgencyEmailModal },
+                    { id: 'emailHistoryModal', close: closeEmailHistoryModal }
                 ];
                 for (const m of openModals) {
                     const el = document.getElementById(m.id);
@@ -3254,6 +3255,69 @@ function initClientsDirectoryModule() {
         btnTplFeedback.dataset.bound = 'true';
         btnTplFeedback.addEventListener('click', () => applyEmailTemplate('feedback'));
     }
+
+    // Botones e Interacciones de Bitácora / Historial de Correos
+    const btnOpenEmailHistoryGlobal = document.getElementById('btnOpenEmailHistoryGlobal');
+    const btnOpenEmailHistoryFromModal = document.getElementById('btnOpenEmailHistoryFromModal');
+    const btnCloseEmailHistoryX = document.getElementById('btnCloseEmailHistoryModalX');
+    const btnCloseEmailHistoryBottom = document.getElementById('btnCloseEmailHistoryModalBottom');
+    const btnRefreshEmailHistory = document.getElementById('btnRefreshEmailHistory');
+    const emailHistorySearchInput = document.getElementById('emailHistorySearchInput');
+    const emailHistoryClientFilter = document.getElementById('emailHistoryClientFilter');
+    const emailHistoryOverlay = document.getElementById('emailHistoryModal');
+
+    if (btnOpenEmailHistoryGlobal && !btnOpenEmailHistoryGlobal.dataset.bound) {
+        btnOpenEmailHistoryGlobal.dataset.bound = 'true';
+        btnOpenEmailHistoryGlobal.addEventListener('click', () => openEmailHistoryModal());
+    }
+
+    if (btnOpenEmailHistoryFromModal && !btnOpenEmailHistoryFromModal.dataset.bound) {
+        btnOpenEmailHistoryFromModal.dataset.bound = 'true';
+        btnOpenEmailHistoryFromModal.addEventListener('click', () => {
+            const cid = currentEmailTargetClient ? currentEmailTargetClient.id : null;
+            openEmailHistoryModal(cid);
+        });
+    }
+
+    if (btnCloseEmailHistoryX && !btnCloseEmailHistoryX.dataset.bound) {
+        btnCloseEmailHistoryX.dataset.bound = 'true';
+        btnCloseEmailHistoryX.addEventListener('click', closeEmailHistoryModal);
+    }
+
+    if (btnCloseEmailHistoryBottom && !btnCloseEmailHistoryBottom.dataset.bound) {
+        btnCloseEmailHistoryBottom.dataset.bound = 'true';
+        btnCloseEmailHistoryBottom.addEventListener('click', closeEmailHistoryModal);
+    }
+
+    if (btnRefreshEmailHistory && !btnRefreshEmailHistory.dataset.bound) {
+        btnRefreshEmailHistory.dataset.bound = 'true';
+        btnRefreshEmailHistory.addEventListener('click', () => loadEmailHistory());
+    }
+
+    if (emailHistoryOverlay && !emailHistoryOverlay.dataset.bound) {
+        emailHistoryOverlay.dataset.bound = 'true';
+        emailHistoryOverlay.addEventListener('click', (e) => {
+            if (e.target === emailHistoryOverlay) closeEmailHistoryModal();
+        });
+    }
+
+    if (emailHistoryClientFilter && !emailHistoryClientFilter.dataset.bound) {
+        emailHistoryClientFilter.dataset.bound = 'true';
+        emailHistoryClientFilter.addEventListener('change', () => loadEmailHistory());
+    }
+
+    if (emailHistorySearchInput && !emailHistorySearchInput.dataset.bound) {
+        emailHistorySearchInput.dataset.bound = 'true';
+        let searchTimer = null;
+        emailHistorySearchInput.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                loadEmailHistory();
+            }, 300);
+        });
+    }
+
+    setupEmailAttachmentHandlers();
 }
 
 async function loadClientsDirectory() {
@@ -3636,9 +3700,14 @@ function renderClientsDirectory() {
         let emailHtml = `<span style="color:var(--text-muted); font-size:0.75rem;">Sin correo</span>`;
         if (c.contact_email) {
             emailHtml = `
-                <button type="button" class="btn-action-icon action-email" onclick="openSendAgencyEmailModal('${escapeHtml(c.contact_email)}', '${escapeHtml(c.name)}')" title="Redactar correo a ${escapeHtml(c.contact_email)} desde hola@hipha.mx">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                </button>
+                <div style="display:inline-flex; align-items:center; gap:0.25rem;">
+                    <button type="button" class="btn-action-icon action-email" onclick="openSendAgencyEmailModal('${escapeHtml(c.contact_email)}', '${escapeHtml(c.name)}')" title="Redactar correo a ${escapeHtml(c.contact_email)} desde hola@hipha.mx">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </button>
+                    <button type="button" class="btn-action-icon action-history" onclick="openEmailHistoryModal(${c.id})" title="Ver bitácora de correos de ${escapeHtml(c.name)}" style="font-size:0.75rem; padding:0.2rem 0.35rem; display:inline-flex; align-items:center; justify-content:center; border:1px solid rgba(148, 163, 184, 0.2); border-radius:4px; background:rgba(255,255,255,0.04); cursor:pointer;">
+                        📜
+                    </button>
+                </div>
             `;
         }
 
@@ -3950,8 +4019,12 @@ function openSendAgencyEmailModal(clientEmail = '', clientName = '', templateTyp
     const inputSubject = document.getElementById('emailInputSubject');
     const inputBody = document.getElementById('emailInputBody');
     const feedback = document.getElementById('emailSendingFeedback');
+    const cfdiAlert = document.getElementById('cfdiReminderAlert');
 
     if (feedback) feedback.classList.add('hidden');
+
+    currentEmailAttachments = [];
+    renderEmailAttachmentList();
 
     currentEmailTargetClient = clientsDirectoryData.find(c => 
         (clientEmail && (c.contact_email || '').toLowerCase() === clientEmail.toLowerCase()) ||
@@ -3966,6 +4039,7 @@ function openSendAgencyEmailModal(clientEmail = '', clientName = '', templateTyp
     } else {
         if (inputSubject) inputSubject.value = '';
         if (inputBody) inputBody.value = '';
+        if (cfdiAlert) cfdiAlert.classList.add('hidden');
     }
 
     if (modal) modal.classList.remove('hidden');
@@ -3974,6 +4048,8 @@ function openSendAgencyEmailModal(clientEmail = '', clientName = '', templateTyp
 function closeSendAgencyEmailModal() {
     const modal = document.getElementById('sendAgencyEmailModal');
     if (modal) modal.classList.add('hidden');
+    currentEmailAttachments = [];
+    renderEmailAttachmentList();
 }
 
 function getFormattedNextCutoffDate(client) {
@@ -4021,6 +4097,15 @@ function applyEmailTemplate(type) {
     const inputClient = document.getElementById('emailInputClientName');
     const inputSubject = document.getElementById('emailInputSubject');
     const inputBody = document.getElementById('emailInputBody');
+    const cfdiAlert = document.getElementById('cfdiReminderAlert');
+
+    if (cfdiAlert) {
+        if (type === 'payment_success' || type === 'payment_thanks') {
+            cfdiAlert.classList.remove('hidden');
+        } else {
+            cfdiAlert.classList.add('hidden');
+        }
+    }
 
     const clientName = (inputClient && inputClient.value) ? inputClient.value.trim() : (currentEmailTargetClient ? currentEmailTargetClient.name : 'Cliente');
     const client = currentEmailTargetClient || clientsDirectoryData.find(c => (c.name || '').toLowerCase() === clientName.toLowerCase());
@@ -4150,22 +4235,32 @@ async function handleSendAgencyEmail(e) {
     }
 
     try {
+        const payload = {
+            to_email,
+            subject,
+            message: message_body,
+            message_body: message_body,
+            client_name,
+            client_id: currentEmailTargetClient ? currentEmailTargetClient.id : null,
+            attachments: currentEmailAttachments.length > 0 ? currentEmailAttachments.map(a => ({
+                filename: a.filename,
+                content_base64: a.content_base64,
+                content_type: a.content_type
+            })) : null
+        };
+
         const response = await fetch(`${API_BASE}/clients/send-email`, {
             method: 'POST',
             headers: {
                 ...getAuthHeaders(),
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                to_email,
-                subject,
-                message: message_body,
-                message_body: message_body,
-                client_name
-            })
+            body: JSON.stringify(payload)
         });
 
         if (response.ok) {
+            currentEmailAttachments = [];
+            renderEmailAttachmentList();
             if (feedback) {
                 feedback.className = '';
                 feedback.style.background = 'rgba(16, 185, 129, 0.15)';
@@ -4178,6 +4273,12 @@ async function handleSendAgencyEmail(e) {
                 closeSendAgencyEmailModal();
                 if (feedback) feedback.classList.add('hidden');
             }, 2500);
+
+            // Refrescar historial si el modal está abierto
+            const historyOverlay = document.getElementById('emailHistoryModal');
+            if (historyOverlay && !historyOverlay.classList.contains('hidden')) {
+                loadEmailHistory();
+            }
         } else {
             const errData = await response.json().catch(() => ({}));
             let errMsg = "Error al enviar el correo. Por favor verifica los datos o la configuración SMTP.";
@@ -4218,6 +4319,328 @@ async function handleSendAgencyEmail(e) {
     }
 }
 
+// ==========================================
+// ADJUNTOS DE ARCHIVOS (PDF, XML, COMPROBANTES)
+// ==========================================
+let currentEmailAttachments = [];
+
+function setupEmailAttachmentHandlers() {
+    const fileInput = document.getElementById('emailFileInput');
+    const btnTrigger = document.getElementById('btnTriggerEmailFile');
+
+    if (btnTrigger && fileInput && !btnTrigger.dataset.bound) {
+        btnTrigger.dataset.bound = 'true';
+        btnTrigger.addEventListener('click', () => {
+            fileInput.click();
+        });
+    }
+
+    if (fileInput && !fileInput.dataset.bound) {
+        fileInput.dataset.bound = 'true';
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files || []);
+            for (const file of files) {
+                // Límite de 8 MB por archivo
+                if (file.size > 8 * 1024 * 1024) {
+                    alert(`El archivo "${file.name}" supera el límite de 8MB.`);
+                    continue;
+                }
+                try {
+                    const base64Content = await readFileAsBase64(file);
+                    currentEmailAttachments.push({
+                        filename: file.name,
+                        content_base64: base64Content,
+                        content_type: file.type || 'application/octet-stream',
+                        size: file.size
+                    });
+                } catch (err) {
+                    console.error("Error al leer archivo:", err);
+                }
+            }
+            fileInput.value = '';
+            renderEmailAttachmentList();
+        });
+    }
+}
+
+function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const result = reader.result;
+            if (typeof result === 'string') {
+                const commaIdx = result.indexOf(',');
+                if (commaIdx !== -1) {
+                    resolve(result.slice(commaIdx + 1));
+                } else {
+                    resolve(result);
+                }
+            } else {
+                reject(new Error("Formato de lectura no compatible"));
+            }
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
+
+function renderEmailAttachmentList() {
+    const list = document.getElementById('emailAttachmentList');
+    if (!list) return;
+
+    if (currentEmailAttachments.length === 0) {
+        list.innerHTML = `<span id="noAttachmentsHint" style="font-size:0.78rem; color:var(--text-muted); font-style:italic; padding:0.2rem 0.4rem;">Ningún archivo adjunto (Opcional)</span>`;
+        return;
+    }
+
+    list.innerHTML = currentEmailAttachments.map((att, idx) => {
+        const isPdf = att.filename.toLowerCase().endsWith('.pdf');
+        const isXml = att.filename.toLowerCase().endsWith('.xml');
+        const icon = isPdf ? '📄' : (isXml ? '📑' : '📎');
+        const sizeKb = att.size ? `(${Math.round(att.size / 1024)} KB)` : '';
+        return `
+            <div style="display:inline-flex; align-items:center; gap:0.35rem; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:0.25rem 0.6rem; font-size:0.78rem; color:var(--text-main);">
+                <span>${icon}</span>
+                <span style="font-weight:600; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(att.filename)}">${escapeHtml(att.filename)}</span>
+                <span style="font-size:0.7rem; color:var(--text-muted);">${sizeKb}</span>
+                <button type="button" onclick="removeEmailAttachment(${idx})" style="background:none; border:none; color:#f87171; font-weight:bold; cursor:pointer; padding:0 0.2rem; font-size:0.85rem;" title="Quitar archivo">&times;</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function removeEmailAttachment(idx) {
+    if (idx >= 0 && idx < currentEmailAttachments.length) {
+        currentEmailAttachments.splice(idx, 1);
+        renderEmailAttachmentList();
+    }
+}
+
+// ==========================================
+// MÓDULO: BITÁCORA E HISTORIAL DE CORREOS ENVIADOS
+// ==========================================
+let emailHistoryData = [];
+let activeEmailHistoryLogId = null;
+
+async function openEmailHistoryModal(clientId = null) {
+    const modal = document.getElementById('emailHistoryModal');
+    if (!modal) return;
+
+    // Poblar selector de clientes
+    const clientSelect = document.getElementById('emailHistoryClientFilter');
+    if (clientSelect) {
+        clientSelect.innerHTML = `<option value="">Todos los Clientes (${clientsDirectoryData.length})</option>` +
+            clientsDirectoryData.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+        if (clientId) {
+            clientSelect.value = String(clientId);
+        } else {
+            clientSelect.value = '';
+        }
+    }
+
+    const searchInput = document.getElementById('emailHistorySearchInput');
+    if (searchInput) searchInput.value = '';
+
+    modal.classList.remove('hidden');
+    await loadEmailHistory();
+}
+
+function closeEmailHistoryModal() {
+    const modal = document.getElementById('emailHistoryModal');
+    if (modal) modal.classList.add('hidden');
+    activeEmailHistoryLogId = null;
+    resetEmailHistoryDetail();
+}
+
+function resetEmailHistoryDetail() {
+    const emptyDetail = document.getElementById('emailHistoryEmptyDetail');
+    const detailContent = document.getElementById('emailHistoryDetailContent');
+    if (emptyDetail) emptyDetail.classList.remove('hidden');
+    if (detailContent) detailContent.classList.add('hidden');
+}
+
+async function loadEmailHistory() {
+    const container = document.getElementById('emailHistoryListContainer');
+    const badge = document.getElementById('emailHistoryCountBadge');
+    const clientSelect = document.getElementById('emailHistoryClientFilter');
+    const searchInput = document.getElementById('emailHistorySearchInput');
+
+    const clientId = clientSelect ? clientSelect.value : '';
+    const search = searchInput ? searchInput.value.trim() : '';
+
+    if (container) {
+        container.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:140px; color:var(--text-muted); font-size:0.85rem;">
+                <span class="spinner" style="width:16px; height:16px; border-width:2px; display:inline-block; margin-right:8px;"></span>
+                <span>Cargando bitácora de correos...</span>
+            </div>
+        `;
+    }
+
+    try {
+        let url = `${API_BASE}/clients/email-history?limit=100`;
+        if (clientId) url += `&client_id=${encodeURIComponent(clientId)}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+
+        const res = await fetch(url, {
+            headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+            emailHistoryData = await res.json();
+            if (badge) badge.textContent = `${emailHistoryData.length}`;
+            renderEmailHistoryList(emailHistoryData);
+        } else {
+            if (container) container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:#f87171; font-size:0.85rem;">Error al cargar bitácora.</div>`;
+        }
+    } catch (err) {
+        console.error("Error cargando historial de correos:", err);
+        if (container) container.innerHTML = `<div style="text-align:center; padding:1.5rem; color:#f87171; font-size:0.85rem;">Fallo de conexión al cargar historial.</div>`;
+    }
+}
+
+function renderEmailHistoryList(logs) {
+    const container = document.getElementById('emailHistoryListContainer');
+    if (!container) return;
+
+    if (!logs || logs.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:2.5rem 1rem; color:var(--text-muted); font-size:0.83rem;">
+                <span style="font-size:1.8rem; display:block; margin-bottom:0.5rem; opacity:0.5;">📭</span>
+                <span>No se encontraron correos enviados con los filtros seleccionados.</span>
+            </div>
+        `;
+        resetEmailHistoryDetail();
+        return;
+    }
+
+    container.innerHTML = logs.map(log => {
+        const isActive = activeEmailHistoryLogId === log.id;
+        const isSent = log.status === 'sent';
+        const statusBadge = isSent 
+            ? `<span style="background:rgba(16,185,129,0.15); color:#34d399; padding:0.1rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight:600;">Enviado</span>`
+            : `<span style="background:rgba(239,68,68,0.15); color:#f87171; padding:0.1rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight:600;">Fallido</span>`;
+
+        let dateStr = '';
+        if (log.created_at) {
+            try {
+                const d = new Date(log.created_at);
+                dateStr = d.toLocaleDateString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                dateStr = (log.created_at || '').slice(0, 16);
+            }
+        }
+
+        const attachmentsBadge = (log.attachments_count && log.attachments_count > 0)
+            ? `<span style="display:inline-flex; align-items:center; gap:0.2rem; background:rgba(0,229,255,0.12); color:var(--accent-cyan); padding:0.1rem 0.4rem; border-radius:4px; font-size:0.68rem; font-weight:600;" title="${escapeHtml((log.attachment_names || []).join(', '))}">📎 ${log.attachments_count}</span>`
+            : '';
+
+        const clientLabel = log.client_name 
+            ? `<span style="color:var(--text-main); font-weight:600;">${escapeHtml(log.client_name)}</span>` 
+            : `<span style="color:var(--text-muted);">${escapeHtml(log.recipient_email)}</span>`;
+
+        return `
+            <div class="email-history-item ${isActive ? 'active' : ''}" onclick="selectEmailHistoryItem(${log.id})" id="emailHistoryItem-${log.id}">
+                <div class="email-history-item-header">
+                    <div style="display:flex; align-items:center; gap:0.35rem; overflow:hidden;">
+                        ${clientLabel}
+                        ${attachmentsBadge}
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.4rem; flex-shrink:0;">
+                        <span style="font-size:0.72rem; color:var(--text-muted);">${dateStr}</span>
+                        ${statusBadge}
+                    </div>
+                </div>
+                <div class="email-history-item-subject" title="${escapeHtml(log.subject || '')}">${escapeHtml(log.subject || '(Sin Asunto)')}</div>
+                <div class="email-history-item-snippet" title="${escapeHtml(log.body_snippet || '')}">${escapeHtml(log.body_snippet || '')}</div>
+            </div>
+        `;
+    }).join('');
+
+    // Si ya había uno activo y sigue en la lista, seleccionarlo; de lo contrario, el primero
+    if (activeEmailHistoryLogId && logs.some(l => l.id === activeEmailHistoryLogId)) {
+        selectEmailHistoryItem(activeEmailHistoryLogId, false);
+    } else if (logs.length > 0) {
+        selectEmailHistoryItem(logs[0].id, false);
+    }
+}
+
+async function selectEmailHistoryItem(logId, triggerScroll = false) {
+    activeEmailHistoryLogId = logId;
+
+    document.querySelectorAll('.email-history-item').forEach(el => el.classList.remove('active'));
+    const activeEl = document.getElementById(`emailHistoryItem-${logId}`);
+    if (activeEl) {
+        activeEl.classList.add('active');
+        if (triggerScroll) activeEl.scrollIntoView({ block: 'nearest' });
+    }
+
+    const emptyDetail = document.getElementById('emailHistoryEmptyDetail');
+    const detailContent = document.getElementById('emailHistoryDetailContent');
+    const subjEl = document.getElementById('emailDetailSubject');
+    const toEl = document.getElementById('emailDetailTo');
+    const clientEl = document.getElementById('emailDetailClient');
+    const dateEl = document.getElementById('emailDetailDate');
+    const statusEl = document.getElementById('emailDetailStatusBadge');
+    const bodyEl = document.getElementById('emailDetailBody');
+    const attContainer = document.getElementById('emailDetailAttachmentsContainer');
+    const attList = document.getElementById('emailDetailAttachmentsList');
+
+    if (emptyDetail) emptyDetail.classList.add('hidden');
+    if (detailContent) detailContent.classList.remove('hidden');
+
+    try {
+        const res = await fetch(`${API_BASE}/clients/email-history/${logId}`, {
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            const detail = await res.json();
+            if (subjEl) subjEl.textContent = detail.subject || '(Sin Asunto)';
+            if (toEl) toEl.textContent = detail.recipient_email || '';
+            if (clientEl) clientEl.textContent = detail.client_name || 'Sin vincular';
+            if (dateEl) {
+                try {
+                    const d = new Date(detail.created_at);
+                    dateEl.textContent = d.toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
+                } catch(e) {
+                    dateEl.textContent = detail.created_at || '';
+                }
+            }
+            if (statusEl) {
+                const isSent = detail.status === 'sent';
+                statusEl.style.background = isSent ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)';
+                statusEl.style.color = isSent ? '#34d399' : '#f87171';
+                statusEl.textContent = isSent ? 'Enviado exitosamente' : 'Error en entrega';
+            }
+
+            if (bodyEl) {
+                bodyEl.textContent = detail.body_text || detail.body_snippet || '(Mensaje vacío)';
+            }
+
+            const attNames = detail.attachment_names || [];
+            if (attNames.length > 0 && attContainer && attList) {
+                attContainer.classList.remove('hidden');
+                attList.innerHTML = attNames.map(name => {
+                    const isPdf = name.toLowerCase().endsWith('.pdf');
+                    const isXml = name.toLowerCase().endsWith('.xml');
+                    const icon = isPdf ? '📄' : (isXml ? '📑' : '📎');
+                    return `
+                        <div class="email-attachment-chip">
+                            <span>${icon}</span>
+                            <span>${escapeHtml(name)}</span>
+                        </div>
+                    `;
+                }).join('');
+            } else if (attContainer) {
+                attContainer.classList.add('hidden');
+                if (attList) attList.innerHTML = '';
+            }
+        }
+    } catch (err) {
+        console.error("Error cargando detalle del correo:", err);
+    }
+}
+
 // Exposición global para interacción directa y consola
 window.openWorkflowTaskModal = openWorkflowTaskModal;
 window.closeWorkflowTaskModal = closeWorkflowTaskModal;
@@ -4232,6 +4655,10 @@ window.handleDeleteClient = handleDeleteClient;
 window.openSendAgencyEmailModal = openSendAgencyEmailModal;
 window.closeSendAgencyEmailModal = closeSendAgencyEmailModal;
 window.applyEmailTemplate = applyEmailTemplate;
+window.openEmailHistoryModal = openEmailHistoryModal;
+window.closeEmailHistoryModal = closeEmailHistoryModal;
+window.selectEmailHistoryItem = selectEmailHistoryItem;
+window.removeEmailAttachment = removeEmailAttachment;
 
 // ==========================================
 // MÓDULO: OBSERVATORIO SOCIAL MEDIA (INSTAGRAM & FACEBOOK)

@@ -7,6 +7,7 @@ from fpdf import FPDF
 from email.message import EmailMessage
 from email.utils import make_msgid, formatdate
 from app.core.config import settings
+from typing import Optional, List
 
 logger = logging.getLogger(__name__)  # SMTP change trigger 2026-08-03
 
@@ -2834,10 +2835,17 @@ async def send_letrerama_quote_notification_team(form_data):
         logger.error(f"Fallo al enviar correo de cotización al equipo Letrerama: {str(e)}")
         return False
 
-async def send_custom_agency_email(to_email: str, subject: str, message_body: str, client_name: str = "") -> bool:
+async def send_custom_agency_email(
+    to_email: str,
+    subject: str,
+    message_body: str,
+    client_name: str = "",
+    attachments: Optional[list] = None
+) -> bool:
     """
     Envía un correo personalizado directamente desde hola@hipha.mx hacia un cliente o prospecto.
     Utiliza el servidor SMTP autenticado de HiphaMX con fallback y protección SPF/DKIM.
+    Soporta múltiples archivos adjuntos en base64 (PDFs, XML para CFDI, etc.).
     """
     from_email = settings.EMAILS_FROM_EMAIL if settings.EMAILS_FROM_EMAIL else "hola@hipha.mx"
     from_name = settings.EMAILS_FROM_NAME if settings.EMAILS_FROM_NAME else "HiphaMX"
@@ -2894,6 +2902,34 @@ async def send_custom_agency_email(to_email: str, subject: str, message_body: st
         html_content=html_content,
         domain="hipha.mx"
     )
+
+    # Procesar archivos adjuntos si existen
+    if attachments:
+        import base64
+        for att in attachments:
+            try:
+                if hasattr(att, "model_dump"):
+                    att_dict = att.model_dump()
+                elif hasattr(att, "dict"):
+                    att_dict = att.dict()
+                elif isinstance(att, dict):
+                    att_dict = att
+                else:
+                    continue
+
+                raw_b64 = att_dict.get("content_base64", "")
+                if "," in raw_b64:
+                    raw_b64 = raw_b64.split(",", 1)[1]
+                file_bytes = base64.b64decode(raw_b64)
+                filename = att_dict.get("filename", "adjunto.pdf")
+                content_type = att_dict.get("content_type", "application/pdf") or "application/pdf"
+                if "/" in content_type:
+                    maintype, subtype = content_type.split("/", 1)
+                else:
+                    maintype, subtype = "application", "octet-stream"
+                message.add_attachment(file_bytes, maintype=maintype, subtype=subtype, filename=filename)
+            except Exception as att_err:
+                logger.warning(f"No se pudo procesar archivo adjunto en send_custom_agency_email: {att_err}")
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)

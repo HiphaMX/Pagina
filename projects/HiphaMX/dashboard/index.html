@@ -436,6 +436,9 @@
                         </div>
 
                         <div class="clients-btn-group">
+                            <button type="button" id="btnOpenEmailHistoryGlobal" class="btn-secondary-mini" style="display:flex; align-items:center; gap:0.4rem; padding:0.55rem 0.9rem; font-weight:600; font-size:0.85rem; border-color:var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); border-radius:8px; cursor:pointer;" title="Ver bitácora de correos enviados desde el dashboard">
+                                <span>📜 Historial</span>
+                            </button>
                             <button type="button" id="btnOpenSendEmailGlobal" class="btn-secondary-mini" style="display:flex; align-items:center; gap:0.4rem; padding:0.55rem 0.9rem; font-weight:600; font-size:0.85rem; border-color:var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); border-radius:8px; cursor:pointer;" title="Redactar correo oficial desde hola@hipha.mx">
                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                                 <span>✉️ Enviar Correo</span>
@@ -880,7 +883,10 @@
                     <h2 style="font-size:1.35rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">✉️ Redactar Correo Oficial</h2>
                     <p style="font-size:0.85rem; color:var(--text-muted);">Enviado directamente desde <strong>hola@hipha.mx</strong> con diseño corporativo</p>
                 </div>
-                <button type="button" id="btnCloseSendEmailModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <button type="button" id="btnOpenEmailHistoryFromModal" class="btn-secondary-mini" style="font-size:0.8rem; padding:0.4rem 0.75rem; border:1px solid var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); border-radius:6px; cursor:pointer;" title="Consultar bitácora de correos enviados">📜 Ver Historial</button>
+                    <button type="button" id="btnCloseSendEmailModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+                </div>
             </div>
 
             <div class="modal-body">
@@ -916,6 +922,32 @@
                     <textarea id="emailInputBody" required rows="6" placeholder="Escribe el cuerpo del mensaje..." style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.75rem; border-radius:8px; outline:none; font-size:0.88rem; line-height:1.5; resize:vertical; font-family:inherit;"></textarea>
                 </div>
 
+                <!-- Recordatorio CFDI (PDF + XML) -->
+                <div id="cfdiReminderAlert" class="hidden" style="background:rgba(255, 171, 0, 0.1); border:1px solid rgba(255, 171, 0, 0.3); border-radius:8px; padding:0.75rem 0.9rem; font-size:0.82rem; color:#ffc107; display:flex; align-items:flex-start; gap:0.6rem;">
+                    <span style="font-size:1.1rem; line-height:1;">💡</span>
+                    <div>
+                        <strong style="display:block; margin-bottom:0.2rem; color:#ffd54f;">Facturación y Comprobante de Pago CFDI:</strong>
+                        <span>Recuerda adjuntar el archivo <strong>PDF de la Factura</strong> y el <strong>XML timbrado</strong> correspondiente a este pago. Puedes seleccionarlos a continuación.</span>
+                    </div>
+                </div>
+
+                <!-- Adjuntar Archivos (PDF, XML, Comprobantes) -->
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">
+                            📎 Archivos Adjuntos (PDF, XML, Comprobantes)
+                        </label>
+                        <button type="button" id="btnTriggerEmailFile" class="btn-secondary-mini" style="font-size:0.75rem; padding:0.3rem 0.65rem; border:1px dashed var(--accent-cyan); background:rgba(0,229,255,0.08); color:var(--accent-cyan); border-radius:6px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:0.3rem;">
+                            <span>+ Adjuntar archivo (PDF / XML)</span>
+                        </button>
+                        <input type="file" id="emailFileInput" multiple accept=".pdf,.xml,.png,.jpg,.jpeg,.zip" style="display:none;">
+                    </div>
+                    
+                    <div id="emailAttachmentList" style="display:flex; flex-wrap:wrap; gap:0.45rem; min-height:36px; padding:0.4rem; background:rgba(0,0,0,0.2); border:1px dashed var(--border-color); border-radius:8px; align-items:center;">
+                        <span id="noAttachmentsHint" style="font-size:0.78rem; color:var(--text-muted); font-style:italic; padding:0.2rem 0.4rem;">Ningún archivo adjunto (Opcional)</span>
+                    </div>
+                </div>
+
                 <div style="background:rgba(0, 229, 255, 0.05); border:1px solid rgba(0,229,255,0.15); border-radius:8px; padding:0.65rem 0.9rem; font-size:0.78rem; color:var(--text-muted); display:flex; align-items:center; gap:0.5rem;">
                     <span style="font-size:1rem;">🛡️</span>
                     <span>Remitente oficial autenticado: <strong style="color:var(--accent-cyan)">hola@hipha.mx</strong> con plantilla HTML de alta conversión.</span>
@@ -934,6 +966,90 @@
                 </div>
             </div>
         </form>
+    </div>
+
+    <!-- Modal para Historial y Bitácora de Correos Oficiales Enviados -->
+    <div id="emailHistoryModal" class="modal-overlay hidden">
+        <div class="modal-dialog modal-xl" style="max-width:960px; height:85vh; display:flex; flex-direction:column;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.3rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">📜 Bitácora de Correos Enviados</h2>
+                    <p style="font-size:0.83rem; color:var(--text-muted); margin:0;">Historial de correos oficiales emitidos desde <strong>hola@hipha.mx</strong> y notificaciones de clientes</p>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <button type="button" id="btnRefreshEmailHistory" class="btn-secondary-mini" style="font-size:0.8rem; padding:0.4rem 0.8rem; border:1px solid var(--border-color); background:rgba(255,255,255,0.05); color:var(--text-main); border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:0.35rem;" title="Refrescar lista de correos">
+                        <span>🔄 Actualizar</span>
+                    </button>
+                    <button type="button" id="btnCloseEmailHistoryModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+                </div>
+            </div>
+
+            <!-- Toolbar de Filtros -->
+            <div style="padding:0.75rem 1.4rem; background:rgba(15, 23, 42, 0.35); border-bottom:1px solid var(--border-color); display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+                <div style="flex:1; min-width:240px;">
+                    <input type="text" id="emailHistorySearchInput" placeholder="Buscar por cliente, destinatario o asunto..." style="width:100%; background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 0.85rem; border-radius:8px; font-size:0.85rem; outline:none;">
+                </div>
+                <div style="min-width:180px;">
+                    <select id="emailHistoryClientFilter" style="width:100%; background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 0.85rem; border-radius:8px; font-size:0.85rem; outline:none;">
+                        <option value="">Todos los Clientes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Cuerpo Split: Lista a la izquierda y Detalle a la derecha -->
+            <div class="modal-body email-history-grid" style="padding:1.2rem;">
+                <!-- Lista de Correos -->
+                <div style="display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,0.15);">
+                    <div style="padding:0.5rem 0.8rem; background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border-color); font-size:0.75rem; font-weight:600; text-transform:uppercase; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+                        <span>Envíos Registrados</span>
+                        <span id="emailHistoryCountBadge" style="background:rgba(0,229,255,0.1); color:var(--accent-cyan); padding:0.15rem 0.5rem; border-radius:4px; font-size:0.7rem;">0</span>
+                    </div>
+                    <div id="emailHistoryListContainer" style="flex:1; overflow-y:auto; padding:0.5rem;">
+                        <div style="text-align:center; padding:2rem; color:var(--text-muted); font-size:0.85rem;">Cargando historial...</div>
+                    </div>
+                </div>
+
+                <!-- Detalle del Correo Seleccionado -->
+                <div id="emailHistoryDetailContainer" style="display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border-color); border-radius:8px; background:rgba(0,0,0,0.25); padding:1rem;">
+                    <div id="emailHistoryEmptyDetail" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; color:var(--text-muted); padding:1.5rem;">
+                        <span style="font-size:2.5rem; margin-bottom:0.75rem; opacity:0.6;">✉️</span>
+                        <h4 style="font-size:0.95rem; font-weight:600; color:var(--text-main); margin-bottom:0.3rem;">Ningún correo seleccionado</h4>
+                        <p style="font-size:0.8rem; margin:0; line-height:1.4;">Haz clic en cualquiera de los correos de la lista para ver el contenido completo y los archivos adjuntos.</p>
+                    </div>
+
+                    <div id="emailHistoryDetailContent" class="hidden" style="display:flex; flex-direction:column; height:100%; overflow:hidden;">
+                        <!-- Encabezado del Detalle -->
+                        <div style="border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; margin-bottom:0.75rem; flex-shrink:0;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; margin-bottom:0.4rem;">
+                                <h3 id="emailDetailSubject" style="font-size:0.98rem; font-weight:600; color:var(--text-main); margin:0; line-height:1.3;"></h3>
+                                <span id="emailDetailStatusBadge" style="font-size:0.72rem; padding:0.2rem 0.55rem; border-radius:4px; font-weight:600; white-space:nowrap;"></span>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:0.25rem; font-size:0.78rem; color:var(--text-muted);">
+                                <div><strong style="color:var(--text-main);">Destinatario:</strong> <span id="emailDetailTo" style="color:var(--accent-cyan); font-weight:500;"></span></div>
+                                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.4rem;">
+                                    <div><strong style="color:var(--text-main);">Cliente:</strong> <span id="emailDetailClient" style="color:var(--text-main);"></span></div>
+                                    <div><strong style="color:var(--text-main);">Fecha:</strong> <span id="emailDetailDate"></span></div>
+                                </div>
+                            </div>
+                            <div id="emailDetailAttachmentsContainer" class="hidden" style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px dashed var(--border-color);">
+                                <span style="font-size:0.74rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.35rem;">📎 Archivos Adjuntos enviados:</span>
+                                <div id="emailDetailAttachmentsList" style="display:flex; flex-wrap:wrap; gap:0.4rem;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Cuerpo del Mensaje -->
+                        <div style="flex:1; overflow-y:auto; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:0.85rem; font-size:0.83rem; line-height:1.6; color:var(--text-main); white-space:pre-wrap; font-family:inherit;" id="emailDetailBody"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding:0.75rem 1.4rem; justify-content:space-between;">
+                <div style="font-size:0.78rem; color:var(--text-muted); display:flex; align-items:center; gap:0.4rem;">
+                    <span>🛡️ Envíos autenticados vía SMTP corporativo</span>
+                </div>
+                <button type="button" id="btnCloseEmailHistoryModalBottom" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.5rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.82rem;">Cerrar</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal para Reporte Ejecutivo PDF con Branding de Hipha -->

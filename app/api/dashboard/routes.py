@@ -19,6 +19,7 @@ from app.core.database import get_db
 from app.models.chilechillon_lead import ChileChillonLead
 from app.models.workflow_task import WorkflowTask
 from app.models.client import AgencyClient
+from app.models.email_log import SentEmailLog
 from app.schemas.workflow import (
     WorkflowTask as WorkflowTaskSchema,
     WorkflowTaskCreate,
@@ -34,7 +35,8 @@ from app.schemas.client import (
     AgencyClient as AgencyClientSchema,
     AgencyClientCreate,
     AgencyClientUpdate,
-    SendAgencyEmailRequest
+    SendAgencyEmailRequest,
+    SentEmailLogResponse
 )
 from app.core.mailer import send_custom_agency_email
 import datetime
@@ -728,9 +730,10 @@ def delete_agency_client(
 @router.post("/clients/send-email")
 async def send_email_to_client(
     email_req: SendAgencyEmailRequest,
+    db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
-    """Envía un correo directamente desde hola@hipha.mx hacia el cliente con diseño institucional."""
+    """Envía un correo directamente desde hola@hipha.mx hacia el cliente con diseño institucional y registra el histórico."""
     if not email_req.to_email or "@" not in email_req.to_email:
         raise HTTPException(status_code=400, detail="Dirección de correo electrónico inválida")
     if not email_req.subject.strip():
@@ -739,17 +742,102 @@ async def send_email_to_client(
     if not msg_content:
         raise HTTPException(status_code=400, detail="El mensaje no puede estar vacío")
 
+    # Resolver cliente vinculado si no se especificó ID explícito
+    client_id = email_req.client_id
+    client_name = (email_req.client_name or "").strip()
+    if not client_id:
+        matched_client = None
+        if client_name:
+            matched_client = db.query(AgencyClient).filter(AgencyClient.name.ilike(client_name)).first()
+        if not matched_client and email_req.to_email:
+            matched_client = db.query(AgencyClient).filter(AgencyClient.contact_email.ilike(email_req.to_email.strip())).first()
+        if matched_client:
+            client_id = matched_client.id
+            if not client_name:
+                client_name = matched_client.name
+
+    has_att = bool(email_req.attachments and len(email_req.attachments) > 0)
+    att_names = ", ".join([a.filename for a in email_req.attachments if a.filename]) if has_att else None
+
+    # Registrar en bitácora de correos
+    sender_user = getattr(current_user, "email", "admin@hipha.mx")
+    log_entry = SentEmailLog(
+        client_id=client_id,
+        client_name=client_name or None,
+        to_email=email_req.to_email.strip(),
+        subject=email_req.subject.strip(),
+        message_body=msg_content,
+        sender_email="hola@hipha.mx",
+        sent_by_user=sender_user,
+        has_attachments=has_att,
+        attachment_names=att_names,
+        status="sent"
+    )
+    db.add(log_entry)
+
     try:
         success = await send_custom_agency_email(
             to_email=email_req.to_email.strip(),
             subject=email_req.subject.strip(),
             message_body=msg_content,
-            client_name=email_req.client_name or ""
+            client_name=email_req.client_name or "",
+            attachments=email_req.attachments
         )
         if success:
-            return {"success": True, "detail": f"Correo enviado exitosamente a {email_req.to_email}"}
+            log_entry.status = "sent"
+            db.commit()
+            db.refresh(log_entry)
+            return {
+                "success": True,
+                "detail": f"Correo enviado exitosamente a {email_req.to_email}",
+                "log_id": log_entry.id
+            }
         else:
+            log_entry.status = "failed"
+            log_entry.error_message = "No se pudo entregar el correo"
+            db.commit()
             raise HTTPException(status_code=500, detail="No se pudo entregar el correo electrónico")
     except Exception as e:
+        log_entry.status = "failed"
+        log_entry.error_message = str(e)
+        db.commit()
         print(f"Error enviando correo institucional: {e}")
         raise HTTPException(status_code=500, detail=f"Error en el servidor de correo: {str(e)}")
+
+
+@router.get("/clients/email-history", response_model=List[SentEmailLogResponse])
+def get_email_history(
+    client_id: Optional[int] = None,
+    search: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Consulta el historial de correos enviados desde el dashboard con soporte para búsqueda y filtrado por cliente."""
+    query = db.query(SentEmailLog)
+    if client_id is not None:
+        query = query.filter(SentEmailLog.client_id == client_id)
+    if search and search.strip():
+        term = f"%{search.strip()}%"
+        query = query.filter(
+            (SentEmailLog.client_name.ilike(term)) |
+            (SentEmailLog.to_email.ilike(term)) |
+            (SentEmailLog.subject.ilike(term)) |
+            (SentEmailLog.message_body.ilike(term)) |
+            (SentEmailLog.attachment_names.ilike(term))
+        )
+    return query.order_by(SentEmailLog.created_at.desc()).offset(offset).limit(limit).all()
+
+
+@router.get("/clients/email-history/{log_id}", response_model=SentEmailLogResponse)
+def get_email_history_detail(
+    log_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Consulta el detalle y cuerpo completo de un correo enviado registrado en el historial."""
+    log_entry = db.query(SentEmailLog).filter(SentEmailLog.id == log_id).first()
+    if not log_entry:
+        raise HTTPException(status_code=404, detail="Registro de correo no encontrado")
+    return log_entry

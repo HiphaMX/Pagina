@@ -76,6 +76,7 @@ def ensure_db_initialized():
     global _tables_created
     if not _tables_created:
         try:
+            import app.models  # noqa: F401 - registrar todos los modelos en Base.metadata
             Base.metadata.create_all(bind=engine)
             # Migración defensiva para columnas adicionales si la tabla ya existía
             try:
