@@ -9,6 +9,7 @@ class WorkflowTaskBase(BaseModel):
     client_name: str
     title: str
     estimated_hours: float = 1.0
+    actual_hours: Optional[float] = None
     revision_hours: float = 0.0
     revisions_count: int = 0
     month_id: Optional[str] = None  # e.g. "2026-09"
@@ -28,6 +29,7 @@ class WorkflowTaskUpdate(BaseModel):
     client_name: Optional[str] = None
     title: Optional[str] = None
     estimated_hours: Optional[float] = None
+    actual_hours: Optional[float] = None
     revision_hours: Optional[float] = None
     revisions_count: Optional[int] = None
     month_id: Optional[str] = None

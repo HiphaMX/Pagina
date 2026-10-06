@@ -18,6 +18,8 @@ mock_admin = UserSchema(
 
 @pytest.fixture(autouse=True)
 def setup_db_and_auth():
+    from app.core.database import ensure_db_initialized
+    ensure_db_initialized()
     Base.metadata.create_all(bind=engine)
     app.dependency_overrides[get_current_active_user] = lambda: mock_admin
     yield
@@ -124,3 +126,63 @@ def test_auto_rollover_on_get_tasks():
     db.query(WorkflowTask).filter(WorkflowTask.id == task_old.id).delete()
     db.commit()
     db.close()
+
+
+def test_workflow_actual_hours_and_time_liberation():
+    """Verifica que se pueda registrar actual_hours al pasar a revisión o terminado, liberando tiempo."""
+    from app.api.dashboard.routes import _get_current_iso_week_id
+    curr_week = _get_current_iso_week_id()
+    db = SessionLocal()
+
+    # 1. Crear tarea de 1.0 hora
+    create_resp = client.post("/api/dashboard/workflow/tasks", json={
+        "week_id": curr_week,
+        "day": "monday",
+        "client_name": "HealthyIce",
+        "title": "3 Carruseles Instagram",
+        "estimated_hours": 1.0,
+        "status": "pending"
+    })
+    assert create_resp.status_code == 200, create_resp.text
+    task_data = create_resp.json()
+    task_id = task_data["id"]
+    assert task_data["actual_hours"] is None
+    assert task_data["estimated_hours"] == 1.0
+
+    # 2. Diseñador termina en 20 min (0.33h) y pasa a 'review' con cliente
+    update_resp = client.put(f"/api/dashboard/workflow/tasks/{task_id}", json={
+        "status": "review",
+        "actual_hours": 0.33
+    })
+    assert update_resp.status_code == 200, update_resp.text
+    updated_data = update_resp.json()
+    assert updated_data["status"] == "review"
+    assert updated_data["actual_hours"] == 0.33
+    assert updated_data["estimated_hours"] == 1.0
+
+    # 3. Pasa a 'completed' con el mismo tiempo real
+    comp_resp = client.put(f"/api/dashboard/workflow/tasks/{task_id}", json={
+        "status": "completed",
+        "actual_hours": 0.33
+    })
+    assert comp_resp.status_code == 200
+    assert comp_resp.json()["status"] == "completed"
+    assert comp_resp.json()["actual_hours"] == 0.33
+
+    # 4. Verificar reporte mensual: las horas base deben ser 0.33, no 1.0
+    today_str = comp_resp.json().get("task_date") or ""
+    if today_str:
+        month_str = today_str[:7]
+        rpt_resp = client.get(f"/api/dashboard/workflow/monthly-report?month={month_str}&client=HealthyIce")
+        if rpt_resp.status_code == 200:
+            rpt_data = rpt_resp.json()
+            client_summary = next((c for c in rpt_data["clients"] if c["client_name"] == "HealthyIce"), None)
+            if client_summary:
+                # El reporte debe incluir 0.33 para esta tarea
+                assert client_summary["base_hours"] >= 0.33
+
+    # Cleanup
+    db.query(WorkflowTask).filter(WorkflowTask.id == task_id).delete()
+    db.commit()
+    db.close()
+

@@ -295,6 +295,7 @@ def create_workflow_task(
         client_name=task_in.client_name,
         title=task_in.title,
         estimated_hours=task_in.estimated_hours,
+        actual_hours=task_in.actual_hours,
         revision_hours=task_in.revision_hours or 0.0,
         revisions_count=task_in.revisions_count or 0,
         month_id=m_id,
@@ -524,7 +525,10 @@ def get_workflow_monthly_report(
                 "tasks_count": 0,
                 "completed_count": 0
             }
-        b_hours = float(t.estimated_hours or 0.0)
+        if t.status in ("review", "completed") and t.actual_hours is not None:
+            b_hours = float(t.actual_hours)
+        else:
+            b_hours = float(t.estimated_hours or 0.0)
         r_hours = float(t.revision_hours or 0.0)
         t_hours = b_hours + r_hours
 

@@ -1479,6 +1479,7 @@ function setupWorkflowElements() {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const openModals = [
+                    { id: 'workflowActualTimeModal', close: closeWorkflowActualTimeModal },
                     { id: 'workflowTaskModal', close: closeWorkflowTaskModal },
                     { id: 'workflowMonthlyReportModal', close: closeMonthlyReportModal },
                     { id: 'clientModal', close: closeClientModal },
@@ -1525,19 +1526,103 @@ function setupWorkflowElements() {
         btnCopyMonthlyReport.addEventListener('click', copyMonthlyReportToClipboard);
     }
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeWorkflowTaskModal();
-            closeMonthlyReportModal();
-        }
-    });
-
     if (btnDeleteTask) {
         btnDeleteTask.addEventListener('click', handleWorkflowTaskDelete);
     }
 
     if (workflowTaskForm) {
         workflowTaskForm.addEventListener('submit', handleWorkflowTaskSubmit);
+    }
+
+    // Listener para mostrar/ocultar sección de tiempo real en modal de edición
+    const taskStatusSelect = document.getElementById('taskInputStatus');
+    const taskActualSection = document.getElementById('taskActualTimeSection');
+    const taskActualInput = document.getElementById('taskInputActualMinutes');
+    const taskHoursSelect = document.getElementById('taskInputHours');
+
+    if (taskStatusSelect && taskActualSection) {
+        taskStatusSelect.addEventListener('change', () => {
+            const st = taskStatusSelect.value;
+            if (st === 'review' || st === 'completed') {
+                taskActualSection.classList.remove('hidden');
+                const baseH = parseFloat(taskHoursSelect ? taskHoursSelect.value : 1.0) || 1.0;
+                const baseM = Math.round(baseH * 60);
+                if (!taskActualInput.value) {
+                    taskActualInput.value = baseM;
+                }
+                updateTaskFreedBadge(baseM, parseFloat(taskActualInput.value) || baseM);
+            } else {
+                taskActualSection.classList.add('hidden');
+            }
+        });
+    }
+
+    // Chips de tiempo rápido dentro de workflowTaskModal
+    const modalChips = document.querySelectorAll('#modalTimeChipsGroup .btn-time-chip');
+    modalChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            modalChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            if (taskActualInput) {
+                taskActualInput.value = chip.dataset.min;
+                const baseH = parseFloat(taskHoursSelect ? taskHoursSelect.value : 1.0) || 1.0;
+                updateTaskFreedBadge(Math.round(baseH * 60), parseFloat(chip.dataset.min));
+            }
+        });
+    });
+
+    if (taskActualInput) {
+        taskActualInput.addEventListener('input', () => {
+            modalChips.forEach(c => c.classList.toggle('active', c.dataset.min === taskActualInput.value));
+            const baseH = parseFloat(taskHoursSelect ? taskHoursSelect.value : 1.0) || 1.0;
+            updateTaskFreedBadge(Math.round(baseH * 60), parseFloat(taskActualInput.value) || 0);
+        });
+    }
+
+    // Listeners del modal rápido workflowActualTimeModal
+    const btnCloseActualTimeX = document.getElementById('btnCloseActualTimeModalX');
+    const btnCancelActualTime = document.getElementById('btnCancelActualTime');
+    const btnConfirmActualTime = document.getElementById('btnConfirmActualTime');
+    const btnSkipActualTime = document.getElementById('btnSkipActualTime');
+    const actualTimeModal = document.getElementById('workflowActualTimeModal');
+    const quickActualInput = document.getElementById('quickActualTimeMinutes');
+    const actualPresets = document.querySelectorAll('.time-presets-grid .btn-time-chip');
+
+    if (btnCloseActualTimeX) btnCloseActualTimeX.addEventListener('click', closeWorkflowActualTimeModal);
+    if (btnCancelActualTime) btnCancelActualTime.addEventListener('click', closeWorkflowActualTimeModal);
+    if (btnConfirmActualTime) btnConfirmActualTime.addEventListener('click', confirmWorkflowActualTimeModal);
+    if (btnSkipActualTime) btnSkipActualTime.addEventListener('click', skipWorkflowActualTimeModal);
+    if (actualTimeModal) {
+        actualTimeModal.addEventListener('click', (e) => {
+            if (e.target === actualTimeModal) closeWorkflowActualTimeModal();
+        });
+    }
+
+    actualPresets.forEach(chip => {
+        chip.addEventListener('click', () => {
+            actualPresets.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            if (quickActualInput) {
+                quickActualInput.value = chip.dataset.min;
+                if (pendingActualTimeTaskId) {
+                    const task = workflowTasks.find(t => String(t.id) === String(pendingActualTimeTaskId));
+                    const baseM = Math.round((parseFloat(task?.estimated_hours) || 1.0) * 60);
+                    updateActualTimeModalPreview(baseM, parseInt(chip.dataset.min));
+                }
+            }
+        });
+    });
+
+    if (quickActualInput) {
+        quickActualInput.addEventListener('input', () => {
+            actualPresets.forEach(c => c.classList.toggle('active', c.dataset.min === quickActualInput.value));
+            if (pendingActualTimeTaskId) {
+                const task = workflowTasks.find(t => String(t.id) === String(pendingActualTimeTaskId));
+                const baseM = Math.round((parseFloat(task?.estimated_hours) || 1.0) * 60);
+                const val = parseFloat(quickActualInput.value) || 0;
+                updateActualTimeModalPreview(baseM, val);
+            }
+        });
     }
 
     // Setup Drag and Drop en las columnas
@@ -1752,6 +1837,7 @@ function renderWorkflowBoard() {
 
     let totalWeekHours = 0;
     const dailyHours = { monday: 0, tuesday: 0, wednesday: 0, thursday: 0, friday: 0 };
+    const dailyFreedHours = { monday: 0, tuesday: 0, wednesday: 0, thursday: 0, friday: 0 };
 
     // Filtrar tareas por cliente si aplica
     const filteredTasks = workflowTasks.filter(task => {
@@ -1768,10 +1854,19 @@ function renderWorkflowBoard() {
         const listEl = document.getElementById(`taskList${capitalize(day)}`);
         const baseH = parseFloat(task.estimated_hours) || 0;
         const revH = parseFloat(task.revision_hours) || 0;
-        const totalH = baseH + revH;
+
+        // Liberación de tiempo: en revisión o terminado se utiliza el tiempo real si fue capturado
+        const isLiberatedStatus = (task.status === 'review' || task.status === 'completed');
+        const hasActual = (task.actual_hours !== null && task.actual_hours !== undefined && !isNaN(parseFloat(task.actual_hours)));
+        const effectiveBaseH = (isLiberatedStatus && hasActual) ? Math.max(0, parseFloat(task.actual_hours)) : baseH;
+        const totalH = effectiveBaseH + revH;
 
         dailyHours[day] += totalH;
         totalWeekHours += totalH;
+
+        if (isLiberatedStatus && hasActual && parseFloat(task.actual_hours) < baseH) {
+            dailyFreedHours[day] += (baseH - parseFloat(task.actual_hours));
+        }
 
         if (listEl) {
             const card = createWorkflowTaskCard(task);
@@ -1782,11 +1877,17 @@ function renderWorkflowBoard() {
     // L-V Semáforo y Barras de Capacidad (9:00 AM a 1:00 PM = 4 horas diarias)
     ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].forEach(day => {
         const hours = dailyHours[day];
+        const freed = dailyFreedHours[day];
         const pillEl = document.getElementById(`hours${capitalize(day)}`);
         const barEl = document.getElementById(`bar${capitalize(day)}`);
 
         if (pillEl) {
-            pillEl.textContent = `${hours.toFixed(1)}h / 4h`;
+            let freedText = '';
+            if (freed >= 0.05) { // al menos ~3 minutos liberados
+                const freedMins = Math.round(freed * 60);
+                freedText = ` <span class="freed-time-pill" title="Tiempo liberado por entregas en revisión o terminadas antes de tiempo">(+${freedMins}m libres)</span>`;
+            }
+            pillEl.innerHTML = `${hours.toFixed(1)}h / 4h${freedText}`;
             pillEl.className = 'day-hours-pill';
             if (hours > 0 && hours < 3.0) {
                 pillEl.classList.add('safe');
@@ -1850,16 +1951,26 @@ function createWorkflowTaskCard(task) {
 
     const clientStyle = getClientStyle(task.client_name);
     const statusInfo = getStatusInfo(task.status);
-    const baseHours = Math.max(0.5, parseFloat(task.estimated_hours) || 1.0);
+    const baseHours = Math.max(0.0, parseFloat(task.estimated_hours) || 1.0);
     const revHours = Math.max(0.0, parseFloat(task.revision_hours) || 0.0);
-    const totalHours = baseHours + revHours;
     const isCompleted = task.status === 'completed';
+    const isReview = task.status === 'review';
+    const hasActual = (task.actual_hours !== null && task.actual_hours !== undefined && !isNaN(parseFloat(task.actual_hours)));
+    const effectiveBaseHours = ((isCompleted || isReview) && hasActual) ? Math.max(0.0, parseFloat(task.actual_hours)) : baseHours;
+    const totalHours = effectiveBaseHours + revHours;
+
+    let freedBadgeHtml = '';
+    if ((isCompleted || isReview) && hasActual && task.actual_hours < baseHours) {
+        const savedMins = Math.round((baseHours - task.actual_hours) * 60);
+        const actualMins = Math.round(task.actual_hours * 60);
+        freedBadgeHtml = `<span class="freed-time-badge" title="Estimado: ${baseHours.toFixed(1)}h • Real: ${actualMins}m (Liberados: ${savedMins}m)">⏱️ ${actualMins}m (-${savedMins}m)</span>`;
+    }
 
     if (isCompleted) {
         card.classList.add('is-completed');
         const tooltipHours = revHours > 0 
-            ? `Total invertido: ${totalHours.toFixed(1)}h (${baseHours.toFixed(1)}h base + ${revHours.toFixed(1)}h cambios)`
-            : `Total invertido: ${totalHours.toFixed(1)}h`;
+            ? `Total invertido: ${totalHours.toFixed(1)}h (${effectiveBaseHours.toFixed(1)}h base real + ${revHours.toFixed(1)}h cambios)`
+            : `Total invertido: ${totalHours.toFixed(1)}h${hasActual && task.actual_hours < baseHours ? ` (Ahorro: ${Math.round((baseHours - task.actual_hours) * 60)} min)` : ''}`;
 
         card.title = `${task.client_name || 'General'} - ${task.title || 'Sin título'} (${tooltipHours}) • Clic para editar`;
         card.innerHTML = `
@@ -1871,6 +1982,7 @@ function createWorkflowTaskCard(task) {
                 <span class="card-title-completed" title="${escapeHtml(task.title || 'Sin título')}">
                     ${escapeHtml(task.title || 'Sin título')}
                 </span>
+                ${freedBadgeHtml}
                 <span class="completed-hours-pill" title="${tooltipHours}">
                     ⏱️ ${totalHours.toFixed(1)}h
                 </span>
@@ -1900,13 +2012,17 @@ function createWorkflowTaskCard(task) {
             ? `<button type="button" class="btn-quick-revision" title="Sumar +30 min por cambios solicitados por el cliente">+0.5h cambio</button>`
             : '';
 
+        const baseHoursChipHtml = (hasActual && isReview && task.actual_hours < baseHours)
+            ? `<span class="hours-chip" title="Estimado original: ${baseHours.toFixed(1)}h • Real invertido: ${effectiveBaseHours.toFixed(1)}h">⏱️ ${effectiveBaseHours.toFixed(1)}h</span>${freedBadgeHtml}`
+            : `<span class="hours-chip">⏱️ ${baseHours.toFixed(1)}h</span>`;
+
         card.innerHTML = `
             <div class="card-top-row">
                 <div class="card-meta-left">
                     <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border};">
                         ${escapeHtml(task.client_name || 'General')}
                     </span>
-                    <span class="hours-chip">⏱️ ${baseHours.toFixed(1)}h</span>
+                    ${baseHoursChipHtml}
                     ${revBadgeHtml}
                 </div>
                 <div style="display:flex; align-items:center; gap:0.35rem;">
@@ -2003,12 +2119,164 @@ function cycleWorkflowTaskStatus(taskId) {
     const task = workflowTasks.find(t => String(t.id) === String(taskId));
     if (!task) return;
     const current = getStatusInfo(task.status);
-    task.status = current.next;
+    const nextStatus = current.next;
+
+    // Si el siguiente estatus es 'review' o 'completed', abrir modal de tiempo real para liberar tiempo sobrante
+    if (nextStatus === 'review' || nextStatus === 'completed') {
+        openWorkflowActualTimeModal(task.id, nextStatus);
+        return;
+    }
+
+    // Si vuelve a 'pending' o 'in_progress', se limpia actual_hours para reservar su jornada completa
+    task.status = nextStatus;
+    task.actual_hours = null;
     saveWorkflowState();
     renderWorkflowBoard();
 
     // Intentar sync con backend
     syncTaskWithApi(task, 'PUT');
+}
+
+// Variables de estado para el modal rápido de tiempo real
+let pendingActualTimeTaskId = null;
+let pendingActualTimeTargetStatus = null;
+
+function openWorkflowActualTimeModal(taskId, targetStatus) {
+    const task = workflowTasks.find(t => String(t.id) === String(taskId));
+    if (!task) return;
+
+    pendingActualTimeTaskId = taskId;
+    pendingActualTimeTargetStatus = targetStatus;
+
+    const modal = document.getElementById('workflowActualTimeModal');
+    const titleEl = document.getElementById('actualTimeModalTitle');
+    const subEl = document.getElementById('actualTimeModalSubtitle');
+    const clientBadge = document.getElementById('actualTimeTaskClientBadge');
+    const taskTitleEl = document.getElementById('actualTimeTaskTitle');
+    const estEl = document.getElementById('actualTimeEstimatedH');
+    const inputMinutes = document.getElementById('quickActualTimeMinutes');
+
+    if (!modal) return;
+
+    const baseH = parseFloat(task.estimated_hours) || 1.0;
+    const baseMinutes = Math.round(baseH * 60);
+    const clientStyle = getClientStyle(task.client_name);
+
+    if (targetStatus === 'review') {
+        if (titleEl) titleEl.textContent = '👀 Pasar a Revisión con Cliente';
+        if (subEl) subEl.textContent = 'Indica los minutos dedicados para liberar el tiempo restante de tu jornada diaria.';
+    } else {
+        if (titleEl) titleEl.textContent = '✅ Marcar como Terminado / Aprobado';
+        if (subEl) subEl.textContent = 'Indica los minutos dedicados para recalcular el tiempo libre de tu día.';
+    }
+
+    if (clientBadge) {
+        clientBadge.textContent = task.client_name || 'General';
+        clientBadge.style.background = clientStyle.bg;
+        clientBadge.style.color = clientStyle.text;
+        clientBadge.style.borderColor = clientStyle.border;
+    }
+
+    if (taskTitleEl) taskTitleEl.textContent = task.title || 'Sin título';
+    if (estEl) estEl.textContent = `${baseH.toFixed(1)}h (${baseMinutes} min)`;
+
+    let currentMin = baseMinutes;
+    if (task.actual_hours !== null && task.actual_hours !== undefined && !isNaN(parseFloat(task.actual_hours))) {
+        currentMin = Math.round(parseFloat(task.actual_hours) * 60);
+    }
+    if (inputMinutes) inputMinutes.value = currentMin;
+
+    updateActualTimeModalPreview(baseMinutes, currentMin);
+
+    // Resaltar chip activo si coincide
+    const chips = modal.querySelectorAll('.time-presets-grid .btn-time-chip');
+    chips.forEach(chip => {
+        const m = parseInt(chip.dataset.min);
+        chip.classList.toggle('active', m === currentMin);
+    });
+
+    modal.classList.remove('hidden');
+    if (inputMinutes) inputMinutes.focus();
+}
+
+function updateActualTimeModalPreview(baseMinutes, selectedMinutes) {
+    const freedPreview = document.getElementById('actualTimeFreedPreview');
+    if (!freedPreview) return;
+
+    if (selectedMinutes < baseMinutes) {
+        const saved = baseMinutes - selectedMinutes;
+        freedPreview.textContent = `🎉 Liberarás +${saved} min hoy`;
+        freedPreview.style.color = '#10b981';
+    } else if (selectedMinutes > baseMinutes) {
+        const extra = selectedMinutes - baseMinutes;
+        freedPreview.textContent = `⚠️ +${extra} min vs estimado`;
+        freedPreview.style.color = '#f59e0b';
+    } else {
+        freedPreview.textContent = `Tiempo exacto estimado`;
+        freedPreview.style.color = 'var(--text-muted)';
+    }
+}
+
+function closeWorkflowActualTimeModal() {
+    const modal = document.getElementById('workflowActualTimeModal');
+    if (modal) modal.classList.add('hidden');
+    pendingActualTimeTaskId = null;
+    pendingActualTimeTargetStatus = null;
+}
+
+function confirmWorkflowActualTimeModal() {
+    if (!pendingActualTimeTaskId) return;
+    const task = workflowTasks.find(t => String(t.id) === String(pendingActualTimeTaskId));
+    if (!task) {
+        closeWorkflowActualTimeModal();
+        return;
+    }
+
+    const inputMinutes = document.getElementById('quickActualTimeMinutes');
+    const baseH = parseFloat(task.estimated_hours) || 1.0;
+    const baseMinutes = Math.round(baseH * 60);
+    let chosenMinutes = inputMinutes ? parseFloat(inputMinutes.value) : baseMinutes;
+    if (isNaN(chosenMinutes) || chosenMinutes < 0) chosenMinutes = baseMinutes;
+
+    task.status = pendingActualTimeTargetStatus || 'completed';
+    task.actual_hours = Math.round((chosenMinutes / 60) * 100) / 100;
+
+    saveWorkflowState();
+    renderWorkflowBoard();
+    syncTaskWithApi(task, 'PUT');
+    closeWorkflowActualTimeModal();
+}
+
+function skipWorkflowActualTimeModal() {
+    if (!pendingActualTimeTaskId) return;
+    const task = workflowTasks.find(t => String(t.id) === String(pendingActualTimeTaskId));
+    if (!task) {
+        closeWorkflowActualTimeModal();
+        return;
+    }
+
+    task.status = pendingActualTimeTargetStatus || 'completed';
+    task.actual_hours = null;
+
+    saveWorkflowState();
+    renderWorkflowBoard();
+    syncTaskWithApi(task, 'PUT');
+    closeWorkflowActualTimeModal();
+}
+
+function updateTaskFreedBadge(baseMinutes, actualMinutes) {
+    const badge = document.getElementById('taskFreedMinutesBadge');
+    if (!badge) return;
+    if (actualMinutes < baseMinutes) {
+        badge.textContent = `Liberará ${baseMinutes - actualMinutes}m del día`;
+        badge.style.display = 'inline-block';
+    } else if (actualMinutes > baseMinutes) {
+        badge.textContent = `+${actualMinutes - baseMinutes}m extra`;
+        badge.style.display = 'inline-block';
+    } else {
+        badge.textContent = 'Mismo tiempo base';
+        badge.style.display = 'inline-block';
+    }
 }
 
 // Drag and drop setup en columnas
@@ -2075,6 +2343,13 @@ function openWorkflowTaskModal(day = 'monday') {
     document.getElementById('taskInputRevisionsCount').value = '0';
     document.getElementById('taskInputStatus').value = 'pending';
     document.getElementById('taskInputNotes').value = '';
+
+    const actualSection = document.getElementById('taskActualTimeSection');
+    const actualInput = document.getElementById('taskInputActualMinutes');
+    const freedBadge = document.getElementById('taskFreedMinutesBadge');
+    if (actualSection) actualSection.classList.add('hidden');
+    if (actualInput) actualInput.value = '';
+    if (freedBadge) freedBadge.textContent = '';
 
     updateModalRevisionSummary();
 
@@ -2226,6 +2501,28 @@ function editWorkflowTask(taskId) {
     document.getElementById('taskInputStatus').value = task.status || 'pending';
     document.getElementById('taskInputNotes').value = task.notes || '';
 
+    // Manejo de campo de tiempo real
+    const actualSection = document.getElementById('taskActualTimeSection');
+    const actualInput = document.getElementById('taskInputActualMinutes');
+    const freedBadge = document.getElementById('taskFreedMinutesBadge');
+    const statusVal = task.status || 'pending';
+    const baseMinutes = Math.round(numHours * 60);
+
+    if (statusVal === 'review' || statusVal === 'completed') {
+        if (actualSection) actualSection.classList.remove('hidden');
+        const curActualMin = (task.actual_hours !== null && task.actual_hours !== undefined)
+            ? Math.round(parseFloat(task.actual_hours) * 60)
+            : baseMinutes;
+        if (actualInput) actualInput.value = curActualMin;
+        updateTaskFreedBadge(baseMinutes, curActualMin);
+        const modalChips = document.querySelectorAll('#modalTimeChipsGroup .btn-time-chip');
+        modalChips.forEach(c => c.classList.toggle('active', parseInt(c.dataset.min) === curActualMin));
+    } else {
+        if (actualSection) actualSection.classList.add('hidden');
+        if (actualInput) actualInput.value = '';
+        if (freedBadge) freedBadge.textContent = '';
+    }
+
     updateModalRevisionSummary();
 
     heading.textContent = 'Editar Entrega de Diseño';
@@ -2255,6 +2552,15 @@ async function handleWorkflowTaskSubmit(e) {
 
     if (!title) return;
 
+    let actualHours = null;
+    if (status === 'review' || status === 'completed') {
+        const actualMinVal = document.getElementById('taskInputActualMinutes')?.value;
+        if (actualMinVal !== '' && actualMinVal !== null && !isNaN(parseFloat(actualMinVal))) {
+            const mins = parseFloat(actualMinVal);
+            actualHours = Math.round((mins / 60) * 100) / 100;
+        }
+    }
+
     if (idVal) {
         // Actualizar tarea existente
         const task = workflowTasks.find(t => String(t.id) === String(idVal));
@@ -2263,6 +2569,7 @@ async function handleWorkflowTaskSubmit(e) {
             task.title = title;
             task.day = day;
             task.estimated_hours = hours;
+            task.actual_hours = actualHours;
             task.revision_hours = revHours;
             task.revisions_count = revCount;
             task.status = status;
@@ -2279,6 +2586,7 @@ async function handleWorkflowTaskSubmit(e) {
             client_name: finalClient,
             title: title,
             estimated_hours: hours,
+            actual_hours: actualHours,
             revision_hours: revHours,
             revisions_count: revCount,
             status: status,
@@ -2338,6 +2646,7 @@ async function syncTaskWithApi(task, method = 'POST') {
             client_name: task.client_name,
             title: task.title,
             estimated_hours: task.estimated_hours,
+            actual_hours: (task.actual_hours !== undefined) ? task.actual_hours : null,
             revision_hours: task.revision_hours || 0.0,
             revisions_count: task.revisions_count || 0,
             status: task.status,
@@ -2760,7 +3069,9 @@ function renderMonthlyReportView() {
     let completedCount = 0;
 
     tasks.forEach(t => {
-        const b = parseFloat(t.estimated_hours) || 0.0;
+        const isLiberated = (t.status === 'review' || t.status === 'completed');
+        const hasActual = (t.actual_hours !== null && t.actual_hours !== undefined && !isNaN(parseFloat(t.actual_hours)));
+        const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0.0);
         const r = parseFloat(t.revision_hours) || 0.0;
         totalBase += b;
         totalRev += r;
@@ -2794,7 +3105,10 @@ function renderMonthlyReportView() {
             if (!clientGroups[c]) {
                 clientGroups[c] = { base: 0, rev: 0, count: 0, completed: 0 };
             }
-            clientGroups[c].base += (parseFloat(t.estimated_hours) || 0);
+            const isLiberated = (t.status === 'review' || t.status === 'completed');
+            const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
+            const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0);
+            clientGroups[c].base += b;
             clientGroups[c].rev += (parseFloat(t.revision_hours) || 0);
             clientGroups[c].count++;
             if (t.status === 'completed') clientGroups[c].completed++;
@@ -2861,11 +3175,17 @@ function renderMonthlyReportView() {
     } else {
         // Vista detallada de piezas de un cliente específico
         const rowsHtml = tasks.map(t => {
-            const b = parseFloat(t.estimated_hours) || 0;
+            const isLiberated = (t.status === 'review' || t.status === 'completed');
+            const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
+            const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0);
+            const origB = parseFloat(t.estimated_hours) || 0;
             const r = parseFloat(t.revision_hours) || 0;
             const tot = b + r;
             const statusInfo = getStatusInfo(t.status);
             const dStr = t.task_date || getTaskExactDate(t);
+            const baseColHint = (isLiberated && hasActual && b < origB)
+                ? `<span title="Estimado original: ${origB.toFixed(1)}h">${b.toFixed(1)}h <small style="color:#10b981; font-weight:600;">(-${Math.round((origB - b) * 60)}m)</small></span>`
+                : `${b.toFixed(1)}h`;
 
             return `
                 <tr>
@@ -2882,7 +3202,7 @@ function renderMonthlyReportView() {
                             ${statusInfo.label}
                         </span>
                     </td>
-                    <td>${b.toFixed(1)}h</td>
+                    <td>${baseColHint}</td>
                     <td style="color:var(--accent-purple)">${r > 0 ? `+${r.toFixed(1)}h (${t.revisions_count || 1}r)` : '0.0h'}</td>
                     <td><strong style="color:var(--accent-cyan); font-size:0.95rem;">${tot.toFixed(1)}h</strong></td>
                 </tr>
@@ -2925,6 +3245,10 @@ function renderMonthlyReportView() {
     }
 }
 
+function task_actual_hours_val(t) {
+    return t.actual_hours !== undefined && !isNaN(parseFloat(t.actual_hours));
+}
+
 async function copyMonthlyReportToClipboard() {
     const inputStart = document.getElementById('rptStartDate');
     const inputEnd = document.getElementById('rptEndDate');
@@ -2944,7 +3268,10 @@ async function copyMonthlyReportToClipboard() {
     let completedCount = 0;
 
     tasks.forEach(t => {
-        totalBase += (parseFloat(t.estimated_hours) || 0);
+        const isLiberated = (t.status === 'review' || t.status === 'completed');
+        const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
+        const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0.0);
+        totalBase += b;
         totalRev += (parseFloat(t.revision_hours) || 0);
         if (t.status === 'completed') completedCount++;
     });
@@ -2963,13 +3290,17 @@ async function copyMonthlyReportToClipboard() {
     text += `DETALLE DE ENTREGABLES:\n`;
 
     tasks.forEach((t, idx) => {
-        const b = (parseFloat(t.estimated_hours) || 0).toFixed(1);
+        const isLiberated = (t.status === 'review' || t.status === 'completed');
+        const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
+        const bVal = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0);
+        const b = bVal.toFixed(1);
         const r = (parseFloat(t.revision_hours) || 0).toFixed(1);
         const tot = (parseFloat(b) + parseFloat(r)).toFixed(1);
         const st = t.status === 'completed' ? '✅ Terminado' : (t.status === 'review' ? '👀 En Revisión' : '🎨 En Proceso');
         const c = selectedClient === 'all' ? `[${t.client_name}] ` : '';
         const d = t.task_date || getTaskExactDate(t);
-        text += `${idx + 1}. ${c}${t.title} (${d}) — ${tot}h (${b}h base + ${r}h cambios) [${st}]\n`;
+        const freedTxt = (isLiberated && hasActual && bVal < (parseFloat(t.estimated_hours) || 0)) ? ` [Real: ${Math.round(bVal * 60)}m]` : '';
+        text += `${idx + 1}. ${c}${t.title} (${d}) — ${tot}h (${b}h base + ${r}h cambios)${freedTxt} [${st}]\n`;
     });
 
     text += `\nGenerado automáticamente por HiphaMX Dashboard`;
@@ -4646,6 +4977,10 @@ window.openWorkflowTaskModal = openWorkflowTaskModal;
 window.closeWorkflowTaskModal = closeWorkflowTaskModal;
 window.editWorkflowTask = editWorkflowTask;
 window.cycleWorkflowTaskStatus = cycleWorkflowTaskStatus;
+window.openWorkflowActualTimeModal = openWorkflowActualTimeModal;
+window.closeWorkflowActualTimeModal = closeWorkflowActualTimeModal;
+window.confirmWorkflowActualTimeModal = confirmWorkflowActualTimeModal;
+window.skipWorkflowActualTimeModal = skipWorkflowActualTimeModal;
 window.openMonthlyReportModal = openMonthlyReportModal;
 window.closeMonthlyReportModal = closeMonthlyReportModal;
 window.addTaskRevision = addTaskRevision;

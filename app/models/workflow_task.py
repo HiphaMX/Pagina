@@ -11,6 +11,7 @@ class WorkflowTask(Base):
     client_name = Column(String, nullable=False)
     title = Column(String, nullable=False)
     estimated_hours = Column(Float, default=1.0)
+    actual_hours = Column(Float, nullable=True, default=None)
     revision_hours = Column(Float, default=0.0)
     revisions_count = Column(Integer, default=0)
     month_id = Column(String, index=True, nullable=True)  # ej. "2026-09"
