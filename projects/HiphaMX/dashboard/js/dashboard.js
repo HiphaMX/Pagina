@@ -1960,7 +1960,7 @@ function createWorkflowTaskCard(task) {
     const totalHours = effectiveBaseHours + revHours;
 
     let freedBadgeHtml = '';
-    if ((isCompleted || isReview) && hasActual && task.actual_hours < baseHours) {
+    if (isReview && hasActual && task.actual_hours < baseHours) {
         const savedMins = Math.round((baseHours - task.actual_hours) * 60);
         const actualMins = Math.round(task.actual_hours * 60);
         freedBadgeHtml = `<span class="freed-time-badge" title="Estimado: ${baseHours.toFixed(1)}h • Real: ${actualMins}m (Liberados: ${savedMins}m)">⏱️ ${actualMins}m (-${savedMins}m)</span>`;
@@ -1970,7 +1970,7 @@ function createWorkflowTaskCard(task) {
         card.classList.add('is-completed');
         const tooltipHours = revHours > 0 
             ? `Total invertido: ${totalHours.toFixed(1)}h (${effectiveBaseHours.toFixed(1)}h base real + ${revHours.toFixed(1)}h cambios)`
-            : `Total invertido: ${totalHours.toFixed(1)}h${hasActual && task.actual_hours < baseHours ? ` (Ahorro: ${Math.round((baseHours - task.actual_hours) * 60)} min)` : ''}`;
+            : `Total invertido: ${totalHours.toFixed(1)}h`;
 
         card.title = `${task.client_name || 'General'} - ${task.title || 'Sin título'} (${tooltipHours}) • Clic para editar`;
         card.innerHTML = `
@@ -1982,7 +1982,6 @@ function createWorkflowTaskCard(task) {
                 <span class="card-title-completed" title="${escapeHtml(task.title || 'Sin título')}">
                     ${escapeHtml(task.title || 'Sin título')}
                 </span>
-                ${freedBadgeHtml}
                 <span class="completed-hours-pill" title="${tooltipHours}">
                     ⏱️ ${totalHours.toFixed(1)}h
                 </span>
