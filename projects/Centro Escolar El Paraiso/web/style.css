@@ -1340,6 +1340,14 @@ body.theme-dark .rotary-node::after {
   transform: translateY(0);
 }
 
+@media (max-width: 768px) {
+  .split-word {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* --- BNS GUÍAS PEDAGÓGICOS (TALENT CARDS) --- */
 .guide-card {
   position: relative;
@@ -3823,11 +3831,42 @@ body.theme-dark .announcement-arch-container {
   }
   .stats_grid {
     flex-direction: column;
-    gap: 32px;
+    gap: 36px;
+    margin-top: 36px;
   }
   .stats_block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
     width: 100%;
     padding: 0;
+  }
+  .stats_number {
+    font-size: clamp(3.2rem, 11vw, 4.4rem);
+    line-height: 0.95;
+    margin-bottom: 2px;
+  }
+  .stats_content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .stats_detail {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+  }
+  .stats_para {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-fg-muted);
+    max-width: 100%;
+    word-break: normal;
+    overflow-wrap: break-word;
   }
   .news_block {
     flex-direction: column;
@@ -4776,12 +4815,131 @@ body.theme-dark .contact-modal_wrapper h3 {
   color: #ffffff !important;
 }
 
+/* Contact info list styling (Clean UX & fully responsive) */
+.contact-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin: 4px 0 12px 0;
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+}
+
+.contact-info-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.contact-info-text {
+  flex: 1;
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.contact-info-text a {
+  color: var(--color-fg);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  transition: color var(--transition-fast);
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.contact-info-text a:hover {
+  color: var(--color-accent-green);
+}
+
+.contact-info-text span {
+  font-family: var(--font-sans);
+  color: var(--color-fg-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: block;
+  max-width: 100%;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.contact-action-wrap {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.contact-action-wrap .contact-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-accent);
+  color: #ffffff;
+  padding: 16px 36px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-accent);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.contact-action-wrap .contact-trigger-btn:hover {
+  background-color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(11, 93, 54, 0.25);
+}
+
+body.theme-dark .contact-action-wrap .contact-trigger-btn {
+  background-color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
+}
+
 @media (max-width: 768px) {
   #contacto .grid-12 > div {
     grid-column: span 12 !important;
   }
   #contacto iframe {
     height: 280px !important;
+  }
+  .contact-info-item {
+    gap: 12px;
+  }
+  .contact-info-text a {
+    font-size: 0.92rem;
+  }
+  .contact-info-text span {
+    font-size: 0.92rem;
+  }
+  .contact-action-wrap .contact-trigger-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 16px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-modal_wrapper {
+    padding: 28px 20px !important;
   }
 }
 
