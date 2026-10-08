@@ -5062,12 +5062,11 @@ body.theme-dark .contact-action-wrap .contact-trigger-btn {
 
 /* ==========================================================================
    INTERACTIVE SECTION: MONITOREO DE OPINIÓN DE PADRES (PULSO COMUNITARIO)
+   [SECCIÓN OCULTADA A SOLICITUD DEL USUARIO]
    ========================================================================== */
-.poll-section {
-  position: relative;
-  background-color: transparent;
-  padding-top: 80px;
-  padding-bottom: 80px;
+.poll-section,
+#opinion-padres {
+  display: none !important;
 }
 
 .poll-bento-grid {
