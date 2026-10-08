@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactModal();
   initParentOpinionPoll();
   initAnnouncementDetailModal();
+  initBlogArticleModal();
 });
 
 /* ==========================================================================
@@ -2315,5 +2316,273 @@ function initAnnouncementDetailModal() {
     if (typeof window.resumeAnnouncementsAutoPlay === 'function') {
       window.resumeAnnouncementsAutoPlay();
     }
+  });
+}
+
+/* ==========================================================================
+   14. BLOG PEDAGÓGICO - ARTÍCULOS COMPLETOS & LECTOR MODAL
+   ========================================================================== */
+const BLOG_ARTICLES_DATA = [
+  {
+    id: "rol-del-juego-programacion",
+    category: "// ROBÓTICA & PENSAMIENTO COMPUTACIONAL",
+    title: "El rol del juego en la programación escolar",
+    author: "Ing. Mateo Ruiz",
+    authorRole: "Coordinador de Robótica Aplicada",
+    date: "15 de Junio, 2026",
+    readTime: "5 min de lectura",
+    image: "robotics_bg_v2.png",
+    lead: "Cómo la robótica educativa fomenta el pensamiento estructurado, la tolerancia a la frustración y la capacidad de resolver problemas reales desde preescolar a través de la lúdica constructivista.",
+    sections: [
+      {
+        heading: "El juego como laboratorio cognitivo infantil",
+        paragraphs: [
+          "En la infancia temprana, el juego no es una distracción ni un simple pasatiempo: es el mecanismo biológico primordial mediante el cual el ser humano explora y modela el mundo. Cuando un alumno en Centro Escolar El Paraíso programa un robot móvil para esquivar obstáculos o recorrer un laberinto trazado en el suelo, el error deja de ser un motivo de penalización.",
+          "En el entorno de robótica, una línea de código que no produce el resultado esperado no es una falla, sino un dato empírico observable. Los niños aprenden a celebrar el hallazgo y a formular hipótesis inmediatas: '¿Por qué giró 90 grados a la izquierda en vez de avanzar 3 pasos?'. Esta relación desestigmatizada con el error es el cimiento de la resiliencia intelectual."
+        ]
+      },
+      {
+        heading: "Del objeto tangible al algoritmo abstracto",
+        paragraphs: [
+          "Siguiendo los principios del construccionismo propuestos por Seymour Papert en el MIT, el cerebro infantil no aprende conceptos lógicos complejos escuchando definiciones pasivas. Requiere construir un objeto físico significativo que interactúe con las leyes del entorno.",
+          "Antes de utilizar interfaces en pantalla, nuestros alumnos manipulan bloques de programación físicos, sensores de proximidad e interruptores mecánicos. Este tránsito sensorial permite que conceptos que suelen causar rechazo en la educación tradicional —como bucles ('loops'), secuencias cronológicas y condicionales ('if / else')— se interioricen como herramientas intuitivas de creación y juego."
+        ]
+      },
+      {
+        heading: "Habilidades para toda la vida más allá del código",
+        paragraphs: [
+          "El objetivo principal de nuestro laboratorio de robótica no es convertir a cada niño en ingeniero de software, sino dotarlo de una caja de herramientas cognitivas universal: capacidad de descomponer problemas colosales en instrucciones sencillas, concentración sostenida y un espíritu colaborativo donde las soluciones se construyen en equipo.",
+          "Al conectar la robótica con proyectos interdisciplinarios que abarcan ciencias naturales y matemáticas CIME, los alumnos descubren que la tecnología es un medio para resolver necesidades de su comunidad, y no solo una pantalla para el consumo pasivo."
+        ]
+      }
+    ],
+    quote: {
+      text: "El mejor aprendizaje ocurre no cuando se instruye pasivamente, sino cuando el niño construye activamente un artefacto significativo en el mundo real.",
+      author: "Seymour Papert (Creador de LOGO y pionero del construccionismo)"
+    },
+    takeaways: [
+      "Transición natural de la curiosidad al razonamiento secuencial",
+      "Reducción sustancial del miedo al fracaso mediante ensayo y error empírico",
+      "Desarrollo temprano de la orientación espacial y la motricidad fina",
+      "Trabajo por proyectos que conecta matemáticas, física y lenguaje"
+    ],
+    whatsappMessage: "Hola, leí el artículo sobre robótica en su blog pedagógico y me interesa conocer más sobre los talleres e inscripciones en Centro Escolar El Paraíso.",
+    ctaText: "Preguntar sobre Robótica por WhatsApp"
+  },
+  {
+    id: "matematicas-manipulativas-cime",
+    category: "// METODOLOGÍA CIME & NEUROEDUCACIÓN",
+    title: "Matemáticas manipulativas y transición conceptual",
+    author: "Mtra. Sofia Varela",
+    authorRole: "Directora de Matemáticas CIME",
+    date: "10 de Junio, 2026",
+    readTime: "6 min de lectura",
+    image: "cime_bg_v2.png",
+    lead: "Por qué el cerebro de un niño requiere interactuar con objetos tridimensionales (regletas y geoplanos CIME) para asimilar el concepto formal de multiplicación, fracciones y razonamiento algebraico sin memorización ciega.",
+    sections: [
+      {
+        heading: "La trampa de la memorización algorítmica temprana",
+        paragraphs: [
+          "Durante décadas, la enseñanza tradicional de las matemáticas ha cometido un error pedagógico sistemático: exigir al niño que memorice tablas numéricas y algoritmos abstractos en papel antes de que su corteza cerebral haya consolidado la noción espacial de cantidad y proporción.",
+          "Esta memorización forzada crea una ilusión de aprendizaje veloz, pero carece de raíces conceptuales. Cuando el estudiante se enfrenta en grados superiores a fracciones, ecuaciones o problemas con enunciados abiertos, la memoria mecánica colapsa y surge la conocida 'ansiedad matemática'."
+        ]
+      },
+      {
+        heading: "El modelo Bruner: Enactivo, Icónico y Simbólico",
+        paragraphs: [
+          "En Centro Escolar El Paraíso implementamos el Sistema CIME, fundamentado en la psicología cognitiva de Jerome Bruner y Jean Piaget. El aprendizaje avanza siempre a través de tres etapas secuenciales rigurosas:",
+          "1. Etapa Enactiva: Los alumnos manipulan físicamente regletas de colores con longitudes y valores exactos. Sumar o multiplicar no es un símbolo sobre papel, sino encajar trenes de regletas y sentir su longitud tangible.",
+          "2. Etapa Icónica: El niño plasma en papel cuadriculado o geoplano la figura y el área formada por sus piezas, transitando del objeto a la representación gráfica.",
+          "3. Etapa Simbólica: Una vez que el concepto existe con total nitidez en su mente, se introduce el número y el signo matemático formal (+, ×, ÷, =). El símbolo cobra vida porque representa una vivencia real previa."
+        ]
+      },
+      {
+        heading: "Fracciones y geometría vividas sin misterio",
+        paragraphs: [
+          "Con las regletas y el geoplano, una fracción como 1/3 deja de ser una cifra misteriosa suspendida sobre una barra: el estudiante comprueba visual y físicamente que tres regletas blancas miden con exactitud una verde claro. La equivalencia de fracciones (2/4 = 1/2) se convierte en una evidencia que sus propios ojos y manos han verificado.",
+          "Esta comprensión profunda desactiva el estrés y genera alumnos con autoestima cognitiva, capaces de explicar con sus propias palabras el porqué de cada procedimiento y de encontrar múltiples caminos para llegar a una misma solución."
+        ]
+      }
+    ],
+    quote: {
+      text: "Lo que la mano hace, la mente lo recuerda. Lo que el ojo ve, el intelecto lo comprende con certidumbre y autonomía.",
+      author: "Principio Fundacional del Constructivismo Matemático CIME"
+    },
+    takeaways: [
+      "Eliminación total del aprendizaje memorístico sin comprensión",
+      "Construcción autónoma del sentido numérico, proporcional y algebraico",
+      "Desarrollo de agilidad mental y gusto intrínseco por la resolución de retos",
+      "Garantía de éxito en la transición académica a niveles de secundaria"
+    ],
+    whatsappMessage: "Hola, leí el artículo sobre matemáticas CIME en su blog y deseo agendar una sesión demostrativa para conocer el método en El Paraíso.",
+    ctaText: "Agendar Sesión CIME por WhatsApp"
+  },
+  {
+    id: "equitacion-inteligencia-emocional",
+    category: "// EQUITACIÓN FORMATIVA & PSICOPEDAGOGÍA",
+    title: "El caballo como espejo: Autorregulación y empatía en la pista",
+    author: "Lic. Lucia Gómez",
+    authorRole: "Directora de Equitación & Psicopedagogía",
+    date: "28 de Mayo, 2026",
+    readTime: "4 min de lectura",
+    image: "equitation_bg_v2.png",
+    lead: "Cómo la interacción consciente y guiada con equinos en nuestro campus fomenta la seguridad interna, la respiración regulada y el liderazgo asertivo sin agresividad en niños desde preescolar.",
+    sections: [
+      {
+        heading: "El caballo no atiende a las palabras, sino al estado interno",
+        paragraphs: [
+          "El caballo es un animal de manada hipersensible que percibe las microexpresiones corporales, el tono muscular y la frecuencia cardíaca de quien se acerca a él. A diferencia de un entorno virtual o de un aula convencional, ante un equino de 450 kilos no es posible fingir calma: si el niño está ansioso o disperso, el animal retrocederá o se mostrará inquieto.",
+          "Esta retroalimentación inmediata, honesta y libre de juicio enseña al alumno a autorregularse. Antes de poder conducir las riendas, el niño debe respirar con serenidad, adoptar una postura firme y transmitir una intención clara. Es la lección de autorregulación emocional más profunda que un infante puede experimentar."
+        ]
+      },
+      {
+        heading: "Liderazgo no violento y asertividad corporal",
+        paragraphs: [
+          "Guiar a un caballo requiere asertividad: ni la fuerza bruta ni la pasividad logran que el equino avance o cambie de dirección con docilidad. Los alumnos aprenden que el verdadero liderazgo proviene del respeto mutuo, la claridad en las señales y la coherencia emocional.",
+          "Esta experiencia en la pista de arena se transfiere de inmediato a su vida cotidiana: los niños desarrollan una presencia más segura en el salón de clases, aprenden a poner límites con firmeza sin agredir, y desarrollan una empatía genuina hacia los seres vivos que los rodean."
+        ]
+      },
+      {
+        heading: "Beneficios neuromotores y propiocepción",
+        paragraphs: [
+          "El movimiento tridimensional del lomo del caballo transmite al cuerpo del jinete impulsos rítmicos casi idénticos al patrón de la marcha humana. Esto estimula el equilibrio vestibular, tonifica la musculatura postural y sincroniza ambos hemisferios cerebrales, favoreciendo la concentración en el aula de clases.",
+          "En Centro Escolar El Paraíso, la equitación no es un deporte elitista o aislado: es una disciplina pedagógica integral incorporada a nuestro campus campestre para nutrir cuerpo, mente y corazón."
+        ]
+      }
+    ],
+    quote: {
+      text: "El caballo refleja quién eres en ese instante exacto. Para guiarlo hacia adelante, primero debes encontrar la serenidad dentro de ti mismo.",
+      author: "Lic. Lucia Gómez (Psicopedagoga y Especialista Ecuestre)"
+    },
+    takeaways: [
+      "Desarrollo de autorregulación emocional y disminución de la impulsividad",
+      "Fortalecimiento de la autoestima a través de logros motrices y afectivos reales",
+      "Mejora notable en postura, tono muscular y balance vestibular",
+      "Conexión directa con la naturaleza y respeto empático hacia los animales"
+    ],
+    whatsappMessage: "Hola, leí el artículo sobre equitación formativa en su blog y me gustaría conocer las instalaciones y el programa ecuestre de El Paraíso.",
+    ctaText: "Preguntar sobre Equitación por WhatsApp"
+  }
+];
+
+function initBlogArticleModal() {
+  const dialog = document.getElementById('article-modal');
+  const triggers = document.querySelectorAll('.article-popup-trigger');
+  const articleCards = document.querySelectorAll('.news_item.article-card');
+  const closeBtn = document.getElementById('article-modal-close-btn');
+  const closeActionBtn = document.getElementById('art-modal-close-action');
+
+  if (!dialog || triggers.length === 0) return;
+
+  const heroEl = document.getElementById('art-modal-hero');
+  const tagEl = document.getElementById('art-modal-tag');
+  const titleEl = document.getElementById('art-modal-title');
+  const authorEl = document.getElementById('art-modal-author');
+  const dateEl = document.getElementById('art-modal-date');
+  const timeEl = document.getElementById('art-modal-time');
+  const leadEl = document.getElementById('art-modal-lead');
+  const sectionsEl = document.getElementById('art-modal-sections');
+  const quoteTextEl = document.getElementById('art-modal-quote-text');
+  const quoteAuthorEl = document.getElementById('art-modal-quote-author');
+  const takeawaysEl = document.getElementById('art-modal-takeaways');
+  const ctaWhatsappEl = document.getElementById('art-modal-cta-whatsapp');
+  const ctaTextEl = document.getElementById('art-modal-cta-text');
+
+  function openArticleModal(idx) {
+    const data = BLOG_ARTICLES_DATA[idx];
+    if (!data) return;
+
+    // Populate Hero & Header
+    if (heroEl) {
+      heroEl.style.backgroundImage = `url('${data.image}')`;
+    }
+    if (tagEl) tagEl.textContent = data.category;
+    if (titleEl) titleEl.textContent = data.title;
+    if (authorEl) authorEl.textContent = `${data.author} (${data.authorRole})`;
+    if (dateEl) dateEl.textContent = data.date;
+    if (timeEl) timeEl.textContent = data.readTime;
+
+    // Populate Lead Text
+    if (leadEl) {
+      leadEl.textContent = data.lead;
+    }
+
+    // Populate Sections
+    if (sectionsEl) {
+      sectionsEl.innerHTML = data.sections.map(sec => `
+        <div class="art-section-block">
+          <h4 class="art-section-heading">${sec.heading}</h4>
+          ${sec.paragraphs.map(p => `<p class="art-section-paragraph">${p}</p>`).join('')}
+        </div>
+      `).join('');
+    }
+
+    // Populate Blockquote
+    if (quoteTextEl) quoteTextEl.textContent = `«${data.quote.text}»`;
+    if (quoteAuthorEl) quoteAuthorEl.textContent = `— ${data.quote.author}`;
+
+    // Populate Takeaways
+    if (takeawaysEl) {
+      takeawaysEl.innerHTML = data.takeaways.map(t => `
+        <li class="art-modal_takeaway-item">
+          <span class="art-modal_takeaway-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span>${t}</span>
+        </li>
+      `).join('');
+    }
+
+    // Populate WhatsApp CTA
+    if (ctaWhatsappEl) {
+      const encodedMsg = encodeURIComponent(data.whatsappMessage);
+      ctaWhatsappEl.href = `https://wa.me/523315679811?text=${encodedMsg}`;
+    }
+    if (ctaTextEl) {
+      ctaTextEl.textContent = data.ctaText;
+    }
+
+    document.body.classList.add('body-no-scroll');
+    dialog.showModal();
+  }
+
+  function closeArticleModal() {
+    dialog.classList.add('closing');
+    setTimeout(() => {
+      dialog.close();
+      dialog.classList.remove('closing');
+      document.body.classList.remove('body-no-scroll');
+    }, 350);
+  }
+
+  triggers.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const idx = parseInt(btn.getAttribute('data-article-idx'), 10) || 0;
+      openArticleModal(idx);
+    });
+  });
+
+  articleCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Avoid duplicate triggers if clicked on an inner button
+      if (e.target.closest('.article-popup-trigger')) return;
+      const idx = parseInt(card.getAttribute('data-article-idx'), 10) || 0;
+      openArticleModal(idx);
+    });
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeArticleModal);
+  if (closeActionBtn) closeActionBtn.addEventListener('click', closeArticleModal);
+
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      closeArticleModal();
+    }
+  });
+
+  dialog.addEventListener('cancel', () => {
+    document.body.classList.remove('body-no-scroll');
   });
 }
