@@ -1592,24 +1592,6 @@ body.theme-dark .rotary-node::after {
   transition: stroke var(--transition-fast), transform var(--transition-normal);
 }
 
-.card-symbol-watermark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 220px;
-  height: 220px;
-  opacity: 0.04;
-  pointer-events: none;
-  color: var(--color-accent);
-  transition: opacity var(--transition-normal), transform var(--transition-normal);
-  z-index: 1;
-}
-
-.specialism-card.card-secondary:hover .card-symbol-watermark {
-  opacity: 0.08;
-  transform: translate(-50%, -50%) scale(1.08);
-}
 
 .specialism-card .card-top {
   display: flex;
@@ -1783,11 +1765,6 @@ body.theme-dark .rotary-node::after {
   .symbol-icon-wrapper svg {
     width: 46px;
     height: 46px;
-  }
-
-  .card-symbol-watermark {
-    width: 180px;
-    height: 180px;
   }
 
   /* Parte inferior: Fotografía y Descripción */
