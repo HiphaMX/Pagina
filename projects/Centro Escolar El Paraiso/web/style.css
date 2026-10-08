@@ -71,6 +71,23 @@ html, body {
   transition: background-color var(--transition-slow), color var(--transition-slow), border-color var(--transition-slow);
 }
 
+/* --- Anchor Scroll Margin for Smooth & Clean Navigation --- */
+section[id],
+div[id],
+footer[id],
+main > div[id] {
+  scroll-margin-top: 90px;
+}
+
+@media (max-width: 768px) {
+  section[id],
+  div[id],
+  footer[id],
+  main > div[id] {
+    scroll-margin-top: 75px;
+  }
+}
+
 /* Custom Selection */
 ::selection {
   background-color: var(--color-accent-green);
@@ -2982,9 +2999,17 @@ body.theme-dark .footer {
 }
 
 @media (max-width: 640px) {
+  .footer {
+    padding-top: 50px !important;
+    padding-bottom: 60px !important;
+  }
   .footer-col {
     grid-column: span 12;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
+  }
+  .footer-grid {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
   }
 }
 
@@ -3392,7 +3417,7 @@ dialog.nav-menu_component[open]::backdrop {
 /* Scroll Lock Utility */
 body.body-no-scroll {
   overflow: hidden !important;
-  height: 100vh;
+  overscroll-behavior: none !important;
 }
 
 /* --- Responsive Menu Overrides --- */
@@ -5168,50 +5193,122 @@ body.theme-dark .contact-action-wrap .contact-trigger-btn {
   border-color: var(--color-accent-green);
 }
 
+/* Contact Grid & Details Desktop */
+.contact-main-grid {
+  align-items: center;
+  gap: 40px;
+}
+
+.contact-details-col {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contact-text-block h3 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.contact-text-block p {
+  color: var(--color-fg-muted);
+  margin-bottom: 16px;
+}
+
 @media (max-width: 768px) {
-  #contacto .grid-12 > div {
-    grid-column: span 12 !important;
+  #contacto {
+    padding-top: 40px !important;
+    padding-bottom: 46px !important;
   }
-  #contacto iframe {
-    height: 280px !important;
+  #contacto .section-header-wrap {
+    margin-bottom: 16px !important;
+  }
+  #contacto .section-header-wrap .text-heading {
+    font-size: clamp(1.75rem, 6vw, 2.2rem) !important;
+    line-height: 1.15 !important;
+    margin-top: 6px !important;
+  }
+  .contact-main-grid {
+    gap: 20px !important;
+  }
+  .contact-details-col {
+    grid-column: span 12 !important;
+    gap: 16px !important;
+  }
+  .contact-text-block h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+  }
+  .contact-text-block p {
+    font-size: 0.94rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 10px !important;
+    color: var(--color-fg-muted);
+  }
+  .contact-info-list {
+    gap: 10px !important;
+    margin: 2px 0 6px 0 !important;
   }
   .contact-info-item {
-    gap: 12px;
+    gap: 12px !important;
+    align-items: center !important;
   }
-  .contact-info-text a {
-    font-size: 0.92rem;
+  .contact-info-icon {
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: 0 !important;
   }
+  .contact-info-text a,
   .contact-info-text span {
-    font-size: 0.92rem;
+    font-size: 0.92rem !important;
+    line-height: 1.4 !important;
+  }
+  .contact-action-wrap {
+    margin-top: 6px !important;
   }
   .contact-action-wrap .contact-trigger-btn {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-    padding: 16px 20px;
-    font-size: 0.95rem;
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 14px 20px !important;
+    font-size: 0.92rem !important;
+    letter-spacing: 0.04em !important;
+  }
+  .contact-map-col {
+    grid-column: span 12 !important;
+    margin-top: 6px !important;
+  }
+  #contacto iframe {
+    height: 210px !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
   }
 }
 
 @media (max-width: 600px) {
   dialog.contact-modal_component {
-    width: 95% !important;
-    max-width: 440px !important;
-    max-height: 92vh !important;
-    max-height: 92dvh !important;
+    width: 94% !important;
+    max-width: 420px !important;
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
     margin: auto !important;
     inset: 0 !important;
   }
 
   .contact-modal_wrapper {
-    padding: 22px 16px 20px 16px !important;
-    max-height: 92vh !important;
-    max-height: 92dvh !important;
+    padding: 20px 16px 18px 16px !important;
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
     border-radius: var(--radius-md) !important;
   }
 
   .contact-modal_header {
-    margin-bottom: 14px !important;
+    margin-bottom: 12px !important;
     padding-right: 36px !important;
   }
 
@@ -5221,41 +5318,41 @@ body.theme-dark .contact-action-wrap .contact-trigger-btn {
   }
 
   .contact-modal_header h3 {
-    font-size: 1.3rem !important;
+    font-size: 1.25rem !important;
     line-height: 1.2 !important;
   }
 
   .contact-modal_close-btn {
-    top: 14px !important;
-    right: 14px !important;
+    top: 12px !important;
+    right: 12px !important;
     width: 32px !important;
     height: 32px !important;
     font-size: 1.25rem !important;
   }
 
   .contact-modal_wrapper .form-group {
-    margin-bottom: 12px !important;
+    margin-bottom: 10px !important;
   }
 
   .contact-modal_wrapper .form-label {
     font-size: 0.7rem !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 3px !important;
   }
 
   .contact-modal_wrapper .form-input {
-    padding: 10px 12px !important;
+    padding: 9px 12px !important;
     font-size: 16px !important; /* CRITICAL: Prevents iOS auto-zoom */
   }
 
   .contact-modal_wrapper .contact-textarea {
-    min-height: 56px !important;
+    min-height: 52px !important;
     padding: 8px 12px !important;
     font-size: 16px !important;
   }
 
   .contact-modal_wrapper #contact-submit-btn {
-    padding: 14px 18px !important;
-    font-size: 0.86rem !important;
+    padding: 12px 16px !important;
+    font-size: 0.88rem !important;
     margin-top: 6px !important;
   }
 

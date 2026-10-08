@@ -43,6 +43,19 @@ function initSplashLoader() {
   }, 1100);
 }
 
+function scrollToSection(targetId) {
+  if (!targetId || targetId === '#') return;
+  const targetSection = document.querySelector(targetId);
+  if (!targetSection) return;
+  const header = document.getElementById('main-header');
+  const headerHeight = header ? header.offsetHeight : 70;
+  const targetTop = targetSection.getBoundingClientRect().top + window.pageYOffset - (headerHeight + 14);
+  window.scrollTo({
+    top: Math.max(0, targetTop),
+    behavior: 'smooth'
+  });
+}
+
 /* ==========================================================================
    1. NAVIGATION & SCROLL TRACKING
    ========================================================================== */
@@ -55,12 +68,7 @@ function initNavigation() {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const targetId = link.getAttribute('href');
-      if (targetId === '#') return;
-      
-      const targetSection = document.querySelector(targetId);
-      if (targetSection) {
-        targetSection.scrollIntoView({ behavior: 'smooth' });
-      }
+      scrollToSection(targetId);
     });
   });
 
@@ -1167,11 +1175,8 @@ function initOverlayMenu() {
 
         // Smooth scroll to target section after overlay closes
         setTimeout(() => {
-          const targetSection = document.querySelector(targetId);
-          if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 500);
+          scrollToSection(targetId);
+        }, 480);
       }
     });
   });

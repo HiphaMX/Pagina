@@ -11,7 +11,7 @@
   <meta name="author" content="HiphaMX">
   
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 
@@ -1530,12 +1530,12 @@
           <h2 class="text-heading" style="margin-top: 12px;">Contacto</h2>
         </div>
 
-        <div class="grid-12" style="align-items: center; gap: 40px;">
+        <div class="grid-12 contact-main-grid">
           <!-- Info & Button Column -->
-          <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 24px;">
-            <div>
-              <h3 class="text-subheading" style="font-size: 1.5rem; margin-bottom: 8px;">Comunícate con nosotros</h3>
-              <p class="text-body" style="color: var(--color-fg-muted); margin-bottom: 16px;">
+          <div class="contact-details-col">
+            <div class="contact-text-block">
+              <h3 class="text-subheading">Comunícate con nosotros</h3>
+              <p class="text-body">
                 Estamos listos para resolver todas tus dudas sobre nuestro modelo educativo, inscripciones y visitas guiadas al campus.
               </p>
             </div>
@@ -1568,7 +1568,10 @@
             </div>
 
             <div class="contact-action-wrap">
-              <button type="button" class="btn contact-trigger-btn">Contáctanos</button>
+              <button type="button" class="btn contact-trigger-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                Abrir Formulario de Contacto
+              </button>
             </div>
           </div>
 
@@ -1940,6 +1943,6 @@
   </dialog>
 
   <!-- --- JAVASCRIPT LOGIC --- -->
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
