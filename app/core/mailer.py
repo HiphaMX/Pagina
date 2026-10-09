@@ -2214,7 +2214,7 @@ def _prepare_project_email(
                 )
 
     # Real From calculation to avoid SPF / Sender mismatch failure
-    actual_from = smtp_user
+    actual_from = smtp_user or from_email
 
     message = EmailMessage()
     message["From"] = f"{from_name} <{actual_from}>"
@@ -2949,7 +2949,7 @@ async def send_oncologiarobotica_confirmation_email(form_data):
         return True
 
     from_name = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_NAME or "Oncología Robótica"
-    from_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or "citas@oncologiarobotica.com.mx"
+    from_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or "Noreply@oncologia-robotica.com"
 
     html_content = f"""
     <!DOCTYPE html>
@@ -2979,7 +2979,7 @@ async def send_oncologiarobotica_confirmation_email(form_data):
             </p>
 
             <div style="text-align: center; margin: 25px 0;">
-                <a href="https://wa.me/523316013840?text=Hola,%20solicito%20seguimiento%20a%20mi%20cita%20en%20Oncología%20Robótica" 
+                <a href="https://wa.me/523311085716?text=Hola,%20solicito%20seguimiento%20a%20mi%20cita%20en%20Oncología%20Robótica" 
                    style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #040b14; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;">
                     Contactar por WhatsApp
                 </a>
@@ -3001,11 +3001,12 @@ async def send_oncologiarobotica_confirmation_email(form_data):
         to_email=form_data.email,
         subject="🩺 Confirmación de Solicitud de Valoración — Oncología Robótica",
         html_content=html_content,
-        domain="oncologiarobotica.com.mx"
+        domain="oncologia-robotica.com"
     )
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Confirmación de Oncología Robótica enviada con éxito a {form_data.email}")
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar confirmación al paciente de Oncología Robótica: {str(e)}")
@@ -3020,8 +3021,9 @@ async def send_oncologiarobotica_notification_team(form_data):
         logger.warning("SMTP no configurado. Simulando notificación de nuevo lead de Oncología Robótica al equipo")
         return True
 
-    from_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or "citas@oncologiarobotica.com.mx"
-    to_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or settings.EMAILS_FROM_EMAIL or "hola@hipha.mx"
+    from_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or "Noreply@oncologia-robotica.com"
+    to_email = settings.ONCOLOGIAROBOTICA_NOTIFICATION_EMAIL or "oncodiaz.89@gmail.com"
+    cc_email = settings.ONCOLOGIAROBOTICA_CC_EMAIL or "hola@hipha.mx"
 
     mensaje_str = form_data.mensaje if form_data.mensaje else "Sin mensaje adicional"
 
@@ -3067,19 +3069,23 @@ async def send_oncologiarobotica_notification_team(form_data):
 
     message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
         project_prefix="ONCOLOGIAROBOTICA",
-        from_name="Oncología Robótica Web",
+        from_name="Oncología Robótica",
         from_email=from_email,
         to_email=to_email,
         subject=f"⚡ NUEVA VALORACIÓN: {form_data.nombre} - {form_data.tipo_procedimiento}",
         html_content=html_content,
-        domain="oncologiarobotica.com.mx"
+        domain="oncologia-robotica.com"
     )
+
+    if cc_email:
+        message["Cc"] = cc_email
 
     del message['Reply-To']
     message['Reply-To'] = form_data.email
 
     try:
         await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Notificación de Oncología Robótica enviada con éxito a {to_email} (CC: {cc_email})")
         return True
     except Exception as e:
         logger.error(f"Fallo al enviar notificación al equipo de Oncología Robótica: {str(e)}")
