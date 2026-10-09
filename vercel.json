@@ -450,26 +450,6 @@
       "dest": "/projects/OncologiaRobotica/$1"
     },
     {
-      "src": "/(blog|padecimientos|tipo|tipos-de-cirugia)/([^/.]+)(?:\\.html)?",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
-        }
-      ],
-      "dest": "/projects/OncologiaRobotica/$1/$2.html"
-    },
-    {
-      "src": "/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp|index)(?:\\.html)?",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
-        }
-      ],
-      "dest": "/projects/OncologiaRobotica/$1.html"
-    },
-    {
       "src": "/",
       "has": [
         {
@@ -523,14 +503,6 @@
     {
       "src": "/oncologia-robotica/",
       "dest": "/projects/OncologiaRobotica/"
-    },
-    {
-      "src": "/oncologia-robotica/(blog|padecimientos|tipo|tipos-de-cirugia)/([^/.]+)(?:\\.html)?",
-      "dest": "/projects/OncologiaRobotica/$1/$2.html"
-    },
-    {
-      "src": "/oncologia-robotica/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp|index)(?:\\.html)?",
-      "dest": "/projects/OncologiaRobotica/$1.html"
     },
     {
       "src": "/oncologia-robotica/(.*)",
