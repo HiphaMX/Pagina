@@ -522,7 +522,7 @@
     },
     {
       "src": "/oncologia-robotica/",
-      "dest": "/projects/OncologiaRobotica/index.html"
+      "dest": "/projects/OncologiaRobotica/"
     },
     {
       "src": "/oncologia-robotica/(blog|padecimientos|tipo|tipos-de-cirugia)/([^/.]+)(?:\\.html)?",
