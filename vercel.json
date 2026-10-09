@@ -460,7 +460,7 @@
       "dest": "/projects/OncologiaRobotica/$1/$2"
     },
     {
-      "src": "/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp|index)(.html|)",
+      "src": "/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp)(.html|)",
       "has": [
         {
           "type": "host",
@@ -470,6 +470,16 @@
       "dest": "/projects/OncologiaRobotica/$1$2"
     },
     {
+      "src": "/(index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-robotica\\.com$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/"
+    },
+    {
       "src": "/",
       "has": [
         {
@@ -477,7 +487,17 @@
           "value": "^(www\\.)?oncologia-robotica\\.com$"
         }
       ],
-      "dest": "/projects/OncologiaRobotica/index.html"
+      "dest": "/projects/OncologiaRobotica/"
+    },
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-robotica\\.com$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/$1"
     },
     {
       "src": "/amdi",
