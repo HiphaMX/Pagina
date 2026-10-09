@@ -122,6 +122,15 @@ class Settings(BaseSettings):
     LETRERAMA_EMAILS_FROM_NAME: str = ""
     LETRERAMA_RECAPTCHA_SECRET_KEY: str = ""
 
+    # ONCOLOGIAROBOTICA Specific SMTP settings (Pendiente de credenciales)
+    ONCOLOGIAROBOTICA_SMTP_HOST: str = ""
+    ONCOLOGIAROBOTICA_SMTP_PORT: Union[int, str] = 587
+    ONCOLOGIAROBOTICA_SMTP_USER: str = ""
+    ONCOLOGIAROBOTICA_SMTP_PASSWORD: str = ""
+    ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL: str = ""
+    ONCOLOGIAROBOTICA_EMAILS_FROM_NAME: str = ""
+    ONCOLOGIAROBOTICA_RECAPTCHA_SECRET_KEY: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
     @validator("SMTP_PORT", pre=True, always=True)

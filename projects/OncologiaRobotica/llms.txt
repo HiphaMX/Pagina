@@ -1,0 +1,35 @@
+# Oncología Robótica — Centro de Cirugía Robótica de Alta Especialidad
+> Oncología Robótica es una práctica médica de alta especialidad en México enfocada en la prevención, diagnóstico oportuno y tratamiento quirúrgico de mínima invasión del cáncer y tumores complejos mediante el Sistema Quirúrgico Da Vinci Xi. Nuestro equipo integra cirujanos certificados internacionalmente en cirugía robótica, con enfoque en la erradicación tumoral completa y la máxima preservación de la calidad de vida y función del paciente.
+
+## Información de Contacto y Citas
+- **Sitio Web Oficial:** [https://hipha.mx/oncologia-robotica](https://hipha.mx/oncologia-robotica)
+- **Atención y Valoración Inmediata:** Formulario web seguro y enlace directo de WhatsApp para pacientes y segundas opiniones.
+- **Ubicación:** Principales centros hospitalarios de alta especialidad con tecnología Da Vinci Xi en México.
+
+---
+
+## Especialidades y Procedimientos Quirúrgicos Robóticos
+
+### 1. Urología Oncológica Robótica
+- **Prostatectomía Radical Robótica (Cáncer de Próstata):** Extirpación oncológica precisa con técnica de preservación nerviosa bilateral (*nerve-sparing*) para salvaguardar la continencia urinaria y la función eréctil.
+- **Nefrectomía Parcial Robótica (Cáncer Renal):** Extirpación selectiva de tumores renales preservando el resto del riñón funcional y minimizando el tiempo de isquemia gracias a la magnificación 3D.
+- **Cistectomía Radical Robótica (Cáncer de Vejiga):** Resección tumoral y derivación urinaria intracorpórea de mínima invasión con menor sangrado y menor estancia en terapia intensiva.
+
+### 2. Cirugía Oncológica de Mínima Invasión (Abdomen y Pelvis)
+- **Tumores Colorrectales y Retroperitoneales:** Disección ganglionar oncológica meticulosa en espacios pélvicos profundos donde la visión 3D HD y los instrumentos articulados EndoWrist superan el alcance de la mano humana.
+- **Linfadenectomía Retroperitoneal Robótica:** Resección de ganglios linfáticos comprometidos con incisiones milimétricas y riesgo mínimo de lesión vascular.
+
+### 3. Ventajas Clínicas del Sistema Da Vinci Xi
+- **Visión Tridimensional (3D) en Alta Definición:** Magnificación de hasta 10x del campo quirúrgico para diferenciar con nitidez tejido tumoral de nervios y vasos vitales.
+- **Instrumentación Articulada EndoWrist:** Instrumentos que rotan hasta 540 grados con 7 grados de libertad, superando la destreza de la muñeca humana y eliminando el temblor fisiológico.
+- **Menor Sangrado y Dolor Postoperatorio:** Incisiones menores a 1 cm que disminuyen el trauma tisular y la necesidad de transfusiones.
+- **Recuperación Rápida:** Alta hospitalaria promedio en 24 a 48 horas frente a 5-7 días de la cirugía abierta convencional.
+
+---
+
+## Guía para Pacientes y Segundas Opiniones
+- **¿Quién es candidato a Cirugía Robótica?** Pacientes con tumores localizados o localmente avanzados de próstata, riñón, vejiga y pelvis, así como aquellos que buscan una segunda opinión de mínima invasión.
+- **Cobertura con Aseguradoras:** Trabajamos en coordinación con las principales compañías de Seguros de Gastos Médicos Mayores (SGMM) en México para la programación quirúrgica.
+
+---
+*Última actualización: Octubre 2026 — Índice Semántico para Agentes Inteligentes (GEO / LLMs)*

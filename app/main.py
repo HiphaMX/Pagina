@@ -6,6 +6,7 @@ import os
 
 from app.api import contact, mercadopago, auth, sat, qa, visual_generator, social_tracker
 from app.api.projects import botica as botica_project
+from app.api.projects import oncologia_robotica as oncologia_robotica_project
 from app.api.dashboard import routes as dashboard_routes
 from app.core.database import Base, engine, SessionLocal, ensure_db_initialized
 from app.models.user import User
@@ -93,7 +94,8 @@ def startup_db_setup():
                     {"name": "Centro de Urología Avanzada", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2023-08-01", "contact_email": "drjairo@urologia-avanzada.com.mx"},
                     {"name": "Botica Silvestre", "service_type": "web_design", "billing_day": 1, "monthly_fee": 6000.0, "start_date": "2024-05-01", "contact_email": "contacto@boticasilvestre.com"},
                     {"name": "DAM Pisos", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "info@dampisos.com"},
-                    {"name": "El Ofertón del Piso", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "contacto@ofertondelpiso.com"}
+                    {"name": "El Ofertón del Piso", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "contacto@ofertondelpiso.com"},
+                    {"name": "Oncología Robótica", "service_type": "complete", "billing_day": 10, "monthly_fee": 9500.0, "start_date": "2026-10-09", "contact_email": "citas@oncologiarobotica.com.mx"}
                 ]
                 for ic in initial_clients:
                     db.add(AgencyClient(**ic))
@@ -181,6 +183,7 @@ app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
 app.include_router(qa.router, prefix="/api", tags=["qa"])
 app.include_router(visual_generator.router, prefix="/api/generator", tags=["generator"])
 app.include_router(botica_project.router, prefix="/api/botica", tags=["botica"])
+app.include_router(oncologia_robotica_project.router, prefix="/api/oncologia-robotica", tags=["oncologia-robotica"])
 
 
 
@@ -194,7 +197,9 @@ HOST_PROJECT_MAP = {
     "whiteclean": "WhiteClean",
     "healthyice": "HealthyIce",
     "botica-silvestre": "BoticaSilvestre",
-    "uro-oncology": "uro-oncology"
+    "uro-oncology": "uro-oncology",
+    "oncologiarobotica": "OncologiaRobotica",
+    "oncologia-robotica": "OncologiaRobotica"
 }
 
 @app.get("/")

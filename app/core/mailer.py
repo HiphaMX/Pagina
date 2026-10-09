@@ -2939,3 +2939,150 @@ async def send_custom_agency_email(
         logger.error(f"Fallo al enviar correo custom a {to_email}: {str(e)}")
         raise e
 
+
+async def send_oncologiarobotica_confirmation_email(form_data):
+    oncologia_configured = bool(settings.ONCOLOGIAROBOTICA_SMTP_HOST and settings.ONCOLOGIAROBOTICA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not oncologia_configured and not global_configured:
+        logger.warning("SMTP no configurado. Simulando envío de confirmación de valoración de Oncología Robótica al cliente")
+        return True
+
+    from_name = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_NAME or "Oncología Robótica"
+    from_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or "citas@oncologiarobotica.com.mx"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; padding: 25px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="border-bottom: 2px solid #00f2fe; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="color: #040b14; margin: 0 0 5px 0;">Oncología Robótica</h2>
+                <p style="margin: 0; color: #0284c7; font-size: 14px; font-weight: bold;">Cirugía de Alta Especialidad Da Vinci Xi</p>
+            </div>
+
+            <p>Estimado(a) <strong>{form_data.nombre}</strong>,</p>
+            
+            <p>Hemos recibido exitosamente tu solicitud de valoración para <strong>{form_data.tipo_procedimiento}</strong>.</p>
+            
+            <p>Nuestro equipo médico de alta especialidad revisará tus datos para contactarte a la brevedad y coordinar tu cita de valoración o segunda opinión oncológica.</p>
+
+            <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                <p style="margin: 0; font-size: 14px; color: #166534;">
+                    <strong>Recomendación importante:</strong> Si cuentas con estudios clínicos previos (antígeno prostático, ultrasonido, tomografía o biopsia), tenlos a la mano para tu consulta.
+                </p>
+            </div>
+
+            <p style="font-size: 14px; color: #64748b;">
+                Si requieres atención urgente o deseas consultar directamente por WhatsApp, puedes comunicarte al equipo médico haciendo clic a continuación:
+            </p>
+
+            <div style="text-align: center; margin: 25px 0;">
+                <a href="https://wa.me/523316013840?text=Hola,%20solicito%20seguimiento%20a%20mi%20cita%20en%20Oncología%20Robótica" 
+                   style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #040b14; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;">
+                    Contactar por WhatsApp
+                </a>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;" />
+            <p style="font-size: 12px; color: #94a3b8; text-align: center; margin: 0;">
+                Oncología Robótica · Máxima precisión contra el cáncer, mínima invasión para tu vida.
+            </p>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="ONCOLOGIAROBOTICA",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject="🩺 Confirmación de Solicitud de Valoración — Oncología Robótica",
+        html_content=html_content,
+        domain="oncologiarobotica.com.mx"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar confirmación al paciente de Oncología Robótica: {str(e)}")
+        return False
+
+
+async def send_oncologiarobotica_notification_team(form_data):
+    oncologia_configured = bool(settings.ONCOLOGIAROBOTICA_SMTP_HOST and settings.ONCOLOGIAROBOTICA_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not oncologia_configured and not global_configured:
+        logger.warning("SMTP no configurado. Simulando notificación de nuevo lead de Oncología Robótica al equipo")
+        return True
+
+    from_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or "citas@oncologiarobotica.com.mx"
+    to_email = settings.ONCOLOGIAROBOTICA_EMAILS_FROM_EMAIL or settings.EMAILS_FROM_EMAIL or "hola@hipha.mx"
+
+    mensaje_str = form_data.mensaje if form_data.mensaje else "Sin mensaje adicional"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; padding: 25px;">
+        <div style="max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="border-bottom: 2px solid #00f2fe; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="color: #040b14; margin: 0 0 5px 0;">⚡ Nueva Solicitud de Valoración Quirúrgica</h2>
+                <p style="margin: 0; color: #64748b; font-size: 14px;">Oncología Robótica — Lead Web de Alta Especialidad</p>
+            </div>
+
+            <h3 style="color: #0284c7; font-size: 15px; margin-bottom: 10px;">👤 Datos del Paciente / Contacto</h3>
+            <table width="100%" cellpadding="8" cellspacing="0" style="font-size: 14px; margin-bottom: 20px; background-color: #f8fafc; border-radius: 8px;">
+                <tr>
+                    <td style="color: #64748b; width: 35%;"><strong>Nombre:</strong></td>
+                    <td style="color: #0f172a;">{form_data.nombre}</td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Email:</strong></td>
+                    <td style="color: #0f172a;"><a href="mailto:{form_data.email}" style="color: #0284c7;">{form_data.email}</a></td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Teléfono / WhatsApp:</strong></td>
+                    <td style="color: #0f172a;"><a href="https://wa.me/52{form_data.telefono.replace(' ', '').replace('-', '')}" style="color: #16a34a; font-weight: bold;">{form_data.telefono}</a></td>
+                </tr>
+                <tr>
+                    <td style="color: #64748b;"><strong>Procedimiento de Interés:</strong></td>
+                    <td style="color: #0f172a; font-weight: bold;">{form_data.tipo_procedimiento}</td>
+                </tr>
+            </table>
+
+            <h3 style="color: #0284c7; font-size: 15px; margin-bottom: 10px;">📝 Resumen Clínico / Mensaje</h3>
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; font-size: 14px; color: #334155; line-height: 1.6;">
+                {mensaje_str}
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="ONCOLOGIAROBOTICA",
+        from_name="Oncología Robótica Web",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"⚡ NUEVA VALORACIÓN: {form_data.nombre} - {form_data.tipo_procedimiento}",
+        html_content=html_content,
+        domain="oncologiarobotica.com.mx"
+    )
+
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación al equipo de Oncología Robótica: {str(e)}")
+        return False
+
+

@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama|OncologiaRobotica)/'",
   "functions": {
     "api/**/*.py": {
       "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}",
@@ -430,6 +430,66 @@
       "dest": "/projects/uro-oncology/public/$1"
     },
     {
+      "src": "/assets/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/assets/$1"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/$1"
+    },
+    {
+      "src": "/(blog|padecimientos|tipo|tipos-de-cirugia)/([^/.]+)(?:\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/$1/$2.html"
+    },
+    {
+      "src": "/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp|index)(?:\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/$1.html"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-?robotica\\.(com\\.mx|com|mx)$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/$1"
+    },
+    {
       "src": "/amdi",
       "status": 308,
       "headers": { "Location": "/amdi/" }
@@ -454,6 +514,27 @@
     {
       "src": "/urologia-avanzada/(.*)",
       "dest": "/projects/urologia-avanzada/$1"
+    },
+    {
+      "src": "/oncologia-robotica",
+      "status": 308,
+      "headers": { "Location": "/oncologia-robotica/" }
+    },
+    {
+      "src": "/oncologia-robotica/",
+      "dest": "/projects/OncologiaRobotica/index.html"
+    },
+    {
+      "src": "/oncologia-robotica/(blog|padecimientos|tipo|tipos-de-cirugia)/([^/.]+)(?:\\.html)?",
+      "dest": "/projects/OncologiaRobotica/$1/$2.html"
+    },
+    {
+      "src": "/oncologia-robotica/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp|index)(?:\\.html)?",
+      "dest": "/projects/OncologiaRobotica/$1.html"
+    },
+    {
+      "src": "/oncologia-robotica/(.*)",
+      "dest": "/projects/OncologiaRobotica/$1"
     },
     {
       "src": "/index\\.html",

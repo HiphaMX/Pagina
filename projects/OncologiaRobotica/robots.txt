@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Agentes de IA y Motores de Búsqueda Generativa (GEO / Grounding)
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Documentación de Web Agéntica
+# llms-txt: https://hipha.mx/oncologia-robotica/llms.txt
