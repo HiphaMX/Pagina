@@ -2964,9 +2964,7 @@ async def send_oncologiarobotica_confirmation_email(form_data):
 
             <p>Estimado(a) <strong>{form_data.nombre}</strong>,</p>
             
-            <p>Hemos recibido exitosamente tu solicitud de valoración para <strong>{form_data.tipo_procedimiento}</strong>.</p>
-            
-            <p>Nuestro equipo médico de alta especialidad revisará tus datos para contactarte a la brevedad y coordinar tu cita de valoración o segunda opinión oncológica.</p>
+            <p>Hemos recibido exitosamente tu solicitud de contacto, nuestro equipo revisará tus datos para contactarte a la brevedad y coordinar todos los detalles de tu cita.</p>
 
             <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0; border-radius: 4px;">
                 <p style="margin: 0; font-size: 14px; color: #166534;">
@@ -2999,7 +2997,7 @@ async def send_oncologiarobotica_confirmation_email(form_data):
         from_name=from_name,
         from_email=from_email,
         to_email=form_data.email,
-        subject="🩺 Confirmación de Solicitud de Valoración — Oncología Robótica",
+        subject="Recibimos tu solicitud — Oncología Robótica",
         html_content=html_content,
         domain="oncologia-robotica.com"
     )
