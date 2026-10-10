@@ -7902,7 +7902,7 @@ figcaption {
 }
 
 .big-button.blue.back {
-  background-color: #538cd6ab;
+  background: linear-gradient(135deg, #ff8a8a 0%, #f06a6a 100%);
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -13966,5 +13966,77 @@ textarea.field-4.n,
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
 }
+
+/* Botón Regresar con Degradado Corporativo Coral/Rosa */
+.big-button.blue.back {
+  background: linear-gradient(135deg, #ff8a8a 0%, #f06a6a 100%) !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(240, 106, 106, 0.35) !important;
+  transition: all 0.25s ease !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+.big-button.blue.back:hover {
+  background: linear-gradient(135deg, #ff7a7a 0%, #e85a5a 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 22px rgba(240, 106, 106, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.big-button.blue.back:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(240, 106, 106, 0.25) !important;
+}
+
+.big-button.blue.back .big-button-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.big-button.blue.back .big-button-heading-shape {
+  background-color: #ffffff !important;
+  border-radius: 50% !important;
+  width: 7px !important;
+  height: 7px !important;
+  display: inline-block !important;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8) !important;
+}
+
+.big-button.blue.back .medium-uppercase-s {
+  color: #ffffff !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+}
+
+/* Espaciado superior para páginas interiores (despeje de navbar fija) */
+.paginasinteriores {
+  margin-top: 220px !important;
+}
+
+@media screen and (max-width: 991px) {
+  .paginasinteriores {
+    margin-top: 135px !important;
+    padding-top: 10px !important;
+  }
+  .div-block-40 {
+    padding-top: 140px !important;
+  }
+}
+
+
 
 
