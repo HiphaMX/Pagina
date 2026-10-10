@@ -625,4 +625,62 @@ def test_upload_bank_pdf_statement_endpoint():
         db.close()
 
 
+def test_parse_bank_pdf_statement_bbva_pyme_julio():
+    from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+
+    with open("tests/fixtures/Julio_FDG.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    txs = parse_bank_pdf_statement(pdf_bytes, "Julio FDG.pdf", account_rfc="DEGF851127TK1")
+    assert len(txs) == 5
+
+    # Validar periodos y RFC
+    for t in txs:
+        assert t["periodo_mes"] == "2026-07"
+        assert t["account_rfc"] == "DEGF851127TK1"
+        assert t["banco"] == "BBVA"
+
+    ingresos = [t for t in txs if t["tipo"] == "INGRESO"]
+    egresos = [t for t in txs if t["tipo"] == "EGRESO"]
+
+    assert len(ingresos) == 2
+    assert len(egresos) == 3
+
+    assert sum(t["monto"] for t in ingresos) == pytest.approx(26967.35, 0.01)
+    assert sum(t["monto"] for t in egresos) == pytest.approx(26967.35, 0.01)
+
+    # Validar detección de proyectos (ej. Axis -> HEALTHYICE)
+    axis_tx = next(t for t in ingresos if "Axis" in t["concepto"])
+    assert axis_tx["area_proyecto"] == "HEALTHYICE"
+    assert axis_tx["monto"] == 4361.60
+
+
+def test_upload_bank_pdf_julio_endpoint():
+    with open("tests/fixtures/Julio_FDG.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    db = SessionLocal()
+    try:
+        files = [("files", ("Julio FDG.pdf", pdf_bytes, "application/pdf"))]
+        upload_res = client.post(
+            "/api/dashboard/reconciliation/upload-files",
+            files=files,
+            data={"account_rfc": "DEGF851127TK1"}
+        )
+        assert upload_res.status_code == 200
+        data_up = upload_res.json()
+        assert data_up["success"] is True
+        assert data_up["processed_statements"] == 5
+        assert "2026-07" in data_up["detected_months"]
+
+        txs = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-07"
+        ).all()
+        assert len(txs) == 5
+    finally:
+        db.close()
+
+
+
 
