@@ -2954,39 +2954,69 @@ async def send_oncologiarobotica_confirmation_email(form_data):
     html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
-    <head><meta charset="utf-8"></head>
-    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; padding: 25px;">
-        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <div style="border-bottom: 2px solid #00f2fe; padding-bottom: 15px; margin-bottom: 20px;">
-                <h2 style="color: #040b14; margin: 0 0 5px 0;">Oncología Robótica</h2>
-                <p style="margin: 0; color: #0284c7; font-size: 14px; font-weight: bold;">Cirugía de Alta Especialidad Da Vinci Xi</p>
-            </div>
-
-            <p>Estimado(a) <strong>{form_data.nombre}</strong>,</p>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recibimos tu solicitud — Oncología Robótica</title>
+    </head>
+    <body style="font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #252525; background-color: #faf8f8; margin: 0; padding: 30px 15px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #fecdd3; box-shadow: 0 10px 25px rgba(255, 138, 138, 0.08); overflow: hidden; border-top: 5px solid #ff8a8a;">
             
-            <p>Hemos recibido exitosamente tu solicitud de contacto, nuestro equipo revisará tus datos para contactarte a la brevedad y coordinar todos los detalles de tu cita.</p>
-
-            <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 15px; margin: 20px 0; border-radius: 4px;">
-                <p style="margin: 0; font-size: 14px; color: #166534;">
-                    <strong>Recomendación importante:</strong> Si cuentas con estudios clínicos previos (antígeno prostático, ultrasonido, tomografía o biopsia), tenlos a la mano para tu consulta.
+            <!-- Header con Logotipo Oficial -->
+            <div style="text-align: center; padding: 28px 24px 20px 24px; border-bottom: 1px solid #fee2e2; background-color: #ffffff;">
+                <img src="https://oncologia-robotica.com/assets/logo-oncologia-robotica.png" 
+                     alt="Oncología Robótica" 
+                     width="140" 
+                     style="display: block; margin: 0 auto; max-width: 140px; height: auto;" 
+                     border="0">
+                <p style="margin: 12px 0 0 0; color: #ff8a8a; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;">
+                    Cirugía de Alta Especialidad · Da Vinci Xi
                 </p>
             </div>
 
-            <p style="font-size: 14px; color: #64748b;">
-                Si requieres atención urgente o deseas consultar directamente por WhatsApp, puedes comunicarte al equipo médico haciendo clic a continuación:
-            </p>
+            <!-- Cuerpo del Correo -->
+            <div style="padding: 32px 30px;">
+                <p style="font-size: 16px; line-height: 1.6; color: #252525; margin: 0 0 16px 0;">
+                    Estimado(a) <strong style="color: #111827;">{form_data.nombre}</strong>,
+                </p>
+                
+                <p style="font-size: 15px; line-height: 1.6; color: #475569; margin: 0 0 20px 0;">
+                    Hemos recibido exitosamente tu solicitud de contacto. Nuestro equipo médico y de atención revisará tus datos a la brevedad para coordinar todos los detalles de tu cita y valoración especializada.
+                </p>
 
-            <div style="text-align: center; margin: 25px 0;">
-                <a href="https://wa.me/523311085716?text=Hola,%20solicito%20seguimiento%20a%20mi%20cita%20en%20Oncología%20Robótica" 
-                   style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #040b14; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;">
-                    Contactar por WhatsApp
-                </a>
+                <!-- Caja de Recomendación Médica -->
+                <div style="background-color: #fff5f5; border-left: 4px solid #ff8a8a; border-radius: 8px; padding: 16px 20px; margin: 24px 0;">
+                    <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #881337;">
+                        <strong style="color: #9f1239;">📋 Recomendación para tu consulta:</strong><br>
+                        Si cuentas con estudios clínicos previos (como ultrasonido, tomografía, resonancia magnética, mastografía o reporte de biopsia/patología), te sugerimos tenerlos a la mano para tu cita.
+                    </p>
+                </div>
+
+                <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin: 0 0 20px 0;">
+                    Si requieres atención prioritaria o deseas comunicarte directamente a través de WhatsApp, puedes contactar al equipo médico haciendo clic a continuación:
+                </p>
+
+                <!-- Botón WhatsApp -->
+                <div style="text-align: center; margin: 28px 0;">
+                    <a href="https://wa.me/523311085716?text=Hola,%20solicito%20seguimiento%20a%20mi%20cita%20en%20Oncolog%C3%ADa%20Rob%C3%B3tica" 
+                       style="background: linear-gradient(135deg, #ff8a8a 0%, #e05252 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: bold; font-size: 15px; display: inline-block; box-shadow: 0 4px 14px rgba(224, 82, 82, 0.3); letter-spacing: 0.5px;">
+                        💬 Contactar por WhatsApp
+                    </a>
+                </div>
+
+                <!-- Footer Institucional -->
+                <div style="border-top: 1px solid #fee2e2; margin-top: 30px; padding-top: 20px; text-align: center;">
+                    <p style="font-size: 13px; font-weight: 700; color: #252525; margin: 0 0 4px 0;">
+                        Dra. Jacqueline H. Díaz Garza
+                    </p>
+                    <p style="font-size: 12px; color: #64748b; margin: 0 0 6px 0;">
+                        Cirugía Oncológica · Laparoscópica Avanzada · Cirugía Robótica Da Vinci Xi
+                    </p>
+                    <p style="font-size: 11px; color: #94a3b8; margin: 0;">
+                        Centro Médico Real San José Valle Real · Zapopan, Jalisco · <a href="https://oncologia-robotica.com" style="color: #ff8a8a; text-decoration: none; font-weight: bold;">oncologia-robotica.com</a>
+                    </p>
+                </div>
             </div>
-
-            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;" />
-            <p style="font-size: 12px; color: #94a3b8; text-align: center; margin: 0;">
-                Oncología Robótica · Máxima precisión contra el cáncer, mínima invasión para tu vida.
-            </p>
         </div>
     </body>
     </html>
@@ -3024,41 +3054,82 @@ async def send_oncologiarobotica_notification_team(form_data):
     cc_email = settings.ONCOLOGIAROBOTICA_CC_EMAIL or "hola@hipha.mx"
 
     mensaje_str = form_data.mensaje if form_data.mensaje else "Sin mensaje adicional"
+    telefono_clean = form_data.telefono.replace(' ', '').replace('-', '').replace('+', '') if form_data.telefono else ""
 
     html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
-    <head><meta charset="utf-8"></head>
-    <body style="font-family: Arial, sans-serif; color: #1e293b; background-color: #f1f5f9; padding: 25px;">
-        <div style="max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <div style="border-bottom: 2px solid #00f2fe; padding-bottom: 15px; margin-bottom: 20px;">
-                <h2 style="color: #040b14; margin: 0 0 5px 0;">⚡ Nueva Solicitud de Valoración Quirúrgica</h2>
-                <p style="margin: 0; color: #64748b; font-size: 14px;">Oncología Robótica — Lead Web de Alta Especialidad</p>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>⚡ NUEVA VALORACIÓN: {form_data.nombre}</title>
+    </head>
+    <body style="font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #252525; background-color: #faf8f8; margin: 0; padding: 30px 15px;">
+        <div style="max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #fecdd3; box-shadow: 0 10px 25px rgba(255, 138, 138, 0.08); overflow: hidden; border-top: 5px solid #ff8a8a;">
+            
+            <!-- Header con Logotipo -->
+            <div style="text-align: center; padding: 26px 20px 18px 20px; border-bottom: 1px solid #fee2e2; background-color: #ffffff;">
+                <img src="https://oncologia-robotica.com/assets/logo-oncologia-robotica.png" 
+                     alt="Oncología Robótica" 
+                     width="120" 
+                     style="display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;" 
+                     border="0">
+                <h2 style="color: #1e293b; margin: 0 0 4px 0; font-size: 20px; font-weight: 700;">⚡ Nueva Solicitud de Valoración</h2>
+                <p style="margin: 0; color: #ff8a8a; font-size: 13px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;">
+                    Oncología Robótica · Lead Web de Alta Especialidad
+                </p>
             </div>
 
-            <h3 style="color: #0284c7; font-size: 15px; margin-bottom: 10px;">👤 Datos del Paciente / Contacto</h3>
-            <table width="100%" cellpadding="8" cellspacing="0" style="font-size: 14px; margin-bottom: 20px; background-color: #f8fafc; border-radius: 8px;">
-                <tr>
-                    <td style="color: #64748b; width: 35%;"><strong>Nombre:</strong></td>
-                    <td style="color: #0f172a;">{form_data.nombre}</td>
-                </tr>
-                <tr>
-                    <td style="color: #64748b;"><strong>Email:</strong></td>
-                    <td style="color: #0f172a;"><a href="mailto:{form_data.email}" style="color: #0284c7;">{form_data.email}</a></td>
-                </tr>
-                <tr>
-                    <td style="color: #64748b;"><strong>Teléfono / WhatsApp:</strong></td>
-                    <td style="color: #0f172a;"><a href="https://wa.me/52{form_data.telefono.replace(' ', '').replace('-', '')}" style="color: #16a34a; font-weight: bold;">{form_data.telefono}</a></td>
-                </tr>
-                <tr>
-                    <td style="color: #64748b;"><strong>Procedimiento de Interés:</strong></td>
-                    <td style="color: #0f172a; font-weight: bold;">{form_data.tipo_procedimiento}</td>
-                </tr>
-            </table>
+            <div style="padding: 28px 26px;">
+                <h3 style="color: #e05252; font-size: 14px; font-weight: 700; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                    👤 Datos del Paciente / Contacto
+                </h3>
 
-            <h3 style="color: #0284c7; font-size: 15px; margin-bottom: 10px;">📝 Resumen Clínico / Mensaje</h3>
-            <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; font-size: 14px; color: #334155; line-height: 1.6;">
-                {mensaje_str}
+                <table width="100%" cellpadding="10" cellspacing="0" style="font-size: 14px; margin-bottom: 24px; background-color: #fff9f9; border: 1px solid #fee2e2; border-radius: 10px; border-collapse: separate; border-spacing: 0;">
+                    <tr>
+                        <td style="color: #64748b; width: 35%; padding: 10px 14px; border-bottom: 1px solid #fee2e2;"><strong>Nombre:</strong></td>
+                        <td style="color: #0f172a; font-weight: 600; padding: 10px 14px; border-bottom: 1px solid #fee2e2;">{form_data.nombre}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #64748b; padding: 10px 14px; border-bottom: 1px solid #fee2e2;"><strong>Email:</strong></td>
+                        <td style="color: #0f172a; padding: 10px 14px; border-bottom: 1px solid #fee2e2;">
+                            <a href="mailto:{form_data.email}" style="color: #e05252; text-decoration: none; font-weight: 600;">{form_data.email}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #64748b; padding: 10px 14px; border-bottom: 1px solid #fee2e2;"><strong>Teléfono / WhatsApp:</strong></td>
+                        <td style="color: #0f172a; padding: 10px 14px; border-bottom: 1px solid #fee2e2;">
+                            <a href="https://wa.me/52{telefono_clean}" style="color: #15803d; font-weight: bold; background: #ecfdf5; padding: 4px 10px; border-radius: 6px; text-decoration: none; display: inline-block;">
+                                💬 {form_data.telefono}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #64748b; padding: 10px 14px;"><strong>Procedimiento de Interés:</strong></td>
+                        <td style="color: #0f172a; font-weight: bold; padding: 10px 14px;">{form_data.tipo_procedimiento}</td>
+                    </tr>
+                </table>
+
+                <h3 style="color: #e05252; font-size: 14px; font-weight: 700; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📝 Resumen Clínico / Mensaje
+                </h3>
+                <div style="background-color: #fafafa; border: 1px solid #f1f5f9; border-left: 4px solid #ff8a8a; padding: 16px; border-radius: 8px; font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 24px;">
+                    {mensaje_str}
+                </div>
+
+                <!-- Botón de acción rápida para el equipo médico -->
+                <div style="text-align: center; margin: 24px 0 10px 0;">
+                    <a href="https://wa.me/52{telefono_clean}?text=Hola%20{form_data.nombre},%20te%20contactamos%20del%20equipo%20de%20Oncolog%C3%ADa%20Rob%C3%B3tica%20para%20dar%20seguimiento%20a%20tu%20solicitud" 
+                       style="background: #25D366; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 14px; display: inline-block; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
+                        💬 Abrir WhatsApp con el Paciente
+                    </a>
+                </div>
+
+                <div style="border-top: 1px solid #fee2e2; margin-top: 24px; padding-top: 16px; text-align: center;">
+                    <p style="font-size: 12px; color: #94a3b8; margin: 0;">
+                        Notificación automática de lead recibida desde <strong>oncologia-robotica.com</strong>
+                    </p>
+                </div>
             </div>
         </div>
     </body>
