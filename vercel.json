@@ -450,6 +450,26 @@
       "dest": "/projects/OncologiaRobotica/$1"
     },
     {
+      "src": "/gracias-formulario",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-robotica\\.com$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/gracias-formulario.html"
+    },
+    {
+      "src": "/(blog|padecimientos|tipo|tipos-de-cirugia)/([^/.]+)(\\.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?oncologia-robotica\\.com$"
+        }
+      ],
+      "dest": "/projects/OncologiaRobotica/$1/$2.html"
+    },
+    {
       "src": "/(blog|padecimientos|tipo|tipos-de-cirugia)/(.*)",
       "has": [
         {
@@ -460,24 +480,24 @@
       "dest": "/projects/OncologiaRobotica/$1/$2"
     },
     {
-      "src": "/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-email|gracias-telefono|gracias-whatsapp)(.html|)",
+      "src": "/(jacqueline-diaz-garza|cirugia|diagnostico|aviso-de-privacidad|preguntas-frecuentes|gracias-formulario|gracias-email|gracias-telefono|gracias-whatsapp)(\\.html|)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?oncologia-robotica\\.com$"
         }
       ],
-      "dest": "/projects/OncologiaRobotica/$1$2"
+      "dest": "/projects/OncologiaRobotica/$1.html"
     },
     {
-      "src": "/(index)(.html|)",
+      "src": "/(index)(\\.html|)",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?oncologia-robotica\\.com$"
         }
       ],
-      "dest": "/projects/OncologiaRobotica/"
+      "dest": "/projects/OncologiaRobotica/index.html"
     },
     {
       "src": "/",
@@ -487,7 +507,7 @@
           "value": "^(www\\.)?oncologia-robotica\\.com$"
         }
       ],
-      "dest": "/projects/OncologiaRobotica/"
+      "dest": "/projects/OncologiaRobotica/index.html"
     },
     {
       "src": "/(.*)",

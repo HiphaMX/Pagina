@@ -122,10 +122,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 }
             }, { passive: true });
         })();
+        // Reset and manage mobile navbar dropdown accordion state
+        var menuBtn = document.querySelector('.menu-button-4');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', function() {
+                var dropdowns = document.querySelectorAll('.navbar-4 .w-dropdown, .navbar-4 .w-dropdown-toggle, .navbar-4 .w-dropdown-list');
+                dropdowns.forEach(function(el) {
+                    el.classList.remove('w--open');
+                });
+            });
+        }
+
         var forms = document.querySelectorAll('form[id*="wf-form"], form[data-name*="lead"], form.popup-2');
         forms.forEach(function(form) {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                if (e.stopImmediatePropagation) e.stopImmediatePropagation();
                 
                 var nombre = (form.querySelector('input[name*="Nombre"], input[id*="Nombre"]') || {}).value || '';
                 var apellido = (form.querySelector('input[name*="Apellido"], input[id*="Apellido"]') || {}).value || '';
@@ -157,25 +170,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 }).then(function(resp) {
-                    return resp.json();
-                }).then(function(data) {
-                    form.style.display = 'none';
-                    var doneBlock = form.parentElement.querySelector('.w-form-done, .success-message-3');
-                    if (doneBlock) doneBlock.style.display = 'block';
-                    var failBlock = form.parentElement.querySelector('.w-form-fail, .error-mensaje-2');
-                    if (failBlock) failBlock.style.display = 'none';
+                    if (resp.ok) {
+                        form.style.display = 'none';
+                        var doneBlock = form.parentElement.querySelector('.w-form-done, .success-message-3');
+                        if (doneBlock) doneBlock.style.display = 'block';
+                        var failBlock = form.parentElement.querySelector('.w-form-fail, .error-mensaje-2');
+                        if (failBlock) failBlock.style.display = 'none';
+                        window.location.href = '/gracias-formulario';
+                        return;
+                    }
+                    return resp.json().then(function(data) {
+                        throw new Error((data && data.detail) || 'Error al enviar');
+                    });
                 }).catch(function(err) {
                     console.error('Error al enviar formulario:', err);
                     var failBlock = form.parentElement.querySelector('.w-form-fail, .error-mensaje-2');
                     if (failBlock) failBlock.style.display = 'block';
-                }).finally(function() {
                     if (submitBtn) {
                         if (submitBtn.tagName === 'INPUT') submitBtn.value = origBtnVal;
                         else submitBtn.textContent = origBtnVal;
                         submitBtn.disabled = false;
                     }
                 });
-            });
+            }, true);
         });
     });
     </script>
