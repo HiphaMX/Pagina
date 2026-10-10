@@ -665,14 +665,32 @@ async def backfill_historical(
 @router.post("/sync-mailbox")
 def sync_mailbox(
     account_rfc: str = Query("DEGF851127TK1"),
+    lookback_days: int = Query(60),
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """
     Detona la lectura y sincronización del buzón de correo dedicado vía IMAP para la entidad solicitada.
     """
-    res = sync_mailbox_invoices(db, account_rfc=account_rfc)
+    res = sync_mailbox_invoices(db, account_rfc=account_rfc, lookback_days=lookback_days)
     return res
+
+
+@router.get("/cron-sync")
+def cron_sync_all_mailboxes(
+    db: Session = Depends(get_db)
+):
+    """
+    Detonador periódico (Vercel Cron / Tareas en segundo plano) para sincronizar
+    automáticamente los buzones de todas las entidades (HIPHA y AMDI).
+    """
+    res_hipha = sync_mailbox_invoices(db, account_rfc="DEGF851127TK1", lookback_days=30)
+    res_amdi = sync_mailbox_invoices(db, account_rfc="MEHA850118Q96", lookback_days=30)
+    return {
+        "success": True,
+        "hipha": res_hipha,
+        "amdi": res_amdi
+    }
 
 
 def _get_export_user(

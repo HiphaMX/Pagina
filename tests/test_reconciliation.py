@@ -452,3 +452,30 @@ def test_deduplicate_transactions():
         db.commit()
         db.close()
 
+
+def test_cron_sync_mailbox(monkeypatch):
+    calls = []
+
+    def mock_sync(db, account_rfc, lookback_days=60):
+        calls.append((account_rfc, lookback_days))
+        return {
+            "success": True,
+            "connected": True,
+            "message": f"Sincronizado {account_rfc}",
+            "processed_xmls": 1,
+            "processed_statements": 0
+        }
+
+    monkeypatch.setattr("app.api.dashboard.reconciliation_routes.sync_mailbox_invoices", mock_sync)
+
+    res = client.get("/api/dashboard/reconciliation/cron-sync")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "hipha" in data
+    assert "amdi" in data
+    assert len(calls) == 2
+    assert calls[0][0] == "DEGF851127TK1"
+    assert calls[1][0] == "MEHA850118Q96"
+
+

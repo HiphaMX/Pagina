@@ -5814,6 +5814,9 @@ function initReconciliationModule() {
             // Recargar datos y selector de meses para la entidad seleccionada
             currentReconMonth = "";
             loadReconciliationData(true);
+
+            // Sincronización automática de buzón en segundo plano al cambiar de entidad
+            autoSyncMailbox(currentReconEntity, true);
         });
     });
 
@@ -5868,35 +5871,25 @@ function initReconciliationModule() {
         });
     }
 
-    // Botón Sincronizar Buzón (específico por RFC)
+    // Botón Sincronizar Buzón (manual y explícito)
     const btnSyncMailbox = document.getElementById('btnSyncMailbox');
     if (btnSyncMailbox) {
-        btnSyncMailbox.addEventListener('click', async () => {
-            const originalHtml = btnSyncMailbox.innerHTML;
-            btnSyncMailbox.disabled = true;
-            const entityLabel = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
-            btnSyncMailbox.innerHTML = `<span class="spinner" style="width:14px; height:14px; display:inline-block; border-width:2px;"></span> <span>Consultando IMAP (${entityLabel})...</span>`;
-
-            try {
-                const res = await fetch(`${API_BASE}/reconciliation/sync-mailbox?account_rfc=${encodeURIComponent(currentReconEntity)}`, {
-                    method: 'POST',
-                    headers: getAuthHeaders()
-                });
-                const data = await res.json();
-                if (data.success) {
-                    alert(data.message);
-                    loadReconciliationData(true);
-                } else {
-                    alert(`Aviso de buzón: ${data.message}`);
-                }
-            } catch (err) {
-                console.error("Error sincronizando buzón:", err);
-                alert("Error de conexión al sincronizar con el buzón de correo.");
-            } finally {
-                btnSyncMailbox.disabled = false;
-                btnSyncMailbox.innerHTML = originalHtml;
-            }
+        btnSyncMailbox.addEventListener('click', () => {
+            autoSyncMailbox(currentReconEntity, false);
         });
+    }
+
+    // Sincronización automática al abrir el módulo
+    autoSyncMailbox(currentReconEntity, true);
+
+    // Auto-sincronización periódica cada 3 minutos en segundo plano si la vista está activa
+    if (!window._reconAutoSyncInterval) {
+        window._reconAutoSyncInterval = setInterval(() => {
+            const reconSection = document.getElementById('view-reconciliation') || document.querySelector('.recon-container');
+            if (reconSection && reconSection.style.display !== 'none') {
+                autoSyncMailbox(currentReconEntity, true);
+            }
+        }, 180000);
     }
 
     // Botones de Exportación (específicos por RFC)
@@ -6618,6 +6611,58 @@ async function deleteTransaction(transactionId) {
 }
 
 // -------------------------------------------------------------
+// SINCRONIZACIÓN AUTOMÁTICA Y PERIÓDICA DE BUZÓN IMAP
+// -------------------------------------------------------------
+let isSyncingMailbox = false;
+
+async function autoSyncMailbox(entityRfc, silent = true) {
+    if (isSyncingMailbox) return;
+    isSyncingMailbox = true;
+
+    const btnSyncMailbox = document.getElementById('btnSyncMailbox');
+    const origHtml = btnSyncMailbox ? btnSyncMailbox.innerHTML : null;
+    const entityLabel = entityRfc === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
+
+    if (btnSyncMailbox) {
+        btnSyncMailbox.disabled = true;
+        btnSyncMailbox.innerHTML = `<span class="spinner" style="width:13px; height:13px; display:inline-block; border-width:2px;"></span> <span>${silent ? 'Comprobando buzón...' : 'Sincronizando ' + entityLabel + '...'}</span>`;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/sync-mailbox?account_rfc=${encodeURIComponent(entityRfc)}&lookback_days=60`, {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            if (data.processed_xmls > 0 || data.processed_statements > 0) {
+                console.log(`[AutoSync] Se importaron ${data.processed_xmls} facturas nuevas para ${entityLabel}`);
+                loadReconciliationData(false);
+                if (!silent) {
+                    alert(`¡Buzón sincronizado!\n${data.message}`);
+                }
+            } else if (!silent) {
+                alert(data.message);
+            }
+        } else if (!silent) {
+            alert(`Aviso de buzón: ${data.message || 'Error consultando IMAP'}`);
+        }
+    } catch (err) {
+        console.error("Error en autoSyncMailbox:", err);
+        if (!silent) {
+            alert("Error de conexión al sincronizar con el buzón de correo.");
+        }
+    } finally {
+        isSyncingMailbox = false;
+        if (btnSyncMailbox && origHtml) {
+            btnSyncMailbox.disabled = false;
+            btnSyncMailbox.innerHTML = origHtml;
+        }
+    }
+}
+
+// -------------------------------------------------------------
 // MODAL DE HISTÓRICO BACKFILL
 // -------------------------------------------------------------
 function initReconBackfillModal() {
@@ -6707,6 +6752,7 @@ window.openMatchManualModal = openMatchManualModal;
 window.approveMatchSuggestion = approveMatchSuggestion;
 window.unmatchTransaction = unmatchTransaction;
 window.deleteTransaction = deleteTransaction;
+window.autoSyncMailbox = autoSyncMailbox;
 
 
 
