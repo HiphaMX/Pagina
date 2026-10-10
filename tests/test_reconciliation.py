@@ -1,0 +1,305 @@
+import pytest
+from datetime import datetime
+from fastapi.testclient import TestClient
+
+from app.main import app
+from app.api.deps import get_current_active_user
+from app.schemas.user import User as UserSchema
+from app.core.database import SessionLocal, Base, engine
+from app.models.reconciliation import CFDIInvoice, BankTransaction
+from app.services.reconciliation.cfdi_parser import parse_cfdi_xml
+from app.services.reconciliation.bbva_parser import parse_bbva_statement
+from app.services.reconciliation.matching_engine import conciliar_movimientos
+from app.services.reconciliation.excel_exporter import export_reconciliation_excel
+from app.services.reconciliation.pdf_reporter import generate_discrepancies_pdf
+
+client = TestClient(app)
+
+mock_admin = UserSchema(
+    id=1,
+    email="hola@hipha.mx",
+    is_active=True,
+    is_superuser=True,
+    full_name="Administrador Hipha"
+)
+
+SAMPLE_CFDI_XML = b"""<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+    Fecha="2026-05-10T12:00:00" Total="1160.00" SubTotal="1000.00" MetodoPago="PUE" FormaPago="03" TipoDeComprobante="I">
+    <cfdi:Emisor Rfc="PROV123456ABC" Nombre="PROVEEDORA DIGITAL SA DE CV" />
+    <cfdi:Receptor Rfc="HMA1803098A3" Nombre="HIPHA MARKETING DIGITAL" />
+    <cfdi:Conceptos>
+        <cfdi:Concepto ClaveProdServ="81111500" Cantidad="1" Descripcion="Licencia Cloud Hosting" Importe="1000.00" />
+    </cfdi:Conceptos>
+    <cfdi:Impuestos TotalImpuestosTrasladados="160.00">
+        <cfdi:Traslados>
+            <cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="160.00" />
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+    <cfdi:Complemento>
+        <tfd:TimbreFiscalDigital UUID="AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE" FechaTimbrado="2026-05-10T12:05:00" />
+    </cfdi:Complemento>
+</cfdi:Comprobante>
+"""
+
+SAMPLE_BBVA_CSV = b"""Fecha,Concepto,Cargo,Abono,Saldo
+12/05/2026,SPEI PAGO PROVEEDORA DIGITAL REF 49201,1160.00,,45000.00
+14/05/2026,COMISION POR TRANSFERENCIA INTERBANCARIA,5.80,,44994.20
+15/05/2026,DEPOSITO EN EFECTIVO,,5000.00,49994.20
+"""
+
+@pytest.fixture(autouse=True)
+def setup_db_and_auth():
+    Base.metadata.create_all(bind=engine)
+    app.dependency_overrides[get_current_active_user] = lambda: mock_admin
+    yield
+    app.dependency_overrides.pop(get_current_active_user, None)
+
+
+def test_cfdi_parser():
+    # Probar como EGRESO (Receptor es Hipha)
+    parsed = parse_cfdi_xml(SAMPLE_CFDI_XML, mi_rfc="HMA1803098A3")
+    assert parsed["uuid"] == "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE"
+    assert parsed["tipo"] == "EGRESO"
+    assert parsed["total"] == 1160.00
+    assert parsed["subtotal"] == 1000.00
+    assert parsed["iva_trasladado"] == 160.00
+    assert parsed["rfc_emisor"] == "PROV123456ABC"
+    assert "PROVEEDORA DIGITAL" in parsed["nombre_emisor"]
+
+    # Probar como INGRESO si el emisor fuera Hipha
+    parsed_ingreso = parse_cfdi_xml(SAMPLE_CFDI_XML, mi_rfc="PROV123456ABC")
+    assert parsed_ingreso["tipo"] == "INGRESO"
+
+
+def test_bbva_parser():
+    txs = parse_bbva_statement(SAMPLE_BBVA_CSV, "movimientos_mayo.csv")
+    assert len(txs) == 3
+
+    # Primera tx: Cargo 1160
+    assert txs[0]["monto"] == 1160.00
+    assert txs[0]["tipo"] == "EGRESO"
+    assert "PROVEEDORA DIGITAL" in txs[0]["concepto"]
+    assert txs[0]["periodo_mes"] == "2026-05"
+    assert len(txs[0]["id_transaccion"]) == 64  # SHA-256
+
+    # Segunda tx: Comisión 5.80
+    assert txs[1]["monto"] == 5.80
+    assert txs[1]["tipo"] == "EGRESO"
+
+    # Tercera tx: Abono 5000
+    assert txs[2]["monto"] == 5000.00
+    assert txs[2]["tipo"] == "INGRESO"
+
+
+def test_matching_engine():
+    parsed_cfdi = parse_cfdi_xml(SAMPLE_CFDI_XML, mi_rfc="HMA1803098A3")
+    txs = parse_bbva_statement(SAMPLE_BBVA_CSV, "movimientos_mayo.csv")
+
+    facturas_pool = [parsed_cfdi]
+    reconciled = conciliar_movimientos(txs, facturas_pool)
+
+    assert len(reconciled) == 3
+
+    # El cargo de 1160 debe ser Nivel 1 (CONCILIADO 100%) porque el monto coincide (1160),
+    # fecha está en ventana (10 a 12 mayo = +2 días) y el nombre 'PROVEEDORA DIGITAL' está en el concepto bancario.
+    tx_1160 = next(t for t in reconciled if t["monto"] == 1160.00)
+    assert tx_1160["status_conciliacion"] == "CONCILIADO"
+    assert tx_1160["uuid_cfdi"] == "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE"
+    assert tx_1160["confianza_score"] == 1.0
+
+    # La comisión de 5.80 debe ser SIN_CFDI
+    tx_comision = next(t for t in reconciled if t["monto"] == 5.80)
+    assert tx_comision["status_conciliacion"] == "SIN_CFDI"
+    assert "comisión" in tx_comision["nota_revision"].lower() or "bancario" in tx_comision["nota_revision"].lower()
+
+
+def test_exporters():
+    txs = parse_bbva_statement(SAMPLE_BBVA_CSV, "movimientos_mayo.csv")
+    parsed_cfdi = parse_cfdi_xml(SAMPLE_CFDI_XML, mi_rfc="HMA1803098A3")
+    reconciled = conciliar_movimientos(txs, [parsed_cfdi])
+
+    # Excel
+    xlsx_bytes = export_reconciliation_excel(reconciled, mes_label="2026-05")
+    assert len(xlsx_bytes) > 1000
+
+    # PDF Faltantes
+    pdf_bytes = generate_discrepancies_pdf(reconciled, mes_label="2026-05")
+    assert len(pdf_bytes) > 500
+    assert pdf_bytes.startswith(b"%PDF")
+
+
+def test_api_reconciliation_endpoints():
+    # 1. Overview
+    res = client.get("/api/dashboard/reconciliation/overview?account_rfc=DEGF851127TK1")
+    assert res.status_code == 200
+    data = res.json()
+    assert "kpis" in data
+    assert "selected_month" in data
+    assert data["entity_name"] == "HIPHA"
+
+    # AMDI Overview
+    res_amdi = client.get("/api/dashboard/reconciliation/overview?account_rfc=MEHA850118Q96")
+    assert res_amdi.status_code == 200
+    assert res_amdi.json()["entity_name"] == "AMDI"
+
+    # 2. Transactions
+    res_tx = client.get("/api/dashboard/reconciliation/transactions?account_rfc=DEGF851127TK1")
+    assert res_tx.status_code == 200
+    assert isinstance(res_tx.json(), list)
+
+    # 3. Pending invoices
+    res_inv = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1")
+    assert res_inv.status_code == 200
+    assert isinstance(res_inv.json(), list)
+
+
+def test_multi_entity_isolation():
+    db = SessionLocal()
+    try:
+        # Create one transaction for HIPHA and one for AMDI
+        tx_hipha = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx_test_hipha_001",
+            fecha=datetime(2026, 5, 20),
+            periodo_mes="2026-05",
+            concepto="PAGO SERVICIO HIPHA DOMINIO",
+            monto=500.0,
+            tipo="EGRESO",
+            saldo=10000.0,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="HIPHA"
+        )
+        tx_amdi = BankTransaction(
+            account_rfc="MEHA850118Q96",
+            id_transaccion="tx_test_amdi_001",
+            fecha=datetime(2026, 5, 21),
+            periodo_mes="2026-05",
+            concepto="COMPRA INSUMOS AMDI FABRICA",
+            monto=1200.0,
+            tipo="EGRESO",
+            saldo=25000.0,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="AMDI"
+        )
+        db.add(tx_hipha)
+        db.add(tx_amdi)
+        db.commit()
+
+        # Query HIPHA transactions
+        res_h = client.get("/api/dashboard/reconciliation/transactions?account_rfc=DEGF851127TK1&month=2026-05")
+        assert res_h.status_code == 200
+        txs_h = res_h.json()
+        assert any(t["id_transaccion"] == "tx_test_hipha_001" for t in txs_h)
+        assert not any(t["id_transaccion"] == "tx_test_amdi_001" for t in txs_h)
+
+        # Query AMDI transactions
+        res_a = client.get("/api/dashboard/reconciliation/transactions?account_rfc=MEHA850118Q96&month=2026-05")
+        assert res_a.status_code == 200
+        txs_a = res_a.json()
+        assert any(t["id_transaccion"] == "tx_test_amdi_001" for t in txs_a)
+        assert not any(t["id_transaccion"] == "tx_test_hipha_001" for t in txs_a)
+
+    finally:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(["tx_test_hipha_001", "tx_test_amdi_001"])).delete(synchronize_session=False)
+        db.commit()
+        db.close()
+
+
+def test_14_column_excel_export_structure():
+    import io
+    import openpyxl
+
+    sample_txs = [
+        {
+            "fecha": "2026-05-15",
+            "area_proyecto": "AMDI Producción",
+            "uuid_cfdi": "11111111-2222-3333-4444-555555555555",
+            "contraparte": "ACEROS DE MEXICO SA",
+            "concepto": "PAGO LAMINA GALVANIZADA",
+            "metodo_pago": "PUE",
+            "monto": 1160.0,
+            "tipo": "EGRESO",
+            "status_conciliacion": "CONCILIADO",
+            "subtotal": 1000.0,
+            "iva_egresos": 160.0,
+            "retencion_isr": 12.5,
+            "tipo_categoria": "GASTO"
+        }
+    ]
+
+    xlsx_bytes = export_reconciliation_excel(sample_txs, mes_label="2026-05", account_rfc="MEHA850118Q96")
+    wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes))
+    ws = wb.active
+
+    # Check Title
+    assert "AMDI" in ws["A1"].value
+
+    # Check 14 Headers on row 3
+    expected_headers = [
+        "FECHA",
+        "ÁREA / PROYECTO",
+        "FOLIO FISCAL",
+        "CLIENTE / PROVEEDOR",
+        "CONCEPTO",
+        "MÉTODO DE PAGO",
+        "INGRESOS",
+        "EGRESOS",
+        "CFDI",
+        "TIPO",
+        "SUBTOTAL",
+        "IVA INGRESOS",
+        "RETENCIÓN ISR",
+        "IVA EGRESOS"
+    ]
+
+    actual_headers = [ws.cell(row=3, column=c).value for c in range(1, 15)]
+    assert actual_headers == expected_headers
+
+    # Check Data on row 4
+    assert ws.cell(row=4, column=1).value == "2026-05-15"
+    assert ws.cell(row=4, column=2).value == "AMDI Producción"
+    assert ws.cell(row=4, column=3).value == "11111111-2222-3333-4444-555555555555"
+    assert ws.cell(row=4, column=4).value == "ACEROS DE MEXICO SA"
+    assert ws.cell(row=4, column=8).value == 1160.0  # EGRESOS
+    assert ws.cell(row=4, column=11).value == 1000.0 # SUBTOTAL
+    assert ws.cell(row=4, column=13).value == 12.5   # RETENCIÓN ISR
+    assert ws.cell(row=4, column=14).value == 160.0  # IVA EGRESOS
+
+    # Check Formulas on totals row (row 5)
+    assert ws.cell(row=5, column=5).value == "TOTALES"
+    assert "=SUM(" in str(ws.cell(row=5, column=7).value)
+    assert "=SUM(" in str(ws.cell(row=5, column=8).value)
+    assert "=SUM(" in str(ws.cell(row=5, column=11).value)
+    assert "=SUM(" in str(ws.cell(row=5, column=13).value)
+    assert "=SUM(" in str(ws.cell(row=5, column=14).value)
+
+
+def test_cfdi_retention_isr_iva_separation():
+    xml_with_retentions = b"""<?xml version="1.0" encoding="utf-8"?>
+    <cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+        Fecha="2026-05-18T10:00:00" Total="1025.00" SubTotal="1000.00" MetodoPago="PUE" FormaPago="03" TipoDeComprobante="I">
+        <cfdi:Emisor Rfc="PROF123456XYZ" Nombre="SERVICIOS PROFESIONALES SC" />
+        <cfdi:Receptor Rfc="MEHA850118Q96" Nombre="AMDI DECORACION" />
+        <cfdi:Impuestos TotalImpuestosTrasladados="160.00" TotalImpuestosRetenidos="135.00">
+            <cfdi:Traslados>
+                <cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="160.00" />
+            </cfdi:Traslados>
+            <cfdi:Retenciones>
+                <cfdi:Retencion Impuesto="001" Importe="100.00" />
+                <cfdi:Retencion Impuesto="002" Importe="35.00" />
+            </cfdi:Retenciones>
+        </cfdi:Impuestos>
+        <cfdi:Complemento>
+            <tfd:TimbreFiscalDigital UUID="99999999-8888-7777-6666-555555555555" />
+        </cfdi:Complemento>
+    </cfdi:Comprobante>
+    """
+    parsed = parse_cfdi_xml(xml_with_retentions, mi_rfc="MEHA850118Q96")
+    assert parsed["uuid"] == "99999999-8888-7777-6666-555555555555"
+    assert parsed["subtotal"] == 1000.0
+    assert parsed["iva_trasladado"] == 160.0
+    assert parsed["retencion_isr"] == 100.0
+    assert parsed["retencion_iva"] == 35.0
+    assert parsed["retenciones"] == 135.0
+

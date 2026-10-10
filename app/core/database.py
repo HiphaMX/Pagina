@@ -96,6 +96,13 @@ def ensure_db_initialized():
                         "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS task_date VARCHAR DEFAULT NULL",
                         "ALTER TABLE social_accounts ADD COLUMN IF NOT EXISTS initial_followers INTEGER DEFAULT 0",
                         "ALTER TABLE social_accounts ADD COLUMN IF NOT EXISTS initial_date TIMESTAMP WITH TIME ZONE DEFAULT NULL",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN IF NOT EXISTS account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN IF NOT EXISTS area_proyecto VARCHAR(100) DEFAULT NULL",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN IF NOT EXISTS retencion_isr FLOAT DEFAULT 0.0",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN IF NOT EXISTS retencion_iva FLOAT DEFAULT 0.0",
+                        "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
+                        "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS area_proyecto VARCHAR(100) DEFAULT NULL",
+                        "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS tipo_categoria VARCHAR(50) DEFAULT NULL",
                     ]
                 else:
                     migration_stmts = [
@@ -110,6 +117,13 @@ def ensure_db_initialized():
                         "ALTER TABLE workflow_tasks ADD COLUMN task_date VARCHAR DEFAULT NULL",
                         "ALTER TABLE social_accounts ADD COLUMN initial_followers INTEGER DEFAULT 0",
                         "ALTER TABLE social_accounts ADD COLUMN initial_date TIMESTAMP WITH TIME ZONE DEFAULT NULL",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN area_proyecto VARCHAR(100) DEFAULT NULL",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN retencion_isr FLOAT DEFAULT 0.0",
+                        "ALTER TABLE cfdi_invoices ADD COLUMN retencion_iva FLOAT DEFAULT 0.0",
+                        "ALTER TABLE bank_transactions ADD COLUMN account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
+                        "ALTER TABLE bank_transactions ADD COLUMN area_proyecto VARCHAR(100) DEFAULT NULL",
+                        "ALTER TABLE bank_transactions ADD COLUMN tipo_categoria VARCHAR(50) DEFAULT NULL",
                     ]
 
                 for stmt in migration_stmts:

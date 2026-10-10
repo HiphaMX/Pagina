@@ -3894,3 +3894,30 @@ select {
     margin-left: 0.25rem;
 }
 
+/* ==========================================================================
+   Módulo de Conciliación Bancaria y Fiscal (BBVA + CFDI)
+   ========================================================================== */
+.reconciliation-section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.recon-entity-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recon-entity-btn:hover {
+    filter: brightness(1.15);
+}
+
+.recon-filter-pill {
+    transition: all 0.2s ease;
+}
+
+.match-invoice-item:hover {
+    border-color: rgba(56, 189, 248, 0.4) !important;
+    background: rgba(56, 189, 248, 0.05) !important;
+}
+

@@ -76,6 +76,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                     <span class="nav-text">Observatorio Social</span>
                 </a>
+                <a href="#" class="nav-link" id="navLinkReconciliation" title="Conciliación Bancaria & Fiscal (BBVA + CFDI)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="nav-text">Conciliación Bancaria</span>
+                </a>
             </nav>
 
             <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
@@ -515,6 +519,159 @@
                     <div class="loading-state">
                         <div class="spinner"></div>
                         <p>Cargando observatorio social media...</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- ========================================== -->
+            <!-- SECCIÓN: CONCILIACIÓN BANCARIA Y FISCAL     -->
+            <!-- ========================================== -->
+            <div class="reconciliation-section-container hidden" id="reconciliationSection">
+                
+                <!-- Barra Superior con KPIs y Controles -->
+                <div class="glass-panel" style="padding: 1.5rem; border-radius: 14px; margin-bottom: 1.5rem;">
+                    
+                    <!-- Selector de Entidad Fiscal (HIPHA vs AMDI) -->
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.6rem;">
+                                <span>Conciliación Bancaria y Fiscal</span>
+                                <span id="reconCurrentEntityBadge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700; letter-spacing: 0.05em;">HIPHA</span>
+                            </h2>
+                            <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Cruce automático de estados de cuenta BBVA contra facturas emitidas y recibidas (CFDI 4.0 / 3.3)</p>
+                        </div>
+                        
+                        <!-- Botones Switch de Entidad -->
+                        <div style="display: flex; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 10px; padding: 4px; gap: 4px;" id="reconEntitySwitcher">
+                            <button type="button" class="recon-entity-btn active" data-rfc="DEGF851127TK1" style="background: var(--text-main); color: #000; border: none; padding: 0.55rem 1.1rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.45rem; transition: all 0.2s;">
+                                <span>🏢 HIPHA</span>
+                                <span style="font-size: 0.72rem; opacity: 0.75; font-family: monospace;">DEGF851127TK1</span>
+                            </button>
+                            <button type="button" class="recon-entity-btn" data-rfc="MEHA850118Q96" style="background: transparent; color: var(--text-muted); border: none; padding: 0.55rem 1.1rem; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.45rem; transition: all 0.2s;">
+                                <span>🏢 AMDI</span>
+                                <span style="font-size: 0.72rem; opacity: 0.75; font-family: monospace;">MEHA850118Q96</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- KPI Cards Row -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <!-- Egresos Banco -->
+                        <div class="client-kpi-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.1rem;">
+                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600;">💸 Egresos Banco (BBVA)</span>
+                            <div class="kpi-num" id="kpiReconEgresosBanco" style="font-size: 1.6rem; font-weight: 700; color: var(--text-main); margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconTotalTxs" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">0 transacciones en el periodo</div>
+                        </div>
+
+                        <!-- Gastos con Factura / Conciliado -->
+                        <div class="client-kpi-card mrr-card" style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 1.1rem;">
+                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #10b981; font-weight: 600;">🧾 Gastos con CFDI (Deducibles)</span>
+                            <div class="kpi-num" id="kpiReconConciliado" style="font-size: 1.6rem; font-weight: 700; color: #34d399; margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconPctConciliado" style="font-size: 0.75rem; color: #10b981; margin-top: 2px;">0% deducible amparado</div>
+                        </div>
+
+                        <!-- Riesgo No Deducible (Sin CFDI) -->
+                        <div class="client-kpi-card alert-card" style="background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 12px; padding: 1.1rem;">
+                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #ef4444; font-weight: 600;">⚠️ Faltante / Sin Factura</span>
+                            <div class="kpi-num" id="kpiReconSinCFDI" style="font-size: 1.6rem; font-weight: 700; color: #f87171; margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconSinCFDICount" style="font-size: 0.75rem; color: #ef4444; margin-top: 2px;">0 cargos sin comprobante</div>
+                        </div>
+
+                        <!-- Ingresos Cobrados -->
+                        <div class="client-kpi-card" style="background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 12px; padding: 1.1rem;">
+                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #60a5fa; font-weight: 600;">📥 Ingresos Banco (Abonos)</span>
+                            <div class="kpi-num" id="kpiReconIngresosBanco" style="font-size: 1.6rem; font-weight: 700; color: #93c5fd; margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconFacturasDisp" style="font-size: 0.75rem; color: #60a5fa; margin-top: 2px;">0 facturas disponibles en cola</div>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar de Acciones & Período -->
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+                        
+                        <!-- Selector de Período -->
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <label for="reconMonthSelect" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Período:</label>
+                            <select id="reconMonthSelect" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.9rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; outline: none; cursor: pointer;">
+                                <option value="">Cargando meses...</option>
+                            </select>
+                            <button type="button" id="btnSyncMailbox" class="btn-secondary-mini" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;" title="Consultar correos no leídos en el buzón dedicado ahora">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <span>Sincronizar Buzón</span>
+                            </button>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;">
+                            <button type="button" id="btnOpenUploadModal" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; border: none; padding: 0.55rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(16,185,129,0.25);">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span>+ Cargar XMLs / CSV</span>
+                            </button>
+                            <button type="button" id="btnExportExcel" style="background: rgba(30, 41, 59, 0.8); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <span>Excel Maestro</span>
+                            </button>
+                            <button type="button" id="btnExportPdfFaltantes" style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                                <span>PDF Faltantes</span>
+                            </button>
+                            <button type="button" id="btnOpenBackfillModal" style="background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.55rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.82rem;" title="Importar sábanas de meses anteriores ya conciliadas">
+                                <span>📁 Histórico</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros y Búsqueda de Transacciones -->
+                <div class="glass-panel" style="padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+                    
+                    <!-- Pestañas de Estatus -->
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;" id="reconStatusTabs">
+                        <button type="button" class="recon-filter-pill active" data-status="ALL" style="background: var(--text-main); color: #000; border: none; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">Todos</button>
+                        <button type="button" class="recon-filter-pill" data-status="CONCILIADO" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">✓ Conciliados</button>
+                        <button type="button" class="recon-filter-pill" data-status="POR_REVISAR" style="background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">⏳ Por Revisar</button>
+                        <button type="button" class="recon-filter-pill" data-status="SIN_CFDI" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">✕ Sin Factura</button>
+                    </div>
+
+                    <!-- Buscador y filtro de tipo -->
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <select id="reconFilterTipo" style="background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.45rem 0.75rem; border-radius: 8px; font-size: 0.82rem; outline: none;">
+                            <option value="ALL">Todos los flujos</option>
+                            <option value="EGRESO">Solo Egresos (Cargos)</option>
+                            <option value="INGRESO">Solo Ingresos (Abonos)</option>
+                        </select>
+                        <div class="search-input-box" style="width: 240px;">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="reconSearchInput" placeholder="Buscar concepto o UUID..." style="font-size: 0.85rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Transacciones y Conciliación -->
+                <div class="glass-panel" style="padding: 0; border-radius: 14px; overflow: hidden;">
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                            <thead>
+                                <tr style="background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                                    <th style="padding: 1rem 1.1rem; width: 100px;">Fecha</th>
+                                    <th style="padding: 1rem 1.1rem; width: 110px;">Área / Proy.</th>
+                                    <th style="padding: 1rem 1.1rem;">Concepto Banco (BBVA)</th>
+                                    <th style="padding: 1rem 1.1rem; text-align: right; width: 125px;">Monto Banco</th>
+                                    <th style="padding: 1rem 1.1rem; text-align: center; width: 120px;">Estatus</th>
+                                    <th style="padding: 1rem 1.1rem;">Comprobante Fiscal (CFDI)</th>
+                                    <th style="padding: 1rem 1.1rem; text-align: right; width: 175px;">Desglose Fiscal (14 col)</th>
+                                    <th style="padding: 1rem 1.1rem; text-align: center; width: 95px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reconTableBody">
+                                <tr>
+                                    <td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                                        <div class="spinner" style="margin: 0 auto 0.75rem auto;"></div>
+                                        Cargando transacciones de conciliación...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -1403,6 +1560,134 @@
                 <button type="submit" id="btnSubmitManualSnapshot" class="btn-primary-mini" style="background:var(--accent-cyan); color:#000000; border:none; padding:0.55rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:700;">Guardar Ajuste</button>
             </div>
         </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: CARGAR XMLS O ESTADO DE CUENTA CSV  -->
+    <!-- ========================================== -->
+    <div id="modalUploadReconciliation" class="modal-overlay hidden">
+        <div class="modal-dialog modal-md" style="max-width: 580px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>Cargar Documentos de Conciliación</span>
+                        <span id="reconUploadTargetBadge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 700;">HIPHA</span>
+                    </h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Sube facturas en XML (individuales o en .ZIP) o estados de cuenta BBVA (.CSV o .XLSX)</p>
+                </div>
+                <button type="button" id="btnCloseUploadModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Dropzone Drag & Drop -->
+                <div id="reconDropzone" style="border: 2px dashed rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.03); border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#38bdf8" stroke-width="2" style="margin: 0 auto 0.75rem auto; display: block;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;">Arrastra tus archivos aquí o haz clic para explorar</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Soporta CFDI .XML, paquetes .ZIP de facturas y archivos .CSV / .XLSX de BBVA</div>
+                    <input type="file" id="reconFileInput" multiple accept=".xml,.zip,.csv,.xlsx,.xls" style="display: none;">
+                </div>
+
+                <!-- Lista de archivos seleccionados -->
+                <div id="reconSelectedFilesList" style="margin-top: 1rem; max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem;"></div>
+
+                <div id="reconUploadProgress" class="hidden" style="margin-top: 1rem; text-align: center;">
+                    <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
+                    <span style="font-size: 0.85rem; color: var(--accent-cyan);">Procesando y ejecutando motor de conciliación automática...</span>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem;">
+                <button type="button" id="btnCancelUploadModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
+                <button type="button" id="btnSubmitUploadFiles" class="btn-primary-mini" style="background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; border:none; padding:0.55rem 1.3rem; border-radius:8px; cursor:pointer; font-weight:700;">Subir y Conciliar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: VINCULACIÓN MANUAL DE CFDI          -->
+    <!-- ========================================== -->
+    <div id="modalMatchManual" class="modal-overlay hidden">
+        <div class="modal-dialog modal-md" style="max-width: 650px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">Vincular Comprobante Fiscal Manualmente</h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Selecciona la factura emitida o recibida que corresponde a esta transacción bancaria</p>
+                </div>
+                <button type="button" id="btnCloseMatchModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Info de la Transacción Seleccionada -->
+                <div id="matchTxSummaryBox" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.9rem; margin-bottom: 1rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
+                        <span style="color: var(--text-muted);">Movimiento Bancario:</span>
+                        <strong id="matchTxMonto" style="color: #38bdf8; font-size: 1rem;">$0.00</strong>
+                    </div>
+                    <div id="matchTxConcepto" style="color: var(--text-main); font-weight: 500;">Concepto</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem;" id="matchTxFechaTipo">Fecha: - • Tipo: -</div>
+                </div>
+
+                <!-- Buscador de Facturas Disponibles -->
+                <div style="margin-bottom: 0.75rem;">
+                    <div class="search-input-box" style="width: 100%;">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="matchInvoiceSearchInput" placeholder="Buscar factura por proveedor, cliente, RFC o UUID..." style="font-size: 0.85rem;">
+                    </div>
+                </div>
+
+                <!-- Lista de Facturas Pendientes para Seleccionar -->
+                <div id="matchInvoicesList" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; border: 1px solid var(--border-color); border-radius: 10px; padding: 0.5rem;">
+                    <div style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando facturas disponibles...</div>
+                </div>
+
+                <input type="hidden" id="matchTargetTxId" value="">
+                <input type="hidden" id="matchSelectedUUID" value="">
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem;">
+                <button type="button" id="btnCancelMatchModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
+                <button type="button" id="btnConfirmMatchManual" class="btn-primary-mini" style="background:var(--accent-cyan); color:#000; border:none; padding:0.55rem 1.3rem; border-radius:8px; cursor:pointer; font-weight:700;">Vincular y Conciliar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: IMPORTACIÓN HISTÓRICA DE EXCEL      -->
+    <!-- ========================================== -->
+    <div id="modalBackfillHistorical" class="modal-overlay hidden">
+        <div class="modal-dialog modal-md" style="max-width: 520px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.2rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>Importar Sábana Histórica</span>
+                        <span id="reconBackfillTargetBadge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 700;">HIPHA</span>
+                    </h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Carga tus hojas de cálculo anteriores con movimientos y folios fiscales ya asignados</p>
+                </div>
+                <button type="button" id="btnCloseBackfillModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div style="background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 10px; padding: 0.9rem; margin-bottom: 1.2rem; font-size: 0.82rem; color: #93c5fd; line-height: 1.4;">
+                    ℹ️ Los renglones que contengan un Folio Fiscal (UUID) válido serán registrados directamente como <strong>CONCILIADO</strong>, asegurando que tus datos históricos queden resguardados sin alterar la conciliación de los meses nuevos.
+                </div>
+
+                <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <label for="backfillFileInput" style="font-size:0.85rem; color:var(--text-main); font-weight:600;">Selecciona el archivo Excel (.xlsx) o CSV</label>
+                    <input type="file" id="backfillFileInput" accept=".xlsx,.xls,.csv" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.65rem; border-radius:8px; outline:none; font-size:0.85rem;">
+                </div>
+
+                <div id="backfillProgress" class="hidden" style="margin-top: 1rem; text-align: center;">
+                    <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
+                    <span style="font-size: 0.85rem; color: var(--accent-cyan);">Migrando datos históricos...</span>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem;">
+                <button type="button" id="btnCancelBackfillModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
+                <button type="button" id="btnSubmitBackfill" class="btn-primary-mini" style="background:var(--accent-cyan); color:#000; border:none; padding:0.55rem 1.3rem; border-radius:8px; cursor:pointer; font-weight:700;">Iniciar Migración</button>
+            </div>
+        </div>
     </div>
 
     <!-- Script de Lógica -->

@@ -36,10 +36,12 @@ const navLinkTraffic = document.getElementById('navLinkTraffic');
 const navLinkWorkflow = document.getElementById('navLinkWorkflow');
 const navLinkClients = document.getElementById('navLinkClients');
 const navLinkSocial = document.getElementById('navLinkSocial');
+const navLinkReconciliation = document.getElementById('navLinkReconciliation');
 const trafficSection = document.getElementById('trafficSection');
 const workflowSection = document.getElementById('workflowSection');
 const clientsSection = document.getElementById('clientsSection');
 const socialSection = document.getElementById('socialSection');
+const reconciliationSection = document.getElementById('reconciliationSection');
 const headerTitle = document.getElementById('headerTitle');
 const headerSubtitle = document.getElementById('headerSubtitle');
 const trafficDateSelector = document.getElementById('trafficDateSelector');
@@ -175,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headerTitle.textContent = "Flujo de Trabajo Semanal (L-V)";
             headerSubtitle.textContent = "Agenda de entregas de diseño";
             if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            window.location.hash = 'workflow';
             initWorkflowModule();
         });
     }
@@ -186,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headerTitle.textContent = "Directorio de Clientes & Retainers";
             headerSubtitle.textContent = "Control de suscripciones, fechas de corte y comunicación directa";
             if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            window.location.hash = 'clients';
             initClientsDirectoryModule();
             loadClientsDirectory();
         });
@@ -198,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headerTitle.textContent = "Centro de Control de Tráfico";
             headerSubtitle.textContent = "Clasificación de cuentas por volumen de usuarios nuevos";
             if (trafficDateSelector) trafficDateSelector.classList.remove('hidden');
+            window.location.hash = 'traffic';
             loadOverviewData();
         });
     }
@@ -209,8 +214,22 @@ document.addEventListener('DOMContentLoaded', () => {
             headerTitle.textContent = "Observatorio Social Media";
             headerSubtitle.textContent = "Monitoreo y crecimiento de seguidores en Instagram y Facebook";
             if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            window.location.hash = 'social';
             initSocialObservatoryModule();
             loadSocialObservatory();
+        });
+    }
+
+    if (navLinkReconciliation) {
+        navLinkReconciliation.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveTab(navLinkReconciliation, reconciliationSection);
+            headerTitle.textContent = "Conciliación Bancaria & Fiscal";
+            headerSubtitle.textContent = "Cruce inteligente de estados de cuenta BBVA contra facturas CFDI (SAT)";
+            if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            window.location.hash = 'reconciliation';
+            initReconciliationModule();
+            loadReconciliationData();
         });
     }
 });
@@ -221,15 +240,45 @@ function showDashboard() {
     purgeDefaultTasks();
     initSidebarAndMobileControls();
     
-    // Activar por defecto el Flujo Semanal
-    setActiveTab(navLinkWorkflow, workflowSection);
-    headerTitle.textContent = "Flujo de Trabajo Semanal (L-V)";
-    headerSubtitle.textContent = "Agenda de entregas de diseño";
-    if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
-    
     initClientsDirectoryModule();
     loadClientsDirectory(); // Carga en background para sincronizar los selectores de clientes
     initWorkflowModule();
+
+    // Detección de pestaña por URL hash (soporta recarga directa o enlaces profundos)
+    const currentHash = (window.location.hash || '').toLowerCase();
+    if (currentHash === '#reconciliation' || currentHash === '#conciliacion') {
+        setActiveTab(navLinkReconciliation, reconciliationSection);
+        headerTitle.textContent = "Conciliación Bancaria & Fiscal";
+        headerSubtitle.textContent = "Cruce inteligente de estados de cuenta BBVA contra facturas CFDI (SAT)";
+        if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+        initReconciliationModule();
+        loadReconciliationData();
+    } else if (currentHash === '#clients' || currentHash === '#clientes') {
+        setActiveTab(navLinkClients, clientsSection);
+        headerTitle.textContent = "Directorio de Clientes & Retainers";
+        headerSubtitle.textContent = "Control centralizado de clientes, igualas mensuales y facturación";
+        if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+        loadClientsDirectory();
+    } else if (currentHash === '#social') {
+        setActiveTab(navLinkSocial, socialSection);
+        headerTitle.textContent = "Observatorio Social Media";
+        headerSubtitle.textContent = "Monitoreo y crecimiento de seguidores en Instagram y Facebook";
+        if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+        initSocialObservatoryModule();
+        loadSocialObservatory();
+    } else if (currentHash === '#traffic' || currentHash === '#trafico') {
+        setActiveTab(navLinkTraffic, trafficSection);
+        headerTitle.textContent = "Centro de Control de Tráfico";
+        headerSubtitle.textContent = "Clasificación de cuentas por volumen de usuarios nuevos";
+        if (trafficDateSelector) trafficDateSelector.classList.remove('hidden');
+        loadOverviewData();
+    } else {
+        // Activar por defecto el Flujo Semanal
+        setActiveTab(navLinkWorkflow, workflowSection);
+        headerTitle.textContent = "Flujo de Trabajo Semanal (L-V)";
+        headerSubtitle.textContent = "Agenda de entregas de diseño";
+        if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+    }
 }
 
 function showLogin() {
@@ -1118,6 +1167,7 @@ function setActiveTab(activeLink, activeSection) {
     if (workflowSection) workflowSection.classList.add('hidden');
     if (clientsSection) clientsSection.classList.add('hidden');
     if (socialSection) socialSection.classList.add('hidden');
+    if (reconciliationSection) reconciliationSection.classList.add('hidden');
     
     if (activeSection) {
         activeSection.classList.remove('hidden');
@@ -5689,5 +5739,882 @@ window.scanSingleSocialAccount = scanSingleSocialAccount;
 window.scanAllSocialAccounts = scanAllSocialAccounts;
 window.deleteSocialAccount = deleteSocialAccount;
 window.loadSocialObservatory = loadSocialObservatory;
+
+// =========================================================================
+// MÓDULO: CONCILIACIÓN BANCARIA Y FISCAL (BBVA + CFDI)
+// =========================================================================
+
+let reconInitialized = false;
+let currentReconEntity = "DEGF851127TK1"; // Default entity: HIPHA
+let currentReconMonth = "";
+let currentReconStatus = "ALL";
+let currentReconTipo = "ALL";
+let currentReconSearch = "";
+let selectedReconFiles = [];
+let pendingInvoicesCache = [];
+
+function initReconciliationModule() {
+    if (reconInitialized) return;
+    reconInitialized = true;
+
+    // Selector de Entidad Fiscal (HIPHA vs AMDI)
+    const entityButtons = document.querySelectorAll('#reconEntitySwitcher .recon-entity-btn');
+    entityButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetBtn = e.currentTarget;
+            const rfc = targetBtn.dataset.rfc;
+            if (!rfc || rfc === currentReconEntity) return;
+
+            currentReconEntity = rfc;
+
+            // Actualizar estilo visual de botones
+            entityButtons.forEach(b => {
+                if (b.dataset.rfc === currentReconEntity) {
+                    b.classList.add('active');
+                    b.style.background = 'var(--text-main)';
+                    b.style.color = '#000';
+                } else {
+                    b.classList.remove('active');
+                    b.style.background = 'transparent';
+                    b.style.color = 'var(--text-muted)';
+                }
+            });
+
+            // Actualizar badges
+            const isAmdi = currentReconEntity === 'MEHA850118Q96';
+            const entityName = isAmdi ? 'AMDI' : 'HIPHA';
+            const entityColor = isAmdi ? '#a78bfa' : '#38bdf8';
+            const entityBg = isAmdi ? 'rgba(167, 139, 250, 0.15)' : 'rgba(56, 189, 248, 0.15)';
+            const entityBorder = isAmdi ? 'rgba(167, 139, 250, 0.3)' : 'rgba(56, 189, 248, 0.3)';
+
+            const currentBadge = document.getElementById('reconCurrentEntityBadge');
+            if (currentBadge) {
+                currentBadge.textContent = entityName;
+                currentBadge.style.color = entityColor;
+                currentBadge.style.background = entityBg;
+                currentBadge.style.borderColor = entityBorder;
+            }
+
+            const uploadBadge = document.getElementById('reconUploadTargetBadge');
+            if (uploadBadge) {
+                uploadBadge.textContent = `${entityName} (${currentReconEntity})`;
+                uploadBadge.style.color = entityColor;
+                uploadBadge.style.background = entityBg;
+                uploadBadge.style.borderColor = entityBorder;
+            }
+
+            const backfillBadge = document.getElementById('reconBackfillTargetBadge');
+            if (backfillBadge) {
+                backfillBadge.textContent = `${entityName} (${currentReconEntity})`;
+                backfillBadge.style.color = entityColor;
+                backfillBadge.style.background = entityBg;
+                backfillBadge.style.borderColor = entityBorder;
+            }
+
+            // Recargar datos y selector de meses para la entidad seleccionada
+            currentReconMonth = "";
+            loadReconciliationData(true);
+        });
+    });
+
+    const monthSelect = document.getElementById('reconMonthSelect');
+    if (monthSelect) {
+        monthSelect.addEventListener('change', (e) => {
+            currentReconMonth = e.target.value;
+            loadReconciliationData(false);
+        });
+    }
+
+    // Pestañas de Estatus
+    const statusTabs = document.querySelectorAll('.recon-filter-pill');
+    statusTabs.forEach(pill => {
+        pill.addEventListener('click', () => {
+            statusTabs.forEach(p => {
+                p.classList.remove('active');
+                p.style.background = p.dataset.status === 'CONCILIADO' ? 'rgba(16, 185, 129, 0.1)' :
+                                     p.dataset.status === 'POR_REVISAR' ? 'rgba(234, 179, 8, 0.1)' :
+                                     p.dataset.status === 'SIN_CFDI' ? 'rgba(239, 68, 68, 0.1)' : 'transparent';
+                p.style.color = p.dataset.status === 'CONCILIADO' ? '#10b981' :
+                                p.dataset.status === 'POR_REVISAR' ? '#eab308' :
+                                p.dataset.status === 'SIN_CFDI' ? '#ef4444' : 'var(--text-main)';
+            });
+            pill.classList.add('active');
+            pill.style.background = 'var(--text-main)';
+            pill.style.color = '#000';
+            currentReconStatus = pill.dataset.status;
+            loadReconciliationTransactions();
+        });
+    });
+
+    // Filtro por Tipo de Flujo
+    const filterTipo = document.getElementById('reconFilterTipo');
+    if (filterTipo) {
+        filterTipo.addEventListener('change', (e) => {
+            currentReconTipo = e.target.value;
+            loadReconciliationTransactions();
+        });
+    }
+
+    // Buscador
+    const searchInput = document.getElementById('reconSearchInput');
+    if (searchInput) {
+        let timeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                currentReconSearch = e.target.value.trim();
+                loadReconciliationTransactions();
+            }, 300);
+        });
+    }
+
+    // Botón Sincronizar Buzón (específico por RFC)
+    const btnSyncMailbox = document.getElementById('btnSyncMailbox');
+    if (btnSyncMailbox) {
+        btnSyncMailbox.addEventListener('click', async () => {
+            const originalHtml = btnSyncMailbox.innerHTML;
+            btnSyncMailbox.disabled = true;
+            const entityLabel = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
+            btnSyncMailbox.innerHTML = `<span class="spinner" style="width:14px; height:14px; display:inline-block; border-width:2px;"></span> <span>Consultando IMAP (${entityLabel})...</span>`;
+
+            try {
+                const res = await fetch(`${API_BASE}/reconciliation/sync-mailbox?account_rfc=${encodeURIComponent(currentReconEntity)}`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    loadReconciliationData(true);
+                } else {
+                    alert(`Aviso de buzón: ${data.message}`);
+                }
+            } catch (err) {
+                console.error("Error sincronizando buzón:", err);
+                alert("Error de conexión al sincronizar con el buzón de correo.");
+            } finally {
+                btnSyncMailbox.disabled = false;
+                btnSyncMailbox.innerHTML = originalHtml;
+            }
+        });
+    }
+
+    // Botones de Exportación (específicos por RFC)
+    const btnExportExcel = document.getElementById('btnExportExcel');
+    if (btnExportExcel) {
+        btnExportExcel.addEventListener('click', () => {
+            const token = localStorage.getItem('dashboard_token');
+            const url = `${API_BASE}/reconciliation/export/excel?month=${encodeURIComponent(currentReconMonth)}&account_rfc=${encodeURIComponent(currentReconEntity)}&token=${token}`;
+            window.open(url, '_blank');
+        });
+    }
+
+    const btnExportPdf = document.getElementById('btnExportPdfFaltantes');
+    if (btnExportPdf) {
+        btnExportPdf.addEventListener('click', () => {
+            const token = localStorage.getItem('dashboard_token');
+            const url = `${API_BASE}/reconciliation/export/pdf-faltantes?month=${encodeURIComponent(currentReconMonth)}&account_rfc=${encodeURIComponent(currentReconEntity)}&token=${token}`;
+            window.open(url, '_blank');
+        });
+    }
+
+    // Modal de Carga de Archivos
+    initReconUploadModal();
+
+    // Modal de Vinculación Manual
+    initReconMatchModal();
+
+    // Modal de Histórico Backfill
+    initReconBackfillModal();
+}
+
+// Carga principal de datos y métricas
+async function loadReconciliationData(refreshMonths = true) {
+    try {
+        const queryParams = new URLSearchParams();
+        if (currentReconMonth) queryParams.append('month', currentReconMonth);
+        queryParams.append('account_rfc', currentReconEntity);
+
+        const res = await fetch(`${API_BASE}/reconciliation/overview?${queryParams.toString()}`, {
+            headers: getAuthHeaders()
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error ${res.status}`);
+        }
+
+        const data = await res.json();
+        currentReconMonth = data.selected_month;
+
+        // Actualizar selector de meses si es necesario
+        if (refreshMonths) {
+            const monthSelect = document.getElementById('reconMonthSelect');
+            if (monthSelect && data.available_months) {
+                monthSelect.innerHTML = '';
+                if (data.available_months.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = currentReconMonth;
+                    opt.textContent = formatMonthLabel(currentReconMonth);
+                    monthSelect.appendChild(opt);
+                } else {
+                    data.available_months.forEach(m => {
+                        const opt = document.createElement('option');
+                        opt.value = m;
+                        opt.textContent = formatMonthLabel(m);
+                        if (m === currentReconMonth) opt.selected = true;
+                        monthSelect.appendChild(opt);
+                    });
+                }
+            }
+        }
+
+        // Actualizar KPIs
+        const k = data.kpis;
+        const egresosEl = document.getElementById('kpiReconEgresosBanco');
+        if (egresosEl) egresosEl.textContent = `$${k.total_egresos_banco.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const concEl = document.getElementById('kpiReconConciliado');
+        if (concEl) concEl.textContent = `$${k.monto_conciliado.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const pctEl = document.getElementById('kpiReconPctConciliado');
+        if (pctEl) pctEl.textContent = `${k.pct_egresos_facturados}% deducible amparado (${k.count_conciliado} transacciones)`;
+
+        const sinCfdiEl = document.getElementById('kpiReconSinCFDI');
+        if (sinCfdiEl) sinCfdiEl.textContent = `$${k.monto_sin_cfdi.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const sinCountEl = document.getElementById('kpiReconSinCFDICount');
+        if (sinCountEl) sinCountEl.textContent = `${k.count_sin_cfdi} cargos sin comprobante digital`;
+
+        const ingresosEl = document.getElementById('kpiReconIngresosBanco');
+        if (ingresosEl) ingresosEl.textContent = `$${k.total_ingresos_banco.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const factDispEl = document.getElementById('kpiReconFacturasDisp');
+        if (factDispEl) factDispEl.textContent = `${k.facturas_disponibles_count} facturas disponibles en cola`;
+
+        const totalTxsEl = document.getElementById('kpiReconTotalTxs');
+        if (totalTxsEl) totalTxsEl.textContent = `${k.total_transacciones} transacciones en el periodo`;
+
+        // Cargar lista de transacciones
+        await loadReconciliationTransactions();
+
+    } catch (err) {
+        console.error("Error al cargar conciliación:", err);
+    }
+}
+
+// Cargar y renderizar tabla de transacciones
+async function loadReconciliationTransactions() {
+    const tbody = document.getElementById('reconTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="8" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
+                Consultando transacciones...
+            </td>
+        </tr>
+    `;
+
+    try {
+        const params = new URLSearchParams();
+        params.append('account_rfc', currentReconEntity);
+        if (currentReconMonth) params.append('month', currentReconMonth);
+        if (currentReconStatus && currentReconStatus !== 'ALL') params.append('status', currentReconStatus);
+        if (currentReconTipo && currentReconTipo !== 'ALL') params.append('tipo', currentReconTipo);
+        if (currentReconSearch) params.append('search', currentReconSearch);
+
+        const res = await fetch(`${API_BASE}/reconciliation/transactions?${params.toString()}`, {
+            headers: getAuthHeaders()
+        });
+
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+
+        const txs = await res.json();
+
+        if (txs.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 0.5rem auto; display: block; opacity: 0.5;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        No se encontraron movimientos bancarios para los filtros seleccionados.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        let html = '';
+        txs.forEach(t => {
+            const isCargo = t.tipo === 'EGRESO';
+            const tipoBadge = isCargo 
+                ? `<span style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700;">CARGO</span>`
+                : `<span style="background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700;">ABONO</span>`;
+
+            // Status Badge
+            let statusBadge = '';
+            if (t.status_conciliacion === 'CONCILIADO') {
+                statusBadge = `<span style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">✓ Conciliado</span>`;
+            } else if (t.status_conciliacion === 'POR_REVISAR') {
+                statusBadge = `<span style="background: rgba(234, 179, 8, 0.12); color: #facc15; border: 1px solid rgba(234,179,8,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">⏳ Por Revisar</span>`;
+            } else {
+                statusBadge = `<span style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">✕ Sin CFDI</span>`;
+            }
+
+            // Comprobante Fiscal info
+            let cfdiHtml = '';
+            if (t.cfdi) {
+                const contraparte = isCargo ? (t.cfdi.nombre_emisor || t.cfdi.rfc_emisor) : (t.cfdi.nombre_receptor || t.cfdi.rfc_receptor);
+                cfdiHtml = `
+                    <div style="font-size: 0.83rem;">
+                        <div style="font-weight: 600; color: var(--text-main); line-height: 1.3;">${escapeHtml(contraparte || t.contraparte || 'Sin nombre')}</div>
+                        <div style="display: flex; gap: 0.4rem; align-items: center; margin-top: 3px; font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">
+                            <span style="color: var(--accent-cyan);">${escapeHtml(t.metodo_pago || 'PUE')}</span>
+                            <span>•</span>
+                            <span>UUID: ${t.cfdi.uuid.slice(0, 16)}...</span>
+                        </div>
+                    </div>
+                `;
+            } else if (t.uuid_cfdi) {
+                cfdiHtml = `
+                    <div style="font-size: 0.83rem;">
+                        <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(t.contraparte || 'Factura vinculada')}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace; margin-top: 2px;">UUID: ${t.uuid_cfdi.slice(0, 16)}...</div>
+                    </div>
+                `;
+            } else if (t.status_conciliacion === 'POR_REVISAR' && t.nota_revision) {
+                cfdiHtml = `<div style="font-size: 0.78rem; color: #facc15; line-height: 1.3;">${escapeHtml(t.nota_revision)}</div>`;
+            } else {
+                cfdiHtml = `<div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.3;">${escapeHtml(t.nota_revision || 'Sin factura registrada')}</div>`;
+            }
+
+            // Desglose Fiscal (14 columnas maestro)
+            let fiscalHtml = '';
+            const subtotalVal = Number(t.subtotal || 0);
+            const ivaVal = isCargo ? Number(t.iva_egresos || 0) : Number(t.iva_ingresos || 0);
+            const retVal = Number(t.retencion_isr || 0);
+
+            if (subtotalVal > 0 || ivaVal > 0 || retVal > 0) {
+                fiscalHtml = `
+                    <div style="font-size: 0.74rem; line-height: 1.35; text-align: right; font-family: monospace;">
+                        <div style="color: var(--text-main);">Sub: $${subtotalVal.toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>
+                        <div style="color: ${ivaVal > 0 ? (isCargo ? '#f87171' : '#34d399') : 'var(--text-muted)'};">IVA: $${ivaVal.toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>
+                        ${retVal > 0 ? `<div style="color: #fbbf24;">Ret ISR: -$${retVal.toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>` : ''}
+                    </div>
+                `;
+            } else {
+                fiscalHtml = `<div style="font-size: 0.74rem; color: var(--text-muted); text-align: right;">-</div>`;
+            }
+
+            // Acciones
+            let actionsHtml = '';
+            if (t.status_conciliacion === 'POR_REVISAR' && t.uuid_cfdi) {
+                actionsHtml = `
+                    <div style="display: flex; gap: 0.35rem; justify-content: center;">
+                        <button type="button" onclick="approveMatchSuggestion(${t.id}, '${t.uuid_cfdi}')" title="Aprobar coincidencia sugerida" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); border-radius: 6px; padding: 0.3rem 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">✓ Aprobar</button>
+                        <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Buscar otra factura" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.45rem; cursor: pointer; font-size: 0.75rem;">🔍</button>
+                    </div>
+                `;
+            } else if (t.status_conciliacion === 'SIN_CFDI') {
+                actionsHtml = `
+                    <div style="display: flex; justify-content: center;">
+                        <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Vincular factura manualmente" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); border-radius: 6px; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">+ Vincular</button>
+                    </div>
+                `;
+            } else if (t.status_conciliacion === 'CONCILIADO') {
+                actionsHtml = `
+                    <div style="display: flex; justify-content: center;">
+                        <button type="button" onclick="unmatchTransaction(${t.id})" title="Desvincular factura" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.55rem; cursor: pointer; font-size: 0.72rem;">Desvincular</button>
+                    </div>
+                `;
+            }
+
+            html += `
+                <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 0.85rem 1.1rem; font-size: 0.82rem; color: var(--text-muted); font-family: monospace;">${formatDateDisplay(t.fecha)}</td>
+                    <td style="padding: 0.85rem 1.1rem; font-size: 0.82rem; font-weight: 600; white-space: nowrap;">
+                        <span style="background: rgba(56, 189, 248, 0.08); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.2); padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.75rem;">${escapeHtml(t.area_proyecto || 'General')}</span>
+                    </td>
+                    <td style="padding: 0.85rem 1.1rem; font-weight: 500; color: var(--text-main); font-size: 0.84rem; max-width: 300px;">
+                        <div style="line-height: 1.35; word-break: break-word;">${escapeHtml(t.concepto)}</div>
+                        <div style="margin-top: 4px;">${tipoBadge}</div>
+                    </td>
+                    <td style="padding: 0.85rem 1.1rem; text-align: right; font-weight: 700; font-size: 0.92rem; color: ${isCargo ? '#f87171' : '#34d399'}; white-space: nowrap;">
+                        ${isCargo ? '-' : '+'}$${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}
+                    </td>
+                    <td style="padding: 0.85rem 1.1rem; text-align: center; white-space: nowrap;">${statusBadge}</td>
+                    <td style="padding: 0.85rem 1.1rem;">${cfdiHtml}</td>
+                    <td style="padding: 0.85rem 1.1rem; text-align: right;">${fiscalHtml}</td>
+                    <td style="padding: 0.85rem 1.1rem; text-align: center;">${actionsHtml}</td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+
+    } catch (err) {
+        console.error("Error cargando transacciones:", err);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="padding: 2.5rem; text-align: center; color: #ef4444;">
+                    Error al consultar transacciones del servidor.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// Helper formato mes
+function formatMonthLabel(m) {
+    if (!m || !m.includes('-')) return m;
+    const parts = m.split('-');
+    const year = parts[0];
+    const monthNum = parseInt(parts[1], 10);
+    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    return `${months[monthNum - 1] || m} ${year}`;
+}
+
+function formatDateDisplay(d) {
+    if (!d) return '';
+    const parts = d.split('-');
+    if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return d;
+}
+
+// -------------------------------------------------------------
+// MODAL DE CARGA DE ARCHIVOS (.XML, .ZIP, .CSV, .XLSX)
+// -------------------------------------------------------------
+function initReconUploadModal() {
+    const btnOpen = document.getElementById('btnOpenUploadModal');
+    const modal = document.getElementById('modalUploadReconciliation');
+    const btnCloseX = document.getElementById('btnCloseUploadModalX');
+    const btnCancel = document.getElementById('btnCancelUploadModal');
+    const dropzone = document.getElementById('reconDropzone');
+    const fileInput = document.getElementById('reconFileInput');
+    const btnSubmit = document.getElementById('btnSubmitUploadFiles');
+    const progress = document.getElementById('reconUploadProgress');
+    const listEl = document.getElementById('reconSelectedFilesList');
+
+    if (btnOpen) {
+        btnOpen.addEventListener('click', () => {
+            selectedReconFiles = [];
+            renderSelectedFiles();
+            if (progress) progress.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
+        });
+    }
+
+    const closeModal = () => {
+        if (modal) modal.classList.add('hidden');
+    };
+
+    if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
+    if (btnCancel) btnCancel.addEventListener('click', closeModal);
+
+    // Dropzone logic
+    if (dropzone && fileInput) {
+        dropzone.addEventListener('click', () => fileInput.click());
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#10b981';
+            dropzone.style.background = 'rgba(16, 185, 129, 0.08)';
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+            dropzone.style.background = 'rgba(56, 189, 248, 0.03)';
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+            dropzone.style.background = 'rgba(56, 189, 248, 0.03)';
+            if (e.dataTransfer.files) {
+                handleAddedFiles(e.dataTransfer.files);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files) {
+                handleAddedFiles(fileInput.files);
+            }
+        });
+    }
+
+    function handleAddedFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+            selectedReconFiles.push(files[i]);
+        }
+        renderSelectedFiles();
+    }
+
+    function renderSelectedFiles() {
+        if (!listEl) return;
+        if (selectedReconFiles.length === 0) {
+            listEl.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        selectedReconFiles.forEach((f, idx) => {
+            const isXml = f.name.toLowerCase().endsWith('.xml');
+            const isZip = f.name.toLowerCase().endsWith('.zip');
+            const icon = isXml ? '🧾' : (isZip ? '📦' : '📊');
+            html += `
+                <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.45rem 0.75rem; font-size: 0.82rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <span>${icon}</span>
+                        <span style="color: var(--text-main); font-weight: 500;">${escapeHtml(f.name)}</span>
+                        <span style="color: var(--text-muted); font-size: 0.75rem;">(${(f.size / 1024).toFixed(1)} KB)</span>
+                    </div>
+                    <button type="button" onclick="removeReconFile(${idx})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; padding: 0 0.3rem;">&times;</button>
+                </div>
+            `;
+        });
+        listEl.innerHTML = html;
+    }
+
+    window.removeReconFile = (idx) => {
+        selectedReconFiles.splice(idx, 1);
+        renderSelectedFiles();
+    };
+
+    if (btnSubmit) {
+        btnSubmit.addEventListener('click', async () => {
+            if (selectedReconFiles.length === 0) {
+                alert('Por favor selecciona al menos un archivo XML, ZIP o CSV para subir.');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            if (progress) progress.classList.remove('hidden');
+
+            const formData = new FormData();
+            selectedReconFiles.forEach(f => {
+                formData.append('files', f);
+            });
+            formData.append('account_rfc', currentReconEntity);
+
+            try {
+                const res = await fetch(`${API_BASE}/reconciliation/upload-files`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('dashboard_token')}`
+                    },
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert(`¡Proceso completado con éxito!\n• ${data.processed_xmls} facturas XML registradas\n• ${data.processed_statements} transacciones bancarias cargadas\n• ${data.matches_creados} coincidencias automáticas vinculadas`);
+                    closeModal();
+                    loadReconciliationData(true);
+                } else {
+                    alert(`Error al procesar: ${data.detail || 'Falla del servidor'}`);
+                }
+            } catch (err) {
+                console.error("Error subiendo archivos:", err);
+                alert('Error de conexión al subir archivos.');
+            } finally {
+                btnSubmit.disabled = false;
+                if (progress) progress.classList.add('hidden');
+            }
+        });
+    }
+}
+
+// -------------------------------------------------------------
+// MODAL DE VINCULACIÓN MANUAL
+// -------------------------------------------------------------
+function initReconMatchModal() {
+    const modal = document.getElementById('modalMatchManual');
+    const btnCloseX = document.getElementById('btnCloseMatchModalX');
+    const btnCancel = document.getElementById('btnCancelMatchModal');
+    const btnConfirm = document.getElementById('btnConfirmMatchManual');
+    const searchInput = document.getElementById('matchInvoiceSearchInput');
+
+    const closeModal = () => {
+        if (modal) modal.classList.add('hidden');
+    };
+
+    if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
+    if (btnCancel) btnCancel.addEventListener('click', closeModal);
+
+    if (searchInput) {
+        let timeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                renderMatchInvoicesList(e.target.value.trim());
+            }, 250);
+        });
+    }
+
+    if (btnConfirm) {
+        btnConfirm.addEventListener('click', async () => {
+            const txId = document.getElementById('matchTargetTxId').value;
+            const uuid = document.getElementById('matchSelectedUUID').value;
+
+            if (!uuid) {
+                alert('Por favor selecciona una factura de la lista.');
+                return;
+            }
+
+            btnConfirm.disabled = true;
+            try {
+                const form = new FormData();
+                form.append('transaction_id', txId);
+                form.append('uuid_cfdi', uuid);
+
+                const res = await fetch(`${API_BASE}/reconciliation/match-manual`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('dashboard_token')}`
+                    },
+                    body: form
+                });
+
+                if (res.ok) {
+                    closeModal();
+                    loadReconciliationData(false);
+                } else {
+                    const errData = await res.json().catch(() => ({}));
+                    alert(errData.detail || 'No se pudo vincular la factura.');
+                }
+            } catch (err) {
+                console.error("Error vinculando:", err);
+                alert('Error de conexión.');
+            } finally {
+                btnConfirm.disabled = false;
+            }
+        });
+    }
+}
+
+async function openMatchManualModal(txId, concepto, monto, fecha, tipo) {
+    const modal = document.getElementById('modalMatchManual');
+    document.getElementById('matchTargetTxId').value = txId;
+    document.getElementById('matchSelectedUUID').value = '';
+
+    document.getElementById('matchTxMonto').textContent = `$${Number(monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+    document.getElementById('matchTxConcepto').textContent = concepto;
+    document.getElementById('matchTxFechaTipo').textContent = `Fecha: ${formatDateDisplay(fecha)} • Flujo: ${tipo === 'EGRESO' ? 'Cargo (Gasto)' : 'Abono (Ingreso)'}`;
+
+    const searchInput = document.getElementById('matchInvoiceSearchInput');
+    if (searchInput) searchInput.value = '';
+
+    if (modal) modal.classList.remove('hidden');
+
+    // Cargar facturas pendientes correspondientes
+    const listEl = document.getElementById('matchInvoicesList');
+    if (listEl) {
+        listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-muted);"><div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>Cargando facturas disponibles...</div>';
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?tipo=${tipo}&account_rfc=${encodeURIComponent(currentReconEntity)}`, {
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            pendingInvoicesCache = await res.json();
+            renderMatchInvoicesList('');
+        }
+    } catch (err) {
+        console.error("Error al obtener facturas disponibles:", err);
+        if (listEl) listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #ef4444;">Error al consultar facturas.</div>';
+    }
+}
+
+function renderMatchInvoicesList(filterText = '') {
+    const listEl = document.getElementById('matchInvoicesList');
+    if (!listEl) return;
+
+    let filtered = pendingInvoicesCache;
+    if (filterText) {
+        const s = filterText.toLowerCase();
+        filtered = filtered.filter(f => 
+            (f.nombre_emisor && f.nombre_emisor.toLowerCase().includes(s)) ||
+            (f.nombre_receptor && f.nombre_receptor.toLowerCase().includes(s)) ||
+            (f.rfc_emisor && f.rfc_emisor.toLowerCase().includes(s)) ||
+            (f.rfc_receptor && f.rfc_receptor.toLowerCase().includes(s)) ||
+            (f.uuid && f.uuid.toLowerCase().includes(s)) ||
+            (f.total && f.total.toString().includes(s))
+        );
+    }
+
+    if (filtered.length === 0) {
+        listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">No se encontraron facturas pendientes que coincidan con la búsqueda.</div>';
+        return;
+    }
+
+    let html = '';
+    filtered.forEach(f => {
+        const contraparte = f.tipo === 'EGRESO' ? f.nombre_emisor : f.nombre_receptor;
+        const rfc = f.tipo === 'EGRESO' ? f.rfc_emisor : f.rfc_receptor;
+        html += `
+            <div class="match-invoice-item" data-uuid="${f.uuid}" onclick="selectInvoiceForMatch('${f.uuid}', this)" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.65rem 0.85rem; cursor: pointer; transition: all 0.15s; background: rgba(255,255,255,0.02);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                    <strong style="color: var(--text-main); font-size: 0.88rem;">${escapeHtml(contraparte || 'Sin nombre')}</strong>
+                    <strong style="color: #10b981; font-size: 0.95rem;">$${Number(f.total).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                    <span>RFC: ${rfc} • Fecha: ${f.fecha_emision}</span>
+                    <span style="font-family: monospace;">UUID: ${f.uuid.slice(0, 16)}...</span>
+                </div>
+            </div>
+        `;
+    });
+    listEl.innerHTML = html;
+}
+
+window.selectInvoiceForMatch = (uuid, el) => {
+    document.querySelectorAll('.match-invoice-item').forEach(item => {
+        item.style.borderColor = 'var(--border-color)';
+        item.style.background = 'rgba(255,255,255,0.02)';
+    });
+    if (el) {
+        el.style.borderColor = 'var(--accent-cyan)';
+        el.style.background = 'rgba(56, 189, 248, 0.1)';
+    }
+    document.getElementById('matchSelectedUUID').value = uuid;
+};
+
+// Acción directa: Aprobar sugerencia de Nivel 2
+async function approveMatchSuggestion(txId, uuid) {
+    try {
+        const form = new FormData();
+        form.append('transaction_id', txId);
+        form.append('uuid_cfdi', uuid);
+
+        const res = await fetch(`${API_BASE}/reconciliation/match-manual`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('dashboard_token')}`
+            },
+            body: form
+        });
+
+        if (res.ok) {
+            loadReconciliationData(false);
+        } else {
+            const err = await res.json().catch(() => ({}));
+            alert(err.detail || 'No se pudo aprobar la coincidencia.');
+        }
+    } catch (err) {
+        console.error("Error al aprobar sugerencia:", err);
+        alert('Error de conexión.');
+    }
+}
+
+// Acción directa: Desvincular transacción
+async function unmatchTransaction(txId) {
+    if (!confirm('¿Deseas desvincular esta transacción? La factura quedará disponible para volver a conciliarse.')) {
+        return;
+    }
+
+    try {
+        const form = new FormData();
+        form.append('transaction_id', txId);
+
+        const res = await fetch(`${API_BASE}/reconciliation/unmatch`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('dashboard_token')}`
+            },
+            body: form
+        });
+
+        if (res.ok) {
+            loadReconciliationData(false);
+        } else {
+            const err = await res.json().catch(() => ({}));
+            alert(err.detail || 'No se pudo desvincular.');
+        }
+    } catch (err) {
+        console.error("Error al desvincular:", err);
+        alert('Error de conexión.');
+    }
+}
+
+// -------------------------------------------------------------
+// MODAL DE HISTÓRICO BACKFILL
+// -------------------------------------------------------------
+function initReconBackfillModal() {
+    const btnOpen = document.getElementById('btnOpenBackfillModal');
+    const modal = document.getElementById('modalBackfillHistorical');
+    const btnCloseX = document.getElementById('btnCloseBackfillModalX');
+    const btnCancel = document.getElementById('btnCancelBackfillModal');
+    const btnSubmit = document.getElementById('btnSubmitBackfill');
+    const fileInput = document.getElementById('backfillFileInput');
+    const progress = document.getElementById('backfillProgress');
+
+    if (btnOpen) {
+        btnOpen.addEventListener('click', () => {
+            if (fileInput) fileInput.value = '';
+            if (progress) progress.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
+        });
+    }
+
+    const closeModal = () => {
+        if (modal) modal.classList.add('hidden');
+    };
+
+    if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
+    if (btnCancel) btnCancel.addEventListener('click', closeModal);
+
+    if (btnSubmit) {
+        btnSubmit.addEventListener('click', async () => {
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                alert('Por favor selecciona un archivo Excel o CSV.');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            if (progress) progress.classList.remove('hidden');
+
+            const form = new FormData();
+            form.append('file', fileInput.files[0]);
+            form.append('account_rfc', currentReconEntity);
+
+            try {
+                const res = await fetch(`${API_BASE}/reconciliation/backfill-excel`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('dashboard_token')}`
+                    },
+                    body: form
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert(`¡Migración completada exitosamente!\n• ${data.imported_transactions} transacciones importadas\n• ${data.imported_invoices} folios fiscales asegurados como conciliados.`);
+                    closeModal();
+                    loadReconciliationData(true);
+                } else {
+                    alert(`Aviso de migración: ${data.detail || 'Error en formato'}`);
+                }
+            } catch (err) {
+                console.error("Error en migración:", err);
+                alert('Error de conexión durante la migración.');
+            } finally {
+                btnSubmit.disabled = false;
+                if (progress) progress.classList.add('hidden');
+            }
+        });
+    }
+}
+
+// Exposición global
+window.initReconciliationModule = initReconciliationModule;
+window.loadReconciliationData = loadReconciliationData;
+window.loadReconciliationTransactions = loadReconciliationTransactions;
+window.openMatchManualModal = openMatchManualModal;
+window.approveMatchSuggestion = approveMatchSuggestion;
+window.unmatchTransaction = unmatchTransaction;
+
 
 

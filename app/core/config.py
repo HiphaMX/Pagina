@@ -135,6 +135,32 @@ class Settings(BaseSettings):
 
     GOOGLE_PLACES_API_KEY: str = ""
 
+    # RECONCILIATION Specific Settings (Multi-Entity)
+    RECONCILIATION_RFC: str = "DEGF851127TK1"
+    RECONCILIATION_IMAP_HOST: str = "mail.hipha.mx"
+    RECONCILIATION_IMAP_PORT: Union[int, str] = 993
+    RECONCILIATION_IMAP_USER: str = "factura@hipha.mx"
+    RECONCILIATION_IMAP_PASSWORD: str = "%k3]ALzqrsOj^X;="
+    RECONCILIATION_IMAP_FOLDER: str = "INBOX"
+
+    # HIPHA Entity
+    HIPHA_RECON_RFC: str = "DEGF851127TK1"
+    HIPHA_RECON_NAME: str = "HIPHA"
+    HIPHA_RECON_IMAP_HOST: str = "mail.hipha.mx"
+    HIPHA_RECON_IMAP_PORT: Union[int, str] = 993
+    HIPHA_RECON_IMAP_USER: str = "factura@hipha.mx"
+    HIPHA_RECON_IMAP_PASSWORD: str = "%k3]ALzqrsOj^X;="
+    HIPHA_RECON_IMAP_FOLDER: str = "INBOX"
+
+    # AMDI Entity
+    AMDI_RECON_RFC: str = "MEHA850118Q96"
+    AMDI_RECON_NAME: str = "AMDI"
+    AMDI_RECON_IMAP_HOST: str = "mail.amdi.mx"
+    AMDI_RECON_IMAP_PORT: Union[int, str] = 993
+    AMDI_RECON_IMAP_USER: str = "factura@amdi.mx"
+    AMDI_RECON_IMAP_PASSWORD: str = "Celi@007_2026mX"
+    AMDI_RECON_IMAP_FOLDER: str = "INBOX"
+
     @validator("SMTP_PORT", pre=True, always=True)
     @classmethod
     def coerce_port(cls, v):
@@ -193,3 +219,27 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_reconciliation_entity_config(account_rfc: Optional[str] = None) -> dict:
+    rfc = (account_rfc or "").strip().upper()
+    if rfc == settings.AMDI_RECON_RFC.upper() or rfc == "AMDI":
+        return {
+            "rfc": settings.AMDI_RECON_RFC,
+            "name": settings.AMDI_RECON_NAME,
+            "host": settings.AMDI_RECON_IMAP_HOST,
+            "port": int(settings.AMDI_RECON_IMAP_PORT or 993),
+            "user": settings.AMDI_RECON_IMAP_USER,
+            "password": settings.AMDI_RECON_IMAP_PASSWORD,
+            "folder": settings.AMDI_RECON_IMAP_FOLDER,
+        }
+    # Default HIPHA
+    return {
+        "rfc": settings.HIPHA_RECON_RFC,
+        "name": settings.HIPHA_RECON_NAME,
+        "host": settings.HIPHA_RECON_IMAP_HOST,
+        "port": int(settings.HIPHA_RECON_IMAP_PORT or 993),
+        "user": settings.HIPHA_RECON_IMAP_USER,
+        "password": settings.HIPHA_RECON_IMAP_PASSWORD,
+        "folder": settings.HIPHA_RECON_IMAP_FOLDER,
+    }

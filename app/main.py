@@ -8,6 +8,7 @@ from app.api import contact, mercadopago, auth, sat, qa, visual_generator, socia
 from app.api.projects import botica as botica_project
 from app.api.projects import oncologia_robotica as oncologia_robotica_project
 from app.api.dashboard import routes as dashboard_routes
+from app.api.dashboard import reconciliation_routes
 from app.core.database import Base, engine, SessionLocal, ensure_db_initialized
 from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
@@ -178,6 +179,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(reconciliation_routes.router, prefix="/api/dashboard/reconciliation", tags=["reconciliation"])
 app.include_router(social_tracker.router, prefix="/api/dashboard/social", tags=["social-tracker"])
 app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
 app.include_router(qa.router, prefix="/api", tags=["qa"])
@@ -211,6 +213,23 @@ def read_root(request: Request):
             if os.path.exists(index_path):
                 return FileResponse(index_path)
     return {"message": "Welcome to HiphaMX API"}
+
+@app.get("/dashboard")
+@app.get("/dashboard/")
+def serve_dashboard():
+    dashboard_index = os.path.join("projects", "HiphaMX", "dashboard", "index.html")
+    if os.path.exists(dashboard_index):
+        return FileResponse(dashboard_index)
+    from fastapi import HTTPException
+    raise HTTPException(status_code=404, detail="Dashboard not found")
+
+@app.get("/dashboard/{path_name:path}")
+def serve_dashboard_static(path_name: str):
+    file_path = os.path.join("projects", "HiphaMX", "dashboard", path_name)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+    from fastapi import HTTPException
+    raise HTTPException(status_code=404, detail="Not Found")
 
 @app.get("/{path_name:path}")
 def serve_client_static(request: Request, path_name: str):
