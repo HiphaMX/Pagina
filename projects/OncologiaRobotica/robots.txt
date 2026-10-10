@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# Agentes de IA y Motores de Búsqueda Generativa (GEO / Grounding)
+# Motores de Búsqueda y Agentes de Grounding / IA (GEO)
 User-agent: Google-Extended
 Allow: /
 
@@ -17,5 +17,15 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
-# Documentación de Web Agéntica
-# llms-txt: https://hipha.mx/oncologia-robotica/llms.txt
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+# Mapa del Sitio XML y Documentación de Web Agéntica
+Sitemap: https://oncologia-robotica.com/sitemap.xml
+# llms-txt: https://oncologia-robotica.com/llms.txt

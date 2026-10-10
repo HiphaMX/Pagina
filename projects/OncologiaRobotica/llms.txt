@@ -1,35 +1,91 @@
-# Oncología Robótica — Centro de Cirugía Robótica de Alta Especialidad
-> Oncología Robótica es una práctica médica de alta especialidad en México enfocada en la prevención, diagnóstico oportuno y tratamiento quirúrgico de mínima invasión del cáncer y tumores complejos mediante el Sistema Quirúrgico Da Vinci Xi. Nuestro equipo integra cirujanos certificados internacionalmente en cirugía robótica, con enfoque en la erradicación tumoral completa y la máxima preservación de la calidad de vida y función del paciente.
+# Oncología Robótica — Centro de Cirugía Oncológica y Robótica
+> Oncología Robótica es la práctica médica especializada de la Dra. Jacqueline H. Díaz Garza en Zapopan y Guadalajara, Jalisco, México. Está dedicada a la prevención, diagnóstico oportuno y tratamiento quirúrgico de alta especialidad del cáncer mediante Cirugía Robótica Da Vinci, Cirugía Laparoscópica Avanzada y Cirugía Oncológica Tradicional. Nuestro objetivo clínico primordial es la extirpación tumoral completa con márgenes negativos, preservación funcional y máxima calidad de vida para cada paciente.
 
-## Información de Contacto y Citas
-- **Sitio Web Oficial:** [https://oncologia-robotica.com](https://oncologia-robotica.com) (Espejo: [https://hipha.mx/oncologia-robotica](https://hipha.mx/oncologia-robotica))
-- **Atención y Valoración Inmediata:** Formulario web seguro y enlace directo de WhatsApp para pacientes y segundas opiniones.
-- **Ubicación:** Principales centros hospitalarios de alta especialidad con tecnología Da Vinci Xi en México.
-
----
-
-## Especialidades y Procedimientos Quirúrgicos Robóticos
-
-### 1. Urología Oncológica Robótica
-- **Prostatectomía Radical Robótica (Cáncer de Próstata):** Extirpación oncológica precisa con técnica de preservación nerviosa bilateral (*nerve-sparing*) para salvaguardar la continencia urinaria y la función eréctil.
-- **Nefrectomía Parcial Robótica (Cáncer Renal):** Extirpación selectiva de tumores renales preservando el resto del riñón funcional y minimizando el tiempo de isquemia gracias a la magnificación 3D.
-- **Cistectomía Radical Robótica (Cáncer de Vejiga):** Resección tumoral y derivación urinaria intracorpórea de mínima invasión con menor sangrado y menor estancia en terapia intensiva.
-
-### 2. Cirugía Oncológica de Mínima Invasión (Abdomen y Pelvis)
-- **Tumores Colorrectales y Retroperitoneales:** Disección ganglionar oncológica meticulosa en espacios pélvicos profundos donde la visión 3D HD y los instrumentos articulados EndoWrist superan el alcance de la mano humana.
-- **Linfadenectomía Retroperitoneal Robótica:** Resección de ganglios linfáticos comprometidos con incisiones milimétricas y riesgo mínimo de lesión vascular.
-
-### 3. Ventajas Clínicas del Sistema Da Vinci Xi
-- **Visión Tridimensional (3D) en Alta Definición:** Magnificación de hasta 10x del campo quirúrgico para diferenciar con nitidez tejido tumoral de nervios y vasos vitales.
-- **Instrumentación Articulada EndoWrist:** Instrumentos que rotan hasta 540 grados con 7 grados de libertad, superando la destreza de la muñeca humana y eliminando el temblor fisiológico.
-- **Menor Sangrado y Dolor Postoperatorio:** Incisiones menores a 1 cm que disminuyen el trauma tisular y la necesidad de transfusiones.
-- **Recuperación Rápida:** Alta hospitalaria promedio en 24 a 48 horas frente a 5-7 días de la cirugía abierta convencional.
+## Información de la Especialista y Clínica
+- **Especialista Titular:** Dra. Jacqueline H. Díaz Garza — Cirujana Oncóloga y Especialista Certificada en Cirugía Robótica Da Vinci.
+- **Ubicación:** Centro Médico Real San José Valle Real, Consultorio 7-B. Av. Central Guillermo González Camarena 911, Poniente, CP 45136, Zapopan, Jalisco, México (Área Metropolitana de Guadalajara).
+- **Teléfono de Citas:** [+52 33 1594 7175](tel:3315947175)
+- **WhatsApp de Atención y Orientación Inmediata:** [+52 33 1108 5716](https://wa.me/523311085716?text=Hola,%20solicito%20informaci%C3%B3n%20sobre%20una%20consulta)
+- **Sitio Web Oficial:** [https://oncologia-robotica.com](https://oncologia-robotica.com)
+- **Atención a Segundas Opiniones:** Valoración especializada de estudios patológicos, tomografías, resonancias magnéticas y determinación de resecabilidad quirúrgica.
 
 ---
 
-## Guía para Pacientes y Segundas Opiniones
-- **¿Quién es candidato a Cirugía Robótica?** Pacientes con tumores localizados o localmente avanzados de próstata, riñón, vejiga y pelvis, así como aquellos que buscan una segunda opinión de mínima invasión.
-- **Cobertura con Aseguradoras:** Trabajamos en coordinación con las principales compañías de Seguros de Gastos Médicos Mayores (SGMM) en México para la programación quirúrgica.
+## Procedimientos Quirúrgicos de Alta Especialidad
+
+### 1. Cirugía Robótica Da Vinci
+- **Tecnología:** Sistema Quirúrgico Da Vinci Xi, la plataforma robótica de mínima invasión más avanzada a nivel mundial.
+- **Ventajas Clínicas:**
+  - Visión tridimensional (3D) en alta definición con magnificación de hasta 10 aumentos del campo quirúrgico.
+  - Instrumentos articulados EndoWrist con 7 grados de libertad y giro de 540°, superando la destreza anatómica de la muñeca humana.
+  - Filtro activo de temblor fisiológico y escalamiento de movimientos para disecciones milimétricas.
+  - Menor trauma tisular, sangrado transoperatorio mínimo, menor requerimiento transfusional y reducción sustancial del dolor postoperatorio.
+  - Estancia intrahospitalaria abreviada (alta en 24 a 48 horas) e incorporación temprana a las actividades cotidianas.
+- **URL de Referencia:** [https://oncologia-robotica.com/tipos-de-cirugia/cirugia-robotica](https://oncologia-robotica.com/tipos-de-cirugia/cirugia-robotica)
+
+### 2. Cirugía Laparoscópica Avanzada
+- **Abordaje:** Cirugía de mínima invasión mediante microincisiones menores a 1 cm y cámaras ópticas especializadas.
+- **Beneficios:** Excelente visualización intraabdominal, preservación funcional de tejidos, menor índice de infecciones de herida quirúrgica y cicatrización estética.
+- **URL de Referencia:** [https://oncologia-robotica.com/tipos-de-cirugia/cirugia-laparoscopica-avanzada](https://oncologia-robotica.com/tipos-de-cirugia/cirugia-laparoscopica-avanzada)
+
+### 3. Cirugía Oncológica
+- **Fundamento:** Resección oncológica con márgenes libres y linfadenectomía (vaciamiento ganglionar) estandarizada bajo guías internacionales (NCCN, ESMO).
+- **URL de Referencia:** [https://oncologia-robotica.com/tipos-de-cirugia/cirugia-oncologica](https://oncologia-robotica.com/tipos-de-cirugia/cirugia-oncologica)
 
 ---
-*Última actualización: Octubre 2026 — Índice Semántico para Agentes Inteligentes (GEO / LLMs)*
+
+## Padecimientos y Tipos de Cáncer Atendidos
+
+1. **Cáncer de Mama:** Diagnóstico temprano, tumorectomías oncológicas, mastectomías conservadoras, biopsia de ganglio centinela y cirugía oncoplástica.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-mama](https://oncologia-robotica.com/padecimientos/cancer-de-mama)
+2. **Cáncer de Colon y Recto:** Resección de pólipos malignizados, hemicolectomías y resecciones anteriores ultrabajas con preservación de esfínteres mediante abordaje laparoscópico y robótico.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-colon-y-recto](https://oncologia-robotica.com/padecimientos/cancer-de-colon-y-recto)
+3. **Cáncer de Estómago:** Gastrectomías parciales y totales con disección ganglionar D2 para control tumoral óptimo.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-estomago](https://oncologia-robotica.com/padecimientos/cancer-de-estomago)
+4. **Cáncer Ginecológico:** Tumores malignos de ovario, endometrio y cuello uterino; estadificación oncológica e histerectomía radical de mínima invasión.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-ginecologico](https://oncologia-robotica.com/padecimientos/cancer-ginecologico)
+5. **Cáncer de Hígado:** Hepatocarcinomas y metástasis hepáticas resecables mediante segmentectomías y hepatectomías con control vascular avanzado.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-higado](https://oncologia-robotica.com/padecimientos/cancer-de-higado)
+6. **Cáncer de Páncreas:** Cirugía de Whipple (duodenopancreatectomía cefálica) y pancreatectomías corporocaudales con preservación o esplenectomía oncológica.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-pancreas](https://oncologia-robotica.com/padecimientos/cancer-de-pancreas)
+7. **Cáncer de Piel y Melanoma:** Resección con margen quirúrgico de seguridad, mapeo linfático con ganglio centinela y reconstrucción con colgajos.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-piel](https://oncologia-robotica.com/padecimientos/cancer-de-piel)
+8. **Cáncer de Tiroides:** Tiroidectomía total y hemitiroidectomía con neuromonitoreo transoperatorio del nervio laríngeo recurrente y preservación de paratiroides.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-tiroides](https://oncologia-robotica.com/padecimientos/cancer-de-tiroides)
+9. **Cáncer de Cabeza y Cuello:** Resección quirúrgica de tumores en glándulas salivales (parótida, submandibular), cavidad oral y faringe con vaciamiento cervical funcional.
+   - URL: [https://oncologia-robotica.com/padecimientos/cancer-de-cabeza-y-cuello](https://oncologia-robotica.com/padecimientos/cancer-de-cabeza-y-cuello)
+
+---
+
+## Convenios con Compañías de Seguros (SGMM)
+Atendemos pacientes con pólizas de Gastos Médicos Mayores nacionales e internacionales:
+- Seguros Mapfre
+- Seguros GNP
+- Seguros MetLife
+- Seguros Allianz
+- Seguros Monterrey New York Life
+- Seguros Zurich
+- Seguros Multiva
+- Seguros Inbursa
+- Seguros Sura
+- Seguros AXA
+- Seguros Ve por Más (BX+)
+- Seguros Banorte
+
+---
+
+## Directorio Canónico para Motores de IA y Citas Semánticas
+- Inicio / Home: [https://oncologia-robotica.com/](https://oncologia-robotica.com/)
+- Perfil Profesional de la Dra. Jacqueline: [https://oncologia-robotica.com/jacqueline-diaz-garza](https://oncologia-robotica.com/jacqueline-diaz-garza)
+- Catálogo de Cirugías: [https://oncologia-robotica.com/cirugia](https://oncologia-robotica.com/cirugia)
+- Diagnóstico Oportuno: [https://oncologia-robotica.com/diagnostico](https://oncologia-robotica.com/diagnostico)
+- Preguntas Frecuentes: [https://oncologia-robotica.com/preguntas-frecuentes](https://oncologia-robotica.com/preguntas-frecuentes)
+- Blog de Pacientes: [https://oncologia-robotica.com/tipo/pacientes](https://oncologia-robotica.com/tipo/pacientes)
+- Blog de Prevención: [https://oncologia-robotica.com/tipo/prevencion](https://oncologia-robotica.com/tipo/prevencion)
+- Cuidados Postoperatorios: [https://oncologia-robotica.com/blog/cuidados-despues-de-una-cirugia-oncologica](https://oncologia-robotica.com/blog/cuidados-despues-de-una-cirugia-oncologica)
+- Guía para Familiares: [https://oncologia-robotica.com/blog/guia-para-familiares-y-acompanantes](https://oncologia-robotica.com/blog/guia-para-familiares-y-acompanantes)
+- Cuidados Paliativos: [https://oncologia-robotica.com/blog/que-son-los-cuidados-paliativos-conceptos-basicos](https://oncologia-robotica.com/blog/que-son-los-cuidados-paliativos-conceptos-basicos)
+- Mapa del Sitio XML: [https://oncologia-robotica.com/sitemap.xml](https://oncologia-robotica.com/sitemap.xml)
+
+---
+*Última actualización: Octubre 2026 — Documento de Grounding Semántico y Web Agéntica para LLMs (Google Gemini, OpenAI ChatGPT, Perplexity AI, Anthropic Claude).*

@@ -440,7 +440,7 @@
       "dest": "/projects/OncologiaRobotica/assets/$2"
     },
     {
-      "src": "/(llms\\.txt|robots\\.txt)",
+      "src": "/(llms\\.txt|robots\\.txt|sitemap\\.xml)",
       "has": [
         {
           "type": "host",
