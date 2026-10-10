@@ -13195,3 +13195,62 @@ figcaption {
   margin: 0 !important;
   vertical-align: middle !important;
 }
+
+/* ============================================================
+   MOBILE NAVIGATION: SUBMENU LEFT ALIGNMENT & AUTO-HIDE ON SCROLL
+   ============================================================ */
+
+/* Left align all dropdown headers and submenus in mobile menu */
+@media screen and (max-width: 991px) {
+  .dropdown-2,
+  .right.w-dropdown,
+  .w-dropdown {
+    width: 100% !important;
+    text-align: left !important;
+  }
+
+  .dropdown-toggle {
+    text-align: left !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .dropdown-list-2,
+  .dropdown-list,
+  .w-dropdown-list,
+  .dropdown-list-2.w--open,
+  .w-dropdown-list.w--open {
+    text-align: left !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .dropdown-link-2,
+  .dropdown-link,
+  .w-dropdown-link {
+    text-align: left !important;
+    padding-left: 32px !important;
+    padding-right: 20px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+}
+
+/* Auto-hide mobile navbar on scroll down, show on scroll up */
+@media screen and (max-width: 991px) {
+  .navbar-4 {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    will-change: transform;
+  }
+
+  .navbar-4.navbar--hidden {
+    transform: translateY(-105%) !important;
+    box-shadow: none !important;
+  }
+}

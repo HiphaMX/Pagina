@@ -58,6 +58,69 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         var b = document.querySelector(".w-webflow-badge"); if (b) b.remove();
+
+        // Mobile Navbar Smart Auto-Hide on Scroll Down, Show on Scroll Up
+        (function() {
+            var lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
+            var ticking = false;
+            var threshold = 8;
+            var minScrollForHide = 60;
+            var navbar = document.querySelector(".navbar-4");
+            if (!navbar) return;
+
+            function onScroll() {
+                var currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+                var isMobile = window.innerWidth <= 991;
+
+                if (!isMobile) {
+                    navbar.classList.remove("navbar--hidden");
+                    lastScrollY = currentScrollY;
+                    ticking = false;
+                    return;
+                }
+
+                if (currentScrollY < 0) {
+                    navbar.classList.remove("navbar--hidden");
+                    lastScrollY = 0;
+                    ticking = false;
+                    return;
+                }
+
+                var isMenuOpen = navbar.querySelector(".w-nav-button.w--open") ||
+                                 navbar.querySelector(".nav-menu-3.w--open") ||
+                                 navbar.querySelector("[data-nav-menu-open]");
+                if (isMenuOpen) {
+                    navbar.classList.remove("navbar--hidden");
+                    lastScrollY = currentScrollY;
+                    ticking = false;
+                    return;
+                }
+
+                if (currentScrollY <= minScrollForHide) {
+                    navbar.classList.remove("navbar--hidden");
+                } else if (currentScrollY > lastScrollY + threshold) {
+                    navbar.classList.add("navbar--hidden");
+                } else if (currentScrollY < lastScrollY - threshold) {
+                    navbar.classList.remove("navbar--hidden");
+                }
+
+                lastScrollY = currentScrollY;
+                ticking = false;
+            }
+
+            window.addEventListener("scroll", function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(onScroll);
+                    ticking = true;
+                }
+            }, { passive: true });
+
+            window.addEventListener("resize", function() {
+                if (window.innerWidth > 991) {
+                    navbar.classList.remove("navbar--hidden");
+                }
+            }, { passive: true });
+        })();
         var forms = document.querySelectorAll('form[id*="wf-form"], form[data-name*="lead"], form.popup-2');
         forms.forEach(function(form) {
             form.addEventListener('submit', function(e) {
