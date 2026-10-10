@@ -13590,26 +13590,34 @@ textarea.field-4.n,
   .navbar-container-2 {
     width: 100% !important;
     max-width: 100% !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     box-sizing: border-box !important;
   }
 
-  .brand-mobile {
+  .navbar-container-2:before,
+  .navbar-container-2:after {
+    content: none !important;
+    display: none !important;
+  }
+
+  .brand-mobile,
+  .brand-mobile.w--current {
     margin: 0 !important;
     padding: 0 !important;
     height: auto !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: flex-start !important;
   }
 
   .brand-mobile .image-46 {
-    height: 52px !important;
+    height: 62px !important;
     width: auto !important;
     display: block !important;
   }
@@ -13618,7 +13626,7 @@ textarea.field-4.n,
     height: 48px !important;
     width: 48px !important;
     padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 -2px 0 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
