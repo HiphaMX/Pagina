@@ -2,7 +2,7 @@
 > Oncología Robótica es una práctica médica de alta especialidad en México enfocada en la prevención, diagnóstico oportuno y tratamiento quirúrgico de mínima invasión del cáncer y tumores complejos mediante el Sistema Quirúrgico Da Vinci Xi. Nuestro equipo integra cirujanos certificados internacionalmente en cirugía robótica, con enfoque en la erradicación tumoral completa y la máxima preservación de la calidad de vida y función del paciente.
 
 ## Información de Contacto y Citas
-- **Sitio Web Oficial:** [https://hipha.mx/oncologia-robotica](https://hipha.mx/oncologia-robotica)
+- **Sitio Web Oficial:** [https://oncologia-robotica.com](https://oncologia-robotica.com) (Espejo: [https://hipha.mx/oncologia-robotica](https://hipha.mx/oncologia-robotica))
 - **Atención y Valoración Inmediata:** Formulario web seguro y enlace directo de WhatsApp para pacientes y segundas opiniones.
 - **Ubicación:** Principales centros hospitalarios de alta especialidad con tecnología Da Vinci Xi en México.
 
