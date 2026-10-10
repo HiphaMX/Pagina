@@ -13113,13 +13113,142 @@ figcaption {
   padding-right: 0 !important;
 }
 
-@media screen and (min-width: 768px) {
+/* ============================================================
+   SECCIÓN CONTACTO: ALINEACIÓN MILIMÉTRICA Y GRID CENTRADO
+   ============================================================ */
+.waves-grid-contact-3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  max-width: 1080px !important;
+  margin: 48px auto 0 !important;
+  grid-column-gap: 28px !important;
+  grid-row-gap: 36px !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+}
+
+#w-node-e69044e3-54dd-33a4-6870-98147bb9e7b4-b6c96e84 {
+  grid-column: 1 / -1 !important;
+  grid-area: auto !important;
+  width: 100% !important;
+  margin-top: 8px !important;
+}
+
+.waves-tile-contact-3 {
+  background-color: #d8efff !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 36px 24px 28px !important;
+  min-height: 210px !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.waves-tile-contact-3:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px rgba(40, 97, 80, 0.12) !important;
+}
+
+/* Contenedor de ícono con altura fija para alineación horizontal exacta */
+.waves-tile-contact-3 .waves---mg-bottom-16 {
+  height: 60px !important;
+  width: 60px !important;
+  min-height: 60px !important;
+  margin-bottom: 20px !important;
+  margin-top: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.waves-tile-contact-3 .waves-icon-64,
+.waves-tile-contact-3 .waves---mg-bottom-16 img,
+.waves-tile-contact-3 .waves---mg-bottom-16 svg {
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  object-fit: contain !important;
+  display: block !important;
+  color: #222 !important;
+}
+
+.waves-tile-contact-3 .waves---paragraph-regular {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 1 auto !important;
+}
+
+.waves-tile-contact-3 .mini-link {
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #286150 !important;
+  text-decoration: none !important;
+  line-height: 1.45 !important;
+  text-align: center !important;
+  display: inline-block !important;
+  border-bottom: 2px solid transparent !important;
+  transition: border-color 0.2s ease, color 0.2s ease !important;
+}
+
+.waves-tile-contact-3 .mini-link:hover {
+  border-bottom-color: #286150 !important;
+  color: #1e4a3d !important;
+}
+
+@media screen and (max-width: 991px) {
   .waves-grid-contact-3 {
-    grid-template-columns: 1fr 1fr 1fr !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    margin-top: 32px !important;
+    padding: 0 !important;
+  }
+  .waves-tile-contact-3 {
+    padding: 24px 16px !important;
+    min-height: 180px !important;
+  }
+  .waves-tile-contact-3 .waves---mg-bottom-16 {
+    height: 48px !important;
+    width: 48px !important;
+    min-height: 48px !important;
+    margin-bottom: 14px !important;
+  }
+  .waves-tile-contact-3 .waves-icon-64,
+  .waves-tile-contact-3 .waves---mg-bottom-16 img,
+  .waves-tile-contact-3 .waves---mg-bottom-16 svg {
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+  }
+  .waves-tile-contact-3 .mini-link {
+    font-size: 13.5px !important;
   }
 }
 
 @media screen and (max-width: 767px) {
+  .waves-grid-contact-3 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-top: 24px !important;
+  }
+  .waves-tile-contact-3 {
+    min-height: auto !important;
+    padding: 24px 20px !important;
+  }
   .image-42 {
     width: 200px !important;
     height: 200px !important;
@@ -13197,11 +13326,28 @@ figcaption {
 }
 
 /* ============================================================
-   MOBILE NAVIGATION: SUBMENU LEFT ALIGNMENT & AUTO-HIDE ON SCROLL
+   NAVBAR MÓVIL DESIGNFLOW: CONTENEDOR COMPACTO, ACORDEÓN Y CONTÁCTANOS
    ============================================================ */
-
-/* Left align all dropdown headers and submenus in mobile menu */
 @media screen and (max-width: 991px) {
+  .navbar-4 {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .navbar-container-2 {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Contenedor compacto sin ocupar 100vh vacío */
   .nav-menu-3 {
     display: flex !important;
     flex-direction: column !important;
@@ -13213,7 +13359,16 @@ figcaption {
     right: 0 !important;
     text-align: left !important;
     box-sizing: border-box !important;
-    background-color: #fff !important;
+    background-color: #ffffff !important;
+    height: auto !important;
+    max-height: calc(100vh - 75px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0 0 16px 0 !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14) !important;
+    border: none !important;
   }
 
   .nav-column-center {
@@ -13249,6 +13404,7 @@ figcaption {
     box-sizing: border-box !important;
   }
 
+  /* Los 4 Toggles de Dropdown: EQUIPO MÉDICO, DIAGNÓSTICO, CIRUGÍAS, BLOG */
   .dropdown-toggle,
   .w-dropdown-toggle {
     text-align: left !important;
@@ -13261,8 +13417,16 @@ figcaption {
     justify-content: space-between !important;
     align-items: center !important;
     cursor: pointer !important;
-    background-color: #fff !important;
+    background-color: #ffffff !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: background-color 0.2s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .dropdown-toggle:hover,
+  .dropdown-toggle:active,
+  .dropdown-toggle:focus {
+    background-color: #fafbfc !important;
   }
 
   .text-block-13 {
@@ -13271,11 +13435,13 @@ figcaption {
     padding: 0 !important;
     text-align: left !important;
     line-height: 1.3 !important;
+    font-family: 'Montserrat', sans-serif !important;
     font-size: 13px !important;
     letter-spacing: 0.5px !important;
     font-weight: 600 !important;
-    color: #333 !important;
+    color: #2d3748 !important;
     flex: 1 1 auto !important;
+    text-transform: uppercase !important;
   }
 
   .dropdown-arrow-2,
@@ -13286,88 +13452,137 @@ figcaption {
     color: #ff8a8a !important;
     font-size: 13px !important;
     flex: 0 0 auto !important;
-    transition: transform 0.25s ease !important;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
+  /* Rotación del Chevron al abrirse */
+  .dropdown-2.is-active .dropdown-arrow-2,
   .dropdown-2.w--open .dropdown-arrow-2,
-  .w-dropdown.w--open .w-icon-dropdown-toggle,
-  .w-dropdown-toggle.w--open .dropdown-arrow-2,
-  .w-dropdown-toggle.w--open .w-icon-dropdown-toggle {
+  .w-dropdown.is-active .w-icon-dropdown-toggle,
+  .w-dropdown.w--open .w-icon-dropdown-toggle {
     transform: rotate(180deg) !important;
+    color: #286150 !important;
   }
 
+  /* HOMOLOGACIÓN EXACTA DE CONTÁCTANOS AL MISMO LOOK QUE EL RESTO DEL NAVBAR */
   .div-block-54 {
     width: 100% !important;
-    text-align: left !important;
-    padding: 16px 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
     box-sizing: border-box !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background-color: #ffffff !important;
   }
 
   .div-block-54 .text-block-7 {
-    text-align: left !important;
-    display: block !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    padding: 16px 20px !important;
+    box-sizing: border-box !important;
+    font-family: 'Montserrat', sans-serif !important;
     font-size: 13px !important;
     letter-spacing: 0.5px !important;
-    font-weight: 700 !important;
-    color: #286150 !important;
+    font-weight: 600 !important;
+    color: #2d3748 !important;
     text-transform: uppercase !important;
+    text-decoration: none !important;
+    background-color: #ffffff !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
   }
 
-  /* Submenus (dropdown lists): Hidden by default even if Webflow adds open classes */
+  /* Indicador chevron derecho a tono con los otros chevrons */
+  .div-block-54 .text-block-7::after {
+    content: "" !important;
+    width: 7px !important;
+    height: 7px !important;
+    border-right: 2px solid #ff8a8a !important;
+    border-top: 2px solid #ff8a8a !important;
+    transform: rotate(45deg) !important;
+    display: inline-block !important;
+    margin-right: 6px !important;
+    transition: transform 0.2s ease, border-color 0.2s ease !important;
+  }
+
+  .div-block-54 .text-block-7:hover,
+  .div-block-54 .text-block-7:active {
+    background-color: #fafbfc !important;
+    color: #286150 !important;
+  }
+
+  .div-block-54 .text-block-7:hover::after,
+  .div-block-54 .text-block-7:active::after {
+    border-color: #286150 !important;
+    transform: rotate(45deg) translate(2px, -2px) !important;
+  }
+
+  /* Submenús colapsados por defecto */
   .dropdown-list-2,
   .dropdown-list,
-  .w-dropdown-list,
-  .w--nav-dropdown-list-open {
+  .w-dropdown-list {
+    display: none !important;
     text-align: left !important;
-    align-items: flex-start !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    background-color: #f8f9fa !important;
+    background-color: #f7fafc !important;
     position: static !important;
-    display: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
   }
 
-  /* When the dropdown is clicked/opened by user (has w--open), show it */
-  .dropdown-list-2.w--open,
-  .w-dropdown-list.w--open,
-  .w--nav-dropdown-list-open.w--open {
+  /* Expansión del submenú cuando está activo */
+  .dropdown-2.is-active > .dropdown-list-2,
+  .dropdown-2.is-active > .w-dropdown-list,
+  .dropdown-2.w--open > .dropdown-list-2,
+  .dropdown-2.w--open > .w-dropdown-list,
+  .w-dropdown.is-active > .w-dropdown-list,
+  .w-dropdown.w--open > .w-dropdown-list,
+  .dropdown-list-2.is-active,
+  .w-dropdown-list.is-active {
     display: block !important;
-    position: static !important;
     visibility: visible !important;
     opacity: 1 !important;
-    width: 100% !important;
+    padding: 6px 0 !important;
   }
 
   .dropdown-link-2,
   .dropdown-link,
   .w-dropdown-link {
     text-align: left !important;
-    padding-left: 32px !important;
-    padding-right: 20px !important;
-    padding-top: 13px !important;
-    padding-bottom: 13px !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
+    padding: 12px 20px 12px 28px !important;
+    margin: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
     display: block !important;
     background-color: transparent !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
+    font-family: 'Montserrat', sans-serif !important;
     font-size: 13px !important;
-    color: #444 !important;
-    text-transform: none !important;
+    font-weight: 500 !important;
+    color: #4a5568 !important;
+    text-transform: capitalize !important;
+    text-decoration: none !important;
+    line-height: 1.4 !important;
+    transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease !important;
   }
 
   .dropdown-link-2:hover,
-  .dropdown-link:hover,
-  .w-dropdown-link:hover {
-    background-color: rgba(40, 97, 80, 0.05) !important;
+  .dropdown-link-2:active,
+  .w-dropdown-link:hover,
+  .w-dropdown-link:active {
+    background-color: rgba(40, 97, 80, 0.06) !important;
     color: #286150 !important;
+    padding-left: 32px !important;
   }
 }
 
-/* Auto-hide mobile navbar on scroll down, show on scroll up */
+/* Auto-hide mobile navbar al hacer scroll */
 @media screen and (max-width: 991px) {
   .navbar-4 {
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -13379,3 +13594,4 @@ figcaption {
     box-shadow: none !important;
   }
 }
+
