@@ -5752,6 +5752,8 @@ let currentReconTipo = "ALL";
 let currentReconSearch = "";
 let selectedReconFiles = [];
 let pendingInvoicesCache = [];
+let currentReconMailboxCount = 0;
+let cachedMailboxInvoices = [];
 
 function initReconciliationModule() {
     if (reconInitialized) return;
@@ -5954,6 +5956,9 @@ function initReconciliationModule() {
 
     // Modal de Histórico Backfill
     initReconBackfillModal();
+
+    // Modal de Facturas en Buzón
+    initMailboxInvoicesModal();
 }
 
 // Carga principal de datos y métricas
@@ -6024,6 +6029,13 @@ async function loadReconciliationData(refreshMonths = true) {
         const sinCountEl = document.getElementById('kpiReconSinCFDICount');
         if (sinCountEl) sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos sin comprobante digital`;
 
+        // Actualizar contador del buzón
+        currentReconMailboxCount = k.facturas_disponibles_count || 0;
+        const mailboxBadge = document.getElementById('reconMailboxCountBadge');
+        if (mailboxBadge) {
+            mailboxBadge.textContent = currentReconMailboxCount;
+        }
+
         // Cargar lista de transacciones
         await loadReconciliationTransactions();
 
@@ -6063,14 +6075,35 @@ async function loadReconciliationTransactions() {
         const txs = await res.json();
 
         if (txs.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">
-                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 0.5rem auto; display: block; opacity: 0.5;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        No se encontraron movimientos bancarios para los filtros seleccionados.
-                    </td>
-                </tr>
-            `;
+            const entityLabel = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
+            if (currentReconMailboxCount > 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="padding: 3.5rem 1.5rem; text-align: center;">
+                            <div style="font-size: 2.6rem; margin-bottom: 0.75rem;">📥</div>
+                            <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.45rem;">
+                                Hay ${currentReconMailboxCount} facturas CFDI recibidas en el buzón para ${entityLabel}
+                            </div>
+                            <div style="font-size: 0.86rem; color: var(--text-muted); max-width: 580px; margin: 0 auto 1.35rem auto; line-height: 1.55;">
+                                Las facturas enviadas a tu correo ya están registradas y listas en el sistema. Para verlas conciliadas en esta tabla, sube tu <strong>estado de cuenta bancario BBVA (.CSV o .XLSX)</strong> usando el botón verde <strong>+ Cargar XMLs / CSV</strong>.
+                            </div>
+                            <button type="button" onclick="openMailboxInvoicesModal()" style="background: rgba(167, 139, 250, 0.2); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.4); padding: 0.65rem 1.35rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; transition: all 0.2s;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>Ver las ${currentReconMailboxCount} facturas recibidas en el buzón</span>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 0.5rem auto; display: block; opacity: 0.5;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            No se encontraron movimientos bancarios para los filtros seleccionados.
+                        </td>
+                    </tr>
+                `;
+            }
             return;
         }
 
@@ -6663,6 +6696,140 @@ async function autoSyncMailbox(entityRfc, silent = true) {
 }
 
 // -------------------------------------------------------------
+// MODAL DE FACTURAS EN BUZÓN (CFDI)
+// -------------------------------------------------------------
+async function openMailboxInvoicesModal() {
+    const modal = document.getElementById('modalMailboxInvoices');
+    if (!modal) return;
+
+    const badge = document.getElementById('mailboxModalEntityBadge');
+    const entityLabel = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
+    if (badge) badge.textContent = entityLabel;
+
+    modal.classList.remove('hidden');
+
+    const tbody = document.getElementById('mailboxModalTableBody');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                    <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
+                    Consultando facturas del buzón para ${entityLabel}...
+                </td>
+            </tr>
+        `;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?account_rfc=${encodeURIComponent(currentReconEntity)}`, {
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        cachedMailboxInvoices = await res.json();
+        renderMailboxInvoicesModal(cachedMailboxInvoices);
+    } catch (err) {
+        console.error("Error cargando facturas del buzón:", err);
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="padding: 2rem; text-align: center; color: #ef4444;">
+                        Error al consultar las facturas del buzón.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+}
+
+function renderMailboxInvoicesModal(invoices) {
+    const tbody = document.getElementById('mailboxModalTableBody');
+    const countEl = document.getElementById('mailboxModalTotalCount');
+    if (countEl) countEl.textContent = `${invoices.length} facturas registradas`;
+    if (!tbody) return;
+
+    if (invoices.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                    No hay facturas registradas en el buzón para esta entidad.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    let html = '';
+    invoices.forEach(inv => {
+        const isIngreso = inv.tipo === 'INGRESO';
+        const tipoBadge = isIngreso
+            ? `<span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600;">Ingreso</span>`
+            : `<span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600;">Gasto</span>`;
+
+        html += `
+            <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+                    ${inv.fecha_emision || '-'}
+                </td>
+                <td style="padding: 0.75rem 0.9rem;">
+                    <div style="font-weight: 600; color: var(--text-main); font-size: 0.84rem;">${escapeHtml(inv.nombre_emisor || 'Emisor Desconocido')}</div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">RFC: ${inv.rfc_emisor || '-'} • UUID: ${(inv.uuid || '').slice(0, 8)}...</div>
+                </td>
+                <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(inv.conceptos_resumen || '')}">
+                    ${escapeHtml(inv.conceptos_resumen || '-')}
+                </td>
+                <td style="padding: 0.75rem 0.9rem; text-align: right; font-weight: 700; color: ${isIngreso ? '#34d399' : '#fbbf24'}; white-space: nowrap;">
+                    $${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}
+                </td>
+                <td style="padding: 0.75rem 0.9rem; text-align: center;">
+                    <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600;">
+                        Pendiente Banco
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function initMailboxInvoicesModal() {
+    const btnOpen = document.getElementById('btnViewMailboxInvoices');
+    const modal = document.getElementById('modalMailboxInvoices');
+    const btnCloseX = document.getElementById('btnCloseMailboxModalX');
+    const btnClose = document.getElementById('btnCloseMailboxModal');
+    const searchInput = document.getElementById('mailboxModalSearchInput');
+
+    if (btnOpen) {
+        btnOpen.addEventListener('click', openMailboxInvoicesModal);
+    }
+
+    const closeModal = () => {
+        if (modal) modal.classList.add('hidden');
+    };
+
+    if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
+    if (btnClose) btnClose.addEventListener('click', closeModal);
+
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.trim().toLowerCase();
+            if (!term) {
+                renderMailboxInvoicesModal(cachedMailboxInvoices);
+                return;
+            }
+            const filtered = cachedMailboxInvoices.filter(inv => {
+                const emisor = (inv.nombre_emisor || '').toLowerCase();
+                const rfc = (inv.rfc_emisor || '').toLowerCase();
+                const conceptos = (inv.conceptos_resumen || '').toLowerCase();
+                const uuid = (inv.uuid || '').toLowerCase();
+                return emisor.includes(term) || rfc.includes(term) || conceptos.includes(term) || uuid.includes(term);
+            });
+            renderMailboxInvoicesModal(filtered);
+        });
+    }
+}
+
+// -------------------------------------------------------------
 // MODAL DE HISTÓRICO BACKFILL
 // -------------------------------------------------------------
 function initReconBackfillModal() {
@@ -6753,6 +6920,7 @@ window.approveMatchSuggestion = approveMatchSuggestion;
 window.unmatchTransaction = unmatchTransaction;
 window.deleteTransaction = deleteTransaction;
 window.autoSyncMailbox = autoSyncMailbox;
+window.openMailboxInvoicesModal = openMailboxInvoicesModal;
 
 
 

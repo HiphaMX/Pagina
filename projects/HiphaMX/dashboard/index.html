@@ -592,6 +592,10 @@
                                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                                 <span>Sincronizar Buzón</span>
                             </button>
+                            <button type="button" id="btnViewMailboxInvoices" style="background: rgba(167, 139, 250, 0.12); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.3); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;" title="Ver todas las facturas CFDI recibidas en el buzón">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                <span>📥 Facturas Buzón (<span id="reconMailboxCountBadge">0</span>)</span>
+                            </button>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -1644,6 +1648,64 @@
             <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem;">
                 <button type="button" id="btnCancelMatchModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
                 <button type="button" id="btnConfirmMatchManual" class="btn-primary-mini" style="background:var(--accent-cyan); color:#000; border:none; padding:0.55rem 1.3rem; border-radius:8px; cursor:pointer; font-weight:700;">Vincular y Conciliar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: FACTURAS CFDI DEL BUZÓN             -->
+    <!-- ========================================== -->
+    <div id="modalMailboxInvoices" class="modal-overlay hidden">
+        <div class="modal-dialog modal-lg" style="max-width: 880px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem; display: flex; align-items: center; gap: 0.6rem;">
+                        <span>Facturas CFDI Recibidas en Buzón</span>
+                        <span id="mailboxModalEntityBadge" style="background: rgba(167, 139, 250, 0.15); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.3); font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 6px; font-weight: 700;">AMDI</span>
+                    </h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Comprobantes fiscales XML descargados automáticamente vía IMAP y listos para conciliar</p>
+                </div>
+                <button type="button" id="btnCloseMailboxModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body" style="padding: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem;">
+                    <div class="search-input-box" style="flex: 1;">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="mailboxModalSearchInput" placeholder="Buscar por emisor, RFC o concepto..." style="font-size: 0.85rem;">
+                    </div>
+                    <div id="mailboxModalTotalCount" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">
+                        0 facturas registradas
+                    </div>
+                </div>
+
+                <div style="max-height: 420px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.84rem;">
+                        <thead>
+                            <tr style="background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">
+                                <th style="padding: 0.75rem 0.9rem;">Fecha</th>
+                                <th style="padding: 0.75rem 0.9rem;">Emisor / Proveedor</th>
+                                <th style="padding: 0.75rem 0.9rem;">Concepto</th>
+                                <th style="padding: 0.75rem 0.9rem; text-align: right;">Total</th>
+                                <th style="padding: 0.75rem 0.9rem; text-align: center;">Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mailboxModalTableBody">
+                            <tr>
+                                <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                    Cargando facturas del buzón...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.78rem; color: var(--text-muted);">
+                    💡 Estas facturas se conciliarán automáticamente cuando cargues tu estado de cuenta bancario BBVA.
+                </div>
+                <button type="button" id="btnCloseMailboxModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600;">Cerrar</button>
             </div>
         </div>
     </div>
