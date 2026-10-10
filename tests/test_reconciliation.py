@@ -343,3 +343,112 @@ def test_historical_backfill_csv_14_columns():
         db.commit()
         db.close()
 
+
+def test_delete_transaction():
+    db = SessionLocal()
+    try:
+        inv = CFDIInvoice(
+            uuid="TEST-DEL-UUID-001",
+            account_rfc="DEGF851127TK1",
+            tipo="EGRESO",
+            rfc_emisor="PROV123",
+            rfc_receptor="DEGF851127TK1",
+            fecha_emision=datetime(2026, 7, 10),
+            total=500.0,
+            conciliado=True
+        )
+        db.add(inv)
+        db.commit()
+
+        tx = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx_test_del_001",
+            fecha=datetime(2026, 7, 10),
+            periodo_mes="2026-07",
+            concepto="CARGO DE PRUEBA A ELIMINAR",
+            monto=500.0,
+            tipo="EGRESO",
+            uuid_cfdi="TEST-DEL-UUID-001",
+            status_conciliacion="CONCILIADO"
+        )
+        db.add(tx)
+        db.commit()
+        tx_id = tx.id
+
+        res = client.delete(f"/api/dashboard/reconciliation/transactions/{tx_id}")
+        assert res.status_code == 200
+        assert res.json()["success"] is True
+
+        # Verificar que la transacción fue borrada
+        deleted = db.query(BankTransaction).filter(BankTransaction.id == tx_id).first()
+        assert deleted is None
+
+        # Verificar que la factura quedó liberada
+        inv_updated = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "TEST-DEL-UUID-001").first()
+        assert inv_updated is not None
+        assert inv_updated.conciliado is False
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "TEST-DEL-UUID-001").delete()
+        db.commit()
+        db.close()
+
+
+def test_deduplicate_transactions():
+    db = SessionLocal()
+    try:
+        tx1 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx_dup_001",
+            fecha=datetime(2026, 7, 22),
+            periodo_mes="2026-07",
+            concepto="ABONO",
+            monto=22605.75,
+            tipo="INGRESO",
+            area_proyecto="DAM",
+            status_conciliacion="SIN_CFDI"
+        )
+        tx2 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx_dup_002",
+            fecha=datetime(2026, 7, 22),
+            periodo_mes="2026-07",
+            concepto="ABONO",
+            monto=22605.75,
+            tipo="INGRESO",
+            area_proyecto="DAM",
+            status_conciliacion="SIN_CFDI"
+        )
+        db.add(tx1)
+        db.add(tx2)
+        db.commit()
+
+        # Debe haber 2 duplicados antes
+        dups_before = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-07",
+            BankTransaction.monto == 22605.75
+        ).all()
+        assert len(dups_before) >= 2
+
+        res = client.post("/api/dashboard/reconciliation/deduplicate?account_rfc=DEGF851127TK1&month=2026-07")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["success"] is True
+        assert data["deleted_count"] >= 1
+
+        # Debe quedar solo 1
+        dups_after = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-07",
+            BankTransaction.monto == 22605.75
+        ).all()
+        assert len(dups_after) == 1
+    finally:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-07",
+            BankTransaction.monto == 22605.75
+        ).delete()
+        db.commit()
+        db.close()
+

@@ -248,11 +248,25 @@ def import_historical_excel(
                 else:
                     existing_cfdi.conciliado = True
 
-            # 2. Registrar Transacción Bancaria
-            hash_seed = f"{effective_rfc}|HIST|{fecha_obj.strftime('%Y-%m-%d')}|{concepto.upper()}|{monto:.2f}|{tipo}|{idx}"
+            # 2. Registrar Transacción Bancaria de forma determinista y sin duplicados
+            area_str = (area_val or '').strip().upper()
+            hash_seed = f"{effective_rfc}|HIST|{fecha_obj.strftime('%Y-%m-%d')}|{concepto.upper()}|{monto:.2f}|{tipo}|{area_str}"
             id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
 
-            existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == id_transaccion).first()
+            # Evitar duplicados: verificar por id_transaccion O por datos de negocio
+            existing_tx = db.query(BankTransaction).filter(
+                BankTransaction.account_rfc == effective_rfc,
+                (
+                    (BankTransaction.id_transaccion == id_transaccion) |
+                    (
+                        (BankTransaction.fecha == fecha_obj) &
+                        (BankTransaction.monto == monto) &
+                        (BankTransaction.tipo == tipo) &
+                        (BankTransaction.concepto == concepto)
+                    )
+                )
+            ).first()
+
             if not existing_tx:
                 new_tx = BankTransaction(
                     account_rfc=effective_rfc,
@@ -272,6 +286,14 @@ def import_historical_excel(
                 )
                 db.add(new_tx)
                 tx_count += 1
+            else:
+                if uuid and not existing_tx.uuid_cfdi:
+                    existing_tx.uuid_cfdi = uuid
+                    existing_tx.status_conciliacion = "CONCILIADO"
+                    existing_tx.confianza_score = 1.0
+                    existing_tx.nota_revision = "Conciliado con folio fiscal histórico."
+                if area_val and not existing_tx.area_proyecto:
+                    existing_tx.area_proyecto = area_val
 
         except Exception as e_row:
             errors.append(f"Fila {idx}: {str(e_row)}")

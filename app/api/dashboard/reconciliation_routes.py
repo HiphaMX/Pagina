@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Q
 from fastapi.responses import StreamingResponse, JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, func
-from typing import Optional, List
+from typing import Optional, List, Dict
 import io
 import zipfile
 from datetime import datetime
@@ -535,6 +535,108 @@ def unmatch_transaction(
     db.commit()
 
     return {"success": True, "message": "Movimiento desvinculado exitosamente."}
+
+
+@router.delete("/transactions/{transaction_id}")
+def delete_bank_transaction(
+    transaction_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Elimina un registro de transacción bancaria. Si estaba vinculado a un CFDI,
+    libera la factura para que vuelva al pool de pendientes y no quede bloqueada.
+    """
+    tx = db.query(BankTransaction).filter(BankTransaction.id == transaction_id).first()
+    if not tx:
+        raise HTTPException(status_code=404, detail="Transacción no encontrada.")
+
+    if tx.uuid_cfdi:
+        uuid_to_free = tx.uuid_cfdi
+        other = db.query(BankTransaction).filter(
+            BankTransaction.uuid_cfdi == uuid_to_free,
+            BankTransaction.id != tx.id
+        ).first()
+        if not other:
+            factura = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_to_free).first()
+            if factura:
+                factura.conciliado = False
+
+    db.delete(tx)
+    db.commit()
+
+    return {"success": True, "message": "Movimiento bancario eliminado correctamente."}
+
+
+@router.post("/deduplicate")
+def deduplicate_transactions(
+    account_rfc: str = Query("DEGF851127TK1"),
+    month: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Escanea y depura transacciones duplicadas para la entidad (y mes si se especifica).
+    Conserva la transacción conciliada (con folio fiscal) o la más completa, y elimina los duplicados redundantes.
+    """
+    entity_cfg = get_reconciliation_entity_config(account_rfc)
+    effective_rfc = entity_cfg["rfc"]
+
+    query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
+    if month:
+        query = query.filter(BankTransaction.periodo_mes == month)
+
+    txs = query.order_by(BankTransaction.fecha.asc(), BankTransaction.id.asc()).all()
+
+    groups: Dict[str, List[BankTransaction]] = {}
+    for t in txs:
+        fecha_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
+        monto_str = f"{float(t.monto or 0.0):.2f}"
+        tipo_str = str(t.tipo or "").upper()
+        conc_str = str(t.concepto or "").strip().upper()
+        area_str = str(t.area_proyecto or "").strip().upper()
+        key = f"{fecha_str}|{monto_str}|{tipo_str}|{conc_str}|{area_str}"
+        groups.setdefault(key, []).append(t)
+
+    deleted_count = 0
+    for key, items in groups.items():
+        if len(items) <= 1:
+            continue
+
+        # Ordenar para conservar el mejor registro:
+        # 1) Aquel que tenga uuid_cfdi
+        # 2) Mayor confianza_score
+        # 3) Menor ID (el original)
+        items_sorted = sorted(
+            items,
+            key=lambda x: (
+                1 if x.uuid_cfdi else 0,
+                x.confianza_score or 0.0,
+                -x.id
+            ),
+            reverse=True
+        )
+
+        primary = items_sorted[0]
+        duplicates = items_sorted[1:]
+
+        for dup in duplicates:
+            if dup.uuid_cfdi and not primary.uuid_cfdi:
+                primary.uuid_cfdi = dup.uuid_cfdi
+                primary.status_conciliacion = dup.status_conciliacion
+                primary.confianza_score = dup.confianza_score
+                primary.nota_revision = dup.nota_revision
+
+            db.delete(dup)
+            deleted_count += 1
+
+    db.commit()
+
+    return {
+        "success": True,
+        "deleted_count": deleted_count,
+        "message": f"Se eliminaron {deleted_count} registros duplicados exitosamente." if deleted_count > 0 else "No se encontraron registros duplicados en este período."
+    }
 
 
 @router.post("/backfill-excel")

@@ -5918,6 +5918,41 @@ function initReconciliationModule() {
         });
     }
 
+    // Botón de Limpieza Automática de Duplicados
+    const btnDeduplicate = document.getElementById('btnDeduplicateRecon');
+    if (btnDeduplicate) {
+        btnDeduplicate.addEventListener('click', async () => {
+            const entityName = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
+            const confirmed = confirm(`¿Deseas buscar y eliminar automáticamente transacciones bancarias duplicadas para ${entityName} en el período actual (${currentReconMonth || 'Todos'})? Se conservará el registro principal y se eliminarán las copias idénticas.`);
+            if (!confirmed) return;
+
+            btnDeduplicate.disabled = true;
+            const origHtml = btnDeduplicate.innerHTML;
+            btnDeduplicate.innerHTML = `<span>⏳ Limpiando...</span>`;
+
+            try {
+                const res = await fetch(`${API_BASE}/reconciliation/deduplicate?account_rfc=${encodeURIComponent(currentReconEntity)}&month=${encodeURIComponent(currentReconMonth || '')}`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    loadReconciliationData(false);
+                } else {
+                    alert(`Aviso: ${data.detail || 'Error al depurar duplicados'}`);
+                }
+            } catch (err) {
+                console.error("Error depurando duplicados:", err);
+                alert(`Error al limpiar duplicados: ${err.message || 'Error de conexión'}`);
+            } finally {
+                btnDeduplicate.disabled = false;
+                btnDeduplicate.innerHTML = origHtml;
+            }
+        });
+    }
+
     // Modal de Carga de Archivos
     initReconUploadModal();
 
@@ -6108,25 +6143,40 @@ async function loadReconciliationTransactions() {
                 fiscalHtml = `<div style="font-size: 0.74rem; color: var(--text-muted); text-align: right;">-</div>`;
             }
 
-            // Acciones
+            // Acciones con botón de eliminar
+            const deleteBtnHtml = `
+                <button type="button" onclick="deleteTransaction(${t.id})" title="Eliminar este movimiento bancario" style="background: rgba(239, 68, 68, 0.08); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 6px; padding: 0.3rem 0.45rem; cursor: pointer; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+            `;
+
             let actionsHtml = '';
             if (t.status_conciliacion === 'POR_REVISAR' && t.uuid_cfdi) {
                 actionsHtml = `
-                    <div style="display: flex; gap: 0.35rem; justify-content: center;">
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
                         <button type="button" onclick="approveMatchSuggestion(${t.id}, '${t.uuid_cfdi}')" title="Aprobar coincidencia sugerida" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); border-radius: 6px; padding: 0.3rem 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">✓ Aprobar</button>
                         <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Buscar otra factura" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.45rem; cursor: pointer; font-size: 0.75rem;">🔍</button>
+                        ${deleteBtnHtml}
                     </div>
                 `;
             } else if (t.status_conciliacion === 'SIN_CFDI') {
                 actionsHtml = `
-                    <div style="display: flex; justify-content: center;">
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
                         <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Vincular factura manualmente" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); border-radius: 6px; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">+ Vincular</button>
+                        ${deleteBtnHtml}
                     </div>
                 `;
             } else if (t.status_conciliacion === 'CONCILIADO') {
                 actionsHtml = `
-                    <div style="display: flex; justify-content: center;">
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
                         <button type="button" onclick="unmatchTransaction(${t.id})" title="Desvincular factura" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.55rem; cursor: pointer; font-size: 0.72rem;">Desvincular</button>
+                        ${deleteBtnHtml}
+                    </div>
+                `;
+            } else {
+                actionsHtml = `
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        ${deleteBtnHtml}
                     </div>
                 `;
             }
@@ -6542,6 +6592,32 @@ async function unmatchTransaction(txId) {
 }
 
 // -------------------------------------------------------------
+// ELIMINAR TRANSACCIÓN BANCARIA INDIVIDUAL
+// -------------------------------------------------------------
+async function deleteTransaction(transactionId) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este movimiento bancario? Si tenía una factura vinculada, quedará libre para ser asignada a otro movimiento.')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/transactions/${transactionId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+
+        if (res.ok) {
+            loadReconciliationData(false);
+        } else {
+            const err = await res.json().catch(() => ({}));
+            alert(err.detail || 'No se pudo eliminar el movimiento.');
+        }
+    } catch (err) {
+        console.error("Error al eliminar movimiento:", err);
+        alert('Error de conexión al eliminar.');
+    }
+}
+
+// -------------------------------------------------------------
 // MODAL DE HISTÓRICO BACKFILL
 // -------------------------------------------------------------
 function initReconBackfillModal() {
@@ -6630,6 +6706,7 @@ window.loadReconciliationTransactions = loadReconciliationTransactions;
 window.openMatchManualModal = openMatchManualModal;
 window.approveMatchSuggestion = approveMatchSuggestion;
 window.unmatchTransaction = unmatchTransaction;
+window.deleteTransaction = deleteTransaction;
 
 
 
