@@ -5968,31 +5968,33 @@ async function loadReconciliationData(refreshMonths = true) {
             }
         }
 
-        // Actualizar KPIs
+        // Actualizar KPIs (3 Tarjetas Claras: Ingresos Verde, Egresos Amarillo, Faltante Rojo)
         const k = data.kpis;
+        const ingresosEl = document.getElementById('kpiReconIngresosBanco');
+        if (ingresosEl) ingresosEl.textContent = `$${(k.total_ingresos_banco || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const ingresosSubEl = document.getElementById('kpiReconIngresosSub');
+        if (ingresosSubEl) {
+            const countIng = k.count_ingresos_banco ?? 0;
+            const concIng = k.count_ingresos_conciliados ?? countIng;
+            ingresosSubEl.textContent = `${countIng} abonos en el periodo (${concIng} con CFDI amparado)`;
+        }
+
         const egresosEl = document.getElementById('kpiReconEgresosBanco');
-        if (egresosEl) egresosEl.textContent = `$${k.total_egresos_banco.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if (egresosEl) egresosEl.textContent = `$${(k.total_egresos_banco || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
-        const concEl = document.getElementById('kpiReconConciliado');
-        if (concEl) concEl.textContent = `$${k.monto_conciliado.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-
-        const pctEl = document.getElementById('kpiReconPctConciliado');
-        if (pctEl) pctEl.textContent = `${k.pct_egresos_facturados}% deducible amparado (${k.count_conciliado} transacciones)`;
+        const egresosSubEl = document.getElementById('kpiReconEgresosSub');
+        if (egresosSubEl) {
+            const countEgr = k.count_egresos_banco ?? 0;
+            const pct = k.pct_egresos_facturados ?? 0;
+            egresosSubEl.textContent = `${countEgr} cargos en el periodo (${pct}% amparado con CFDI)`;
+        }
 
         const sinCfdiEl = document.getElementById('kpiReconSinCFDI');
-        if (sinCfdiEl) sinCfdiEl.textContent = `$${k.monto_sin_cfdi.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if (sinCfdiEl) sinCfdiEl.textContent = `$${(k.monto_sin_cfdi || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
         const sinCountEl = document.getElementById('kpiReconSinCFDICount');
-        if (sinCountEl) sinCountEl.textContent = `${k.count_sin_cfdi} cargos sin comprobante digital`;
-
-        const ingresosEl = document.getElementById('kpiReconIngresosBanco');
-        if (ingresosEl) ingresosEl.textContent = `$${k.total_ingresos_banco.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-
-        const factDispEl = document.getElementById('kpiReconFacturasDisp');
-        if (factDispEl) factDispEl.textContent = `${k.facturas_disponibles_count} facturas disponibles en cola`;
-
-        const totalTxsEl = document.getElementById('kpiReconTotalTxs');
-        if (totalTxsEl) totalTxsEl.textContent = `${k.total_transacciones} transacciones en el periodo`;
+        if (sinCountEl) sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos sin comprobante digital`;
 
         // Cargar lista de transacciones
         await loadReconciliationTransactions();

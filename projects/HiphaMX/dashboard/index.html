@@ -555,34 +555,27 @@
                         </div>
                     </div>
                     
-                    <!-- KPI Cards Row -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                        <!-- Egresos Banco -->
-                        <div class="client-kpi-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.1rem;">
-                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600;">💸 Egresos Banco (BBVA)</span>
-                            <div class="kpi-num" id="kpiReconEgresosBanco" style="font-size: 1.6rem; font-weight: 700; color: var(--text-main); margin-top: 0.35rem;">$0.00</div>
-                            <div class="kpi-sub-text" id="kpiReconTotalTxs" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">0 transacciones en el periodo</div>
+                    <!-- KPI Cards Row: 3 Tarjetas (Ingresos Verde, Egresos Amarillo, Faltante Rojo) -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <!-- 1. Ingresos Banco (Abonos deducibles) - Color Verde -->
+                        <div class="client-kpi-card mrr-card" style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 12px; padding: 1.15rem;">
+                            <span class="kpi-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #10b981; font-weight: 700;">📥 Ingresos Banco (Abonos deducibles)</span>
+                            <div class="kpi-num" id="kpiReconIngresosBanco" style="font-size: 1.7rem; font-weight: 700; color: #34d399; margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconIngresosSub" style="font-size: 0.76rem; color: #10b981; margin-top: 3px;">0 abonos en el periodo</div>
                         </div>
 
-                        <!-- Gastos con Factura / Conciliado -->
-                        <div class="client-kpi-card mrr-card" style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 1.1rem;">
-                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #10b981; font-weight: 600;">🧾 Gastos con CFDI (Deducibles)</span>
-                            <div class="kpi-num" id="kpiReconConciliado" style="font-size: 1.6rem; font-weight: 700; color: #34d399; margin-top: 0.35rem;">$0.00</div>
-                            <div class="kpi-sub-text" id="kpiReconPctConciliado" style="font-size: 0.75rem; color: #10b981; margin-top: 2px;">0% deducible amparado</div>
+                        <!-- 2. Egresos Banco (Gastos deducibles) - Color Amarillo -->
+                        <div class="client-kpi-card" style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: 12px; padding: 1.15rem;">
+                            <span class="kpi-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #f59e0b; font-weight: 700;">💸 Egresos Banco (Gastos deducibles)</span>
+                            <div class="kpi-num" id="kpiReconEgresosBanco" style="font-size: 1.7rem; font-weight: 700; color: #fbbf24; margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconEgresosSub" style="font-size: 0.76rem; color: #f59e0b; margin-top: 3px;">0 cargos en el periodo</div>
                         </div>
 
-                        <!-- Riesgo No Deducible (Sin CFDI) -->
-                        <div class="client-kpi-card alert-card" style="background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 12px; padding: 1.1rem;">
-                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #ef4444; font-weight: 600;">⚠️ Faltante / Sin Factura</span>
-                            <div class="kpi-num" id="kpiReconSinCFDI" style="font-size: 1.6rem; font-weight: 700; color: #f87171; margin-top: 0.35rem;">$0.00</div>
-                            <div class="kpi-sub-text" id="kpiReconSinCFDICount" style="font-size: 0.75rem; color: #ef4444; margin-top: 2px;">0 cargos sin comprobante</div>
-                        </div>
-
-                        <!-- Ingresos Cobrados -->
-                        <div class="client-kpi-card" style="background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 12px; padding: 1.1rem;">
-                            <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #60a5fa; font-weight: 600;">📥 Ingresos Banco (Abonos)</span>
-                            <div class="kpi-num" id="kpiReconIngresosBanco" style="font-size: 1.6rem; font-weight: 700; color: #93c5fd; margin-top: 0.35rem;">$0.00</div>
-                            <div class="kpi-sub-text" id="kpiReconFacturasDisp" style="font-size: 0.75rem; color: #60a5fa; margin-top: 2px;">0 facturas disponibles en cola</div>
+                        <!-- 3. Faltante / Sin Factura - Color Rojo -->
+                        <div class="client-kpi-card alert-card" style="background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.28); border-radius: 12px; padding: 1.15rem;">
+                            <span class="kpi-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #ef4444; font-weight: 700;">⚠️ Faltante / Sin Factura</span>
+                            <div class="kpi-num" id="kpiReconSinCFDI" style="font-size: 1.7rem; font-weight: 700; color: #f87171; margin-top: 0.35rem;">$0.00</div>
+                            <div class="kpi-sub-text" id="kpiReconSinCFDICount" style="font-size: 0.76rem; color: #ef4444; margin-top: 3px;">0 cargos sin comprobante digital</div>
                         </div>
                     </div>
 

@@ -57,20 +57,24 @@ def get_reconciliation_overview(
     )
     all_txs = query.all()
 
-    total_ingresos_banco = sum(t.monto for t in all_txs if t.tipo == "INGRESO")
-    total_egresos_banco = sum(t.monto for t in all_txs if t.tipo == "EGRESO")
+    ingresos_txs = [t for t in all_txs if t.tipo == "INGRESO"]
+    egresos_txs = [t for t in all_txs if t.tipo == "EGRESO"]
 
-    conciliados = [t for t in all_txs if t.status_conciliacion == "CONCILIADO"]
-    por_revisar = [t for t in all_txs if t.status_conciliacion == "POR_REVISAR"]
-    sin_cfdi = [t for t in all_txs if t.status_conciliacion == "SIN_CFDI"]
+    total_ingresos_banco = sum(t.monto for t in ingresos_txs)
+    total_egresos_banco = sum(t.monto for t in egresos_txs)
 
-    monto_conciliado = sum(t.monto for t in conciliados)
-    monto_revision = sum(t.monto for t in por_revisar)
-    monto_sin_cfdi = sum(t.monto for t in sin_cfdi)
+    conciliados_ingresos = [t for t in ingresos_txs if t.status_conciliacion == "CONCILIADO"]
+    conciliados_egresos = [t for t in egresos_txs if t.status_conciliacion == "CONCILIADO"]
 
-    # Porcentaje de egresos con factura
-    egresos_conciliados = sum(t.monto for t in conciliados if t.tipo == "EGRESO")
-    pct_egresos_facturados = round((egresos_conciliados / total_egresos_banco * 100), 1) if total_egresos_banco > 0 else 0.0
+    sin_cfdi_egresos = [t for t in egresos_txs if t.status_conciliacion == "SIN_CFDI"]
+    monto_sin_cfdi = sum(t.monto for t in sin_cfdi_egresos)
+    count_sin_cfdi = len(sin_cfdi_egresos)
+
+    monto_egresos_conciliados = sum(t.monto for t in conciliados_egresos)
+    pct_egresos_facturados = round((monto_egresos_conciliados / total_egresos_banco * 100), 1) if total_egresos_banco > 0 else 0.0
+
+    monto_ingresos_conciliados = sum(t.monto for t in conciliados_ingresos)
+    pct_ingresos_facturados = round((monto_ingresos_conciliados / total_ingresos_banco * 100), 1) if total_ingresos_banco > 0 else 0.0
 
     # Facturas disponibles sin conciliar para esta entidad
     facturas_disponibles_count = db.query(CFDIInvoice).filter(
@@ -89,14 +93,19 @@ def get_reconciliation_overview(
         "available_months": available_months,
         "kpis": {
             "total_ingresos_banco": round(total_ingresos_banco, 2),
+            "count_ingresos_banco": len(ingresos_txs),
             "total_egresos_banco": round(total_egresos_banco, 2),
-            "monto_conciliado": round(monto_conciliado, 2),
-            "count_conciliado": len(conciliados),
-            "monto_revision": round(monto_revision, 2),
-            "count_revision": len(por_revisar),
+            "count_egresos_banco": len(egresos_txs),
             "monto_sin_cfdi": round(monto_sin_cfdi, 2),
-            "count_sin_cfdi": len(sin_cfdi),
+            "count_sin_cfdi": count_sin_cfdi,
             "pct_egresos_facturados": pct_egresos_facturados,
+            "pct_ingresos_facturados": pct_ingresos_facturados,
+            "monto_egresos_conciliados": round(monto_egresos_conciliados, 2),
+            "count_egresos_conciliados": len(conciliados_egresos),
+            "monto_ingresos_conciliados": round(monto_ingresos_conciliados, 2),
+            "count_ingresos_conciliados": len(conciliados_ingresos),
+            "monto_conciliado": round(monto_egresos_conciliados, 2),
+            "count_conciliado": len(conciliados_egresos),
             "facturas_disponibles_count": facturas_disponibles_count,
             "total_transacciones": len(all_txs)
         }
