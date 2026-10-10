@@ -1,9 +1,26 @@
 import io
 import csv
+import re
 import hashlib
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 import openpyxl
+
+
+SPANISH_MONTHS = {
+    'ENERO': '01', 'ENE': '01',
+    'FEBRERO': '02', 'FEB': '02',
+    'MARZO': '03', 'MAR': '03',
+    'ABRIL': '04', 'ABR': '04',
+    'MAYO': '05', 'MAY': '05',
+    'JUNIO': '06', 'JUN': '06',
+    'JULIO': '07', 'JUL': '07',
+    'AGOSTO': '08', 'AGO': '08',
+    'SEPTIEMBRE': '09', 'SETIEMBRE': '09', 'SEP': '09', 'SET': '09',
+    'OCTUBRE': '10', 'OCT': '10',
+    'NOVIEMBRE': '11', 'NOV': '11',
+    'DICIEMBRE': '12', 'DIC': '12'
+}
 
 
 def _clean_header(h: Any) -> str:
@@ -17,30 +34,137 @@ def _parse_num(val: Any) -> Optional[float]:
         return None
     if isinstance(val, (int, float)):
         return float(val)
-    s = str(val).replace(",", "").replace("$", "").replace(" ", "").strip()
-    if not s or s.upper() in ["NAN", "NONE", "NULL", "-", "--"]:
+    s = str(val).strip()
+    if not s or s.upper() in ["NAN", "NONE", "NULL", "-", "--", "N/A"]:
         return None
+
+    is_negative = False
+    s_upper = s.upper()
+
+    # Contabilidad: montos negativos entre paréntesis (150.00)
+    if "(" in s and ")" in s:
+        is_negative = True
+        s = s.replace("(", "").replace(")", "")
+
+    # Sufijos bancarios DB (Débito) / CR (Crédito)
+    if "DB" in s_upper or "DR" in s_upper:
+        is_negative = True
+        s = re.sub(r'\b(DB|DR)\b', '', s, flags=re.IGNORECASE)
+    if "CR" in s_upper:
+        s = re.sub(r'\bCR\b', '', s, flags=re.IGNORECASE)
+
+    s = s.replace("$", "").replace("MXN", "").replace("USD", "").replace(" ", "").strip()
+    if not s:
+        return None
+
+    if s.startswith("-"):
+        is_negative = True
+        s = s[1:].strip()
+    elif s.endswith("-"):
+        is_negative = True
+        s = s[:-1].strip()
+
+    # Formatos decimales: europeo/mexicano (1.250,50 vs 1,250.50 vs 1250,50)
+    if "." in s and "," in s:
+        if s.rfind(",") > s.rfind("."):
+            s = s.replace(".", "").replace(",", ".")
+        else:
+            s = s.replace(",", "")
+    elif "," in s:
+        parts = s.split(",")
+        if len(parts) == 2 and len(parts[1]) in (1, 2):
+            s = s.replace(",", ".")
+        else:
+            s = s.replace(",", "")
+
     try:
-        return float(s)
+        num = float(s)
+        return -num if is_negative else num
     except (ValueError, TypeError):
         return None
 
 
-def _parse_date(val: Any) -> Optional[datetime]:
+def parse_flexible_date(val: Any) -> Optional[datetime]:
+    """
+    Parsea fechas provenientes de extractos bancarios en formatos numéricos
+    (DD/MM/YYYY, YYYY-MM-DD, DD-MM-YY) o con nombres de meses en español (01/AGO/2026, 15-AGO-26).
+    """
+    if not val:
+        return None
     if isinstance(val, datetime):
         return val
     if hasattr(val, "date") and callable(getattr(val, "date")):
         d = val.date()
         return datetime(d.year, d.month, d.day)
-    s = str(val or "").strip()
+
+    s = str(val).strip()
     if not s:
         return None
-    for fmt in ["%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%d/%m/%y", "%Y-%m-%d %H:%M:%S", "%d/%m/%Y %H:%M:%S"]:
+
+    # Intentar formatos ISO y numéricos directos
+    for fmt in ["%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%d/%m/%y", "%d-%m-%y", "%Y-%m-%d %H:%M:%S", "%d/%m/%Y %H:%M:%S"]:
         try:
             return datetime.strptime(s[:19] if " " in s else s[:10], fmt)
         except ValueError:
             continue
+
+    # Normalizar meses en español (ej. AGO, AGOSTO, ENE, DIC)
+    s_upper = s.upper()
+    for m_name, m_num in SPANISH_MONTHS.items():
+        if m_name in s_upper:
+            s_upper = re.sub(r'[\b\-_/]' + m_name + r'[\b\-_/]', f'/{m_num}/', s_upper)
+            s_upper = s_upper.replace(m_name, m_num)
+            break
+
+    clean_s = s_upper.replace('.', '').replace('-', '/').strip()
+    parts = clean_s.split()[0].split('/')
+    if len(parts) == 3:
+        p0, p1, p2 = parts[0], parts[1], parts[2]
+        if len(p0) == 4:  # YYYY/MM/DD
+            clean_s = f"{p0}-{p1.zfill(2)}-{p2.zfill(2)}"
+        else:  # DD/MM/YYYY o DD/MM/YY
+            year = ("20" + p2) if len(p2) == 2 else p2
+            clean_s = f"{year}-{p1.zfill(2)}-{p0.zfill(2)}"
+        try:
+            return datetime.strptime(clean_s, "%Y-%m-%d")
+        except Exception:
+            pass
+
     return None
+
+
+# Retrocompatibilidad
+_parse_date = parse_flexible_date
+
+
+def _detect_delimiter(text: str) -> str:
+    """
+    Determina de manera robusta el delimitador CSV (, ; \t |),
+    incluso si hay líneas de metadatos o preámbulos en el archivo.
+    """
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if not lines:
+        return ','
+
+    candidates = [',', ';', '\t', '|']
+    scores = {c: 0 for c in candidates}
+
+    # Evaluar las primeras 40 líneas
+    for line in lines[:40]:
+        for c in candidates:
+            cnt = line.count(c)
+            if cnt >= 2:
+                scores[c] += cnt
+
+    best = max(scores, key=scores.get)
+    if scores[best] > 0:
+        return best
+
+    try:
+        sample = text[:4096]
+        return csv.Sniffer().sniff(sample, delimiters=',;\t|').delimiter
+    except Exception:
+        return ','
 
 
 def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = "DEGF851127TK1") -> List[Dict[str, Any]]:
@@ -49,7 +173,7 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
     (formato .csv, .xlsx o .xls).
     
     Genera un hash determinista único (SHA-256) por cada transacción para prevenir duplicados.
-    Utiliza exclusivamente librerías estándar y openpyxl (cero dependencias de pandas).
+    Maneja preámbulos de metadatos, múltiples delimitadores, fechas en español y montos contables.
     """
     if not file_content:
         raise ValueError("El archivo de estado de cuenta está vacío.")
@@ -59,7 +183,7 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
 
     if filename_lower.endswith(".csv"):
         decoded_text: Optional[str] = None
-        for encoding in ["utf-8-sig", "utf-8", "latin-1", "cp1252"]:
+        for encoding in ["utf-8-sig", "utf-8", "latin-1", "cp1252", "iso-8859-1"]:
             try:
                 decoded_text = file_content.decode(encoding)
                 break
@@ -69,14 +193,7 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
         if not decoded_text:
             raise ValueError("No se pudo leer el archivo CSV de BBVA con ninguna codificación estándar.")
 
-        sample = decoded_text[:2048]
-        delim = ','
-        try:
-            dialect = csv.Sniffer().sniff(sample, delimiters=',;\t|')
-            delim = dialect.delimiter
-        except Exception:
-            delim = ','
-
+        delim = _detect_delimiter(decoded_text)
         reader = csv.reader(io.StringIO(decoded_text), delimiter=delim)
         rows = [list(r) for r in reader if any(str(field).strip() for field in r)]
 
@@ -95,12 +212,21 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
     if not rows:
         raise ValueError("El archivo de estado de cuenta no contiene renglones válidos.")
 
-    # Buscar el renglón de encabezados dentro de los primeros 15 renglones
+    # Buscar el renglón de encabezados dentro de los primeros 40 renglones
     header_row_idx = None
     headers: List[str] = []
-    for idx, r in enumerate(rows[:15]):
+
+    for idx, r in enumerate(rows[:40]):
         cleaned_r = [_clean_header(c) for c in r]
-        if any(any(k in c for k in ["fecha", "f. oper", "f. valor", "operacion"]) for c in cleaned_r):
+        has_date = any(any(k in c for k in ["fecha", "f. oper", "f oper", "f. valor", "f valor", "operacion", "dia"]) for c in cleaned_r)
+        has_other = any(any(k in c for k in [
+            "concepto", "descripci", "detalle", "motivo", "movimiento", "referencia",
+            "cargo", "retiro", "debito", "egreso", "salida",
+            "abono", "deposito", "credito", "ingreso", "entrada",
+            "importe", "monto", "saldo", "balance"
+        ]) for c in cleaned_r)
+
+        if has_date and has_other and len(cleaned_r) >= 2:
             header_row_idx = idx
             headers = cleaned_r
             break
@@ -110,15 +236,15 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
         headers = [_clean_header(c) for c in rows[0]]
 
     # Mapeo flexible de columnas comunes en exportaciones BBVA
-    col_fecha_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["fecha", "f. oper", "f. valor", "operacion"])), None)
-    col_concepto_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["concepto", "descripci", "detalle", "motivo", "movimiento"])), None)
-    col_cargo_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["cargo", "retiro", "debito"])), None)
-    col_abono_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["abono", "deposito", "credito"])), None)
+    col_fecha_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["fecha", "f. oper", "f oper", "f. valor", "f valor", "operacion", "dia"])), None)
+    col_concepto_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["concepto", "descripci", "detalle", "motivo", "movimiento", "referencia", "glosa", "leyenda"])), None)
+    col_cargo_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["cargo", "retiro", "debito", "salida", "egreso", "disposicion"])), None)
+    col_abono_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["abono", "deposito", "credito", "entrada", "ingreso"])), None)
     col_saldo_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["saldo", "balance"])), None)
 
     col_monto_unico_idx = None
     if col_cargo_idx is None and col_abono_idx is None:
-        col_monto_unico_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["importe", "monto"])), None)
+        col_monto_unico_idx = next((i for i, h in enumerate(headers) if any(k in h for k in ["importe", "monto", "cantidad", "valor"])), None)
 
     if col_fecha_idx is None or col_concepto_idx is None or (col_cargo_idx is None and col_abono_idx is None and col_monto_unico_idx is None):
         raise ValueError(
@@ -133,12 +259,13 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
             continue
 
         raw_fecha_val = row[col_fecha_idx]
-        fecha_obj = _parse_date(raw_fecha_val)
+        fecha_obj = parse_flexible_date(raw_fecha_val)
         if not fecha_obj:
             continue
 
         concepto = str(row[col_concepto_idx] or "").strip()
-        if not concepto or concepto.upper().startswith("TOTAL"):
+        concepto_up = concepto.upper()
+        if not concepto or any(concepto_up.startswith(k) for k in ["TOTAL", "SALDO INICIAL", "SALDO FINAL", "RESUMEN", "CORTE"]):
             continue
 
         cargo = 0.0
@@ -156,12 +283,12 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
             if col_cargo_idx is not None and col_cargo_idx < len(row):
                 c_num = _parse_num(row[col_cargo_idx])
                 if c_num is not None:
-                    cargo = float(c_num)
+                    cargo = abs(float(c_num))
 
             if col_abono_idx is not None and col_abono_idx < len(row):
                 a_num = _parse_num(row[col_abono_idx])
                 if a_num is not None:
-                    abono = float(a_num)
+                    abono = abs(float(a_num))
 
         saldo = None
         if col_saldo_idx is not None and col_saldo_idx < len(row):

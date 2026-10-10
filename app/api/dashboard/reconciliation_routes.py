@@ -43,6 +43,20 @@ def get_reconciliation_overview(
     ).distinct().order_by(desc(BankTransaction.periodo_mes)).all()
     available_months = [m[0] for m in months_query if m[0]]
 
+    # También incluir meses donde existan facturas CFDI
+    try:
+        cfdi_dates = db.query(CFDIInvoice.fecha_emision).filter(
+            CFDIInvoice.account_rfc == effective_rfc
+        ).all()
+        for d in cfdi_dates:
+            if d[0]:
+                m_str = d[0].strftime("%Y-%m")
+                if m_str not in available_months:
+                    available_months.append(m_str)
+        available_months.sort(reverse=True)
+    except Exception:
+        pass
+
     # Si no se pasó mes y hay meses disponibles, tomar el más reciente
     selected_month = month
     if not selected_month and available_months:
@@ -296,6 +310,7 @@ async def upload_reconciliation_files(
     processed_xmls = 0
     processed_statements = 0
     errors = []
+    detected_months = set()
 
     for file in files:
         filename = file.filename or ""
@@ -311,6 +326,8 @@ async def upload_reconciliation_files(
                             xml_bytes = z.read(zip_info.filename)
                             try:
                                 cfdi_data = parse_cfdi_xml(xml_bytes, mi_rfc=effective_rfc)
+                                if cfdi_data.get("fecha_emision"):
+                                    detected_months.add(cfdi_data["fecha_emision"].strftime("%Y-%m"))
                                 existing = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == cfdi_data["uuid"]).first()
                                 if not existing:
                                     inv = CFDIInvoice(
@@ -347,6 +364,8 @@ async def upload_reconciliation_files(
         elif filename_lower.endswith(".xml"):
             try:
                 cfdi_data = parse_cfdi_xml(content, mi_rfc=effective_rfc)
+                if cfdi_data.get("fecha_emision"):
+                    detected_months.add(cfdi_data["fecha_emision"].strftime("%Y-%m"))
                 existing = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == cfdi_data["uuid"]).first()
                 if not existing:
                     inv = CFDIInvoice(
@@ -377,32 +396,51 @@ async def upload_reconciliation_files(
             except Exception as e_xml:
                 errors.append(f"{filename}: {str(e_xml)}")
 
-        # 3. Estado de cuenta BBVA (CSV o Excel)
+        # 3. Estado de cuenta BBVA (CSV o Excel) o Sábana contable
         elif filename_lower.endswith(".csv") or filename_lower.endswith(".xlsx") or filename_lower.endswith(".xls"):
+            is_sabana = False
             try:
-                transacciones = parse_bbva_statement(content, filename, account_rfc=effective_rfc)
-                for tx in transacciones:
-                    existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
-                    if not existing_tx:
-                        new_tx = BankTransaction(
-                            account_rfc=effective_rfc,
-                            area_proyecto=entity_name,
-                            tipo_categoria="INGRESO" if tx["tipo"] == "INGRESO" else "GASTO",
-                            id_transaccion=tx["id_transaccion"],
-                            banco=tx["banco"],
-                            fecha=tx["fecha"],
-                            concepto=tx["concepto"],
-                            monto=tx["monto"],
-                            tipo=tx["tipo"],
-                            saldo=tx.get("saldo"),
-                            status_conciliacion="SIN_CFDI",
-                            confianza_score=0.0,
-                            periodo_mes=tx["periodo_mes"]
-                        )
-                        db.add(new_tx)
-                        processed_statements += 1
-            except Exception as e_stmt:
-                errors.append(f"{filename}: {str(e_stmt)}")
+                snippet = content[:2048].decode("utf-8", errors="ignore").upper()
+                if any(k in snippet for k in ["FOLIO FISCAL", "AREA/PROYECTO", "CLIENTE/PROVEEDOR", "IVA INGRESOS", "IVA EGR"]):
+                    is_sabana = True
+            except Exception:
+                pass
+
+            if is_sabana:
+                try:
+                    res_bf = import_historical_excel(content, filename, db, mi_rfc=effective_rfc)
+                    processed_statements += res_bf.get("transacciones_importadas", 0)
+                    processed_xmls += res_bf.get("facturas_importadas", 0)
+                    if res_bf.get("meses_afectados"):
+                        detected_months.update(res_bf["meses_afectados"])
+                except Exception as e_bf:
+                    errors.append(f"{filename} (sábana): {str(e_bf)}")
+            else:
+                try:
+                    transacciones = parse_bbva_statement(content, filename, account_rfc=effective_rfc)
+                    for tx in transacciones:
+                        detected_months.add(tx["periodo_mes"])
+                        existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
+                        if not existing_tx:
+                            new_tx = BankTransaction(
+                                account_rfc=effective_rfc,
+                                area_proyecto=entity_name,
+                                tipo_categoria="INGRESO" if tx["tipo"] == "INGRESO" else "GASTO",
+                                id_transaccion=tx["id_transaccion"],
+                                banco=tx["banco"],
+                                fecha=tx["fecha"],
+                                concepto=tx["concepto"],
+                                monto=tx["monto"],
+                                tipo=tx["tipo"],
+                                saldo=tx.get("saldo"),
+                                status_conciliacion="SIN_CFDI",
+                                confianza_score=0.0,
+                                periodo_mes=tx["periodo_mes"]
+                            )
+                            db.add(new_tx)
+                            processed_statements += 1
+                except Exception as e_stmt:
+                    errors.append(f"{filename}: {str(e_stmt)}")
 
     db.commit()
 
@@ -466,8 +504,10 @@ async def upload_reconciliation_files(
         "processed_xmls": processed_xmls,
         "processed_statements": processed_statements,
         "matches_creados": matches_creados,
+        "detected_months": sorted(list(detected_months), reverse=True),
         "errors": errors
     }
+
 
 
 @router.post("/match-manual")

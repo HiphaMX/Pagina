@@ -93,6 +93,53 @@ def test_bbva_parser():
     assert txs[2]["tipo"] == "INGRESO"
 
 
+def test_bbva_parser_spanish_months_and_agosto():
+    bbva_agosto_csv = b"""Fecha,Concepto / Referencia,Cargo,Abono,Saldo
+01/AGO/2026,PAGO PROVEEDOR SERVICIOS CLOUD,2500.00,,42500.00
+15-AGO-26,DEPOSITO CLIENTE HONORARIOS,,15000.00,57500.00
+28/Ago/2026,COMISION MANEJO DE CUENTA,150.00,,57350.00
+"""
+    txs = parse_bbva_statement(bbva_agosto_csv, "movimientos_agosto.csv")
+    assert len(txs) == 3
+
+    assert txs[0]["periodo_mes"] == "2026-08"
+    assert txs[0]["monto"] == 2500.00
+    assert txs[0]["tipo"] == "EGRESO"
+
+    assert txs[1]["periodo_mes"] == "2026-08"
+    assert txs[1]["monto"] == 15000.00
+    assert txs[1]["tipo"] == "INGRESO"
+
+    assert txs[2]["periodo_mes"] == "2026-08"
+    assert txs[2]["monto"] == 150.00
+    assert txs[2]["tipo"] == "EGRESO"
+
+
+def test_bbva_parser_semicolon_and_preamble():
+    bbva_semi_csv = """BBVA Bancomer S.A.
+Cuenta: 0123456789
+Periodo consultado: 01/08/2026 al 31/08/2026
+
+Fecha de operacion;Concepto;Retiro;Deposito;Saldo
+05/08/2026;COMPRA SUPERMERCADO;(1.250,50);;38749,50
+10/08/2026;TRANSFERENCIA SPEI ENTRADA;;5.000,00;43749,50
+TOTAL DE MOVIMIENTOS: 2
+""".encode("latin-1")
+
+    txs = parse_bbva_statement(bbva_semi_csv, "bbva_export_netcash.csv")
+    assert len(txs) == 2
+
+    # Retiro con parentesis y formato decimal europeo
+    assert txs[0]["monto"] == 1250.50
+    assert txs[0]["tipo"] == "EGRESO"
+    assert txs[0]["periodo_mes"] == "2026-08"
+
+    # Deposito
+    assert txs[1]["monto"] == 5000.00
+    assert txs[1]["tipo"] == "INGRESO"
+    assert txs[1]["periodo_mes"] == "2026-08"
+
+
 def test_matching_engine():
     parsed_cfdi = parse_cfdi_xml(SAMPLE_CFDI_XML, mi_rfc="HMA1803098A3")
     txs = parse_bbva_statement(SAMPLE_BBVA_CSV, "movimientos_mayo.csv")
@@ -347,6 +394,10 @@ def test_historical_backfill_csv_14_columns():
 def test_delete_transaction():
     db = SessionLocal()
     try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == "tx_test_del_001").delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "TEST-DEL-UUID-001").delete()
+        db.commit()
+
         inv = CFDIInvoice(
             uuid="TEST-DEL-UUID-001",
             account_rfc="DEGF851127TK1",
@@ -396,6 +447,9 @@ def test_delete_transaction():
 def test_deduplicate_transactions():
     db = SessionLocal()
     try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(["tx_dup_001", "tx_dup_002"])).delete()
+        db.commit()
+
         tx1 = BankTransaction(
             account_rfc="DEGF851127TK1",
             id_transaccion="tx_dup_001",

@@ -5744,9 +5744,27 @@ window.loadSocialObservatory = loadSocialObservatory;
 // MÓDULO: CONCILIACIÓN BANCARIA Y FISCAL (BBVA + CFDI)
 // =========================================================================
 
+const RECON_MONTH_NAMES = [
+    { num: '01', name: 'Enero' },
+    { num: '02', name: 'Febrero' },
+    { num: '03', name: 'Marzo' },
+    { num: '04', name: 'Abril' },
+    { num: '05', name: 'Mayo' },
+    { num: '06', name: 'Junio' },
+    { num: '07', name: 'Julio' },
+    { num: '08', name: 'Agosto' },
+    { num: '09', name: 'Septiembre' },
+    { num: '10', name: 'Octubre' },
+    { num: '11', name: 'Noviembre' },
+    { num: '12', name: 'Diciembre' }
+];
+
 let reconInitialized = false;
 let currentReconEntity = "DEGF851127TK1"; // Default entity: HIPHA
-let currentReconMonth = "";
+let currentReconYear = "2026";
+let currentReconMonthNum = "08";
+let currentReconMonth = `${currentReconYear}-${currentReconMonthNum}`;
+let availableReconMonths = [];
 let currentReconStatus = "ALL";
 let currentReconTipo = "ALL";
 let currentReconSearch = "";
@@ -5754,6 +5772,24 @@ let selectedReconFiles = [];
 let pendingInvoicesCache = [];
 let currentReconMailboxCount = 0;
 let cachedMailboxInvoices = [];
+
+function updateReconMonthDropdown() {
+    const monthSelect = document.getElementById('reconMonthSelect');
+    if (!monthSelect) return;
+
+    monthSelect.innerHTML = '';
+    RECON_MONTH_NAMES.forEach(m => {
+        const periodKey = `${currentReconYear}-${m.num}`;
+        const hasData = availableReconMonths.includes(periodKey);
+        const opt = document.createElement('option');
+        opt.value = m.num;
+        opt.textContent = `${m.num} - ${m.name}${hasData ? ' •' : ''}`;
+        if (m.num === currentReconMonthNum) {
+            opt.selected = true;
+        }
+        monthSelect.appendChild(opt);
+    });
+}
 
 function initReconciliationModule() {
     if (reconInitialized) return;
@@ -5813,8 +5849,8 @@ function initReconciliationModule() {
                 backfillBadge.style.borderColor = entityBorder;
             }
 
-            // Recargar datos y selector de meses para la entidad seleccionada
-            currentReconMonth = "";
+            // Recargar datos para la entidad seleccionada manteniendo año y mes
+            currentReconMonth = `${currentReconYear}-${currentReconMonthNum}`;
             loadReconciliationData(true);
 
             // Sincronización automática de buzón en segundo plano al cambiar de entidad
@@ -5822,13 +5858,27 @@ function initReconciliationModule() {
         });
     });
 
-    const monthSelect = document.getElementById('reconMonthSelect');
-    if (monthSelect) {
-        monthSelect.addEventListener('change', (e) => {
-            currentReconMonth = e.target.value;
+    const yearSelect = document.getElementById('reconYearSelect');
+    if (yearSelect) {
+        yearSelect.value = currentReconYear;
+        yearSelect.addEventListener('change', (e) => {
+            currentReconYear = e.target.value;
+            currentReconMonth = `${currentReconYear}-${currentReconMonthNum}`;
+            updateReconMonthDropdown();
             loadReconciliationData(false);
         });
     }
+
+    const monthSelect = document.getElementById('reconMonthSelect');
+    if (monthSelect) {
+        monthSelect.value = currentReconMonthNum;
+        monthSelect.addEventListener('change', (e) => {
+            currentReconMonthNum = e.target.value;
+            currentReconMonth = `${currentReconYear}-${currentReconMonthNum}`;
+            loadReconciliationData(false);
+        });
+    }
+
 
     // Pestañas de Estatus
     const statusTabs = document.querySelectorAll('.recon-filter-pill');
@@ -5977,29 +6027,21 @@ async function loadReconciliationData(refreshMonths = true) {
         }
 
         const data = await res.json();
-        currentReconMonth = data.selected_month;
-
-        // Actualizar selector de meses si es necesario
-        if (refreshMonths) {
-            const monthSelect = document.getElementById('reconMonthSelect');
-            if (monthSelect && data.available_months) {
-                monthSelect.innerHTML = '';
-                if (data.available_months.length === 0) {
-                    const opt = document.createElement('option');
-                    opt.value = currentReconMonth;
-                    opt.textContent = formatMonthLabel(currentReconMonth);
-                    monthSelect.appendChild(opt);
-                } else {
-                    data.available_months.forEach(m => {
-                        const opt = document.createElement('option');
-                        opt.value = m;
-                        opt.textContent = formatMonthLabel(m);
-                        if (m === currentReconMonth) opt.selected = true;
-                        monthSelect.appendChild(opt);
-                    });
-                }
-            }
+        if (data.available_months) {
+            availableReconMonths = data.available_months;
         }
+
+        if (data.selected_month && data.selected_month.includes('-')) {
+            currentReconMonth = data.selected_month;
+            const parts = currentReconMonth.split('-');
+            currentReconYear = parts[0];
+            currentReconMonthNum = parts[1];
+            const yearSelect = document.getElementById('reconYearSelect');
+            if (yearSelect) yearSelect.value = currentReconYear;
+        }
+
+        // Actualizar selector cronológico de Enero a Diciembre
+        updateReconMonthDropdown();
 
         // Actualizar KPIs (3 Tarjetas Claras: Ingresos Verde, Egresos Amarillo, Faltante Rojo)
         const k = data.kpis;
@@ -6387,11 +6429,27 @@ function initReconUploadModal() {
 
                 const data = await res.json();
                 if (data.success) {
-                    alert(`¡Proceso completado con éxito!\n• ${data.processed_xmls} facturas XML registradas\n• ${data.processed_statements} transacciones bancarias cargadas\n• ${data.matches_creados} coincidencias automáticas vinculadas`);
+                    let alertMsg = `¡Proceso completado con éxito!\n• ${data.processed_xmls} facturas XML registradas\n• ${data.processed_statements} transacciones bancarias cargadas\n• ${data.matches_creados} coincidencias automáticas vinculadas`;
+                    if (data.errors && data.errors.length > 0) {
+                        alertMsg += `\n\n⚠️ Errores / Avisos en archivos:\n${data.errors.join('\n')}`;
+                    }
+                    alert(alertMsg);
+
+                    // Conmutar al mes detectado en los archivos si está disponible
+                    if (data.detected_months && data.detected_months.length > 0) {
+                        const targetMonth = data.detected_months[0];
+                        const parts = targetMonth.split('-');
+                        currentReconYear = parts[0];
+                        currentReconMonthNum = parts[1];
+                        currentReconMonth = targetMonth;
+                        const yearSelect = document.getElementById('reconYearSelect');
+                        if (yearSelect) yearSelect.value = currentReconYear;
+                    }
+
                     closeModal();
                     loadReconciliationData(true);
                 } else {
-                    alert(`Error al procesar: ${data.detail || 'Falla del servidor'}`);
+                    alert(`Error al procesar: ${data.detail || (data.errors && data.errors.join('\n')) || 'Falla del servidor'}`);
                 }
             } catch (err) {
                 console.error("Error subiendo archivos:", err);
@@ -6895,6 +6953,15 @@ function initReconBackfillModal() {
                 const data = await res.json();
                 if (data.success) {
                     alert(`¡Migración completada exitosamente!\n• ${data.imported_transactions} transacciones importadas\n• ${data.imported_invoices} folios fiscales asegurados como conciliados.`);
+                    if (data.meses_afectados && data.meses_afectados.length > 0) {
+                        const targetMonth = data.meses_afectados[0];
+                        const parts = targetMonth.split('-');
+                        currentReconYear = parts[0];
+                        currentReconMonthNum = parts[1];
+                        currentReconMonth = targetMonth;
+                        const yearSelect = document.getElementById('reconYearSelect');
+                        if (yearSelect) yearSelect.value = currentReconYear;
+                    }
                     closeModal();
                     loadReconciliationData(true);
                 } else {

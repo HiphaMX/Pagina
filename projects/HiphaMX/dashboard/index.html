@@ -583,10 +583,32 @@
                     <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
                         
                         <!-- Selector de Período -->
-                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <label for="reconMonthSelect" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Período:</label>
-                            <select id="reconMonthSelect" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.9rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; outline: none; cursor: pointer;">
-                                <option value="">Cargando meses...</option>
+                        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <span>Período:</span>
+                            </label>
+                            <!-- Selector de Año (Por defecto 2026) -->
+                            <select id="reconYearSelect" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.8rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; outline: none; cursor: pointer;" title="Seleccionar Año fiscal">
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026" selected>2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                            <!-- Selector de Mes (Enero a Diciembre en orden cronológico) -->
+                            <select id="reconMonthSelect" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.9rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; outline: none; cursor: pointer;" title="Seleccionar Mes">
+                                <option value="01">01 - Enero</option>
+                                <option value="02">02 - Febrero</option>
+                                <option value="03">03 - Marzo</option>
+                                <option value="04">04 - Abril</option>
+                                <option value="05">05 - Mayo</option>
+                                <option value="06">06 - Junio</option>
+                                <option value="07">07 - Julio</option>
+                                <option value="08" selected>08 - Agosto</option>
+                                <option value="09">09 - Septiembre</option>
+                                <option value="10">10 - Octubre</option>
+                                <option value="11">11 - Noviembre</option>
+                                <option value="12">12 - Diciembre</option>
                             </select>
                             <button type="button" id="btnSyncMailbox" class="btn-secondary-mini" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;" title="Consultar correos no leídos en el buzón dedicado ahora">
                                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>

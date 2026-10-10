@@ -15,35 +15,13 @@ def _clean_header(h: Any) -> str:
     return s
 
 
-def _parse_num(val: Any) -> Optional[float]:
-    if val is None:
-        return None
-    if isinstance(val, (int, float)):
-        return float(val)
-    s = str(val).replace(",", "").replace("$", "").replace(" ", "").strip()
-    if not s or s.upper() in ["NAN", "NONE", "NULL", "-", "--"]:
-        return None
-    try:
-        return float(s)
-    except (ValueError, TypeError):
-        return None
+from app.services.reconciliation.bbva_parser import (
+    parse_flexible_date,
+    _parse_num,
+    _detect_delimiter,
+)
 
-
-def _parse_date(val: Any) -> Optional[datetime]:
-    if isinstance(val, datetime):
-        return val
-    if hasattr(val, "date") and callable(getattr(val, "date")):
-        d = val.date()
-        return datetime(d.year, d.month, d.day)
-    s = str(val or "").strip()
-    if not s:
-        return None
-    for fmt in ["%Y-%m-%d", "%d/%m/%Y", "%Y-%m-%d %H:%M:%S", "%d-%m-%Y", "%d/%m/%y", "%d/%m/%Y %H:%M:%S"]:
-        try:
-            return datetime.strptime(s[:19] if " " in s else s[:10], fmt)
-        except ValueError:
-            continue
-    return None
+_parse_date = parse_flexible_date
 
 
 def import_historical_excel(
@@ -76,13 +54,7 @@ def import_historical_excel(
         if not decoded_text:
             raise ValueError("No se pudo leer el archivo CSV con ninguna codificación estándar.")
 
-        sample = decoded_text[:2048]
-        delim = ','
-        try:
-            dialect = csv.Sniffer().sniff(sample, delimiters=',;\t|')
-            delim = dialect.delimiter
-        except Exception:
-            delim = ','
+        delim = _detect_delimiter(decoded_text)
 
         reader = csv.reader(io.StringIO(decoded_text), delimiter=delim)
         rows = [list(r) for r in reader if any(str(field).strip() for field in r)]
