@@ -1,6 +1,5 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "git diff HEAD^ HEAD --quiet .",
   "rewrites": [
     {
       "source": "/api/:path*",
