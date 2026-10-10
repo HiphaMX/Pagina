@@ -13114,7 +13114,7 @@ figcaption {
 }
 
 /* ============================================================
-   SECCIÓN CONTACTO: ALINEACIÓN MILIMÉTRICA Y GRID CENTRADO
+   SECCIÓN CONTACTO: ALINEACIÓN MILIMÉTRICA Y GRID CENTRADO DESIGNFLOW
    ============================================================ */
 .waves-grid-contact-3 {
   display: grid !important;
@@ -13122,20 +13122,26 @@ figcaption {
   max-width: 1080px !important;
   margin: 48px auto 0 !important;
   grid-column-gap: 28px !important;
-  grid-row-gap: 36px !important;
+  grid-row-gap: 40px !important;
   align-items: stretch !important;
   justify-content: center !important;
-  padding: 0 16px !important;
+  padding: 0 20px !important;
   box-sizing: border-box !important;
 }
 
+/* Tarjeta y formulario maestro abarcando el ancho completo (3 columnas) */
+.waves-master-contact-2,
 #w-node-e69044e3-54dd-33a4-6870-98147bb9e7b4-b6c96e84 {
   grid-column: 1 / -1 !important;
-  grid-area: auto !important;
+  grid-row: auto !important;
   width: 100% !important;
-  margin-top: 8px !important;
+  max-width: 100% !important;
+  margin: 16px 0 0 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
 }
 
+/* 3 Tarjetas de contacto superiores (Teléfono, WhatsApp, Ubicación) */
 .waves-tile-contact-3 {
   background-color: #d8efff !important;
   border-radius: 16px !important;
@@ -13209,23 +13215,209 @@ figcaption {
   color: #1e4a3d !important;
 }
 
+/* Banner de imagen familiar de fondo */
+.waves-image-wrap-contact-2 {
+  width: 100% !important;
+  height: 320px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08) !important;
+}
+
+.waves-image-contact-2 {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* Tarjeta flotante del formulario: Designflow Premium */
+.waves-content-contact-2 {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 90% !important;
+  max-width: 820px !important;
+  margin: -140px auto 0 auto !important;
+  padding: 48px 56px !important;
+  background-color: #ffffff !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 60px rgba(40, 97, 80, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(40, 97, 80, 0.08) !important;
+  box-sizing: border-box !important;
+}
+
+.new-form.w-form {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Grid del formulario: 2 columnas en desktop */
+.waves-content-contact-2 .popup-2,
+.popup-2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  grid-column-gap: 20px !important;
+  grid-row-gap: 20px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Campos de entrada estilizados */
+.field-4,
+.field-4.n {
+  width: 100% !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  padding: 0 18px !important;
+  background-color: #f8fafc !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #1a202c !important;
+  box-sizing: border-box !important;
+  transition: all 0.25s ease !important;
+  outline: none !important;
+}
+
+.field-4::placeholder,
+.field-4.n::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+.field-4:focus,
+.field-4.n:focus {
+  background-color: #ffffff !important;
+  border-color: #286150 !important;
+  box-shadow: 0 0 0 4px rgba(40, 97, 80, 0.12) !important;
+}
+
+/* Textarea a ancho completo */
+textarea.field-4,
+textarea.field-4.n,
+#Mensaje-2,
+.field-4.n.w-node-_66100b70-19f2-00e3-aadb-83aeb081a0ab-b6c96e84 {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  min-height: 110px !important;
+  height: 110px !important;
+  padding: 14px 18px !important;
+  resize: vertical !important;
+  border-radius: 12px !important;
+}
+
+/* Checkbox suscripción */
+.checkbox-field,
+#w-node-_66100b70-19f2-00e3-aadb-83aeb081a0ac-b6c96e84 {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 4px 0 8px 0 !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+
+.checkbox-field .w-checkbox-input,
+.checkbox-field .checkbox {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 5px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+  accent-color: #286150 !important;
+}
+
+.checkbox-field .checkbox-label {
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 13px !important;
+  color: #475569 !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+}
+
+.checkbox-field .checkbox-label .text-span-2 {
+  color: #286150 !important;
+  font-weight: 600 !important;
+}
+
+/* Botón de envío Designflow con degradado coral vibrante */
+.popup-2 .boton.new,
+.popup-2 .button-5,
+.popup-2 input[type="submit"],
+#w-node-_66100b70-19f2-00e3-aadb-83aeb081a0b2-b6c96e84 {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  height: 54px !important;
+  background: linear-gradient(135deg, #ff8a8a 0%, #f06a6a 100%) !important;
+  color: #ffffff !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 24px rgba(240, 106, 106, 0.35) !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 6px 0 0 0 !important;
+  text-align: center !important;
+}
+
+.popup-2 .boton.new:hover,
+.popup-2 .button-5:hover,
+.popup-2 input[type="submit"]:hover,
+#w-node-_66100b70-19f2-00e3-aadb-83aeb081a0b2-b6c96e84:hover {
+  background: linear-gradient(135deg, #ff7a7a 0%, #e85a5a 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 14px 30px rgba(240, 106, 106, 0.45) !important;
+}
+
+.popup-2 .boton.new:active,
+.popup-2 .button-5:active,
+.popup-2 input[type="submit"]:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 6px 16px rgba(240, 106, 106, 0.3) !important;
+}
+
 @media screen and (max-width: 991px) {
   .waves-grid-contact-3 {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 20px !important;
     margin-top: 32px !important;
-    padding: 0 !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
   }
+
   .waves-tile-contact-3 {
-    padding: 24px 16px !important;
-    min-height: 180px !important;
+    width: 100% !important;
+    max-width: 680px !important;
+    min-height: auto !important;
+    padding: 24px 20px !important;
+    box-sizing: border-box !important;
   }
+
   .waves-tile-contact-3 .waves---mg-bottom-16 {
     height: 48px !important;
     width: 48px !important;
     min-height: 48px !important;
-    margin-bottom: 14px !important;
+    margin-bottom: 12px !important;
   }
+
   .waves-tile-contact-3 .waves-icon-64,
   .waves-tile-contact-3 .waves---mg-bottom-16 img,
   .waves-tile-contact-3 .waves---mg-bottom-16 svg {
@@ -13234,21 +13426,74 @@ figcaption {
     max-width: 38px !important;
     max-height: 38px !important;
   }
-  .waves-tile-contact-3 .mini-link {
-    font-size: 13.5px !important;
-  }
-}
 
-@media screen and (max-width: 767px) {
-  .waves-grid-contact-3 {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-    margin-top: 24px !important;
+  .waves-tile-contact-3 .mini-link {
+    font-size: 14px !important;
   }
-  .waves-tile-contact-3 {
-    min-height: auto !important;
-    padding: 24px 20px !important;
+
+  .waves-master-contact-2,
+  #w-node-e69044e3-54dd-33a4-6870-98147bb9e7b4-b6c96e84 {
+    width: 100% !important;
+    max-width: 680px !important;
+    margin: 16px auto 0 auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
   }
+
+  .waves-image-wrap-contact-2 {
+    width: 100% !important;
+    height: 220px !important;
+    border-radius: 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  .waves-content-contact-2 {
+    width: 94% !important;
+    max-width: 640px !important;
+    margin: -70px auto 0 auto !important;
+    padding: 32px 24px !important;
+    border-radius: 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  .waves-content-contact-2 .popup-2,
+  .popup-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .field-4,
+  .field-4.n {
+    width: 100% !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    font-size: 14px !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  textarea.field-4,
+  textarea.field-4.n,
+  #Mensaje-2 {
+    width: 100% !important;
+    min-height: 96px !important;
+    height: 96px !important;
+    padding: 12px 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .popup-2 .boton.new,
+  .popup-2 .button-5,
+  .popup-2 input[type="submit"] {
+    width: 100% !important;
+    height: 52px !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
+  }
+
   .image-42 {
     width: 200px !important;
     height: 200px !important;
@@ -13337,6 +13582,8 @@ figcaption {
     margin-right: 0 !important;
     border-radius: 0 !important;
     box-sizing: border-box !important;
+    position: relative !important;
+    z-index: 1000 !important;
   }
 
   .navbar-container-2 {
@@ -13347,16 +13594,42 @@ figcaption {
     box-sizing: border-box !important;
   }
 
-  /* Contenedor compacto sin ocupar 100vh vacío */
-  .nav-menu-3 {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
+  .menu-button-4 {
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+
+  /* Overlay de Webflow en móvil: auto height, z-index adecuado y scroll suave */
+  .w-nav-overlay {
+    top: 100% !important;
     width: 100% !important;
-    max-width: 100% !important;
+    height: auto !important;
+    max-height: calc(100vh - 75px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14) !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    background-color: #ffffff !important;
+    z-index: 999 !important;
+  }
+
+  .w-nav-overlay:not([style*="display: block"]) {
+    display: none !important;
+  }
+
+  /* Contenedor compacto: cerrado por defecto en pantallas móviles */
+  .nav-menu-3 {
+    display: none !important;
+    position: absolute !important;
+    top: 100% !important;
     left: 0 !important;
     right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
     text-align: left !important;
     box-sizing: border-box !important;
     background-color: #ffffff !important;
@@ -13369,6 +13642,29 @@ figcaption {
     border-bottom-right-radius: 16px !important;
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14) !important;
     border: none !important;
+    z-index: 1000 !important;
+  }
+
+  /* Solo visible cuando el menú está abierto */
+  .navbar-4.menu-open .nav-menu-3,
+  .navbar-4:has(.menu-button-4.w--open) .nav-menu-3,
+  .w-nav-overlay .nav-menu-3,
+  .nav-menu-3.w--open,
+  .nav-menu-3[data-nav-menu-open] {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    position: static !important;
+    top: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 10px 0 20px 0 !important;
+    background-color: #ffffff !important;
   }
 
   .nav-column-center {
