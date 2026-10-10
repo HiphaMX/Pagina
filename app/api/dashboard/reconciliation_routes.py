@@ -228,6 +228,7 @@ def get_reconciliation_transactions(
             "iva_egresos": iva_egr_val,
             "monto": t.monto,
             "tipo": t.tipo,
+            "banco": t.banco or "BBVA",
             "saldo": t.saldo,
             "status_conciliacion": t.status_conciliacion,
             "confianza_score": t.confianza_score,

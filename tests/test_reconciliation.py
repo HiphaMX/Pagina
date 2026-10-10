@@ -682,5 +682,121 @@ def test_upload_bank_pdf_julio_endpoint():
         db.close()
 
 
+def test_parse_bank_pdf_statement_mercadopago_credit_card():
+    from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+
+    with open("tests/fixtures/ML_agosto_2026.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    txs = parse_bank_pdf_statement(pdf_bytes, "ML_agosto_2026.pdf", account_rfc="DEGF851127TK1")
+    assert len(txs) == 6
+
+    # Todas las compras con tarjeta son EGRESOS del periodo 2026-08
+    for t in txs:
+        assert t["tipo"] == "EGRESO"
+        assert t["banco"] == "TC MERCADO PAGO"
+        assert t["periodo_mes"] == "2026-08"
+        assert t["account_rfc"] == "DEGF851127TK1"
+
+    # La suma de las compras debe ser exactamente el total a pagar del periodo: $4,421.29
+    total_compras = sum(t["monto"] for t in txs)
+    assert total_compras == pytest.approx(4421.29, 0.01)
+
+    # Validar comercios individuales
+    conceptos = [t["concepto"] for t in txs]
+    assert any("Google One" in c for c in conceptos)
+    assert any("GOOGLE CLOUD" in c for c in conceptos)
+    assert any("WALMART" in c for c in conceptos)
+    assert any("NEUBOX" in c for c in conceptos)
+    assert any("MERCADOLIBRE" in c for c in conceptos)
+    assert any("MP ECOMMERCE" in c for c in conceptos)
+
+    # Asegurar que saldos anteriores y pagos de la tarjeta no se extraen como transacciones
+    assert not any("Saldo al corte" in c for c in conceptos)
+    assert not any("Pago del resumen" in c for c in conceptos)
+
+
+def test_upload_bank_pdf_mercadopago_and_cross_match():
+    with open("tests/fixtures/ML_agosto_2026.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    db = SessionLocal()
+    try:
+        # 1. Crear facturas CFDI de gastos para cruzar con las compras de la tarjeta
+        cfdi_gcloud = CFDIInvoice(
+            uuid="CFDI-GCLOUD-TEST-0001",
+            account_rfc="DEGF851127TK1",
+            area_proyecto="HIPHA",
+            tipo="EGRESO",
+            rfc_emisor="GCM150101XYZ",
+            nombre_emisor="GOOGLE CLOUD MEXICO S DE RL DE CV",
+            rfc_receptor="DEGF851127TK1",
+            nombre_receptor="FRANCISCO DE JESUS DELGADILLO GARCIA",
+            fecha_emision=datetime(2026, 8, 1, 10, 0),
+            subtotal=260.12,
+            iva_trasladado=41.62,
+            retenciones=0.0,
+            total=301.74,
+            metodo_pago="PUE",
+            conceptos_resumen="Consumo Cloud Hosting GCP",
+            conciliado=False
+        )
+        cfdi_walmart = CFDIInvoice(
+            uuid="CFDI-WALMART-TEST-0002",
+            account_rfc="DEGF851127TK1",
+            area_proyecto="HIPHA",
+            tipo="EGRESO",
+            rfc_emisor="NWM9709244W4",
+            nombre_emisor="NUEVA WAL MART DE MEXICO S DE RL DE CV",
+            rfc_receptor="DEGF851127TK1",
+            nombre_receptor="FRANCISCO DE JESUS DELGADILLO GARCIA",
+            fecha_emision=datetime(2026, 8, 4, 18, 30),
+            subtotal=1197.41,
+            iva_trasladado=191.59,
+            retenciones=0.0,
+            total=1389.00,
+            metodo_pago="PUE",
+            conceptos_resumen="Insumos Oficina Walmart",
+            conciliado=False
+        )
+        db.merge(cfdi_gcloud)
+        db.merge(cfdi_walmart)
+        db.commit()
+
+        # 2. Subir estado de cuenta de Mercado Pago
+        files = [("files", ("ML_agosto_2026.pdf", pdf_bytes, "application/pdf"))]
+        upload_res = client.post(
+            "/api/dashboard/reconciliation/upload-files",
+            files=files,
+            data={"account_rfc": "DEGF851127TK1"}
+        )
+        assert upload_res.status_code == 200
+        data_up = upload_res.json()
+        assert data_up["success"] is True
+        assert data_up["processed_statements"] == 6
+        assert "2026-08" in data_up["detected_months"]
+
+        # 3. Validar que las transacciones de Google Cloud y Walmart se conciliaron automáticamente
+        tx_gcloud = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.monto == 301.74
+        ).first()
+        assert tx_gcloud is not None
+        assert tx_gcloud.status_conciliacion == "CONCILIADO"
+        assert tx_gcloud.uuid_cfdi == "CFDI-GCLOUD-TEST-0001"
+        assert tx_gcloud.banco == "TC MERCADO PAGO"
+
+        tx_walmart = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.monto == 1389.00
+        ).first()
+        assert tx_walmart is not None
+        assert tx_walmart.status_conciliacion == "CONCILIADO"
+        assert tx_walmart.uuid_cfdi == "CFDI-WALMART-TEST-0002"
+    finally:
+        db.close()
+
+
+
 
 

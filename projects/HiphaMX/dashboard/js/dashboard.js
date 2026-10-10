@@ -6156,6 +6156,10 @@ async function loadReconciliationTransactions() {
                 ? `<span style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700;">CARGO</span>`
                 : `<span style="background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700;">ABONO</span>`;
 
+            const bancoBadge = (t.banco && t.banco !== 'BBVA')
+                ? `<span style="background: rgba(168, 85, 247, 0.12); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700;">💳 ${escapeHtml(t.banco)}</span>`
+                : '';
+
             // Status Badge
             let statusBadge = '';
             if (t.status_conciliacion === 'CONCILIADO') {
@@ -6257,7 +6261,7 @@ async function loadReconciliationTransactions() {
                     </td>
                     <td style="padding: 0.85rem 1.1rem; font-weight: 500; color: var(--text-main); font-size: 0.84rem; max-width: 300px;">
                         <div style="line-height: 1.35; word-break: break-word;">${escapeHtml(t.concepto)}</div>
-                        <div style="margin-top: 4px;">${tipoBadge}</div>
+                        <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;">${tipoBadge}${bancoBadge}</div>
                     </td>
                     <td style="padding: 0.85rem 1.1rem; text-align: right; font-weight: 700; font-size: 0.92rem; color: ${isCargo ? '#f87171' : '#34d399'}; white-space: nowrap;">
                         ${isCargo ? '-' : '+'}$${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}

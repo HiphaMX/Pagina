@@ -364,6 +364,129 @@ def _parse_bbva_pyme_statement(
     return result
 
 
+def _parse_mercadopago_statement(
+    full_text: str,
+    pages_text: List[str],
+    filename: str,
+    account_rfc: str
+) -> List[Dict[str, Any]]:
+    """
+    Parsea estados de cuenta de tarjeta de crédito de Mercado Pago / Mercado Libre.
+    Extrae las compras del período (EGRESOS) para conciliar directamente contra facturas de gastos.
+    Omite saldos anteriores y pagos del resumen (liquidación de saldo de deuda).
+    """
+    # 1. Extraer año y mes del estado de cuenta
+    stmt_year = datetime.now().year
+    stmt_month = datetime.now().month
+
+    m_date = re.search(r"Fecha:\s*(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})", full_text)
+    if m_date:
+        stmt_year = int(m_date.group(3))
+        mon_str = m_date.group(2).upper()
+        if mon_str in SPANISH_MONTHS:
+            stmt_month = int(SPANISH_MONTHS[mon_str])
+    else:
+        m_month = re.search(r"estado de cuenta de\s+([a-zA-Z]+)", full_text, re.IGNORECASE)
+        if m_month:
+            mon_str = m_month.group(1).upper()
+            if mon_str in SPANISH_MONTHS:
+                stmt_month = int(SPANISH_MONTHS[mon_str])
+
+    # 2. RFC efectivo (asociar a Hipha DEGF851127TK1 si es Francisco Delgadillo)
+    effective_rfc = account_rfc or "DEGF851127TK1"
+    if "DELGADILLO GARCIA" in full_text.upper():
+        effective_rfc = "DEGF851127TK1"
+
+    periodo_mes_default = f"{stmt_year}-{stmt_month:02d}"
+
+    # 3. Procesar movimientos
+    line_pattern = re.compile(r"^(\d{2}/\d{2})\s+(.+?)\s+(-?)\s*[$]?\s*([\d,]+\.\d{2})$")
+    in_movs = False
+    txs: List[Dict[str, Any]] = []
+
+    for page_txt in pages_text:
+        lines = page_txt.split("\n")
+        for line in lines:
+            line_clean = line.strip()
+            if line_clean == "Movimientos":
+                in_movs = True
+                continue
+            if in_movs and any(line_clean.startswith(k) for k in [
+                "Subtotal", "Saldo a meses", "Información general", "Glosario"
+            ]):
+                in_movs = False
+                continue
+            if not in_movs:
+                continue
+
+            m = line_pattern.match(line_clean)
+            if m:
+                d_token, desc, sign, amt_str = m.groups()
+                desc_clean = re.sub(r"\s+", " ", desc).strip()
+                desc_up = desc_clean.upper()
+
+                # Ignorar saldos de cortes previos y pagos a la tarjeta (liquidación de pasivo)
+                if "SALDO AL CORTE" in desc_up or "SALDO ANTERIOR" in desc_up:
+                    continue
+                if "PAGO DEL RESUMEN" in desc_up or "PAGO A TU TARJETA" in desc_up:
+                    continue
+
+                monto = _parse_num(amt_str)
+                if not monto or monto <= 0:
+                    continue
+
+                parts_d = d_token.split("/")
+                day_p = int(parts_d[0])
+                mon_p = int(parts_d[1])
+
+                if mon_p == stmt_month:
+                    tx_date = datetime(stmt_year, mon_p, day_p)
+                elif mon_p == (stmt_month - 1) or (stmt_month == 1 and mon_p == 12):
+                    tx_year = stmt_year if mon_p != 12 else (stmt_year - 1)
+                    tx_date = datetime(tx_year, mon_p, day_p)
+                else:
+                    # Compras a meses de periodos previos (ej. 06/11 facturado en el corte actual)
+                    tx_date = datetime(stmt_year, stmt_month, min(day_p, 28))
+
+                tipo = "EGRESO"
+                txs.append({
+                    "fecha": tx_date,
+                    "concepto": desc_clean,
+                    "monto": round(monto, 2),
+                    "tipo": tipo,
+                    "periodo_mes": periodo_mes_default
+                })
+            elif txs and not line_clean.startswith(("Fecha", "Número", "Subtotal", "MXN", "Movimientos")):
+                txs[-1]["concepto"] += " " + line_clean
+
+    result: List[Dict[str, Any]] = []
+    for idx, t in enumerate(txs):
+        concepto_final = t["concepto"][:500]
+        area_proyecto = _detect_area_project(concepto_final)
+        fecha_obj = t["fecha"]
+        date_str = fecha_obj.strftime("%Y-%m-%d")
+        monto_val = t["monto"]
+        tipo_val = t["tipo"]
+        hash_seed = f"{effective_rfc}|TC_MERCADO_PAGO|{date_str}|{concepto_final.upper()}|{monto_val:.2f}|{tipo_val}"
+        id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
+
+        result.append({
+            "account_rfc": effective_rfc,
+            "id_transaccion": id_transaccion,
+            "banco": "TC MERCADO PAGO",
+            "fecha": fecha_obj,
+            "concepto": concepto_final,
+            "monto": t["monto"],
+            "tipo": t["tipo"],
+            "saldo": None,
+            "periodo_mes": t["periodo_mes"],
+            "area_proyecto": area_proyecto,
+            "referencia_rastreo": None
+        })
+
+    return result
+
+
 def parse_bank_pdf_statement(
     file_content: bytes,
     filename: str,
@@ -394,13 +517,19 @@ def parse_bank_pdf_statement(
     full_text = "\n".join(full_text_parts)
     full_text_up = full_text.upper()
 
-    # 1. Detectar si es Estado de Cuenta BBVA (ej. PyME con Detalle de Movimientos)
+    # 1. Detectar si es Estado de Cuenta de Tarjeta Mercado Pago / Mercado Libre
+    if any(k in full_text_up for k in ["MERCADO PAGO", "MERCADOPAGO", "MERCADO LENDING", "MERCADOLIBRE"]):
+        txs_mp = _parse_mercadopago_statement(full_text, pages_text, filename, account_rfc)
+        if txs_mp:
+            return txs_mp
+
+    # 2. Detectar si es Estado de Cuenta BBVA (ej. PyME con Detalle de Movimientos)
     if "DETALLE DE MOVIMIENTOS" in full_text_up or "MAESTRA PYME" in full_text_up or "ESTADO DE CUENTA" in full_text_up:
         txs_pyme = _parse_bbva_pyme_statement(full_text, filename, account_rfc)
         if txs_pyme:
             return txs_pyme
 
-    # 2. Detectar si es un comprobante de operación individual / transferencia / traspaso
+    # 3. Detectar si es un comprobante de operación individual / transferencia / traspaso
     is_comprobante = any(k in full_text_up for k in [
         "RESULTADO DEL TRASPASO", "COMPROBANTE", "DETALLE DE LA TRANSFERENCIA",
         "DATOS DEL BENEFICIARIO", "CUENTA DE RETIRO", "FORMA DE DEPÓSITO",
@@ -412,17 +541,18 @@ def parse_bank_pdf_statement(
         if txs:
             return txs
 
-    # 3. Tabular statement genérico
+    # 4. Tabular statement genérico
     txs_tab = _parse_tabular_statement(pages_text, filename, account_rfc)
     if txs_tab:
         return txs_tab
 
-    # 4. Fallback comprobante
+    # 5. Fallback comprobante
     txs_fallback = _parse_single_comprobante(full_text, filename, account_rfc)
     if txs_fallback:
         return txs_fallback
 
     raise ValueError(
         "No se encontraron transacciones bancarias legibles en el PDF. "
-        "Asegúrese de que sea un estado de cuenta o comprobante oficial de BBVA u otro banco."
+        "Asegúrese de que sea un estado de cuenta o comprobante oficial de BBVA, Mercado Pago u otro banco."
     )
+
