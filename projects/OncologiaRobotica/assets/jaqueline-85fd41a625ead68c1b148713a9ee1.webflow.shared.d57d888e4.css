@@ -8407,7 +8407,7 @@ figcaption {
 
 @media screen and (max-width: 991px) {
   body {
-    padding-top: 150px;
+    padding-top: 0 !important;
   }
 
   h2 {
@@ -13582,24 +13582,59 @@ textarea.field-4.n,
     margin-right: 0 !important;
     border-radius: 0 !important;
     box-sizing: border-box !important;
-    position: relative !important;
+    position: sticky !important;
+    top: 0 !important;
     z-index: 1000 !important;
   }
 
   .navbar-container-2 {
     width: 100% !important;
     max-width: 100% !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
     box-sizing: border-box !important;
   }
 
+  .brand-mobile {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .brand-mobile .image-46 {
+    height: 52px !important;
+    width: auto !important;
+    display: block !important;
+  }
+
   .menu-button-4 {
+    height: 48px !important;
+    width: 48px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     cursor: pointer !important;
     -webkit-tap-highlight-color: transparent !important;
     touch-action: manipulation !important;
     user-select: none !important;
     -webkit-user-select: none !important;
+  }
+
+  .menu-button-4 .icon-5 {
+    font-size: 26px !important;
+  }
+
+  .hero-content {
+    padding-top: 40px !important;
   }
 
   /* Overlay de Webflow en móvil: auto height, z-index adecuado y scroll suave */
@@ -13878,16 +13913,14 @@ textarea.field-4.n,
   }
 }
 
-/* Auto-hide mobile navbar al hacer scroll */
-@media screen and (max-width: 991px) {
-  .navbar-4 {
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    will-change: transform;
-  }
+/* Auto-hide navbar al hacer scroll (desktop y móvil) */
+.navbar-4 {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
 
-  .navbar-4.navbar--hidden {
-    transform: translateY(-105%) !important;
-    box-shadow: none !important;
-  }
+.navbar-4.navbar--hidden {
+  transform: translateY(-105%) !important;
+  box-shadow: none !important;
 }
 

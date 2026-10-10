@@ -56,9 +56,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- HiphaMX / Oncología Robótica Form Handler Hook -->
     <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var b = document.querySelector(".w-webflow-badge"); if (b) b.remove();
-
-        // Mobile Navbar Smart Auto-Hide on Scroll Down, Show on Scroll Up
+        var b = document.querySelector(".w-webflow-badge"); if (b) b.remove();        // Universal Navbar Smart Auto-Hide on Scroll Down, Show on Scroll Up (Desktop & Mobile)
         (function() {
             var lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
             var ticking = false;
@@ -69,14 +67,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             function onScroll() {
                 var currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-                var isMobile = window.innerWidth <= 991;
-
-                if (!isMobile) {
-                    navbar.classList.remove("navbar--hidden");
-                    lastScrollY = currentScrollY;
-                    ticking = false;
-                    return;
-                }
 
                 if (currentScrollY < 0) {
                     navbar.classList.remove("navbar--hidden");
@@ -115,9 +105,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }, { passive: true });
 
             window.addEventListener("resize", function() {
-                if (window.innerWidth > 991) {
-                    navbar.classList.remove("navbar--hidden");
-                }
+                navbar.classList.remove("navbar--hidden");
             }, { passive: true });
         })();
         // ============================================================
