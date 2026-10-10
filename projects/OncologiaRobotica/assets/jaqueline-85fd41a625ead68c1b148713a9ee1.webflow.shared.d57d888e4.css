@@ -13748,9 +13748,9 @@ textarea.field-4.n,
     box-sizing: border-box !important;
   }
 
-  .dropdown-2,
-  .right.w-dropdown,
-  .w-dropdown {
+  .nav-menu-3 .dropdown-2,
+  .nav-menu-3 .right.w-dropdown,
+  .nav-menu-3 .w-dropdown {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -13764,8 +13764,8 @@ textarea.field-4.n,
   }
 
   /* Los 4 Toggles de Dropdown: EQUIPO MÉDICO, DIAGNÓSTICO, CIRUGÍAS, BLOG */
-  .dropdown-toggle,
-  .w-dropdown-toggle {
+  .nav-menu-3 .dropdown-toggle,
+  .nav-menu-3 .w-dropdown-toggle {
     text-align: left !important;
     width: 100% !important;
     height: auto !important;
@@ -13782,13 +13782,13 @@ textarea.field-4.n,
     -webkit-tap-highlight-color: transparent !important;
   }
 
-  .dropdown-toggle:hover,
-  .dropdown-toggle:active,
-  .dropdown-toggle:focus {
+  .nav-menu-3 .dropdown-toggle:hover,
+  .nav-menu-3 .dropdown-toggle:active,
+  .nav-menu-3 .dropdown-toggle:focus {
     background-color: #fafbfc !important;
   }
 
-  .text-block-13 {
+  .nav-menu-3 .text-block-13 {
     order: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -13803,8 +13803,8 @@ textarea.field-4.n,
     text-transform: uppercase !important;
   }
 
-  .dropdown-arrow-2,
-  .w-icon-dropdown-toggle {
+  .nav-menu-3 .dropdown-arrow-2,
+  .nav-menu-3 .w-icon-dropdown-toggle {
     order: 2 !important;
     margin: 0 !important;
     position: static !important;
@@ -13815,16 +13815,16 @@ textarea.field-4.n,
   }
 
   /* Rotación del Chevron al abrirse */
-  .dropdown-2.is-active .dropdown-arrow-2,
-  .dropdown-2.w--open .dropdown-arrow-2,
-  .w-dropdown.is-active .w-icon-dropdown-toggle,
-  .w-dropdown.w--open .w-icon-dropdown-toggle {
+  .nav-menu-3 .dropdown-2.is-active .dropdown-arrow-2,
+  .nav-menu-3 .dropdown-2.w--open .dropdown-arrow-2,
+  .nav-menu-3 .w-dropdown.is-active .w-icon-dropdown-toggle,
+  .nav-menu-3 .w-dropdown.w--open .w-icon-dropdown-toggle {
     transform: rotate(180deg) !important;
     color: #286150 !important;
   }
 
   /* HOMOLOGACIÓN EXACTA DE CONTÁCTANOS AL MISMO LOOK QUE EL RESTO DEL NAVBAR */
-  .div-block-54 {
+  .nav-menu-3 .div-block-54 {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -13833,7 +13833,7 @@ textarea.field-4.n,
     background-color: #ffffff !important;
   }
 
-  .div-block-54 .text-block-7 {
+  .nav-menu-3 .div-block-54 .text-block-7 {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -13855,7 +13855,7 @@ textarea.field-4.n,
   }
 
   /* Indicador chevron derecho a tono con los otros chevrons */
-  .div-block-54 .text-block-7::after {
+  .nav-menu-3 .div-block-54 .text-block-7::after {
     content: "" !important;
     width: 7px !important;
     height: 7px !important;
@@ -13867,22 +13867,22 @@ textarea.field-4.n,
     transition: transform 0.2s ease, border-color 0.2s ease !important;
   }
 
-  .div-block-54 .text-block-7:hover,
-  .div-block-54 .text-block-7:active {
+  .nav-menu-3 .div-block-54 .text-block-7:hover,
+  .nav-menu-3 .div-block-54 .text-block-7:active {
     background-color: #fafbfc !important;
     color: #286150 !important;
   }
 
-  .div-block-54 .text-block-7:hover::after,
-  .div-block-54 .text-block-7:active::after {
+  .nav-menu-3 .div-block-54 .text-block-7:hover::after,
+  .nav-menu-3 .div-block-54 .text-block-7:active::after {
     border-color: #286150 !important;
     transform: rotate(45deg) translate(2px, -2px) !important;
   }
 
   /* Submenús colapsados por defecto */
-  .dropdown-list-2,
-  .dropdown-list,
-  .w-dropdown-list {
+  .nav-menu-3 .dropdown-list-2,
+  .nav-menu-3 .dropdown-list,
+  .nav-menu-3 .w-dropdown-list {
     display: none !important;
     text-align: left !important;
     width: 100% !important;
@@ -13896,23 +13896,23 @@ textarea.field-4.n,
   }
 
   /* Expansión del submenú cuando está activo */
-  .dropdown-2.is-active > .dropdown-list-2,
-  .dropdown-2.is-active > .w-dropdown-list,
-  .dropdown-2.w--open > .dropdown-list-2,
-  .dropdown-2.w--open > .w-dropdown-list,
-  .w-dropdown.is-active > .w-dropdown-list,
-  .w-dropdown.w--open > .w-dropdown-list,
-  .dropdown-list-2.is-active,
-  .w-dropdown-list.is-active {
+  .nav-menu-3 .dropdown-2.is-active > .dropdown-list-2,
+  .nav-menu-3 .dropdown-2.is-active > .w-dropdown-list,
+  .nav-menu-3 .dropdown-2.w--open > .dropdown-list-2,
+  .nav-menu-3 .dropdown-2.w--open > .w-dropdown-list,
+  .nav-menu-3 .w-dropdown.is-active > .w-dropdown-list,
+  .nav-menu-3 .w-dropdown.w--open > .w-dropdown-list,
+  .nav-menu-3 .dropdown-list-2.is-active,
+  .nav-menu-3 .w-dropdown-list.is-active {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     padding: 6px 0 !important;
   }
 
-  .dropdown-link-2,
-  .dropdown-link,
-  .w-dropdown-link {
+  .nav-menu-3 .dropdown-link-2,
+  .nav-menu-3 .dropdown-link,
+  .nav-menu-3 .w-dropdown-link {
     text-align: left !important;
     padding: 12px 20px 12px 28px !important;
     margin: 0 !important;
@@ -13932,14 +13932,130 @@ textarea.field-4.n,
     transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease !important;
   }
 
-  .dropdown-link-2:hover,
-  .dropdown-link-2:active,
-  .w-dropdown-link:hover,
-  .w-dropdown-link:active {
+  .nav-menu-3 .dropdown-link-2:hover,
+  .nav-menu-3 .dropdown-link-2:active,
+  .nav-menu-3 .w-dropdown-link:hover,
+  .nav-menu-3 .w-dropdown-link:active {
     background-color: rgba(40, 97, 80, 0.06) !important;
     color: #286150 !important;
     padding-left: 32px !important;
   }
+}
+
+/* ============================================================
+   HOME FAQ ACCORDION - Estética Amarilla Unificada y Fluida
+   ============================================================ */
+.faq-wrapper {
+  background-color: #fff1e4 !important;
+}
+
+.faq-dropdown {
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+  margin-bottom: 0 !important;
+  width: 100% !important;
+}
+
+.faq-question-wrapper,
+.faq-question-wrapper.w-dropdown-toggle {
+  background-color: transparent !important;
+  border-bottom: none !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: auto !important;
+  padding: 18px 45px 18px 0 !important;
+  position: relative !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.faq-question-wrapper:hover,
+.faq-question-wrapper:active,
+.faq-question-wrapper:focus {
+  background-color: transparent !important;
+}
+
+.faq-question-wrapper .text-style-medium {
+  color: #1a202c !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-align: left !important;
+  flex: 1 1 auto !important;
+}
+
+.faq-question-wrapper .icon-accordion {
+  position: absolute !important;
+  right: 0 !important;
+  top: 22px !important;
+  transform: rotate(45deg) !important;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  width: 22px !important;
+  height: 22px !important;
+  cursor: pointer !important;
+}
+
+.faq-dropdown.is-active .icon-accordion,
+.faq-dropdown.w--open .icon-accordion {
+  transform: rotate(135deg) !important;
+}
+
+.faq-dropdown .faq-wrapper.w-dropdown-list {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  position: static !important;
+  display: block !important;
+  visibility: visible !important;
+  height: 0px;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: height 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.3s ease !important;
+}
+
+.faq-dropdown.is-active .faq-wrapper.w-dropdown-list,
+.faq-dropdown.w--open .faq-wrapper.w-dropdown-list {
+  opacity: 1 !important;
+}
+
+.faq-dropdown .faq-padding {
+  padding: 0 0 18px 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+.faq-dropdown .faq-padding .margin-bottom,
+.faq-dropdown .faq-padding .margin-xsmall,
+.faq-dropdown .faq-padding .margin-bottom.margin-xsmall {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.faq-dropdown .faq-padding p,
+.faq-dropdown .faq-padding .paragraph-9 {
+  color: #4a5568 !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  box-sizing: border-box !important;
 }
 
 /* Auto-hide navbar al hacer scroll (desktop y móvil) */
