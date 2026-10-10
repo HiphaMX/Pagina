@@ -1596,7 +1596,7 @@
                         <span>Cargar Documentos de Conciliación</span>
                         <span id="reconUploadTargetBadge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 700;">HIPHA</span>
                     </h2>
-                    <p style="font-size:0.82rem; color:var(--text-muted);">Sube facturas en XML (individuales o en .ZIP) o estados de cuenta BBVA (.CSV o .XLSX)</p>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Sube facturas en XML (.ZIP), estados de cuenta y comprobantes BBVA (.CSV, .XLSX o .PDF)</p>
                 </div>
                 <button type="button" id="btnCloseUploadModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
             </div>
@@ -1606,8 +1606,8 @@
                 <div id="reconDropzone" style="border: 2px dashed rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.03); border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
                     <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#38bdf8" stroke-width="2" style="margin: 0 auto 0.75rem auto; display: block;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;">Arrastra tus archivos aquí o haz clic para explorar</div>
-                    <div style="font-size: 0.78rem; color: var(--text-muted);">Soporta CFDI .XML, paquetes .ZIP de facturas y archivos .CSV / .XLSX de BBVA</div>
-                    <input type="file" id="reconFileInput" multiple accept=".xml,.zip,.csv,.xlsx,.xls" style="display: none;">
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">Soporta CFDI .XML, paquetes .ZIP, estados de cuenta y comprobantes en .CSV, .XLSX o .PDF</div>
+                    <input type="file" id="reconFileInput" multiple accept=".xml,.zip,.csv,.xlsx,.xls,.pdf" style="display: none;">
                 </div>
 
                 <!-- Lista de archivos seleccionados -->

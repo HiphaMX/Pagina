@@ -19,6 +19,7 @@ from app.services.reconciliation.excel_exporter import export_reconciliation_exc
 from app.services.reconciliation.pdf_reporter import generate_discrepancies_pdf
 from app.services.reconciliation.backfill import import_historical_excel
 from app.services.reconciliation.mail_listener import sync_mailbox_invoices
+from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
 
 router = APIRouter()
 
@@ -445,6 +446,38 @@ async def upload_reconciliation_files(
                             processed_statements += 1
                 except Exception as e_stmt:
                     errors.append(f"{filename}: {str(e_stmt)}")
+
+        # 4. Estado de cuenta o comprobante bancario en PDF
+        elif filename_lower.endswith(".pdf"):
+            try:
+                transacciones = parse_bank_pdf_statement(content, filename, account_rfc=effective_rfc)
+                for tx in transacciones:
+                    detected_months.add(tx["periodo_mes"])
+                    existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
+                    if not existing_tx:
+                        new_tx = BankTransaction(
+                            account_rfc=tx["account_rfc"],
+                            area_proyecto=tx.get("area_proyecto") or entity_name,
+                            tipo_categoria="INGRESO" if tx["tipo"] == "INGRESO" else "GASTO",
+                            id_transaccion=tx["id_transaccion"],
+                            banco=tx["banco"],
+                            fecha=tx["fecha"],
+                            concepto=tx["concepto"],
+                            monto=tx["monto"],
+                            tipo=tx["tipo"],
+                            saldo=tx.get("saldo"),
+                            status_conciliacion="SIN_CFDI",
+                            confianza_score=0.0,
+                            periodo_mes=tx["periodo_mes"]
+                        )
+                        db.add(new_tx)
+                        processed_statements += 1
+                    else:
+                        if tx.get("area_proyecto") and not existing_tx.area_proyecto:
+                            existing_tx.area_proyecto = tx["area_proyecto"]
+                        processed_statements += 1
+            except Exception as e_pdf:
+                errors.append(f"{filename} (PDF bancario): {str(e_pdf)}")
 
     db.commit()
 

@@ -576,4 +576,53 @@ def test_backfill_agosto_declared_month_and_concept_synthesis():
         db.close()
 
 
+def test_parse_bank_pdf_statement_bbva_comprobante():
+    from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+
+    with open("tests/fixtures/BBVA.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    txs = parse_bank_pdf_statement(pdf_bytes, "BBVA.pdf", account_rfc="MEHA850118Q96")
+    assert len(txs) == 1
+    t = txs[0]
+    assert t["monto"] == 2000.00
+    assert t["tipo"] == "EGRESO"
+    assert t["periodo_mes"] == "2026-10"
+    assert "JAIME OMAR RODRIGUEZ ALCALA" in t["concepto"]
+    assert "DESINSTALACION LETRERO DAM" in t["concepto"]
+    assert t["area_proyecto"] == "DAM"
+    assert t["referencia_rastreo"] == "BNET01002610090025425885"
+
+
+def test_upload_bank_pdf_statement_endpoint():
+    with open("tests/fixtures/BBVA.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    db = SessionLocal()
+    try:
+        files = [("files", ("BBVA.pdf", pdf_bytes, "application/pdf"))]
+        upload_res = client.post(
+            "/api/dashboard/reconciliation/upload-files",
+            files=files,
+            data={"account_rfc": "MEHA850118Q96"}
+        )
+        assert upload_res.status_code == 200
+        data_up = upload_res.json()
+        assert data_up["success"] is True
+        assert data_up["processed_statements"] >= 1
+        assert "2026-10" in data_up["detected_months"]
+
+        tx = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "MEHA850118Q96",
+            BankTransaction.periodo_mes == "2026-10",
+            BankTransaction.monto == 2000.00
+        ).first()
+        assert tx is not None
+        assert tx.tipo == "EGRESO"
+        assert tx.area_proyecto == "DAM"
+        assert "JAIME OMAR RODRIGUEZ ALCALA" in tx.concepto
+    finally:
+        db.close()
+
+
 

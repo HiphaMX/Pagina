@@ -6382,7 +6382,8 @@ function initReconUploadModal() {
         selectedReconFiles.forEach((f, idx) => {
             const isXml = f.name.toLowerCase().endsWith('.xml');
             const isZip = f.name.toLowerCase().endsWith('.zip');
-            const icon = isXml ? '🧾' : (isZip ? '📦' : '📊');
+            const isPdf = f.name.toLowerCase().endsWith('.pdf');
+            const icon = isXml ? '🧾' : (isZip ? '📦' : (isPdf ? '📄' : '📊'));
             html += `
                 <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.45rem 0.75rem; font-size: 0.82rem;">
                     <div style="display: flex; align-items: center; gap: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
@@ -6405,7 +6406,7 @@ function initReconUploadModal() {
     if (btnSubmit) {
         btnSubmit.addEventListener('click', async () => {
             if (selectedReconFiles.length === 0) {
-                alert('Por favor selecciona al menos un archivo XML, ZIP o CSV para subir.');
+                alert('Por favor selecciona al menos un archivo XML, ZIP, CSV, Excel o PDF para subir.');
                 return;
             }
 
