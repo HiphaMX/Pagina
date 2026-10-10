@@ -1,5 +1,6 @@
 import io
 import csv
+import re
 import hashlib
 from datetime import datetime
 from typing import Dict, Any, List, Optional
@@ -114,8 +115,45 @@ def import_historical_excel(
     if col_fecha is None:
         raise ValueError(f"No se encontró la columna de FECHA en el archivo histórico. Columnas: {headers}")
 
+    # Detectar si el archivo o renglones previos al encabezado declaran un mes específico (ej: celda AGOSTO o archivo agosto.csv)
+    months_map = {
+        "ENERO": "01", "ENE": "01",
+        "FEBRERO": "02", "FEB": "02",
+        "MARZO": "03", "MAR": "03",
+        "ABRIL": "04", "ABR": "04",
+        "MAYO": "05", "MAY": "05",
+        "JUNIO": "06", "JUN": "06",
+        "JULIO": "07", "JUL": "07",
+        "AGOSTO": "08", "AGO": "08",
+        "SEPTIEMBRE": "09", "SETIEMBRE": "09", "SEP": "09", "SET": "09",
+        "OCTUBRE": "10", "OCT": "10",
+        "NOVIEMBRE": "11", "NOV": "11",
+        "DICIEMBRE": "12", "DIC": "12"
+    }
+
+    declared_month = None
+    for r in rows[:header_row_idx]:
+        for c in r:
+            token = _clean_header(c)
+            for m_name, m_num in months_map.items():
+                if token == m_name or re.search(r'\b' + re.escape(m_name) + r'\b', token):
+                    declared_month = m_num
+                    break
+            if declared_month:
+                break
+        if declared_month:
+            break
+
+    if not declared_month:
+        fn_clean = _clean_header(filename)
+        for m_name, m_num in months_map.items():
+            if re.search(r'\b' + re.escape(m_name) + r'\b', fn_clean):
+                declared_month = m_num
+                break
+
     tx_count = 0
     cfdi_count = 0
+    meses_afectados = set()
     errors: List[str] = []
 
     for idx, row in enumerate(rows[header_row_idx + 1:], start=header_row_idx + 1):
@@ -128,7 +166,16 @@ def import_historical_excel(
             if not fecha_obj:
                 continue
 
-            concepto = str(row[col_concepto] or "").strip() if (col_concepto is not None and col_concepto < len(row)) else f"Movimiento {idx}"
+            raw_concepto = str(row[col_concepto] or "").strip() if (col_concepto is not None and col_concepto < len(row)) else ""
+            concepto = raw_concepto
+
+            # Determinar periodo_mes: si el archivo/hoja declaró un mes explícito y el año coincide
+            if declared_month:
+                periodo_mes = f"{fecha_obj.year}-{declared_month}"
+            else:
+                periodo_mes = fecha_obj.strftime("%Y-%m")
+
+            meses_afectados.add(periodo_mes)
 
             # Extraer montos
             monto = 0.0
@@ -168,6 +215,11 @@ def import_historical_excel(
             area_val = str(row[col_area] or "").strip() if (col_area is not None and col_area < len(row) and row[col_area]) else None
             metodo_val = str(row[col_metodo] or "PUE").strip().upper() if (col_metodo is not None and col_metodo < len(row) and row[col_metodo]) else "PUE"
             tipo_cat_val = str(row[col_tipo] or "").strip() if (col_tipo is not None and col_tipo < len(row) and row[col_tipo]) else ("INGRESO" if tipo == "INGRESO" else "GASTO")
+
+            # Si el concepto estaba vacío en la sábana, sintetizarlo con contraparte, área y método
+            if not concepto:
+                parts = [p for p in [contraparte, area_val, metodo_val] if p]
+                concepto = " - ".join(parts) if parts else f"Movimiento {idx}"
 
             subtotal_num = _parse_num(row[col_subtotal]) if (col_subtotal is not None and col_subtotal < len(row)) else None
             subtotal_val = monto if subtotal_num is None else float(subtotal_num)
@@ -234,7 +286,12 @@ def import_historical_excel(
                         (BankTransaction.fecha == fecha_obj) &
                         (BankTransaction.monto == monto) &
                         (BankTransaction.tipo == tipo) &
-                        (BankTransaction.concepto == concepto)
+                        (
+                            (BankTransaction.concepto == concepto) |
+                            (BankTransaction.concepto == "") |
+                            (BankTransaction.concepto == None) |
+                            (BankTransaction.area_proyecto == area_val)
+                        )
                     )
                 )
             ).first()
@@ -254,18 +311,24 @@ def import_historical_excel(
                     status_conciliacion="CONCILIADO" if uuid else "SIN_CFDI",
                     confianza_score=1.0 if uuid else 0.0,
                     nota_revision="Migrado desde sábana histórica." if uuid else "Histórico sin folio fiscal.",
-                    periodo_mes=fecha_obj.strftime("%Y-%m")
+                    periodo_mes=periodo_mes
                 )
                 db.add(new_tx)
                 tx_count += 1
             else:
+                # Actualizar transacción existente si tenía campos vacíos o periodo desfasado
+                if concepto and (not existing_tx.concepto or existing_tx.concepto == ""):
+                    existing_tx.concepto = concepto
+                if area_val and not existing_tx.area_proyecto:
+                    existing_tx.area_proyecto = area_val
+                if periodo_mes and existing_tx.periodo_mes != periodo_mes:
+                    existing_tx.periodo_mes = periodo_mes
                 if uuid and not existing_tx.uuid_cfdi:
                     existing_tx.uuid_cfdi = uuid
                     existing_tx.status_conciliacion = "CONCILIADO"
                     existing_tx.confianza_score = 1.0
                     existing_tx.nota_revision = "Conciliado con folio fiscal histórico."
-                if area_val and not existing_tx.area_proyecto:
-                    existing_tx.area_proyecto = area_val
+                tx_count += 1
 
         except Exception as e_row:
             errors.append(f"Fila {idx}: {str(e_row)}")
@@ -275,6 +338,9 @@ def import_historical_excel(
     return {
         "success": True,
         "imported_transactions": tx_count,
+        "transacciones_importadas": tx_count,
         "imported_invoices": cfdi_count,
+        "facturas_importadas": cfdi_count,
+        "meses_afectados": sorted(list(meses_afectados)),
         "errors": errors[:10]
     }

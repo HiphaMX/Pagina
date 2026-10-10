@@ -447,7 +447,11 @@ def test_delete_transaction():
 def test_deduplicate_transactions():
     db = SessionLocal()
     try:
-        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(["tx_dup_001", "tx_dup_002"])).delete()
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-07",
+            BankTransaction.monto == 22605.75
+        ).delete()
         db.commit()
 
         tx1 = BankTransaction(
@@ -482,7 +486,7 @@ def test_deduplicate_transactions():
             BankTransaction.periodo_mes == "2026-07",
             BankTransaction.monto == 22605.75
         ).all()
-        assert len(dups_before) >= 2
+        assert len(dups_before) == 2
 
         res = client.post("/api/dashboard/reconciliation/deduplicate?account_rfc=DEGF851127TK1&month=2026-07")
         assert res.status_code == 200
@@ -531,5 +535,45 @@ def test_cron_sync_mailbox(monkeypatch):
     assert len(calls) == 2
     assert calls[0][0] == "DEGF851127TK1"
     assert calls[1][0] == "MEHA850118Q96"
+
+
+def test_backfill_agosto_declared_month_and_concept_synthesis():
+    with open("tests/fixtures/agosto.csv", "rb") as f:
+        content = f.read()
+
+    db = SessionLocal()
+    try:
+        res = import_historical_excel(content, "agosto.csv", db, mi_rfc="DEGF851127TK1")
+        assert res["success"] is True
+        assert res["imported_transactions"] == 3
+        assert res["transacciones_importadas"] == 3
+        assert "2026-08" in res["meses_afectados"]
+
+        txs = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-08"
+        ).all()
+        assert len(txs) == 3
+
+        # Conceptos no deben estar vacíos
+        for t in txs:
+            assert t.concepto and len(t.concepto) > 3
+            assert t.periodo_mes == "2026-08"
+
+        # Verificar montos
+        montos = sorted([float(t.monto) for t in txs])
+        assert montos == [383.88, 4361.60, 22605.75]
+
+        # Verificar endpoint de upload con archivo agosto.csv
+        files = [("files", ("agosto.csv", content, "text/csv"))]
+        upload_res = client.post("/api/dashboard/reconciliation/upload-files", files=files, data={"account_rfc": "DEGF851127TK1"})
+        assert upload_res.status_code == 200
+        data_up = upload_res.json()
+        assert data_up["success"] is True
+        assert data_up["processed_statements"] == 3
+        assert "2026-08" in data_up["detected_months"]
+    finally:
+        db.close()
+
 
 

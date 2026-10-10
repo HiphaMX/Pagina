@@ -264,6 +264,14 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
             continue
 
         concepto = str(row[col_concepto_idx] or "").strip()
+        if not concepto:
+            for c_idx, cell in enumerate(row):
+                if c_idx not in [col_fecha_idx, col_cargo_idx, col_abono_idx, col_saldo_idx, col_monto_unico_idx]:
+                    cand = str(cell or "").strip()
+                    if len(cand) >= 3 and _parse_num(cand) is None:
+                        concepto = cand
+                        break
+
         concepto_up = concepto.upper()
         if not concepto or any(concepto_up.startswith(k) for k in ["TOTAL", "SALDO INICIAL", "SALDO FINAL", "RESUMEN", "CORTE"]):
             continue

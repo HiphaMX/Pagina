@@ -409,8 +409,10 @@ async def upload_reconciliation_files(
             if is_sabana:
                 try:
                     res_bf = import_historical_excel(content, filename, db, mi_rfc=effective_rfc)
-                    processed_statements += res_bf.get("transacciones_importadas", 0)
-                    processed_xmls += res_bf.get("facturas_importadas", 0)
+                    st_cnt = res_bf.get("transacciones_importadas", 0) or res_bf.get("imported_transactions", 0)
+                    inv_cnt = res_bf.get("facturas_importadas", 0) or res_bf.get("imported_invoices", 0)
+                    processed_statements += st_cnt
+                    processed_xmls += inv_cnt
                     if res_bf.get("meses_afectados"):
                         detected_months.update(res_bf["meses_afectados"])
                 except Exception as e_bf:
@@ -438,6 +440,8 @@ async def upload_reconciliation_files(
                                 periodo_mes=tx["periodo_mes"]
                             )
                             db.add(new_tx)
+                            processed_statements += 1
+                        else:
                             processed_statements += 1
                 except Exception as e_stmt:
                     errors.append(f"{filename}: {str(e_stmt)}")
