@@ -6589,6 +6589,19 @@ function initReconBackfillModal() {
                     body: form
                 });
 
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    let errMsg = `Error del servidor (${res.status})`;
+                    try {
+                        const errJson = JSON.parse(errorText);
+                        errMsg = errJson.detail || errJson.message || errMsg;
+                    } catch (_) {
+                        if (errorText && errorText.length < 200) errMsg = errorText;
+                    }
+                    alert(`Aviso de migración: ${errMsg}`);
+                    return;
+                }
+
                 const data = await res.json();
                 if (data.success) {
                     alert(`¡Migración completada exitosamente!\n• ${data.imported_transactions} transacciones importadas\n• ${data.imported_invoices} folios fiscales asegurados como conciliados.`);
@@ -6599,7 +6612,7 @@ function initReconBackfillModal() {
                 }
             } catch (err) {
                 console.error("Error en migración:", err);
-                alert('Error de conexión durante la migración.');
+                alert(`Error durante la migración: ${err.message || 'Error de red'}`);
             } finally {
                 btnSubmit.disabled = false;
                 if (progress) progress.classList.add('hidden');

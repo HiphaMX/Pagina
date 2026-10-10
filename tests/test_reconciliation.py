@@ -12,6 +12,7 @@ from app.services.reconciliation.bbva_parser import parse_bbva_statement
 from app.services.reconciliation.matching_engine import conciliar_movimientos
 from app.services.reconciliation.excel_exporter import export_reconciliation_excel
 from app.services.reconciliation.pdf_reporter import generate_discrepancies_pdf
+from app.services.reconciliation.backfill import import_historical_excel
 
 client = TestClient(app)
 
@@ -302,4 +303,43 @@ def test_cfdi_retention_isr_iva_separation():
     assert parsed["retencion_isr"] == 100.0
     assert parsed["retencion_iva"] == 35.0
     assert parsed["retenciones"] == 135.0
+
+
+def test_historical_backfill_csv_14_columns():
+    db = SessionLocal()
+    sample_csv = (
+        b"FECHA,\xc1REA / PROYECTO,FOLIO FISCAL,CLIENTE / PROVEEDOR,CONCEPTO,M\xc9TODO DE PAGO,INGRESOS,EGRESOS,CFDI,TIPO,SUBTOTAL,IVA INGRESOS,RETENCI\xd3N ISR,IVA EGRESOS\n"
+        b"15/01/2026,HIPHA MKT,12345678-1234-1234-1234-123456789012,CLIENTE ABC,CAMPANA DIGITAL GOOGLE,PUE,11600.00,,I,INGRESO,10000.00,1600.00,0.00,0.00\n"
+        b"18/01/2026,HIPHA MKT,,BBVA COMISIONES,COMISION MENSUAL CUENTA,PUE,,232.00,,GASTO,200.00,0.00,0.00,32.00\n"
+    )
+
+    try:
+        res = import_historical_excel(
+            sample_csv,
+            "ENero.csv",
+            db,
+            mi_rfc="DEGF851127TK1",
+            account_rfc="DEGF851127TK1"
+        )
+        assert res["success"] is True
+        assert res["imported_transactions"] == 2
+        assert res["imported_invoices"] == 1
+
+        # Check that the invoice was registered as CONCILIADO
+        inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "12345678-1234-1234-1234-123456789012").first()
+        assert inv is not None
+        assert inv.conciliado is True
+        assert inv.total == 11600.00
+
+        # Check transactions
+        txs = db.query(BankTransaction).filter(BankTransaction.account_rfc == "DEGF851127TK1", BankTransaction.periodo_mes == "2026-01").all()
+        assert len(txs) == 2
+        conciliated_tx = next(t for t in txs if t.uuid_cfdi == "12345678-1234-1234-1234-123456789012")
+        assert conciliated_tx.status_conciliacion == "CONCILIADO"
+        assert conciliated_tx.monto == 11600.00
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "12345678-1234-1234-1234-123456789012").delete()
+        db.query(BankTransaction).filter(BankTransaction.account_rfc == "DEGF851127TK1", BankTransaction.periodo_mes == "2026-01").delete()
+        db.commit()
+        db.close()
 
