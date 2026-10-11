@@ -6275,7 +6275,7 @@ async function loadReconciliationTransactions() {
                         ${deleteBtnHtml}
                     </div>
                 `;
-            } else if (t.status_conciliacion === 'SIN_CFDI') {
+            } else if (t.status_conciliacion === 'SIN_CFDI' || t.status_conciliacion === 'POR_REVISAR') {
                 actionsHtml = `
                     <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                         <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Vincular factura manualmente" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); border-radius: 6px; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">+ Vincular</button>

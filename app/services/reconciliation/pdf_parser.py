@@ -31,8 +31,105 @@ PROJECT_KEYWORD_MAP = {
     "UROLOGIA": "UROLOGIA",
     "ONCOLOGIA": "ONCOLOGIA",
     "WHITE CLEAN": "WHITE CLEAN",
-    "CHILE CHILLON": "CHILE CHILLON"
+    "CHILE CHILLON": "CHILE CHILLON",
+    "DELGADILLO MEDINA": "DELGADILLO MEDINA",
+    "DELGADILLO": "DELGADILLO MEDINA",
+    "MEDINA": "DELGADILLO MEDINA"
 }
+
+# Proveedores corporativos reconocidos de Hipha (tech, hosting, suscripciones, insumos y telecom)
+RECOGNIZED_PROVIDERS = [
+    # Tech, Cloud & SaaS
+    "GOOGLE", "GSUITE", "GCLOUD", "GOOGLE CLOUD", "GOOGLE ONE", "GOOGLE ADS", "YOUTUBE", "PAYU *GOOGLE",
+    "NEUBOX", "PAYPAL *NEUBOX",
+    "VERCEL",
+    "OPENAI", "CHATGPT",
+    "ANTHROPIC", "CLAUDE",
+    "ADOBE",
+    "FACEBOOK", "META", "INSTAGRAM", "WHATSAPP",
+    "APPLE", "ITUNES", "ICLOUD",
+    "MICROSOFT", "MSFT", "OFFICE 365", "OFFICE365", "AZURE",
+    "AMAZON", "AWS", "AMZN",
+    "ZOOM",
+    "GITHUB",
+    "FIGMA",
+    "WEBFLOW",
+    "STRIPE",
+    "SHOPIFY",
+    "CANVA",
+    "SLACK",
+    "NOTION",
+    "MIRO",
+    "LINKEDIN",
+    "GODADDY",
+    "NAMECHEAP",
+    "DIGITALOCEAN",
+    "HEROKU",
+    "CLOUDFLARE",
+    "DROPBOX",
+    "MAILCHIMP",
+    "HUBSPOT",
+
+    # Insumos y tiendas corporativas
+    "WALMART", "WAL-MART", "WAL MART", "NUEVA WAL MART", "BODEGA AURRERA", "AURRERA", "SAMS", "SAM'S",
+    "COSTCO",
+    "HOME DEPOT",
+    "OFFICE DEPOT", "OFFICEMAX", "LUMEN",
+    "GONVILL", "LIBRERIAS GONVILL",
+
+    # Telecom y Servicios
+    "CFE", "COMISION FEDERAL DE ELECTRICIDAD",
+    "ROTOPLAS",
+    "TELMEX", "TELCEL", "AT&T", "ATT", "IZZI", "TOTALPLAY",
+
+    # Movilidad y viajes
+    "UBER", "DIDI", "CABIFY",
+    "VOLARIS", "AEROMEXICO", "VIVAAEROBUS"
+]
+
+MP_TERMINAL_KEYWORDS = [
+    "MP *", "MP*", "MERCADO PAGO", "MERCADOPAGO", "MERPAGO*", "MERPAGO *",
+    "MP ECOMMERCE", "TPV", "TERMINAL", "CLIP*", "CLIP ", "IZETTLE", "BILLPOCKET",
+    "MERCADOLIBRE", "MERCADO LIBRE"
+]
+
+
+def is_delgadillo_medina_tc_expense(concepto: str, banco: str = "TC MERCADO PAGO") -> bool:
+    """
+    Determina si un gasto de tarjeta de crédito (TC) debe asignarse por defecto al proyecto
+    'DELGADILLO MEDINA' para su posterior revisión:
+    - Aplica únicamente a gastos con tarjeta de crédito.
+    - Se activa si proviene de terminales de Mercado Pago / TPVs O si no corresponde
+      a un proveedor corporativo reconocido de la agencia (ej. Google, Neubox, Vercel, Walmart).
+    - Respeta proyectos explícitos de clientes (ej. DAM, HEALTHYICE, etc.).
+    """
+    banco_up = (banco or "").upper()
+    is_tc = banco_up.startswith("TC") or any(k in banco_up for k in ["TARJETA", "MERCADO PAGO", "MERCADOPAGO", "CREDITO"])
+    if not is_tc:
+        return False
+
+    concepto_up = (concepto or "").upper()
+
+    # Si ya tiene una palabra clave explícita de un cliente (que no sea Delgadillo Medina), no intervenir
+    for kw, project_name in PROJECT_KEYWORD_MAP.items():
+        if project_name != "DELGADILLO MEDINA" and re.search(r"\b" + re.escape(kw) + r"\b", concepto_up):
+            return False
+
+    # Si coincide explícitamente con DELGADILLO o MEDINA
+    if any(k in concepto_up for k in ["DELGADILLO MEDINA", "DELGADILLO", "MEDINA"]):
+        return True
+
+    # 1. Comprobar si proviene de terminales de cobro de Mercado Pago / TPVs
+    if any(k in concepto_up for k in MP_TERMINAL_KEYWORDS):
+        return True
+
+    # 2. Comprobar si corresponde a un proveedor corporativo reconocido
+    has_recognized_provider = any(p in concepto_up for p in RECOGNIZED_PROVIDERS)
+    if has_recognized_provider:
+        return False
+
+    # Si no es un proveedor corporativo reconocido, es candidato a revisión Delgadillo Medina
+    return True
 
 
 def _detect_area_project(concepto: str, default_area: Optional[str] = None) -> Optional[str]:
@@ -474,6 +571,13 @@ def _parse_mercadopago_statement(
     for idx, t in enumerate(txs):
         concepto_final = t["concepto"][:500]
         area_proyecto = _detect_area_project(concepto_final)
+        nota_revision = None
+
+        if not area_proyecto:
+            if is_delgadillo_medina_tc_expense(concepto_final, banco="TC MERCADO PAGO"):
+                area_proyecto = "DELGADILLO MEDINA"
+                nota_revision = "Gasto con TC sin proveedor corporativo reconocido o terminal MP (DELGADILLO MEDINA - Pendiente de revisión)"
+
         fecha_obj = t["fecha"]
         date_str = fecha_obj.strftime("%Y-%m-%d")
         monto_val = t["monto"]
@@ -492,6 +596,7 @@ def _parse_mercadopago_statement(
             "saldo": None,
             "periodo_mes": t["periodo_mes"],
             "area_proyecto": area_proyecto,
+            "nota_revision": nota_revision,
             "referencia_rastreo": None
         })
 

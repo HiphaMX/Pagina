@@ -240,24 +240,31 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
                 "fecha": t.fecha,
                 "concepto": t.concepto,
                 "monto": t.monto,
-                "tipo": t.tipo
+                "tipo": t.tipo,
+                "banco": t.banco,
+                "area_proyecto": t.area_proyecto
             } for t in tx_pendientes]
 
             if facturas_dict and tx_list:
                 conciliados = conciliar_movimientos(tx_list, facturas_dict)
                 for res in conciliados:
-                    if res.get("uuid_cfdi"):
-                        db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
-                        if db_tx:
+                    db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
+                    if db_tx:
+                        if res.get("uuid_cfdi"):
                             db_tx.uuid_cfdi = res["uuid_cfdi"]
                             db_tx.status_conciliacion = res["status_conciliacion"]
                             db_tx.confianza_score = res["confianza_score"]
                             db_tx.nota_revision = res["nota_revision"]
 
-                        if res["status_conciliacion"] == "CONCILIADO":
-                            db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
-                            if db_f:
-                                db_f.conciliado = True
+                            if res["status_conciliacion"] == "CONCILIADO":
+                                db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
+                                if db_f:
+                                    db_f.conciliado = True
+                        else:
+                            if res.get("area_proyecto") and (not db_tx.area_proyecto or db_tx.area_proyecto in [entity_name, "General"]):
+                                db_tx.area_proyecto = res["area_proyecto"]
+                            if res.get("nota_revision") and not db_tx.nota_revision:
+                                db_tx.nota_revision = res["nota_revision"]
 
                 db.commit()
 

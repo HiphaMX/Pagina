@@ -148,6 +148,28 @@ def startup_db_setup():
     except Exception as se:
         print(f"Nota: Siembra de líneas base de redes sociales: {se}")
 
+    # Homologar gastos de TC sin comprobante para DELGADILLO MEDINA
+    try:
+        from app.models.reconciliation import BankTransaction
+        from app.services.reconciliation.pdf_parser import is_delgadillo_medina_tc_expense
+        db = SessionLocal()
+        try:
+            tc_unlinked = db.query(BankTransaction).filter(
+                BankTransaction.tipo == "EGRESO",
+                BankTransaction.uuid_cfdi == None,
+                (BankTransaction.banco.like("%TC%")) | (BankTransaction.banco.like("%MERCADO PAGO%"))
+            ).all()
+            for t in tc_unlinked:
+                if (not t.area_proyecto or t.area_proyecto in ["HIPHA", "General"]) and is_delgadillo_medina_tc_expense(t.concepto, banco=t.banco):
+                    t.area_proyecto = "DELGADILLO MEDINA"
+                    if not t.nota_revision or "Transacción bancaria sin CFDI" in t.nota_revision:
+                        t.nota_revision = "Gasto con TC sin proveedor corporativo reconocido o terminal MP (DELGADILLO MEDINA - Pendiente de revisión)"
+            db.commit()
+        finally:
+            db.close()
+    except Exception as e_dm:
+        print(f"Nota en actualización de gastos DELGADILLO MEDINA: {e_dm}")
+
     # Escribir secretos de Google Analytics si estamos en Vercel
     try:
         if os.environ.get("VERCEL") == "1":

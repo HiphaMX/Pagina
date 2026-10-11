@@ -544,14 +544,17 @@ async def upload_reconciliation_files(
                             tipo=tx["tipo"],
                             saldo=tx.get("saldo"),
                             status_conciliacion="SIN_CFDI",
+                            nota_revision=tx.get("nota_revision") or "Transacción bancaria sin CFDI registrado en el período.",
                             confianza_score=0.0,
                             periodo_mes=tx["periodo_mes"]
                         )
                         db.add(new_tx)
                         processed_statements += 1
                     else:
-                        if tx.get("area_proyecto") and not existing_tx.area_proyecto:
+                        if tx.get("area_proyecto") and (not existing_tx.area_proyecto or existing_tx.area_proyecto == entity_name):
                             existing_tx.area_proyecto = tx["area_proyecto"]
+                        if tx.get("nota_revision") and not existing_tx.nota_revision:
+                            existing_tx.nota_revision = tx["nota_revision"]
                         processed_statements += 1
             except Exception as e_pdf:
                 errors.append(f"{filename} (PDF bancario): {str(e_pdf)}")
@@ -588,25 +591,32 @@ async def upload_reconciliation_files(
             "fecha": t.fecha,
             "concepto": t.concepto,
             "monto": t.monto,
-            "tipo": t.tipo
+            "tipo": t.tipo,
+            "banco": t.banco,
+            "area_proyecto": t.area_proyecto
         } for t in tx_pendientes]
 
         if facturas_dict and tx_list:
             conciliados = conciliar_movimientos(tx_list, facturas_dict)
             for res in conciliados:
-                if res.get("uuid_cfdi"):
-                    db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
-                    if db_tx:
+                db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
+                if db_tx:
+                    if res.get("uuid_cfdi"):
                         db_tx.uuid_cfdi = res["uuid_cfdi"]
                         db_tx.status_conciliacion = res["status_conciliacion"]
                         db_tx.confianza_score = res["confianza_score"]
                         db_tx.nota_revision = res["nota_revision"]
 
-                    if res["status_conciliacion"] == "CONCILIADO":
-                        db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
-                        if db_f:
-                            db_f.conciliado = True
-                        matches_creados += 1
+                        if res["status_conciliacion"] == "CONCILIADO":
+                            db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
+                            if db_f:
+                                db_f.conciliado = True
+                            matches_creados += 1
+                    else:
+                        if res.get("area_proyecto") and (not db_tx.area_proyecto or db_tx.area_proyecto in [entity_name, "General"]):
+                            db_tx.area_proyecto = res["area_proyecto"]
+                        if res.get("nota_revision") and not db_tx.nota_revision:
+                            db_tx.nota_revision = res["nota_revision"]
 
             db.commit()
     except Exception as e_engine:
@@ -949,25 +959,32 @@ def deduplicate_transactions(
             "fecha": t.fecha,
             "concepto": t.concepto,
             "monto": t.monto,
-            "tipo": t.tipo
+            "tipo": t.tipo,
+            "banco": t.banco,
+            "area_proyecto": t.area_proyecto
         } for t in tx_pendientes]
 
         if facturas_dict and tx_list:
             conciliados = conciliar_movimientos(tx_list, facturas_dict)
             for res in conciliados:
-                if res.get("uuid_cfdi"):
-                    db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
-                    if db_tx:
+                db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
+                if db_tx:
+                    if res.get("uuid_cfdi"):
                         db_tx.uuid_cfdi = res["uuid_cfdi"]
                         db_tx.status_conciliacion = res["status_conciliacion"]
                         db_tx.confianza_score = res["confianza_score"]
                         db_tx.nota_revision = res["nota_revision"]
 
-                    if res["status_conciliacion"] == "CONCILIADO":
-                        db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
-                        if db_f:
-                            db_f.conciliado = True
-                        matches_creados += 1
+                        if res["status_conciliacion"] == "CONCILIADO":
+                            db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
+                            if db_f:
+                                db_f.conciliado = True
+                            matches_creados += 1
+                    else:
+                        if res.get("area_proyecto") and (not db_tx.area_proyecto or db_tx.area_proyecto in [entity_name, "General"]):
+                            db_tx.area_proyecto = res["area_proyecto"]
+                        if res.get("nota_revision") and not db_tx.nota_revision:
+                            db_tx.nota_revision = res["nota_revision"]
             db.commit()
     except Exception as e_recon:
         print(f"Error en conciliación automática tras deduplicar: {e_recon}")

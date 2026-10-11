@@ -719,6 +719,19 @@ def test_parse_bank_pdf_statement_mercadopago_credit_card():
     assert any("MERCADOLIBRE" in c for c in conceptos)
     assert any("MP ECOMMERCE" in c for c in conceptos)
 
+    # Validar que gastos de terminales MP se asignan a DELGADILLO MEDINA por defecto
+    tx_mp = next(t for t in txs if "MP ECOMMERCE" in t["concepto"])
+    assert tx_mp["area_proyecto"] == "DELGADILLO MEDINA"
+    assert "DELGADILLO MEDINA" in tx_mp["nota_revision"]
+
+    tx_ml = next(t for t in txs if "MERCADOLIBRE" in t["concepto"])
+    assert tx_ml["area_proyecto"] == "DELGADILLO MEDINA"
+    assert "DELGADILLO MEDINA" in tx_ml["nota_revision"]
+
+    # Compras de proveedores reconocidos no deben asignarse a Delgadillo Medina
+    tx_google = next(t for t in txs if "Google One" in t["concepto"])
+    assert tx_google["area_proyecto"] != "DELGADILLO MEDINA"
+
     # Asegurar que saldos anteriores y pagos de la tarjeta no se extraen como transacciones
     assert not any("Saldo al corte" in c for c in conceptos)
     assert not any("Pago del resumen" in c for c in conceptos)
@@ -1056,8 +1069,32 @@ def test_update_transaction_status_and_mes_completo():
         db.close()
 
 
+def test_delgadillo_medina_tc_heuristic():
+    from app.services.reconciliation.pdf_parser import is_delgadillo_medina_tc_expense
 
+    # 1. Compras en terminales Mercado Pago con TC -> DELGADILLO MEDINA
+    assert is_delgadillo_medina_tc_expense("Compra en MP ECOMMERCE 10 de 12", banco="TC MERCADO PAGO") is True
+    assert is_delgadillo_medina_tc_expense("Compra en merpago*MERCADOLIBRE 1 de 4", banco="TC MERCADO PAGO") is True
+    assert is_delgadillo_medina_tc_expense("MP*RESTAURANTE LOCAL", banco="TC MERCADO PAGO") is True
+    assert is_delgadillo_medina_tc_expense("CLIP*FARMACIA DE LA ESQUINA", banco="TC BBVA") is True
 
+    # 2. Compras en comercios no corporativos con TC -> DELGADILLO MEDINA
+    assert is_delgadillo_medina_tc_expense("FARMACIA GUADALAJARA SUC 42", banco="TC MERCADO PAGO") is True
+    assert is_delgadillo_medina_tc_expense("TIENDA DE ABARROTES DON JUAN", banco="TC MERCADO PAGO") is True
 
+    # 3. Proveedores corporativos reconocidos con TC -> NO es Delgadillo Medina (permanece HIPHA)
+    assert is_delgadillo_medina_tc_expense("Compra en Google One", banco="TC MERCADO PAGO") is False
+    assert is_delgadillo_medina_tc_expense("PAYU *GOOGLE CLOUD", banco="TC MERCADO PAGO") is False
+    assert is_delgadillo_medina_tc_expense("PAYPAL *NEUBOX US$ 23.62", banco="TC MERCADO PAGO") is False
+    assert is_delgadillo_medina_tc_expense("WALMART SUPER 1", banco="TC MERCADO PAGO") is False
+    assert is_delgadillo_medina_tc_expense("VERCEL INC CLOUD", banco="TC MERCADO PAGO") is False
+    assert is_delgadillo_medina_tc_expense("CFE SUMINISTRADOR", banco="TC MERCADO PAGO") is False
 
+    # 4. Proyectos explícitos de clientes con TC -> NO es Delgadillo Medina (se respeta el cliente)
+    assert is_delgadillo_medina_tc_expense("COMPRA MATERIALES DAM", banco="TC MERCADO PAGO") is False
+    assert is_delgadillo_medina_tc_expense("INSUMOS HEALTHYICE", banco="TC MERCADO PAGO") is False
 
+    # 5. Gastos que NO son de tarjeta de crédito (ej. BBVA cuenta fiscal) -> NUNCA aplica Delgadillo Medina
+    assert is_delgadillo_medina_tc_expense("Compra en MP ECOMMERCE 10 de 12", banco="BBVA") is False
+    assert is_delgadillo_medina_tc_expense("TIENDA DE ABARROTES DON JUAN", banco="BBVA") is False
+    assert is_delgadillo_medina_tc_expense("PAGO DE IMPUESTOS AL SAT", banco="BBVA") is False

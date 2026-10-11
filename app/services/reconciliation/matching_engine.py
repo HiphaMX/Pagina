@@ -95,15 +95,24 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
             status_asignado = "SIN_CFDI"
             confianza_score = 0.0
 
-            # Identificar si es comisión bancaria o movimiento no deducible recurrente
-            if any(term in concepto_upper for term in ["COMISION", "IVA COMISION", "MEMBRESIA", "MANEJO DE CUENTA", "CHEQUE"]):
+            banco_val = tx.get("banco", "")
+            from app.services.reconciliation.pdf_parser import is_delgadillo_medina_tc_expense
+
+            if tx_tipo == "EGRESO" and is_delgadillo_medina_tc_expense(tx.get("concepto", ""), banco=banco_val):
+                nota_revision = "Gasto con TC sin proveedor corporativo reconocido o terminal MP (DELGADILLO MEDINA - Pendiente de revisión)"
+                delgadillo_area = "DELGADILLO MEDINA"
+            elif any(term in concepto_upper for term in ["COMISION", "IVA COMISION", "MEMBRESIA", "MANEJO DE CUENTA", "CHEQUE"]):
                 nota_revision = "Cargo bancario / comisión BBVA. Generalmente amparado en el estado de cuenta fiscal mensual del banco."
+                delgadillo_area = None
             elif any(term in concepto_upper for term in ["RETIRO", "DISPOSICION", "CAJERO"]):
                 nota_revision = "Retiro en efectivo / ventanilla. Sin comprobante digital emitido."
+                delgadillo_area = None
             elif any(term in concepto_upper for term in ["PAGO DE INTERESES", "RENDIMIENTO"]):
                 nota_revision = "Abono por intereses ganados de BBVA."
+                delgadillo_area = None
             else:
                 nota_revision = "Transacción bancaria sin CFDI registrado en el período."
+                delgadillo_area = None
 
         # Construir registro resultado
         resultado_tx = dict(tx)
@@ -111,6 +120,8 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
         resultado_tx["status_conciliacion"] = status_asignado
         resultado_tx["confianza_score"] = confianza_score
         resultado_tx["nota_revision"] = nota_revision
+        if uuid_asignado is None and delgadillo_area:
+            resultado_tx["area_proyecto"] = delgadillo_area
 
         resultados.append(resultado_tx)
 
