@@ -27,6 +27,8 @@ class CFDIInvoice(Base):
     forma_pago = Column(String(50), nullable=True)  # 01, 03, 04, etc.
     conceptos_resumen = Column(Text, nullable=True)
     conciliado = Column(Boolean, default=False, index=True)
+    comprobado = Column(Boolean, default=False, index=True)
+    motivo_comprobacion = Column(String(100), nullable=True)
     fuente = Column(String(50), default="DASHBOARD")  # EMAIL, DASHBOARD, HISTORICO, SAT
     xml_raw = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

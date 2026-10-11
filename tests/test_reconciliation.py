@@ -1412,3 +1412,100 @@ def test_filter_by_amount_and_duplicates():
         db.commit()
         db.close()
 
+
+def test_comprobar_invoice_endpoints():
+    db = SessionLocal()
+    test_uuid = "CFDI-COMPROBAR-TEST-001"
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).delete()
+        db.commit()
+
+        test_inv = CFDIInvoice(
+            uuid=test_uuid,
+            account_rfc="DEGF851127TK1",
+            rfc_emisor="PROV999999XYZ",
+            nombre_emisor="SERVICIOS HIPOTECARES SA DE CV",
+            rfc_receptor="DEGF851127TK1",
+            nombre_receptor="FRANCISCO DEGOLLADO",
+            fecha_emision=datetime(2026, 7, 10, 10, 0, 0),
+            total=4500.00,
+            subtotal=4500.00,
+            tipo="EGRESO",
+            conciliado=False,
+            comprobado=False,
+            motivo_comprobacion=None,
+            area_proyecto="HIPHA"
+        )
+        db.add(test_inv)
+        db.commit()
+
+        # 1. Comprobar la factura con motivo "Hipoteca"
+        res_comp = client.post(
+            f"/api/dashboard/reconciliation/invoices/{test_uuid}/comprobar",
+            json={"motivo": "Hipoteca"}
+        )
+        assert res_comp.status_code == 200
+        data_comp = res_comp.json()
+        assert data_comp["success"] is True
+        assert data_comp["comprobado"] is True
+        assert data_comp["motivo_comprobacion"] == "Hipoteca"
+
+        # Verificar en base de datos
+        db_inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).first()
+        assert db_inv.comprobado is True
+        assert db_inv.motivo_comprobacion == "Hipoteca"
+
+        # 2. Validar que /pending-invoices NO la incluya si include_comprobados=False
+        res_pend = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1")
+        assert res_pend.status_code == 200
+        uuids_pend = [i["uuid"] for i in res_pend.json()]
+        assert test_uuid not in uuids_pend
+
+        # 3. Validar que /pending-invoices SÍ la incluya si include_comprobados=True
+        res_inc = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1&include_comprobados=true")
+        assert res_inc.status_code == 200
+        items_inc = [i for i in res_inc.json() if i["uuid"] == test_uuid]
+        assert len(items_inc) == 1
+        assert items_inc[0]["comprobado"] is True
+        assert items_inc[0]["motivo_comprobacion"] == "Hipoteca"
+
+        # 4. Validar filtro comprobado_status=COMPROBADO vs PENDIENTE
+        res_status_comp = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1&comprobado_status=COMPROBADO")
+        assert res_status_comp.status_code == 200
+        assert any(i["uuid"] == test_uuid for i in res_status_comp.json())
+
+        res_status_pend = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1&comprobado_status=PENDIENTE")
+        assert res_status_pend.status_code == 200
+        assert not any(i["uuid"] == test_uuid for i in res_status_pend.json())
+
+        # 5. Cambiar motivo a "Pago efectivo"
+        res_comp2 = client.post(
+            f"/api/dashboard/reconciliation/invoices/{test_uuid}/comprobar",
+            json={"motivo": "Pago efectivo"}
+        )
+        assert res_comp2.status_code == 200
+        assert res_comp2.json()["motivo_comprobacion"] == "Pago efectivo"
+
+        # 6. Revertir comprobación
+        res_rev = client.post(f"/api/dashboard/reconciliation/invoices/{test_uuid}/revert-comprobar")
+        assert res_rev.status_code == 200
+        data_rev = res_rev.json()
+        assert data_rev["success"] is True
+        assert data_rev["comprobado"] is False
+        assert data_rev["motivo_comprobacion"] is None
+
+        # Verificar en DB que se desmarcó
+        db.refresh(db_inv)
+        assert db_inv.comprobado is False
+        assert db_inv.motivo_comprobacion is None
+
+        # Ahora debe volver a aparecer en /pending-invoices normal
+        res_pend_after = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1")
+        assert res_pend_after.status_code == 200
+        assert any(i["uuid"] == test_uuid for i in res_pend_after.json())
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).delete()
+        db.commit()
+        db.close()
+

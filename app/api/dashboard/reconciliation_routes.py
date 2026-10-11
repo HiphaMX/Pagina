@@ -47,6 +47,10 @@ class BatchUpdateProjectRequest(BaseModel):
     update_cfdi: bool = True
 
 
+class ComprobarInvoiceRequest(BaseModel):
+    motivo: str
+
+
 router = APIRouter()
 
 
@@ -146,10 +150,16 @@ def get_reconciliation_overview(
     # Mes completo: Si existen movimientos y no hay ningún egreso pendiente de CFDI
     mes_completo = bool(len(all_txs) > 0 and count_sin_cfdi == 0)
 
-    # Facturas disponibles sin conciliar para esta entidad
+    # Facturas disponibles sin conciliar ni comprobadas fuera de banco
     facturas_disponibles_count = db.query(CFDIInvoice).filter(
         CFDIInvoice.account_rfc == effective_rfc,
-        CFDIInvoice.conciliado == False
+        CFDIInvoice.conciliado == False,
+        CFDIInvoice.comprobado == False
+    ).count()
+
+    count_facturas_comprobadas = db.query(CFDIInvoice).filter(
+        CFDIInvoice.account_rfc == effective_rfc,
+        CFDIInvoice.comprobado == True
     ).count()
 
     return {
@@ -185,6 +195,7 @@ def get_reconciliation_overview(
             "monto_conciliado": round(monto_egresos_conciliados, 2),
             "count_conciliado": len(conciliados_egresos),
             "facturas_disponibles_count": facturas_disponibles_count,
+            "count_facturas_comprobadas": count_facturas_comprobadas,
             "total_transacciones": len(all_txs)
         }
     }
@@ -343,15 +354,17 @@ def get_pending_invoices(
     tipo: Optional[str] = Query(None, description="Filtrar por tipo: INGRESO, EGRESO o ALL"),
     month: Optional[str] = Query(None, description="Filtrar por mes en formato YYYY-MM"),
     include_reconciled: bool = Query(False, description="Incluir facturas ya vinculadas para asociar múltiples pagos"),
+    include_comprobados: bool = Query(False, description="Incluir facturas marcadas como comprobadas fuera de banco"),
+    comprobado_status: Optional[str] = Query("ALL", description="Filtrar por estatus de comprobación: ALL, PENDIENTE o COMPROBADO"),
     search: Optional[str] = Query(None),
     account_rfc: str = Query("DEGF851127TK1"),
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """
-    Retorna las facturas registradas de la entidad disponibles para conciliar,
-    con soporte para filtrado por mes, tipo, e inclusión de facturas ya vinculadas
-    para permitir asociar múltiples pagos bancarios a una misma factura.
+    Retorna las facturas registradas de la entidad disponibles para conciliar o comprobar,
+    con soporte para filtrado por mes, tipo, estatus de comprobación (efectivo, hipoteca, rendimientos, etc.),
+    e inclusión de facturas ya vinculadas para permitir asociar múltiples pagos bancarios.
     """
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
@@ -362,6 +375,13 @@ def get_pending_invoices(
 
     if not include_reconciled:
         query = query.filter(CFDIInvoice.conciliado == False)
+
+    if comprobado_status == "PENDIENTE":
+        query = query.filter(CFDIInvoice.comprobado == False)
+    elif comprobado_status == "COMPROBADO":
+        query = query.filter(CFDIInvoice.comprobado == True)
+    elif not include_comprobados:
+        query = query.filter(CFDIInvoice.comprobado == False)
 
     if tipo and tipo != "ALL":
         query = query.filter(CFDIInvoice.tipo == tipo)
@@ -427,6 +447,8 @@ def get_pending_invoices(
             "metodo_pago": inv.metodo_pago,
             "conceptos_resumen": inv.conceptos_resumen,
             "conciliado": inv.conciliado,
+            "comprobado": bool(getattr(inv, "comprobado", False)),
+            "motivo_comprobacion": getattr(inv, "motivo_comprobacion", None) or "",
             "monto_vinculado": monto_vinculado,
             "saldo_pendiente": saldo_pendiente,
             "pagos_vinculados_count": len(txs_for_inv)
@@ -653,6 +675,7 @@ async def upload_reconciliation_files(
     try:
         facturas_pendientes = db.query(CFDIInvoice).filter(
             CFDIInvoice.conciliado == False,
+            CFDIInvoice.comprobado == False,
             CFDIInvoice.account_rfc == effective_rfc
         ).all()
         facturas_dict = [{
@@ -1138,6 +1161,7 @@ def deduplicate_transactions(
     try:
         facturas_pendientes = db.query(CFDIInvoice).filter(
             CFDIInvoice.conciliado == False,
+            CFDIInvoice.comprobado == False,
             CFDIInvoice.account_rfc == effective_rfc
         ).all()
         facturas_dict = [{
@@ -1212,6 +1236,68 @@ def deduplicate_transactions(
         "periods_fixed": periods_fixed,
         "matches_creados": matches_creados,
         "message": msg
+    }
+
+
+@router.post("/invoices/{uuid}/comprobar")
+def comprobar_invoice(
+    uuid: str,
+    payload: ComprobarInvoiceRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Marca una factura CFDI como comprobada fuera de la cuenta bancaria principal
+    (ej. Pago efectivo, Hipoteca, Rendimientos, Otra TC).
+    """
+    clean_uuid = uuid.strip()
+    factura = db.query(CFDIInvoice).filter(func.lower(CFDIInvoice.uuid) == clean_uuid.lower()).first()
+    if not factura:
+        raise HTTPException(status_code=404, detail="Factura CFDI no encontrada.")
+
+    motivo = payload.motivo.strip()
+    if not motivo:
+        raise HTTPException(status_code=400, detail="El motivo de comprobación es obligatorio.")
+
+    factura.comprobado = True
+    factura.motivo_comprobacion = motivo
+    db.commit()
+    db.refresh(factura)
+
+    return {
+        "success": True,
+        "uuid": factura.uuid,
+        "comprobado": True,
+        "motivo_comprobacion": factura.motivo_comprobacion,
+        "message": f"Factura amparada exitosamente como comprobada ({factura.motivo_comprobacion})."
+    }
+
+
+@router.post("/invoices/{uuid}/revert-comprobar")
+def revert_comprobar_invoice(
+    uuid: str,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Desmarca la comprobación de una factura CFDI, devolviéndola al estado 'Pendiente Banco'.
+    """
+    clean_uuid = uuid.strip()
+    factura = db.query(CFDIInvoice).filter(func.lower(CFDIInvoice.uuid) == clean_uuid.lower()).first()
+    if not factura:
+        raise HTTPException(status_code=404, detail="Factura CFDI no encontrada.")
+
+    factura.comprobado = False
+    factura.motivo_comprobacion = None
+    db.commit()
+    db.refresh(factura)
+
+    return {
+        "success": True,
+        "uuid": factura.uuid,
+        "comprobado": False,
+        "motivo_comprobacion": None,
+        "message": f"Factura {factura.uuid} desmarcada. Vuelve a estar pendiente de conciliación bancaria."
     }
 
 

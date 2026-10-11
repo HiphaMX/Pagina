@@ -1745,30 +1745,38 @@
     <!-- MODAL: FACTURAS CFDI DEL BUZÓN             -->
     <!-- ========================================== -->
     <div id="modalMailboxInvoices" class="modal-overlay hidden">
-        <div class="modal-dialog modal-lg" style="max-width: 880px;">
+        <div class="modal-dialog modal-lg" style="max-width: 960px;">
             <div class="modal-header">
                 <div>
                     <h2 style="font-size:1.25rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem; display: flex; align-items: center; gap: 0.6rem;">
                         <span>Facturas CFDI Recibidas en Buzón</span>
                         <span id="mailboxModalEntityBadge" style="background: rgba(167, 139, 250, 0.15); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.3); font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 6px; font-weight: 700;">AMDI</span>
                     </h2>
-                    <p style="font-size:0.82rem; color:var(--text-muted);">Comprobantes fiscales XML descargados automáticamente vía IMAP y listos para conciliar</p>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Comprobantes fiscales XML descargados automáticamente vía IMAP y listos para conciliar o comprobar</p>
                 </div>
                 <button type="button" id="btnCloseMailboxModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
             </div>
             
             <div class="modal-body" style="padding: 1.25rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem;">
-                    <div class="search-input-box" style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
+                    <div class="search-input-box" style="flex: 1; min-width: 240px;">
                         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         <input type="text" id="mailboxModalSearchInput" placeholder="Buscar por emisor, RFC o concepto..." style="font-size: 0.85rem;">
                     </div>
+
+                    <!-- Filtro por estatus en buzón: Todas / Pendientes Banco / Comprobadas -->
+                    <div style="display: flex; gap: 0.35rem; align-items: center;" id="mailboxStatusFilterGroup">
+                        <button type="button" class="btn-mailbox-filter active" data-filter="ALL" style="background: var(--text-main); color: #000; border: none; padding: 0.35rem 0.75rem; border-radius: 16px; font-size: 0.76rem; font-weight: 600; cursor: pointer;">Todas</button>
+                        <button type="button" class="btn-mailbox-filter" data-filter="PENDIENTE" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.35rem 0.75rem; border-radius: 16px; font-size: 0.76rem; font-weight: 600; cursor: pointer;">Pendientes Banco</button>
+                        <button type="button" class="btn-mailbox-filter" data-filter="COMPROBADO" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.35rem 0.75rem; border-radius: 16px; font-size: 0.76rem; font-weight: 600; cursor: pointer;">✓ Comprobadas</button>
+                    </div>
+
                     <div id="mailboxModalTotalCount" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">
                         0 facturas registradas
                     </div>
                 </div>
 
-                <div style="max-height: 420px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px;">
+                <div style="max-height: 440px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px;">
                     <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.84rem;">
                         <thead>
                             <tr style="background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">
@@ -1777,11 +1785,12 @@
                                 <th style="padding: 0.75rem 0.9rem;">Concepto</th>
                                 <th style="padding: 0.75rem 0.9rem; text-align: right;">Total</th>
                                 <th style="padding: 0.75rem 0.9rem; text-align: center;">Estatus</th>
+                                <th style="padding: 0.75rem 0.9rem; text-align: center;">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="mailboxModalTableBody">
                             <tr>
-                                <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                                <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">
                                     Cargando facturas del buzón...
                                 </td>
                             </tr>
@@ -1792,9 +1801,84 @@
 
             <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="font-size: 0.78rem; color: var(--text-muted);">
-                    💡 Estas facturas se conciliarán automáticamente cuando cargues tu estado de cuenta bancario BBVA.
+                    💡 Las facturas no bancarias (efectivo, hipoteca, inversiones, otra TC) pueden ampararse directamente con el botón <strong>✓ Comprobar</strong>.
                 </div>
                 <button type="button" id="btnCloseMailboxModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.2rem; border-radius:8px; cursor:pointer; font-weight:600;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: COMPROBAR FACTURA CFDI              -->
+    <!-- ========================================== -->
+    <div id="modalComprobarInvoice" class="modal-overlay hidden" style="z-index: 10010;">
+        <div class="modal-dialog modal-md" style="max-width: 520px;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem; font-weight:600; color:var(--text-main); margin-bottom:0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>Comprobar Factura Fiscal</span>
+                        <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 700;">Sin Banco</span>
+                    </h2>
+                    <p style="font-size:0.82rem; color:var(--text-muted);">Ampara esta factura fiscal justificando su método de pago fuera de la cuenta bancaria principal</p>
+                </div>
+                <button type="button" id="btnCloseComprobarModalX" onclick="closeComprobarInvoiceModal()" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+            
+            <div class="modal-body" style="padding: 1.25rem;">
+                <input type="hidden" id="comprobarInvoiceUuid" value="">
+
+                <!-- Resumen de la Factura -->
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 1.2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; margin-bottom: 0.4rem;">
+                        <div>
+                            <div id="comprobarInvoiceEmisor" style="font-weight: 700; color: var(--text-main); font-size: 0.92rem; line-height: 1.3;">-</div>
+                            <div id="comprobarInvoiceUuidDisp" style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace; margin-top: 2px;">UUID: -</div>
+                        </div>
+                        <div id="comprobarInvoiceTotal" style="font-size: 1.25rem; font-weight: 800; color: #fbbf24; text-align: right; white-space: nowrap;">$0.00</div>
+                    </div>
+                    <div id="comprobarInvoiceConcepto" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 0.4rem; margin-top: 0.4rem;">-</div>
+                </div>
+
+                <div style="margin-bottom: 0.8rem;">
+                    <label style="display: block; font-size: 0.84rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.6rem;">
+                        Selecciona el origen o motivo de comprobación:
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;" id="comprobarReasonOptions">
+                        <label class="comprobar-card-opt" style="border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); padding: 0.8rem 0.85rem; border-radius: 8px; cursor: pointer; display: flex; align-items: flex-start; gap: 0.55rem; transition: all 0.2s;">
+                            <input type="radio" name="comprobarReason" value="Pago efectivo" checked style="margin-top: 3px;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.84rem; color: var(--text-main);">💵 Pago efectivo</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.25; margin-top: 2px;">Pagado en efectivo en caja</div>
+                            </div>
+                        </label>
+                        <label class="comprobar-card-opt" style="border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); padding: 0.8rem 0.85rem; border-radius: 8px; cursor: pointer; display: flex; align-items: flex-start; gap: 0.55rem; transition: all 0.2s;">
+                            <input type="radio" name="comprobarReason" value="Hipoteca" style="margin-top: 3px;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.84rem; color: var(--text-main);">🏠 Hipoteca</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.25; margin-top: 2px;">Pago desde otra cuenta hipotecaria</div>
+                            </div>
+                        </label>
+                        <label class="comprobar-card-opt" style="border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); padding: 0.8rem 0.85rem; border-radius: 8px; cursor: pointer; display: flex; align-items: flex-start; gap: 0.55rem; transition: all 0.2s;">
+                            <input type="radio" name="comprobarReason" value="Rendimientos" style="margin-top: 3px;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.84rem; color: var(--text-main);">📈 Rendimientos</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.25; margin-top: 2px;">Intereses o rendimientos de inversión</div>
+                            </div>
+                        </label>
+                        <label class="comprobar-card-opt" style="border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); padding: 0.8rem 0.85rem; border-radius: 8px; cursor: pointer; display: flex; align-items: flex-start; gap: 0.55rem; transition: all 0.2s;">
+                            <input type="radio" name="comprobarReason" value="Otra TC" style="margin-top: 3px;">
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.84rem; color: var(--text-main);">💳 Otra TC</div>
+                                <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.25; margin-top: 2px;">Otra tarjeta de crédito externa</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem;">
+                <button type="button" onclick="closeComprobarInvoiceModal()" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600;">Cancelar</button>
+                <button type="button" id="btnConfirmComprobarInvoice" onclick="submitComprobarInvoice()" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; border: none; padding: 0.55rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.84rem; box-shadow: 0 2px 8px rgba(16,185,129,0.25);">✓ Confirmar Comprobación</button>
             </div>
         </div>
     </div>

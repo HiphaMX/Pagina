@@ -7078,6 +7078,8 @@ async function autoSyncMailbox(entityRfc, silent = true) {
 // -------------------------------------------------------------
 // MODAL DE FACTURAS EN BUZÓN (CFDI)
 // -------------------------------------------------------------
+let currentMailboxFilter = 'ALL';
+
 async function openMailboxInvoicesModal() {
     const modal = document.getElementById('modalMailboxInvoices');
     if (!modal) return;
@@ -7092,7 +7094,7 @@ async function openMailboxInvoicesModal() {
     if (tbody) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                <td colspan="6" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
                     <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
                     Consultando facturas del buzón para ${entityLabel}...
                 </td>
@@ -7101,24 +7103,49 @@ async function openMailboxInvoicesModal() {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?account_rfc=${encodeURIComponent(currentReconEntity)}`, {
+        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?account_rfc=${encodeURIComponent(currentReconEntity)}&include_comprobados=true`, {
             headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         cachedMailboxInvoices = await res.json();
-        renderMailboxInvoicesModal(cachedMailboxInvoices);
+        filterAndRenderMailboxInvoices();
     } catch (err) {
         console.error("Error cargando facturas del buzón:", err);
         if (tbody) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="5" style="padding: 2rem; text-align: center; color: #ef4444;">
+                    <td colspan="6" style="padding: 2rem; text-align: center; color: #ef4444;">
                         Error al consultar las facturas del buzón.
                     </td>
                 </tr>
             `;
         }
     }
+}
+
+function filterAndRenderMailboxInvoices() {
+    const searchInput = document.getElementById('mailboxModalSearchInput');
+    const term = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+    let filtered = cachedMailboxInvoices;
+    if (currentMailboxFilter === 'PENDIENTE') {
+        filtered = filtered.filter(inv => !inv.comprobado);
+    } else if (currentMailboxFilter === 'COMPROBADO') {
+        filtered = filtered.filter(inv => !!inv.comprobado);
+    }
+
+    if (term) {
+        filtered = filtered.filter(inv => {
+            const emisor = (inv.nombre_emisor || '').toLowerCase();
+            const rfc = (inv.rfc_emisor || '').toLowerCase();
+            const conceptos = (inv.conceptos_resumen || '').toLowerCase();
+            const uuid = (inv.uuid || '').toLowerCase();
+            const motivo = (inv.motivo_comprobacion || '').toLowerCase();
+            return emisor.includes(term) || rfc.includes(term) || conceptos.includes(term) || uuid.includes(term) || motivo.includes(term);
+        });
+    }
+
+    renderMailboxInvoicesModal(filtered);
 }
 
 function renderMailboxInvoicesModal(invoices) {
@@ -7130,8 +7157,8 @@ function renderMailboxInvoicesModal(invoices) {
     if (invoices.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
-                    No hay facturas registradas en el buzón para esta entidad.
+                <td colspan="6" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                    No hay facturas que coincidan con los filtros actuales.
                 </td>
             </tr>
         `;
@@ -7141,9 +7168,42 @@ function renderMailboxInvoicesModal(invoices) {
     let html = '';
     invoices.forEach(inv => {
         const isIngreso = inv.tipo === 'INGRESO';
-        const tipoBadge = isIngreso
-            ? `<span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600;">Ingreso</span>`
-            : `<span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600;">Gasto</span>`;
+        const isComprobado = !!inv.comprobado;
+        const motivo = inv.motivo_comprobacion || 'Sin banco';
+
+        let estatusHtml = '';
+        let accionHtml = '';
+
+        if (isComprobado) {
+            estatusHtml = `
+                <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;" title="Factura comprobada fuera de cuenta bancaria">
+                    ✓ Comprobado: ${escapeHtml(motivo)}
+                </span>
+            `;
+            accionHtml = `
+                <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
+                    <button type="button" onclick="openComprobarInvoiceModal('${inv.uuid}')" title="Cambiar motivo de comprobación" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.55rem; cursor: pointer; font-size: 0.74rem; font-weight: 600;">
+                        ✏️ Cambiar
+                    </button>
+                    <button type="button" onclick="revertComprobarInvoice('${inv.uuid}')" title="Desmarcar y regresar a Pendiente Banco" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.5rem; cursor: pointer; font-size: 0.74rem;">
+                        ↩️
+                    </button>
+                </div>
+            `;
+        } else {
+            estatusHtml = `
+                <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600;">
+                    Pendiente Banco
+                </span>
+            `;
+            accionHtml = `
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <button type="button" onclick="openComprobarInvoiceModal('${inv.uuid}')" title="Amparar factura fuera de cuenta bancaria (Efectivo, Hipoteca, Rendimientos, Otra TC)" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); border-radius: 6px; padding: 0.32rem 0.75rem; cursor: pointer; font-size: 0.76rem; font-weight: 700; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.3rem;">
+                        ✓ Comprobar
+                    </button>
+                </div>
+            `;
+        }
 
         html += `
             <tr style="border-bottom: 1px solid var(--border-color);">
@@ -7154,16 +7214,17 @@ function renderMailboxInvoicesModal(invoices) {
                     <div style="font-weight: 600; color: var(--text-main); font-size: 0.84rem;">${escapeHtml(inv.nombre_emisor || 'Emisor Desconocido')}</div>
                     <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">RFC: ${inv.rfc_emisor || '-'} • UUID: ${(inv.uuid || '').slice(0, 8)}...</div>
                 </td>
-                <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(inv.conceptos_resumen || '')}">
+                <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(inv.conceptos_resumen || '')}">
                     ${escapeHtml(inv.conceptos_resumen || '-')}
                 </td>
                 <td style="padding: 0.75rem 0.9rem; text-align: right; font-weight: 700; color: ${isIngreso ? '#34d399' : '#fbbf24'}; white-space: nowrap;">
                     $${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}
                 </td>
                 <td style="padding: 0.75rem 0.9rem; text-align: center;">
-                    <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600;">
-                        Pendiente Banco
-                    </span>
+                    ${estatusHtml}
+                </td>
+                <td style="padding: 0.75rem 0.9rem; text-align: center;">
+                    ${accionHtml}
                 </td>
             </tr>
         `;
@@ -7190,22 +7251,141 @@ function initMailboxInvoicesModal() {
     if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
     if (btnClose) btnClose.addEventListener('click', closeModal);
 
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.trim().toLowerCase();
-            if (!term) {
-                renderMailboxInvoicesModal(cachedMailboxInvoices);
-                return;
-            }
-            const filtered = cachedMailboxInvoices.filter(inv => {
-                const emisor = (inv.nombre_emisor || '').toLowerCase();
-                const rfc = (inv.rfc_emisor || '').toLowerCase();
-                const conceptos = (inv.conceptos_resumen || '').toLowerCase();
-                const uuid = (inv.uuid || '').toLowerCase();
-                return emisor.includes(term) || rfc.includes(term) || conceptos.includes(term) || uuid.includes(term);
+    // Segmented filters (Todas / Pendientes Banco / Comprobadas)
+    const filterBtns = document.querySelectorAll('.btn-mailbox-filter');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => {
+                b.classList.remove('active');
+                b.style.background = b.dataset.filter === 'PENDIENTE' ? 'rgba(56, 189, 248, 0.1)' :
+                                     b.dataset.filter === 'COMPROBADO' ? 'rgba(16, 185, 129, 0.1)' : 'transparent';
+                b.style.color = b.dataset.filter === 'PENDIENTE' ? '#38bdf8' :
+                                b.dataset.filter === 'COMPROBADO' ? '#10b981' : 'var(--text-main)';
             });
-            renderMailboxInvoicesModal(filtered);
+            btn.classList.add('active');
+            btn.style.background = 'var(--text-main)';
+            btn.style.color = '#000';
+            currentMailboxFilter = btn.dataset.filter || 'ALL';
+            filterAndRenderMailboxInvoices();
         });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            filterAndRenderMailboxInvoices();
+        });
+    }
+}
+
+// -------------------------------------------------------------
+// MODAL: COMPROBAR FACTURA CFDI (Sin Banco)
+// -------------------------------------------------------------
+function openComprobarInvoiceModal(uuid) {
+    const modal = document.getElementById('modalComprobarInvoice');
+    if (!modal) return;
+
+    const inv = cachedMailboxInvoices.find(i => (i.uuid || '').toLowerCase() === (uuid || '').toLowerCase());
+    if (!inv) {
+        alert("No se encontró la factura seleccionada.");
+        return;
+    }
+
+    document.getElementById('comprobarInvoiceUuid').value = inv.uuid;
+    document.getElementById('comprobarInvoiceEmisor').textContent = inv.nombre_emisor || inv.rfc_emisor || 'Emisor Desconocido';
+    document.getElementById('comprobarInvoiceUuidDisp').textContent = `UUID: ${inv.uuid}`;
+    document.getElementById('comprobarInvoiceTotal').textContent = `$${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+    document.getElementById('comprobarInvoiceConcepto').textContent = inv.conceptos_resumen || 'Sin conceptos especificados';
+
+    // Seleccionar motivo actual o por defecto "Pago efectivo"
+    const currentMotivo = inv.motivo_comprobacion || 'Pago efectivo';
+    const radios = document.querySelectorAll('input[name="comprobarReason"]');
+    radios.forEach(r => {
+        r.checked = (r.value === currentMotivo);
+    });
+
+    modal.classList.remove('hidden');
+}
+
+function closeComprobarInvoiceModal() {
+    const modal = document.getElementById('modalComprobarInvoice');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function submitComprobarInvoice() {
+    const uuid = document.getElementById('comprobarInvoiceUuid').value;
+    const selectedRadio = document.querySelector('input[name="comprobarReason"]:checked');
+    const motivo = selectedRadio ? selectedRadio.value : 'Pago efectivo';
+
+    if (!uuid) return;
+
+    const btn = document.getElementById('btnConfirmComprobarInvoice');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Guardando...';
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/invoices/${encodeURIComponent(uuid)}/comprobar`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ motivo })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Error al comprobar la factura');
+
+        closeComprobarInvoiceModal();
+
+        // Actualizar en caché local
+        const idx = cachedMailboxInvoices.findIndex(i => (i.uuid || '').toLowerCase() === uuid.toLowerCase());
+        if (idx !== -1) {
+            cachedMailboxInvoices[idx].comprobado = true;
+            cachedMailboxInvoices[idx].motivo_comprobacion = motivo;
+        }
+
+        filterAndRenderMailboxInvoices();
+        // Recargar contador general del buzón
+        if (typeof loadReconciliationData === 'function') {
+            loadReconciliationData(false);
+        }
+    } catch (err) {
+        console.error("Error comprobando factura:", err);
+        alert(err.message || 'Error al guardar la comprobación de la factura.');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '✓ Confirmar Comprobación';
+        }
+    }
+}
+
+async function revertComprobarInvoice(uuid) {
+    if (!uuid) return;
+    const ok = confirm("¿Deseas desmarcar esta factura comprobada y devolverla al estatus 'Pendiente Banco'?");
+    if (!ok) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/invoices/${encodeURIComponent(uuid)}/revert-comprobar`, {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Error al desmarcar la factura');
+
+        // Actualizar en caché local
+        const idx = cachedMailboxInvoices.findIndex(i => (i.uuid || '').toLowerCase() === uuid.toLowerCase());
+        if (idx !== -1) {
+            cachedMailboxInvoices[idx].comprobado = false;
+            cachedMailboxInvoices[idx].motivo_comprobacion = null;
+        }
+
+        filterAndRenderMailboxInvoices();
+        // Recargar contador general del buzón
+        if (typeof loadReconciliationData === 'function') {
+            loadReconciliationData(false);
+        }
+    } catch (err) {
+        console.error("Error desmarcando factura:", err);
+        alert(err.message || 'Error al desmarcar la comprobación.');
     }
 }
 
@@ -7812,6 +7992,10 @@ window.clearReconBatchSelection = clearReconBatchSelection;
 window.applyBatchPersonalExpense = applyBatchPersonalExpense;
 window.openBatchMarkNoAplicaModal = openBatchMarkNoAplicaModal;
 window.openBatchEditProjectModal = openBatchEditProjectModal;
+window.openComprobarInvoiceModal = openComprobarInvoiceModal;
+window.closeComprobarInvoiceModal = closeComprobarInvoiceModal;
+window.submitComprobarInvoice = submitComprobarInvoice;
+window.revertComprobarInvoice = revertComprobarInvoice;
 
 
 
