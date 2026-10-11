@@ -34,6 +34,19 @@ class UpdateTransactionStatusRequest(BaseModel):
     motivo: Optional[str] = None
 
 
+class BatchUpdateStatusRequest(BaseModel):
+    transaction_ids: List[int]
+    status_conciliacion: str  # "NO_APLICA", "SIN_CFDI", "POR_REVISAR"
+    motivo: Optional[str] = None
+    area_proyecto: Optional[str] = None
+
+
+class BatchUpdateProjectRequest(BaseModel):
+    transaction_ids: List[int]
+    area_proyecto: str
+    update_cfdi: bool = True
+
+
 router = APIRouter()
 
 
@@ -840,6 +853,123 @@ def update_transaction_status(
         "transaction_id": tx.id,
         "status_conciliacion": tx.status_conciliacion,
         "nota_revision": tx.nota_revision
+    }
+
+
+@router.post("/transactions/batch-status")
+def batch_update_transaction_status(
+    payload: BatchUpdateStatusRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Actualiza el estatus de conciliación y justificación en lote para múltiples transacciones bancarias.
+    Permite marcar con 1 clic múltiples gastos como NO_APLICA (ej. Gasto Personal / DELGADILLO MEDINA).
+    """
+    if not payload.transaction_ids:
+        raise HTTPException(status_code=400, detail="No se proporcionaron transacciones para actualizar.")
+
+    target_status = payload.status_conciliacion.upper().strip()
+    if target_status not in ("NO_APLICA", "SIN_CFDI", "POR_REVISAR"):
+        raise HTTPException(status_code=400, detail="Estatus no válido para actualización manual.")
+
+    txs = db.query(BankTransaction).filter(BankTransaction.id.in_(payload.transaction_ids)).all()
+    if not txs:
+        raise HTTPException(status_code=404, detail="No se encontraron transacciones con los IDs especificados.")
+
+    updated_count = 0
+    motivo_clean = payload.motivo.strip() if payload.motivo else None
+    new_area = payload.area_proyecto.strip() if payload.area_proyecto else None
+
+    # Si el motivo es gasto personal o menciona Delgadillo Medina y no se especificó proyecto, auto-asignar DELGADILLO MEDINA
+    if motivo_clean and any(k in motivo_clean.lower() for k in ["personal", "delgadillo", "medina"]) and not new_area:
+        new_area = "DELGADILLO MEDINA"
+
+    for tx in txs:
+        if target_status == "NO_APLICA":
+            # Desvincular factura asociada si la tenía
+            if tx.uuid_cfdi:
+                uuid_to_free = tx.uuid_cfdi
+                tx.uuid_cfdi = None
+                other = db.query(BankTransaction).filter(
+                    BankTransaction.uuid_cfdi == uuid_to_free,
+                    BankTransaction.id != tx.id
+                ).first()
+                if not other:
+                    factura = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_to_free).first()
+                    if factura:
+                        factura.conciliado = False
+
+            tx.status_conciliacion = "NO_APLICA"
+            if motivo_clean:
+                tx.nota_revision = motivo_clean
+            if new_area:
+                tx.area_proyecto = new_area
+            updated_count += 1
+
+        elif target_status == "SIN_CFDI":
+            tx.status_conciliacion = "SIN_CFDI"
+            if tx.nota_revision and any(k in tx.nota_revision.lower() for k in ["impuesto", "traspaso", "tarjeta", "no aplica", "no deducible", "personal"]):
+                tx.nota_revision = None
+            if new_area:
+                tx.area_proyecto = new_area
+            updated_count += 1
+
+        elif target_status == "POR_REVISAR":
+            tx.status_conciliacion = "POR_REVISAR"
+            if motivo_clean:
+                tx.nota_revision = motivo_clean
+            if new_area:
+                tx.area_proyecto = new_area
+            updated_count += 1
+
+    db.commit()
+
+    return {
+        "success": True,
+        "updated_count": updated_count,
+        "status_conciliacion": target_status,
+        "area_proyecto": new_area,
+        "message": f"Se actualizaron {updated_count} transacciones exitosamente."
+    }
+
+
+@router.post("/transactions/batch-project")
+def batch_update_transaction_project(
+    payload: BatchUpdateProjectRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Actualiza el proyecto / área en lote para múltiples transacciones bancarias.
+    """
+    if not payload.transaction_ids:
+        raise HTTPException(status_code=400, detail="No se proporcionaron transacciones para actualizar.")
+
+    new_project = payload.area_proyecto.strip()
+    if not new_project:
+        raise HTTPException(status_code=400, detail="El nombre del proyecto no puede estar vacío.")
+
+    txs = db.query(BankTransaction).filter(BankTransaction.id.in_(payload.transaction_ids)).all()
+    if not txs:
+        raise HTTPException(status_code=404, detail="No se encontraron transacciones con los IDs especificados.")
+
+    updated_count = 0
+    for tx in txs:
+        tx.area_proyecto = new_project
+        if payload.update_cfdi and tx.uuid_cfdi:
+            factura = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == tx.uuid_cfdi).first()
+            if factura:
+                factura.area_proyecto = new_project
+        updated_count += 1
+
+    db.commit()
+
+    return {
+        "success": True,
+        "updated_count": updated_count,
+        "area_proyecto": new_project,
+        "message": f"Se actualizó el proyecto a '{new_project}' para {updated_count} transacciones."
     }
 
 

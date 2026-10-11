@@ -677,25 +677,50 @@
                     </div>
                 </div>
 
+                <!-- Barra de Acciones por Lote (Aparece al seleccionar 1 o más renglones) -->
+                <div id="reconBatchActionBar" class="glass-panel" style="padding: 0.85rem 1.35rem; border-radius: 12px; margin-bottom: 1.1rem; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(56, 189, 248, 0.45); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 0.5rem; border-radius: 14px; background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); font-weight: 700; font-size: 0.88rem;" id="reconBatchSelectedCount">0</span>
+                        <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-main);">movimientos seleccionados</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
+                        <button type="button" id="btnBatchPersonalExpense" onclick="applyBatchPersonalExpense()" class="btn-primary-mini" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; border: none; padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35); transition: all 0.15s;" title="Marcar los seleccionados como Gasto Personal / No Deducible y asignar a DELGADILLO MEDINA">
+                            <span>⚡ 🚫 No CFDI (Gasto Personal)</span>
+                        </button>
+                        <button type="button" id="btnBatchOtherNoAplica" onclick="openBatchMarkNoAplicaModal()" class="btn-secondary-mini" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.5rem 0.9rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
+                            <span>🚫 Otro Motivo...</span>
+                        </button>
+                        <button type="button" id="btnBatchAssignProject" onclick="openBatchEditProjectModal()" class="btn-secondary-mini" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.5rem 0.9rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
+                            <span>🏷️ Asignar Proyecto...</span>
+                        </button>
+                        <button type="button" id="btnBatchClearSelection" onclick="clearReconBatchSelection()" style="background: transparent; color: var(--text-muted); border: none; padding: 0.5rem 0.75rem; font-size: 0.82rem; cursor: pointer; text-decoration: underline;">
+                            Cancelar selección
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Tabla de Transacciones y Conciliación -->
                 <div class="glass-panel" style="padding: 0; border-radius: 14px; overflow: hidden;">
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
                             <thead>
                                 <tr style="background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                                    <th style="padding: 1rem 1.1rem; width: 100px;">Fecha</th>
-                                    <th style="padding: 1rem 1.1rem; width: 110px;">Área / Proy.</th>
-                                    <th style="padding: 1rem 1.1rem;">Concepto Bancario / TC</th>
-                                    <th style="padding: 1rem 1.1rem; text-align: right; width: 125px;">Monto</th>
-                                    <th style="padding: 1rem 1.1rem; text-align: center; width: 120px;">Estatus</th>
-                                    <th style="padding: 1rem 1.1rem;">Comprobante Fiscal (CFDI)</th>
-                                    <th style="padding: 1rem 1.1rem; text-align: right; width: 175px;">Desglose Fiscal (14 col)</th>
-                                    <th style="padding: 1rem 1.1rem; text-align: center; width: 95px;">Acciones</th>
+                                    <th style="padding: 1rem 0.6rem 1rem 1.1rem; width: 38px; text-align: center;">
+                                        <input type="checkbox" id="reconSelectAllCheckbox" onchange="toggleSelectAllRecon(this)" title="Seleccionar todos los visibles" style="accent-color: var(--accent-cyan); width: 16px; height: 16px; cursor: pointer;">
+                                    </th>
+                                    <th style="padding: 1rem 0.9rem; width: 95px;">Fecha</th>
+                                    <th style="padding: 1rem 0.9rem; width: 110px;">Área / Proy.</th>
+                                    <th style="padding: 1rem 0.9rem;">Concepto Bancario / TC</th>
+                                    <th style="padding: 1rem 0.9rem; text-align: right; width: 125px;">Monto</th>
+                                    <th style="padding: 1rem 0.9rem; text-align: center; width: 120px;">Estatus</th>
+                                    <th style="padding: 1rem 0.9rem;">Comprobante Fiscal (CFDI)</th>
+                                    <th style="padding: 1rem 0.9rem; text-align: right; width: 175px;">Desglose Fiscal (14 col)</th>
+                                    <th style="padding: 1rem 0.9rem; text-align: center; width: 95px;">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="reconTableBody">
                                 <tr>
-                                    <td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                                    <td colspan="9" style="padding: 3rem; text-align: center; color: var(--text-muted);">
                                         <div class="spinner" style="margin: 0 auto 0.75rem auto;"></div>
                                         Cargando transacciones de conciliación...
                                     </td>

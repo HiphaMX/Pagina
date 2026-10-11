@@ -1098,3 +1098,139 @@ def test_delgadillo_medina_tc_heuristic():
     assert is_delgadillo_medina_tc_expense("Compra en MP ECOMMERCE 10 de 12", banco="BBVA") is False
     assert is_delgadillo_medina_tc_expense("TIENDA DE ABARROTES DON JUAN", banco="BBVA") is False
     assert is_delgadillo_medina_tc_expense("PAGO DE IMPUESTOS AL SAT", banco="BBVA") is False
+
+
+def test_batch_update_status_personal_expense():
+    client = TestClient(app)
+    db = SessionLocal()
+    tx_ids = ["tx-batch-test-01", "tx-batch-test-02", "tx-batch-test-03"]
+    try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(tx_ids)).delete()
+        db.commit()
+
+        # Crear 3 transacciones de egreso sin CFDI
+        for idx, tid in enumerate(tx_ids):
+            tx = BankTransaction(
+                account_rfc="DEGF851127TK1",
+                id_transaccion=tid,
+                banco="TC MERCADO PAGO",
+                fecha=datetime(2026, 9, 10 + idx),
+                concepto=f"COMPRA PERSONAL {idx + 1}",
+                monto=250.0 * (idx + 1),
+                tipo="EGRESO",
+                status_conciliacion="SIN_CFDI",
+                area_proyecto="HIPHA",
+                periodo_mes="2026-09"
+            )
+            db.add(tx)
+        db.commit()
+
+        created_txs = db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(tx_ids)).all()
+        assert len(created_txs) == 3
+        numeric_ids = [t.id for t in created_txs]
+
+        # Llamar al endpoint por lote
+        res = client.post(
+            "/api/dashboard/reconciliation/transactions/batch-status",
+            json={
+                "transaction_ids": numeric_ids,
+                "status_conciliacion": "NO_APLICA",
+                "motivo": "Gasto Personal / No Deducible (DELGADILLO MEDINA)",
+                "area_proyecto": "DELGADILLO MEDINA"
+            }
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert data["success"] is True
+        assert data["updated_count"] == 3
+        assert data["status_conciliacion"] == "NO_APLICA"
+        assert data["area_proyecto"] == "DELGADILLO MEDINA"
+
+        # Verificar en base de datos
+        db.expire_all()
+        db_txs = db.query(BankTransaction).filter(BankTransaction.id.in_(numeric_ids)).all()
+        for t in db_txs:
+            assert t.status_conciliacion == "NO_APLICA"
+            assert t.area_proyecto == "DELGADILLO MEDINA"
+            assert "DELGADILLO MEDINA" in t.nota_revision
+    finally:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(tx_ids)).delete()
+        db.commit()
+        db.close()
+
+
+def test_batch_update_project():
+    client = TestClient(app)
+    db = SessionLocal()
+    tx_ids = ["tx-batch-proj-01", "tx-batch-proj-02"]
+    cfdi_uuids = ["CFDI-BATCH-PROJ-01", "CFDI-BATCH-PROJ-02"]
+    try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(tx_ids)).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_(cfdi_uuids)).delete()
+        db.commit()
+
+        for idx, (tid, cuuid) in enumerate(zip(tx_ids, cfdi_uuids)):
+            inv = CFDIInvoice(
+                uuid=cuuid,
+                account_rfc="DEGF851127TK1",
+                area_proyecto="GENERAL",
+                tipo="EGRESO",
+                rfc_emisor="EMISOR123",
+                nombre_emisor="EMISOR PRUEBA",
+                rfc_receptor="DEGF851127TK1",
+                nombre_receptor="HIPHA",
+                fecha_emision=datetime(2026, 9, 5),
+                total=500.0,
+                conciliado=True
+            )
+            db.add(inv)
+
+            tx = BankTransaction(
+                account_rfc="DEGF851127TK1",
+                id_transaccion=tid,
+                banco="BBVA",
+                fecha=datetime(2026, 9, 5),
+                concepto=f"COMPRA INSUMOS {idx}",
+                monto=500.0,
+                tipo="EGRESO",
+                uuid_cfdi=cuuid,
+                status_conciliacion="CONCILIADO",
+                area_proyecto="GENERAL",
+                periodo_mes="2026-09"
+            )
+            db.add(tx)
+        db.commit()
+
+        created_txs = db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(tx_ids)).all()
+        numeric_ids = [t.id for t in created_txs]
+
+        # Llamar al endpoint batch-project actualizando a "DAM" y propagando a CFDIs
+        res = client.post(
+            "/api/dashboard/reconciliation/transactions/batch-project",
+            json={
+                "transaction_ids": numeric_ids,
+                "area_proyecto": "DAM",
+                "update_cfdi": True
+            }
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert data["success"] is True
+        assert data["updated_count"] == 2
+        assert data["area_proyecto"] == "DAM"
+
+        # Validar en base de datos
+        db.expire_all()
+        db_txs = db.query(BankTransaction).filter(BankTransaction.id.in_(numeric_ids)).all()
+        for t in db_txs:
+            assert t.area_proyecto == "DAM"
+
+        db_invs = db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_(cfdi_uuids)).all()
+        for inv in db_invs:
+            assert inv.area_proyecto == "DAM"
+    finally:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(tx_ids)).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_(cfdi_uuids)).delete()
+        db.commit()
+        db.close()
+

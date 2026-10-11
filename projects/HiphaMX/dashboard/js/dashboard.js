@@ -6131,9 +6131,12 @@ async function loadReconciliationTransactions() {
     const tbody = document.getElementById('reconTableBody');
     if (!tbody) return;
 
+    // Limpiar selección por lote al refrescar datos
+    clearReconBatchSelection(false);
+
     tbody.innerHTML = `
         <tr>
-            <td colspan="8" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+            <td colspan="9" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
                 <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
                 Consultando transacciones...
             </td>
@@ -6161,7 +6164,7 @@ async function loadReconciliationTransactions() {
             if (currentReconMailboxCount > 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="padding: 3.5rem 1.5rem; text-align: center;">
+                        <td colspan="9" style="padding: 3.5rem 1.5rem; text-align: center;">
                             <div style="font-size: 2.6rem; margin-bottom: 0.75rem;">📥</div>
                             <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.45rem;">
                                 Hay ${currentReconMailboxCount} facturas CFDI recibidas en el buzón para ${entityLabel}
@@ -6179,7 +6182,7 @@ async function loadReconciliationTransactions() {
             } else {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                        <td colspan="9" style="padding: 3rem; text-align: center; color: var(--text-muted);">
                             <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 0.5rem auto; display: block; opacity: 0.5;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                             No se encontraron movimientos bancarios para los filtros seleccionados.
                         </td>
@@ -6306,25 +6309,28 @@ async function loadReconciliationTransactions() {
             }
 
             html += `
-                <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 0.85rem 1.1rem; font-size: 0.82rem; color: var(--text-muted); font-family: monospace;">${formatDateDisplay(t.fecha)}</td>
-                    <td style="padding: 0.85rem 1.1rem; font-size: 0.82rem; font-weight: 600; white-space: nowrap;">
+                <tr id="recon-row-${t.id}" style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="if(!this.classList.contains('selected-row')) this.style.background='rgba(255,255,255,0.02)'" onmouseout="if(!this.classList.contains('selected-row')) this.style.background='transparent'">
+                    <td style="padding: 0.85rem 0.6rem 0.85rem 1.1rem; text-align: center;">
+                        <input type="checkbox" class="recon-row-checkbox" value="${t.id}" data-id="${t.id}" onchange="updateReconBatchSelection()" style="accent-color: var(--accent-cyan); width: 16px; height: 16px; cursor: pointer;">
+                    </td>
+                    <td style="padding: 0.85rem 0.9rem; font-size: 0.82rem; color: var(--text-muted); font-family: monospace;">${formatDateDisplay(t.fecha)}</td>
+                    <td style="padding: 0.85rem 0.9rem; font-size: 0.82rem; font-weight: 600; white-space: nowrap;">
                         <button type="button" onclick="openEditProjectModal(${t.id}, '${escapeHtml(t.area_proyecto || 'General')}', '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}')" title="Click para editar o asignar Proyecto / Área" style="background: rgba(56, 189, 248, 0.08); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.25rem 0.55rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.15s;">
                             <span>${escapeHtml(t.area_proyecto || 'General')}</span>
                             <span style="opacity: 0.65; font-size: 0.7rem;">✏️</span>
                         </button>
                     </td>
-                    <td style="padding: 0.85rem 1.1rem; font-weight: 500; color: var(--text-main); font-size: 0.84rem; max-width: 300px;">
+                    <td style="padding: 0.85rem 0.9rem; font-weight: 500; color: var(--text-main); font-size: 0.84rem; max-width: 300px;">
                         <div style="line-height: 1.35; word-break: break-word;">${escapeHtml(t.concepto)}</div>
                         <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;">${tipoBadge}${bancoBadge}</div>
                     </td>
-                    <td style="padding: 0.85rem 1.1rem; text-align: right; font-weight: 700; font-size: 0.92rem; color: ${isCargo ? '#f87171' : '#34d399'}; white-space: nowrap;">
+                    <td style="padding: 0.85rem 0.9rem; text-align: right; font-weight: 700; font-size: 0.92rem; color: ${isCargo ? '#f87171' : '#34d399'}; white-space: nowrap;">
                         ${isCargo ? '-' : '+'}$${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}
                     </td>
-                    <td style="padding: 0.85rem 1.1rem; text-align: center; white-space: nowrap;">${statusBadge}</td>
-                    <td style="padding: 0.85rem 1.1rem;">${cfdiHtml}</td>
-                    <td style="padding: 0.85rem 1.1rem; text-align: right;">${fiscalHtml}</td>
-                    <td style="padding: 0.85rem 1.1rem; text-align: center;">${actionsHtml}</td>
+                    <td style="padding: 0.85rem 0.9rem; text-align: center; white-space: nowrap;">${statusBadge}</td>
+                    <td style="padding: 0.85rem 0.9rem;">${cfdiHtml}</td>
+                    <td style="padding: 0.85rem 0.9rem; text-align: right;">${fiscalHtml}</td>
+                    <td style="padding: 0.85rem 0.9rem; text-align: center;">${actionsHtml}</td>
                 </tr>
             `;
         });
@@ -6335,7 +6341,7 @@ async function loadReconciliationTransactions() {
         console.error("Error cargando transacciones:", err);
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" style="padding: 2.5rem; text-align: center; color: #ef4444;">
+                <td colspan="9" style="padding: 2.5rem; text-align: center; color: #ef4444;">
                     Error al consultar transacciones del servidor.
                 </td>
             </tr>
@@ -7122,9 +7128,201 @@ function initReconBackfillModal() {
 }
 
 // -------------------------------------------------------------
+// SELECCIÓN MÚLTIPLE Y ACCIONES POR LOTE (BATCH RECONCILIATION)
+// -------------------------------------------------------------
+window.selectedReconTxIds = new Set();
+let isBatchMarkNoAplica = false;
+let isBatchEditProject = false;
+
+function updateReconBatchSelection() {
+    const checkboxes = document.querySelectorAll('.recon-row-checkbox');
+    const master = document.getElementById('reconSelectAllCheckbox');
+    const bar = document.getElementById('reconBatchActionBar');
+    const countEl = document.getElementById('reconBatchSelectedCount');
+
+    window.selectedReconTxIds = new Set();
+    let allChecked = checkboxes.length > 0;
+
+    checkboxes.forEach(cb => {
+        const id = parseInt(cb.value, 10);
+        const tr = document.getElementById(`recon-row-${id}`);
+        if (cb.checked) {
+            window.selectedReconTxIds.add(id);
+            if (tr) {
+                tr.classList.add('selected-row');
+                tr.style.background = 'rgba(56, 189, 248, 0.08)';
+            }
+        } else {
+            allChecked = false;
+            if (tr) {
+                tr.classList.remove('selected-row');
+                tr.style.background = 'transparent';
+            }
+        }
+    });
+
+    if (master) {
+        master.checked = allChecked && checkboxes.length > 0;
+        master.indeterminate = !allChecked && window.selectedReconTxIds.size > 0;
+    }
+
+    const count = window.selectedReconTxIds.size;
+    if (countEl) countEl.textContent = count;
+
+    if (bar) {
+        if (count > 0) {
+            bar.style.display = 'flex';
+        } else {
+            bar.style.display = 'none';
+        }
+    }
+}
+
+function toggleSelectAllRecon(master) {
+    const isChecked = master ? master.checked : false;
+    const checkboxes = document.querySelectorAll('.recon-row-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = isChecked;
+    });
+    updateReconBatchSelection();
+}
+
+function clearReconBatchSelection(uncheckDom = true) {
+    window.selectedReconTxIds = new Set();
+    const master = document.getElementById('reconSelectAllCheckbox');
+    if (master) {
+        master.checked = false;
+        master.indeterminate = false;
+    }
+    const bar = document.getElementById('reconBatchActionBar');
+    if (bar) bar.style.display = 'none';
+    const countEl = document.getElementById('reconBatchSelectedCount');
+    if (countEl) countEl.textContent = '0';
+
+    if (uncheckDom) {
+        const checkboxes = document.querySelectorAll('.recon-row-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = false;
+            const tr = document.getElementById(`recon-row-${cb.value}`);
+            if (tr) {
+                tr.classList.remove('selected-row');
+                tr.style.background = 'transparent';
+            }
+        });
+    }
+}
+
+async function applyBatchPersonalExpense() {
+    const count = window.selectedReconTxIds ? window.selectedReconTxIds.size : 0;
+    if (count === 0) {
+        alert('Por favor selecciona al menos un movimiento de la tabla.');
+        return;
+    }
+
+    if (!confirm(`¿Deseas marcar ${count} movimiento(s) como "Gasto Personal / No Deducible" y asignarlos a "DELGADILLO MEDINA"?`)) {
+        return;
+    }
+
+    const btn = document.getElementById('btnBatchPersonalExpense');
+    const origHtml = btn ? btn.innerHTML : '';
+    try {
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span>⏳ Aplicando a ${count}...</span>`;
+        }
+
+        const res = await fetch(`${API_BASE}/reconciliation/transactions/batch-status`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                transaction_ids: Array.from(window.selectedReconTxIds),
+                status_conciliacion: 'NO_APLICA',
+                motivo: 'Gasto Personal / No Deducible (DELGADILLO MEDINA)',
+                area_proyecto: 'DELGADILLO MEDINA'
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Error al aplicar justificación por lote');
+        }
+
+        const data = await res.json();
+        clearReconBatchSelection();
+        await loadReconciliationData(false);
+    } catch (err) {
+        console.error("Error en batch personal expense:", err);
+        alert(err.message || 'Error al actualizar movimientos en lote.');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+        }
+    }
+}
+
+function openBatchMarkNoAplicaModal() {
+    const count = window.selectedReconTxIds ? window.selectedReconTxIds.size : 0;
+    if (count === 0) {
+        alert('Por favor selecciona al menos un movimiento de la tabla.');
+        return;
+    }
+
+    isBatchMarkNoAplica = true;
+    const modal = document.getElementById('modalMarkNoAplica');
+    if (!modal) return;
+
+    document.getElementById('markNoAplicaTxId').value = 'BATCH';
+    document.getElementById('markNoAplicaTxConcept').textContent = `📦 Selección múltiple: ${count} movimientos bancarios`;
+    document.getElementById('markNoAplicaTxDate').textContent = `Total seleccionados: ${count}`;
+    document.getElementById('markNoAplicaTxAmount').textContent = `Acción por Lote`;
+
+    const reasonSelect = document.getElementById('markNoAplicaReasonSelect');
+    const customGroup = document.getElementById('markNoAplicaCustomGroup');
+    const customInput = document.getElementById('markNoAplicaCustomInput');
+
+    if (reasonSelect) {
+        reasonSelect.value = 'Gasto Personal / No Deducible (DELGADILLO MEDINA)';
+    }
+    if (customGroup) customGroup.classList.add('hidden');
+    if (customInput) customInput.value = '';
+
+    modal.classList.remove('hidden');
+}
+
+function openBatchEditProjectModal() {
+    const count = window.selectedReconTxIds ? window.selectedReconTxIds.size : 0;
+    if (count === 0) {
+        alert('Por favor selecciona al menos un movimiento de la tabla.');
+        return;
+    }
+
+    isBatchEditProject = true;
+    const modal = document.getElementById('modalEditProject');
+    if (!modal) return;
+
+    document.getElementById('editProjectTxId').value = 'BATCH';
+    document.getElementById('editProjectTxConcept').textContent = `📦 Selección múltiple: ${count} movimientos bancarios`;
+    document.getElementById('editProjectTxDate').textContent = `Total seleccionados: ${count}`;
+    document.getElementById('editProjectTxAmount').textContent = `Acción por Lote`;
+
+    const input = document.getElementById('editProjectInput');
+    if (input) {
+        input.value = 'DELGADILLO MEDINA';
+        setTimeout(() => input.focus(), 100);
+    }
+
+    modal.classList.remove('hidden');
+}
+
+// -------------------------------------------------------------
 // MODAL: EDICIÓN DE PROYECTO / ÁREA
 // -------------------------------------------------------------
 function openEditProjectModal(txId, currentProject, concepto, monto, fecha) {
+    isBatchEditProject = false;
     const modal = document.getElementById('modalEditProject');
     if (!modal) return;
 
@@ -7143,17 +7341,16 @@ function openEditProjectModal(txId, currentProject, concepto, monto, fecha) {
 }
 
 function closeEditProjectModal() {
+    isBatchEditProject = false;
     const modal = document.getElementById('modalEditProject');
     if (modal) modal.classList.add('hidden');
 }
 
 async function saveTransactionProject() {
-    const txId = document.getElementById('editProjectTxId').value;
     const input = document.getElementById('editProjectInput');
     const updateCfdiCheckbox = document.getElementById('editProjectUpdateCfdi');
     const btnSave = document.getElementById('btnSaveEditProject');
 
-    if (!txId) return;
     const newProject = (input ? input.value : '').trim() || 'General';
     const updateCfdi = updateCfdiCheckbox ? updateCfdiCheckbox.checked : true;
 
@@ -7163,25 +7360,55 @@ async function saveTransactionProject() {
             btnSave.textContent = 'Guardando...';
         }
 
-        const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/project`, {
-            method: 'PATCH',
-            headers: {
-                ...getAuthHeaders(),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                area_proyecto: newProject,
-                update_cfdi: updateCfdi
-            })
-        });
+        if (isBatchEditProject) {
+            const count = window.selectedReconTxIds ? window.selectedReconTxIds.size : 0;
+            if (count === 0) throw new Error('No hay movimientos seleccionados.');
 
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.detail || 'Error al actualizar proyecto');
+            const res = await fetch(`${API_BASE}/reconciliation/transactions/batch-project`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    transaction_ids: Array.from(window.selectedReconTxIds),
+                    area_proyecto: newProject,
+                    update_cfdi: updateCfdi
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || 'Error al actualizar proyectos en lote');
+            }
+
+            closeEditProjectModal();
+            clearReconBatchSelection();
+            await loadReconciliationTransactions();
+        } else {
+            const txId = document.getElementById('editProjectTxId').value;
+            if (!txId) return;
+
+            const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/project`, {
+                method: 'PATCH',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    area_proyecto: newProject,
+                    update_cfdi: updateCfdi
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || 'Error al actualizar proyecto');
+            }
+
+            closeEditProjectModal();
+            await loadReconciliationTransactions();
         }
-
-        closeEditProjectModal();
-        await loadReconciliationTransactions();
     } catch (err) {
         console.error("Error guardando proyecto:", err);
         alert(err.message || 'Error al guardar el proyecto.');
@@ -7197,6 +7424,7 @@ async function saveTransactionProject() {
 // MODAL: JUSTIFICAR MOVIMIENTO (NO REQUIERE CFDI)
 // -------------------------------------------------------------
 function openMarkNoAplicaModal(txId, concepto, monto, fecha) {
+    isBatchMarkNoAplica = false;
     const modal = document.getElementById('modalMarkNoAplica');
     if (!modal) return;
 
@@ -7232,17 +7460,15 @@ function openMarkNoAplicaModal(txId, concepto, monto, fecha) {
 }
 
 function closeMarkNoAplicaModal() {
+    isBatchMarkNoAplica = false;
     const modal = document.getElementById('modalMarkNoAplica');
     if (modal) modal.classList.add('hidden');
 }
 
 async function saveTransactionNoAplica() {
-    const txId = document.getElementById('markNoAplicaTxId').value;
     const reasonSelect = document.getElementById('markNoAplicaReasonSelect');
     const customInput = document.getElementById('markNoAplicaCustomInput');
     const btnConfirm = document.getElementById('btnConfirmMarkNoAplica');
-
-    if (!txId) return;
 
     let motivo = reasonSelect ? reasonSelect.value : 'No requiere comprobante fiscal';
     if (motivo === 'OTRO') {
@@ -7255,26 +7481,56 @@ async function saveTransactionNoAplica() {
             btnConfirm.textContent = 'Guardando...';
         }
 
-        const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/status`, {
-            method: 'PATCH',
-            headers: {
-                ...getAuthHeaders(),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                status_conciliacion: 'NO_APLICA',
-                motivo: motivo
-            })
-        });
+        if (isBatchMarkNoAplica) {
+            const count = window.selectedReconTxIds ? window.selectedReconTxIds.size : 0;
+            if (count === 0) throw new Error('No hay movimientos seleccionados.');
 
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.detail || 'Error al justificar movimiento');
+            const res = await fetch(`${API_BASE}/reconciliation/transactions/batch-status`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    transaction_ids: Array.from(window.selectedReconTxIds),
+                    status_conciliacion: 'NO_APLICA',
+                    motivo: motivo
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || 'Error al justificar lote');
+            }
+
+            closeMarkNoAplicaModal();
+            clearReconBatchSelection();
+            await loadReconciliationData(false);
+        } else {
+            const txId = document.getElementById('markNoAplicaTxId').value;
+            if (!txId) return;
+
+            const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status_conciliacion: 'NO_APLICA',
+                    motivo: motivo
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || 'Error al justificar movimiento');
+            }
+
+            closeMarkNoAplicaModal();
+            // Recargar datos y overview para recalcular el Check de Mes Completo
+            await loadReconciliationData(false);
         }
-
-        closeMarkNoAplicaModal();
-        // Recargar datos y overview para recalcular el Check de Mes Completo
-        await loadReconciliationData(false);
     } catch (err) {
         console.error("Error al marcar como no aplica:", err);
         alert(err.message || 'Error al justificar movimiento.');
@@ -7375,6 +7631,12 @@ window.openMarkNoAplicaModal = openMarkNoAplicaModal;
 window.closeMarkNoAplicaModal = closeMarkNoAplicaModal;
 window.saveTransactionNoAplica = saveTransactionNoAplica;
 window.revertTransactionSinCfdi = revertTransactionSinCfdi;
+window.toggleSelectAllRecon = toggleSelectAllRecon;
+window.updateReconBatchSelection = updateReconBatchSelection;
+window.clearReconBatchSelection = clearReconBatchSelection;
+window.applyBatchPersonalExpense = applyBatchPersonalExpense;
+window.openBatchMarkNoAplicaModal = openBatchMarkNoAplicaModal;
+window.openBatchEditProjectModal = openBatchEditProjectModal;
 
 
 
