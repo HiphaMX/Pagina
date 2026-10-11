@@ -302,7 +302,7 @@ def _parse_bbva_pyme_statement(
                 saldo = _parse_num(nums[-1])
                 tipo = 'INGRESO'
             elif len(nums) == 1:
-                # 1 número: Cargo
+                # 1 número: Cargo o Abono
                 monto = _parse_num(nums[0])
                 tipo = 'EGRESO'
             elif len(nums) == 2:
@@ -310,6 +310,17 @@ def _parse_bbva_pyme_statement(
                 monto = _parse_num(nums[0])
                 saldo = _parse_num(nums[1])
                 tipo = 'EGRESO'
+
+            # Ajuste inteligente: si len(nums) < 3 pero el concepto indica expresamente DEPOSITO o ABONO en BBVA
+            if tipo == 'EGRESO':
+                concept_up = concept_part.upper()
+                is_explicit_abono = any(k in concept_up for k in [
+                    "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
+                    "ABONO POR LIQUIDACION", "ABONO DE INTERESES", "DEPOSITO EN SUCURSAL",
+                    "DEPOSITO", "ABONO"
+                ])
+                if is_explicit_abono:
+                    tipo = 'INGRESO'
 
             if not monto or monto <= 0:
                 continue

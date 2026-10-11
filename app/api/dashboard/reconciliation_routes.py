@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc, func
 from typing import Optional, List, Dict
 import io
+import re
 import zipfile
 from datetime import datetime
 
@@ -654,12 +655,38 @@ def deduplicate_transactions(
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """
-    Escanea y depura transacciones duplicadas para la entidad (y mes si se especifica).
-    Conserva la transacción conciliada (con folio fiscal) o la más completa, y elimina los duplicados redundantes.
+    Escanea, reclasifica depósitos mal categorizados, corrige desfases de periodo
+    y depura transacciones duplicadas para la entidad.
     """
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
 
+    # 1. Reclasificar depósitos que hayan sido marcados por error como EGRESO debido a layouts de PDF
+    all_txs = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc).all()
+    reclassified_count = 0
+    periods_fixed = 0
+
+    for t in all_txs:
+        conc_up = str(t.concepto or "").upper()
+        is_deposito = any(k in conc_up for k in [
+            "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
+            "ABONO POR LIQUIDACION", "ABONO DE INTERESES"
+        ])
+        if is_deposito and t.tipo == "EGRESO":
+            t.tipo = "INGRESO"
+            t.tipo_categoria = "INGRESO"
+            reclassified_count += 1
+
+        # 2. Corregir periodo_mes si la fecha real no coincide (excepto TC Mercado Pago que va por corte mensual)
+        if t.fecha and t.banco != "TC MERCADO PAGO":
+            real_period = t.fecha.strftime("%Y-%m")
+            if t.periodo_mes != real_period:
+                t.periodo_mes = real_period
+                periods_fixed += 1
+
+    db.commit()
+
+    # 3. Deduplicación
     query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
     if month:
         query = query.filter(BankTransaction.periodo_mes == month)
@@ -671,9 +698,9 @@ def deduplicate_transactions(
         fecha_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
         monto_str = f"{float(t.monto or 0.0):.2f}"
         tipo_str = str(t.tipo or "").upper()
-        conc_str = str(t.concepto or "").strip().upper()
-        area_str = str(t.area_proyecto or "").strip().upper()
-        key = f"{fecha_str}|{monto_str}|{tipo_str}|{conc_str}|{area_str}"
+        # Normalizar concepto para agrupar versiones cortas vs largas del mismo movimiento
+        conc_norm = re.sub(r'[^A-Z0-9]', '', str(t.concepto or "").upper())[:25]
+        key = f"{fecha_str}|{monto_str}|{tipo_str}|{conc_norm}"
         groups.setdefault(key, []).append(t)
 
     deleted_count = 0
@@ -681,10 +708,6 @@ def deduplicate_transactions(
         if len(items) <= 1:
             continue
 
-        # Ordenar para conservar el mejor registro:
-        # 1) Aquel que tenga uuid_cfdi
-        # 2) Mayor confianza_score
-        # 3) Menor ID (el original)
         items_sorted = sorted(
             items,
             key=lambda x: (
@@ -710,10 +733,78 @@ def deduplicate_transactions(
 
     db.commit()
 
+    # 4. Detonar conciliación automática para emparejar movimientos corregidos
+    matches_creados = 0
+    try:
+        facturas_pendientes = db.query(CFDIInvoice).filter(
+            CFDIInvoice.conciliado == False,
+            CFDIInvoice.account_rfc == effective_rfc
+        ).all()
+        facturas_dict = [{
+            "uuid": f.uuid,
+            "tipo": f.tipo,
+            "rfc_emisor": f.rfc_emisor,
+            "nombre_emisor": f.nombre_emisor,
+            "rfc_receptor": f.rfc_receptor,
+            "nombre_receptor": f.nombre_receptor,
+            "fecha_emision": f.fecha_emision,
+            "subtotal": f.subtotal,
+            "iva": f.iva_trasladado,
+            "total": f.total
+        } for f in facturas_pendientes]
+
+        tx_pendientes = db.query(BankTransaction).filter(
+            BankTransaction.status_conciliacion != "CONCILIADO",
+            BankTransaction.account_rfc == effective_rfc
+        ).all()
+        tx_list = [{
+            "id": t.id,
+            "id_transaccion": t.id_transaccion,
+            "fecha": t.fecha,
+            "concepto": t.concepto,
+            "monto": t.monto,
+            "tipo": t.tipo
+        } for t in tx_pendientes]
+
+        if facturas_dict and tx_list:
+            conciliados = conciliar_movimientos(tx_list, facturas_dict)
+            for res in conciliados:
+                if res.get("uuid_cfdi"):
+                    db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
+                    if db_tx:
+                        db_tx.uuid_cfdi = res["uuid_cfdi"]
+                        db_tx.status_conciliacion = res["status_conciliacion"]
+                        db_tx.confianza_score = res["confianza_score"]
+                        db_tx.nota_revision = res["nota_revision"]
+
+                    if res["status_conciliacion"] == "CONCILIADO":
+                        db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
+                        if db_f:
+                            db_f.conciliado = True
+                        matches_creados += 1
+            db.commit()
+    except Exception as e_recon:
+        print(f"Error en conciliación automática tras deduplicar: {e_recon}")
+
+    msg_parts = []
+    if reclassified_count > 0:
+        msg_parts.append(f"{reclassified_count} depósitos reclasificados")
+    if periods_fixed > 0:
+        msg_parts.append(f"{periods_fixed} periodos corregidos")
+    if deleted_count > 0:
+        msg_parts.append(f"{deleted_count} duplicados eliminados")
+    if matches_creados > 0:
+        msg_parts.append(f"{matches_creados} facturas conciliadas")
+
+    msg = f"Optimización completada: {', '.join(msg_parts)}." if msg_parts else "Registros al día, no se requirieron correcciones."
+
     return {
         "success": True,
         "deleted_count": deleted_count,
-        "message": f"Se eliminaron {deleted_count} registros duplicados exitosamente." if deleted_count > 0 else "No se encontraron registros duplicados en este período."
+        "reclassified_count": reclassified_count,
+        "periods_fixed": periods_fixed,
+        "matches_creados": matches_creados,
+        "message": msg
     }
 
 

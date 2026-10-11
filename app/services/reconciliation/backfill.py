@@ -169,8 +169,8 @@ def import_historical_excel(
             raw_concepto = str(row[col_concepto] or "").strip() if (col_concepto is not None and col_concepto < len(row)) else ""
             concepto = raw_concepto
 
-            # Determinar periodo_mes: si el archivo/hoja declaró un mes explícito y el año coincide
-            if declared_month:
+            # Determinar periodo_mes: respetar la fecha real de la fila; solo usar declared_month si coincide el mes
+            if declared_month and fecha_obj.month == int(declared_month):
                 periodo_mes = f"{fecha_obj.year}-{declared_month}"
             else:
                 periodo_mes = fecha_obj.strftime("%Y-%m")
