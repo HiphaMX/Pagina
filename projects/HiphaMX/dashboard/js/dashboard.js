@@ -6151,7 +6151,7 @@ async function loadReconciliationData(refreshMonths = true) {
         const sinCountEl = document.getElementById('kpiReconSinCFDICount');
         if (sinCountEl) {
             const noAplicaTxt = (k.count_no_aplica && k.count_no_aplica > 0) ? ` (${k.count_no_aplica} exentos/justificados)` : '';
-            sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos sin comprobante digital${noAplicaTxt}`;
+            sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos por validar${noAplicaTxt}`;
         }
 
         // Actualizar badge del contador de posibles duplicados
@@ -6196,8 +6196,8 @@ async function loadReconciliationData(refreshMonths = true) {
                 monthStatusBadge.style.borderColor = 'rgba(245, 158, 11, 0.35)';
                 monthStatusBadge.style.color = '#fbbf24';
                 monthStatusBadge.style.boxShadow = 'none';
-                monthStatusBadge.innerHTML = `<span>⏳ EN PROCESO (${countSin} sin CFDI)</span>`;
-                monthStatusBadge.title = `Faltan ${countSin} egresos por vincular a comprobante fiscal`;
+                monthStatusBadge.innerHTML = `<span>⏳ EN PROCESO (${countSin} por validar)</span>`;
+                monthStatusBadge.title = `${countSin} egresos pendientes por validar o vincular a comprobante fiscal`;
             }
         }
 
@@ -6372,7 +6372,7 @@ async function loadReconciliationTransactions() {
             } else if (t.status_conciliacion === 'NO_APLICA' || t.status_conciliacion === 'EXENTO') {
                 statusBadge = `<span style="background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">🚫 No requiere CFDI</span>`;
             } else {
-                statusBadge = `<span style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">✕ Sin CFDI</span>`;
+                statusBadge = `<span style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">Por validar</span>`;
             }
 
             // Comprobante Fiscal info
