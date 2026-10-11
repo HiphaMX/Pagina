@@ -6470,12 +6470,18 @@ function initReconUploadModal() {
 // -------------------------------------------------------------
 // MODAL DE VINCULACIÓN MANUAL
 // -------------------------------------------------------------
+// -------------------------------------------------------------
+// MODAL DE VINCULACIÓN MANUAL
+// -------------------------------------------------------------
 function initReconMatchModal() {
     const modal = document.getElementById('modalMatchManual');
     const btnCloseX = document.getElementById('btnCloseMatchModalX');
     const btnCancel = document.getElementById('btnCancelMatchModal');
     const btnConfirm = document.getElementById('btnConfirmMatchManual');
     const searchInput = document.getElementById('matchInvoiceSearchInput');
+    const monthSelect = document.getElementById('matchModalMonthFilter');
+    const typeSelect = document.getElementById('matchModalTypeFilter');
+    const incReconciledChk = document.getElementById('matchModalIncludeReconciled');
 
     const closeModal = () => {
         if (modal) modal.classList.add('hidden');
@@ -6490,8 +6496,18 @@ function initReconMatchModal() {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 renderMatchInvoicesList(e.target.value.trim());
-            }, 250);
+            }, 200);
         });
+    }
+
+    if (monthSelect) {
+        monthSelect.addEventListener('change', () => fetchPendingInvoicesForMatch());
+    }
+    if (typeSelect) {
+        typeSelect.addEventListener('change', () => fetchPendingInvoicesForMatch());
+    }
+    if (incReconciledChk) {
+        incReconciledChk.addEventListener('change', () => fetchPendingInvoicesForMatch());
     }
 
     if (btnConfirm) {
@@ -6535,6 +6551,43 @@ function initReconMatchModal() {
     }
 }
 
+async function fetchPendingInvoicesForMatch() {
+    const listEl = document.getElementById('matchInvoicesList');
+    if (listEl) {
+        listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-muted);"><div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>Cargando facturas disponibles...</div>';
+    }
+
+    const monthSelect = document.getElementById('matchModalMonthFilter');
+    const typeSelect = document.getElementById('matchModalTypeFilter');
+    const incReconciledChk = document.getElementById('matchModalIncludeReconciled');
+
+    const monthVal = monthSelect ? monthSelect.value : '';
+    const typeVal = typeSelect ? typeSelect.value : 'ALL';
+    const incReconciled = incReconciledChk ? incReconciledChk.checked : false;
+
+    const params = new URLSearchParams();
+    params.append('account_rfc', currentReconEntity);
+    if (typeVal && typeVal !== 'ALL') params.append('tipo', typeVal);
+    if (monthVal) params.append('month', monthVal);
+    if (incReconciled) params.append('include_reconciled', 'true');
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?${params.toString()}`, {
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            pendingInvoicesCache = await res.json();
+            const searchInput = document.getElementById('matchInvoiceSearchInput');
+            renderMatchInvoicesList(searchInput ? searchInput.value.trim() : '');
+        } else {
+            if (listEl) listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #ef4444;">Error al consultar facturas.</div>';
+        }
+    } catch (err) {
+        console.error("Error al obtener facturas disponibles:", err);
+        if (listEl) listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #ef4444;">Error de conexión.</div>';
+    }
+}
+
 async function openMatchManualModal(txId, concepto, monto, fecha, tipo) {
     const modal = document.getElementById('modalMatchManual');
     document.getElementById('matchTargetTxId').value = txId;
@@ -6542,31 +6595,41 @@ async function openMatchManualModal(txId, concepto, monto, fecha, tipo) {
 
     document.getElementById('matchTxMonto').textContent = `$${Number(monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     document.getElementById('matchTxConcepto').textContent = concepto;
-    document.getElementById('matchTxFechaTipo').textContent = `Fecha: ${formatDateDisplay(fecha)} • Flujo: ${tipo === 'EGRESO' ? 'Cargo (Gasto)' : 'Abono (Ingreso)'}`;
+    document.getElementById('matchTxFechaTipo').textContent = `Fecha: ${formatDateDisplay(fecha)} • Flujo detectado en banco: ${tipo === 'EGRESO' ? 'Cargo (Gasto)' : 'Abono (Ingreso)'}`;
 
     const searchInput = document.getElementById('matchInvoiceSearchInput');
     if (searchInput) searchInput.value = '';
 
+    // Poblar selector de meses en el modal con meses disponibles
+    const monthSelect = document.getElementById('matchModalMonthFilter');
+    if (monthSelect) {
+        monthSelect.innerHTML = '<option value="">Todos los meses</option>';
+        const monthsList = (availableReconMonths && availableReconMonths.length > 0) ? availableReconMonths : [currentReconMonth || '2026-08'];
+        monthsList.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m;
+            opt.textContent = `Mes: ${m}`;
+            monthSelect.appendChild(opt);
+        });
+        // Preseleccionar mes actual del dashboard
+        monthSelect.value = currentReconMonth || (monthsList[0] || '');
+    }
+
+    // Configurar selector de tipo: por defecto 'ALL' para no restringir la búsqueda
+    const typeSelect = document.getElementById('matchModalTypeFilter');
+    if (typeSelect) {
+        typeSelect.value = 'ALL';
+    }
+
+    const incReconciledChk = document.getElementById('matchModalIncludeReconciled');
+    if (incReconciledChk) {
+        incReconciledChk.checked = false;
+    }
+
     if (modal) modal.classList.remove('hidden');
 
-    // Cargar facturas pendientes correspondientes
-    const listEl = document.getElementById('matchInvoicesList');
-    if (listEl) {
-        listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-muted);"><div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>Cargando facturas disponibles...</div>';
-    }
-
-    try {
-        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?tipo=${tipo}&account_rfc=${encodeURIComponent(currentReconEntity)}`, {
-            headers: getAuthHeaders()
-        });
-        if (res.ok) {
-            pendingInvoicesCache = await res.json();
-            renderMatchInvoicesList('');
-        }
-    } catch (err) {
-        console.error("Error al obtener facturas disponibles:", err);
-        if (listEl) listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #ef4444;">Error al consultar facturas.</div>';
-    }
+    // Cargar facturas
+    await fetchPendingInvoicesForMatch();
 }
 
 function renderMatchInvoicesList(filterText = '') {
@@ -6582,29 +6645,49 @@ function renderMatchInvoicesList(filterText = '') {
             (f.rfc_emisor && f.rfc_emisor.toLowerCase().includes(s)) ||
             (f.rfc_receptor && f.rfc_receptor.toLowerCase().includes(s)) ||
             (f.uuid && f.uuid.toLowerCase().includes(s)) ||
+            (f.conceptos_resumen && f.conceptos_resumen.toLowerCase().includes(s)) ||
             (f.total && f.total.toString().includes(s))
         );
     }
 
     if (filtered.length === 0) {
-        listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">No se encontraron facturas pendientes que coincidan con la búsqueda.</div>';
+        listEl.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">No se encontraron facturas con los filtros seleccionados.<br><span style="font-size:0.75rem; color:#38bdf8;">Prueba cambiando el mes a "Todos los meses" o activando "Incluir facturas ya vinculadas".</span></div>';
         return;
     }
 
     let html = '';
     filtered.forEach(f => {
-        const contraparte = f.tipo === 'EGRESO' ? f.nombre_emisor : f.nombre_receptor;
-        const rfc = f.tipo === 'EGRESO' ? f.rfc_emisor : f.rfc_receptor;
+        const esIngreso = f.tipo === 'INGRESO';
+        const contraparte = esIngreso ? f.nombre_receptor : f.nombre_emisor;
+        const rfc = esIngreso ? f.rfc_receptor : f.rfc_emisor;
+        const tipoBadge = esIngreso
+            ? '<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700;">EMITIDA (Ingreso)</span>'
+            : '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700;">RECIBIDA (Gasto)</span>';
+
+        const multiPagoBadge = (f.pagos_vinculados_count && f.pagos_vinculados_count > 0)
+            ? `<div style="margin-top: 0.3rem; font-size: 0.72rem; color: #38bdf8; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); padding: 0.25rem 0.5rem; border-radius: 5px; display: flex; justify-content: space-between;">
+                <span>🔗 Pagos vinculados: <strong>${f.pagos_vinculados_count}</strong> ($${Number(f.monto_vinculado).toLocaleString('es-MX', {minimumFractionDigits: 2})})</span>
+                <span>Saldo por amparar: <strong>$${Number(f.saldo_pendiente).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong></span>
+               </div>`
+            : '';
+
+        const conceptoTxt = f.conceptos_resumen ? `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(f.conceptos_resumen)}</div>` : '';
+
         html += `
-            <div class="match-invoice-item" data-uuid="${f.uuid}" onclick="selectInvoiceForMatch('${f.uuid}', this)" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.65rem 0.85rem; cursor: pointer; transition: all 0.15s; background: rgba(255,255,255,0.02);">
+            <div class="match-invoice-item" data-uuid="${f.uuid}" onclick="selectInvoiceForMatch('${f.uuid}', this)" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.7rem 0.85rem; cursor: pointer; transition: all 0.15s; background: rgba(255,255,255,0.02);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                    <strong style="color: var(--text-main); font-size: 0.88rem;">${escapeHtml(contraparte || 'Sin nombre')}</strong>
-                    <strong style="color: #10b981; font-size: 0.95rem;">$${Number(f.total).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
+                    <div style="display: flex; align-items: center; gap: 0.45rem;">
+                        ${tipoBadge}
+                        <strong style="color: var(--text-main); font-size: 0.88rem;">${escapeHtml(contraparte || 'Sin nombre')}</strong>
+                    </div>
+                    <strong style="color: #38bdf8; font-size: 0.95rem;">$${Number(f.total).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                ${conceptoTxt}
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
                     <span>RFC: ${rfc} • Fecha: ${f.fecha_emision}</span>
                     <span style="font-family: monospace;">UUID: ${f.uuid.slice(0, 16)}...</span>
                 </div>
+                ${multiPagoBadge}
             </div>
         `;
     });

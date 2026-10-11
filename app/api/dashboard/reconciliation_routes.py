@@ -243,25 +243,44 @@ def get_reconciliation_transactions(
 
 @router.get("/pending-invoices")
 def get_pending_invoices(
-    tipo: Optional[str] = Query(None),
+    tipo: Optional[str] = Query(None, description="Filtrar por tipo: INGRESO, EGRESO o ALL"),
+    month: Optional[str] = Query(None, description="Filtrar por mes en formato YYYY-MM"),
+    include_reconciled: bool = Query(False, description="Incluir facturas ya vinculadas para asociar múltiples pagos"),
     search: Optional[str] = Query(None),
     account_rfc: str = Query("DEGF851127TK1"),
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """
-    Retorna las facturas registradas de la entidad que aún no han sido conciliadas con ningún movimiento bancario.
+    Retorna las facturas registradas de la entidad disponibles para conciliar,
+    con soporte para filtrado por mes, tipo, e inclusión de facturas ya vinculadas
+    para permitir asociar múltiples pagos bancarios a una misma factura.
     """
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
 
     query = db.query(CFDIInvoice).filter(
-        CFDIInvoice.conciliado == False,
         CFDIInvoice.account_rfc == effective_rfc
     )
 
+    if not include_reconciled:
+        query = query.filter(CFDIInvoice.conciliado == False)
+
     if tipo and tipo != "ALL":
         query = query.filter(CFDIInvoice.tipo == tipo)
+
+    if month:
+        try:
+            parts = month.strip().split("-")
+            y, m = int(parts[0]), int(parts[1])
+            start_dt = datetime(y, m, 1)
+            if m == 12:
+                end_dt = datetime(y + 1, 1, 1)
+            else:
+                end_dt = datetime(y, m + 1, 1)
+            query = query.filter(CFDIInvoice.fecha_emision >= start_dt, CFDIInvoice.fecha_emision < end_dt)
+        except Exception:
+            pass
 
     if search:
         s = f"%{search.strip()}%"
@@ -273,26 +292,50 @@ def get_pending_invoices(
             (CFDIInvoice.uuid.ilike(s))
         )
 
-    invoices = query.order_by(desc(CFDIInvoice.fecha_emision)).limit(100).all()
+    invoices = query.order_by(desc(CFDIInvoice.fecha_emision)).limit(150).all()
 
-    return [{
-        "uuid": inv.uuid,
-        "account_rfc": inv.account_rfc,
-        "area_proyecto": inv.area_proyecto,
-        "tipo": inv.tipo,
-        "rfc_emisor": inv.rfc_emisor,
-        "nombre_emisor": inv.nombre_emisor,
-        "rfc_receptor": inv.rfc_receptor,
-        "nombre_receptor": inv.nombre_receptor,
-        "fecha_emision": inv.fecha_emision.strftime("%Y-%m-%d") if inv.fecha_emision else "",
-        "subtotal": inv.subtotal,
-        "iva": inv.iva_trasladado,
-        "retencion_isr": getattr(inv, "retencion_isr", 0.0),
-        "retencion_iva": getattr(inv, "retencion_iva", 0.0),
-        "total": inv.total,
-        "metodo_pago": inv.metodo_pago,
-        "conceptos_resumen": inv.conceptos_resumen
-    } for inv in invoices]
+    # Precalcular montos vinculados para facturas retornadas
+    inv_uuids = [inv.uuid for inv in invoices]
+    linked_tx_map: Dict[str, List[BankTransaction]] = {}
+    if inv_uuids:
+        all_linked = db.query(BankTransaction).filter(
+            BankTransaction.uuid_cfdi.in_(inv_uuids),
+            BankTransaction.account_rfc == effective_rfc
+        ).all()
+        for t in all_linked:
+            linked_tx_map.setdefault(t.uuid_cfdi, []).append(t)
+
+    results = []
+    for inv in invoices:
+        txs_for_inv = linked_tx_map.get(inv.uuid, [])
+        monto_vinculado = round(sum(float(t.monto or 0) for t in txs_for_inv), 2)
+        total_inv = float(inv.total or 0)
+        saldo_pendiente = max(0.0, round(total_inv - monto_vinculado, 2))
+
+        results.append({
+            "uuid": inv.uuid,
+            "account_rfc": inv.account_rfc,
+            "area_proyecto": inv.area_proyecto,
+            "tipo": inv.tipo,
+            "rfc_emisor": inv.rfc_emisor,
+            "nombre_emisor": inv.nombre_emisor,
+            "rfc_receptor": inv.rfc_receptor,
+            "nombre_receptor": inv.nombre_receptor,
+            "fecha_emision": inv.fecha_emision.strftime("%Y-%m-%d") if inv.fecha_emision else "",
+            "subtotal": inv.subtotal,
+            "iva": inv.iva_trasladado,
+            "retencion_isr": getattr(inv, "retencion_isr", 0.0),
+            "retencion_iva": getattr(inv, "retencion_iva", 0.0),
+            "total": inv.total,
+            "metodo_pago": inv.metodo_pago,
+            "conceptos_resumen": inv.conceptos_resumen,
+            "conciliado": inv.conciliado,
+            "monto_vinculado": monto_vinculado,
+            "saldo_pendiente": saldo_pendiente,
+            "pagos_vinculados_count": len(txs_for_inv)
+        })
+
+    return results
 
 
 @router.post("/upload-files")
@@ -558,6 +601,8 @@ def match_manual(
 ):
     """
     Enlaza manualmente una transacción bancaria con un CFDI específico o aprueba una sugerencia.
+    Soporta vincular múltiples transacciones a una misma factura y alinea automáticamente
+    el tipo de flujo si el movimiento bancario fue clasificado con la dirección opuesta.
     """
     tx = db.query(BankTransaction).filter(BankTransaction.id == transaction_id).first()
     if not tx:
@@ -567,18 +612,37 @@ def match_manual(
     if not factura:
         raise HTTPException(status_code=404, detail="Factura CFDI no encontrada.")
 
-    # Si la transacción ya tenía otra factura, liberar la anterior
+    # Si la transacción ya tenía otra factura, liberar la anterior si nadie más la usa
     if tx.uuid_cfdi and tx.uuid_cfdi != factura.uuid:
-        prev_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == tx.uuid_cfdi).first()
+        prev_uuid = tx.uuid_cfdi
+        prev_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == prev_uuid).first()
         if prev_f:
-            prev_f.conciliado = False
+            other_tx = db.query(BankTransaction).filter(
+                BankTransaction.uuid_cfdi == prev_uuid,
+                BankTransaction.id != tx.id
+            ).first()
+            if not other_tx:
+                prev_f.conciliado = False
+
+    # Alinear tipo de flujo contable si difiere
+    if tx.tipo != factura.tipo:
+        tx.tipo = factura.tipo
+        if tx.tipo == "INGRESO":
+            tx.ingresos = tx.monto
+            tx.egresos = 0.0
+            tx.tipo_categoria = "INGRESO"
+        else:
+            tx.egresos = tx.monto
+            tx.ingresos = 0.0
+            tx.tipo_categoria = "GASTO"
 
     tx.uuid_cfdi = factura.uuid
     tx.status_conciliacion = "CONCILIADO"
     tx.confianza_score = 1.0
-    tx.nota_revision = f"Conciliado manualmente con {factura.nombre_emisor if tx.tipo == 'EGRESO' else factura.nombre_receptor}."
-    factura.conciliado = True
+    tx.contraparte = factura.nombre_receptor if tx.tipo == "INGRESO" else factura.nombre_emisor
+    tx.nota_revision = f"Conciliado manualmente con {tx.contraparte}."
 
+    factura.conciliado = True
     db.commit()
 
     return {"success": True, "message": "Movimiento conciliado exitosamente."}

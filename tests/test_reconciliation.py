@@ -805,6 +805,123 @@ def test_upload_bank_pdf_mercadopago_and_cross_match():
         db.close()
 
 
+def test_pending_invoices_month_filter_and_multi_payment():
+    db = SessionLocal()
+    try:
+        # 1. Crear factura CFDI emitida (INGRESO) de $3,213.20 en agosto 2026
+        uuid_tukipa = "CFDI-TUKIPA-MULTI-PAY-001"
+        cfdi = CFDIInvoice(
+            uuid=uuid_tukipa,
+            account_rfc="DEGF851127TK1",
+            tipo="INGRESO",
+            rfc_emisor="DEGF851127TK1",
+            nombre_emisor="FRANCISCO DE JESUS DELGADILLO GARCIA",
+            rfc_receptor="MEHA870222DY4",
+            nombre_receptor="ABEL ALEJANDRO MEDINA HERNANDEZ",
+            fecha_emision=datetime(2026, 8, 28, 10, 0),
+            subtotal=2770.00,
+            iva_trasladado=443.20,
+            retenciones=0.0,
+            total=3213.20,
+            metodo_pago="PPD",
+            conceptos_resumen="Diseño gráfico y publicidad",
+            conciliado=False
+        )
+        db.merge(cfdi)
+
+        # 2. Crear dos transacciones bancarias en BBVA
+        tx1 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx-tukipa-pago1",
+            banco="BBVA",
+            fecha=datetime(2026, 8, 28),
+            concepto="PAGO CUENTA DE TERCERO - Tukipa Marqueting",
+            monto=2770.00,
+            tipo="EGRESO",  # Clasificado inicialmente como EGRESO por BBVA
+            status_conciliacion="SIN_CFDI",
+            periodo_mes="2026-08"
+        )
+        tx2 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx-tukipa-pago2",
+            banco="BBVA",
+            fecha=datetime(2026, 8, 28),
+            concepto="PAGO CUENTA DE TERCERO - iva tukipa marketi",
+            monto=443.20,
+            tipo="EGRESO",
+            status_conciliacion="SIN_CFDI",
+            periodo_mes="2026-08"
+        )
+        db.merge(tx1)
+        db.merge(tx2)
+        db.commit()
+
+        db_tx1 = db.query(BankTransaction).filter(BankTransaction.id_transaccion == "tx-tukipa-pago1").first()
+        db_tx2 = db.query(BankTransaction).filter(BankTransaction.id_transaccion == "tx-tukipa-pago2").first()
+
+        # 3. Probar endpoint /pending-invoices con filtro de mes
+        res_aug = client.get("/api/dashboard/reconciliation/pending-invoices?month=2026-08&account_rfc=DEGF851127TK1")
+        assert res_aug.status_code == 200
+        invs_aug = res_aug.json()
+        target = next((i for i in invs_aug if i["uuid"] == uuid_tukipa), None)
+        assert target is not None
+        assert target["total"] == 3213.20
+        assert target["tipo"] == "INGRESO"
+        assert target["saldo_pendiente"] == 3213.20
+
+        # Verificar que si se filtra por otro mes (ej. 2026-09), no aparece
+        res_sep = client.get("/api/dashboard/reconciliation/pending-invoices?month=2026-09&account_rfc=DEGF851127TK1")
+        assert not any(i["uuid"] == uuid_tukipa for i in res_sep.json())
+
+        # 4. Vincular el primer pago ($2,770.00)
+        match1 = client.post("/api/dashboard/reconciliation/match-manual", data={
+            "transaction_id": db_tx1.id,
+            "uuid_cfdi": uuid_tukipa
+        })
+        assert match1.status_code == 200
+
+        # Validar alineación de flujo: tx1 debe haber cambiado a INGRESO
+        db.refresh(db_tx1)
+        assert db_tx1.tipo == "INGRESO"
+        assert db_tx1.status_conciliacion == "CONCILIADO"
+        assert db_tx1.uuid_cfdi == uuid_tukipa
+
+        # 5. Consultar /pending-invoices sin include_reconciled: ya no debe salir porque conciliado=True
+        res_norec = client.get("/api/dashboard/reconciliation/pending-invoices?month=2026-08&account_rfc=DEGF851127TK1")
+        assert not any(i["uuid"] == uuid_tukipa for i in res_norec.json())
+
+        # Consultar /pending-invoices CON include_reconciled=True: debe salir mostrando el monto vinculado y saldo restante
+        res_rec = client.get("/api/dashboard/reconciliation/pending-invoices?month=2026-08&include_reconciled=true&account_rfc=DEGF851127TK1")
+        assert res_rec.status_code == 200
+        target_rec = next((i for i in res_rec.json() if i["uuid"] == uuid_tukipa), None)
+        assert target_rec is not None
+        assert target_rec["pagos_vinculados_count"] == 1
+        assert target_rec["monto_vinculado"] == 2770.00
+        assert target_rec["saldo_pendiente"] == 443.20
+
+        # 6. Vincular el segundo pago ($443.20) a la misma factura
+        match2 = client.post("/api/dashboard/reconciliation/match-manual", data={
+            "transaction_id": db_tx2.id,
+            "uuid_cfdi": uuid_tukipa
+        })
+        assert match2.status_code == 200
+
+        db.refresh(db_tx2)
+        assert db_tx2.tipo == "INGRESO"
+        assert db_tx2.status_conciliacion == "CONCILIADO"
+        assert db_tx2.uuid_cfdi == uuid_tukipa
+
+        # Verificar saldo pendiente actualizado a 0.0
+        res_final = client.get("/api/dashboard/reconciliation/pending-invoices?month=2026-08&include_reconciled=true&account_rfc=DEGF851127TK1")
+        target_final = next(i for i in res_final.json() if i["uuid"] == uuid_tukipa)
+        assert target_final["pagos_vinculados_count"] == 2
+        assert target_final["monto_vinculado"] == 3213.20
+        assert target_final["saldo_pendiente"] == 0.0
+    finally:
+        db.close()
+
+
+
 
 
 

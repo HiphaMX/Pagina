@@ -1651,11 +1651,37 @@
                 </div>
 
                 <!-- Buscador de Facturas Disponibles -->
-                <div style="margin-bottom: 0.75rem;">
+                <div style="margin-bottom: 0.65rem;">
                     <div class="search-input-box" style="width: 100%;">
                         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input type="text" id="matchInvoiceSearchInput" placeholder="Buscar factura por proveedor, cliente, RFC o UUID..." style="font-size: 0.85rem;">
+                        <input type="text" id="matchInvoiceSearchInput" placeholder="Buscar por cliente, proveedor, RFC o UUID..." style="font-size: 0.85rem;">
                     </div>
+                </div>
+
+                <!-- Barra de Filtros: Mes y Tipo de CFDI -->
+                <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.65rem;">
+                    <div style="flex: 1;">
+                        <label for="matchModalMonthFilter" style="display: block; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.2rem; font-weight: 600;">Período / Mes:</label>
+                        <select id="matchModalMonthFilter" style="width: 100%; background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.8rem; outline: none; cursor: pointer;">
+                            <option value="">Todos los meses</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="matchModalTypeFilter" style="display: block; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.2rem; font-weight: 600;">Tipo de Factura:</label>
+                        <select id="matchModalTypeFilter" style="width: 100%; background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.8rem; outline: none; cursor: pointer;">
+                            <option value="ALL">Todas las facturas</option>
+                            <option value="INGRESO">Emitidas (Ingreso / Clientes)</option>
+                            <option value="EGRESO">Recibidas (Gasto / Proveedores)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Toggle para facturas con pagos previos (Multi-Pago) -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; padding: 0.4rem 0.6rem; background: rgba(56, 189, 248, 0.05); border: 1px dashed rgba(56, 189, 248, 0.3); border-radius: 7px;">
+                    <input type="checkbox" id="matchModalIncludeReconciled" style="cursor: pointer; width: 14px; height: 14px; accent-color: var(--accent-cyan);">
+                    <label for="matchModalIncludeReconciled" style="font-size: 0.76rem; color: var(--text-main); cursor: pointer; user-select: none;">
+                        Incluir facturas ya vinculadas (para relacionar múltiples pagos / parcialidades a la misma factura)
+                    </label>
                 </div>
 
                 <!-- Lista de Facturas Pendientes para Seleccionar -->
