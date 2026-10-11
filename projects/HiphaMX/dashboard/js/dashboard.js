@@ -6009,6 +6009,9 @@ function initReconciliationModule() {
 
     // Modal de Facturas en Buzón
     initMailboxInvoicesModal();
+
+    // Modales de Edición de Proyecto y Justificación (No Requiere CFDI)
+    initProjectAndExemptionModals();
 }
 
 // Carga principal de datos y métricas
@@ -6069,7 +6072,43 @@ async function loadReconciliationData(refreshMonths = true) {
         if (sinCfdiEl) sinCfdiEl.textContent = `$${(k.monto_sin_cfdi || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 
         const sinCountEl = document.getElementById('kpiReconSinCFDICount');
-        if (sinCountEl) sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos sin comprobante digital`;
+        if (sinCountEl) {
+            const noAplicaTxt = (k.count_no_aplica && k.count_no_aplica > 0) ? ` (${k.count_no_aplica} exentos/justificados)` : '';
+            sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos sin comprobante digital${noAplicaTxt}`;
+        }
+
+        // Actualizar Badge de Salud / Check Mensual al 100%
+        const monthStatusBadge = document.getElementById('reconMonthStatusBadge');
+        if (monthStatusBadge) {
+            const totalTx = k.total_transacciones || 0;
+            const countSin = k.count_sin_cfdi || 0;
+            const countNoAplica = k.count_no_aplica || 0;
+            const mesCompleto = k.mes_completo || false;
+
+            if (totalTx === 0) {
+                monthStatusBadge.style.background = 'rgba(255, 255, 255, 0.04)';
+                monthStatusBadge.style.borderColor = 'var(--border-color)';
+                monthStatusBadge.style.color = 'var(--text-muted)';
+                monthStatusBadge.style.boxShadow = 'none';
+                monthStatusBadge.innerHTML = `<span>ℹ️ Sin movimientos en este mes</span>`;
+                monthStatusBadge.title = 'No hay movimientos bancarios registrados en este período';
+            } else if (mesCompleto) {
+                monthStatusBadge.style.background = 'rgba(16, 185, 129, 0.16)';
+                monthStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+                monthStatusBadge.style.color = '#34d399';
+                monthStatusBadge.style.boxShadow = '0 0 12px rgba(16, 185, 129, 0.2)';
+                const extraTxt = countNoAplica > 0 ? ` (${countNoAplica} justificados)` : '';
+                monthStatusBadge.innerHTML = `<span>✅ MES CONCILIADO AL 100%${extraTxt}</span>`;
+                monthStatusBadge.title = 'Todos los gastos de este mes cuentan con factura fiscal digital o están debidamente justificados';
+            } else {
+                monthStatusBadge.style.background = 'rgba(245, 158, 11, 0.12)';
+                monthStatusBadge.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+                monthStatusBadge.style.color = '#fbbf24';
+                monthStatusBadge.style.boxShadow = 'none';
+                monthStatusBadge.innerHTML = `<span>⏳ EN PROCESO (${countSin} sin CFDI)</span>`;
+                monthStatusBadge.title = `Faltan ${countSin} egresos por vincular a comprobante fiscal`;
+            }
+        }
 
         // Actualizar contador del buzón
         currentReconMailboxCount = k.facturas_disponibles_count || 0;
@@ -6166,6 +6205,8 @@ async function loadReconciliationTransactions() {
                 statusBadge = `<span style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">✓ Conciliado</span>`;
             } else if (t.status_conciliacion === 'POR_REVISAR') {
                 statusBadge = `<span style="background: rgba(234, 179, 8, 0.12); color: #facc15; border: 1px solid rgba(234,179,8,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">⏳ Por Revisar</span>`;
+            } else if (t.status_conciliacion === 'NO_APLICA' || t.status_conciliacion === 'EXENTO') {
+                statusBadge = `<span style="background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">🚫 No requiere CFDI</span>`;
             } else {
                 statusBadge = `<span style="background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">✕ Sin CFDI</span>`;
             }
@@ -6191,6 +6232,8 @@ async function loadReconciliationTransactions() {
                         <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace; margin-top: 2px;">UUID: ${t.uuid_cfdi.slice(0, 16)}...</div>
                     </div>
                 `;
+            } else if (t.status_conciliacion === 'NO_APLICA' || t.status_conciliacion === 'EXENTO') {
+                cfdiHtml = `<div style="font-size: 0.78rem; color: #94a3b8; line-height: 1.35;"><span style="color: var(--accent-cyan);">Justificado:</span> ${escapeHtml(t.nota_revision || 'No sujeto a factura comercial')}</div>`;
             } else if (t.status_conciliacion === 'POR_REVISAR' && t.nota_revision) {
                 cfdiHtml = `<div style="font-size: 0.78rem; color: #facc15; line-height: 1.3;">${escapeHtml(t.nota_revision)}</div>`;
             } else {
@@ -6225,7 +6268,7 @@ async function loadReconciliationTransactions() {
             let actionsHtml = '';
             if (t.status_conciliacion === 'POR_REVISAR' && t.uuid_cfdi) {
                 actionsHtml = `
-                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                         <button type="button" onclick="approveMatchSuggestion(${t.id}, '${t.uuid_cfdi}')" title="Aprobar coincidencia sugerida" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); border-radius: 6px; padding: 0.3rem 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">✓ Aprobar</button>
                         <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Buscar otra factura" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.45rem; cursor: pointer; font-size: 0.75rem;">🔍</button>
                         ${deleteBtnHtml}
@@ -6233,14 +6276,22 @@ async function loadReconciliationTransactions() {
                 `;
             } else if (t.status_conciliacion === 'SIN_CFDI') {
                 actionsHtml = `
-                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                         <button type="button" onclick="openMatchManualModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}', '${t.tipo}')" title="Vincular factura manualmente" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); border-radius: 6px; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">+ Vincular</button>
+                        <button type="button" onclick="openMarkNoAplicaModal(${t.id}, '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}')" title="Marcar como movimiento que no requiere factura (SAT, Tarjeta, Traspaso)" style="background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); border-radius: 6px; padding: 0.3rem 0.5rem; cursor: pointer; font-size: 0.72rem;">🚫 No CFDI</button>
+                        ${deleteBtnHtml}
+                    </div>
+                `;
+            } else if (t.status_conciliacion === 'NO_APLICA' || t.status_conciliacion === 'EXENTO') {
+                actionsHtml = `
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center; flex-wrap: wrap;">
+                        <button type="button" onclick="revertTransactionSinCfdi(${t.id})" title="Desmarcar y volver a requerir factura" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.55rem; cursor: pointer; font-size: 0.72rem;">Desmarcar</button>
                         ${deleteBtnHtml}
                     </div>
                 `;
             } else if (t.status_conciliacion === 'CONCILIADO') {
                 actionsHtml = `
-                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center;">
+                    <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                         <button type="button" onclick="unmatchTransaction(${t.id})" title="Desvincular factura" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.55rem; cursor: pointer; font-size: 0.72rem;">Desvincular</button>
                         ${deleteBtnHtml}
                     </div>
@@ -6257,7 +6308,10 @@ async function loadReconciliationTransactions() {
                 <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
                     <td style="padding: 0.85rem 1.1rem; font-size: 0.82rem; color: var(--text-muted); font-family: monospace;">${formatDateDisplay(t.fecha)}</td>
                     <td style="padding: 0.85rem 1.1rem; font-size: 0.82rem; font-weight: 600; white-space: nowrap;">
-                        <span style="background: rgba(56, 189, 248, 0.08); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.2); padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.75rem;">${escapeHtml(t.area_proyecto || 'General')}</span>
+                        <button type="button" onclick="openEditProjectModal(${t.id}, '${escapeHtml(t.area_proyecto || 'General')}', '${escapeHtml(t.concepto)}', ${t.monto}, '${t.fecha}')" title="Click para editar o asignar Proyecto / Área" style="background: rgba(56, 189, 248, 0.08); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.25rem 0.55rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.15s;">
+                            <span>${escapeHtml(t.area_proyecto || 'General')}</span>
+                            <span style="opacity: 0.65; font-size: 0.7rem;">✏️</span>
+                        </button>
                     </td>
                     <td style="padding: 0.85rem 1.1rem; font-weight: 500; color: var(--text-main); font-size: 0.84rem; max-width: 300px;">
                         <div style="line-height: 1.35; word-break: break-word;">${escapeHtml(t.concepto)}</div>
@@ -7066,6 +7120,243 @@ function initReconBackfillModal() {
     }
 }
 
+// -------------------------------------------------------------
+// MODAL: EDICIÓN DE PROYECTO / ÁREA
+// -------------------------------------------------------------
+function openEditProjectModal(txId, currentProject, concepto, monto, fecha) {
+    const modal = document.getElementById('modalEditProject');
+    if (!modal) return;
+
+    document.getElementById('editProjectTxId').value = txId;
+    document.getElementById('editProjectTxConcept').textContent = concepto || '-';
+    document.getElementById('editProjectTxDate').textContent = fecha ? `Fecha: ${fecha}` : '-';
+    document.getElementById('editProjectTxAmount').textContent = monto ? `$${Number(monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}` : '-';
+    
+    const input = document.getElementById('editProjectInput');
+    if (input) {
+        input.value = currentProject && currentProject !== 'General' ? currentProject : '';
+    }
+
+    modal.classList.remove('hidden');
+    setTimeout(() => { if (input) input.focus(); }, 100);
+}
+
+function closeEditProjectModal() {
+    const modal = document.getElementById('modalEditProject');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function saveTransactionProject() {
+    const txId = document.getElementById('editProjectTxId').value;
+    const input = document.getElementById('editProjectInput');
+    const updateCfdiCheckbox = document.getElementById('editProjectUpdateCfdi');
+    const btnSave = document.getElementById('btnSaveEditProject');
+
+    if (!txId) return;
+    const newProject = (input ? input.value : '').trim() || 'General';
+    const updateCfdi = updateCfdiCheckbox ? updateCfdiCheckbox.checked : true;
+
+    try {
+        if (btnSave) {
+            btnSave.disabled = true;
+            btnSave.textContent = 'Guardando...';
+        }
+
+        const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/project`, {
+            method: 'PATCH',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                area_proyecto: newProject,
+                update_cfdi: updateCfdi
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Error al actualizar proyecto');
+        }
+
+        closeEditProjectModal();
+        await loadReconciliationTransactions();
+    } catch (err) {
+        console.error("Error guardando proyecto:", err);
+        alert(err.message || 'Error al guardar el proyecto.');
+    } finally {
+        if (btnSave) {
+            btnSave.disabled = false;
+            btnSave.textContent = 'Guardar Proyecto';
+        }
+    }
+}
+
+// -------------------------------------------------------------
+// MODAL: JUSTIFICAR MOVIMIENTO (NO REQUIERE CFDI)
+// -------------------------------------------------------------
+function openMarkNoAplicaModal(txId, concepto, monto, fecha) {
+    const modal = document.getElementById('modalMarkNoAplica');
+    if (!modal) return;
+
+    document.getElementById('markNoAplicaTxId').value = txId;
+    document.getElementById('markNoAplicaTxConcept').textContent = concepto || '-';
+    document.getElementById('markNoAplicaTxDate').textContent = fecha ? `Fecha: ${fecha}` : '-';
+    document.getElementById('markNoAplicaTxAmount').textContent = monto ? `-$${Number(monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}` : '-';
+
+    const reasonSelect = document.getElementById('markNoAplicaReasonSelect');
+    const customGroup = document.getElementById('markNoAplicaCustomGroup');
+    const customInput = document.getElementById('markNoAplicaCustomInput');
+
+    if (reasonSelect) {
+        // Autoselección inteligente basada en concepto
+        const upper = (concepto || '').toUpperCase();
+        if (upper.includes('SAT') || upper.includes('IMPUESTO') || upper.includes('DECLARAC') || upper.includes('TESORERIA')) {
+            reasonSelect.value = 'Impuestos SAT (Pago de declaraciones / provisionales)';
+        } else if (upper.includes('TARJETA') || upper.includes('MERCADO PAGO') || upper.includes('MERCADOPAGO') || upper.includes('ML') || upper.includes('PAGO TC')) {
+            reasonSelect.value = 'Pago / Liquidación de Tarjeta de Crédito (Traspaso a ML / Tarjeta)';
+        } else if (upper.includes('TRASPASO') || upper.includes('TRANSFERENCIA PROPIA')) {
+            reasonSelect.value = 'Traspaso entre Cuentas Propias';
+        } else if (upper.includes('COMISION') || upper.includes('INTERES')) {
+            reasonSelect.value = 'Comisión / Interés Bancario Exento';
+        } else {
+            reasonSelect.value = 'Impuestos SAT (Pago de declaraciones / provisionales)';
+        }
+    }
+
+    if (customGroup) customGroup.classList.add('hidden');
+    if (customInput) customInput.value = '';
+
+    modal.classList.remove('hidden');
+}
+
+function closeMarkNoAplicaModal() {
+    const modal = document.getElementById('modalMarkNoAplica');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function saveTransactionNoAplica() {
+    const txId = document.getElementById('markNoAplicaTxId').value;
+    const reasonSelect = document.getElementById('markNoAplicaReasonSelect');
+    const customInput = document.getElementById('markNoAplicaCustomInput');
+    const btnConfirm = document.getElementById('btnConfirmMarkNoAplica');
+
+    if (!txId) return;
+
+    let motivo = reasonSelect ? reasonSelect.value : 'No requiere comprobante fiscal';
+    if (motivo === 'OTRO') {
+        motivo = (customInput ? customInput.value : '').trim() || 'Movimiento no sujeto a CFDI';
+    }
+
+    try {
+        if (btnConfirm) {
+            btnConfirm.disabled = true;
+            btnConfirm.textContent = 'Guardando...';
+        }
+
+        const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/status`, {
+            method: 'PATCH',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status_conciliacion: 'NO_APLICA',
+                motivo: motivo
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Error al justificar movimiento');
+        }
+
+        closeMarkNoAplicaModal();
+        // Recargar datos y overview para recalcular el Check de Mes Completo
+        await loadReconciliationData(false);
+    } catch (err) {
+        console.error("Error al marcar como no aplica:", err);
+        alert(err.message || 'Error al justificar movimiento.');
+    } finally {
+        if (btnConfirm) {
+            btnConfirm.disabled = false;
+            btnConfirm.textContent = 'Confirmar y Justificar';
+        }
+    }
+}
+
+async function revertTransactionSinCfdi(txId) {
+    if (!confirm('¿Deseas desmarcar este movimiento para que vuelva a requerir factura fiscal (CFDI)?')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/reconciliation/transactions/${txId}/status`, {
+            method: 'PATCH',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status_conciliacion: 'SIN_CFDI'
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Error al revertir estatus');
+        }
+
+        await loadReconciliationData(false);
+    } catch (err) {
+        console.error("Error al revertir estatus:", err);
+        alert(err.message || 'Error al revertir estatus.');
+    }
+}
+
+function initProjectAndExemptionModals() {
+    // Modal Edit Project
+    const btnCloseProjX = document.getElementById('btnCloseEditProjectX');
+    const btnCancelProj = document.getElementById('btnCancelEditProject');
+    const btnSaveProj = document.getElementById('btnSaveEditProject');
+    const projChips = document.querySelectorAll('.btn-project-chip');
+
+    if (btnCloseProjX) btnCloseProjX.addEventListener('click', closeEditProjectModal);
+    if (btnCancelProj) btnCancelProj.addEventListener('click', closeEditProjectModal);
+    if (btnSaveProj) btnSaveProj.addEventListener('click', saveTransactionProject);
+
+    projChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const projName = chip.dataset.proj || chip.textContent.trim();
+            const input = document.getElementById('editProjectInput');
+            if (input) input.value = projName;
+        });
+    });
+
+    // Modal Mark No Aplica
+    const btnCloseNoAplicaX = document.getElementById('btnCloseMarkNoAplicaX');
+    const btnCancelNoAplica = document.getElementById('btnCancelMarkNoAplica');
+    const btnConfirmNoAplica = document.getElementById('btnConfirmMarkNoAplica');
+    const reasonSelect = document.getElementById('markNoAplicaReasonSelect');
+    const customGroup = document.getElementById('markNoAplicaCustomGroup');
+
+    if (btnCloseNoAplicaX) btnCloseNoAplicaX.addEventListener('click', closeMarkNoAplicaModal);
+    if (btnCancelNoAplica) btnCancelNoAplica.addEventListener('click', closeMarkNoAplicaModal);
+    if (btnConfirmNoAplica) btnConfirmNoAplica.addEventListener('click', saveTransactionNoAplica);
+
+    if (reasonSelect) {
+        reasonSelect.addEventListener('change', () => {
+            if (reasonSelect.value === 'OTRO') {
+                if (customGroup) customGroup.classList.remove('hidden');
+                const customInput = document.getElementById('markNoAplicaCustomInput');
+                if (customInput) customInput.focus();
+            } else {
+                if (customGroup) customGroup.classList.add('hidden');
+            }
+        });
+    }
+}
+
 // Exposición global
 window.initReconciliationModule = initReconciliationModule;
 window.loadReconciliationData = loadReconciliationData;
@@ -7076,6 +7367,14 @@ window.unmatchTransaction = unmatchTransaction;
 window.deleteTransaction = deleteTransaction;
 window.autoSyncMailbox = autoSyncMailbox;
 window.openMailboxInvoicesModal = openMailboxInvoicesModal;
+window.openEditProjectModal = openEditProjectModal;
+window.closeEditProjectModal = closeEditProjectModal;
+window.saveTransactionProject = saveTransactionProject;
+window.openMarkNoAplicaModal = openMarkNoAplicaModal;
+window.closeMarkNoAplicaModal = closeMarkNoAplicaModal;
+window.saveTransactionNoAplica = saveTransactionNoAplica;
+window.revertTransactionSinCfdi = revertTransactionSinCfdi;
+
 
 
 

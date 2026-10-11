@@ -610,7 +610,14 @@
                                 <option value="11">11 - Noviembre</option>
                                 <option value="12">12 - Diciembre</option>
                             </select>
+
+                            <!-- Badge de Estatus de Salud y Check del Mes -->
+                            <div id="reconMonthStatusBadge" style="display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.85rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; transition: all 0.25s; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); color: var(--text-muted);" title="Estado de completitud fiscal del mes">
+                                <span>⏳ Verificando mes...</span>
+                            </div>
+
                             <button type="button" id="btnSyncMailbox" class="btn-secondary-mini" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;" title="Consultar correos no leídos en el buzón dedicado ahora">
+
                                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                                 <span>Sincronizar Buzón</span>
                             </button>
@@ -1797,7 +1804,125 @@
         </div>
     </div>
 
+    <!-- Modal: Asignar Proyecto / Área a Movimiento -->
+    <div id="modalEditProject" class="modal-overlay hidden" style="z-index: 10000;">
+        <div class="modal-content" style="max-width: 500px; width: 92%;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🏷️ Asignar Proyecto / Área</span>
+                    </h2>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Clasifica el gasto o ingreso para tus reportes por cliente</p>
+                </div>
+                <button type="button" id="btnCloseEditProjectX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding: 1.25rem;">
+                <input type="hidden" id="editProjectTxId" value="">
+                
+                <!-- Resumen de Transacción -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem; margin-bottom: 1.1rem;">
+                    <div id="editProjectTxConcept" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px; word-break: break-word;">-</div>
+                    <div style="display: flex; gap: 0.8rem; font-size: 0.78rem; color: var(--text-muted);">
+                        <span id="editProjectTxDate">-</span>
+                        <span id="editProjectTxAmount" style="font-weight: 700; color: var(--accent-cyan);">-</span>
+                    </div>
+                </div>
+
+                <!-- Chips de Proyectos Frecuentes -->
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Proyectos / Clientes Frecuentes:</label>
+                <div id="editProjectChips" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem;">
+                    <button type="button" class="btn-project-chip" data-proj="DAM" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">DAM</button>
+                    <button type="button" class="btn-project-chip" data-proj="HEALTHYICE" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">HEALTHYICE</button>
+                    <button type="button" class="btn-project-chip" data-proj="URO-ONCOLOGY" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">URO-ONCOLOGY</button>
+                    <button type="button" class="btn-project-chip" data-proj="HIPHA" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">HIPHA</button>
+                    <button type="button" class="btn-project-chip" data-proj="CHILE CHILLÓN" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">CHILE CHILLÓN</button>
+                    <button type="button" class="btn-project-chip" data-proj="LETRERAMA" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">LETRERAMA</button>
+                    <button type="button" class="btn-project-chip" data-proj="GRUPO GARI" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">GRUPO GARI</button>
+                    <button type="button" class="btn-project-chip" data-proj="VALENCIA" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">VALENCIA</button>
+                    <button type="button" class="btn-project-chip" data-proj="BOTICA SILVESTRE" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">BOTICA SILVESTRE</button>
+                    <button type="button" class="btn-project-chip" data-proj="GENERAL" style="background: rgba(255,255,255,0.08); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">GENERAL</button>
+                </div>
+
+                <!-- Input Nombre de Proyecto -->
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem;">
+                    <label for="editProjectInput" style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">Nombre del Proyecto / Área:</label>
+                    <input type="text" id="editProjectInput" placeholder="Ej. DAM, HEALTHYICE, GENERAL..." style="background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px; outline: none; font-size: 0.9rem;">
+                </div>
+
+                <!-- Checkbox Propagar a CFDI -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                    <input type="checkbox" id="editProjectUpdateCfdi" checked style="accent-color: var(--accent-cyan); width: 16px; height: 16px; cursor: pointer;">
+                    <label for="editProjectUpdateCfdi" style="font-size: 0.82rem; color: var(--text-muted); cursor: pointer;">Actualizar también en la factura CFDI vinculada (si aplica)</label>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem; padding: 1rem 1.25rem;">
+                <button type="button" id="btnCancelEditProject" class="btn-secondary-mini" style="background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 1.1rem; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                <button type="button" id="btnSaveEditProject" class="btn-primary-mini" style="background: var(--accent-cyan); color: #000; border: none; padding: 0.55rem 1.3rem; border-radius: 8px; cursor: pointer; font-weight: 700;">Guardar Proyecto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Justificar Movimiento (No Requiere CFDI) -->
+    <div id="modalMarkNoAplica" class="modal-overlay hidden" style="z-index: 10000;">
+        <div class="modal-content" style="max-width: 500px; width: 92%;">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🚫 No Requiere Comprobante (CFDI)</span>
+                    </h2>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Justifica el egreso para no computar como faltante y completar el mes</p>
+                </div>
+                <button type="button" id="btnCloseMarkNoAplicaX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding: 1.25rem;">
+                <input type="hidden" id="markNoAplicaTxId" value="">
+
+                <!-- Info Box -->
+                <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px; padding: 0.85rem; margin-bottom: 1.1rem; font-size: 0.82rem; color: #93c5fd; line-height: 1.4;">
+                    ℹ️ Los pagos de impuestos al SAT, comisiones exentas o traspasos para liquidar saldo de tarjetas de crédito no reciben factura de proveedor. Al justificarlos, saldrán de la lista de faltantes y permitirán activar el <strong>Check de Mes Completo al 100%</strong>.
+                </div>
+
+                <!-- Resumen de Transacción -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem; margin-bottom: 1.1rem;">
+                    <div id="markNoAplicaTxConcept" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px; word-break: break-word;">-</div>
+                    <div style="display: flex; gap: 0.8rem; font-size: 0.78rem; color: var(--text-muted);">
+                        <span id="markNoAplicaTxDate">-</span>
+                        <span id="markNoAplicaTxAmount" style="font-weight: 700; color: #f87171;">-</span>
+                    </div>
+                </div>
+
+                <!-- Motivo Selector -->
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem;">
+                    <label for="markNoAplicaReasonSelect" style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">Motivo de Exención / Justificación:</label>
+                    <select id="markNoAplicaReasonSelect" style="background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px; outline: none; font-size: 0.88rem; cursor: pointer;">
+                        <option value="Impuestos SAT (Pago de declaraciones / provisionales)">🏛️ Impuestos SAT (Pago de declaraciones / provisionales)</option>
+                        <option value="Pago / Liquidación de Tarjeta de Crédito (Traspaso a ML / Tarjeta)">💳 Pago / Liquidación de Tarjeta de Crédito (Traspaso a ML / Tarjeta)</option>
+                        <option value="Traspaso entre Cuentas Propias">🔄 Traspaso entre Cuentas Propias</option>
+                        <option value="Comisión / Interés Bancario Exento">🏦 Comisión / Interés Bancario Exento</option>
+                        <option value="Gasto No Deducible">📁 Gasto No Deducible</option>
+                        <option value="OTRO">✏️ Otro motivo (especificar abajo)...</option>
+                    </select>
+                </div>
+
+                <!-- Input Motivo Personalizado -->
+                <div id="markNoAplicaCustomGroup" class="form-group hidden" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label for="markNoAplicaCustomInput" style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">Escribe el motivo:</label>
+                    <input type="text" id="markNoAplicaCustomInput" placeholder="Ej. Devolución de capital..." style="background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.65rem; border-radius: 8px; outline: none; font-size: 0.88rem;">
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.6rem; padding: 1rem 1.25rem;">
+                <button type="button" id="btnCancelMarkNoAplica" class="btn-secondary-mini" style="background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 1.1rem; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                <button type="button" id="btnConfirmMarkNoAplica" class="btn-primary-mini" style="background: #38bdf8; color: #000; border: none; padding: 0.55rem 1.3rem; border-radius: 8px; cursor: pointer; font-weight: 700;">Confirmar y Justificar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script de Lógica -->
     <script src="/projects/HiphaMX/dashboard/js/dashboard.js"></script>
+
 </body>
 </html>

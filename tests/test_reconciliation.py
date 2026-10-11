@@ -925,6 +925,138 @@ def test_pending_invoices_month_filter_and_multi_payment():
         db.close()
 
 
+def test_update_transaction_project():
+    client = TestClient(app)
+    db = SessionLocal()
+    try:
+        uuid_proj = "CFDI-TEST-PROJECT-UPDATE"
+        tx_id = "tx-test-proj-001"
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx_id).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_proj).delete()
+        db.commit()
+
+        cfdi = CFDIInvoice(
+            uuid=uuid_proj,
+            account_rfc="DEGF851127TK1",
+            area_proyecto="GENERAL",
+            tipo="EGRESO",
+            rfc_emisor="PROV990101XYZ",
+            nombre_emisor="PROVEEDOR PRUEBA",
+            rfc_receptor="DEGF851127TK1",
+            nombre_receptor="HIPHA",
+            fecha_emision=datetime(2026, 8, 15),
+            total=1500.00,
+            conciliado=True
+        )
+        db.add(cfdi)
+
+        tx = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion=tx_id,
+            banco="BBVA",
+            fecha=datetime(2026, 8, 15),
+            concepto="COMPRA MATERIALES PUBLICITARIOS",
+            monto=1500.00,
+            tipo="EGRESO",
+            uuid_cfdi=uuid_proj,
+            status_conciliacion="CONCILIADO",
+            area_proyecto="GENERAL",
+            periodo_mes="2026-08"
+        )
+        db.add(tx)
+        db.commit()
+        db.refresh(tx)
+
+        # 1. Actualizar a 'DAM'
+        res = client.patch(
+            f"/api/dashboard/reconciliation/transactions/{tx.id}/project",
+            json={"area_proyecto": "DAM", "update_cfdi": True}
+        )
+        assert res.status_code == 200
+        data = res.json()
+        assert data["success"] is True
+        assert data["area_proyecto"] == "DAM"
+
+        # Verificar en base de datos tanto transacción como CFDI
+        db.refresh(tx)
+        db.refresh(cfdi)
+        assert tx.area_proyecto == "DAM"
+        assert cfdi.area_proyecto == "DAM"
+
+        # 2. Actualizar solo la transacción sin CFDI
+        res2 = client.patch(
+            f"/api/dashboard/reconciliation/transactions/{tx.id}/project",
+            json={"area_proyecto": "HEALTHYICE", "update_cfdi": False}
+        )
+        assert res2.status_code == 200
+        db.refresh(tx)
+        db.refresh(cfdi)
+        assert tx.area_proyecto == "HEALTHYICE"
+        assert cfdi.area_proyecto == "DAM"
+    finally:
+        db.close()
+
+
+def test_update_transaction_status_and_mes_completo():
+    client = TestClient(app)
+    db = SessionLocal()
+    try:
+        tx_sat_id = "tx-test-sat-001"
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx_sat_id).delete()
+        db.commit()
+
+        # 1. Crear egreso representativo de pago SAT sin CFDI
+        tx_sat = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion=tx_sat_id,
+            banco="BBVA",
+            fecha=datetime(2026, 9, 17),
+            concepto="PAGO DE IMPUESTOS AL SAT",
+            monto=4271.00,
+            tipo="EGRESO",
+            status_conciliacion="SIN_CFDI",
+            periodo_mes="2026-09"
+        )
+        db.add(tx_sat)
+        db.commit()
+        db.refresh(tx_sat)
+
+        # Overview antes: count_sin_cfdi >= 1, mes_completo == False
+        res_pre = client.get("/api/dashboard/reconciliation/overview?month=2026-09&account_rfc=DEGF851127TK1")
+        assert res_pre.status_code == 200
+        kpis_pre = res_pre.json()["kpis"]
+        assert kpis_pre["count_sin_cfdi"] >= 1
+        assert kpis_pre["mes_completo"] is False
+
+        # 2. Marcar como NO_APLICA (Impuestos SAT)
+        res_mark = client.patch(
+            f"/api/dashboard/reconciliation/transactions/{tx_sat.id}/status",
+            json={"status_conciliacion": "NO_APLICA", "motivo": "Impuestos SAT"}
+        )
+        assert res_mark.status_code == 200
+        assert res_mark.json()["status_conciliacion"] == "NO_APLICA"
+
+        # Overview después: count_sin_cfdi debe ser 0 si no hay otros, y count_no_aplica >= 1
+        res_post = client.get("/api/dashboard/reconciliation/overview?month=2026-09&account_rfc=DEGF851127TK1")
+        kpis_post = res_post.json()["kpis"]
+        assert kpis_post["count_no_aplica"] >= 1
+
+        # Si tx_sat era el único en 2026-09, mes_completo pasa a True
+        if kpis_post["count_sin_cfdi"] == 0:
+            assert kpis_post["mes_completo"] is True
+
+        # 3. Revertir a SIN_CFDI
+        res_rev = client.patch(
+            f"/api/dashboard/reconciliation/transactions/{tx_sat.id}/status",
+            json={"status_conciliacion": "SIN_CFDI"}
+        )
+        assert res_rev.status_code == 200
+        assert res_rev.json()["status_conciliacion"] == "SIN_CFDI"
+    finally:
+        db.close()
+
+
+
 
 
 

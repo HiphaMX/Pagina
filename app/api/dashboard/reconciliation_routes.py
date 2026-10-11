@@ -7,6 +7,7 @@ import io
 import re
 import zipfile
 from datetime import datetime
+from pydantic import BaseModel
 
 from app.core.database import get_db
 from app.api.deps import get_current_active_user
@@ -22,7 +23,19 @@ from app.services.reconciliation.backfill import import_historical_excel
 from app.services.reconciliation.mail_listener import sync_mailbox_invoices
 from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
 
+
+class UpdateTransactionProjectRequest(BaseModel):
+    area_proyecto: str
+    update_cfdi: bool = True
+
+
+class UpdateTransactionStatusRequest(BaseModel):
+    status_conciliacion: str  # "NO_APLICA", "SIN_CFDI"
+    motivo: Optional[str] = None
+
+
 router = APIRouter()
+
 
 
 @router.get("/overview")
@@ -86,11 +99,18 @@ def get_reconciliation_overview(
     monto_sin_cfdi = sum(t.monto for t in sin_cfdi_egresos)
     count_sin_cfdi = len(sin_cfdi_egresos)
 
+    no_aplica_egresos = [t for t in egresos_txs if t.status_conciliacion in ("NO_APLICA", "EXENTO")]
+    monto_no_aplica = sum(t.monto for t in no_aplica_egresos)
+    count_no_aplica = len(no_aplica_egresos)
+
     monto_egresos_conciliados = sum(t.monto for t in conciliados_egresos)
     pct_egresos_facturados = round((monto_egresos_conciliados / total_egresos_banco * 100), 1) if total_egresos_banco > 0 else 0.0
 
     monto_ingresos_conciliados = sum(t.monto for t in conciliados_ingresos)
     pct_ingresos_facturados = round((monto_ingresos_conciliados / total_ingresos_banco * 100), 1) if total_ingresos_banco > 0 else 0.0
+
+    # Mes completo: Si existen movimientos y no hay ningún egreso pendiente de CFDI
+    mes_completo = bool(len(all_txs) > 0 and count_sin_cfdi == 0)
 
     # Facturas disponibles sin conciliar para esta entidad
     facturas_disponibles_count = db.query(CFDIInvoice).filter(
@@ -114,6 +134,9 @@ def get_reconciliation_overview(
             "count_egresos_banco": len(egresos_txs),
             "monto_sin_cfdi": round(monto_sin_cfdi, 2),
             "count_sin_cfdi": count_sin_cfdi,
+            "monto_no_aplica": round(monto_no_aplica, 2),
+            "count_no_aplica": count_no_aplica,
+            "mes_completo": mes_completo,
             "pct_egresos_facturados": pct_egresos_facturados,
             "pct_ingresos_facturados": pct_ingresos_facturados,
             "monto_egresos_conciliados": round(monto_egresos_conciliados, 2),
@@ -207,7 +230,14 @@ def get_reconciliation_transactions(
 
         area_proyecto = t.area_proyecto or entity_name
         tipo_cat = t.tipo_categoria or ("INGRESO" if t.tipo == "INGRESO" else "GASTO")
-        cfdi_status_label = "CONCILIADO" if t.uuid_cfdi else ("POR REVISAR" if t.status_conciliacion == "POR_REVISAR" else "SIN CFDI")
+        if t.uuid_cfdi:
+            cfdi_status_label = "CONCILIADO"
+        elif t.status_conciliacion == "POR_REVISAR":
+            cfdi_status_label = "POR REVISAR"
+        elif t.status_conciliacion in ("NO_APLICA", "EXENTO"):
+            cfdi_status_label = "NO REQUIERE CFDI"
+        else:
+            cfdi_status_label = "SIN CFDI"
 
         results.append({
             "id": t.id,
@@ -709,6 +739,96 @@ def delete_bank_transaction(
     db.commit()
 
     return {"success": True, "message": "Movimiento bancario eliminado correctamente."}
+
+
+@router.patch("/transactions/{transaction_id}/project")
+def update_transaction_project(
+    transaction_id: int,
+    payload: UpdateTransactionProjectRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Actualiza el proyecto o área asignada a una transacción bancaria y, opcionalmente,
+    a la factura CFDI que tenga vinculada.
+    """
+    tx = db.query(BankTransaction).filter(BankTransaction.id == transaction_id).first()
+    if not tx:
+        raise HTTPException(status_code=404, detail="Transacción no encontrada.")
+
+    new_project = payload.area_proyecto.strip()
+    tx.area_proyecto = new_project
+
+    if payload.update_cfdi and tx.uuid_cfdi:
+        factura = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == tx.uuid_cfdi).first()
+        if factura:
+            factura.area_proyecto = new_project
+
+    db.commit()
+    db.refresh(tx)
+
+    return {
+        "success": True,
+        "message": f"Proyecto actualizado a '{new_project}' exitosamente.",
+        "transaction_id": tx.id,
+        "area_proyecto": tx.area_proyecto
+    }
+
+
+@router.patch("/transactions/{transaction_id}/status")
+def update_transaction_status(
+    transaction_id: int,
+    payload: UpdateTransactionStatusRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Actualiza el estatus de conciliación de una transacción bancaria.
+    Permite marcar movimientos como NO_APLICA (ej. Traspasos entre cuentas,
+    pago de impuestos al SAT, liquidación de saldo de tarjeta de crédito) para que
+    no compute como faltante y permita activar el Check de Mes Completo.
+    """
+    tx = db.query(BankTransaction).filter(BankTransaction.id == transaction_id).first()
+    if not tx:
+        raise HTTPException(status_code=404, detail="Transacción no encontrada.")
+
+    target_status = payload.status_conciliacion.upper().strip()
+    if target_status not in ("NO_APLICA", "SIN_CFDI", "POR_REVISAR"):
+        raise HTTPException(status_code=400, detail="Estatus no válido para actualización manual.")
+
+    if target_status == "NO_APLICA":
+        # Si estaba vinculada a una factura, desvincularla para no dejarla bloqueada
+        if tx.uuid_cfdi:
+            uuid_to_free = tx.uuid_cfdi
+            tx.uuid_cfdi = None
+            other = db.query(BankTransaction).filter(
+                BankTransaction.uuid_cfdi == uuid_to_free,
+                BankTransaction.id != tx.id
+            ).first()
+            if not other:
+                factura = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_to_free).first()
+                if factura:
+                    factura.conciliado = False
+
+        tx.status_conciliacion = "NO_APLICA"
+        if payload.motivo:
+            tx.nota_revision = payload.motivo.strip()
+    elif target_status == "SIN_CFDI":
+        tx.status_conciliacion = "SIN_CFDI"
+        # Limpiar nota si era un motivo de exención
+        if tx.nota_revision and any(k in tx.nota_revision.lower() for k in ["impuesto", "traspaso", "tarjeta", "no aplica", "no deducible"]):
+            tx.nota_revision = None
+
+    db.commit()
+    db.refresh(tx)
+
+    return {
+        "success": True,
+        "message": f"Estatus actualizado a '{tx.status_conciliacion}' exitosamente.",
+        "transaction_id": tx.id,
+        "status_conciliacion": tx.status_conciliacion,
+        "nota_revision": tx.nota_revision
+    }
 
 
 @router.post("/deduplicate")

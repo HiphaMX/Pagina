@@ -60,6 +60,9 @@ def export_reconciliation_excel(
     fill_por_revisar = PatternFill(start_color="FEF9C3", end_color="FEF9C3", fill_type="solid")  # Amarillo suave
     font_por_revisar = Font(name="Arial", size=9, bold=True, color="854D0E")
 
+    fill_no_aplica = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")  # Gris azulado neutro
+    font_no_aplica = Font(name="Arial", size=9, bold=True, color="475569")
+
     thin_border = Border(
         left=Side(style='thin', color='CBD5E1'),
         right=Side(style='thin', color='CBD5E1'),
@@ -159,6 +162,8 @@ def export_reconciliation_excel(
             cfdi_label = "CONCILIADO"
         elif status == "POR_REVISAR":
             cfdi_label = "POR REVISAR"
+        elif status in ("NO_APLICA", "EXENTO"):
+            cfdi_label = "NO REQUIERE CFDI"
         else:
             cfdi_label = "SIN CFDI"
 
@@ -216,9 +221,13 @@ def export_reconciliation_excel(
         elif status == "POR_REVISAR":
             c_cfdi.fill = fill_por_revisar
             c_cfdi.font = font_por_revisar
+        elif status in ("NO_APLICA", "EXENTO"):
+            c_cfdi.fill = fill_no_aplica
+            c_cfdi.font = font_no_aplica
         else:
             c_cfdi.fill = fill_sin_cfdi
             c_cfdi.font = font_sin_cfdi
+
 
         # 10. TIPO
         ws.cell(row=current_row, column=10, value=tipo_categoria).alignment = Alignment(horizontal='center')
