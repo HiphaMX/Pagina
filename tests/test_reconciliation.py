@@ -808,8 +808,12 @@ def test_upload_bank_pdf_mercadopago_and_cross_match():
 def test_pending_invoices_month_filter_and_multi_payment():
     db = SessionLocal()
     try:
-        # 1. Crear factura CFDI emitida (INGRESO) de $3,213.20 en agosto 2026
         uuid_tukipa = "CFDI-TUKIPA-MULTI-PAY-001"
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(["tx-tukipa-pago1", "tx-tukipa-pago2"])).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_tukipa).delete()
+        db.commit()
+
+        # 1. Crear factura CFDI emitida (INGRESO) de $3,213.20 en agosto 2026
         cfdi = CFDIInvoice(
             uuid=uuid_tukipa,
             account_rfc="DEGF851127TK1",
