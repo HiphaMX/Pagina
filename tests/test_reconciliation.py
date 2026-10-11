@@ -1325,3 +1325,90 @@ def test_batch_update_project():
         db.commit()
         db.close()
 
+
+def test_filter_by_amount_and_duplicates():
+    client = TestClient(app)
+    db = SessionLocal()
+    test_ids = ["tx-dup-amt-01", "tx-dup-amt-02", "tx-dup-amt-03"]
+    try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(test_ids)).delete()
+        db.commit()
+
+        # Dos transacciones con mismo monto (1234.50) y una con monto único (500.00)
+        tx1 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx-dup-amt-01",
+            banco="BBVA",
+            fecha=datetime(2026, 6, 10),
+            concepto="SUSCRIPCION SOFTWARE DUPLICADA 1",
+            monto=1234.50,
+            tipo="EGRESO",
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="HIPHA",
+            periodo_mes="2026-06"
+        )
+        tx2 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx-dup-amt-02",
+            banco="BBVA",
+            fecha=datetime(2026, 6, 10),
+            concepto="SUSCRIPCION SOFTWARE DUPLICADA 2",
+            monto=1234.50,
+            tipo="EGRESO",
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="HIPHA",
+            periodo_mes="2026-06"
+        )
+        tx3 = BankTransaction(
+            account_rfc="DEGF851127TK1",
+            id_transaccion="tx-dup-amt-03",
+            banco="BBVA",
+            fecha=datetime(2026, 6, 12),
+            concepto="PAGO SERVICIO UNICO",
+            monto=500.00,
+            tipo="EGRESO",
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="HIPHA",
+            periodo_mes="2026-06"
+        )
+        db.add_all([tx1, tx2, tx3])
+        db.commit()
+
+        # 1. Validar KPIs en Overview
+        res_ov = client.get("/api/dashboard/reconciliation/overview?month=2026-06&account_rfc=DEGF851127TK1")
+        assert res_ov.status_code == 200
+        kpis = res_ov.json()["kpis"]
+        assert kpis["count_posibles_duplicados"] == 2
+        assert kpis["monto_posibles_duplicados"] == pytest.approx(2469.00, 0.01)
+
+        # 2. Filtrar por monto exacto ($1,234.50)
+        res_amt = client.get("/api/dashboard/reconciliation/transactions?month=2026-06&account_rfc=DEGF851127TK1&amount=1234.50")
+        assert res_amt.status_code == 200
+        items_amt = res_amt.json()
+        assert len(items_amt) == 2
+        for it in items_amt:
+            assert it["monto"] == 1234.50
+            assert it["duplicate_count"] == 2
+            assert it["is_possible_duplicate"] is True
+
+        # 3. Filtrar por monto único ($500.00)
+        res_single = client.get("/api/dashboard/reconciliation/transactions?month=2026-06&account_rfc=DEGF851127TK1&amount=500.00")
+        assert res_single.status_code == 200
+        items_single = res_single.json()
+        assert len(items_single) == 1
+        assert items_single[0]["monto"] == 500.00
+        assert items_single[0]["duplicate_count"] == 1
+        assert items_single[0]["is_possible_duplicate"] is False
+
+        # 4. Filtrar solo duplicados (only_duplicates=true)
+        res_dups = client.get("/api/dashboard/reconciliation/transactions?month=2026-06&account_rfc=DEGF851127TK1&only_duplicates=true")
+        assert res_dups.status_code == 200
+        items_dups = res_dups.json()
+        assert len(items_dups) == 2
+        assert all(it["monto"] == 1234.50 for it in items_dups)
+
+    finally:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(test_ids)).delete()
+        db.commit()
+        db.close()
+

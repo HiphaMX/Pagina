@@ -5769,6 +5769,8 @@ let availableReconMonths = [];
 let currentReconStatus = "ALL";
 let currentReconTipo = "ALL";
 let currentReconSearch = "";
+let currentReconAmount = null;
+let currentReconOnlyDuplicates = false;
 let selectedReconFiles = [];
 let pendingInvoicesCache = [];
 let currentReconMailboxCount = 0;
@@ -5885,7 +5887,23 @@ function initReconciliationModule() {
     const statusTabs = document.querySelectorAll('.recon-filter-pill');
     statusTabs.forEach(pill => {
         pill.addEventListener('click', () => {
+            if (pill.dataset.duplicates === 'true') {
+                currentReconOnlyDuplicates = !currentReconOnlyDuplicates;
+                if (currentReconOnlyDuplicates) {
+                    pill.classList.add('active');
+                    pill.style.background = '#fbbf24';
+                    pill.style.color = '#000';
+                } else {
+                    pill.classList.remove('active');
+                    pill.style.background = 'rgba(245, 158, 11, 0.1)';
+                    pill.style.color = '#fbbf24';
+                }
+                loadReconciliationTransactions();
+                return;
+            }
+
             statusTabs.forEach(p => {
+                if (p.dataset.duplicates === 'true') return;
                 p.classList.remove('active');
                 p.style.background = p.dataset.status === 'CONCILIADO' ? 'rgba(16, 185, 129, 0.1)' :
                                      p.dataset.status === 'POR_REVISAR' ? 'rgba(234, 179, 8, 0.1)' :
@@ -5901,6 +5919,60 @@ function initReconciliationModule() {
             loadReconciliationTransactions();
         });
     });
+
+    // Filtro por Cantidad Exacta $$
+    const filterAmount = document.getElementById('reconFilterAmount');
+    const btnClearAmount = document.getElementById('btnReconClearAmount');
+    if (filterAmount) {
+        let amtTimeout;
+        filterAmount.addEventListener('input', (e) => {
+            clearTimeout(amtTimeout);
+            const val = e.target.value.trim();
+            if (btnClearAmount) btnClearAmount.style.display = val ? 'inline-block' : 'none';
+            amtTimeout = setTimeout(() => {
+                currentReconAmount = val ? parseFloat(val) : null;
+                loadReconciliationTransactions();
+            }, 300);
+        });
+    }
+
+    // Funciones globales para filtrar o limpiar por cantidad y duplicados
+    window.clearReconAmountFilter = function() {
+        const inp = document.getElementById('reconFilterAmount');
+        if (inp) inp.value = '';
+        const btn = document.getElementById('btnReconClearAmount');
+        if (btn) btn.style.display = 'none';
+        currentReconAmount = null;
+        loadReconciliationTransactions();
+    };
+
+    window.filterByExactAmount = function(amt) {
+        const inp = document.getElementById('reconFilterAmount');
+        if (inp) inp.value = amt;
+        const btn = document.getElementById('btnReconClearAmount');
+        if (btn) btn.style.display = 'inline-block';
+        currentReconAmount = Number(amt);
+        loadReconciliationTransactions();
+        const tableCard = document.getElementById('reconTableBody');
+        if (tableCard) tableCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    window.toggleDuplicatesFilter = function(forceVal) {
+        currentReconOnlyDuplicates = typeof forceVal === 'boolean' ? forceVal : !currentReconOnlyDuplicates;
+        const pill = document.getElementById('reconFilterDuplicatesPill');
+        if (pill) {
+            if (currentReconOnlyDuplicates) {
+                pill.classList.add('active');
+                pill.style.background = '#fbbf24';
+                pill.style.color = '#000';
+            } else {
+                pill.classList.remove('active');
+                pill.style.background = 'rgba(245, 158, 11, 0.1)';
+                pill.style.color = '#fbbf24';
+            }
+        }
+        loadReconciliationTransactions();
+    };
 
     // Filtro por Tipo de Flujo
     const filterTipo = document.getElementById('reconFilterTipo');
@@ -6082,6 +6154,20 @@ async function loadReconciliationData(refreshMonths = true) {
             sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos sin comprobante digital${noAplicaTxt}`;
         }
 
+        // Actualizar badge del contador de posibles duplicados
+        const dupBadge = document.getElementById('reconDuplicatesBadgeCount');
+        const dupPill = document.getElementById('reconFilterDuplicatesPill');
+        if (dupBadge) {
+            const countDup = k.count_posibles_duplicados || 0;
+            dupBadge.textContent = countDup;
+            dupBadge.style.display = countDup > 0 ? 'inline-block' : 'none';
+            if (dupPill) {
+                dupPill.title = countDup > 0 
+                    ? `Se detectaron ${countDup} movimientos con importes repetidos ($${Number(k.monto_posibles_duplicados || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}). Clic para filtrarlos.`
+                    : 'No se detectaron importes duplicados en este período.';
+            }
+        }
+
         // Actualizar Badge de Salud / Check Mensual al 100%
         const monthStatusBadge = document.getElementById('reconMonthStatusBadge');
         if (monthStatusBadge) {
@@ -6154,6 +6240,8 @@ async function loadReconciliationTransactions() {
         if (currentReconStatus && currentReconStatus !== 'ALL') params.append('status', currentReconStatus);
         if (currentReconTipo && currentReconTipo !== 'ALL') params.append('tipo', currentReconTipo);
         if (currentReconSearch) params.append('search', currentReconSearch);
+        if (currentReconAmount !== null && !isNaN(currentReconAmount)) params.append('amount', currentReconAmount);
+        if (currentReconOnlyDuplicates) params.append('only_duplicates', 'true');
 
         const res = await fetch(`${API_BASE}/reconciliation/transactions?${params.toString()}`, {
             headers: getAuthHeaders()
@@ -6165,7 +6253,43 @@ async function loadReconciliationTransactions() {
 
         if (txs.length === 0) {
             const entityLabel = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
-            if (currentReconMailboxCount > 0) {
+            if (currentReconOnlyDuplicates) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
+                            <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🎉</div>
+                            <div style="font-size: 1.05rem; font-weight: 700; color: #34d399; margin-bottom: 0.35rem;">
+                                No se encontraron importes duplicados
+                            </div>
+                            <div style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1.1rem;">
+                                No hay transacciones con montos repetidos para los filtros actuales en este período.
+                            </div>
+                            <button type="button" onclick="toggleDuplicatesFilter(false)" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.45rem 1.1rem; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600;">
+                                Ver todos los movimientos
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            } else if (currentReconAmount !== null && !isNaN(currentReconAmount)) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="padding: 3rem 1.5rem; text-align: center; color: var(--text-muted);">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+                            <div style="font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.35rem;">
+                                No se encontraron movimientos con importe de $${Number(currentReconAmount).toLocaleString('es-MX', {minimumFractionDigits: 2})}
+                            </div>
+                            <div style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 1rem;">
+                                Prueba con otra cantidad o limpia el filtro para ver todo el estado de cuenta.
+                            </div>
+                            <button type="button" onclick="clearReconAmountFilter()" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.25); padding: 0.45rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600;">
+                                ✕ Limpiar filtro de cantidad
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            } else if (currentReconMailboxCount > 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="9" style="padding: 3.5rem 1.5rem; text-align: center;">
@@ -6197,6 +6321,38 @@ async function loadReconciliationTransactions() {
         }
 
         let html = '';
+
+        // Banner informativo si está activo el modo duplicados o filtro por importe
+        if (currentReconOnlyDuplicates) {
+            html += `
+                <tr style="background: rgba(245, 158, 11, 0.08); border-bottom: 1px solid rgba(245, 158, 11, 0.25);">
+                    <td colspan="9" style="padding: 0.75rem 1.1rem; font-size: 0.82rem; color: #fbbf24;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1rem;">🔁</span>
+                                <span><strong>Modo de detección activo:</strong> Mostrando únicamente movimientos con importes repetidos ($$) en este período (${txs.length} transacciones). Revisa las fechas y conceptos para identificar cargos duplicados o errores de captura.</span>
+                            </div>
+                            <button type="button" onclick="toggleDuplicatesFilter(false)" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 6px; padding: 0.25rem 0.65rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">✕ Salir del modo duplicados</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        } else if (currentReconAmount !== null && !isNaN(currentReconAmount)) {
+            html += `
+                <tr style="background: rgba(56, 189, 248, 0.08); border-bottom: 1px solid rgba(56, 189, 248, 0.25);">
+                    <td colspan="9" style="padding: 0.75rem 1.1rem; font-size: 0.82rem; color: var(--accent-cyan);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1rem;">💲</span>
+                                <span><strong>Filtrando por importe:</strong> Mostrando ${txs.length} movimiento(s) con cantidad de ~$${Number(currentReconAmount).toLocaleString('es-MX', {minimumFractionDigits: 2})}.</span>
+                            </div>
+                            <button type="button" onclick="clearReconAmountFilter()" style="background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 6px; padding: 0.25rem 0.65rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">✕ Quitar filtro de importe</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
         txs.forEach(t => {
             const isCargo = t.tipo === 'EGRESO';
             const tipoBadge = isCargo 
@@ -6312,8 +6468,20 @@ async function loadReconciliationTransactions() {
                 `;
             }
 
+            // Detección de posibles duplicados por importe
+            const isDuplicate = Boolean(t.is_possible_duplicate || (t.duplicate_count && t.duplicate_count > 1));
+            const duplicateBadge = isDuplicate ? `
+                <div style="margin-top: 3px;">
+                    <button type="button" onclick="filterByExactAmount(${t.monto})" title="Hay ${t.duplicate_count} movimientos con este mismo importe ($${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}). Haz clic para filtrarlos y comparar posibles duplicados" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.12rem 0.45rem; font-size: 0.68rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; transition: all 0.15s;">
+                        <span>⚠️ ${t.duplicate_count} con este $$</span>
+                    </button>
+                </div>
+            ` : '';
+
+            const rowBorderLeft = isDuplicate ? 'border-left: 3px solid rgba(245, 158, 11, 0.7);' : '';
+
             html += `
-                <tr id="recon-row-${t.id}" style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="if(!this.classList.contains('selected-row')) this.style.background='rgba(255,255,255,0.02)'" onmouseout="if(!this.classList.contains('selected-row')) this.style.background='transparent'">
+                <tr id="recon-row-${t.id}" style="${rowBorderLeft} border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="if(!this.classList.contains('selected-row')) this.style.background='rgba(255,255,255,0.02)'" onmouseout="if(!this.classList.contains('selected-row')) this.style.background='transparent'">
                     <td style="padding: 0.85rem 0.6rem 0.85rem 1.1rem; text-align: center;">
                         <input type="checkbox" class="recon-row-checkbox" value="${t.id}" data-id="${t.id}" onchange="updateReconBatchSelection()" style="accent-color: var(--accent-cyan); width: 16px; height: 16px; cursor: pointer;">
                     </td>
@@ -6329,7 +6497,8 @@ async function loadReconciliationTransactions() {
                         <div style="margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;">${tipoBadge}${bancoBadge}</div>
                     </td>
                     <td style="padding: 0.85rem 0.9rem; text-align: right; font-weight: 700; font-size: 0.92rem; color: ${isCargo ? '#f87171' : '#34d399'}; white-space: nowrap;">
-                        ${isCargo ? '-' : '+'}$${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}
+                        <div>${isCargo ? '-' : '+'}$${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}</div>
+                        ${duplicateBadge}
                     </td>
                     <td style="padding: 0.85rem 0.9rem; text-align: center; white-space: nowrap;">${statusBadge}</td>
                     <td style="padding: 0.85rem 0.9rem;">${cfdiHtml}</td>

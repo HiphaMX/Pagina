@@ -655,22 +655,31 @@
                 <!-- Filtros y Búsqueda de Transacciones -->
                 <div class="glass-panel" style="padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1.2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
                     
-                    <!-- Pestañas de Estatus -->
+                    <!-- Pestañas de Estatus y Duplicados -->
                     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;" id="reconStatusTabs">
                         <button type="button" class="recon-filter-pill active" data-status="ALL" style="background: var(--text-main); color: #000; border: none; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">Todos</button>
                         <button type="button" class="recon-filter-pill" data-status="CONCILIADO" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">✓ Conciliados</button>
                         <button type="button" class="recon-filter-pill" data-status="POR_REVISAR" style="background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">⏳ Por Revisar</button>
                         <button type="button" class="recon-filter-pill" data-status="SIN_CFDI" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">✕ Sin Factura</button>
+                        <button type="button" class="recon-filter-pill" id="reconFilterDuplicatesPill" data-duplicates="true" style="background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;" title="Mostrar solo movimientos con montos repetidos para detectar cargos o capturas duplicadas">
+                            <span>🔁 Posibles Duplicados</span>
+                            <span id="reconDuplicatesBadgeCount" style="background: rgba(245, 158, 11, 0.25); padding: 0.1rem 0.45rem; border-radius: 10px; font-size: 0.72rem; display: none;">0</span>
+                        </button>
                     </div>
 
-                    <!-- Buscador y filtro de tipo -->
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <!-- Buscador, filtro de cantidad $$ y filtro de tipo -->
+                    <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                        <div class="search-input-box" style="width: 145px; position: relative; display: flex; align-items: center;" title="Filtrar por cantidad exacta $$ (ej. 820.00)">
+                            <span style="color: var(--accent-cyan); font-weight: 700; font-size: 0.88rem; margin-right: 4px;">$</span>
+                            <input type="number" id="reconFilterAmount" step="any" placeholder="Cantidad $$" style="font-size: 0.82rem; width: 85px; border: none; background: transparent; color: var(--text-main); outline: none;">
+                            <button type="button" id="btnReconClearAmount" onclick="clearReconAmountFilter()" style="display: none; background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 0 4px; font-size: 0.82rem;" title="Limpiar filtro de cantidad">✕</button>
+                        </div>
                         <select id="reconFilterTipo" style="background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.45rem 0.75rem; border-radius: 8px; font-size: 0.82rem; outline: none;">
                             <option value="ALL">Todos los flujos</option>
                             <option value="EGRESO">Solo Egresos (Cargos)</option>
                             <option value="INGRESO">Solo Ingresos (Abonos)</option>
                         </select>
-                        <div class="search-input-box" style="width: 240px;">
+                        <div class="search-input-box" style="width: 220px;">
                             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             <input type="text" id="reconSearchInput" placeholder="Buscar concepto o UUID..." style="font-size: 0.85rem;">
                         </div>

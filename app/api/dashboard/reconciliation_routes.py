@@ -134,6 +134,15 @@ def get_reconciliation_overview(
     monto_ingresos_conciliados = sum(t.monto for t in conciliados_ingresos)
     pct_ingresos_facturados = round((monto_ingresos_conciliados / total_ingresos_banco * 100), 1) if total_ingresos_banco > 0 else 0.0
 
+    # Detección de posibles movimientos con importes repetidos (duplicados) en el periodo
+    amount_freq = {}
+    for t in all_txs:
+        m_r = round(float(t.monto or 0.0), 2)
+        amount_freq[m_r] = amount_freq.get(m_r, 0) + 1
+    dup_txs = [t for t in all_txs if amount_freq.get(round(float(t.monto or 0.0), 2), 0) > 1]
+    count_posibles_duplicados = len(dup_txs)
+    monto_posibles_duplicados = sum(t.monto for t in dup_txs)
+
     # Mes completo: Si existen movimientos y no hay ningún egreso pendiente de CFDI
     mes_completo = bool(len(all_txs) > 0 and count_sin_cfdi == 0)
 
@@ -164,6 +173,8 @@ def get_reconciliation_overview(
             "count_sin_cfdi": count_sin_cfdi,
             "monto_no_aplica": round(monto_no_aplica, 2),
             "count_no_aplica": count_no_aplica,
+            "count_posibles_duplicados": count_posibles_duplicados,
+            "monto_posibles_duplicados": round(monto_posibles_duplicados, 2),
             "mes_completo": mes_completo,
             "pct_egresos_facturados": pct_egresos_facturados,
             "pct_ingresos_facturados": pct_ingresos_facturados,
@@ -185,16 +196,29 @@ def get_reconciliation_transactions(
     status: Optional[str] = Query("ALL"),
     tipo: Optional[str] = Query("ALL"),
     search: Optional[str] = Query(None),
+    amount: Optional[float] = Query(None, description="Filtrar por cantidad exacta o aproximada ($$)"),
+    only_duplicates: Optional[bool] = Query(False, description="Filtrar solo transacciones con montos duplicados en el período"),
     account_rfc: str = Query("DEGF851127TK1"),
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
 ):
     """
-    Retorna la lista de transacciones bancarias del mes con datos del CFDI asociado y las 14 columnas fiscales.
+    Retorna la lista de transacciones bancarias del mes con datos del CFDI asociado y las 14 columnas fiscales,
+    con soporte para filtrado por cantidad ($$) y detección de posibles movimientos duplicados.
     """
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
+
+    # Frecuencia de montos en el periodo para detectar duplicados
+    base_month_query = db.query(BankTransaction.monto).filter(BankTransaction.account_rfc == effective_rfc)
+    if month:
+        base_month_query = base_month_query.filter(BankTransaction.periodo_mes == month)
+    
+    amount_counts = {}
+    for (m,) in base_month_query.all():
+        m_r = round(float(m or 0.0), 2)
+        amount_counts[m_r] = amount_counts.get(m_r, 0) + 1
 
     query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
 
@@ -213,6 +237,16 @@ def get_reconciliation_transactions(
             (BankTransaction.concepto.ilike(search_filter)) |
             (BankTransaction.uuid_cfdi.ilike(search_filter))
         )
+
+    if amount is not None:
+        query = query.filter(func.abs(BankTransaction.monto - amount) <= 0.05)
+
+    if only_duplicates:
+        dup_amounts = [amt for amt, cnt in amount_counts.items() if cnt > 1]
+        if dup_amounts:
+            query = query.filter(BankTransaction.monto.in_(dup_amounts))
+        else:
+            return []
 
     # Ordenar por fecha descendente
     txs = query.order_by(desc(BankTransaction.fecha), desc(BankTransaction.id)).all()
@@ -267,6 +301,9 @@ def get_reconciliation_transactions(
         else:
             cfdi_status_label = "SIN CFDI"
 
+        m_val = round(float(t.monto or 0.0), 2)
+        dup_count = amount_counts.get(m_val, 1)
+
         results.append({
             "id": t.id,
             "account_rfc": t.account_rfc,
@@ -286,6 +323,8 @@ def get_reconciliation_transactions(
             "retencion_isr": ret_isr_val,
             "iva_egresos": iva_egr_val,
             "monto": t.monto,
+            "duplicate_count": dup_count,
+            "is_possible_duplicate": dup_count > 1,
             "tipo": t.tipo,
             "banco": t.banco or "BBVA",
             "saldo": t.saldo,
