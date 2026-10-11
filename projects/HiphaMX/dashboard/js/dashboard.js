@@ -7327,11 +7327,26 @@ async function submitComprobarInvoice() {
     try {
         const res = await fetch(`${API_BASE}/reconciliation/invoices/${encodeURIComponent(uuid)}/comprobar`, {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ motivo })
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Error al comprobar la factura');
+        if (!res.ok) {
+            let msg = 'Error al comprobar la factura';
+            if (typeof data.detail === 'string') {
+                msg = data.detail;
+            } else if (Array.isArray(data.detail)) {
+                msg = data.detail.map(d => d.msg || (typeof d === 'object' ? JSON.stringify(d) : String(d))).join('; ');
+            } else if (data.detail && typeof data.detail === 'object') {
+                msg = JSON.stringify(data.detail);
+            } else if (data.message) {
+                msg = data.message;
+            }
+            throw new Error(msg);
+        }
 
         closeComprobarInvoiceModal();
 
@@ -7369,7 +7384,19 @@ async function revertComprobarInvoice(uuid) {
             headers: getAuthHeaders()
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Error al desmarcar la factura');
+        if (!res.ok) {
+            let msg = 'Error al desmarcar la factura';
+            if (typeof data.detail === 'string') {
+                msg = data.detail;
+            } else if (Array.isArray(data.detail)) {
+                msg = data.detail.map(d => d.msg || (typeof d === 'object' ? JSON.stringify(d) : String(d))).join('; ');
+            } else if (data.detail && typeof data.detail === 'object') {
+                msg = JSON.stringify(data.detail);
+            } else if (data.message) {
+                msg = data.message;
+            }
+            throw new Error(msg);
+        }
 
         // Actualizar en caché local
         const idx = cachedMailboxInvoices.findIndex(i => (i.uuid || '').toLowerCase() === uuid.toLowerCase());

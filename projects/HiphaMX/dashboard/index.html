@@ -1812,6 +1812,13 @@
     <!-- MODAL: COMPROBAR FACTURA CFDI              -->
     <!-- ========================================== -->
     <div id="modalComprobarInvoice" class="modal-overlay hidden" style="z-index: 10010;">
+        <style>
+            .comprobar-card-opt:has(input:checked) {
+                border-color: #10b981 !important;
+                background: rgba(16, 185, 129, 0.09) !important;
+                box-shadow: 0 0 0 1px #10b981 inset;
+            }
+        </style>
         <div class="modal-dialog modal-md" style="max-width: 520px;">
             <div class="modal-header">
                 <div>
