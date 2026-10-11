@@ -58,7 +58,16 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
 
     mail = None
     try:
-        mail = imaplib.IMAP4_SSL(host, port)
+        try:
+            mail = imaplib.IMAP4_SSL(host, port)
+        except Exception:
+            # Fallback en caso de mismatch de certificado de servidor compartido (ej. Neubox cPanel)
+            import ssl
+            ssl_ctx = ssl.create_default_context()
+            ssl_ctx.check_hostname = False
+            ssl_ctx.verify_mode = ssl.CERT_NONE
+            mail = imaplib.IMAP4_SSL(host, port, ssl_context=ssl_ctx)
+
         mail.login(user, password)
         status, _ = mail.select(folder)
         if status != "OK":
