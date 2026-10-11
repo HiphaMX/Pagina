@@ -72,12 +72,14 @@ def get_reconciliation_overview(
     except Exception:
         pass
 
-    # Si no se pasó mes y hay meses disponibles, tomar el más reciente
-    selected_month = month
-    if not selected_month and available_months:
-        selected_month = available_months[0]
-    elif not selected_month:
-        selected_month = datetime.now().strftime("%Y-%m")
+    # Asegurar que el mes calendario actual esté en available_months
+    current_cal_month = datetime.now().strftime("%Y-%m")
+    if current_cal_month not in available_months:
+        available_months.append(current_cal_month)
+        available_months.sort(reverse=True)
+
+    # Si no se pasó mes, tomar por defecto el mes actual del calendario para partir de ahí
+    selected_month = month or current_cal_month
 
     # Filtro base por entidad y mes
     query = db.query(BankTransaction).filter(

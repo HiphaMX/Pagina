@@ -5759,10 +5759,11 @@ const RECON_MONTH_NAMES = [
     { num: '12', name: 'Diciembre' }
 ];
 
+const _reconNow = new Date();
 let reconInitialized = false;
 let currentReconEntity = "DEGF851127TK1"; // Default entity: HIPHA
-let currentReconYear = "2026";
-let currentReconMonthNum = "08";
+let currentReconYear = String(_reconNow.getFullYear());
+let currentReconMonthNum = String(_reconNow.getMonth() + 1).padStart(2, '0');
 let currentReconMonth = `${currentReconYear}-${currentReconMonthNum}`;
 let availableReconMonths = [];
 let currentReconStatus = "ALL";
@@ -6658,7 +6659,7 @@ async function openMatchManualModal(txId, concepto, monto, fecha, tipo) {
     const monthSelect = document.getElementById('matchModalMonthFilter');
     if (monthSelect) {
         monthSelect.innerHTML = '<option value="">Todos los meses</option>';
-        const monthsList = (availableReconMonths && availableReconMonths.length > 0) ? availableReconMonths : [currentReconMonth || '2026-08'];
+        const monthsList = (availableReconMonths && availableReconMonths.length > 0) ? availableReconMonths : [currentReconMonth || new Date().toISOString().slice(0, 7)];
         monthsList.forEach(m => {
             const opt = document.createElement('option');
             opt.value = m;
