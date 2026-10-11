@@ -690,6 +690,97 @@ def test_upload_bank_pdf_julio_endpoint():
         db.close()
 
 
+def test_parse_bank_pdf_statement_bbva_pyme_febrero():
+    from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+
+    with open("tests/fixtures/Febrero_FDG.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    txs = parse_bank_pdf_statement(pdf_bytes, "Febrero FDG.pdf", account_rfc="DEGF851127TK1")
+    assert len(txs) == 7
+
+    for t in txs:
+        assert t["periodo_mes"] == "2026-02"
+        assert t["account_rfc"] == "DEGF851127TK1"
+        assert t["banco"] == "BBVA"
+
+    ingresos = [t for t in txs if t["tipo"] == "INGRESO"]
+    egresos = [t for t in txs if t["tipo"] == "EGRESO"]
+
+    # 3 Abonos ($23,945.75) y 4 Cargos ($12,783.91)
+    assert len(ingresos) == 3
+    assert len(egresos) == 4
+    assert sum(t["monto"] for t in ingresos) == pytest.approx(23945.75, 0.01)
+    assert sum(t["monto"] for t in egresos) == pytest.approx(12783.91, 0.01)
+
+    # 01/FEB: Cargo $11,433.91 (PAGO CUENTA DE TERCERO - Entre cuentas)
+    tx_01_feb = next(t for t in egresos if t["monto"] == 11433.91)
+    assert "Entre cuentas" in tx_01_feb["concepto"]
+    assert tx_01_feb["status_conciliacion"] == "NO_APLICA"
+    assert tx_01_feb["area_proyecto"] == "DELGADILLO MEDINA"
+
+    # 03/FEB: Abono $820.00 (SPEI Mercado Pago - entre cuentas)
+    tx_03_feb_ing = next(t for t in ingresos if t["monto"] == 820.00)
+    assert tx_03_feb_ing["status_conciliacion"] == "NO_APLICA"
+    assert tx_03_feb_ing["nota_revision"] == "Traspaso entre Cuentas Propias"
+    assert tx_03_feb_ing["area_proyecto"] == "DELGADILLO MEDINA"
+
+    # 07/FEB: Abono $520.00 (SPEI Mercado Pago - Francisco Delgadillo García)
+    tx_07_feb_ing = next(t for t in ingresos if t["monto"] == 520.00)
+    assert tx_07_feb_ing["status_conciliacion"] == "NO_APLICA"
+    assert tx_07_feb_ing["nota_revision"] == "Traspaso entre Cuentas Propias"
+
+    # 26/FEB: Abono $22,605.75 (DEPOSITO DE TERCERO - PAGO DE DAM BMRCASH)
+    tx_26_feb_ing = next(t for t in ingresos if t["monto"] == 22605.75)
+    assert "DAM" in tx_26_feb_ing["concepto"]
+    assert tx_26_feb_ing["status_conciliacion"] == "SIN_CFDI"
+
+
+def test_upload_bank_pdf_febrero_endpoint_and_income_exclusion():
+    with open("tests/fixtures/Febrero_FDG.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    db = SessionLocal()
+    try:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-02"
+        ).delete()
+        db.commit()
+
+        # 1. Subir estado de cuenta de Febrero
+        files = [("files", ("Febrero FDG.pdf", pdf_bytes, "application/pdf"))]
+        upload_res = client.post(
+            "/api/dashboard/reconciliation/upload-files",
+            files=files,
+            data={"account_rfc": "DEGF851127TK1"}
+        )
+        assert upload_res.status_code == 200
+        data_up = upload_res.json()
+        assert data_up["success"] is True
+        assert data_up["processed_statements"] == 7
+        assert "2026-02" in data_up["detected_months"]
+
+        # 2. Consultar Overview de Febrero
+        res_ov = client.get("/api/dashboard/reconciliation/overview?month=2026-02&account_rfc=DEGF851127TK1")
+        assert res_ov.status_code == 200
+        kpis = res_ov.json()["kpis"]
+
+        # Validar que los ingresos comerciales reflejen SOLO $22,605.75 (depósito de DAM)
+        # y NO incluyan los traspasos entre cuentas propias de $820.00 y $520.00 ($1,340.00)
+        assert kpis["total_ingresos_banco"] == pytest.approx(22605.75, 0.01)
+        assert kpis["count_ingresos_banco"] == 1
+        assert kpis["total_traspasos_ingresos"] == pytest.approx(1340.00, 0.01)
+        assert kpis["count_traspasos_ingresos"] == 2
+        assert kpis["total_ingresos_bruto"] == pytest.approx(23945.75, 0.01)
+
+        # Validar egresos totales ($12,783.91)
+        assert kpis["total_egresos_banco"] == pytest.approx(12783.91, 0.01)
+        assert kpis["count_egresos_banco"] == 4
+    finally:
+        db.close()
+
+
 def test_parse_bank_pdf_statement_mercadopago_credit_card():
     from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
 

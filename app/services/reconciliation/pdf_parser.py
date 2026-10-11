@@ -132,6 +132,48 @@ def is_delgadillo_medina_tc_expense(concepto: str, banco: str = "TC MERCADO PAGO
     return True
 
 
+def is_own_account_transfer(concepto: str, account_rfc: str = "") -> bool:
+    """
+    Determina si un movimiento bancario corresponde a un traspaso o transferencia entre cuentas propias
+    (mismo titular o entre los titulares de Hipha y AMDI: Francisco Delgadillo y Adriana Medina),
+    los cuales no deben considerarse ingresos gravables de clientes ni egresos comerciales.
+    """
+    if not concepto:
+        return False
+    c_up = concepto.upper()
+
+    # 1. Frases y palabras clave explícitas
+    transfer_keywords = [
+        "ENTRE CUENTAS",
+        "ENTRE MIS CUENTAS",
+        "TRASPASO ENTRE CUENTAS",
+        "TRASPASO ENTRE MIS CUENTAS",
+        "TRANSFERENCIA ENTRE CUENTAS",
+        "CUENTA PROPIA",
+        "CUENTAS PROPIAS",
+        "TRASPASO PROPIO",
+        "TRANSFERENCIA PROPIA",
+        "MISMO TITULAR",
+    ]
+    if any(kw in c_up for kw in transfer_keywords):
+        return True
+
+    # 2. Nombre del titular o contrapartes propias (Francisco Delgadillo y Adriana Medina)
+    titulares = [
+        "FRANCISCO DE JESUS DELGADILLO GARCIA",
+        "FRANCISCO DELGADILLO GARCIA",
+        "FRANCISCO DELGADILLO",
+        "ADRIANA MEDINA HERNANDEZ",
+        "ADRIANA MEDINA",
+        "DEGF851127TK1",
+        "MEHA850118Q96",
+    ]
+    if any(t in c_up for t in titulares):
+        return True
+
+    return False
+
+
 def _detect_area_project(concepto: str, default_area: Optional[str] = None) -> Optional[str]:
     concepto_up = (concepto or "").upper()
     for kw, project_name in PROJECT_KEYWORD_MAP.items():
@@ -338,7 +380,8 @@ def _parse_bbva_pyme_statement(
 ) -> List[Dict[str, Any]]:
     """
     Parsea estados de cuenta mensuales estructurados de BBVA (ej. Maestra PyME BBVA).
-    Extrae periodo, RFC, titular, y todas las filas de la sección 'Detalle de Movimientos Realizados'.
+    Extrae periodo, RFC, titular, y todas las filas de la sección 'Detalle de Movimientos Realizados'
+    utilizando análisis de balance de saldos bancarios y soporte multipágina.
     """
     # 1. Extraer año y periodo del encabezado
     m_periodo = re.search(r'Periodo\s+DEL\s+\d{2}/\d{2}/(\d{4})\s+AL\s+\d{2}/\d{2}/(\d{4})', full_text, re.IGNORECASE)
@@ -349,14 +392,18 @@ def _parse_bbva_pyme_statement(
     doc_rfc = m_rfc.group(1).strip() if m_rfc else None
     effective_rfc = account_rfc or doc_rfc or "DEGF851127TK1"
 
+    # 3. Extraer Saldo Anterior / Inicial para trazabilidad aritmética
+    m_ini = re.search(r'Saldo\s+(?:Anterior|Inicial)\s+(\+|-)?\s*([\d,]+\.\d{2})', full_text, re.IGNORECASE)
+    initial_balance = _parse_num(m_ini.group(2)) if m_ini else 0.0
+
     lines = full_text.split('\n')
     in_movs = False
-    txs: List[Dict[str, Any]] = []
-    current_tx: Optional[Dict[str, Any]] = None
+    raw_rows: List[Dict[str, Any]] = []
+    current_raw: Optional[Dict[str, Any]] = None
 
-    for idx, line in enumerate(lines):
+    for line in lines:
         line_str = line.strip()
-        if 'Detalle de Movimientos Realizados' in line_str:
+        if 'Detalle de Movimientos Realizados' in line_str or line_str.startswith('OPER LIQ DESCRIPCIÓN') or line_str.startswith('OPER LIQ DESCRIPCION'):
             in_movs = True
             continue
         if in_movs and any(line_str.startswith(k) for k in [
@@ -364,9 +411,9 @@ def _parse_bbva_pyme_statement(
             'Cuadro resumen', 'Glosario de Abreviaturas'
         ]):
             in_movs = False
-            if current_tx:
-                txs.append(current_tx)
-                current_tx = None
+            if current_raw:
+                raw_rows.append(current_raw)
+                current_raw = None
             continue
 
         if not in_movs:
@@ -375,85 +422,105 @@ def _parse_bbva_pyme_statement(
         # Detectar inicio de movimiento: ej. 22/JUL 22/JUL o 22/07 22/07 o 22/JUL
         m_row = re.match(r'^(\d{2}/[A-Za-z]{3}|\d{2}/\d{2})(?:\s+(\d{2}/[A-Za-z]{3}|\d{2}/\d{2}))?\s+(.+)$', line_str)
         if m_row:
-            if current_tx:
-                txs.append(current_tx)
-                current_tx = None
+            if current_raw:
+                raw_rows.append(current_raw)
+                current_raw = None
 
             oper_date_str = m_row.group(1)
             rest = m_row.group(3).strip()
 
             # Extraer números al final
-            nums = re.findall(r'[\d,]+\.\d{2}', rest)
+            nums = re.findall(r'-?[\d,]+\.\d{2}', rest)
             concept_part = rest
             for n in nums:
                 last_pos = concept_part.rfind(n)
                 if last_pos != -1:
                     concept_part = concept_part[:last_pos].strip()
 
-            monto = 0.0
-            tipo = 'EGRESO'
-            saldo = None
-            if len(nums) >= 3:
-                # 3 números: Abono, Saldo Operación, Saldo Liquidación
-                monto = _parse_num(nums[0])
-                saldo = _parse_num(nums[-1])
-                tipo = 'INGRESO'
-            elif len(nums) == 1:
-                # 1 número: Cargo o Abono
-                monto = _parse_num(nums[0])
-                tipo = 'EGRESO'
-            elif len(nums) == 2:
-                # 2 números: Cargo y Saldo
-                monto = _parse_num(nums[0])
-                saldo = _parse_num(nums[1])
-                tipo = 'EGRESO'
+            parsed_nums = [_parse_num(n) for n in nums]
 
-            # Ajuste inteligente: si len(nums) < 3 pero el concepto indica expresamente DEPOSITO o ABONO en BBVA
-            if tipo == 'EGRESO':
-                concept_up = concept_part.upper()
-                is_explicit_abono = any(k in concept_up for k in [
-                    "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
-                    "ABONO POR LIQUIDACION", "ABONO DE INTERESES", "DEPOSITO EN SUCURSAL",
-                    "DEPOSITO", "ABONO"
-                ])
-                if is_explicit_abono:
-                    tipo = 'INGRESO'
-
-            if not monto or monto <= 0:
-                continue
-
-            # Parsear fecha
             parts_d = oper_date_str.split('/')
             day = int(parts_d[0])
             mon_token = parts_d[1].upper()
             mon_num = int(SPANISH_MONTHS.get(mon_token, mon_token))
             fecha_obj = datetime(year, mon_num, day)
 
-            current_tx = {
+            current_raw = {
                 'fecha': fecha_obj,
                 'concepto': concept_part,
-                'monto': round(monto, 2),
-                'tipo': tipo,
-                'saldo': saldo,
+                'nums': parsed_nums,
                 'periodo_mes': f'{year}-{mon_num:02d}'
             }
-        elif current_tx and line_str and not line_str.startswith('OPER LIQ') and not line_str.startswith('FECHA') and not line_str.startswith('SALDO'):
+        elif current_raw and line_str and not line_str.startswith('OPER LIQ') and not line_str.startswith('FECHA') and not line_str.startswith('SALDO'):
             # Línea subordinada (referencia, guía, BNET, concepto adicional)
-            current_tx['concepto'] += ' - ' + line_str
+            current_raw['concepto'] += ' - ' + line_str
 
-    if current_tx:
-        txs.append(current_tx)
+    if current_raw:
+        raw_rows.append(current_raw)
 
+    # 4. Clasificación aritmética de saldos (INGRESO vs EGRESO) y auto-etiquetado
+    curr_saldo = initial_balance
     result: List[Dict[str, Any]] = []
-    for idx, t in enumerate(txs):
-        concepto_final = t['concepto'][:500]
-        area_proyecto = _detect_area_project(concepto_final)
-        periodo_mes = t['periodo_mes']
-        fecha_obj = t['fecha']
+
+    for idx, r in enumerate(raw_rows):
+        nums = r['nums']
+        if not nums:
+            continue
+        monto = abs(nums[0])
+        if monto <= 0:
+            continue
+
+        tipo: Optional[str] = None
+        saldo_registrado = None
+
+        if len(nums) >= 2:
+            candidates = nums[1:]
+            is_ing = any(abs((curr_saldo + monto) - c) < 0.05 for c in candidates)
+            is_egr = any(abs((curr_saldo - monto) - c) < 0.05 for c in candidates)
+            if is_ing and not is_egr:
+                tipo = 'INGRESO'
+                curr_saldo = curr_saldo + monto
+                saldo_registrado = curr_saldo
+            elif is_egr and not is_ing:
+                tipo = 'EGRESO'
+                curr_saldo = curr_saldo - monto
+                saldo_registrado = curr_saldo
+            elif is_ing and is_egr:
+                pass
+
+        if not tipo:
+            concept_up = r['concepto'].upper()
+            is_explicit_abono = any(k in concept_up for k in [
+                "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
+                "ABONO POR LIQUIDACION", "ABONO DE INTERESES", "DEPOSITO EN SUCURSAL",
+                "DEPOSITO", "ABONO", "SPEI RECIBIDO"
+            ])
+            if is_explicit_abono:
+                tipo = 'INGRESO'
+                curr_saldo = curr_saldo + monto
+            else:
+                tipo = 'EGRESO'
+                curr_saldo = curr_saldo - monto
+            saldo_registrado = curr_saldo
+
+        concepto_final = r['concepto'][:500]
+        periodo_mes = r['periodo_mes']
+        fecha_obj = r['fecha']
         date_str = fecha_obj.strftime("%Y-%m-%d")
-        saldo_token = f"{t['saldo']:.2f}" if t['saldo'] is not None else f"row-{idx}"
-        hash_seed = f"{effective_rfc}|BBVA_PYME|{date_str}|{concepto_final.upper()}|{t['monto']:.2f}|{t['tipo']}|{saldo_token}"
+        saldo_token = f"{saldo_registrado:.2f}" if saldo_registrado is not None else f"row-{idx}"
+        hash_seed = f"{effective_rfc}|BBVA_PYME|{date_str}|{concepto_final.upper()}|{monto:.2f}|{tipo}|{saldo_token}"
         id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
+
+        # Detección de traspasos entre cuentas propias
+        is_own = is_own_account_transfer(concepto_final, account_rfc=effective_rfc)
+        if is_own:
+            status_conciliacion = "NO_APLICA"
+            nota_revision = "Traspaso entre Cuentas Propias"
+            area_proyecto = "DELGADILLO MEDINA"
+        else:
+            status_conciliacion = "SIN_CFDI"
+            nota_revision = "Transacción bancaria sin CFDI registrado en el período."
+            area_proyecto = _detect_area_project(concepto_final)
 
         result.append({
             "account_rfc": effective_rfc,
@@ -461,11 +528,13 @@ def _parse_bbva_pyme_statement(
             "banco": "BBVA",
             "fecha": fecha_obj,
             "concepto": concepto_final,
-            "monto": t['monto'],
-            "tipo": t['tipo'],
-            "saldo": t['saldo'],
+            "monto": round(monto, 2),
+            "tipo": tipo,
+            "saldo": round(saldo_registrado, 2) if saldo_registrado is not None else None,
             "periodo_mes": periodo_mes,
             "area_proyecto": area_proyecto,
+            "status_conciliacion": status_conciliacion,
+            "nota_revision": nota_revision,
             "referencia_rastreo": None
         })
 

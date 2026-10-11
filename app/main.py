@@ -170,6 +170,27 @@ def startup_db_setup():
     except Exception as e_dm:
         print(f"Nota en actualización de gastos DELGADILLO MEDINA: {e_dm}")
 
+    # Homologar traspasos entre cuentas propias para DELGADILLO MEDINA (excluidos de ingresos y gastos comerciales)
+    try:
+        from app.models.reconciliation import BankTransaction
+        from app.services.reconciliation.pdf_parser import is_own_account_transfer
+        db = SessionLocal()
+        try:
+            candidates = db.query(BankTransaction).filter(
+                BankTransaction.status_conciliacion.in_(["SIN_CFDI", "POR_REVISAR"])
+            ).all()
+            for t in candidates:
+                if is_own_account_transfer(t.concepto, account_rfc=t.account_rfc):
+                    t.status_conciliacion = "NO_APLICA"
+                    t.nota_revision = "Traspaso entre Cuentas Propias"
+                    t.area_proyecto = "DELGADILLO MEDINA"
+                    t.confianza_score = 1.0
+            db.commit()
+        finally:
+            db.close()
+    except Exception as e_traspasos:
+        print(f"Nota en actualización de traspasos propios: {e_traspasos}")
+
     # Escribir secretos de Google Analytics si estamos en Vercel
     try:
         if os.environ.get("VERCEL") == "1":

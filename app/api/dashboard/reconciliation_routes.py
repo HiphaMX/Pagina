@@ -21,7 +21,7 @@ from app.services.reconciliation.excel_exporter import export_reconciliation_exc
 from app.services.reconciliation.pdf_reporter import generate_discrepancies_pdf
 from app.services.reconciliation.backfill import import_historical_excel
 from app.services.reconciliation.mail_listener import sync_mailbox_invoices
-from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement, is_own_account_transfer
 
 
 class UpdateTransactionProjectRequest(BaseModel):
@@ -104,10 +104,20 @@ def get_reconciliation_overview(
     ingresos_txs = [t for t in all_txs if t.tipo == "INGRESO"]
     egresos_txs = [t for t in all_txs if t.tipo == "EGRESO"]
 
-    total_ingresos_banco = sum(t.monto for t in ingresos_txs)
+    # Separar traspasos entre cuentas propias (no computan como ingreso del negocio ni requieren CFDI)
+    traspasos_ingresos = [
+        t for t in ingresos_txs
+        if t.status_conciliacion in ("NO_APLICA", "EXENTO") or is_own_account_transfer(t.concepto, effective_rfc)
+    ]
+    ingresos_comerciales = [t for t in ingresos_txs if t not in traspasos_ingresos]
+
+    total_ingresos_banco = sum(t.monto for t in ingresos_comerciales)
+    total_traspasos_ingresos = sum(t.monto for t in traspasos_ingresos)
+    count_traspasos_ingresos = len(traspasos_ingresos)
+
     total_egresos_banco = sum(t.monto for t in egresos_txs)
 
-    conciliados_ingresos = [t for t in ingresos_txs if t.status_conciliacion == "CONCILIADO"]
+    conciliados_ingresos = [t for t in ingresos_comerciales if t.status_conciliacion == "CONCILIADO"]
     conciliados_egresos = [t for t in egresos_txs if t.status_conciliacion == "CONCILIADO"]
 
     sin_cfdi_egresos = [t for t in egresos_txs if t.status_conciliacion == "SIN_CFDI"]
@@ -144,7 +154,10 @@ def get_reconciliation_overview(
         "available_months": available_months,
         "kpis": {
             "total_ingresos_banco": round(total_ingresos_banco, 2),
-            "count_ingresos_banco": len(ingresos_txs),
+            "count_ingresos_banco": len(ingresos_comerciales),
+            "total_ingresos_bruto": round(sum(t.monto for t in ingresos_txs), 2),
+            "total_traspasos_ingresos": round(total_traspasos_ingresos, 2),
+            "count_traspasos_ingresos": count_traspasos_ingresos,
             "total_egresos_banco": round(total_egresos_banco, 2),
             "count_egresos_banco": len(egresos_txs),
             "monto_sin_cfdi": round(monto_sin_cfdi, 2),
@@ -514,10 +527,15 @@ async def upload_reconciliation_files(
                     for tx in transacciones:
                         detected_months.add(tx["periodo_mes"])
                         existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
+                        is_own = is_own_account_transfer(tx.get("concepto", ""), account_rfc=effective_rfc)
+                        status_init = "NO_APLICA" if is_own else "SIN_CFDI"
+                        nota_init = "Traspaso entre Cuentas Propias" if is_own else "Transacción bancaria sin CFDI registrado en el período."
+                        area_init = "DELGADILLO MEDINA" if is_own else entity_name
+
                         if not existing_tx:
                             new_tx = BankTransaction(
                                 account_rfc=effective_rfc,
-                                area_proyecto=entity_name,
+                                area_proyecto=area_init,
                                 tipo_categoria="INGRESO" if tx["tipo"] == "INGRESO" else "GASTO",
                                 id_transaccion=tx["id_transaccion"],
                                 banco=tx["banco"],
@@ -526,13 +544,19 @@ async def upload_reconciliation_files(
                                 monto=tx["monto"],
                                 tipo=tx["tipo"],
                                 saldo=tx.get("saldo"),
-                                status_conciliacion="SIN_CFDI",
-                                confianza_score=0.0,
+                                status_conciliacion=status_init,
+                                nota_revision=nota_init,
+                                confianza_score=1.0 if is_own else 0.0,
                                 periodo_mes=tx["periodo_mes"]
                             )
                             db.add(new_tx)
                             processed_statements += 1
                         else:
+                            if is_own and existing_tx.status_conciliacion in ("SIN_CFDI", "POR_REVISAR"):
+                                existing_tx.status_conciliacion = "NO_APLICA"
+                                existing_tx.nota_revision = "Traspaso entre Cuentas Propias"
+                                existing_tx.area_proyecto = "DELGADILLO MEDINA"
+                                existing_tx.confianza_score = 1.0
                             processed_statements += 1
                 except Exception as e_stmt:
                     errors.append(f"{filename}: {str(e_stmt)}")
@@ -544,10 +568,15 @@ async def upload_reconciliation_files(
                 for tx in transacciones:
                     detected_months.add(tx["periodo_mes"])
                     existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
+                    is_own = is_own_account_transfer(tx.get("concepto", ""), account_rfc=effective_rfc)
+                    status_init = "NO_APLICA" if is_own else (tx.get("status_conciliacion") or "SIN_CFDI")
+                    nota_init = "Traspaso entre Cuentas Propias" if is_own else (tx.get("nota_revision") or "Transacción bancaria sin CFDI registrado en el período.")
+                    area_init = "DELGADILLO MEDINA" if is_own else (tx.get("area_proyecto") or entity_name)
+
                     if not existing_tx:
                         new_tx = BankTransaction(
                             account_rfc=tx["account_rfc"],
-                            area_proyecto=tx.get("area_proyecto") or entity_name,
+                            area_proyecto=area_init,
                             tipo_categoria="INGRESO" if tx["tipo"] == "INGRESO" else "GASTO",
                             id_transaccion=tx["id_transaccion"],
                             banco=tx["banco"],
@@ -556,18 +585,24 @@ async def upload_reconciliation_files(
                             monto=tx["monto"],
                             tipo=tx["tipo"],
                             saldo=tx.get("saldo"),
-                            status_conciliacion="SIN_CFDI",
-                            nota_revision=tx.get("nota_revision") or "Transacción bancaria sin CFDI registrado en el período.",
-                            confianza_score=0.0,
+                            status_conciliacion=status_init,
+                            nota_revision=nota_init,
+                            confianza_score=1.0 if is_own else 0.0,
                             periodo_mes=tx["periodo_mes"]
                         )
                         db.add(new_tx)
                         processed_statements += 1
                     else:
-                        if tx.get("area_proyecto") and (not existing_tx.area_proyecto or existing_tx.area_proyecto == entity_name):
-                            existing_tx.area_proyecto = tx["area_proyecto"]
-                        if tx.get("nota_revision") and not existing_tx.nota_revision:
-                            existing_tx.nota_revision = tx["nota_revision"]
+                        if is_own and existing_tx.status_conciliacion in ("SIN_CFDI", "POR_REVISAR"):
+                            existing_tx.status_conciliacion = "NO_APLICA"
+                            existing_tx.nota_revision = "Traspaso entre Cuentas Propias"
+                            existing_tx.area_proyecto = "DELGADILLO MEDINA"
+                            existing_tx.confianza_score = 1.0
+                        else:
+                            if tx.get("area_proyecto") and (not existing_tx.area_proyecto or existing_tx.area_proyecto == entity_name):
+                                existing_tx.area_proyecto = tx["area_proyecto"]
+                            if tx.get("nota_revision") and not existing_tx.nota_revision:
+                                existing_tx.nota_revision = tx["nota_revision"]
                         processed_statements += 1
             except Exception as e_pdf:
                 errors.append(f"{filename} (PDF bancario): {str(e_pdf)}")
@@ -595,7 +630,7 @@ async def upload_reconciliation_files(
         } for f in facturas_pendientes]
 
         tx_pendientes = db.query(BankTransaction).filter(
-            BankTransaction.status_conciliacion != "CONCILIADO",
+            BankTransaction.status_conciliacion.notin_(["CONCILIADO", "NO_APLICA", "EXENTO"]),
             BankTransaction.account_rfc == effective_rfc
         ).all()
         tx_list = [{

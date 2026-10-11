@@ -6056,7 +6056,11 @@ async function loadReconciliationData(refreshMonths = true) {
         if (ingresosSubEl) {
             const countIng = k.count_ingresos_banco ?? 0;
             const concIng = k.count_ingresos_conciliados ?? countIng;
-            ingresosSubEl.textContent = `${countIng} abonos en el periodo (${concIng} con CFDI amparado)`;
+            let subTxt = `${countIng} abonos comerciales (${concIng} con CFDI amparado)`;
+            if (k.count_traspasos_ingresos && k.count_traspasos_ingresos > 0) {
+                subTxt += ` · ${k.count_traspasos_ingresos} traspaso(s) propio(s) ($${Number(k.total_traspasos_ingresos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}) excluidos`;
+            }
+            ingresosSubEl.textContent = subTxt;
         }
 
         const egresosEl = document.getElementById('kpiReconEgresosBanco');
@@ -7431,7 +7435,10 @@ function openMarkNoAplicaModal(txId, concepto, monto, fecha) {
     document.getElementById('markNoAplicaTxId').value = txId;
     document.getElementById('markNoAplicaTxConcept').textContent = concepto || '-';
     document.getElementById('markNoAplicaTxDate').textContent = fecha ? `Fecha: ${fecha}` : '-';
-    document.getElementById('markNoAplicaTxAmount').textContent = monto ? `-$${Number(monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}` : '-';
+    const upper = (concepto || '').toUpperCase();
+    const isIncome = upper.includes('DEPOSITO') || upper.includes('ABONO') || upper.includes('SPEI RECIBIDO');
+    const sign = isIncome ? '+' : '-';
+    document.getElementById('markNoAplicaTxAmount').textContent = monto ? `${sign}$${Number(monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}` : '-';
 
     const reasonSelect = document.getElementById('markNoAplicaReasonSelect');
     const customGroup = document.getElementById('markNoAplicaCustomGroup');
@@ -7439,13 +7446,12 @@ function openMarkNoAplicaModal(txId, concepto, monto, fecha) {
 
     if (reasonSelect) {
         // Autoselección inteligente basada en concepto
-        const upper = (concepto || '').toUpperCase();
-        if (upper.includes('SAT') || upper.includes('IMPUESTO') || upper.includes('DECLARAC') || upper.includes('TESORERIA')) {
+        if (upper.includes('ENTRE CUENTAS') || upper.includes('CUENTAS PROPIAS') || upper.includes('CUENTA PROPIA') || upper.includes('TRASPASO') || upper.includes('TRANSFERENCIA PROPIA') || upper.includes('DELGADILLO') || upper.includes('ADRIANA MEDINA')) {
+            reasonSelect.value = 'Traspaso entre Cuentas Propias';
+        } else if (upper.includes('SAT') || upper.includes('IMPUESTO') || upper.includes('DECLARAC') || upper.includes('TESORERIA')) {
             reasonSelect.value = 'Impuestos SAT (Pago de declaraciones / provisionales)';
         } else if (upper.includes('TARJETA') || upper.includes('MERCADO PAGO') || upper.includes('MERCADOPAGO') || upper.includes('ML') || upper.includes('PAGO TC')) {
             reasonSelect.value = 'Pago / Liquidación de Tarjeta de Crédito (Traspaso a ML / Tarjeta)';
-        } else if (upper.includes('TRASPASO') || upper.includes('TRANSFERENCIA PROPIA')) {
-            reasonSelect.value = 'Traspaso entre Cuentas Propias';
         } else if (upper.includes('COMISION') || upper.includes('INTERES')) {
             reasonSelect.value = 'Comisión / Interés Bancario Exento';
         } else {

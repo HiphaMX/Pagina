@@ -25,6 +25,19 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
     resultados = []
 
     for tx in transacciones_banco:
+        # Si la transacción ya está excluida/justificada (NO_APLICA, EXENTO) o es un traspaso entre cuentas propias
+        from app.services.reconciliation.pdf_parser import is_own_account_transfer
+
+        if tx.get("status_conciliacion") in ("NO_APLICA", "EXENTO") or is_own_account_transfer(tx.get("concepto", ""), account_rfc=tx.get("account_rfc", "")):
+            resultado_tx = dict(tx)
+            resultado_tx["uuid_cfdi"] = None
+            resultado_tx["status_conciliacion"] = "NO_APLICA"
+            resultado_tx["confianza_score"] = 1.0
+            resultado_tx["nota_revision"] = tx.get("nota_revision") or "Traspaso entre Cuentas Propias"
+            resultado_tx["area_proyecto"] = tx.get("area_proyecto") or "DELGADILLO MEDINA"
+            resultados.append(resultado_tx)
+            continue
+
         # Extraer fecha bancaria
         tx_fecha = tx["fecha"]
         if isinstance(tx_fecha, str):
