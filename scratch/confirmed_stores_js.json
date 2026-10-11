@@ -1,0 +1,156 @@
+[
+  {
+    "id": "mariscos-carlitos",
+    "name": "Mariscos Carlitos",
+    "ciudad": "Zapopan",
+    "giro": "Restaurantes",
+    "lat": 20.799239999999998,
+    "lng": -103.4739601,
+    "mapsUrl": "https://maps.google.com/?cid=13072515807496314685",
+    "giroColor": "bg-red-100 text-red-700 border-red-200",
+    "note": "Me comenta que están llenos de Salsas me compro una macha para su uso personal"
+  },
+  {
+    "id": "abarrotes-reynoso",
+    "name": "Abarrotes Reynoso",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.745469,
+    "lng": -103.4188935,
+    "mapsUrl": "https://maps.google.com/?cid=7592359946662177058",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro solo salsa Negra para el"
+  },
+  {
+    "id": "carnicer-a-las-palmas",
+    "name": "Carnicería Las Palmas",
+    "ciudad": "Zapopan",
+    "giro": "Carnicería",
+    "lat": 20.74684,
+    "lng": -103.4186436,
+    "mapsUrl": "https://maps.google.com/?cid=287167523473092459",
+    "giroColor": "bg-rose-100 text-rose-700 border-rose-200",
+    "note": "Dejaron 2 de cada una"
+  },
+  {
+    "id": "abarrotes-los-compadres",
+    "name": "Abarrotes los compadres",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.7790756,
+    "lng": -103.4690243,
+    "mapsUrl": "https://maps.google.com/?cid=10100795504100800537",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro una de cada una menos semillas"
+  },
+  {
+    "id": "tienda-six",
+    "name": "Tienda SIX",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.7844412,
+    "lng": -103.47666489999999,
+    "mapsUrl": "https://maps.google.com/?cid=17566142128056309486",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro 1 salsa de cada una"
+  },
+  {
+    "id": "carnes-selectas-la-ternera-carniceria",
+    "name": "Carnes Selectas La Ternera Carniceria",
+    "ciudad": "Zapopan",
+    "giro": "Carnicería",
+    "lat": 20.7840375,
+    "lng": -103.476052,
+    "mapsUrl": "https://maps.google.com/?cid=15833837203687499045",
+    "giroColor": "bg-rose-100 text-rose-700 border-rose-200",
+    "note": "Compro de árbol y salsas negras. \nHabanero no le gustó\nTatemada mucho ajo y falta sal"
+  },
+  {
+    "id": "carnicer-a-bistec-real",
+    "name": "Carnicería bistec Real",
+    "ciudad": "Zapopan",
+    "giro": "Carnicería",
+    "lat": 20.784371399999998,
+    "lng": -103.47296689999999,
+    "mapsUrl": "https://maps.google.com/?cid=16274712343334620260",
+    "giroColor": "bg-rose-100 text-rose-700 border-rose-200",
+    "note": "Compraron una de cada una"
+  },
+  {
+    "id": "mariscos-kil-uea",
+    "name": "Mariscos Kiláuea",
+    "ciudad": "Zapopan",
+    "giro": "Restaurantes",
+    "lat": 20.7458495,
+    "lng": -103.44494569999999,
+    "mapsUrl": "https://maps.google.com/?cid=815425066657316068",
+    "giroColor": "bg-red-100 text-red-700 border-red-200",
+    "note": "El viernes llevar 3 negras 3 habaneras y 1 de arbol"
+  },
+  {
+    "id": "tienda-six-9",
+    "name": "Tienda SIX",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.7719693,
+    "lng": -103.44493609999999,
+    "mapsUrl": "https://maps.google.com/?cid=5766739298004724790",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro una de cada una"
+  },
+  {
+    "id": "abarrotes-macal",
+    "name": "abarrotes macal",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.769261,
+    "lng": -103.44272439999999,
+    "mapsUrl": "https://maps.google.com/?cid=16215360291915938060",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro una salsa de cada una"
+  },
+  {
+    "id": "abarrotes-six",
+    "name": "Abarrotes SIX",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.77219,
+    "lng": -103.43690289999999,
+    "mapsUrl": "https://maps.google.com/?cid=11642488946022920006",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro una de cada sabor"
+  },
+  {
+    "id": "carniceria-san-gonzalo",
+    "name": "CARNICERIA SAN GONZALO",
+    "ciudad": "Zapopan",
+    "giro": "Carnicería",
+    "lat": 20.772401499999997,
+    "lng": -103.4342416,
+    "mapsUrl": "https://maps.google.com/?cid=17921037812722370625",
+    "giroColor": "bg-rose-100 text-rose-700 border-rose-200",
+    "note": "Compro 2 salsas de cada sabor"
+  },
+  {
+    "id": "abarrotes-el-chiquilin",
+    "name": "Abarrotes El Chiquilin",
+    "ciudad": "Zapopan",
+    "giro": "Tienda de abarrotes",
+    "lat": 20.7714976,
+    "lng": -103.4346944,
+    "mapsUrl": "https://maps.google.com/?cid=970602783824638242",
+    "giroColor": "bg-emerald-100 text-emerald-700 border-emerald-200",
+    "note": "Compro una de cada una"
+  },
+  {
+    "id": "el-faro-sonorense-taco-fish",
+    "name": "EL FARO SONORENSE - Taco Fish",
+    "ciudad": "Zapopan",
+    "giro": "Restaurantes",
+    "lat": 20.7383961,
+    "lng": -103.4303393,
+    "mapsUrl": "https://maps.google.com/?cid=15633382811920904789",
+    "giroColor": "bg-red-100 text-red-700 border-red-200",
+    "note": "Compro una salsa habanera tatemada"
+  }
+]
