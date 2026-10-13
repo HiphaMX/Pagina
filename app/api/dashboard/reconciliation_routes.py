@@ -6,7 +6,7 @@ from typing import Optional, List, Dict
 import io
 import re
 import zipfile
-from datetime import datetime
+from datetime import datetime, timedelta
 from pydantic import BaseModel
 
 from app.core.database import get_db
@@ -52,6 +52,65 @@ class ComprobarInvoiceRequest(BaseModel):
 
 
 router = APIRouter()
+
+
+def _find_existing_transaction(db: Session, tx: dict, effective_rfc: str) -> Optional[BankTransaction]:
+    """
+    Busca si una transacción bancaria ya existe en la base de datos de forma idempotente,
+    verificando primero por hash id_transaccion y como respaldo por identidad de negocio
+    (mismo RFC, misma fecha calendario, mismo tipo, mismo importe y coincidencia de saldo/concepto).
+    """
+    tx_id = tx.get("id_transaccion")
+    if tx_id:
+        exact = db.query(BankTransaction).filter(
+            BankTransaction.id_transaccion == tx_id,
+            BankTransaction.account_rfc == effective_rfc
+        ).first()
+        if exact:
+            return exact
+
+    tx_fecha = tx.get("fecha")
+    tx_monto = tx.get("monto")
+    tx_tipo = tx.get("tipo")
+    if not (tx_fecha and tx_monto is not None and tx_tipo):
+        return None
+
+    if isinstance(tx_fecha, datetime):
+        dia_inicio = tx_fecha.replace(hour=0, minute=0, second=0, microsecond=0)
+    else:
+        dia_inicio = datetime.combine(tx_fecha, datetime.min.time())
+    dia_fin = dia_inicio + timedelta(days=1)
+
+    candidates = db.query(BankTransaction).filter(
+        BankTransaction.account_rfc == effective_rfc,
+        BankTransaction.fecha >= dia_inicio,
+        BankTransaction.fecha < dia_fin,
+        BankTransaction.tipo == tx_tipo,
+        func.abs(BankTransaction.monto - float(tx_monto)) <= 0.02
+    ).all()
+
+    if not candidates:
+        return None
+
+    tx_saldo = tx.get("saldo")
+    tx_conc_norm = re.sub(r'[^A-Z0-9]', '', str(tx.get("concepto") or "").upper())
+
+    for c in candidates:
+        if tx_saldo is not None and c.saldo is not None:
+            if abs(float(c.saldo) - float(tx_saldo)) <= 0.05:
+                return c
+        c_conc_norm = re.sub(r'[^A-Z0-9]', '', str(c.concepto or "").upper())
+        if tx_conc_norm and c_conc_norm:
+            if tx_conc_norm[:20] == c_conc_norm[:20] or tx_conc_norm in c_conc_norm or c_conc_norm in tx_conc_norm:
+                return c
+
+    if len(candidates) == 1:
+        c = candidates[0]
+        c_conc_norm = re.sub(r'[^A-Z0-9]', '', str(c.concepto or "").upper())
+        if tx_conc_norm[:10] and tx_conc_norm[:10] == c_conc_norm[:10]:
+            return c
+
+    return None
 
 
 
@@ -138,12 +197,13 @@ def get_reconciliation_overview(
     monto_ingresos_conciliados = sum(t.monto for t in conciliados_ingresos)
     pct_ingresos_facturados = round((monto_ingresos_conciliados / total_ingresos_banco * 100), 1) if total_ingresos_banco > 0 else 0.0
 
-    # Detección de posibles movimientos con importes repetidos (duplicados) en el periodo (por tipo: egreso con egreso, ingreso con ingreso)
+    # Detección de posibles movimientos duplicados en el periodo (misma fecha, mismo monto y mismo tipo)
     amount_freq = {}
     for t in all_txs:
-        key = (round(float(t.monto or 0.0), 2), t.tipo)
+        f_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
+        key = (f_str, round(float(t.monto or 0.0), 2), t.tipo)
         amount_freq[key] = amount_freq.get(key, 0) + 1
-    dup_txs = [t for t in all_txs if amount_freq.get((round(float(t.monto or 0.0), 2), t.tipo), 0) > 1]
+    dup_txs = [t for t in all_txs if amount_freq.get((t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE", round(float(t.monto or 0.0), 2), t.tipo), 0) > 1]
     count_posibles_duplicados = len(dup_txs)
     monto_posibles_duplicados = round(sum(t.monto for t in dup_txs), 2)
 
@@ -303,14 +363,16 @@ def get_reconciliation_transactions(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
-    # Frecuencia de montos en el periodo para detectar duplicados por tipo
-    base_month_query = db.query(BankTransaction.monto, BankTransaction.tipo).filter(BankTransaction.account_rfc == effective_rfc)
+    # Detección de posibles duplicados en el periodo (misma fecha, mismo monto y mismo tipo)
+    base_month_query = db.query(BankTransaction.id, BankTransaction.fecha, BankTransaction.monto, BankTransaction.tipo).filter(BankTransaction.account_rfc == effective_rfc)
     if month:
         base_month_query = base_month_query.filter(BankTransaction.periodo_mes == month)
     
     amount_counts = {}
-    for (m, tip) in base_month_query.all():
-        key = (round(float(m or 0.0), 2), tip)
+    month_tx_meta = base_month_query.all()
+    for (t_id, f_val, m, tip) in month_tx_meta:
+        f_str = f_val.strftime("%Y-%m-%d") if f_val else "NODATE"
+        key = (f_str, round(float(m or 0.0), 2), tip)
         amount_counts[key] = amount_counts.get(key, 0) + 1
 
     query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
@@ -335,16 +397,12 @@ def get_reconciliation_transactions(
         query = query.filter(func.abs(BankTransaction.monto - amount) <= 0.05)
 
     if only_duplicates:
-        dup_keys = [k for k, cnt in amount_counts.items() if cnt > 1]
-        if dup_keys:
-            or_clauses = [
-                and_(
-                    func.abs(BankTransaction.monto - k[0]) <= 0.05,
-                    BankTransaction.tipo == k[1]
-                )
-                for k in dup_keys
-            ]
-            query = query.filter(or_(*or_clauses))
+        dup_ids = [
+            t_id for (t_id, f_val, m, tip) in month_tx_meta
+            if amount_counts.get((f_val.strftime("%Y-%m-%d") if f_val else "NODATE", round(float(m or 0.0), 2), tip), 0) > 1
+        ]
+        if dup_ids:
+            query = query.filter(BankTransaction.id.in_(dup_ids))
         else:
             return []
 
@@ -401,8 +459,9 @@ def get_reconciliation_transactions(
         else:
             cfdi_status_label = "SIN CFDI"
 
+        f_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
         m_val = round(float(t.monto or 0.0), 2)
-        dup_count = amount_counts.get((m_val, t.tipo), 1)
+        dup_count = amount_counts.get((f_str, m_val, t.tipo), 1)
 
         results.append({
             "id": t.id,
@@ -802,7 +861,7 @@ async def upload_reconciliation_files(
                     transacciones = parse_bbva_statement(content, filename, account_rfc=effective_rfc)
                     for tx in transacciones:
                         detected_months.add(tx["periodo_mes"])
-                        existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
+                        existing_tx = _find_existing_transaction(db, tx, effective_rfc)
                         is_own = is_own_account_transfer(tx.get("concepto", ""), account_rfc=effective_rfc)
                         status_init = "NO_APLICA" if is_own else "SIN_CFDI"
                         nota_init = "Traspaso entre Cuentas Propias" if is_own else "Transacción bancaria sin CFDI registrado en el período."
@@ -833,6 +892,8 @@ async def upload_reconciliation_files(
                                 existing_tx.nota_revision = "Traspaso entre Cuentas Propias"
                                 existing_tx.area_proyecto = "DELGADILLO MEDINA"
                                 existing_tx.confianza_score = 1.0
+                            if existing_tx.saldo is None and tx.get("saldo") is not None:
+                                existing_tx.saldo = tx.get("saldo")
                             processed_statements += 1
                 except Exception as e_stmt:
                     errors.append(f"{filename}: {str(e_stmt)}")
@@ -843,7 +904,7 @@ async def upload_reconciliation_files(
                 transacciones = parse_bank_pdf_statement(content, filename, account_rfc=effective_rfc)
                 for tx in transacciones:
                     detected_months.add(tx["periodo_mes"])
-                    existing_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx["id_transaccion"]).first()
+                    existing_tx = _find_existing_transaction(db, tx, effective_rfc)
                     is_own = is_own_account_transfer(tx.get("concepto", ""), account_rfc=effective_rfc)
                     status_init = "NO_APLICA" if is_own else (tx.get("status_conciliacion") or "SIN_CFDI")
                     nota_init = "Traspaso entre Cuentas Propias" if is_own else (tx.get("nota_revision") or "Transacción bancaria sin CFDI registrado en el período.")
@@ -879,6 +940,8 @@ async def upload_reconciliation_files(
                                 existing_tx.area_proyecto = tx["area_proyecto"]
                             if tx.get("nota_revision") and not existing_tx.nota_revision:
                                 existing_tx.nota_revision = tx["nota_revision"]
+                        if existing_tx.saldo is None and tx.get("saldo") is not None:
+                            existing_tx.saldo = tx.get("saldo")
                         processed_statements += 1
             except Exception as e_pdf:
                 errors.append(f"{filename} (PDF bancario): {str(e_pdf)}")

@@ -6563,7 +6563,7 @@ async function loadReconciliationTransactions() {
             const isDuplicate = Boolean(t.is_possible_duplicate || (t.duplicate_count && t.duplicate_count > 1));
             const duplicateBadge = isDuplicate ? `
                 <div style="margin-top: 3px;">
-                    <button type="button" onclick="filterByExactAmount(${t.monto})" title="Hay ${t.duplicate_count} movimientos con este mismo importe ($${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}). Haz clic para filtrarlos y comparar posibles duplicados" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.12rem 0.45rem; font-size: 0.68rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; transition: all 0.15s;">
+                    <button type="button" onclick="filterByExactAmount(${t.monto})" title="Hay ${t.duplicate_count} movimientos con este mismo importe ($${Number(t.monto).toLocaleString('es-MX', {minimumFractionDigits: 2})}) en esta misma fecha. Haz clic para filtrarlos y comparar posibles duplicados" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.12rem 0.45rem; font-size: 0.68rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; transition: all 0.15s;">
                         <span>⚠️ ${t.duplicate_count} con este $$</span>
                     </button>
                 </div>

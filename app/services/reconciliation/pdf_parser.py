@@ -508,7 +508,7 @@ def _parse_bbva_pyme_statement(
         fecha_obj = r['fecha']
         date_str = fecha_obj.strftime("%Y-%m-%d")
         saldo_token = f"{saldo_registrado:.2f}" if saldo_registrado is not None else f"row-{idx}"
-        hash_seed = f"{effective_rfc}|BBVA_PYME|{date_str}|{concepto_final.upper()}|{monto:.2f}|{tipo}|{saldo_token}"
+        hash_seed = f"{effective_rfc}|BBVA|{date_str}|{concepto_final.upper()}|{monto:.2f}|{tipo}|{saldo_token}"
         id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
 
         # Detección de traspasos entre cuentas propias

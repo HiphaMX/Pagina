@@ -1824,3 +1824,99 @@ def test_reprocess_endpoint():
     assert data["entity"]["rfc"] == "MEHA850118Q96"
 
 
+def test_upload_idempotency_and_distinct_date_duplicates():
+    from app.api.dashboard.reconciliation_routes import _find_existing_transaction
+    db = SessionLocal()
+    test_ids = ["TX-IDEM-01", "TX-IDEM-02", "TX-IDEM-03"]
+    try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(test_ids)).delete()
+        db.commit()
+
+        # 1. Validar idempotencia con _find_existing_transaction
+        tx1 = BankTransaction(
+            account_rfc="MEHA850118Q96",
+            id_transaccion="TX-IDEM-01",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 15, 10, 30),
+            concepto="PAGO RENTA OFICINAS BBVA",
+            monto=3000.00,
+            tipo="EGRESO",
+            saldo=50000.00,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="AMDI",
+            periodo_mes="2026-05"
+        )
+        db.add(tx1)
+        db.commit()
+
+        # Simular candidato proveniente de otro parser (ej. PDF vs Excel) con distinto hash_seed
+        candidate = {
+            "id_transaccion": "TX-IDEM-CANDIDATE-DIFF-HASH",
+            "fecha": datetime(2026, 5, 15, 0, 0),
+            "concepto": "PAGO RENTA OFICINAS",
+            "monto": 3000.00,
+            "tipo": "EGRESO",
+            "saldo": 50000.00
+        }
+        found = _find_existing_transaction(db, candidate, "MEHA850118Q96")
+        assert found is not None
+        assert found.id_transaccion == "TX-IDEM-01"
+
+        # 2. Agregar movimiento recurrente en OTRA fecha (20 de mayo)
+        tx2 = BankTransaction(
+            account_rfc="MEHA850118Q96",
+            id_transaccion="TX-IDEM-02",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 20, 14, 0),
+            concepto="PAGO SUMINISTROS DIVERSOS",
+            monto=3000.00,
+            tipo="EGRESO",
+            saldo=47000.00,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="AMDI",
+            periodo_mes="2026-05"
+        )
+        db.add(tx2)
+        db.commit()
+
+        # Como están en fechas diferentes (15 de mayo vs 20 de mayo), NO deben marcarse como duplicados
+        res_ov1 = client.get("/api/dashboard/reconciliation/overview?month=2026-05&account_rfc=MEHA850118Q96")
+        assert res_ov1.status_code == 200
+        assert res_ov1.json()["kpis"]["count_posibles_duplicados"] == 0
+
+        # 3. Agregar movimiento duplicado en la MISMA fecha (15 de mayo)
+        tx3 = BankTransaction(
+            account_rfc="MEHA850118Q96",
+            id_transaccion="TX-IDEM-03",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 15, 18, 0),
+            concepto="PAGO RENTA OFICINAS CARGO DOBLE",
+            monto=3000.00,
+            tipo="EGRESO",
+            saldo=44000.00,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="AMDI",
+            periodo_mes="2026-05"
+        )
+        db.add(tx3)
+        db.commit()
+
+        # Ahora sí debe detectar 2 movimientos duplicados en el 15 de mayo
+        res_ov2 = client.get("/api/dashboard/reconciliation/overview?month=2026-05&account_rfc=MEHA850118Q96")
+        assert res_ov2.status_code == 200
+        assert res_ov2.json()["kpis"]["count_posibles_duplicados"] == 2
+
+        # Filtrar solo duplicados en /transactions
+        res_dups = client.get("/api/dashboard/reconciliation/transactions?month=2026-05&account_rfc=MEHA850118Q96&only_duplicates=true")
+        assert res_dups.status_code == 200
+        dups_data = res_dups.json()
+        assert len(dups_data) == 2
+        returned_ids = {d["id_transaccion"] for d in dups_data}
+        assert returned_ids == {"TX-IDEM-01", "TX-IDEM-03"}
+
+    finally:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion.in_(test_ids)).delete()
+        db.commit()
+        db.close()
+
+
