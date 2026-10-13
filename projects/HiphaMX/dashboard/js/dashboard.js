@@ -6196,7 +6196,7 @@ async function loadReconciliationData(refreshMonths = true) {
         if (ivaIngSubEl) {
             const subIng = (k.subtotal_ingresos_facturados || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
             const cntIng = k.count_ingresos_facturados || 0;
-            ivaIngSubEl.textContent = `Subtotal facturado: $${subIng} (${cntIng} facturas emitidas)`;
+            ivaIngSubEl.textContent = `Subtotal cobrado: $${subIng} (${cntIng} facturas cobradas)`;
         }
 
         const ivaEgrEl = document.getElementById('kpiReconIvaEgresos');

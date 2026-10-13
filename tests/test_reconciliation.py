@@ -267,10 +267,25 @@ def test_tax_kpis_calculation_and_balance():
         db.add(cfdi_egr)
         db.commit()
 
-        # 3. Consultar overview para el mes
-        res = client.get(f"/api/dashboard/reconciliation/overview?month={month_test}&account_rfc=DEGF851127TK1")
-        assert res.status_code == 200
-        kpis = res.json()["kpis"]
+        # 3. Consultar overview para el mes mientras la factura de ingreso está pendiente de pago (NO cobrada)
+        res_unpaid = client.get(f"/api/dashboard/reconciliation/overview?month={month_test}&account_rfc=DEGF851127TK1")
+        assert res_unpaid.status_code == 200
+        kpis_unpaid = res_unpaid.json()["kpis"]
+        # Al no estar cobrada en banco, NO genera IVA Trasladado en el mes (LIVA Art. 1-B)
+        assert kpis_unpaid["subtotal_ingresos_facturados"] == 0.00
+        assert kpis_unpaid["iva_trasladado_ingresos"] == 0.00
+        assert kpis_unpaid["count_ingresos_facturados"] == 0
+        assert kpis_unpaid["iva_acreditable_egresos"] == 800.00
+        # Balance a favor de egresos comprobados (-800.00)
+        assert kpis_unpaid["balance_iva_estimado"] == -800.00
+
+        # 4. Ahora simular que se realiza la operación bancaria y se concilia la factura de ingreso
+        cfdi_ing.conciliado = True
+        db.commit()
+
+        res_paid = client.get(f"/api/dashboard/reconciliation/overview?month={month_test}&account_rfc=DEGF851127TK1")
+        assert res_paid.status_code == 200
+        kpis = res_paid.json()["kpis"]
 
         assert kpis["subtotal_ingresos_facturados"] == 10000.00
         assert kpis["iva_trasladado_ingresos"] == 1600.00

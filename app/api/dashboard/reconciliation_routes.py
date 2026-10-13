@@ -239,12 +239,13 @@ def get_reconciliation_overview(
         except Exception:
             pass
 
-    # 1. Facturas de Ingreso (CFDI Emitidos en el mes o vinculados a ingresos del periodo)
+    # 1. Facturas de Ingreso Cobradas (CFDI efectivamente cobrados vía banco o comprobados en el período - LIVA Art. 1-B)
     ingresos_invoices_map: Dict[str, CFDIInvoice] = {}
     if start_dt and end_dt:
         cfdis_mes_ing = db.query(CFDIInvoice).filter(
             CFDIInvoice.account_rfc == effective_rfc,
             CFDIInvoice.tipo == "INGRESO",
+            (CFDIInvoice.conciliado == True) | (CFDIInvoice.comprobado == True),
             CFDIInvoice.fecha_emision >= start_dt,
             CFDIInvoice.fecha_emision < end_dt
         ).all()
