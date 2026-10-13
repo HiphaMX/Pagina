@@ -1466,21 +1466,25 @@ def deduplicate_transactions(
                     db.delete(s_tx)
                     deleted_count += 1
                 else:
-                    # Si era una fila de sábana histórica que no cruzó con banco
-                    is_sabana_phantom = (
-                        (s_tx.nota_revision and any(k in s_tx.nota_revision.lower() for k in ["sábana", "sabana", "histórico", "historico"]))
-                        or any(k in str(s_tx.id_transaccion or "").lower() for k in ["|hist|", "hist", "sabana", "fantasma"])
-                    )
-                    if is_sabana_phantom:
-                        if s_tx.uuid_cfdi:
-                            cfdi_inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == s_tx.uuid_cfdi).first()
-                            if cfdi_inv:
-                                cfdi_inv.comprobado = True
-                                if not cfdi_inv.motivo_comprobacion:
-                                    cfdi_inv.motivo_comprobacion = "Efectivo / Sábana"
-                                invoices_credited_count += 1
+                    # Gasto en efectivo, cuenta externa o fila de sábana no registrada en el extracto oficial
+                    if s_tx.uuid_cfdi:
+                        cfdi_inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == s_tx.uuid_cfdi).first()
+                        if cfdi_inv:
+                            cfdi_inv.comprobado = True
+                            if not cfdi_inv.motivo_comprobacion:
+                                cfdi_inv.motivo_comprobacion = "Efectivo / Sábana"
+                            invoices_credited_count += 1
                         db.delete(s_tx)
                         deleted_count += 1
+                    else:
+                        is_sabana_phantom = (
+                            (s_tx.nota_revision and any(k in s_tx.nota_revision.lower() for k in ["sábana", "sabana", "histórico", "historico"]))
+                            or any(k in str(s_tx.id_transaccion or "").lower() for k in ["|hist|", "hist", "sabana", "fantasma"])
+                            or (s_tx.banco == "BBVA" and not str(s_tx.id_transaccion or "").startswith("tx_dup"))
+                        )
+                        if is_sabana_phantom:
+                            db.delete(s_tx)
+                            deleted_count += 1
 
         # Deduplicar registros idénticos entre transacciones sin saldo restantes (mismo concepto, día y monto)
         remaining_sabana = [x for x in m_txs if x.saldo is None and x not in db.deleted]
