@@ -620,6 +620,7 @@ def get_pending_invoices(
             "retencion_iva": getattr(inv, "retencion_iva", 0.0),
             "total": inv.total,
             "metodo_pago": inv.metodo_pago,
+            "forma_pago": getattr(inv, "forma_pago", None) or "",
             "conceptos_resumen": inv.conceptos_resumen,
             "conciliado": inv.conciliado,
             "comprobado": bool(getattr(inv, "comprobado", False)),
@@ -1340,23 +1341,47 @@ def deduplicate_transactions(
     y depura transacciones duplicadas para la entidad.
     """
     entity_cfg = get_reconciliation_entity_config(account_rfc)
-    effective_rfc = entity_cfg["rfc"]
+    effective_rfc = account_rfc if (account_rfc and account_rfc not in ["AMDI", "HIPHA"]) else entity_cfg["rfc"]
+    entity_name = entity_cfg.get("name", "Entidad")
 
-    # 1. Reclasificar depósitos que hayan sido marcados por error como EGRESO debido a layouts de PDF
+    # 1. Reclasificar depósitos y devoluciones que hayan sido marcados por error como EGRESO
     all_txs = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc).all()
     reclassified_count = 0
     periods_fixed = 0
 
     for t in all_txs:
         conc_up = str(t.concepto or "").upper()
-        is_deposito = any(k in conc_up for k in [
+        is_devuelto = any(k in conc_up for k in ["SPEI DEVUELTO", "DEVOLUCION", "DEVOLUCIÓN"])
+        is_deposito = is_devuelto or any(k in conc_up for k in [
             "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
-            "ABONO POR LIQUIDACION", "ABONO DE INTERESES"
+            "ABONO POR LIQUIDACION", "ABONO DE INTERESES", "SPEI RECIBIDO"
         ])
+
         if is_deposito and t.tipo == "EGRESO":
             t.tipo = "INGRESO"
             t.tipo_categoria = "INGRESO"
             reclassified_count += 1
+
+        if is_devuelto:
+            t.status_conciliacion = "NO_APLICA"
+            t.nota_revision = "Cancelación de SPEI devuelto"
+            t.confianza_score = 1.0
+
+            # Buscar el movimiento emisor que fue devuelto (SPEI ENVIADO de mismo monto en ±3 días)
+            t_fecha = t.fecha.date() if t.fecha else None
+            t_monto = round(float(t.monto or 0.0), 2)
+            for other in all_txs:
+                if other.id == t.id or other.tipo != "EGRESO":
+                    continue
+                if abs(round(float(other.monto or 0.0), 2) - t_monto) <= 0.05:
+                    other_fecha = other.fecha.date() if other.fecha else None
+                    if t_fecha and other_fecha and abs((t_fecha - other_fecha).days) <= 3:
+                        other_conc = str(other.concepto or "").upper()
+                        if "SPEI" in other_conc or "DEVUELTO" in conc_up:
+                            other.status_conciliacion = "NO_APLICA"
+                            other.nota_revision = "Cancelado por SPEI devuelto"
+                            other.confianza_score = 1.0
+                            break
 
         # 2. Corregir periodo_mes si la fecha real no coincide (excepto TC Mercado Pago que va por corte mensual)
         if t.fecha and t.banco != "TC MERCADO PAGO":
@@ -1367,38 +1392,54 @@ def deduplicate_transactions(
 
     db.commit()
 
-    # 3. Deduplicación inteligente
+    # 3. Deduplicación y consolidación inteligente
+    # Identificar qué periodos cuentan con estados de cuenta oficiales (con saldo)
+    official_months = set(
+        r[0] for r in db.query(BankTransaction.periodo_mes)
+        .filter(BankTransaction.account_rfc == effective_rfc, BankTransaction.saldo.isnot(None))
+        .distinct().all()
+    )
+
     query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
     if month:
         query = query.filter(BankTransaction.periodo_mes == month)
 
     txs = query.order_by(BankTransaction.fecha.asc(), BankTransaction.id.asc()).all()
 
-    # Agrupar transacciones por fecha (día), monto y tipo
-    day_groups: Dict[Tuple[str, str, str], List[BankTransaction]] = {}
+    # Agrupar transacciones por periodo_mes
+    txs_by_month: Dict[str, List[BankTransaction]] = {}
     for t in txs:
-        fecha_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
-        monto_str = f"{float(t.monto or 0.0):.2f}"
-        tipo_str = str(t.tipo or "").upper()
-        key = (fecha_str, monto_str, tipo_str)
-        day_groups.setdefault(key, []).append(t)
+        p_m = t.periodo_mes or (t.fecha.strftime("%Y-%m") if t.fecha else "NODATE")
+        txs_by_month.setdefault(p_m, []).append(t)
 
     deleted_count = 0
-    for (fecha_str, monto_str, tipo_str), items in day_groups.items():
-        if len(items) <= 1:
-            continue
+    invoices_credited_count = 0
 
-        # Separar transacciones oficiales de extracto bancario (con saldo) y transacciones de sábana/histórico (sin saldo)
-        bank_txs = [x for x in items if x.saldo is not None]
-        sabana_txs = [x for x in items if x.saldo is None]
+    for p_m, m_txs in txs_by_month.items():
+        has_official_stmt = p_m in official_months
 
-        # Caso A: Fusión cross-source (Banco oficial vs Sábana)
-        if bank_txs and sabana_txs:
+        bank_txs = [x for x in m_txs if x.saldo is not None]
+        sabana_txs = [x for x in m_txs if x.saldo is None]
+
+        if has_official_stmt and sabana_txs:
+            # En meses con extracto oficial de banco, la sábana NO debe duplicar cargos u abonos.
+            # Fusionar con movimientos oficiales en ventana de ±4 días.
             used_bank_ids = set()
             for s_tx in list(sabana_txs):
+                s_fecha = s_tx.fecha.date() if s_tx.fecha else None
+                s_monto = round(float(s_tx.monto or 0.0), 2)
+                s_tipo = str(s_tx.tipo or "").upper()
+
                 best_bank = None
                 for b_tx in bank_txs:
                     if b_tx.id in used_bank_ids:
+                        continue
+                    if str(b_tx.tipo or "").upper() != s_tipo:
+                        continue
+                    if abs(round(float(b_tx.monto or 0.0), 2) - s_monto) > 0.05:
+                        continue
+                    b_fecha = b_tx.fecha.date() if b_tx.fecha else None
+                    if s_fecha and b_fecha and abs((b_fecha - s_fecha).days) > 4:
                         continue
                     best_bank = b_tx
                     break
@@ -1410,43 +1451,72 @@ def deduplicate_transactions(
                         best_bank.area_proyecto = s_tx.area_proyecto
                     if s_tx.tipo_categoria and not best_bank.tipo_categoria:
                         best_bank.tipo_categoria = s_tx.tipo_categoria
-                    if s_tx.uuid_cfdi and not best_bank.uuid_cfdi:
+                    if s_tx.uuid_cfdi:
                         best_bank.uuid_cfdi = s_tx.uuid_cfdi
-                        best_bank.status_conciliacion = s_tx.status_conciliacion or "CONCILIADO"
-                        best_bank.confianza_score = s_tx.confianza_score or 1.0
+                        best_bank.status_conciliacion = "CONCILIADO"
+                        best_bank.confianza_score = 1.0
                         best_bank.nota_revision = s_tx.nota_revision or "Conciliado con folio fiscal histórico (sábana)."
+                        # Marcar factura como conciliada
+                        cfdi_inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == s_tx.uuid_cfdi).first()
+                        if cfdi_inv:
+                            cfdi_inv.conciliado = True
                     elif s_tx.concepto and not best_bank.nota_revision:
                         best_bank.nota_revision = f"Sábana: {s_tx.concepto}"
 
                     db.delete(s_tx)
                     deleted_count += 1
-                    sabana_txs.remove(s_tx)
-
-        # Caso B: Duplicados entre sábanas (ambos sin saldo)
-        if len(sabana_txs) > 1:
-            s_subgroups: Dict[str, List[BankTransaction]] = {}
-            for st in sabana_txs:
-                c_norm = re.sub(r'[^A-Z0-9]', '', str(st.concepto or "").upper())[:25]
-                s_subgroups.setdefault(c_norm, []).append(st)
-
-            for c_norm, s_items in s_subgroups.items():
-                if len(s_items) > 1:
-                    s_sorted = sorted(
-                        s_items,
-                        key=lambda x: (1 if x.uuid_cfdi else 0, x.confianza_score or 0.0, -x.id),
-                        reverse=True
+                else:
+                    # Si era una fila de sábana histórica que no cruzó con banco
+                    is_sabana_phantom = (
+                        (s_tx.nota_revision and any(k in s_tx.nota_revision.lower() for k in ["sábana", "sabana", "histórico", "historico"]))
+                        or any(k in str(s_tx.id_transaccion or "").lower() for k in ["|hist|", "hist", "sabana", "fantasma"])
                     )
-                    s_primary = s_sorted[0]
-                    for s_dup in s_sorted[1:]:
-                        if s_dup.uuid_cfdi and not s_primary.uuid_cfdi:
-                            s_primary.uuid_cfdi = s_dup.uuid_cfdi
-                            s_primary.status_conciliacion = s_dup.status_conciliacion
-                            s_primary.confianza_score = s_dup.confianza_score
-                            s_primary.nota_revision = s_dup.nota_revision
-                        db.delete(s_dup)
+                    if is_sabana_phantom:
+                        if s_tx.uuid_cfdi:
+                            cfdi_inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == s_tx.uuid_cfdi).first()
+                            if cfdi_inv:
+                                cfdi_inv.comprobado = True
+                                if not cfdi_inv.motivo_comprobacion:
+                                    cfdi_inv.motivo_comprobacion = "Efectivo / Sábana"
+                                invoices_credited_count += 1
+                        db.delete(s_tx)
                         deleted_count += 1
 
-        # Caso C: Duplicados idénticos en banco (mismo saldo y concepto o mismo id_transaccion)
+        # Deduplicar registros idénticos entre transacciones sin saldo restantes (mismo concepto, día y monto)
+        remaining_sabana = [x for x in m_txs if x.saldo is None and x not in db.deleted]
+        if len(remaining_sabana) > 1:
+            day_groups: Dict[Tuple[str, str, str], List[BankTransaction]] = {}
+            for t in remaining_sabana:
+                f_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
+                m_str = f"{float(t.monto or 0.0):.2f}"
+                t_str = str(t.tipo or "").upper()
+                day_groups.setdefault((f_str, m_str, t_str), []).append(t)
+
+            for key, items in day_groups.items():
+                if len(items) > 1:
+                    s_subgroups: Dict[str, List[BankTransaction]] = {}
+                    for st in items:
+                        c_norm = re.sub(r'[^A-Z0-9]', '', str(st.concepto or "").upper())[:25]
+                        s_subgroups.setdefault(c_norm, []).append(st)
+
+                    for c_norm, s_items in s_subgroups.items():
+                        if len(s_items) > 1:
+                            s_sorted = sorted(
+                                s_items,
+                                key=lambda x: (1 if x.uuid_cfdi else 0, x.confianza_score or 0.0, -x.id),
+                                reverse=True
+                            )
+                            s_primary = s_sorted[0]
+                            for s_dup in s_sorted[1:]:
+                                if s_dup.uuid_cfdi and not s_primary.uuid_cfdi:
+                                    s_primary.uuid_cfdi = s_dup.uuid_cfdi
+                                    s_primary.status_conciliacion = s_dup.status_conciliacion
+                                    s_primary.confianza_score = s_dup.confianza_score
+                                    s_primary.nota_revision = s_dup.nota_revision
+                                db.delete(s_dup)
+                                deleted_count += 1
+
+        # Deduplicar registros idénticos en banco oficial (mismo saldo y concepto)
         if len(bank_txs) > 1:
             b_subgroups: Dict[Tuple[str, str], List[BankTransaction]] = {}
             for bt in bank_txs:
@@ -1482,11 +1552,13 @@ def deduplicate_transactions(
 
     msg_parts = []
     if reclassified_count > 0:
-        msg_parts.append(f"{reclassified_count} depósitos reclasificados")
+        msg_parts.append(f"{reclassified_count} depósitos/devoluciones reclasificados")
     if periods_fixed > 0:
         msg_parts.append(f"{periods_fixed} periodos corregidos")
     if deleted_count > 0:
-        msg_parts.append(f"{deleted_count} duplicados eliminados")
+        msg_parts.append(f"{deleted_count} duplicados/fantasmas eliminados")
+    if invoices_credited_count > 0:
+        msg_parts.append(f"{invoices_credited_count} facturas acreditadas fuera de banco")
     if matches_creados > 0:
         msg_parts.append(f"{matches_creados} facturas conciliadas")
 
@@ -1497,6 +1569,7 @@ def deduplicate_transactions(
         "deleted_count": deleted_count,
         "reclassified_count": reclassified_count,
         "periods_fixed": periods_fixed,
+        "invoices_credited_count": invoices_credited_count,
         "matches_creados": matches_creados,
         "message": msg
     }

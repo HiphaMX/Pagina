@@ -74,8 +74,8 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 f_d = f_fecha.date() if hasattr(f_fecha, "date") else f_fecha
                 delta_dias = (tx_d - f_d).days
 
-                rfc_contraparte = (f.get("rfc_emisor") if f_tipo == "EGRESO" else f.get("rfc_receptor") or "").upper().strip()
-                nombre_contraparte = (f.get("nombre_emisor") if f_tipo == "EGRESO" else f.get("nombre_receptor") or "").upper().strip()
+                rfc_contraparte = str((f.get("rfc_emisor") if f_tipo == "EGRESO" else f.get("rfc_receptor")) or "").upper().strip()
+                nombre_contraparte = str((f.get("nombre_emisor") if f_tipo == "EGRESO" else f.get("nombre_receptor")) or "").upper().strip()
                 tokens_nombre = _clean_text_tokens(nombre_contraparte)
 
                 tiene_coincidencia_texto = False

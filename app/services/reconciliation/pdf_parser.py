@@ -507,7 +507,7 @@ def _parse_bbva_pyme_statement(
             is_explicit_abono = any(k in concept_up for k in [
                 "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
                 "ABONO POR LIQUIDACION", "ABONO DE INTERESES", "DEPOSITO EN SUCURSAL",
-                "DEPOSITO", "ABONO", "SPEI RECIBIDO"
+                "DEPOSITO", "ABONO", "SPEI RECIBIDO", "SPEI DEVUELTO", "DEVOLUCION", "DEVOLUCIÓN"
             ])
             if is_explicit_abono:
                 tipo = 'INGRESO'

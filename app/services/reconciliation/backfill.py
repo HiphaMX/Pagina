@@ -26,6 +26,41 @@ from app.services.reconciliation.bbva_parser import (
 _parse_date = parse_flexible_date
 
 
+def _classify_payment_method(metodo_str: str) -> Dict[str, Any]:
+    """
+    Clasifica el método de pago especificado en la sábana para determinar si
+    corresponde a un gasto comprobado fuera de banco (efectivo, tarjetas externas)
+    o a una cuenta soportada (BBVA o TC Mercado Pago).
+    """
+    m = (metodo_str or "").strip().upper()
+    if not m:
+        return {"es_banco": True, "banco": "BBVA", "comprobado": False, "motivo": None, "forma_pago": "03"}
+
+    # 1. Efectivo / Caja chica / Reembolsos de viáticos
+    if any(k in m for k in ["EFECTIVO", "01", "CAJA CHICA", "CASH"]):
+        return {"es_banco": False, "banco": None, "comprobado": True, "motivo": "Efectivo", "forma_pago": "01"}
+
+    # 2. TC Mercado Pago (cuenta de tarjeta de crédito soportada)
+    if any(k in m for k in ["TC MERCADO PAGO", "MERCADO PAGO", "ML"]):
+        return {"es_banco": True, "banco": "TC MERCADO PAGO", "comprobado": False, "motivo": None, "forma_pago": "04"}
+
+    # 3. Tarjetas o cuentas externas fuera de banco
+    if "REVOLUT" in m:
+        return {"es_banco": False, "banco": None, "comprobado": True, "motivo": "TC Revolut", "forma_pago": "04"}
+
+    if any(k in m for k in ["HIPOTECA", "HIPOTECARIO"]):
+        return {"es_banco": False, "banco": None, "comprobado": True, "motivo": "Hipoteca", "forma_pago": "03"}
+
+    if any(k in m for k in ["RENDIMIENTO", "INVERSION"]):
+        return {"es_banco": False, "banco": None, "comprobado": True, "motivo": "Rendimientos", "forma_pago": "03"}
+
+    if any(k in m for k in ["TC", "T- CRÉDITO", "T. CRÉDITO", "T- CREDITO", "T. CREDITO", "TARJETA", "CREDITO", "04", "28"]):
+        return {"es_banco": False, "banco": None, "comprobado": True, "motivo": "Otra TC", "forma_pago": "04"}
+
+    # 4. Cuenta bancaria fiscal / Transferencia BBVA
+    return {"es_banco": True, "banco": "BBVA", "comprobado": False, "motivo": None, "forma_pago": "03"}
+
+
 def import_historical_excel(
     file_content: bytes,
     filename: str,
@@ -156,6 +191,7 @@ def import_historical_excel(
     cfdi_count = 0
     meses_afectados = set()
     matched_tx_ids = set()
+    official_stmt_cache: Dict[str, bool] = {}
     errors: List[str] = []
 
     for idx, row in enumerate(rows[header_row_idx + 1:], start=header_row_idx + 1):
@@ -243,7 +279,15 @@ def import_historical_excel(
                 r_num = _parse_num(row[col_ret_isr])
                 ret_isr_val = 0.0 if r_num is None else float(r_num)
 
-            # 1. Registrar CFDI si tenía UUID
+            # Clasificar método de pago
+            info_pago = _classify_payment_method(metodo_val)
+            forma_pago_val = info_pago["forma_pago"]
+            es_banco = info_pago["es_banco"]
+            es_comprobado = info_pago["comprobado"]
+            motivo_comp = info_pago["motivo"]
+
+            existing_cfdi = None
+            # 1. Registrar o actualizar CFDI si tenía UUID
             if uuid:
                 existing_cfdi = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid).first()
                 if not existing_cfdi:
@@ -264,15 +308,38 @@ def import_historical_excel(
                         retenciones=round(ret_isr_val, 2),
                         total=round(monto, 2),
                         metodo_pago=metodo_val[:10] if metodo_val else "PUE",
-                        forma_pago="03",
+                        forma_pago=forma_pago_val,
                         conceptos_resumen=concepto[:250],
-                        conciliado=True,
+                        conciliado=False,
+                        comprobado=es_comprobado,
+                        motivo_comprobacion=motivo_comp,
                         fuente="HISTORICO"
                     )
                     db.add(new_cfdi)
+                    existing_cfdi = new_cfdi
                     cfdi_count += 1
                 else:
-                    existing_cfdi.conciliado = True
+                    if es_comprobado:
+                        existing_cfdi.comprobado = True
+                        if motivo_comp and not existing_cfdi.motivo_comprobacion:
+                            existing_cfdi.motivo_comprobacion = motivo_comp
+                    if forma_pago_val and not existing_cfdi.forma_pago:
+                        existing_cfdi.forma_pago = forma_pago_val
+
+            # Si NO es un pago bancario (es efectivo, TC Mercado Pago, Revolut, etc.)
+            # NO debe insertarse en BankTransaction(banco="BBVA") para evitar inflar cargos y abonos del banco
+            if not es_banco:
+                continue
+
+            # Verificar si este periodo cuenta con extracto bancario oficial
+            if periodo_mes not in official_stmt_cache:
+                has_stmt = db.query(BankTransaction).filter(
+                    BankTransaction.account_rfc == effective_rfc,
+                    BankTransaction.periodo_mes == periodo_mes,
+                    BankTransaction.saldo.isnot(None)
+                ).first() is not None
+                official_stmt_cache[periodo_mes] = has_stmt
+            has_official_stmt = official_stmt_cache[periodo_mes]
 
             # 2. Registrar Transacción Bancaria de forma determinista y sin duplicados
             area_str = (area_val or '').strip().upper()
@@ -286,15 +353,15 @@ def import_historical_excel(
             ).first()
 
             if not existing_tx:
-                start_day = datetime(fecha_obj.year, fecha_obj.month, fecha_obj.day, 0, 0, 0)
-                end_day = start_day + timedelta(days=1)
+                start_window = fecha_obj - timedelta(days=3)
+                end_window = fecha_obj + timedelta(days=4)
 
                 candidates = db.query(BankTransaction).filter(
                     BankTransaction.account_rfc == effective_rfc,
-                    BankTransaction.fecha >= start_day,
-                    BankTransaction.fecha < end_day,
+                    BankTransaction.fecha >= start_window,
+                    BankTransaction.fecha < end_window,
                     BankTransaction.tipo == tipo,
-                    func.abs(BankTransaction.monto - monto) <= 0.02
+                    func.abs(BankTransaction.monto - monto) <= 0.05
                 ).order_by(
                     BankTransaction.saldo.isnot(None).desc(),
                     BankTransaction.id.asc()
@@ -318,12 +385,13 @@ def import_historical_excel(
                             break
 
             if not existing_tx:
+                banco_target = info_pago.get("banco") or "BBVA"
                 new_tx = BankTransaction(
                     account_rfc=effective_rfc,
                     area_proyecto=area_val,
                     tipo_categoria=tipo_cat_val,
                     id_transaccion=id_transaccion,
-                    banco="BBVA",
+                    banco=banco_target,
                     fecha=fecha_obj,
                     concepto=concepto,
                     monto=monto,
@@ -338,6 +406,8 @@ def import_historical_excel(
                 db.flush()
                 matched_tx_ids.add(new_tx.id)
                 tx_count += 1
+                if uuid and existing_cfdi:
+                    existing_cfdi.conciliado = True
             else:
                 matched_tx_ids.add(existing_tx.id)
                 # Enriquecer transacción existente con los datos de la sábana
@@ -352,6 +422,8 @@ def import_historical_excel(
                     existing_tx.status_conciliacion = "CONCILIADO"
                     existing_tx.confianza_score = 1.0
                     existing_tx.nota_revision = "Conciliado con folio fiscal histórico (sábana)."
+                    if existing_cfdi:
+                        existing_cfdi.conciliado = True
                 else:
                     if concepto and not existing_tx.nota_revision:
                         if existing_tx.concepto != concepto:

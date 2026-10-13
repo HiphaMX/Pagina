@@ -2211,5 +2211,168 @@ def test_egresos_own_accounts_exclusion_overview():
         db.close()
 
 
+def test_sabana_cash_invoices_marked_comprobado_and_no_bank_pollution():
+    """
+    Verifica que al importar una sábana con gastos en efectivo o tarjetas fuera de banco:
+    1. Las facturas con UUID se marcan como comprobadas (comprobado=True, motivo='Efectivo', forma_pago='01').
+    2. NO se inyectan transacciones fantasma en BankTransaction(banco="BBVA") para no inflar cargos operativos.
+    """
+    db = SessionLocal()
+    test_rfc = "TEST_RFC_CASH_SABANA"
+    test_month = "2026-05"
+
+    try:
+        # Sábana CSV con 2 filas: 1 en EFECTIVO con UUID, 1 en TC con UUID, y 1 transferencia oficial
+        csv_content = (
+            "FECHA,AREA,FOLIO FISCAL,PROVEEDOR,CONCEPTO,METODO,EGRESOS,SUBTOTAL,IVA\n"
+            "2026-05-15,VENTAS,11111111-2222-3333-4444-555555555555,WALMART,COMPRA DESPENSA,EFECTIVO,555.00,478.45,76.55\n"
+            "2026-05-16,PROYECTO A,66666666-7777-8888-9999-000000000000,MERCADO LIBRE,EQUIPO COMPUTO,T- CRÉDITO,1200.00,1034.48,165.52\n"
+        ).encode("utf-8")
+
+        res = import_historical_excel(csv_content, "sabana_mayo.csv", db, account_rfc=test_rfc)
+        assert res["success"] is True
+
+        # Verificar que NO se crearon transacciones bancarias BBVA para los pagos fuera de banco
+        txs = db.query(BankTransaction).filter(BankTransaction.account_rfc == test_rfc).all()
+        assert len(txs) == 0
+
+        # Verificar que los CFDIs se registraron y quedaron como comprobados
+        inv1 = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "11111111-2222-3333-4444-555555555555").first()
+        assert inv1 is not None
+        assert inv1.comprobado is True
+        assert inv1.motivo_comprobacion == "Efectivo"
+        assert inv1.forma_pago == "01"
+
+        inv2 = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == "66666666-7777-8888-9999-000000000000").first()
+        assert inv2 is not None
+        assert inv2.comprobado is True
+        assert inv2.motivo_comprobacion == "Otra TC"
+        assert inv2.forma_pago == "04"
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.account_rfc == test_rfc).delete()
+        db.query(BankTransaction).filter(BankTransaction.account_rfc == test_rfc).delete()
+        db.commit()
+        db.close()
+
+
+def test_deduplicate_spei_devuelto_and_sabana_consolidation():
+    """
+    Verifica que el endpoint /deduplicate:
+    1. Reclasifique SPEI DEVUELTO como INGRESO y le asigne status NO_APLICA.
+    2. Cancele el SPEI ENVIADO correspondiente como NO_APLICA.
+    3. Elimine transacciones de sábana (saldo=None) cuando ya existe extracto oficial y acredite las facturas.
+    """
+    db = SessionLocal()
+    test_rfc = "TEST_RFC_DEDUP"
+    test_month = "2026-05"
+
+    try:
+        # Movimiento 1: SPEI ENVIADO (con saldo de banco oficial)
+        t_enviado = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="tx_spei_enviado",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 9, 10, 0),
+            concepto="SPEI ENVIADO BANAMEX - Reembolso materiales",
+            monto=6523.00,
+            tipo="EGRESO",
+            saldo=235515.64,
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+        # Movimiento 2: SPEI DEVUELTO (con saldo de banco oficial, pero clasificado por error como EGRESO)
+        t_devuelto = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="tx_spei_devuelto",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 9, 11, 0),
+            concepto="SPEI DEVUELTOBANAMEX - Reembolso materiales",
+            monto=6523.00,
+            tipo="EGRESO",
+            saldo=228992.64,
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+        # Movimiento 3: Movimiento oficial de banco
+        t_oficial = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="tx_oficial",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 20),
+            concepto="PAGO DE SERVICIOS LUZ",
+            monto=1500.00,
+            tipo="EGRESO",
+            saldo=227492.64,
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+        # Movimiento 4: Movimiento fantasma de sábana (saldo=None) sin contraparte oficial en banco, con UUID
+        test_uuid = "99999999-8888-7777-6666-555555555555"
+        cfdi_phantom = CFDIInvoice(
+            uuid=test_uuid,
+            account_rfc=test_rfc,
+            tipo="EGRESO",
+            rfc_emisor="GAS123456789",
+            rfc_receptor=test_rfc,
+            fecha_emision=datetime(2026, 5, 26),
+            subtotal=1476.72,
+            iva_trasladado=236.28,
+            total=1713.00,
+            conciliado=False,
+            comprobado=False
+        )
+        t_fantasma = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="tx_fantasma_sabana",
+            banco="BBVA",
+            fecha=datetime(2026, 5, 26),
+            concepto="TRASLADO TEPIC - GDL",
+            monto=1713.00,
+            tipo="EGRESO",
+            saldo=None,
+            uuid_cfdi=test_uuid,
+            periodo_mes=test_month,
+            status_conciliacion="POR_REVISAR"
+        )
+
+        db.add_all([t_enviado, t_devuelto, t_oficial, cfdi_phantom, t_fantasma])
+        db.commit()
+
+        # Ejecutar deduplicate
+        res = client.post(f"/api/dashboard/reconciliation/deduplicate?account_rfc={test_rfc}&month={test_month}")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["success"] is True
+        assert data["reclassified_count"] >= 1
+        assert data["deleted_count"] >= 1
+
+        # Verificar t_devuelto reclasificado como INGRESO y NO_APLICA
+        db.refresh(t_devuelto)
+        assert t_devuelto.tipo == "INGRESO"
+        assert t_devuelto.status_conciliacion == "NO_APLICA"
+
+        # Verificar t_enviado cancelado como NO_APLICA
+        db.refresh(t_enviado)
+        assert t_enviado.status_conciliacion == "NO_APLICA"
+
+        # Verificar que la transacción fantasma fue eliminada
+        db.expire_all()
+        fantasma_check = db.query(BankTransaction).filter(BankTransaction.id_transaccion == "tx_fantasma_sabana").first()
+        assert fantasma_check is None
+
+        # Verificar que la factura del movimiento fantasma fue acreditada fuera de banco
+        cfdi_check = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).first()
+        assert cfdi_check is not None
+        assert cfdi_check.comprobado is True
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.account_rfc == test_rfc).delete()
+        db.query(BankTransaction).filter(BankTransaction.account_rfc == test_rfc).delete()
+        db.commit()
+        db.close()
+
+
+
 
 
