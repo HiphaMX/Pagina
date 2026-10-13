@@ -162,6 +162,79 @@ def get_reconciliation_overview(
         CFDIInvoice.comprobado == True
     ).count()
 
+    # -------------------------------------------------------------
+    # Métricas Fiscales e IVA para el período seleccionado
+    # -------------------------------------------------------------
+    start_dt = None
+    end_dt = None
+    if selected_month:
+        try:
+            parts = selected_month.strip().split("-")
+            y, m = int(parts[0]), int(parts[1])
+            start_dt = datetime(y, m, 1)
+            if m == 12:
+                end_dt = datetime(y + 1, 1, 1)
+            else:
+                end_dt = datetime(y, m + 1, 1)
+        except Exception:
+            pass
+
+    # 1. Facturas de Ingreso (CFDI Emitidos en el mes o vinculados a ingresos del periodo)
+    ingresos_invoices_map: Dict[str, CFDIInvoice] = {}
+    if start_dt and end_dt:
+        cfdis_mes_ing = db.query(CFDIInvoice).filter(
+            CFDIInvoice.account_rfc == effective_rfc,
+            CFDIInvoice.tipo == "INGRESO",
+            CFDIInvoice.fecha_emision >= start_dt,
+            CFDIInvoice.fecha_emision < end_dt
+        ).all()
+        for inv in cfdis_mes_ing:
+            ingresos_invoices_map[inv.uuid] = inv
+
+    linked_ing_uuids = [t.uuid_cfdi for t in conciliados_ingresos if t.uuid_cfdi]
+    if linked_ing_uuids:
+        linked_cfdis = db.query(CFDIInvoice).filter(
+            CFDIInvoice.uuid.in_(linked_ing_uuids),
+            CFDIInvoice.account_rfc == effective_rfc
+        ).all()
+        for inv in linked_cfdis:
+            ingresos_invoices_map[inv.uuid] = inv
+
+    subtotal_ingresos_facturados = round(sum(float(inv.subtotal or 0.0) for inv in ingresos_invoices_map.values()), 2)
+    iva_trasladado_ingresos = round(sum(float(inv.iva_trasladado or 0.0) for inv in ingresos_invoices_map.values()), 2)
+    total_ingresos_facturados = round(sum(float(inv.total or 0.0) for inv in ingresos_invoices_map.values()), 2)
+    count_ingresos_facturados = len(ingresos_invoices_map)
+
+    # 2. Facturas de Egreso / Gastos Comprobados (CFDI Recibidos amparados vía banco o comprobados fuera de banco)
+    egresos_invoices_map: Dict[str, CFDIInvoice] = {}
+    if start_dt and end_dt:
+        cfdis_mes_egr = db.query(CFDIInvoice).filter(
+            CFDIInvoice.account_rfc == effective_rfc,
+            CFDIInvoice.tipo == "EGRESO",
+            (CFDIInvoice.comprobado == True) | (CFDIInvoice.conciliado == True),
+            CFDIInvoice.fecha_emision >= start_dt,
+            CFDIInvoice.fecha_emision < end_dt
+        ).all()
+        for inv in cfdis_mes_egr:
+            egresos_invoices_map[inv.uuid] = inv
+
+    linked_egr_uuids = [t.uuid_cfdi for t in conciliados_egresos if t.uuid_cfdi]
+    if linked_egr_uuids:
+        linked_egr_cfdis = db.query(CFDIInvoice).filter(
+            CFDIInvoice.uuid.in_(linked_egr_uuids),
+            CFDIInvoice.account_rfc == effective_rfc
+        ).all()
+        for inv in linked_egr_cfdis:
+            egresos_invoices_map[inv.uuid] = inv
+
+    subtotal_egresos_comprobados = round(sum(float(inv.subtotal or 0.0) for inv in egresos_invoices_map.values()), 2)
+    iva_acreditable_egresos = round(sum(float(inv.iva_trasladado or 0.0) for inv in egresos_invoices_map.values()), 2)
+    total_egresos_comprobados = round(sum(float(inv.total or 0.0) for inv in egresos_invoices_map.values()), 2)
+    count_egresos_comprobados = len(egresos_invoices_map)
+
+    # 3. Balance Estimado de IVA (Cobrado en Ingresos - Acreditable en Gastos Comprobados)
+    balance_iva_estimado = round(iva_trasladado_ingresos - iva_acreditable_egresos, 2)
+
     return {
         "entity": {
             "rfc": effective_rfc,
@@ -196,7 +269,16 @@ def get_reconciliation_overview(
             "count_conciliado": len(conciliados_egresos),
             "facturas_disponibles_count": facturas_disponibles_count,
             "count_facturas_comprobadas": count_facturas_comprobadas,
-            "total_transacciones": len(all_txs)
+            "total_transacciones": len(all_txs),
+            "subtotal_ingresos_facturados": subtotal_ingresos_facturados,
+            "iva_trasladado_ingresos": iva_trasladado_ingresos,
+            "total_ingresos_facturados": total_ingresos_facturados,
+            "count_ingresos_facturados": count_ingresos_facturados,
+            "subtotal_egresos_comprobados": subtotal_egresos_comprobados,
+            "iva_acreditable_egresos": iva_acreditable_egresos,
+            "total_egresos_comprobados": total_egresos_comprobados,
+            "count_egresos_comprobados": count_egresos_comprobados,
+            "balance_iva_estimado": balance_iva_estimado
         }
     }
 

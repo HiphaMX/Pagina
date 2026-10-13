@@ -186,6 +186,17 @@ def test_api_reconciliation_endpoints():
     assert "selected_month" in data
     assert data["entity_name"] == "HIPHA"
 
+    k = data["kpis"]
+    assert "subtotal_ingresos_facturados" in k
+    assert "iva_trasladado_ingresos" in k
+    assert "total_ingresos_facturados" in k
+    assert "count_ingresos_facturados" in k
+    assert "subtotal_egresos_comprobados" in k
+    assert "iva_acreditable_egresos" in k
+    assert "total_egresos_comprobados" in k
+    assert "count_egresos_comprobados" in k
+    assert "balance_iva_estimado" in k
+
     # AMDI Overview
     res_amdi = client.get("/api/dashboard/reconciliation/overview?account_rfc=MEHA850118Q96")
     assert res_amdi.status_code == 200
@@ -200,6 +211,84 @@ def test_api_reconciliation_endpoints():
     res_inv = client.get("/api/dashboard/reconciliation/pending-invoices?account_rfc=DEGF851127TK1")
     assert res_inv.status_code == 200
     assert isinstance(res_inv.json(), list)
+
+
+def test_tax_kpis_calculation_and_balance():
+    db = SessionLocal()
+    uuid_ing = "CFDI-TEST-TAX-ING-001"
+    uuid_egr = "CFDI-TEST-TAX-EGR-002"
+    month_test = "2026-11"
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_ing, uuid_egr])).delete()
+        db.commit()
+
+        # 1. Factura de Ingreso emitida
+        cfdi_ing = CFDIInvoice(
+            uuid=uuid_ing,
+            account_rfc="DEGF851127TK1",
+            tipo="INGRESO",
+            rfc_emisor="DEGF851127TK1",
+            nombre_emisor="FRANCISCO DE JESUS DELGADILLO GARCIA",
+            rfc_receptor="CLI999999XYZ",
+            nombre_receptor="CLIENTE TEST IVA SA",
+            fecha_emision=datetime(2026, 11, 10, 10, 0),
+            subtotal=10000.00,
+            iva_trasladado=1600.00,
+            retenciones=0.0,
+            total=11600.00,
+            metodo_pago="PUE",
+            conciliado=False,
+            comprobado=False,
+            area_proyecto="HIPHA"
+        )
+
+        # 2. Factura de Egreso comprobada vía TC externa
+        cfdi_egr = CFDIInvoice(
+            uuid=uuid_egr,
+            account_rfc="DEGF851127TK1",
+            tipo="EGRESO",
+            rfc_emisor="PROV888888XYZ",
+            nombre_emisor="PROVEEDOR COMPROBADO TC",
+            rfc_receptor="DEGF851127TK1",
+            nombre_receptor="FRANCISCO DE JESUS DELGADILLO GARCIA",
+            fecha_emision=datetime(2026, 11, 15, 14, 0),
+            subtotal=5000.00,
+            iva_trasladado=800.00,
+            retenciones=0.0,
+            total=5800.00,
+            metodo_pago="PUE",
+            conciliado=False,
+            comprobado=True,
+            motivo_comprobacion="TC Mercado Libre",
+            area_proyecto="HIPHA"
+        )
+
+        db.add(cfdi_ing)
+        db.add(cfdi_egr)
+        db.commit()
+
+        # 3. Consultar overview para el mes
+        res = client.get(f"/api/dashboard/reconciliation/overview?month={month_test}&account_rfc=DEGF851127TK1")
+        assert res.status_code == 200
+        kpis = res.json()["kpis"]
+
+        assert kpis["subtotal_ingresos_facturados"] == 10000.00
+        assert kpis["iva_trasladado_ingresos"] == 1600.00
+        assert kpis["total_ingresos_facturados"] == 11600.00
+        assert kpis["count_ingresos_facturados"] == 1
+
+        assert kpis["subtotal_egresos_comprobados"] == 5000.00
+        assert kpis["iva_acreditable_egresos"] == 800.00
+        assert kpis["total_egresos_comprobados"] == 5800.00
+        assert kpis["count_egresos_comprobados"] == 1
+
+        # Balance = 1600 - 800 = 800
+        assert kpis["balance_iva_estimado"] == 800.00
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_ing, uuid_egr])).delete()
+        db.commit()
+        db.close()
 
 
 def test_multi_entity_isolation():
@@ -834,6 +923,15 @@ def test_upload_bank_pdf_mercadopago_and_cross_match():
 
     db = SessionLocal()
     try:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == "DEGF851127TK1",
+            BankTransaction.periodo_mes == "2026-08"
+        ).delete()
+        db.query(CFDIInvoice).filter(
+            CFDIInvoice.uuid.in_(["CFDI-GCLOUD-TEST-0001", "CFDI-WALMART-TEST-0002"])
+        ).delete()
+        db.commit()
+
         # 1. Crear facturas CFDI de gastos para cruzar con las compras de la tarjeta
         cfdi_gcloud = CFDIInvoice(
             uuid="CFDI-GCLOUD-TEST-0001",
@@ -851,7 +949,8 @@ def test_upload_bank_pdf_mercadopago_and_cross_match():
             total=301.74,
             metodo_pago="PUE",
             conceptos_resumen="Consumo Cloud Hosting GCP",
-            conciliado=False
+            conciliado=False,
+            comprobado=False
         )
         cfdi_walmart = CFDIInvoice(
             uuid="CFDI-WALMART-TEST-0002",
@@ -869,7 +968,8 @@ def test_upload_bank_pdf_mercadopago_and_cross_match():
             total=1389.00,
             metodo_pago="PUE",
             conceptos_resumen="Insumos Oficina Walmart",
-            conciliado=False
+            conciliado=False,
+            comprobado=False
         )
         db.merge(cfdi_gcloud)
         db.merge(cfdi_walmart)

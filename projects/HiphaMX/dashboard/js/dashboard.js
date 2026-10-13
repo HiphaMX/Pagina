@@ -6154,6 +6154,63 @@ async function loadReconciliationData(refreshMonths = true) {
             sinCountEl.textContent = `${k.count_sin_cfdi || 0} cargos por validar${noAplicaTxt}`;
         }
 
+        // Actualizar KPIs Fila 2: Fiscales e IVA (IVA Ingresos, IVA Egresos Comprobados, Balance IVA)
+        const ivaIngEl = document.getElementById('kpiReconIvaIngresos');
+        if (ivaIngEl) ivaIngEl.textContent = `$${(k.iva_trasladado_ingresos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const ivaIngSubEl = document.getElementById('kpiReconIvaIngresosSub');
+        if (ivaIngSubEl) {
+            const subIng = (k.subtotal_ingresos_facturados || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            const cntIng = k.count_ingresos_facturados || 0;
+            ivaIngSubEl.textContent = `Subtotal facturado: $${subIng} (${cntIng} facturas emitidas)`;
+        }
+
+        const ivaEgrEl = document.getElementById('kpiReconIvaEgresos');
+        if (ivaEgrEl) ivaEgrEl.textContent = `$${(k.iva_acreditable_egresos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+        const ivaEgrSubEl = document.getElementById('kpiReconIvaEgresosSub');
+        if (ivaEgrSubEl) {
+            const subEgr = (k.subtotal_egresos_comprobados || 0).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            const cntEgr = k.count_egresos_comprobados || 0;
+            ivaEgrSubEl.textContent = `Subtotal deducible: $${subEgr} (${cntEgr} facturas amparadas)`;
+        }
+
+        const balIvaEl = document.getElementById('kpiReconBalanceIva');
+        const balIvaSubEl = document.getElementById('kpiReconBalanceIvaSub');
+        const balIvaBadgeEl = document.getElementById('kpiReconBalanceIvaBadge');
+        if (balIvaEl) {
+            const bal = k.balance_iva_estimado || 0;
+            const absBal = Math.abs(bal).toLocaleString('es-MX', {minimumFractionDigits: 2});
+            if (bal > 0) {
+                balIvaEl.textContent = `$${absBal}`;
+                balIvaEl.style.color = '#e879f9';
+                if (balIvaBadgeEl) {
+                    balIvaBadgeEl.textContent = 'A Cargo';
+                    balIvaBadgeEl.style.background = 'rgba(232, 121, 249, 0.15)';
+                    balIvaBadgeEl.style.color = '#e879f9';
+                }
+                if (balIvaSubEl) balIvaSubEl.textContent = 'IVA neto preliminar a pagar estimado';
+            } else if (bal < 0) {
+                balIvaEl.textContent = `+$${absBal}`;
+                balIvaEl.style.color = '#34d399';
+                if (balIvaBadgeEl) {
+                    balIvaBadgeEl.textContent = 'A Favor';
+                    balIvaBadgeEl.style.background = 'rgba(16, 185, 129, 0.15)';
+                    balIvaBadgeEl.style.color = '#34d399';
+                }
+                if (balIvaSubEl) balIvaSubEl.textContent = 'Saldo a favor preliminar de IVA';
+            } else {
+                balIvaEl.textContent = '$0.00';
+                balIvaEl.style.color = 'var(--text-muted)';
+                if (balIvaBadgeEl) {
+                    balIvaBadgeEl.textContent = 'Equilibrado';
+                    balIvaBadgeEl.style.background = 'rgba(148, 163, 184, 0.15)';
+                    balIvaBadgeEl.style.color = 'var(--text-muted)';
+                }
+                if (balIvaSubEl) balIvaSubEl.textContent = 'Sin diferencia preliminar de IVA';
+            }
+        }
+
         // Actualizar badge del contador de posibles duplicados
         const dupBadge = document.getElementById('reconDuplicatesBadgeCount');
         const dupPill = document.getElementById('reconFilterDuplicatesPill');
