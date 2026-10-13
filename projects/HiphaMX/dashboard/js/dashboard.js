@@ -6176,7 +6176,11 @@ async function loadReconciliationData(refreshMonths = true) {
         if (egresosSubEl) {
             const countEgr = k.count_egresos_banco ?? 0;
             const pct = k.pct_egresos_facturados ?? 0;
-            egresosSubEl.textContent = `${countEgr} cargos en el periodo (${pct}% amparado con CFDI)`;
+            let subEgrTxt = `${countEgr} cargos operativos (${pct}% amparado con CFDI)`;
+            if (k.count_traspasos_egresos && k.count_traspasos_egresos > 0) {
+                subEgrTxt += ` · ${k.count_traspasos_egresos} traspaso(s) propio(s) ($${Number(k.total_traspasos_egresos || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}) excluidos`;
+            }
+            egresosSubEl.textContent = subEgrTxt;
         }
 
         const sinCfdiEl = document.getElementById('kpiReconSinCFDI');

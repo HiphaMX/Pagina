@@ -180,7 +180,7 @@ def startup_db_setup():
                 BankTransaction.status_conciliacion.in_(["SIN_CFDI", "POR_REVISAR"])
             ).all()
             for t in candidates:
-                if is_own_account_transfer(t.concepto, account_rfc=t.account_rfc):
+                if is_own_account_transfer(t.concepto, account_rfc=t.account_rfc) or (t.nota_revision and "Traspaso entre Cuentas Propias" in t.nota_revision):
                     t.status_conciliacion = "NO_APLICA"
                     t.nota_revision = "Traspaso entre Cuentas Propias"
                     t.area_proyecto = "DELGADILLO MEDINA"

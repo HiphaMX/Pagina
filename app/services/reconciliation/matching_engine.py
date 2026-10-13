@@ -28,7 +28,7 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
         # Si la transacción ya está excluida/justificada (NO_APLICA, EXENTO) o es un traspaso entre cuentas propias
         from app.services.reconciliation.pdf_parser import is_own_account_transfer
 
-        if tx.get("status_conciliacion") in ("NO_APLICA", "EXENTO") or is_own_account_transfer(tx.get("concepto", ""), account_rfc=tx.get("account_rfc", "")):
+        if tx.get("status_conciliacion") in ("NO_APLICA", "EXENTO") or is_own_account_transfer(tx.get("concepto", ""), account_rfc=tx.get("account_rfc", "")) or (tx.get("nota_revision") and "Traspaso entre Cuentas Propias" in tx.get("nota_revision", "")):
             resultado_tx = dict(tx)
             resultado_tx["uuid_cfdi"] = None
             resultado_tx["status_conciliacion"] = "NO_APLICA"

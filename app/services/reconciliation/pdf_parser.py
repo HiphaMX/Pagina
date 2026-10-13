@@ -142,7 +142,7 @@ def is_own_account_transfer(concepto: str, account_rfc: str = "") -> bool:
         return False
     c_up = concepto.upper()
 
-    # 1. Frases y palabras clave explícitas
+    # 1. Frases y palabras clave explícitas (traspasos y retiros propios / cajero)
     transfer_keywords = [
         "ENTRE CUENTAS",
         "ENTRE MIS CUENTAS",
@@ -154,6 +154,17 @@ def is_own_account_transfer(concepto: str, account_rfc: str = "") -> bool:
         "TRASPASO PROPIO",
         "TRANSFERENCIA PROPIA",
         "MISMO TITULAR",
+        "RETIRO A CUENTA",
+        "RETIRO A MI CUENTA",
+        "RETIRO A MIS CUENTAS",
+        "RETIRO CUENTA PROPIA",
+        "RETIRO EN CAJERO",
+        "RETIRO CAJERO",
+        "RETIRO CAJERO AUTOMATICO",
+        "RETIRO DE EFECTIVO",
+        "CAJERO AUTOMATICO",
+        "DISPOSICION EN CAJERO",
+        "DISPOSICION CAJERO",
     ]
     if any(kw in c_up for kw in transfer_keywords):
         return True
@@ -169,6 +180,9 @@ def is_own_account_transfer(concepto: str, account_rfc: str = "") -> bool:
         "MEHA850118Q96",
     ]
     if any(t in c_up for t in titulares):
+        return True
+
+    if account_rfc and account_rfc.upper() in c_up:
         return True
 
     return False

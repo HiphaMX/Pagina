@@ -170,10 +170,14 @@ def get_reconciliation_overview(
     ingresos_txs = [t for t in all_txs if t.tipo == "INGRESO"]
     egresos_txs = [t for t in all_txs if t.tipo == "EGRESO"]
 
-    # Separar traspasos entre cuentas propias (no computan como ingreso del negocio ni requieren CFDI)
+    # Separar traspasos entre cuentas propias en ingresos (no computan como ingreso del negocio ni requieren CFDI)
     traspasos_ingresos = [
         t for t in ingresos_txs
-        if t.status_conciliacion in ("NO_APLICA", "EXENTO") or is_own_account_transfer(t.concepto, effective_rfc)
+        if not t.uuid_cfdi and (
+            t.status_conciliacion in ("NO_APLICA", "EXENTO") or
+            is_own_account_transfer(t.concepto, effective_rfc) or
+            (t.nota_revision and "Traspaso entre Cuentas Propias" in t.nota_revision)
+        )
     ]
     ingresos_comerciales = [t for t in ingresos_txs if t not in traspasos_ingresos]
 
@@ -181,16 +185,32 @@ def get_reconciliation_overview(
     total_traspasos_ingresos = sum(t.monto for t in traspasos_ingresos)
     count_traspasos_ingresos = len(traspasos_ingresos)
 
-    total_egresos_banco = sum(t.monto for t in egresos_txs)
+    # Separar traspasos/retiros entre cuentas propias en egresos (retiros y transferencias internas que no son gastos operativos del negocio)
+    traspasos_egresos = [
+        t for t in egresos_txs
+        if not t.uuid_cfdi and (
+            is_own_account_transfer(t.concepto, effective_rfc) or
+            (t.nota_revision and "Traspaso entre Cuentas Propias" in t.nota_revision) or
+            (t.status_conciliacion in ("NO_APLICA", "EXENTO") and any(
+                kw in (t.concepto or "").lower() for kw in ["traspaso", "retiro a cuenta", "entre cuentas", "cajero", "retiro cajero", "cuenta propia"]
+            ))
+        )
+    ]
+    egresos_operativos = [t for t in egresos_txs if t not in traspasos_egresos]
+
+    total_egresos_banco = sum(t.monto for t in egresos_operativos)
+    total_egresos_bruto = sum(t.monto for t in egresos_txs)
+    total_traspasos_egresos = sum(t.monto for t in traspasos_egresos)
+    count_traspasos_egresos = len(traspasos_egresos)
 
     conciliados_ingresos = [t for t in ingresos_comerciales if t.status_conciliacion == "CONCILIADO"]
-    conciliados_egresos = [t for t in egresos_txs if t.status_conciliacion == "CONCILIADO"]
+    conciliados_egresos = [t for t in egresos_operativos if t.status_conciliacion == "CONCILIADO"]
 
-    sin_cfdi_egresos = [t for t in egresos_txs if t.status_conciliacion == "SIN_CFDI"]
+    sin_cfdi_egresos = [t for t in egresos_operativos if t.status_conciliacion == "SIN_CFDI"]
     monto_sin_cfdi = sum(t.monto for t in sin_cfdi_egresos)
     count_sin_cfdi = len(sin_cfdi_egresos)
 
-    no_aplica_egresos = [t for t in egresos_txs if t.status_conciliacion in ("NO_APLICA", "EXENTO")]
+    no_aplica_egresos = [t for t in egresos_operativos if t.status_conciliacion in ("NO_APLICA", "EXENTO")]
     monto_no_aplica = sum(t.monto for t in no_aplica_egresos)
     count_no_aplica = len(no_aplica_egresos)
 
@@ -315,7 +335,10 @@ def get_reconciliation_overview(
             "total_traspasos_ingresos": round(total_traspasos_ingresos, 2),
             "count_traspasos_ingresos": count_traspasos_ingresos,
             "total_egresos_banco": round(total_egresos_banco, 2),
-            "count_egresos_banco": len(egresos_txs),
+            "count_egresos_banco": len(egresos_operativos),
+            "total_egresos_bruto": round(total_egresos_bruto, 2),
+            "total_traspasos_egresos": round(total_traspasos_egresos, 2),
+            "count_traspasos_egresos": count_traspasos_egresos,
             "monto_sin_cfdi": round(monto_sin_cfdi, 2),
             "count_sin_cfdi": count_sin_cfdi,
             "monto_no_aplica": round(monto_no_aplica, 2),
@@ -1571,7 +1594,7 @@ def reprocess_entity_reconciliation(
                 tx.periodo_mes = real_period
                 periods_fixed += 1
 
-        is_own = is_own_account_transfer(tx.concepto, account_rfc=effective_rfc)
+        is_own = is_own_account_transfer(tx.concepto, account_rfc=effective_rfc) or (tx.nota_revision and "Traspaso entre Cuentas Propias" in tx.nota_revision)
         if is_own:
             tx.status_conciliacion = "NO_APLICA"
             tx.nota_revision = "Traspaso entre Cuentas Propias"

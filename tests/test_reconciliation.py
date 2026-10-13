@@ -878,9 +878,12 @@ def test_upload_bank_pdf_febrero_endpoint_and_income_exclusion():
         assert kpis["count_traspasos_ingresos"] == 2
         assert kpis["total_ingresos_bruto"] == pytest.approx(23945.75, 0.01)
 
-        # Validar egresos totales ($12,783.91)
-        assert kpis["total_egresos_banco"] == pytest.approx(12783.91, 0.01)
-        assert kpis["count_egresos_banco"] == 4
+        # Validar egresos operativos ($1,350.00) excluyendo traspaso propio ($11,433.91)
+        assert kpis["total_egresos_banco"] == pytest.approx(1350.00, 0.01)
+        assert kpis["count_egresos_banco"] == 3
+        assert kpis["total_traspasos_egresos"] == pytest.approx(11433.91, 0.01)
+        assert kpis["count_traspasos_egresos"] == 1
+        assert kpis["total_egresos_bruto"] == pytest.approx(12783.91, 0.01)
     finally:
         db.close()
 
@@ -2089,6 +2092,124 @@ def test_deduplicate_cross_source_bank_and_sabana():
         ).delete()
         db.commit()
         db.close()
+
+
+def test_egresos_own_accounts_exclusion_overview():
+    """
+    Verifica que los retiros en cajero y traspasos entre cuentas propias en egresos
+    sean debidamente excluidos de 'total_egresos_banco' y 'count_egresos_banco',
+    y se expongan en 'total_traspasos_egresos' y 'total_egresos_bruto'.
+    """
+    db = SessionLocal()
+    test_rfc = "DEGF851127TK1"
+    test_month = "2026-03"
+
+    try:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).delete()
+        db.commit()
+
+        # 1. Traspaso entre cuentas propias
+        t1 = BankTransaction(
+            id_transaccion="TX-EGR-01",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 3, 21),
+            concepto="PAGO CUENTA DE TERCERO - 0008727337  BNET 1184465733 Entre cuentas",
+            monto=19452.75,
+            tipo="EGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="NO_APLICA",
+            nota_revision="Traspaso entre Cuentas Propias"
+        )
+        # 2. Retiro en cajero automático
+        t2 = BankTransaction(
+            id_transaccion="TX-EGR-02",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 3, 12),
+            concepto="RETIRO CAJERO AUTOMATICO - ******7842  MAR12 13:02 BBVA A312",
+            monto=5000.00,
+            tipo="EGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="NO_APLICA",
+            nota_revision="Traspaso entre Cuentas Propias"
+        )
+        # 3. Gasto operativo comercial con CFDI
+        t3 = BankTransaction(
+            id_transaccion="TX-EGR-03",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 3, 10),
+            concepto="NEUBOX INTERNET SA DE CV",
+            monto=301.48,
+            tipo="EGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="CONCILIADO",
+            uuid_cfdi="UUID-NEUBOX-123"
+        )
+        # 4. Gasto operativo comercial sin CFDI pendiente
+        t4 = BankTransaction(
+            id_transaccion="TX-EGR-04",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 3, 15),
+            concepto="COMPRA EN HOME DEPOT",
+            monto=674.00,
+            tipo="EGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+        # 5. Pago de impuestos al SAT (exento/no aplica pero es gasto operativo del negocio)
+        t5 = BankTransaction(
+            id_transaccion="TX-EGR-05",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 3, 18),
+            concepto="PAGO DE IMPUESTOS SAT TESORERIA DE LA FEDERACION",
+            monto=3228.00,
+            tipo="EGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="NO_APLICA",
+            nota_revision="Impuestos SAT"
+        )
+        db.add_all([t1, t2, t3, t4, t5])
+        db.commit()
+
+        # Consultar overview
+        res = client.get(f"/api/dashboard/reconciliation/overview?month={test_month}&account_rfc={test_rfc}")
+        assert res.status_code == 200
+        kpis = res.json()["kpis"]
+
+        # Traspasos/retiros propios excluidos: $19,452.75 + $5,000.00 = $24,452.75 (2 movimientos)
+        assert kpis["count_traspasos_egresos"] == 2
+        assert kpis["total_traspasos_egresos"] == pytest.approx(24452.75, 0.01)
+
+        # Egresos brutos totales: 19,452.75 + 5,000 + 301.48 + 674.00 + 3,228.00 = $28,656.23
+        assert kpis["total_egresos_bruto"] == pytest.approx(28656.23, 0.01)
+
+        # Egresos banco (operativos del negocio): 301.48 + 674.00 + 3,228.00 = $4,203.48 (3 movimientos)
+        assert kpis["count_egresos_banco"] == 3
+        assert kpis["total_egresos_banco"] == pytest.approx(4203.48, 0.01)
+
+        # Sin CFDI pendientes (solo t4): $674.00
+        assert kpis["count_sin_cfdi"] == 1
+        assert kpis["monto_sin_cfdi"] == pytest.approx(674.00, 0.01)
+
+        # No aplica operativos (solo SAT t5): $3,228.00
+        assert kpis["count_no_aplica"] == 1
+        assert kpis["monto_no_aplica"] == pytest.approx(3228.00, 0.01)
+
+    finally:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).delete()
+        db.commit()
+        db.close()
+
 
 
 
