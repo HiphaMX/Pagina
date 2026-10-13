@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query, Header
 from fastapi.responses import StreamingResponse, JSONResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, and_, or_
 from typing import Optional, List, Dict
 import io
 import re
@@ -138,14 +138,14 @@ def get_reconciliation_overview(
     monto_ingresos_conciliados = sum(t.monto for t in conciliados_ingresos)
     pct_ingresos_facturados = round((monto_ingresos_conciliados / total_ingresos_banco * 100), 1) if total_ingresos_banco > 0 else 0.0
 
-    # Detección de posibles movimientos con importes repetidos (duplicados) en el periodo
+    # Detección de posibles movimientos con importes repetidos (duplicados) en el periodo (por tipo: egreso con egreso, ingreso con ingreso)
     amount_freq = {}
     for t in all_txs:
-        m_r = round(float(t.monto or 0.0), 2)
-        amount_freq[m_r] = amount_freq.get(m_r, 0) + 1
-    dup_txs = [t for t in all_txs if amount_freq.get(round(float(t.monto or 0.0), 2), 0) > 1]
+        key = (round(float(t.monto or 0.0), 2), t.tipo)
+        amount_freq[key] = amount_freq.get(key, 0) + 1
+    dup_txs = [t for t in all_txs if amount_freq.get((round(float(t.monto or 0.0), 2), t.tipo), 0) > 1]
     count_posibles_duplicados = len(dup_txs)
-    monto_posibles_duplicados = sum(t.monto for t in dup_txs)
+    monto_posibles_duplicados = round(sum(t.monto for t in dup_txs), 2)
 
     # Mes completo: Si existen movimientos y no hay ningún egreso pendiente de CFDI
     mes_completo = bool(len(all_txs) > 0 and count_sin_cfdi == 0)
@@ -221,15 +221,15 @@ def get_reconciliation_transactions(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
-    # Frecuencia de montos en el periodo para detectar duplicados
-    base_month_query = db.query(BankTransaction.monto).filter(BankTransaction.account_rfc == effective_rfc)
+    # Frecuencia de montos en el periodo para detectar duplicados por tipo
+    base_month_query = db.query(BankTransaction.monto, BankTransaction.tipo).filter(BankTransaction.account_rfc == effective_rfc)
     if month:
         base_month_query = base_month_query.filter(BankTransaction.periodo_mes == month)
     
     amount_counts = {}
-    for (m,) in base_month_query.all():
-        m_r = round(float(m or 0.0), 2)
-        amount_counts[m_r] = amount_counts.get(m_r, 0) + 1
+    for (m, tip) in base_month_query.all():
+        key = (round(float(m or 0.0), 2), tip)
+        amount_counts[key] = amount_counts.get(key, 0) + 1
 
     query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
 
@@ -253,9 +253,16 @@ def get_reconciliation_transactions(
         query = query.filter(func.abs(BankTransaction.monto - amount) <= 0.05)
 
     if only_duplicates:
-        dup_amounts = [amt for amt, cnt in amount_counts.items() if cnt > 1]
-        if dup_amounts:
-            query = query.filter(BankTransaction.monto.in_(dup_amounts))
+        dup_keys = [k for k, cnt in amount_counts.items() if cnt > 1]
+        if dup_keys:
+            or_clauses = [
+                and_(
+                    func.abs(BankTransaction.monto - k[0]) <= 0.05,
+                    BankTransaction.tipo == k[1]
+                )
+                for k in dup_keys
+            ]
+            query = query.filter(or_(*or_clauses))
         else:
             return []
 
@@ -313,7 +320,7 @@ def get_reconciliation_transactions(
             cfdi_status_label = "SIN CFDI"
 
         m_val = round(float(t.monto or 0.0), 2)
-        dup_count = amount_counts.get(m_val, 1)
+        dup_count = amount_counts.get((m_val, t.tipo), 1)
 
         results.append({
             "id": t.id,
