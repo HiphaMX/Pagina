@@ -7296,8 +7296,8 @@ function openComprobarInvoiceModal(uuid) {
     document.getElementById('comprobarInvoiceTotal').textContent = `$${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     document.getElementById('comprobarInvoiceConcepto').textContent = inv.conceptos_resumen || 'Sin conceptos especificados';
 
-    // Seleccionar motivo actual o por defecto "Pago efectivo"
-    const currentMotivo = inv.motivo_comprobacion || 'Pago efectivo';
+    // Seleccionar motivo actual o por defecto "TC Mercado Libre"
+    const currentMotivo = inv.motivo_comprobacion || 'TC Mercado Libre';
     const radios = document.querySelectorAll('input[name="comprobarReason"]');
     radios.forEach(r => {
         r.checked = (r.value === currentMotivo);
@@ -7314,7 +7314,7 @@ function closeComprobarInvoiceModal() {
 async function submitComprobarInvoice() {
     const uuid = document.getElementById('comprobarInvoiceUuid').value;
     const selectedRadio = document.querySelector('input[name="comprobarReason"]:checked');
-    const motivo = selectedRadio ? selectedRadio.value : 'Pago efectivo';
+    const motivo = selectedRadio ? selectedRadio.value : 'TC Mercado Libre';
 
     if (!uuid) return;
 

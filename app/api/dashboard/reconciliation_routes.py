@@ -1308,6 +1308,63 @@ def revert_comprobar_invoice(
     }
 
 
+@router.post("/purge-credit-card-transactions")
+def purge_credit_card_transactions(
+    account_rfc: str = Query("DEGF851127TK1"),
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Elimina todos los movimientos de tarjeta de crédito (Mercado Pago / Mercado Libre)
+    de la tabla bank_transactions para mantener la conciliación bancaria enfocada 100%
+    en la cuenta bancaria fiscal (BBVA).
+    
+    Las facturas CFDI que se encontraban vinculadas a estos movimientos se amparan
+    automáticamente como 'comprobado = True' con motivo 'TC Mercado Libre',
+    para preservar su trazabilidad contable y deducibilidad en el buzón.
+    """
+    entity_cfg = get_reconciliation_entity_config(account_rfc)
+    effective_rfc = entity_cfg["rfc"]
+
+    # 1. Buscar transacciones de TC asociadas a la entidad
+    tc_query = db.query(BankTransaction).filter(
+        BankTransaction.account_rfc == effective_rfc,
+        (
+            (BankTransaction.banco.ilike("%MERCADO%")) |
+            (BankTransaction.banco.ilike("%LIBRE%")) |
+            (BankTransaction.banco.ilike("TC%"))
+        )
+    )
+    tc_txs = tc_query.all()
+    
+    # 2. Facturas vinculadas que deben preservarse como 'TC Mercado Libre'
+    migrated_uuids = []
+    cfdi_uuids = [t.uuid_cfdi for t in tc_txs if t.uuid_cfdi]
+    if cfdi_uuids:
+        cfdis = db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_(cfdi_uuids)).all()
+        for cfdi in cfdis:
+            cfdi.comprobado = True
+            cfdi.motivo_comprobacion = "TC Mercado Libre"
+            cfdi.conciliado = False
+            migrated_uuids.append(cfdi.uuid)
+    
+    # 3. Eliminar las transacciones de tarjeta de crédito
+    deleted_count = len(tc_txs)
+    tc_ids = [t.id for t in tc_txs]
+    if tc_ids:
+        db.query(BankTransaction).filter(BankTransaction.id.in_(tc_ids)).delete(synchronize_session=False)
+
+    db.commit()
+
+    return {
+        "success": True,
+        "deleted_transactions_count": deleted_count,
+        "migrated_invoices_count": len(migrated_uuids),
+        "migrated_cfdi_uuids": migrated_uuids,
+        "message": f"Se eliminaron {deleted_count} movimientos de tarjeta de crédito y se ampararon {len(migrated_uuids)} facturas CFDI con 'TC Mercado Libre'."
+    }
+
+
 @router.post("/backfill-excel")
 async def backfill_historical(
     file: UploadFile = File(...),

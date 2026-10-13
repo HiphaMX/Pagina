@@ -1509,3 +1509,71 @@ def test_comprobar_invoice_endpoints():
         db.commit()
         db.close()
 
+
+def test_purge_credit_card_transactions():
+    db = SessionLocal()
+    test_uuid = "CFDI-TC-PURGE-TEST-001"
+    test_tx_id = "test-tc-purge-tx-001"
+    try:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == test_tx_id).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).delete()
+        db.commit()
+
+        # 1. Crear una factura CFDI y una transacción de TC vinculada
+        test_inv = CFDIInvoice(
+            uuid=test_uuid,
+            account_rfc="DEGF851127TK1",
+            rfc_emisor="PROV888888XYZ",
+            nombre_emisor="PROVEEDOR TC TEST SA",
+            rfc_receptor="DEGF851127TK1",
+            fecha_emision=datetime(2026, 7, 5),
+            total=1250.00,
+            subtotal=1250.00,
+            tipo="EGRESO",
+            conciliado=True,
+            comprobado=False,
+            motivo_comprobacion=None,
+            area_proyecto="HIPHA"
+        )
+        db.add(test_inv)
+
+        test_tx = BankTransaction(
+            id_transaccion=test_tx_id,
+            account_rfc="DEGF851127TK1",
+            fecha=datetime(2026, 7, 5),
+            monto=1250.00,
+            tipo="EGRESO",
+            banco="TC MERCADO PAGO",
+            concepto="Compra en PROVEEDOR TC TEST",
+            status_conciliacion="CONCILIADO",
+            uuid_cfdi=test_uuid,
+            periodo_mes="2026-07"
+        )
+        db.add(test_tx)
+        db.commit()
+
+        # 2. Ejecutar la purga
+        res_purge = client.post("/api/dashboard/reconciliation/purge-credit-card-transactions?account_rfc=DEGF851127TK1")
+        assert res_purge.status_code == 200
+        data_purge = res_purge.json()
+        assert data_purge["success"] is True
+        assert data_purge["deleted_transactions_count"] >= 1
+        assert test_uuid in data_purge["migrated_cfdi_uuids"]
+
+        # 3. Validar que la transacción de TC fue eliminada
+        db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == test_tx_id).first()
+        assert db_tx is None
+
+        # 4. Validar que la factura CFDI ahora está comprobada como 'TC Mercado Libre'
+        db_inv = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).first()
+        assert db_inv is not None
+        assert db_inv.comprobado is True
+        assert db_inv.motivo_comprobacion == "TC Mercado Libre"
+        assert db_inv.conciliado is False
+
+    finally:
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == test_tx_id).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).delete()
+        db.commit()
+        db.close()
+
