@@ -70,7 +70,9 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 if isinstance(f_fecha, str):
                     f_fecha = datetime.strptime(f_fecha[:10], "%Y-%m-%d")
 
-                delta_dias = (tx_fecha - f_fecha).days
+                tx_d = tx_fecha.date() if hasattr(tx_fecha, "date") else tx_fecha
+                f_d = f_fecha.date() if hasattr(f_fecha, "date") else f_fecha
+                delta_dias = (tx_d - f_d).days
 
                 rfc_contraparte = (f.get("rfc_emisor") if f_tipo == "EGRESO" else f.get("rfc_receptor") or "").upper().strip()
                 nombre_contraparte = (f.get("nombre_emisor") if f_tipo == "EGRESO" else f.get("nombre_receptor") or "").upper().strip()
@@ -89,14 +91,15 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 f_related = [d["uuid"] for d in f.get("doctos_relacionados", []) if d.get("uuid")]
 
                 # Ventana comercial flexible:
-                # - Con coincidencia de nombre/RFC: de -15 días a +60 días (crédito comercial y PPD)
+                # - Con coincidencia de nombre/RFC: de -60 días (anticipos de clientes) a +90 días (crédito comercial y PPD)
                 # - Sin coincidencia visible en concepto: ventana estricta de -3 a +7 días
                 if tiene_coincidencia_texto:
-                    if -15 <= delta_dias <= 60:
+                    if -60 <= delta_dias <= 90:
                         rep_tag = " [Complemento de Pago]" if f.get("metodo_pago") == "PAGO" else ""
-                        candidatos.append((f, 1, f"Match exacto{rep_tag} por importe (${tx_monto:,.2f}), fecha ({delta_dias}d) y coincidencia con {nombre_contraparte[:30]}.", 1.0, f_related))
-                    elif 61 <= delta_dias <= 120:
-                        candidatos.append((f, 2, f"Monto (${tx_monto:,.2f}) y contraparte ({nombre_contraparte[:30]}) coinciden, pero con desfase de {delta_dias} días (Pago diferido).", 0.8, f_related))
+                        ant_tag = " [Anticipo]" if delta_dias < 0 else ""
+                        candidatos.append((f, 1, f"Match exacto{rep_tag}{ant_tag} por importe (${tx_monto:,.2f}), fecha ({delta_dias}d) y coincidencia con {nombre_contraparte[:30]}.", 1.0, f_related))
+                    elif 91 <= delta_dias <= 150 or -90 <= delta_dias < -60:
+                        candidatos.append((f, 2, f"Monto (${tx_monto:,.2f}) y contraparte ({nombre_contraparte[:30]}) coinciden, pero con desfase de {delta_dias} días.", 0.8, f_related))
                 else:
                     if -3 <= delta_dias <= 7:
                         candidatos.append((f, 2, f"Monto (${tx_monto:,.2f}) y fecha coinciden con CFDI de {nombre_contraparte[:30]}, pero el concepto bancario no contiene el RFC/Nombre visible.", 0.7, f_related))
@@ -141,8 +144,10 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 c_fec = c["fecha_emision"]
                 if isinstance(c_fec, str):
                     c_fec = datetime.strptime(c_fec[:10], "%Y-%m-%d")
-                d_days = (tx_fecha - c_fec).days
-                if -15 <= d_days <= 90:
+                tx_d = tx_fecha.date() if hasattr(tx_fecha, "date") else tx_fecha
+                c_d = c_fec.date() if hasattr(c_fec, "date") else c_fec
+                d_days = (tx_d - c_d).days
+                if -60 <= d_days <= 90:
                     valid_cands.append(c)
 
             # Ordenar primero los que coinciden en nombre/RFC
