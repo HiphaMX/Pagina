@@ -6071,6 +6071,40 @@ function initReconciliationModule() {
         });
     }
 
+    const btnReprocess = document.getElementById('btnReprocessRecon');
+    if (btnReprocess) {
+        btnReprocess.addEventListener('click', async () => {
+            const entityName = currentReconEntity === 'MEHA850118Q96' ? 'AMDI' : 'HIPHA';
+            const confirmed = confirm(`¿Deseas reprocesar de forma integral todos los XMLs y transacciones bancarias para ${entityName}? Se re-analizarán Complementos de Pago (REPs), se reclasificarán nóminas como egresos y se conciliarán automáticamente pagos consolidados multi-factura.`);
+            if (!confirmed) return;
+
+            btnReprocess.disabled = true;
+            const origHtml = btnReprocess.innerHTML;
+            btnReprocess.innerHTML = `<span>⏳ Reprocesando...</span>`;
+
+            try {
+                const res = await fetch(`${API_BASE}/reconciliation/reprocess?account_rfc=${encodeURIComponent(currentReconEntity)}`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    loadReconciliationData(false);
+                } else {
+                    alert(`Aviso: ${data.detail || 'Error al reprocesar conciliación'}`);
+                }
+            } catch (err) {
+                console.error("Error reprocesando conciliación:", err);
+                alert(`Error al reprocesar: ${err.message || 'Error de conexión'}`);
+            } finally {
+                btnReprocess.disabled = false;
+                btnReprocess.innerHTML = origHtml;
+            }
+        });
+    }
+
     // Modal de Carga de Archivos
     initReconUploadModal();
 

@@ -1677,3 +1677,150 @@ def test_purge_credit_card_transactions():
         db.commit()
         db.close()
 
+
+def test_parse_complemento_de_pago():
+    rep_xml = b"""<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+    xmlns:pago20="http://www.sat.gob.mx/Pagos20"
+    xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+    Version="4.0" Fecha="2026-06-15T10:00:00" Total="0" SubTotal="0" Moneda="XXX" TipoDeComprobante="P">
+    <cfdi:Emisor Rfc="MEHA850118Q96" Nombre="ADRIANA MEDINA HERNANDEZ" />
+    <cfdi:Receptor Rfc="DME950316G28" Nombre="DAL-TILE MEXICO S DE RL DE CV" />
+    <cfdi:Complemento>
+        <pago20:Pagos Version="2.0">
+            <pago20:Totales MontoTotalPagos="55200.50" TotalTrasladosBaseIVA16="47586.64" TotalTrasladosImpuestoIVA16="7613.86" />
+            <pago20:Pago FechaPago="2026-06-14T12:00:00" FormaDePagoP="03" MonedaP="MXN" Monto="55200.50">
+                <pago20:DoctoRelacionado IdDocumento="11111111-2222-3333-4444-555555555555" ImpPagado="55200.50" ImpSaldoAnt="55200.50" ImpSaldoInsoluto="0.00" NumParcialidad="1" />
+            </pago20:Pago>
+        </pago20:Pagos>
+        <tfd:TimbreFiscalDigital UUID="REP-TEST-UUID-1234-5678" FechaTimbrado="2026-06-15T10:05:00" />
+    </cfdi:Complemento>
+</cfdi:Comprobante>"""
+
+    parsed = parse_cfdi_xml(rep_xml, mi_rfc="MEHA850118Q96")
+    assert parsed["uuid"] == "REP-TEST-UUID-1234-5678"
+    assert parsed["tipo"] == "INGRESO"
+    assert parsed["total"] == 55200.50
+    assert parsed["metodo_pago"] == "PAGO"
+    assert parsed["es_pago"] is True
+    assert len(parsed["doctos_relacionados"]) == 1
+    assert parsed["doctos_relacionados"][0]["uuid"] == "11111111-2222-3333-4444-555555555555"
+    assert parsed["doctos_relacionados"][0]["imp_pagado"] == 55200.50
+
+
+def test_parse_cfdi_nomina():
+    nomina_xml = """<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+    xmlns:nomina12="http://www.sat.gob.mx/nomina12"
+    xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+    Version="4.0" Fecha="2026-04-15T18:00:00" Total="8500.00" SubTotal="9000.00" TipoDeComprobante="N">
+    <cfdi:Emisor Rfc="MEHA850118Q96" Nombre="ADRIANA MEDINA HERNANDEZ" />
+    <cfdi:Receptor Rfc="EMPLEADO123" Nombre="JUAN PEREZ LOPEZ" />
+    <cfdi:Conceptos>
+        <cfdi:Concepto Descripcion="Pago de nómina quincenal" Importe="9000.00" />
+    </cfdi:Conceptos>
+    <cfdi:Complemento>
+        <nomina12:Nomina Version="1.2" TipoNomina="O" FechaPago="2026-04-15" />
+        <tfd:TimbreFiscalDigital UUID="NOMINA-UUID-TEST-9999" FechaTimbrado="2026-04-15T18:05:00" />
+    </cfdi:Complemento>
+</cfdi:Comprobante>""".encode("utf-8")
+
+    parsed = parse_cfdi_xml(nomina_xml, mi_rfc="MEHA850118Q96")
+    assert parsed["uuid"] == "NOMINA-UUID-TEST-9999"
+    assert parsed["tipo"] == "EGRESO"
+    assert parsed["es_nomina"] is True
+    assert parsed["total"] == 8500.00
+
+
+def test_matching_consolidated_invoices():
+    facturas = [
+        {
+            "uuid": "INV-DALTILE-01",
+            "tipo": "INGRESO",
+            "rfc_emisor": "MEHA850118Q96",
+            "rfc_receptor": "DME950316G28",
+            "nombre_receptor": "DAL-TILE MEXICO S DE RL DE CV",
+            "fecha_emision": "2026-03-01",
+            "total": 100000.00,
+            "metodo_pago": "PPD",
+            "conceptos_resumen": "Suministro e instalacion"
+        },
+        {
+            "uuid": "INV-DALTILE-02",
+            "tipo": "INGRESO",
+            "rfc_emisor": "MEHA850118Q96",
+            "rfc_receptor": "DME950316G28",
+            "nombre_receptor": "DAL-TILE MEXICO S DE RL DE CV",
+            "fecha_emision": "2026-03-02",
+            "total": 50000.00,
+            "metodo_pago": "PPD",
+            "conceptos_resumen": "Mantenimiento canceleria"
+        }
+    ]
+
+    transacciones = [
+        {
+            "id": 101,
+            "id_transaccion": "TX-CONSOLIDATED-01",
+            "fecha": datetime(2026, 3, 10),
+            "concepto": "DEPOSITO POR SPEI DAL-TILE MEXICO SA FACT 101 Y 102",
+            "monto": 150000.00,
+            "tipo": "INGRESO",
+            "banco": "BBVA"
+        }
+    ]
+
+    resultados = conciliar_movimientos(transacciones, facturas)
+    assert len(resultados) == 1
+    res = resultados[0]
+    assert res["status_conciliacion"] == "CONCILIADO"
+    assert res["confianza_score"] == 1.0
+    assert set(res["related_cfdi_uuids"]) == {"INV-DALTILE-01", "INV-DALTILE-02"}
+
+
+def test_matching_complemento_de_pago():
+    facturas = [
+        {
+            "uuid": "REP-UUID-900",
+            "tipo": "INGRESO",
+            "rfc_emisor": "MEHA850118Q96",
+            "rfc_receptor": "DME950316G28",
+            "nombre_receptor": "DAL-TILE MEXICO S DE RL DE CV",
+            "fecha_emision": "2026-04-12",
+            "total": 45000.00,
+            "metodo_pago": "PAGO",
+            "conceptos_resumen": "Complemento de Pago ampara INV-01",
+            "doctos_relacionados": [{"uuid": "INV-PPD-ORIGINAL-01", "imp_pagado": 45000.00}]
+        }
+    ]
+
+    transacciones = [
+        {
+            "id": 102,
+            "id_transaccion": "TX-REP-01",
+            "fecha": datetime(2026, 4, 12),
+            "concepto": "SPEI RECIBIDO DE DAL TILE REF 9920",
+            "monto": 45000.00,
+            "tipo": "INGRESO",
+            "banco": "BBVA"
+        }
+    ]
+
+    resultados = conciliar_movimientos(transacciones, facturas)
+    assert len(resultados) == 1
+    res = resultados[0]
+    assert res["status_conciliacion"] == "CONCILIADO"
+    assert res["uuid_cfdi"] == "REP-UUID-900"
+    assert "INV-PPD-ORIGINAL-01" in res["related_cfdi_uuids"]
+
+
+def test_reprocess_endpoint():
+    res = client.post("/api/dashboard/reconciliation/reprocess?account_rfc=MEHA850118Q96")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "invoices_reparsed" in data
+    assert "matches_creados" in data
+    assert data["entity"]["rfc"] == "MEHA850118Q96"
+
+

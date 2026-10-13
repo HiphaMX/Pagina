@@ -546,6 +546,106 @@ def get_pending_invoices(
     return results
 
 
+def _run_reconciliation_pass(
+    db: Session,
+    effective_rfc: str,
+    entity_name: str,
+    periodo_mes: Optional[str] = None
+) -> int:
+    """
+    Ejecuta el motor de conciliación avanzada sobre las facturas pendientes y movimientos
+    bancarios pendientes de la entidad:
+    - Extrae método de pago, conceptos y documentos relacionados de complementos de pago.
+    - Soporta matches 1:1 con ventana comercial flexible para transferencias de crédito.
+    - Soporta pagos consolidados (1 depósito ampara 2 o 3 facturas).
+    - Marca como conciliadas tanto las transacciones como todas las facturas hijas y consolidadas.
+    """
+    facturas_query = db.query(CFDIInvoice).filter(
+        CFDIInvoice.conciliado == False,
+        CFDIInvoice.comprobado == False,
+        CFDIInvoice.account_rfc == effective_rfc
+    )
+    facturas_pendientes = facturas_query.all()
+    facturas_dict = []
+    for f in facturas_pendientes:
+        f_item = {
+            "uuid": f.uuid,
+            "tipo": f.tipo,
+            "rfc_emisor": f.rfc_emisor,
+            "nombre_emisor": f.nombre_emisor,
+            "rfc_receptor": f.rfc_receptor,
+            "nombre_receptor": f.nombre_receptor,
+            "fecha_emision": f.fecha_emision,
+            "subtotal": f.subtotal,
+            "iva": f.iva_trasladado,
+            "total": f.total,
+            "metodo_pago": f.metodo_pago,
+            "conceptos_resumen": f.conceptos_resumen,
+            "doctos_relacionados": []
+        }
+        if f.metodo_pago == "PAGO" and f.xml_raw:
+            try:
+                rep_data = parse_cfdi_xml(f.xml_raw.encode("utf-8"), mi_rfc=effective_rfc)
+                f_item["doctos_relacionados"] = rep_data.get("doctos_relacionados", [])
+            except Exception:
+                pass
+        facturas_dict.append(f_item)
+
+    tx_query = db.query(BankTransaction).filter(
+        BankTransaction.status_conciliacion.notin_(["CONCILIADO", "NO_APLICA", "EXENTO"]),
+        BankTransaction.account_rfc == effective_rfc
+    )
+    if periodo_mes:
+        tx_query = tx_query.filter(BankTransaction.periodo_mes == periodo_mes)
+    tx_pendientes = tx_query.all()
+
+    tx_list = [{
+        "id": t.id,
+        "id_transaccion": t.id_transaccion,
+        "fecha": t.fecha,
+        "concepto": t.concepto,
+        "monto": t.monto,
+        "tipo": t.tipo,
+        "banco": t.banco,
+        "area_proyecto": t.area_proyecto
+    } for t in tx_pendientes]
+
+    matches_creados = 0
+    if facturas_dict and tx_list:
+        conciliados = conciliar_movimientos(tx_list, facturas_dict)
+        for res in conciliados:
+            db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
+            if not db_tx:
+                continue
+            if res.get("uuid_cfdi"):
+                db_tx.uuid_cfdi = res["uuid_cfdi"]
+                db_tx.status_conciliacion = res["status_conciliacion"]
+                db_tx.confianza_score = res["confianza_score"]
+                db_tx.nota_revision = res["nota_revision"]
+
+                if res["status_conciliacion"] == "CONCILIADO":
+                    db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
+                    if db_f:
+                        db_f.conciliado = True
+                    for rel_uuid in res.get("related_cfdi_uuids", []):
+                        if rel_uuid and rel_uuid != res["uuid_cfdi"]:
+                            rel_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == rel_uuid).first()
+                            if rel_f:
+                                rel_f.conciliado = True
+                    matches_creados += 1
+            else:
+                if res.get("status_conciliacion") in ("NO_APLICA", "EXENTO"):
+                    db_tx.status_conciliacion = res["status_conciliacion"]
+                    db_tx.confianza_score = res["confianza_score"]
+                    db_tx.nota_revision = res["nota_revision"]
+                elif res.get("area_proyecto") and (not db_tx.area_proyecto or db_tx.area_proyecto in [entity_name, "General"]):
+                    db_tx.area_proyecto = res["area_proyecto"]
+                if res.get("nota_revision") and not db_tx.nota_revision:
+                    db_tx.nota_revision = res["nota_revision"]
+        db.commit()
+    return matches_creados
+
+
 @router.post("/upload-files")
 async def upload_reconciliation_files(
     files: List[UploadFile] = File(...),
@@ -609,6 +709,19 @@ async def upload_reconciliation_files(
                                     )
                                     db.add(inv)
                                     processed_xmls += 1
+                                else:
+                                    if cfdi_data["total"] > 0 and (existing.total == 0 or existing.total != cfdi_data["total"]):
+                                        existing.total = cfdi_data["total"]
+                                    if cfdi_data.get("subtotal", 0.0) > 0 and existing.subtotal == 0:
+                                        existing.subtotal = cfdi_data["subtotal"]
+                                    if cfdi_data.get("metodo_pago") and existing.metodo_pago != cfdi_data["metodo_pago"]:
+                                        existing.metodo_pago = cfdi_data["metodo_pago"]
+                                    if cfdi_data.get("tipo") and existing.tipo != cfdi_data["tipo"]:
+                                        existing.tipo = cfdi_data["tipo"]
+                                    if cfdi_data.get("conceptos_resumen") and existing.conceptos_resumen != cfdi_data["conceptos_resumen"]:
+                                        existing.conceptos_resumen = cfdi_data["conceptos_resumen"]
+                                    if not existing.xml_raw:
+                                        existing.xml_raw = xml_bytes.decode("utf-8", errors="ignore")
                             except Exception as e_zip_xml:
                                 errors.append(f"{zip_info.filename}: {str(e_zip_xml)}")
             except Exception as e_zip:
@@ -647,6 +760,19 @@ async def upload_reconciliation_files(
                     )
                     db.add(inv)
                     processed_xmls += 1
+                else:
+                    if cfdi_data["total"] > 0 and (existing.total == 0 or existing.total != cfdi_data["total"]):
+                        existing.total = cfdi_data["total"]
+                    if cfdi_data.get("subtotal", 0.0) > 0 and existing.subtotal == 0:
+                        existing.subtotal = cfdi_data["subtotal"]
+                    if cfdi_data.get("metodo_pago") and existing.metodo_pago != cfdi_data["metodo_pago"]:
+                        existing.metodo_pago = cfdi_data["metodo_pago"]
+                    if cfdi_data.get("tipo") and existing.tipo != cfdi_data["tipo"]:
+                        existing.tipo = cfdi_data["tipo"]
+                    if cfdi_data.get("conceptos_resumen") and existing.conceptos_resumen != cfdi_data["conceptos_resumen"]:
+                        existing.conceptos_resumen = cfdi_data["conceptos_resumen"]
+                    if not existing.xml_raw:
+                        existing.xml_raw = content.decode("utf-8", errors="ignore")
             except Exception as e_xml:
                 errors.append(f"{filename}: {str(e_xml)}")
 
@@ -762,62 +888,7 @@ async def upload_reconciliation_files(
     # 4. Detonar conciliación automática filtrando por la entidad activa
     matches_creados = 0
     try:
-        facturas_pendientes = db.query(CFDIInvoice).filter(
-            CFDIInvoice.conciliado == False,
-            CFDIInvoice.comprobado == False,
-            CFDIInvoice.account_rfc == effective_rfc
-        ).all()
-        facturas_dict = [{
-            "uuid": f.uuid,
-            "tipo": f.tipo,
-            "rfc_emisor": f.rfc_emisor,
-            "nombre_emisor": f.nombre_emisor,
-            "rfc_receptor": f.rfc_receptor,
-            "nombre_receptor": f.nombre_receptor,
-            "fecha_emision": f.fecha_emision,
-            "subtotal": f.subtotal,
-            "iva": f.iva_trasladado,
-            "total": f.total
-        } for f in facturas_pendientes]
-
-        tx_pendientes = db.query(BankTransaction).filter(
-            BankTransaction.status_conciliacion.notin_(["CONCILIADO", "NO_APLICA", "EXENTO"]),
-            BankTransaction.account_rfc == effective_rfc
-        ).all()
-        tx_list = [{
-            "id": t.id,
-            "id_transaccion": t.id_transaccion,
-            "fecha": t.fecha,
-            "concepto": t.concepto,
-            "monto": t.monto,
-            "tipo": t.tipo,
-            "banco": t.banco,
-            "area_proyecto": t.area_proyecto
-        } for t in tx_pendientes]
-
-        if facturas_dict and tx_list:
-            conciliados = conciliar_movimientos(tx_list, facturas_dict)
-            for res in conciliados:
-                db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
-                if db_tx:
-                    if res.get("uuid_cfdi"):
-                        db_tx.uuid_cfdi = res["uuid_cfdi"]
-                        db_tx.status_conciliacion = res["status_conciliacion"]
-                        db_tx.confianza_score = res["confianza_score"]
-                        db_tx.nota_revision = res["nota_revision"]
-
-                        if res["status_conciliacion"] == "CONCILIADO":
-                            db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
-                            if db_f:
-                                db_f.conciliado = True
-                            matches_creados += 1
-                    else:
-                        if res.get("area_proyecto") and (not db_tx.area_proyecto or db_tx.area_proyecto in [entity_name, "General"]):
-                            db_tx.area_proyecto = res["area_proyecto"]
-                        if res.get("nota_revision") and not db_tx.nota_revision:
-                            db_tx.nota_revision = res["nota_revision"]
-
-            db.commit()
+        matches_creados = _run_reconciliation_pass(db, effective_rfc, entity_name)
     except Exception as e_engine:
         errors.append(f"Error en motor de conciliación: {e_engine}")
 
@@ -1248,61 +1319,7 @@ def deduplicate_transactions(
     # 4. Detonar conciliación automática para emparejar movimientos corregidos
     matches_creados = 0
     try:
-        facturas_pendientes = db.query(CFDIInvoice).filter(
-            CFDIInvoice.conciliado == False,
-            CFDIInvoice.comprobado == False,
-            CFDIInvoice.account_rfc == effective_rfc
-        ).all()
-        facturas_dict = [{
-            "uuid": f.uuid,
-            "tipo": f.tipo,
-            "rfc_emisor": f.rfc_emisor,
-            "nombre_emisor": f.nombre_emisor,
-            "rfc_receptor": f.rfc_receptor,
-            "nombre_receptor": f.nombre_receptor,
-            "fecha_emision": f.fecha_emision,
-            "subtotal": f.subtotal,
-            "iva": f.iva_trasladado,
-            "total": f.total
-        } for f in facturas_pendientes]
-
-        tx_pendientes = db.query(BankTransaction).filter(
-            BankTransaction.status_conciliacion != "CONCILIADO",
-            BankTransaction.account_rfc == effective_rfc
-        ).all()
-        tx_list = [{
-            "id": t.id,
-            "id_transaccion": t.id_transaccion,
-            "fecha": t.fecha,
-            "concepto": t.concepto,
-            "monto": t.monto,
-            "tipo": t.tipo,
-            "banco": t.banco,
-            "area_proyecto": t.area_proyecto
-        } for t in tx_pendientes]
-
-        if facturas_dict and tx_list:
-            conciliados = conciliar_movimientos(tx_list, facturas_dict)
-            for res in conciliados:
-                db_tx = db.query(BankTransaction).filter(BankTransaction.id_transaccion == res["id_transaccion"]).first()
-                if db_tx:
-                    if res.get("uuid_cfdi"):
-                        db_tx.uuid_cfdi = res["uuid_cfdi"]
-                        db_tx.status_conciliacion = res["status_conciliacion"]
-                        db_tx.confianza_score = res["confianza_score"]
-                        db_tx.nota_revision = res["nota_revision"]
-
-                        if res["status_conciliacion"] == "CONCILIADO":
-                            db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
-                            if db_f:
-                                db_f.conciliado = True
-                            matches_creados += 1
-                    else:
-                        if res.get("area_proyecto") and (not db_tx.area_proyecto or db_tx.area_proyecto in [entity_name, "General"]):
-                            db_tx.area_proyecto = res["area_proyecto"]
-                        if res.get("nota_revision") and not db_tx.nota_revision:
-                            db_tx.nota_revision = res["nota_revision"]
-            db.commit()
+        matches_creados = _run_reconciliation_pass(db, effective_rfc, entity_name, periodo_mes=month)
     except Exception as e_recon:
         print(f"Error en conciliación automática tras deduplicar: {e_recon}")
 
@@ -1324,6 +1341,142 @@ def deduplicate_transactions(
         "reclassified_count": reclassified_count,
         "periods_fixed": periods_fixed,
         "matches_creados": matches_creados,
+        "message": msg
+    }
+
+
+@router.post("/reprocess")
+def reprocess_entity_reconciliation(
+    account_rfc: str = Query("MEHA850118Q96", description="RFC de la entidad: DEGF851127TK1 o MEHA850118Q96"),
+    year: Optional[str] = Query(None, description="Año opcional a reprocesar (ej. '2026')"),
+    month: Optional[str] = Query(None, description="Mes opcional a reprocesar (ej. '2026-03')"),
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Reprocesa de forma integral todas las facturas XML y estados de cuenta de la entidad:
+    1. Re-analiza los XMLs almacenados (xml_raw) actualizando montos de Complementos de Pago (REPs),
+       reclasificando Nóminas como EGRESO y enriqueciendo conceptos/doctos relacionados.
+    2. Reclasifica depósitos bancarios marcados como EGRESO y corrige periodos desfasados.
+    3. Resetea conciliaciones automáticas previas para permitir un emparejamiento limpio de punta a punta.
+    4. Ejecuta el motor avanzado de conciliación (coincidencias 1:1, complementos de pago y pagos consolidados).
+    """
+    entity_cfg = get_reconciliation_entity_config(account_rfc)
+    effective_rfc = entity_cfg["rfc"]
+    entity_name = entity_cfg["name"]
+
+    # 1. Re-procesar facturas CFDI con xml_raw
+    inv_query = db.query(CFDIInvoice).filter(CFDIInvoice.account_rfc == effective_rfc)
+    all_invs = inv_query.all()
+    invoices_reparsed = 0
+    zeros_fixed = 0
+    nominas_reclassified = 0
+
+    for inv in all_invs:
+        if inv.xml_raw:
+            try:
+                cfdi_data = parse_cfdi_xml(inv.xml_raw.encode("utf-8"), mi_rfc=effective_rfc)
+                old_total = inv.total or 0.0
+                new_total = cfdi_data.get("total", 0.0)
+
+                if old_total == 0.0 and new_total > 0:
+                    zeros_fixed += 1
+
+                if inv.tipo != cfdi_data["tipo"]:
+                    if cfdi_data["tipo"] == "EGRESO" and cfdi_data.get("es_nomina"):
+                        nominas_reclassified += 1
+
+                inv.total = new_total
+                inv.subtotal = cfdi_data.get("subtotal", 0.0)
+                inv.iva_trasladado = cfdi_data.get("iva_trasladado", 0.0)
+                inv.retencion_isr = cfdi_data.get("retencion_isr", 0.0)
+                inv.retencion_iva = cfdi_data.get("retencion_iva", 0.0)
+                inv.retenciones = cfdi_data.get("retenciones", 0.0)
+                inv.metodo_pago = cfdi_data.get("metodo_pago")
+                inv.forma_pago = cfdi_data.get("forma_pago")
+                inv.tipo = cfdi_data["tipo"]
+                if cfdi_data.get("conceptos_resumen"):
+                    inv.conceptos_resumen = cfdi_data["conceptos_resumen"]
+
+                # Reset conciliado flag si no está comprobada manualmente
+                if not inv.comprobado:
+                    inv.conciliado = False
+
+                invoices_reparsed += 1
+            except Exception:
+                pass
+        else:
+            if not inv.comprobado:
+                inv.conciliado = False
+
+    # 2. Reclasificar y limpiar transacciones bancarias
+    tx_query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
+    if month:
+        tx_query = tx_query.filter(BankTransaction.periodo_mes == month)
+    elif year:
+        tx_query = tx_query.filter(BankTransaction.periodo_mes.startswith(f"{year}-"))
+
+    all_txs = tx_query.all()
+    deposits_reclassified = 0
+    periods_fixed = 0
+
+    for tx in all_txs:
+        conc_up = str(tx.concepto or "").upper()
+        is_deposito = any(k in conc_up for k in [
+            "DEPOSITO DE TERCERO", "DEPOSITO EN EFECTIVO", "DEPOSITO POR SPEI",
+            "ABONO POR LIQUIDACION", "ABONO DE INTERESES"
+        ])
+        if is_deposito and tx.tipo == "EGRESO":
+            tx.tipo = "INGRESO"
+            tx.tipo_categoria = "INGRESO"
+            deposits_reclassified += 1
+
+        if tx.fecha and tx.banco != "TC MERCADO PAGO":
+            real_period = tx.fecha.strftime("%Y-%m")
+            if tx.periodo_mes != real_period:
+                tx.periodo_mes = real_period
+                periods_fixed += 1
+
+        is_own = is_own_account_transfer(tx.concepto, account_rfc=effective_rfc)
+        if is_own:
+            tx.status_conciliacion = "NO_APLICA"
+            tx.nota_revision = "Traspaso entre Cuentas Propias"
+            tx.confianza_score = 1.0
+        else:
+            tx.status_conciliacion = "SIN_CFDI"
+            tx.uuid_cfdi = None
+            tx.confianza_score = 0.0
+
+    db.commit()
+
+    # 3. Ejecutar pasada integral del motor de conciliación
+    matches_creados = _run_reconciliation_pass(db, effective_rfc, entity_name, periodo_mes=month)
+
+    # 4. Estadísticas finales
+    total_txs = len(all_txs)
+    total_conciliados = db.query(BankTransaction).filter(
+        BankTransaction.account_rfc == effective_rfc,
+        BankTransaction.status_conciliacion == "CONCILIADO"
+    ).count()
+
+    msg = (
+        f"Reprocesamiento exitoso para {entity_name}: {invoices_reparsed} facturas analizadas "
+        f"({zeros_fixed} complementos de pago con monto asignado, {nominas_reclassified} nóminas a egreso), "
+        f"{deposits_reclassified} depósitos reclasificados. Se lograron {matches_creados} conciliaciones automáticas "
+        f"({total_conciliados} de {total_txs} transacciones ahora en estatus CONCILIADO)."
+    )
+
+    return {
+        "success": True,
+        "entity": {"rfc": effective_rfc, "name": entity_name},
+        "invoices_reparsed": invoices_reparsed,
+        "zeros_fixed": zeros_fixed,
+        "nominas_reclassified": nominas_reclassified,
+        "deposits_reclassified": deposits_reclassified,
+        "periods_fixed": periods_fixed,
+        "matches_creados": matches_creados,
+        "total_conciliados": total_conciliados,
+        "total_transactions": total_txs,
         "message": msg
     }
 

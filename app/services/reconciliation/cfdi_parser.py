@@ -82,6 +82,7 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
     else:
         fecha_dt = datetime.utcnow()
 
+    tipo_comprobante = (root.attrib.get('TipoDeComprobante') or root.attrib.get('tipoDeComprobante') or 'I').upper()
     total = float(root.attrib.get('Total') or root.attrib.get('total') or 0.0)
     subtotal = float(root.attrib.get('SubTotal') or root.attrib.get('subtotal') or 0.0)
     metodo_pago = root.attrib.get('MetodoPago') or root.attrib.get('metodoPago') or 'PUE'
@@ -111,7 +112,7 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
             for t in find_all_nodes(traslados_wrapper, 'Traslado'):
                 impuesto_tipo = t.attrib.get('Impuesto') or t.attrib.get('impuesto')
                 importe_str = t.attrib.get('Importe') or t.attrib.get('importe') or '0'
-                if impuesto_tipo == '002':
+                if impuesto_tipo in ('002', 'IVA'):
                     try:
                         iva_trasladado += float(importe_str)
                     except ValueError:
@@ -128,7 +129,7 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
                     retenciones_total += r_val
                     if impuesto_tipo == '001':
                         retencion_isr += r_val
-                    elif impuesto_tipo == '002':
+                    elif impuesto_tipo in ('002', 'IVA'):
                         retencion_iva += r_val
                 except ValueError:
                     pass
@@ -143,20 +144,144 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
                 conceptos_list.append(desc.strip())
     conceptos_resumen = " | ".join(conceptos_list[:3]) if conceptos_list else ""
 
-    # 7. Clasificación INGRESO vs EGRESO
-    # Si el RFC emisor es igual a mi RFC, la factura es un INGRESO (emitida a un cliente)
-    # En cualquier otro caso, es un EGRESO (recibida de un proveedor)
+    # 7. Soporte Avanzado para Complemento para Recepción de Pagos (Tipo 'P', CFDI 3.3 y 4.0)
+    doctos_relacionados = []
+    fecha_pago_dt = None
+    es_pago = (tipo_comprobante == 'P')
+
+    pagos_wrapper = None
+    for elem in root.iter():
+        tag_local = elem.tag.split('}')[-1]
+        if tag_local == 'Pagos':
+            pagos_wrapper = elem
+            es_pago = True
+            break
+
+    if es_pago and pagos_wrapper is not None:
+        metodo_pago = "PAGO"
+        totales_elem = None
+        for child in pagos_wrapper:
+            if child.tag.split('}')[-1] == 'Totales':
+                totales_elem = child
+                break
+
+        monto_totales = 0.0
+        if totales_elem is not None:
+            try:
+                monto_totales = float(totales_elem.attrib.get('MontoTotalPagos') or totales_elem.attrib.get('montoTotalPagos') or 0.0)
+            except ValueError:
+                monto_totales = 0.0
+            try:
+                iva_tot = float(totales_elem.attrib.get('TotalTrasladosImpuestoIVA16') or 0.0)
+                if iva_tot > 0:
+                    iva_trasladado = iva_tot
+            except ValueError:
+                pass
+
+        pago_nodes = [c for c in pagos_wrapper if c.tag.split('}')[-1] == 'Pago']
+        monto_pagos_sum = 0.0
+        for p in pago_nodes:
+            try:
+                monto_p = float(p.attrib.get('Monto') or p.attrib.get('monto') or 0.0)
+                monto_pagos_sum += monto_p
+            except ValueError:
+                pass
+
+            fp_raw = p.attrib.get('FechaPago') or p.attrib.get('fechaPago') or ''
+            if fp_raw and not fecha_pago_dt:
+                try:
+                    fecha_pago_dt = datetime.fromisoformat(fp_raw.replace('Z', ''))
+                except ValueError:
+                    try:
+                        fecha_pago_dt = datetime.strptime(fp_raw[:10], "%Y-%m-%d")
+                    except ValueError:
+                        pass
+
+            fp_code = p.attrib.get('FormaDePagoP') or p.attrib.get('formaDePagoP') or ''
+            if fp_code:
+                forma_pago = fp_code
+
+            # Buscar DoctoRelacionado dentro de cada Pago
+            for elem_sub in p.iter():
+                if elem_sub.tag.split('}')[-1] == 'DoctoRelacionado':
+                    id_doc = (elem_sub.attrib.get('IdDocumento') or elem_sub.attrib.get('idDocumento') or '').strip().upper()
+                    try:
+                        imp_pagado = float(elem_sub.attrib.get('ImpPagado') or elem_sub.attrib.get('impPagado') or 0.0)
+                    except ValueError:
+                        imp_pagado = 0.0
+                    try:
+                        imp_ant = float(elem_sub.attrib.get('ImpSaldoAnt') or elem_sub.attrib.get('impSaldoAnt') or 0.0)
+                    except ValueError:
+                        imp_ant = 0.0
+                    try:
+                        imp_ins = float(elem_sub.attrib.get('ImpSaldoInsoluto') or elem_sub.attrib.get('impSaldoInsoluto') or 0.0)
+                    except ValueError:
+                        imp_ins = 0.0
+                    try:
+                        parc = int(elem_sub.attrib.get('NumParcialidad') or elem_sub.attrib.get('numParcialidad') or 1)
+                    except ValueError:
+                        parc = 1
+
+                    if id_doc:
+                        doctos_relacionados.append({
+                            "uuid": id_doc,
+                            "imp_pagado": imp_pagado,
+                            "imp_saldo_ant": imp_ant,
+                            "imp_saldo_insoluto": imp_ins,
+                            "num_parcialidad": parc
+                        })
+
+        final_pago_total = monto_totales if monto_totales > 0 else monto_pagos_sum
+        if final_pago_total > 0:
+            total = final_pago_total
+            if subtotal == 0.0:
+                subtotal = round(total - iva_trasladado, 2)
+
+        if fecha_pago_dt:
+            fecha_dt = fecha_pago_dt
+
+        if doctos_relacionados:
+            docs_summary = ", ".join([f"{d['uuid'][:8]} (${d['imp_pagado']:,.2f})" for d in doctos_relacionados[:3]])
+            extra = f" (+{len(doctos_relacionados)-3} más)" if len(doctos_relacionados) > 3 else ""
+            conceptos_resumen = f"Complemento de Pago (${total:,.2f}) ampara {len(doctos_relacionados)} factura(s): {docs_summary}{extra}"
+
+    # 8. Soporte para CFDI de Nómina (Tipo 'N')
+    es_nomina = (tipo_comprobante == 'N')
+    if not es_nomina:
+        for elem in root.iter():
+            if elem.tag.split('}')[-1] == 'Nomina':
+                es_nomina = True
+                break
+
+    if es_nomina:
+        metodo_pago = "NOMINA"
+        if not conceptos_resumen or conceptos_resumen.upper() == "PAGO":
+            conceptos_resumen = f"Recibo de Nómina: {nombre_receptor}"
+
+    # 9. Clasificación Fiscal determinista (INGRESO vs EGRESO)
     tipo = "EGRESO"
-    if mi_rfc and mi_rfc.strip():
-        if rfc_emisor == mi_rfc.strip().upper():
+    mi_rfc_clean = (mi_rfc or "").strip().upper()
+
+    if es_nomina:
+        tipo = "EGRESO"
+    elif es_pago:
+        if mi_rfc_clean and rfc_emisor == mi_rfc_clean:
             tipo = "INGRESO"
         else:
             tipo = "EGRESO"
-    else:
-        # Si no se configuró mi_rfc, evaluar el tipo de comprobante SAT: 'I' = Ingreso
-        tipo_comprobante = (root.attrib.get('TipoDeComprobante') or 'I').upper()
-        if tipo_comprobante == 'E':  # Nota de crédito
+    elif tipo_comprobante == 'E':
+        if mi_rfc_clean and rfc_emisor == mi_rfc_clean:
             tipo = "EGRESO"
+        else:
+            tipo = "INGRESO"
+    else:
+        if mi_rfc_clean:
+            if rfc_emisor == mi_rfc_clean:
+                tipo = "INGRESO"
+            else:
+                tipo = "EGRESO"
+        else:
+            tipo = "INGRESO" if tipo_comprobante == 'I' else "EGRESO"
 
     iva_ingresos = round(iva_trasladado, 2) if tipo == "INGRESO" else 0.0
     iva_egresos = round(iva_trasladado, 2) if tipo == "EGRESO" else 0.0
@@ -164,6 +289,7 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
     return {
         "uuid": uuid,
         "tipo": tipo,
+        "tipo_comprobante": tipo_comprobante,
         "rfc_emisor": rfc_emisor,
         "nombre_emisor": nombre_emisor,
         "rfc_receptor": rfc_receptor,
@@ -180,4 +306,8 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
         "metodo_pago": metodo_pago,
         "forma_pago": forma_pago,
         "conceptos_resumen": conceptos_resumen[:500] if conceptos_resumen else "",
+        "doctos_relacionados": doctos_relacionados,
+        "es_pago": es_pago,
+        "es_nomina": es_nomina,
+        "fecha_pago": fecha_pago_dt
     }
