@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Q
 from fastapi.responses import StreamingResponse, JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, func, and_, or_
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Tuple
 import io
 import re
 import zipfile
@@ -108,6 +108,9 @@ def _find_existing_transaction(db: Session, tx: dict, effective_rfc: str) -> Opt
         c = candidates[0]
         c_conc_norm = re.sub(r'[^A-Z0-9]', '', str(c.concepto or "").upper())
         if tx_conc_norm[:10] and tx_conc_norm[:10] == c_conc_norm[:10]:
+            return c
+        # Si el candidato existente proviene de sábana (saldo is None) y el entrante es de extracto bancario
+        if c.saldo is None:
             return c
 
     return None
@@ -895,6 +898,10 @@ async def upload_reconciliation_files(
                                 existing_tx.confianza_score = 1.0
                             if existing_tx.saldo is None and tx.get("saldo") is not None:
                                 existing_tx.saldo = tx.get("saldo")
+                                if tx.get("concepto") and existing_tx.concepto != tx["concepto"]:
+                                    if not existing_tx.nota_revision:
+                                        existing_tx.nota_revision = f"Sábana: {existing_tx.concepto}"
+                                    existing_tx.concepto = tx["concepto"]
                             processed_statements += 1
                 except Exception as e_stmt:
                     errors.append(f"{filename}: {str(e_stmt)}")
@@ -943,6 +950,10 @@ async def upload_reconciliation_files(
                                 existing_tx.nota_revision = tx["nota_revision"]
                         if existing_tx.saldo is None and tx.get("saldo") is not None:
                             existing_tx.saldo = tx.get("saldo")
+                            if tx.get("concepto") and existing_tx.concepto != tx["concepto"]:
+                                if not existing_tx.nota_revision:
+                                    existing_tx.nota_revision = f"Sábana: {existing_tx.concepto}"
+                                existing_tx.concepto = tx["concepto"]
                         processed_statements += 1
             except Exception as e_pdf:
                 errors.append(f"{filename} (PDF bancario): {str(e_pdf)}")
@@ -1333,50 +1344,109 @@ def deduplicate_transactions(
 
     db.commit()
 
-    # 3. Deduplicación
+    # 3. Deduplicación inteligente
     query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
     if month:
         query = query.filter(BankTransaction.periodo_mes == month)
 
     txs = query.order_by(BankTransaction.fecha.asc(), BankTransaction.id.asc()).all()
 
-    groups: Dict[str, List[BankTransaction]] = {}
+    # Agrupar transacciones por fecha (día), monto y tipo
+    day_groups: Dict[Tuple[str, str, str], List[BankTransaction]] = {}
     for t in txs:
         fecha_str = t.fecha.strftime("%Y-%m-%d") if t.fecha else "NODATE"
         monto_str = f"{float(t.monto or 0.0):.2f}"
         tipo_str = str(t.tipo or "").upper()
-        # Normalizar concepto para agrupar versiones cortas vs largas del mismo movimiento
-        conc_norm = re.sub(r'[^A-Z0-9]', '', str(t.concepto or "").upper())[:25]
-        key = f"{fecha_str}|{monto_str}|{tipo_str}|{conc_norm}"
-        groups.setdefault(key, []).append(t)
+        key = (fecha_str, monto_str, tipo_str)
+        day_groups.setdefault(key, []).append(t)
 
     deleted_count = 0
-    for key, items in groups.items():
+    for (fecha_str, monto_str, tipo_str), items in day_groups.items():
         if len(items) <= 1:
             continue
 
-        items_sorted = sorted(
-            items,
-            key=lambda x: (
-                1 if x.uuid_cfdi else 0,
-                x.confianza_score or 0.0,
-                -x.id
-            ),
-            reverse=True
-        )
+        # Separar transacciones oficiales de extracto bancario (con saldo) y transacciones de sábana/histórico (sin saldo)
+        bank_txs = [x for x in items if x.saldo is not None]
+        sabana_txs = [x for x in items if x.saldo is None]
 
-        primary = items_sorted[0]
-        duplicates = items_sorted[1:]
+        # Caso A: Fusión cross-source (Banco oficial vs Sábana)
+        if bank_txs and sabana_txs:
+            used_bank_ids = set()
+            for s_tx in list(sabana_txs):
+                best_bank = None
+                for b_tx in bank_txs:
+                    if b_tx.id in used_bank_ids:
+                        continue
+                    best_bank = b_tx
+                    break
 
-        for dup in duplicates:
-            if dup.uuid_cfdi and not primary.uuid_cfdi:
-                primary.uuid_cfdi = dup.uuid_cfdi
-                primary.status_conciliacion = dup.status_conciliacion
-                primary.confianza_score = dup.confianza_score
-                primary.nota_revision = dup.nota_revision
+                if best_bank:
+                    used_bank_ids.add(best_bank.id)
+                    # Transferir metadatos de la sábana al registro bancario oficial
+                    if s_tx.area_proyecto:
+                        best_bank.area_proyecto = s_tx.area_proyecto
+                    if s_tx.tipo_categoria and not best_bank.tipo_categoria:
+                        best_bank.tipo_categoria = s_tx.tipo_categoria
+                    if s_tx.uuid_cfdi and not best_bank.uuid_cfdi:
+                        best_bank.uuid_cfdi = s_tx.uuid_cfdi
+                        best_bank.status_conciliacion = s_tx.status_conciliacion or "CONCILIADO"
+                        best_bank.confianza_score = s_tx.confianza_score or 1.0
+                        best_bank.nota_revision = s_tx.nota_revision or "Conciliado con folio fiscal histórico (sábana)."
+                    elif s_tx.concepto and not best_bank.nota_revision:
+                        best_bank.nota_revision = f"Sábana: {s_tx.concepto}"
 
-            db.delete(dup)
-            deleted_count += 1
+                    db.delete(s_tx)
+                    deleted_count += 1
+                    sabana_txs.remove(s_tx)
+
+        # Caso B: Duplicados entre sábanas (ambos sin saldo)
+        if len(sabana_txs) > 1:
+            s_subgroups: Dict[str, List[BankTransaction]] = {}
+            for st in sabana_txs:
+                c_norm = re.sub(r'[^A-Z0-9]', '', str(st.concepto or "").upper())[:25]
+                s_subgroups.setdefault(c_norm, []).append(st)
+
+            for c_norm, s_items in s_subgroups.items():
+                if len(s_items) > 1:
+                    s_sorted = sorted(
+                        s_items,
+                        key=lambda x: (1 if x.uuid_cfdi else 0, x.confianza_score or 0.0, -x.id),
+                        reverse=True
+                    )
+                    s_primary = s_sorted[0]
+                    for s_dup in s_sorted[1:]:
+                        if s_dup.uuid_cfdi and not s_primary.uuid_cfdi:
+                            s_primary.uuid_cfdi = s_dup.uuid_cfdi
+                            s_primary.status_conciliacion = s_dup.status_conciliacion
+                            s_primary.confianza_score = s_dup.confianza_score
+                            s_primary.nota_revision = s_dup.nota_revision
+                        db.delete(s_dup)
+                        deleted_count += 1
+
+        # Caso C: Duplicados idénticos en banco (mismo saldo y concepto o mismo id_transaccion)
+        if len(bank_txs) > 1:
+            b_subgroups: Dict[Tuple[str, str], List[BankTransaction]] = {}
+            for bt in bank_txs:
+                s_val = f"{float(bt.saldo or 0.0):.2f}"
+                c_norm = re.sub(r'[^A-Z0-9]', '', str(bt.concepto or "").upper())[:25]
+                b_subgroups.setdefault((s_val, c_norm), []).append(bt)
+
+            for (s_val, c_norm), b_items in b_subgroups.items():
+                if len(b_items) > 1:
+                    b_sorted = sorted(
+                        b_items,
+                        key=lambda x: (1 if x.uuid_cfdi else 0, x.confianza_score or 0.0, -x.id),
+                        reverse=True
+                    )
+                    b_primary = b_sorted[0]
+                    for b_dup in b_sorted[1:]:
+                        if b_dup.uuid_cfdi and not b_primary.uuid_cfdi:
+                            b_primary.uuid_cfdi = b_dup.uuid_cfdi
+                            b_primary.status_conciliacion = b_dup.status_conciliacion
+                            b_primary.confianza_score = b_dup.confianza_score
+                            b_primary.nota_revision = b_dup.nota_revision
+                        db.delete(b_dup)
+                        deleted_count += 1
 
     db.commit()
 

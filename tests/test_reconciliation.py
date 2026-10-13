@@ -1935,3 +1935,160 @@ def test_upload_idempotency_and_distinct_date_duplicates():
         db.close()
 
 
+def test_sabana_deduplication_and_enrichment():
+    db = SessionLocal()
+    test_rfc = "MEHA850118Q96"
+    test_month = "2026-01"
+    uuid_test = "99999999-8888-7777-6666-555555555555"
+
+    try:
+        # Limpiar datos previos de prueba
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_test).delete()
+        db.commit()
+
+        # 1. Simular transacción existente proveniente del extracto BBVA (con saldo y concepto técnico)
+        bbva_tx = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="BBVA-JAN-001",
+            banco="BBVA",
+            fecha=datetime(2026, 1, 5, 12, 0),
+            concepto="SPEI ENVIADO INBURSA REF 12345678 CUENTA 9876543210",
+            monto=60000.00,
+            tipo="EGRESO",
+            saldo=145230.50,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="AMDI",
+            periodo_mes=test_month
+        )
+        db.add(bbva_tx)
+        db.commit()
+
+        # 2. Simular importación de la sábana Excel que contiene el mismo movimiento pero con descripción humana y área específica
+        sample_sabana_csv = (
+            b"FECHA,\xc1REA / PROYECTO,FOLIO FISCAL,CLIENTE / PROVEEDOR,CONCEPTO,M\xc9TODO DE PAGO,INGRESOS,EGRESOS,CFDI,TIPO,SUBTOTAL,IVA INGRESOS,RETENCI\xd3N ISR,IVA EGRESOS\n"
+            b"05/01/2026,DELGADILLO MEDINA,99999999-8888-7777-6666-555555555555,PRESTAMISTA SA,PRESTAMO CORPORATIVO,PUE,,60000.00,E,EGRESO,60000.00,0.00,0.00,0.00\n"
+        )
+
+        res = import_historical_excel(
+            sample_sabana_csv,
+            "sabana_enero.csv",
+            db,
+            mi_rfc=test_rfc,
+            account_rfc=test_rfc
+        )
+        assert res["success"] is True
+
+        # 3. Verificar que NO se duplicó el registro en la base de datos
+        all_txs = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).all()
+        assert len(all_txs) == 1, f"Se esperaba 1 transacción pero se encontraron {len(all_txs)}"
+
+        enriched_tx = all_txs[0]
+        # Debe haber preservado el saldo bancario real y el hash original de BBVA
+        assert enriched_tx.id_transaccion == "BBVA-JAN-001"
+        assert enriched_tx.saldo == 145230.50
+        # Debe haberse enriquecido con el área y el UUID de la sábana
+        assert enriched_tx.area_proyecto == "DELGADILLO MEDINA"
+        assert enriched_tx.uuid_cfdi == uuid_test
+        assert enriched_tx.status_conciliacion == "CONCILIADO"
+
+    finally:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).delete()
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_test).delete()
+        db.commit()
+        db.close()
+
+
+def test_deduplicate_cross_source_bank_and_sabana():
+    db = SessionLocal()
+    test_rfc = "MEHA850118Q96"
+    test_month = "2026-01"
+
+    try:
+        # Limpiar
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).delete()
+        db.commit()
+
+        # 1. Movimiento BBVA oficial (con saldo)
+        tx_bank = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="TX-BANK-01",
+            banco="BBVA",
+            fecha=datetime(2026, 1, 7, 10, 30),
+            concepto="COMISION BBVA PAQUETE PYME",
+            monto=104.00,
+            tipo="EGRESO",
+            saldo=145126.50,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="AMDI",
+            periodo_mes=test_month
+        )
+        # 2. Movimiento Sábana (sin saldo, área específica)
+        tx_sabana = BankTransaction(
+            account_rfc=test_rfc,
+            id_transaccion="TX-SABANA-01",
+            banco="BBVA",
+            fecha=datetime(2026, 1, 7, 0, 0),
+            concepto="COMISION BBVA",
+            monto=104.00,
+            tipo="EGRESO",
+            saldo=None,
+            status_conciliacion="SIN_CFDI",
+            area_proyecto="DELGADILLO MEDINA",
+            periodo_mes=test_month
+        )
+        db.add(tx_bank)
+        db.add(tx_sabana)
+        db.commit()
+
+        # Verificar que inicialmente hay 2 posibles duplicados
+        res_ov = client.get(f"/api/dashboard/reconciliation/overview?month={test_month}&account_rfc={test_rfc}")
+        assert res_ov.status_code == 200
+        assert res_ov.json()["kpis"]["count_posibles_duplicados"] == 2
+
+        # Llamar a /deduplicate
+        res_dedup = client.post(f"/api/dashboard/reconciliation/deduplicate?account_rfc={test_rfc}&month={test_month}")
+        assert res_dedup.status_code == 200
+        data_dedup = res_dedup.json()
+        assert data_dedup["success"] is True
+        assert data_dedup["deleted_count"] == 1
+
+        # Verificar que quedó únicamente la transacción bancaria oficial con el área de la sábana
+        remaining_txs = db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).all()
+        assert len(remaining_txs) == 1
+        rem = remaining_txs[0]
+        assert rem.id_transaccion == "TX-BANK-01"
+        assert rem.saldo == 145126.50
+        assert rem.area_proyecto == "DELGADILLO MEDINA"
+        assert "Sábana: COMISION BBVA" in (rem.nota_revision or "")
+
+        # Verificar que los posibles duplicados ahora son 0
+        res_ov_after = client.get(f"/api/dashboard/reconciliation/overview?month={test_month}&account_rfc={test_rfc}")
+        assert res_ov_after.status_code == 200
+        assert res_ov_after.json()["kpis"]["count_posibles_duplicados"] == 0
+
+    finally:
+        db.query(BankTransaction).filter(
+            BankTransaction.account_rfc == test_rfc,
+            BankTransaction.periodo_mes == test_month
+        ).delete()
+        db.commit()
+        db.close()
+
+
+

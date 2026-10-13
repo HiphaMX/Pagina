@@ -2,10 +2,11 @@ import io
 import csv
 import re
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 import openpyxl
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from app.models.reconciliation import CFDIInvoice, BankTransaction
 
@@ -154,6 +155,7 @@ def import_historical_excel(
     tx_count = 0
     cfdi_count = 0
     meses_afectados = set()
+    matched_tx_ids = set()
     errors: List[str] = []
 
     for idx, row in enumerate(rows[header_row_idx + 1:], start=header_row_idx + 1):
@@ -280,21 +282,40 @@ def import_historical_excel(
             # Evitar duplicados: verificar por id_transaccion O por datos de negocio
             existing_tx = db.query(BankTransaction).filter(
                 BankTransaction.account_rfc == effective_rfc,
-                (
-                    (BankTransaction.id_transaccion == id_transaccion) |
-                    (
-                        (BankTransaction.fecha == fecha_obj) &
-                        (BankTransaction.monto == monto) &
-                        (BankTransaction.tipo == tipo) &
-                        (
-                            (BankTransaction.concepto == concepto) |
-                            (BankTransaction.concepto == "") |
-                            (BankTransaction.concepto == None) |
-                            (BankTransaction.area_proyecto == area_val)
-                        )
-                    )
-                )
+                BankTransaction.id_transaccion == id_transaccion
             ).first()
+
+            if not existing_tx:
+                start_day = datetime(fecha_obj.year, fecha_obj.month, fecha_obj.day, 0, 0, 0)
+                end_day = start_day + timedelta(days=1)
+
+                candidates = db.query(BankTransaction).filter(
+                    BankTransaction.account_rfc == effective_rfc,
+                    BankTransaction.fecha >= start_day,
+                    BankTransaction.fecha < end_day,
+                    BankTransaction.tipo == tipo,
+                    func.abs(BankTransaction.monto - monto) <= 0.02
+                ).order_by(
+                    BankTransaction.saldo.isnot(None).desc(),
+                    BankTransaction.id.asc()
+                ).all()
+
+                conc_norm = re.sub(r'[^A-Z0-9]', '', str(concepto or "").upper())
+                # Paso 2a: Preferir candidato con coincidencia de concepto o área
+                for c in candidates:
+                    if c.id in matched_tx_ids:
+                        continue
+                    c_conc_norm = re.sub(r'[^A-Z0-9]', '', str(c.concepto or "").upper())
+                    if (conc_norm and conc_norm in c_conc_norm) or (c.area_proyecto and c.area_proyecto == area_val):
+                        existing_tx = c
+                        break
+
+                # Paso 2b: Si no hubo coincidencia textual pero hay un candidato disponible
+                if not existing_tx:
+                    for c in candidates:
+                        if c.id not in matched_tx_ids:
+                            existing_tx = c
+                            break
 
             if not existing_tx:
                 new_tx = BankTransaction(
@@ -314,20 +335,27 @@ def import_historical_excel(
                     periodo_mes=periodo_mes
                 )
                 db.add(new_tx)
+                db.flush()
+                matched_tx_ids.add(new_tx.id)
                 tx_count += 1
             else:
-                # Actualizar transacción existente si tenía campos vacíos o periodo desfasado
-                if concepto and (not existing_tx.concepto or existing_tx.concepto == ""):
-                    existing_tx.concepto = concepto
-                if area_val and not existing_tx.area_proyecto:
+                matched_tx_ids.add(existing_tx.id)
+                # Enriquecer transacción existente con los datos de la sábana
+                if area_val:
                     existing_tx.area_proyecto = area_val
+                if tipo_cat_val and (not existing_tx.tipo_categoria or existing_tx.tipo_categoria == ""):
+                    existing_tx.tipo_categoria = tipo_cat_val
                 if periodo_mes and existing_tx.periodo_mes != periodo_mes:
                     existing_tx.periodo_mes = periodo_mes
-                if uuid and not existing_tx.uuid_cfdi:
+                if uuid:
                     existing_tx.uuid_cfdi = uuid
                     existing_tx.status_conciliacion = "CONCILIADO"
                     existing_tx.confianza_score = 1.0
-                    existing_tx.nota_revision = "Conciliado con folio fiscal histórico."
+                    existing_tx.nota_revision = "Conciliado con folio fiscal histórico (sábana)."
+                else:
+                    if concepto and not existing_tx.nota_revision:
+                        if existing_tx.concepto != concepto:
+                            existing_tx.nota_revision = f"Sábana: {concepto}"
                 tx_count += 1
 
         except Exception as e_row:
