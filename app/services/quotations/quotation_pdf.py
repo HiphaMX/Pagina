@@ -75,14 +75,18 @@ def generate_quotation_pdf(
         raise FileNotFoundError(f"Plantilla base no encontrada en: {TEMPLATE_PATH}")
 
     bank_info = bank_details or DEFAULT_BANK_DETAILS
+    beneficiary_name = sanitize_text(str(bank_info.get("beneficiary") or "FRANCISCO DE JESUS DELGADILLO GARCIA"))
+    rfc_regime = sanitize_text(str(bank_info.get("rfc_regime") or "RFC: DEGF851127TK1 | Régimen Simplificado de Confianza"))
+    bank_account = sanitize_text(str(bank_info.get("bank_account_clabe") or "BBVA Bancomer | Cuenta: 0476919804 | Clabe: 0123 2000 4769 1980 40"))
+    contact_bank = sanitize_text(str(bank_info.get("contact") or "Teléfono: 333 6762545 | Email: factura@hipha.mx"))
 
-    folio = sanitize_text(quotation_data.get("folio", "HIP-2026-0001"))
-    client_name = sanitize_text(quotation_data.get("client_name", "Cliente").strip())
-    client_contact = sanitize_text(quotation_data.get("client_contact", "").strip())
-    client_email = sanitize_text(quotation_data.get("client_email", "").strip())
-    client_phone = sanitize_text(quotation_data.get("client_phone", "").strip())
-    notes = sanitize_text(quotation_data.get("notes", "").strip())
-    validity_days = quotation_data.get("validity_days", 30)
+    folio = sanitize_text(str(quotation_data.get("folio") or "HIP-2026-0001"))
+    client_name = sanitize_text(str(quotation_data.get("client_name") or "Cliente").strip())
+    client_contact = sanitize_text(str(quotation_data.get("client_contact") or "").strip())
+    client_email = sanitize_text(str(quotation_data.get("client_email") or "").strip())
+    client_phone = sanitize_text(str(quotation_data.get("client_phone") or "").strip())
+    notes = sanitize_text(str(quotation_data.get("notes") or "").strip())
+    validity_days = quotation_data.get("validity_days") or 30
 
     raw_date = quotation_data.get("date")
     if isinstance(raw_date, str):
@@ -103,10 +107,10 @@ def generate_quotation_pdf(
     subtotal = 0.0
 
     for idx, it in enumerate(raw_items, 1):
-        name = sanitize_text(it.get("name", f"Concepto {idx}"))
-        desc = sanitize_text(it.get("description", ""))
-        qty = float(it.get("quantity", 1.0))
-        unit_price = float(it.get("unit_price", 0.0))
+        name = sanitize_text(str(it.get("name") or f"Concepto {idx}"))
+        desc = sanitize_text(str(it.get("description") or ""))
+        qty = float(it.get("quantity") or 1.0)
+        unit_price = float(it.get("unit_price") or 0.0)
         item_sub = qty * unit_price
         subtotal += item_sub
         items.append({
@@ -173,35 +177,59 @@ def generate_quotation_pdf(
             pdf.set_font("Helvetica", "B", 9.5)
             pdf.cell(130, 5, " | ".join(contact_parts), align="L")
 
-        # Condiciones comerciales equilibradas y proporcionadas en pie de página
-        render_commercial_conditions()
+        # Footer institucional balanceado a 2 columnas (Datos Bancarios + Condiciones Comerciales)
+        render_page2_footer()
 
-    def render_commercial_conditions():
-        # Cubrir las condiciones comerciales originales de la plantilla con fondo blanco
+    def render_page2_footer():
+        footer_y = 239.0
+
+        # Cubrir fondo inferior de la plantilla (reemplaza las condiciones viejas de gran tamaño)
         pdf.set_fill_color(255, 255, 255)
-        pdf.rect(14, 236, 188, 36, style="F")
+        pdf.rect(14, 235, 188, 38, style="F")
 
-        # Redibujar condiciones comerciales con escala tipográfica sutil y equilibrada
-        pdf.set_xy(16, 241)
-        pdf.set_text_color(15, 23, 42)  # Slate 900
+        # Columna Izquierda: Datos Bancarios y Fiscales (X=16 a X=104, ancho 88 mm)
+        pdf.set_xy(16, footer_y)
+        pdf.set_text_color(15, 23, 42)
         pdf.set_font("Helvetica", "B", 7.0)
-        pdf.cell(184, 3.5, "CONDICIONES COMERCIALES:", align="L")
+        pdf.cell(88, 3.5, "DATOS BANCARIOS Y FISCALES:", align="L")
 
-        pdf.set_text_color(100, 116, 139)  # Slate 500
+        pdf.set_xy(16, footer_y + 4.2)
+        pdf.set_font("Helvetica", "B", 6.8)
+        pdf.set_text_color(30, 41, 59)
+        pdf.cell(88, 3.2, beneficiary_name, align="L")
+
+        pdf.set_xy(16, footer_y + 7.8)
+        pdf.set_font("Helvetica", "", 6.5)
+        pdf.set_text_color(71, 85, 105)
+        pdf.cell(88, 3.2, rfc_regime, align="L")
+
+        pdf.set_xy(16, footer_y + 11.4)
+        pdf.cell(88, 3.2, bank_account, align="L")
+
+        pdf.set_xy(16, footer_y + 15.0)
+        pdf.cell(88, 3.2, contact_bank, align="L")
+
+        # Columna Derecha: Condiciones Comerciales (X=112 a X=200, ancho 88 mm)
+        pdf.set_xy(112, footer_y)
+        pdf.set_text_color(15, 23, 42)
+        pdf.set_font("Helvetica", "B", 7.0)
+        pdf.cell(88, 3.5, "CONDICIONES COMERCIALES:", align="L")
+
+        pdf.set_text_color(71, 85, 105)
         pdf.set_font("Helvetica", "", 6.5)
 
-        pdf.set_xy(16, 245.5)
-        pdf.cell(184, 3.2, f"- Se requiere del {int(down_payment_rate * 100)}% como anticipo para iniciar, el tiempo de entrega se confirma al contratar.", align="L")
+        pdf.set_xy(112, footer_y + 4.2)
+        pdf.cell(88, 3.2, f"- Se requiere del {int(down_payment_rate * 100)}% como anticipo para iniciar el proyecto.", align="L")
 
-        pdf.set_xy(16, 249.2)
-        pdf.cell(184, 3.2, "- Cualquier concepto no incluido en la presente cotización deberá cotizarse por separado.", align="L")
+        pdf.set_xy(112, footer_y + 7.8)
+        pdf.cell(88, 3.2, "- Cualquier concepto no incluido se cotiza por separado.", align="L")
 
-        pdf.set_xy(16, 252.9)
+        pdf.set_xy(112, footer_y + 11.4)
         iva_cond = "- Los precios mostrados no incluyen IVA." if not apply_tax else "- Precios en moneda nacional (MXN) con desglose de impuestos."
-        pdf.cell(184, 3.2, iva_cond, align="L")
+        pdf.cell(88, 3.2, iva_cond, align="L")
 
-        pdf.set_xy(16, 256.6)
-        pdf.cell(184, 3.2, f"- Cotización válida por {validity_days} días naturales.", align="L")
+        pdf.set_xy(112, footer_y + 15.0)
+        pdf.cell(88, 3.2, f"- Cotización válida por {validity_days} días naturales.", align="L")
 
     def render_table_header(y_pos: float):
         # Fondo redondeado azul marino para el encabezado
@@ -292,59 +320,34 @@ def generate_quotation_pdf(
         current_y += row_h
 
     # -------------------------------------------------------------
-    # SECCIÓN TOTALES Y DATOS BANCARIOS (SIN MARCOS, TRAZOS NI RELLENOS)
+    # SECCIÓN TOTALES Y OBSERVACIONES
     # -------------------------------------------------------------
-    bottom_start_y = max(current_y + 8, 178.0)
+    totals_start_y = max(current_y + 6, 145.0)
 
-    # Si por alguna razón queda muy pegado al pie con condiciones (Y=242), saltar de página
-    if bottom_start_y > 200.0:
+    # Si por alguna razón queda muy pegado al pie (Y=235), saltar de página
+    if totals_start_y > 195.0:
         pdf.add_page()
         render_page2_header()
-        bottom_start_y = 55.0
+        totals_start_y = 55.0
 
-    # 1. Datos Bancarios y Fiscales (Izquierda: X=16 a X=118, ancho 105 mm)
-    beneficiary_name = bank_info.get("beneficiary", "FRANCISCO DE JESUS DELGADILLO GARCIA")
-    rfc_regime = bank_info.get("rfc_regime", "RFC: DEGF851127TK1 | Régimen Simplificado de Confianza")
-    bank_account = bank_info.get("bank_account_clabe", "BBVA Bancomer | Cuenta: 0476919804 | Clabe: 0123 2000 4769 1980 40")
-    contact_bank = bank_info.get("contact", "Teléfono: 333 6762545 | Email: factura@hipha.mx")
-
-    pdf.set_xy(16, bottom_start_y)
-    pdf.set_text_color(15, 23, 42)
-    pdf.set_font("Helvetica", "B", 8.5)
-    pdf.cell(105, 4.5, beneficiary_name, align="L")
-
-    pdf.set_xy(16, bottom_start_y + 5.0)
-    pdf.set_text_color(71, 85, 105)
-    pdf.set_font("Helvetica", "", 7.5)
-    pdf.cell(105, 4.0, rfc_regime, align="L")
-
-    pdf.set_xy(16, bottom_start_y + 11.5)
-    pdf.set_text_color(15, 23, 42)
-    pdf.set_font("Helvetica", "B", 7.5)
-    pdf.cell(105, 4.0, "CUENTA BANCARIA", align="L")
-
-    pdf.set_xy(16, bottom_start_y + 15.8)
-    pdf.set_text_color(51, 65, 85)
-    pdf.set_font("Helvetica", "", 7.5)
-    pdf.cell(105, 4.0, bank_account, align="L")
-
-    pdf.set_xy(16, bottom_start_y + 20.2)
-    pdf.set_text_color(71, 85, 105)
-    pdf.set_font("Helvetica", "", 7.5)
-    pdf.cell(105, 4.0, contact_bank, align="L")
-
+    # Notas u observaciones opcionales en el lado izquierdo
     if notes:
-        pdf.set_xy(16, bottom_start_y + 25.8)
+        pdf.set_xy(16, totals_start_y)
+        pdf.set_text_color(15, 23, 42)
+        pdf.set_font("Helvetica", "B", 7.5)
+        pdf.cell(90, 4.0, "NOTAS / OBSERVACIONES:", align="L")
+
+        pdf.set_xy(16, totals_start_y + 4.8)
         pdf.set_font("Helvetica", "I", 7.0)
         pdf.set_text_color(100, 116, 139)
-        pdf.multi_cell(105, 3.2, f"Nota: {notes[:140]}", align="L")
+        pdf.multi_cell(90, 3.3, notes[:220], align="L")
 
-    # 2. Desglose de Totales (Derecha: X=124 a X=200, ancho 76 mm)
+    # Desglose de Totales (Derecha: X=124 a X=200, ancho 76 mm)
     box_w = 76
     box_x = 124
 
     # Subtotal
-    pdf.set_xy(box_x, bottom_start_y)
+    pdf.set_xy(box_x, totals_start_y)
     pdf.set_text_color(71, 85, 105)
     pdf.set_font("Helvetica", "", 8.5)
     pdf.cell(38, 4.5, "Subtotal:", align="L")
@@ -353,7 +356,7 @@ def generate_quotation_pdf(
     pdf.cell(38, 4.5, format_currency(subtotal), align="R")
 
     # IVA
-    pdf.set_xy(box_x, bottom_start_y + 5.5)
+    pdf.set_xy(box_x, totals_start_y + 5.5)
     pdf.set_text_color(71, 85, 105)
     pdf.set_font("Helvetica", "", 8.5)
     iva_label = f"I.V.A. ({int(tax_rate * 100)}%):" if apply_tax else "I.V.A.:"
@@ -364,7 +367,7 @@ def generate_quotation_pdf(
     pdf.cell(38, 4.5, iva_val_str, align="R")
 
     # TOTAL
-    pdf.set_xy(box_x, bottom_start_y + 12.0)
+    pdf.set_xy(box_x, totals_start_y + 12.0)
     pdf.set_text_color(15, 23, 42)
     pdf.set_font("Helvetica", "B", 10.0)
     pdf.cell(34, 5.5, "TOTAL:", align="L")
@@ -373,7 +376,7 @@ def generate_quotation_pdf(
     pdf.cell(42, 5.5, format_currency(total), align="R")
 
     # Anticipo Requerido (50%) en Cyan Hipha
-    pdf.set_xy(box_x, bottom_start_y + 19.0)
+    pdf.set_xy(box_x, totals_start_y + 19.0)
     pdf.set_text_color(0, 180, 216)  # Cyan oficial de marca Hipha
     pdf.set_font("Helvetica", "B", 8.0)
     ant_pct_label = f"ANTICIPO REQUERIDO ({int(down_payment_rate * 100)}%):"
