@@ -3117,6 +3117,60 @@ def test_reclassify_invoices_by_fiscal_rfc():
         db.close()
 
 
+def test_split_payments_match_single_cfdi():
+    """Valida que múltiples depósitos que en conjunto liquidan una factura o Complemento de Pago (ej. Tukipa $2,770 + $443.20 = $3,213.20) se concilien automáticamente."""
+    from app.services.reconciliation.matching_engine import conciliar_movimientos
+
+    txs = [
+        {
+            "id": 101,
+            "id_transaccion": "tx_split_1",
+            "fecha": "2026-08-28",
+            "concepto": "PAGO CUENTA DE TERCERO - 0001699927 BNET 2744866398 Tukipa Marqueting",
+            "monto": 2770.0,
+            "tipo": "INGRESO",
+            "banco": "BBVA",
+            "area_proyecto": "HIPHA"
+        },
+        {
+            "id": 102,
+            "id_transaccion": "tx_split_2",
+            "fecha": "2026-08-28",
+            "concepto": "PAGO CUENTA DE TERCERO - 0091687735 BNET 2744866398 iva tukipa marketi",
+            "monto": 443.20,
+            "tipo": "INGRESO",
+            "banco": "BBVA",
+            "area_proyecto": "HIPHA"
+        }
+    ]
+
+    facturas = [
+        {
+            "uuid": "REP-TUKIPA-3213-UUID",
+            "tipo": "INGRESO",
+            "rfc_emisor": "DEGF851127TK1",
+            "nombre_emisor": "FRANCISCO DE JESUS DELGADILLO GARCIA",
+            "rfc_receptor": "MEHA870222DY4",
+            "nombre_receptor": "ABEL ALEJANDRO MEDINA HERNANDEZ",
+            "fecha_emision": "2026-08-28",
+            "subtotal": 2770.0,
+            "iva": 443.20,
+            "total": 3213.20,
+            "metodo_pago": "PAGO",
+            "conceptos_resumen": "Pago recibido de $3,213.20",
+            "doctos_relacionados": []
+        }
+    ]
+
+    resultados = conciliar_movimientos(txs, facturas)
+    assert len(resultados) == 2
+    assert resultados[0]["status_conciliacion"] == "CONCILIADO"
+    assert resultados[0]["uuid_cfdi"] == "REP-TUKIPA-3213-UUID"
+    assert resultados[1]["status_conciliacion"] == "CONCILIADO"
+    assert resultados[1]["uuid_cfdi"] == "REP-TUKIPA-3213-UUID"
+
+
+
 
 
 

@@ -1871,6 +1871,9 @@ def reprocess_entity_reconciliation(
             tx.status_conciliacion = "NO_APLICA"
             tx.nota_revision = "Traspaso entre Cuentas Propias"
             tx.confianza_score = 1.0
+        elif (tx.status_conciliacion == "CONCILIADO" and tx.uuid_cfdi) or (tx.nota_revision and "Conciliado manualmente" in tx.nota_revision):
+            # Preservar transacciones ya conciliadas con su CFDI o vinculadas manualmente
+            pass
         else:
             tx.status_conciliacion = "SIN_CFDI"
             tx.uuid_cfdi = None

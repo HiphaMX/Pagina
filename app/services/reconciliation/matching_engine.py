@@ -243,4 +243,74 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
 
         resultados.append(resultado_tx)
 
+    # -------------------------------------------------------------
+    # FASE 4: Múltiples Movimientos Bancarios para 1 solo CFDI / REP (Split Payments M:1)
+    # -------------------------------------------------------------
+    unmatched_indices = [
+        idx for idx, r in enumerate(resultados)
+        if not r.get("uuid_cfdi") and r.get("status_conciliacion") == "SIN_CFDI"
+    ]
+
+    if facturas_pool and len(unmatched_indices) >= 2:
+        for f in list(facturas_pool):
+            f_tipo = f["tipo"]
+            f_total = round(float(f["total"]), 2)
+            if f_total <= 0:
+                continue
+
+            f_fecha = f.get("fecha_pago") or f["fecha_emision"]
+            if isinstance(f_fecha, str):
+                f_fecha = datetime.strptime(f_fecha[:10], "%Y-%m-%d")
+            f_d = f_fecha.date() if hasattr(f_fecha, "date") else f_fecha
+
+            contraparte_name = str((f.get("nombre_receptor") if f_tipo == "INGRESO" else f.get("nombre_emisor")) or "").upper().strip()
+
+            cands_idx = []
+            for u_idx in unmatched_indices:
+                r = resultados[u_idx]
+                if r.get("uuid_cfdi") or r.get("tipo") != f_tipo:
+                    continue
+                r_monto = round(float(r["monto"]), 2)
+                if r_monto >= f_total or r_monto <= 0:
+                    continue
+                r_fecha = r["fecha"]
+                if isinstance(r_fecha, str):
+                    r_fecha = datetime.strptime(r_fecha[:10], "%Y-%m-%d")
+                r_d = r_fecha.date() if hasattr(r_fecha, "date") else r_fecha
+
+                delta = abs((r_d - f_d).days)
+                if delta <= 90:
+                    cands_idx.append(u_idx)
+
+            found_combo = None
+            for i_pos in range(len(cands_idx)):
+                for j_pos in range(i_pos + 1, len(cands_idx)):
+                    idx_a = cands_idx[i_pos]
+                    idx_b = cands_idx[j_pos]
+                    sum_monto = round(float(resultados[idx_a]["monto"]) + float(resultados[idx_b]["monto"]), 2)
+                    if abs(sum_monto - f_total) <= 0.05:
+                        found_combo = [idx_a, idx_b]
+                        break
+                if found_combo:
+                    break
+
+            if found_combo:
+                f_related = [d["uuid"] for d in f.get("doctos_relacionados", []) if d.get("uuid")]
+                rep_tag = " [Complemento de Pago]" if f.get("metodo_pago") == "PAGO" else ""
+                for pos, c_idx in enumerate(found_combo):
+                    tx_c = resultados[c_idx]
+                    tx_c["uuid_cfdi"] = f["uuid"]
+                    tx_c["status_conciliacion"] = "CONCILIADO"
+                    tx_c["confianza_score"] = 1.0
+                    tx_c["related_cfdi_uuids"] = f_related
+                    tx_c["contraparte"] = contraparte_name
+                    tx_c["nota_revision"] = f"Pago parcial ({pos+1} de {len(found_combo)}) para CFDI/REP{rep_tag}: {f['uuid'][:8]} (${f_total:,.2f}) - {contraparte_name[:30]}"
+
+                if f in facturas_pool:
+                    facturas_pool.remove(f)
+                if f_related:
+                    facturas_pool = [inv for inv in facturas_pool if inv["uuid"] not in f_related]
+
+                unmatched_indices = [idx for idx in unmatched_indices if idx not in found_combo]
+
     return resultados
