@@ -2943,6 +2943,181 @@ def test_sync_all_complementos_de_pago_and_no_disponibles_para_justificar():
         db.close()
 
 
+def test_auto_reconcile_cash_expenses():
+    """
+    Valida que todas las facturas de egreso con forma de pago en efectivo ('01')
+    se concilien y amparen automáticamente como 'Pago efectivo', quedando excluidas
+    de las facturas pendientes de conciliar con el banco.
+    """
+    from app.services.reconciliation.mail_listener import auto_reconcile_cash_expenses
+
+    db = SessionLocal()
+    test_rfc = "DEGF851127TK1"
+    uuid_cash_1 = "TEST-CASH-EGRESO-001"
+    uuid_cash_2 = "TEST-CASH-EGRESO-002"
+    uuid_transf = "TEST-TRANSFER-EGRESO-003"
+
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_cash_1, uuid_cash_2, uuid_transf])).delete()
+        db.commit()
+
+        # 1. Factura en efectivo sin conciliar
+        f_cash1 = CFDIInvoice(
+            uuid=uuid_cash_1,
+            account_rfc=test_rfc,
+            area_proyecto="HiphaMX",
+            tipo="EGRESO",
+            rfc_emisor="GAS990101XYZ",
+            nombre_emisor="GASOLINERA TEST",
+            rfc_receptor=test_rfc,
+            nombre_receptor="HIPHA",
+            fecha_emision=datetime(2026, 10, 5),
+            subtotal=500.0,
+            iva_trasladado=80.0,
+            total=580.0,
+            metodo_pago="PUE",
+            forma_pago="01",
+            conciliado=False,
+            comprobado=False
+        )
+
+        # 2. Factura en efectivo con texto descriptivo
+        f_cash2 = CFDIInvoice(
+            uuid=uuid_cash_2,
+            account_rfc=test_rfc,
+            area_proyecto="HiphaMX",
+            tipo="EGRESO",
+            rfc_emisor="OXX990101XYZ",
+            nombre_emisor="CADENA COMERCIAL TEST",
+            rfc_receptor=test_rfc,
+            nombre_receptor="HIPHA",
+            fecha_emision=datetime(2026, 10, 6),
+            subtotal=100.0,
+            iva_trasladado=16.0,
+            total=116.0,
+            metodo_pago="PUE",
+            forma_pago="01 - Efectivo",
+            conciliado=False,
+            comprobado=False
+        )
+
+        # 3. Factura por transferencia (NO debe conciliarse automáticamente como efectivo)
+        f_transf = CFDIInvoice(
+            uuid=uuid_transf,
+            account_rfc=test_rfc,
+            area_proyecto="HiphaMX",
+            tipo="EGRESO",
+            rfc_emisor="TEL990101XYZ",
+            nombre_emisor="TELEFONIA TEST",
+            rfc_receptor=test_rfc,
+            nombre_receptor="HIPHA",
+            fecha_emision=datetime(2026, 10, 7),
+            subtotal=1000.0,
+            iva_trasladado=160.0,
+            total=1160.0,
+            metodo_pago="PUE",
+            forma_pago="03",
+            conciliado=False,
+            comprobado=False
+        )
+
+        db.add_all([f_cash1, f_cash2, f_transf])
+        db.commit()
+
+        # Ejecutar auto-conciliación
+        reconciled_cnt = auto_reconcile_cash_expenses(db, test_rfc)
+        assert reconciled_cnt >= 2
+
+        # Validar en DB
+        inv1 = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_cash_1).first()
+        assert inv1.conciliado is True
+        assert inv1.comprobado is True
+        assert inv1.motivo_comprobacion == "Pago efectivo"
+
+        inv2 = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_cash_2).first()
+        assert inv2.conciliado is True
+        assert inv2.comprobado is True
+        assert inv2.motivo_comprobacion == "Pago efectivo"
+
+        inv3 = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_transf).first()
+        assert inv3.conciliado is False
+        assert inv3.comprobado is False
+
+        # Validar endpoint de facturas pendientes (no debe listar las de efectivo si include_reconciled=False)
+        res = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&include_reconciled=false&include_comprobados=false")
+        assert res.status_code == 200
+        uuids_pending = [item["uuid"] for item in res.json()]
+        assert uuid_cash_1 not in uuids_pending
+        assert uuid_cash_2 not in uuids_pending
+        assert uuid_transf in uuids_pending
+
+        # Validar que si include_comprobados=True se listan y contienen forma_pago y metodo_pago
+        res_all = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&include_reconciled=true&include_comprobados=true")
+        assert res_all.status_code == 200
+        items_map = {item["uuid"]: item for item in res_all.json()}
+        assert items_map[uuid_cash_1]["forma_pago"] == "01"
+        assert items_map[uuid_cash_1]["motivo_comprobacion"] == "Pago efectivo"
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_cash_1, uuid_cash_2, uuid_transf])).delete()
+        db.commit()
+        db.close()
+
+
+def test_reclassify_invoices_by_fiscal_rfc():
+    """
+    Valida que los comprobantes recibidos con un account_rfc incorrecto (ej. EXPO OBRA BLANCA
+    recibido en el correo de Hipha pero con receptor fiscal de AMDI) sean reclasificados
+    automáticamente a su cuenta fiscal real (MEHA850118Q96 / AMDI).
+    """
+    from app.services.reconciliation.mail_listener import reclassify_invoices_by_fiscal_rfc
+
+    db = SessionLocal()
+    uuid_obra_blanca_test = "B5B1A683-A5D5-4509-B007-3BDA15D4B06F-TEST"
+
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_obra_blanca_test).delete()
+        db.commit()
+
+        # Simular factura de Obra Blanca guardada erróneamente en Hipha
+        inv_wrong = CFDIInvoice(
+            uuid=uuid_obra_blanca_test,
+            account_rfc="DEGF851127TK1",  # Guardado erróneamente en Hipha
+            area_proyecto="HiphaMX",
+            tipo="EGRESO",
+            rfc_emisor="EOB181101831",
+            nombre_emisor="EXPO OBRA BLANCA",
+            rfc_receptor="MEHA850118Q96",  # Receptor real es AMDI
+            nombre_receptor="ADRIANA MEDINA HERNANDEZ",
+            fecha_emision=datetime(2026, 10, 11),
+            subtotal=396.55,
+            iva_trasladado=63.45,
+            total=460.0,
+            metodo_pago="PUE",
+            forma_pago="04",
+            conceptos_resumen="Acceso al EVENTO OBRA BLANCA 2026",
+            conciliado=False,
+            comprobado=False
+        )
+        db.add(inv_wrong)
+        db.commit()
+
+        # Ejecutar reclasificación
+        reclassified = reclassify_invoices_by_fiscal_rfc(db)
+        assert reclassified >= 1
+
+        # Verificar en DB que ahora pertenece a AMDI
+        inv_fixed = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_obra_blanca_test).first()
+        assert inv_fixed.account_rfc == "MEHA850118Q96"
+        assert inv_fixed.area_proyecto == "AMDI"
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid_obra_blanca_test).delete()
+        db.commit()
+        db.close()
+
+
+
 
 
 

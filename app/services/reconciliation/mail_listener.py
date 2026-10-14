@@ -24,6 +24,90 @@ def _decode_mime_header(header_val: str) -> str:
     return "".join(result)
 
 
+def auto_reconcile_cash_expenses(db: Session, effective_rfc: str = None) -> int:
+    """
+    Concilia y ampara automáticamente todas las facturas de egreso pagadas en efectivo (forma_pago == '01').
+    Las facturas en efectivo no generan movimientos bancarios en la cuenta fiscal (BBVA) y quedan
+    amparadas directamente como comprobadas/conciliadas fuera de banco sin requerir intervención del usuario.
+    """
+    from sqlalchemy import or_
+    query = db.query(CFDIInvoice).filter(
+        CFDIInvoice.tipo == "EGRESO",
+        or_(
+            CFDIInvoice.forma_pago == "01",
+            CFDIInvoice.forma_pago.ilike("%01%"),
+            CFDIInvoice.forma_pago.ilike("%efectivo%")
+        ),
+        or_(
+            CFDIInvoice.conciliado == False,
+            CFDIInvoice.comprobado == False,
+            CFDIInvoice.motivo_comprobacion != "Pago efectivo"
+        )
+    )
+    if effective_rfc:
+        query = query.filter(CFDIInvoice.account_rfc == effective_rfc)
+
+    cash_invoices = query.all()
+    count = len(cash_invoices)
+    if count > 0:
+        for inv in cash_invoices:
+            inv.conciliado = True
+            inv.comprobado = True
+            inv.motivo_comprobacion = "Pago efectivo"
+        db.commit()
+    return count
+
+
+def reclassify_invoices_by_fiscal_rfc(db: Session) -> int:
+    """
+    Reclasifica las facturas CFDI en la base de datos a su entidad correcta según el RFC del receptor o emisor:
+    - Si el receptor o emisor es MEHA850118Q96 (AMDI), su account_rfc DEBE ser MEHA850118Q96 y area_proyecto 'AMDI'.
+    - Si el receptor o emisor es DEGF851127TK1 (HIPHA), su account_rfc DEBE ser DEGF851127TK1 y area_proyecto 'HiphaMX'.
+    Esto soluciona comprobantes recibidos en el buzón compartido o reenviados (ej. EXPO OBRA BLANCA)
+    que fueron guardados con el account_rfc de la casilla IMAP en lugar del RFC fiscal del comprobante.
+    """
+    from sqlalchemy import or_
+    reclassified = 0
+
+    # 1. Facturas que pertenecen a AMDI pero están asignadas a otra cuenta
+    amdi_invoices = db.query(CFDIInvoice).filter(
+        or_(
+            CFDIInvoice.rfc_receptor == "MEHA850118Q96",
+            CFDIInvoice.rfc_emisor == "MEHA850118Q96"
+        ),
+        CFDIInvoice.account_rfc != "MEHA850118Q96"
+    ).all()
+    for inv in amdi_invoices:
+        inv.account_rfc = "MEHA850118Q96"
+        inv.area_proyecto = "AMDI"
+        if inv.rfc_emisor == "MEHA850118Q96" and inv.tipo != "EGRESO":
+            inv.tipo = "INGRESO"
+        elif inv.rfc_receptor == "MEHA850118Q96" and inv.tipo != "INGRESO":
+            inv.tipo = "EGRESO"
+        reclassified += 1
+
+    # 2. Facturas que pertenecen a HIPHA pero están asignadas a otra cuenta
+    hipha_invoices = db.query(CFDIInvoice).filter(
+        or_(
+            CFDIInvoice.rfc_receptor == "DEGF851127TK1",
+            CFDIInvoice.rfc_emisor == "DEGF851127TK1"
+        ),
+        CFDIInvoice.account_rfc != "DEGF851127TK1"
+    ).all()
+    for inv in hipha_invoices:
+        inv.account_rfc = "DEGF851127TK1"
+        inv.area_proyecto = "HiphaMX"
+        if inv.rfc_emisor == "DEGF851127TK1" and inv.tipo != "EGRESO":
+            inv.tipo = "INGRESO"
+        elif inv.rfc_receptor == "DEGF851127TK1" and inv.tipo != "INGRESO":
+            inv.tipo = "EGRESO"
+        reclassified += 1
+
+    if reclassified > 0:
+        db.commit()
+    return reclassified
+
+
 def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookback_days: int = 60) -> Dict[str, Any]:
     """
     Se conecta al buzón dedicado de correo vía IMAP para la entidad seleccionada (HIPHA o AMDI),
@@ -101,12 +185,33 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
                 cfdi_data = parse_cfdi_xml(xml_bytes, mi_rfc=entity_rfc)
                 uuid = cfdi_data["uuid"]
                 
+                # Determinar la entidad fiscal real según receptor/emisor del CFDI
+                rec_rfc = (cfdi_data.get("rfc_receptor") or "").strip().upper()
+                emi_rfc = (cfdi_data.get("rfc_emisor") or "").strip().upper()
+
+                target_account_rfc = entity_rfc
+                target_area_name = entity_name
+
+                if rec_rfc == "MEHA850118Q96" or emi_rfc == "MEHA850118Q96":
+                    target_account_rfc = "MEHA850118Q96"
+                    target_area_name = "AMDI"
+                elif rec_rfc == "DEGF851127TK1" or emi_rfc == "DEGF851127TK1":
+                    target_account_rfc = "DEGF851127TK1"
+                    target_area_name = "HiphaMX"
+
+                # Re-parsear clasificación fiscal si target_account_rfc difiere de entity_rfc
+                if target_account_rfc != entity_rfc:
+                    cfdi_data = parse_cfdi_xml(xml_bytes, mi_rfc=target_account_rfc)
+
+                forma_pago_val = str(cfdi_data.get("forma_pago") or "").strip()
+                is_cash_egreso = (cfdi_data["tipo"] == "EGRESO" and (forma_pago_val == "01" or "01" in forma_pago_val or "efectivo" in forma_pago_val.lower()))
+
                 existing = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == uuid).first()
                 if not existing:
                     new_invoice = CFDIInvoice(
                         uuid=uuid,
-                        account_rfc=entity_rfc,
-                        area_proyecto=entity_name,
+                        account_rfc=target_account_rfc,
+                        area_proyecto=target_area_name,
                         tipo=cfdi_data["tipo"],
                         rfc_emisor=cfdi_data["rfc_emisor"],
                         nombre_emisor=cfdi_data["nombre_emisor"],
@@ -122,12 +227,22 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
                         metodo_pago=cfdi_data["metodo_pago"],
                         forma_pago=cfdi_data["forma_pago"],
                         conceptos_resumen=cfdi_data["conceptos_resumen"],
-                        conciliado=False,
+                        conciliado=is_cash_egreso,
+                        comprobado=is_cash_egreso,
+                        motivo_comprobacion="Pago efectivo" if is_cash_egreso else None,
                         fuente="EMAIL",
                         xml_raw=xml_bytes.decode("utf-8", errors="ignore")
                     )
                     db.add(new_invoice)
                     processed_xmls += 1
+                else:
+                    if existing.account_rfc != target_account_rfc:
+                        existing.account_rfc = target_account_rfc
+                        existing.area_proyecto = target_area_name
+                    if is_cash_egreso and (not existing.conciliado or not existing.comprobado or existing.motivo_comprobacion != "Pago efectivo"):
+                        existing.conciliado = True
+                        existing.comprobado = True
+                        existing.motivo_comprobacion = "Pago efectivo"
             except Exception as e_xml:
                 errors.append(f"Error procesando {src_filename}: {str(e_xml)}")
 
@@ -270,6 +385,13 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
 
         except Exception as e_match:
             errors.append(f"Error en conciliación posterior al buzón: {e_match}")
+
+        # Reclasificar facturas por RFC fiscal y auto-conciliar egresos en efectivo
+        try:
+            reclassify_invoices_by_fiscal_rfc(db)
+            auto_reconcile_cash_expenses(db, entity_rfc)
+        except Exception as e_post:
+            errors.append(f"Error en post-proceso de buzón: {e_post}")
 
         return {
             "success": True,

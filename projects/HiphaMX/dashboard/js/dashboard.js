@@ -7063,6 +7063,7 @@ function renderMatchInvoicesList(filterText = '') {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
                     <div style="display: flex; align-items: center; gap: 0.45rem;">
                         ${tipoBadge}
+                        ${formatFormaPagoBadge(f.forma_pago, f.metodo_pago)}
                         <strong style="color: var(--text-main); font-size: 0.88rem;">${escapeHtml(contraparte || 'Sin nombre')}</strong>
                     </div>
                     <strong style="color: #38bdf8; font-size: 0.95rem;">$${Number(f.total).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
@@ -7229,6 +7230,37 @@ async function autoSyncMailbox(entityRfc, silent = true) {
 // -------------------------------------------------------------
 // MODAL DE FACTURAS EN BUZÓN (CFDI)
 // -------------------------------------------------------------
+function formatFormaPagoBadge(formaPago, metodoPago) {
+    const fp = String(formaPago || '').trim();
+    const mp = String(metodoPago || '').trim().toUpperCase();
+
+    if (fp === '01' || fp.toLowerCase().includes('efectivo')) {
+        return `<span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Pagado en Efectivo (01)">💵 Efectivo (01)</span>`;
+    }
+    if (fp === '04' || fp.toLowerCase().includes('credito') || fp.toLowerCase().includes('crédito')) {
+        return `<span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Tarjeta de Crédito (04)">💳 TC (04)</span>`;
+    }
+    if (fp === '28' || fp.toLowerCase().includes('debito') || fp.toLowerCase().includes('débito')) {
+        return `<span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Tarjeta de Débito (28)">💳 T. Débito (28)</span>`;
+    }
+    if (fp === '03' || fp.toLowerCase().includes('transferencia')) {
+        return `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Transferencia electrónica / Cuenta Fiscal (03)">🏛️ Cta Fiscal (03)</span>`;
+    }
+    if (fp === '02' || fp.toLowerCase().includes('cheque')) {
+        return `<span style="background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Cheque nominativo (02)">📝 Cheque (02)</span>`;
+    }
+    if (mp === 'PAGO') {
+        return `<span style="background: rgba(167, 139, 250, 0.15); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Complemento para Recepción de Pagos">📥 Pago REP</span>`;
+    }
+    if (fp === '99' || mp === 'PPD') {
+        return `<span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.25rem;" title="Por definir / PPD">⏳ PPD (99)</span>`;
+    }
+    if (fp) {
+        return `<span style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-color); font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 500; white-space: nowrap;">${escapeHtml(fp)}</span>`;
+    }
+    return `<span style="color: var(--text-muted); font-size: 0.75rem;">${escapeHtml(mp || '-')}</span>`;
+}
+
 let currentMailboxFilter = 'ALL';
 
 async function openMailboxInvoicesModal() {
@@ -7245,7 +7277,7 @@ async function openMailboxInvoicesModal() {
     if (tbody) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                <td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
                     <div class="spinner" style="margin: 0 auto 0.5rem auto;"></div>
                     Consultando facturas del buzón para ${entityLabel}...
                 </td>
@@ -7265,7 +7297,7 @@ async function openMailboxInvoicesModal() {
         if (tbody) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" style="padding: 2rem; text-align: center; color: #ef4444;">
+                    <td colspan="7" style="padding: 2rem; text-align: center; color: #ef4444;">
                         Error al consultar las facturas del buzón.
                     </td>
                 </tr>
@@ -7304,7 +7336,9 @@ function filterAndRenderMailboxInvoices() {
             const conceptos = (inv.conceptos_resumen || '').toLowerCase();
             const uuid = (inv.uuid || '').toLowerCase();
             const motivo = (inv.motivo_comprobacion || '').toLowerCase();
-            return emisor.includes(term) || rfc.includes(term) || conceptos.includes(term) || uuid.includes(term) || motivo.includes(term);
+            const formaPago = (inv.forma_pago || '').toLowerCase();
+            const metodoPago = (inv.metodo_pago || '').toLowerCase();
+            return emisor.includes(term) || rfc.includes(term) || conceptos.includes(term) || uuid.includes(term) || motivo.includes(term) || formaPago.includes(term) || metodoPago.includes(term);
         });
     }
 
@@ -7320,7 +7354,7 @@ function renderMailboxInvoicesModal(invoices) {
     if (invoices.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
+                <td colspan="7" style="padding: 2.5rem; text-align: center; color: var(--text-muted);">
                     No hay facturas que coincidan con los filtros actuales.
                 </td>
             </tr>
@@ -7340,6 +7374,7 @@ function renderMailboxInvoicesModal(invoices) {
             inv.complemento_pago_uuid
         );
         const isComplemento = (inv.metodo_pago === 'PAGO');
+        const isCashEgreso = (inv.tipo === 'EGRESO' && (String(inv.forma_pago || '').trim() === '01' || String(inv.forma_pago || '').toLowerCase().includes('efectivo') || inv.motivo_comprobacion === 'Pago efectivo'));
 
         let estatusHtml = '';
         let accionHtml = '';
@@ -7364,6 +7399,17 @@ function renderMailboxInvoicesModal(invoices) {
             accionHtml = `
                 <div style="font-size: 0.74rem; color: var(--text-muted); text-align: center;">
                     Ampara facturas PPD
+                </div>
+            `;
+        } else if (isCashEgreso || inv.motivo_comprobacion === 'Pago efectivo') {
+            estatusHtml = `
+                <span style="background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;" title="Factura de egreso pagada en efectivo. Conciliada automáticamente fuera de banco.">
+                    ✓ Conciliado (Efectivo)
+                </span>
+            `;
+            accionHtml = `
+                <div style="font-size: 0.74rem; color: #10b981; font-weight: 600; text-align: center;">
+                    ✓ Pagado en efectivo
                 </div>
             `;
         } else if (isComprobado) {
@@ -7408,6 +7454,9 @@ function renderMailboxInvoicesModal(invoices) {
                 </td>
                 <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(inv.conceptos_resumen || '')}">
                     ${escapeHtml(inv.conceptos_resumen || '-')}
+                </td>
+                <td style="padding: 0.75rem 0.9rem; text-align: center;">
+                    ${formatFormaPagoBadge(inv.forma_pago, inv.metodo_pago)}
                 </td>
                 <td style="padding: 0.75rem 0.9rem; text-align: right; font-weight: 700; color: ${isIngreso ? '#34d399' : '#fbbf24'}; white-space: nowrap;">
                     $${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}
@@ -7488,12 +7537,47 @@ function openComprobarInvoiceModal(uuid) {
     document.getElementById('comprobarInvoiceTotal').textContent = `$${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     document.getElementById('comprobarInvoiceConcepto').textContent = inv.conceptos_resumen || 'Sin conceptos especificados';
 
-    // Seleccionar motivo actual o por defecto "TC Mercado Libre"
-    const currentMotivo = inv.motivo_comprobacion || 'TC Mercado Libre';
-    const radios = document.querySelectorAll('input[name="comprobarReason"]');
-    radios.forEach(r => {
-        r.checked = (r.value === currentMotivo);
-    });
+    // Generar opciones de comprobación dinámicas según la entidad (AMDI vs Hipha)
+    const isAmdi = (currentReconEntity === 'MEHA850118Q96') || (inv.account_rfc === 'MEHA850118Q96');
+    const container = document.getElementById('comprobarReasonOptions');
+    if (container) {
+        let options = [];
+        if (isAmdi) {
+            options = [
+                { value: 'TC Volaris', title: '💳 TC Volaris', desc: 'Pagado con Tarjeta Volaris INVEX' },
+                { value: 'TC BBVA', title: '💳 TC BBVA', desc: 'Pagado con Tarjeta de Crédito BBVA' },
+                { value: 'Pago efectivo', title: '💵 Pago efectivo', desc: 'Pagado en efectivo en caja' },
+                { value: 'Hipoteca', title: '🏠 Hipoteca', desc: 'Pago desde otra cuenta hipotecaria' },
+                { value: 'Rendimientos', title: '📈 Rendimientos', desc: 'Intereses o rendimientos de inversión' },
+                { value: 'Otra TC', title: '💳 Otra TC', desc: 'Otra tarjeta de crédito externa' },
+            ];
+        } else {
+            options = [
+                { value: 'TC Mercado Pago', title: '💳 TC Mercado Pago', desc: 'TC Mercado Libre / Mercado Pago' },
+                { value: 'TC Revolut', title: '💳 TC Revolut', desc: 'Pagado con Tarjeta Revolut' },
+                { value: 'Pago efectivo', title: '💵 Pago efectivo', desc: 'Pagado en efectivo en caja' },
+                { value: 'Hipoteca', title: '🏠 Hipoteca', desc: 'Pago desde otra cuenta hipotecaria' },
+                { value: 'Rendimientos', title: '📈 Rendimientos', desc: 'Intereses o rendimientos de inversión' },
+                { value: 'Otra TC', title: '💳 Otra TC', desc: 'Otra tarjeta de crédito externa' },
+            ];
+        }
+
+        const currentMotivo = inv.motivo_comprobacion || (isAmdi ? 'TC Volaris' : 'TC Mercado Pago');
+        const normalizedMotivo = (!isAmdi && (currentMotivo === 'TC Mercado Libre' || currentMotivo === 'TC Mercado Pago')) ? 'TC Mercado Pago' : currentMotivo;
+
+        container.innerHTML = options.map((opt, idx) => {
+            const isChecked = (opt.value === normalizedMotivo) || (idx === 0 && !options.some(o => o.value === normalizedMotivo));
+            return `
+                <label class="comprobar-card-opt" style="border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); padding: 0.8rem 0.85rem; border-radius: 8px; cursor: pointer; display: flex; align-items: flex-start; gap: 0.55rem; transition: all 0.2s;">
+                    <input type="radio" name="comprobarReason" value="${opt.value}" ${isChecked ? 'checked' : ''} style="margin-top: 3px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.84rem; color: var(--text-main);">${opt.title}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.25; margin-top: 2px;">${opt.desc}</div>
+                    </div>
+                </label>
+            `;
+        }).join('');
+    }
 
     modal.classList.remove('hidden');
 }
@@ -7506,7 +7590,8 @@ function closeComprobarInvoiceModal() {
 async function submitComprobarInvoice() {
     const uuid = document.getElementById('comprobarInvoiceUuid').value;
     const selectedRadio = document.querySelector('input[name="comprobarReason"]:checked');
-    const motivo = selectedRadio ? selectedRadio.value : 'TC Mercado Libre';
+    const defaultReason = (currentReconEntity === 'MEHA850118Q96') ? 'TC Volaris' : 'TC Mercado Pago';
+    const motivo = selectedRadio ? selectedRadio.value : defaultReason;
 
     if (!uuid) return;
 

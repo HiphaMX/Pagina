@@ -20,7 +20,11 @@ from app.services.reconciliation.matching_engine import conciliar_movimientos
 from app.services.reconciliation.excel_exporter import export_reconciliation_excel
 from app.services.reconciliation.pdf_reporter import generate_discrepancies_pdf
 from app.services.reconciliation.backfill import import_historical_excel
-from app.services.reconciliation.mail_listener import sync_mailbox_invoices
+from app.services.reconciliation.mail_listener import (
+    sync_mailbox_invoices,
+    reclassify_invoices_by_fiscal_rfc,
+    auto_reconcile_cash_expenses
+)
 from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement, is_own_account_transfer
 
 
@@ -131,7 +135,9 @@ def get_reconciliation_overview(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
-    # Sincronizar automáticamente relaciones de Complementos de Pago (REPs)
+    # Reclasificar facturas por RFC fiscal, conciliar efectivo y sincronizar REPs
+    reclassify_invoices_by_fiscal_rfc(db)
+    auto_reconcile_cash_expenses(db, effective_rfc)
     sync_all_complementos_de_pago(db, effective_rfc)
 
     # Meses disponibles en la base de datos para esta entidad
@@ -586,7 +592,9 @@ def get_pending_invoices(
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
 
-    # Sincronizar automáticamente cualquier Complemento de Pago (REP) para que sus facturas no aparezcan como pendientes
+    # Reclasificar facturas por RFC fiscal, conciliar egresos en efectivo y sincronizar REPs
+    reclassify_invoices_by_fiscal_rfc(db)
+    auto_reconcile_cash_expenses(db, effective_rfc)
     sync_all_complementos_de_pago(db, effective_rfc)
 
     query = db.query(CFDIInvoice).filter(
@@ -791,7 +799,9 @@ def _run_reconciliation_pass(
     - Soporta pagos consolidados (1 depósito ampara 2 o 3 facturas).
     - Marca como conciliadas tanto las transacciones como todas las facturas hijas y consolidadas.
     """
-    # 0. Pre-procesar todos los Complementos de Pago (REP) para marcar sus facturas hijas PPD como pagadas
+    # 0. Pre-procesar reclasificación fiscal, efectivo y Complementos de Pago (REP)
+    reclassify_invoices_by_fiscal_rfc(db)
+    auto_reconcile_cash_expenses(db, effective_rfc)
     sync_all_complementos_de_pago(db, effective_rfc)
 
     facturas_query = db.query(CFDIInvoice).filter(
@@ -922,6 +932,8 @@ async def upload_reconciliation_files(
                                 cfdi_data = parse_cfdi_xml(xml_bytes, mi_rfc=effective_rfc)
                                 if cfdi_data.get("fecha_emision"):
                                     detected_months.add(cfdi_data["fecha_emision"].strftime("%Y-%m"))
+                                fp_zip = str(cfdi_data.get("forma_pago") or "").strip()
+                                is_cash_egr_zip = (cfdi_data["tipo"] == "EGRESO" and (fp_zip == "01" or "01" in fp_zip or "efectivo" in fp_zip.lower()))
                                 existing = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == cfdi_data["uuid"]).first()
                                 if not existing:
                                     inv = CFDIInvoice(
@@ -943,13 +955,19 @@ async def upload_reconciliation_files(
                                         metodo_pago=cfdi_data["metodo_pago"],
                                         forma_pago=cfdi_data["forma_pago"],
                                         conceptos_resumen=cfdi_data["conceptos_resumen"],
-                                        conciliado=False,
+                                        conciliado=is_cash_egr_zip,
+                                        comprobado=is_cash_egr_zip,
+                                        motivo_comprobacion="Pago efectivo" if is_cash_egr_zip else None,
                                         fuente="DASHBOARD",
                                         xml_raw=xml_bytes.decode("utf-8", errors="ignore")
                                     )
                                     db.add(inv)
                                     processed_xmls += 1
                                 else:
+                                    if is_cash_egr_zip and (not existing.conciliado or not existing.comprobado or existing.motivo_comprobacion != "Pago efectivo"):
+                                        existing.conciliado = True
+                                        existing.comprobado = True
+                                        existing.motivo_comprobacion = "Pago efectivo"
                                     if cfdi_data["total"] > 0 and (existing.total == 0 or existing.total != cfdi_data["total"]):
                                         existing.total = cfdi_data["total"]
                                     if cfdi_data.get("subtotal", 0.0) > 0 and existing.subtotal == 0:
@@ -978,6 +996,8 @@ async def upload_reconciliation_files(
                 cfdi_data = parse_cfdi_xml(content, mi_rfc=effective_rfc)
                 if cfdi_data.get("fecha_emision"):
                     detected_months.add(cfdi_data["fecha_emision"].strftime("%Y-%m"))
+                fp_ind = str(cfdi_data.get("forma_pago") or "").strip()
+                is_cash_egr_ind = (cfdi_data["tipo"] == "EGRESO" and (fp_ind == "01" or "01" in fp_ind or "efectivo" in fp_ind.lower()))
                 existing = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == cfdi_data["uuid"]).first()
                 if not existing:
                     inv = CFDIInvoice(
@@ -999,13 +1019,19 @@ async def upload_reconciliation_files(
                         metodo_pago=cfdi_data["metodo_pago"],
                         forma_pago=cfdi_data["forma_pago"],
                         conceptos_resumen=cfdi_data["conceptos_resumen"],
-                        conciliado=False,
+                        conciliado=is_cash_egr_ind,
+                        comprobado=is_cash_egr_ind,
+                        motivo_comprobacion="Pago efectivo" if is_cash_egr_ind else None,
                         fuente="DASHBOARD",
                         xml_raw=content.decode("utf-8", errors="ignore")
                     )
                     db.add(inv)
                     processed_xmls += 1
                 else:
+                    if is_cash_egr_ind and (not existing.conciliado or not existing.comprobado or existing.motivo_comprobacion != "Pago efectivo"):
+                        existing.conciliado = True
+                        existing.comprobado = True
+                        existing.motivo_comprobacion = "Pago efectivo"
                     if cfdi_data["total"] > 0 and (existing.total == 0 or existing.total != cfdi_data["total"]):
                         existing.total = cfdi_data["total"]
                     if cfdi_data.get("subtotal", 0.0) > 0 and existing.subtotal == 0:
@@ -1762,6 +1788,10 @@ def reprocess_entity_reconciliation(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
+    # Reclasificar facturas por RFC fiscal y auto-conciliar facturas de egreso en efectivo
+    reclassify_invoices_by_fiscal_rfc(db)
+    auto_reconcile_cash_expenses(db, effective_rfc)
+
     # 1. Re-procesar facturas CFDI con xml_raw
     inv_query = db.query(CFDIInvoice).filter(CFDIInvoice.account_rfc == effective_rfc)
     all_invs = inv_query.all()
@@ -2063,6 +2093,8 @@ def trigger_sync_complementos_pago(
     """
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
+    reclassify_invoices_by_fiscal_rfc(db)
+    auto_reconcile_cash_expenses(db, effective_rfc)
     count = sync_all_complementos_de_pago(db, effective_rfc)
     return {
         "success": True,
