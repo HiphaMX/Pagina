@@ -7,6 +7,12 @@
       "maxDuration": 30
     }
   },
+  "crons": [
+    {
+      "path": "/api/dashboard/web-health/cron",
+      "schedule": "0 8 */2 * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

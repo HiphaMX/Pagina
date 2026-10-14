@@ -143,6 +143,9 @@ class Settings(BaseSettings):
     RECONCILIATION_IMAP_PASSWORD: str = "%k3]ALzqrsOj^X;="
     RECONCILIATION_IMAP_FOLDER: str = "INBOX"
 
+    # Gemini / Imagen 3 API Configuration
+    GEMINI_API_KEY: Optional[str] = None
+
     # HIPHA Entity
     HIPHA_RECON_RFC: str = "DEGF851127TK1"
     HIPHA_RECON_NAME: str = "HIPHA"

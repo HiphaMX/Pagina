@@ -80,6 +80,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     <span class="nav-text">Conciliación Bancaria</span>
                 </a>
+                <a href="#" class="nav-link" id="navLinkWebHealth" title="Monitoreo Web y Agente Guardián">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                    <span class="nav-text">Monitoreo Web</span>
+                </a>
             </nav>
 
             <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
@@ -772,6 +776,134 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- ========================================== -->
+            <!-- SECCIÓN: MONITOREO WEB & AGENTE GUARDIÁN   -->
+            <!-- ========================================== -->
+            <div class="webhealth-section-container hidden" id="webHealthSection">
+                
+                <!-- Panel Principal: Agente Guardián Web & Acciones -->
+                <div class="webhealth-hero-panel">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;">
+                                <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main); margin: 0;">Monitoreo Web & Agente Guardián</h2>
+                                <span class="webhealth-badge badge-healthy" style="background: rgba(0, 229, 255, 0.12); color: #00e5ff; border-color: rgba(0, 229, 255, 0.35);">
+                                    <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #00e5ff;"></span>
+                                    Guardián IA Autónomo
+                                </span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                                Auditoría integral de la flota de sitios web: uptime, certificados SSL, entregabilidad de correo (SPF/DMARC), Google Maps y compatibilidad GEO / Agéntica (/llms.txt).
+                            </p>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                            <button type="button" id="btnRefreshWebHealth" class="btn-secondary-mini" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                <span>Recargar</span>
+                            </button>
+                            <button type="button" id="btnRunFleetAudit" style="background: linear-gradient(135deg, #00e5ff 0%, #3b82f6 100%); color: #0f172a; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.84rem; display: flex; align-items: center; gap: 0.45rem; box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25); transition: all 0.2s;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <span id="btnRunFleetAuditText">Auditar Toda la Flota Ahora</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Banner / Informe Ejecutivo del Agente Guardián -->
+                    <div class="webhealth-agent-banner">
+                        <div class="webhealth-agent-avatar">
+                            🛡️
+                            <div class="pulse-dot"></div>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem;">
+                                <h3 style="font-size: 0.95rem; font-weight: 700; color: #38bdf8; margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+                                    <span>Diagnóstico Ejecutivo del Guardián</span>
+                                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 400;" id="webHealthLastAuditTime">Cargando última inspección...</span>
+                                </h3>
+                                <span style="font-size: 0.72rem; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 0.15rem 0.5rem; border-radius: 4px;">Cron: Cada 48h (Vercel)</span>
+                            </div>
+                            <div id="webHealthAgentSummary" style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5; white-space: pre-line;">
+                                Analizando la salud operativa de los sitios web de Hipha...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards Row -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <!-- 1. Total Sitios -->
+                    <div class="client-kpi-card" style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.15rem;">
+                        <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">🌐 Sitios Monitoreados</span>
+                        <div class="kpi-num" id="kpiWebHealthTotal" style="font-size: 1.7rem; font-weight: 700; color: var(--text-main); margin-top: 0.35rem;">--</div>
+                        <div class="kpi-sub-text" id="kpiWebHealthHealthyRatio" style="font-size: 0.75rem; color: #34d399; margin-top: 3px;">-- saludables</div>
+                    </div>
+
+                    <!-- 2. Uptime Flota -->
+                    <div class="client-kpi-card" style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 12px; padding: 1.15rem;">
+                        <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #10b981; font-weight: 700;">⚡ Disponibilidad (Uptime)</span>
+                        <div class="kpi-num" id="kpiWebHealthUptime" style="font-size: 1.7rem; font-weight: 700; color: #34d399; margin-top: 0.35rem;">100%</div>
+                        <div class="kpi-sub-text" id="kpiWebHealthCriticalCount" style="font-size: 0.75rem; color: #10b981; margin-top: 3px;">0 sitios caídos</div>
+                    </div>
+
+                    <!-- 3. Latencia Promedio TTFB -->
+                    <div class="client-kpi-card" style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 12px; padding: 1.15rem;">
+                        <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #38bdf8; font-weight: 700;">⏱️ Latencia Servidor (TTFB)</span>
+                        <div class="kpi-num" id="kpiWebHealthLatency" style="font-size: 1.7rem; font-weight: 700; color: #38bdf8; margin-top: 0.35rem;">-- ms</div>
+                        <div class="kpi-sub-text" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Promedio en la flota</div>
+                    </div>
+
+                    <!-- 4. SSL en Riesgo -->
+                    <div class="client-kpi-card" style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: 12px; padding: 1.15rem;">
+                        <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #f59e0b; font-weight: 700;">🔒 SSL Vence &lt; 30 días</span>
+                        <div class="kpi-num" id="kpiWebHealthSslExpiring" style="font-size: 1.7rem; font-weight: 700; color: #fbbf24; margin-top: 0.35rem;">0</div>
+                        <div class="kpi-sub-text" style="font-size: 0.75rem; color: #f59e0b; margin-top: 3px;">Renovación prioritaria</div>
+                    </div>
+
+                    <!-- 5. Formularios / SPF & DMARC -->
+                    <div class="client-kpi-card" style="background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.28); border-radius: 12px; padding: 1.15rem;">
+                        <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #60a5fa; font-weight: 700;">✉️ Entregabilidad SMTP / SPF</span>
+                        <div class="kpi-num" id="kpiWebHealthSmtp" style="font-size: 1.7rem; font-weight: 700; color: #60a5fa; margin-top: 0.35rem;">--</div>
+                        <div class="kpi-sub-text" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Registros de correo OK</div>
+                    </div>
+
+                    <!-- 6. Web Agéntica & GEO -->
+                    <div class="client-kpi-card" style="background: rgba(168, 85, 247, 0.06); border: 1px solid rgba(168, 85, 247, 0.28); border-radius: 12px; padding: 1.15rem;">
+                        <span class="kpi-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #c084fc; font-weight: 700;">🤖 Web Agéntica (/llms.txt)</span>
+                        <div class="kpi-num" id="kpiWebHealthLlms" style="font-size: 1.7rem; font-weight: 700; color: #c084fc; margin-top: 0.35rem;">--</div>
+                        <div class="kpi-sub-text" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Índices para IA / GEO</div>
+                    </div>
+                </div>
+
+                <!-- Barra de Filtros y Búsqueda -->
+                <div class="glass-panel" style="padding: 1rem 1.25rem; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+                    <!-- Buscador -->
+                    <div style="flex: 1; min-width: 260px; max-width: 420px; position: relative;">
+                        <input type="text" id="webHealthSearchInput" placeholder="Buscar sitio, dominio o cliente..." style="width: 100%; background: rgba(15, 23, 42, 0.7); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.55rem 0.85rem 0.55rem 2.2rem; font-size: 0.85rem; outline: none; transition: border-color 0.2s;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+
+                    <!-- Botones de Filtro por Estado -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+                        <button type="button" class="webhealth-filter-btn active" data-filter="ALL">Todos (<span id="webHealthCountAll">0</span>)</button>
+                        <button type="button" class="webhealth-filter-btn" data-filter="HEALTHY">🟢 Saludables (<span id="webHealthCountHealthy">0</span>)</button>
+                        <button type="button" class="webhealth-filter-btn" data-filter="WARNING">🟡 Advertencias (<span id="webHealthCountWarning">0</span>)</button>
+                        <button type="button" class="webhealth-filter-btn" data-filter="CRITICAL">🔴 Críticos (<span id="webHealthCountCritical">0</span>)</button>
+                    </div>
+                </div>
+
+                <!-- Grid de Sitios Web Monitoreados -->
+                <div class="webhealth-grid" id="webHealthGrid">
+                    <!-- Cards se generan dinámicamente con JS -->
+                    <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-muted);">
+                        <div class="spinner" style="margin: 0 auto 0.75rem auto;"></div>
+                        Cargando flota de sitios y diagnóstico del Guardián...
                     </div>
                 </div>
 
@@ -2099,8 +2231,118 @@
         </div>
     </div>
 
+    <!-- Modal: Diagnóstico Técnico Detallado del Sitio Web -->
+    <div id="webHealthModal" class="modal-overlay hidden">
+        <div class="modal-dialog modal-lg" style="max-width: 820px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 1.25rem 1.5rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <h2 id="modalWebHealthDomain" style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0;">dominio.com</h2>
+                        <span id="modalWebHealthBadge" class="webhealth-badge badge-healthy">SALUDABLE</span>
+                    </div>
+                    <p id="modalWebHealthClientName" style="font-size: 0.85rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">Cliente de la Agencia</p>
+                </div>
+                <button type="button" id="btnCloseWebHealthModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem;">
+                <!-- Recomendación IA del Agente -->
+                <div style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(168, 85, 247, 0.08)); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.15rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.2rem;">🛡️</span>
+                        <h4 style="font-size: 0.9rem; font-weight: 700; color: #38bdf8; margin: 0;">Diagnóstico & Recomendación del Guardián</h4>
+                    </div>
+                    <p id="modalWebHealthRecommendation" style="font-size: 0.85rem; color: #e2e8f0; line-height: 1.5; margin: 0; white-space: pre-line;">-</p>
+                </div>
+
+                <!-- Grid de Diagnósticos Técnicos -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
+                    <!-- 1. Servidor & Conexión -->
+                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <span>🌐 Servidor & Conectividad</span>
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.82rem;">
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Código HTTP:</span><strong id="modalWebHealthStatusCode">-</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Latencia TTFB:</span><strong id="modalWebHealthResponseTime">-</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">URL Final:</span><span id="modalWebHealthFinalUrl" style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace;">-</span></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Score Global:</span><strong id="modalWebHealthScore" style="color: #38bdf8;">100 / 100</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Certificado SSL -->
+                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <span>🔒 Certificado SSL / TLS</span>
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.82rem;">
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Válido:</span><strong id="modalWebHealthSslValid">-</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Días restantes:</span><strong id="modalWebHealthSslDays">-</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Emisor (CA):</span><span id="modalWebHealthSslIssuer" style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Entregabilidad de Correo (DNS SPF / DMARC) -->
+                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <span>✉️ Entregabilidad (DNS & SMTP)</span>
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.82rem;">
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Registro SPF:</span><strong id="modalWebHealthSpfStatus">-</strong></div>
+                            <div id="modalWebHealthSpfRecord" style="font-family: monospace; font-size: 0.72rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 0.35rem 0.5rem; border-radius: 4px; word-break: break-all;">-</div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 4px;"><span style="color: var(--text-muted);">Registro DMARC:</span><strong id="modalWebHealthDmarcStatus">-</strong></div>
+                            <div id="modalWebHealthDmarcRecord" style="font-family: monospace; font-size: 0.72rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 0.35rem 0.5rem; border-radius: 4px; word-break: break-all;">-</div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 4px;"><span style="color: var(--text-muted);">Endpoint Formulario:</span><strong id="modalWebHealthSmtpStatus">-</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Google Maps & APIs Externas -->
+                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <span>🗺️ Google Maps & Scripts</span>
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.82rem;">
+                            <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Estatus Mapas:</span><strong id="modalWebHealthMapsStatus">-</strong></div>
+                            <div id="modalWebHealthMapsDetails" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-top: 4px;">-</div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Visibilidad GEO & Agentes IA (/llms.txt y robots.txt) -->
+                    <div style="grid-column: 1 / -1; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <span>🤖 Optimización GEO & Agentes de IA (/llms.txt)</span>
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.82rem;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;">
+                                <div><span style="color: var(--text-muted);">Archivo /llms.txt:</span> <strong id="modalWebHealthLlmsStatus">-</strong></div>
+                                <div><span style="color: var(--text-muted);">Permite Rastreadores IA (robots.txt):</span> <strong id="modalWebHealthRobotsAiStatus">-</strong></div>
+                            </div>
+                            <div id="modalWebHealthLlmsSnippet" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.75rem; color: #a7f3d0; max-height: 120px; overflow-y: auto; white-space: pre-wrap;">
+                                No disponible
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);">
+                <a id="modalWebHealthVisitBtn" href="#" target="_blank" class="btn-secondary-mini" style="background: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 1.1rem; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <span>🌐 Abrir Sitio Web</span>
+                </a>
+                <div style="display: flex; gap: 0.6rem;">
+                    <button type="button" id="btnModalReauditDomain" class="btn-primary-mini" style="background: #00e5ff; color: #0f172a; border: none; padding: 0.55rem 1.3rem; border-radius: 8px; cursor: pointer; font-weight: 700;">
+                        ⚡ Re-auditar Este Sitio
+                    </button>
+                    <button type="button" id="btnCloseWebHealthModal" class="btn-secondary-mini" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.55rem 1.1rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Script de Lógica -->
-    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261013-6"></script>
+    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261014-1"></script>
 
 </body>
 </html>

@@ -9,6 +9,7 @@ from app.api.projects import botica as botica_project
 from app.api.projects import oncologia_robotica as oncologia_robotica_project
 from app.api.dashboard import routes as dashboard_routes
 from app.api.dashboard import reconciliation_routes
+from app.api.dashboard import web_health_routes
 from app.core.database import Base, engine, SessionLocal, ensure_db_initialized
 from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
@@ -17,6 +18,7 @@ from app.models.sat import SatAccount, SatInvoice, SatDownloadRequest
 from app.models.workflow_task import WorkflowTask
 from app.models.client import AgencyClient
 from app.models.social_tracker import SocialAccount, SocialSnapshot
+from app.models.web_health import WebHealthAudit
 from app.core.security import get_password_hash
 
 app = FastAPI(title="HiphaMX API")
@@ -223,6 +225,7 @@ app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 app.include_router(mercadopago.router, prefix="/api/mercadopago", tags=["mercadopago"])
 app.include_router(dashboard_routes.router, prefix="/api/dashboard", tags=["dashboard"])
 app.include_router(reconciliation_routes.router, prefix="/api/dashboard/reconciliation", tags=["reconciliation"])
+app.include_router(web_health_routes.router, prefix="/api/dashboard/web-health", tags=["web-health"])
 app.include_router(social_tracker.router, prefix="/api/dashboard/social", tags=["social-tracker"])
 app.include_router(sat.router, prefix="/api/sat", tags=["sat"])
 app.include_router(qa.router, prefix="/api", tags=["qa"])

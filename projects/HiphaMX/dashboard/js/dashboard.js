@@ -37,11 +37,13 @@ const navLinkWorkflow = document.getElementById('navLinkWorkflow');
 const navLinkClients = document.getElementById('navLinkClients');
 const navLinkSocial = document.getElementById('navLinkSocial');
 const navLinkReconciliation = document.getElementById('navLinkReconciliation');
+const navLinkWebHealth = document.getElementById('navLinkWebHealth');
 const trafficSection = document.getElementById('trafficSection');
 const workflowSection = document.getElementById('workflowSection');
 const clientsSection = document.getElementById('clientsSection');
 const socialSection = document.getElementById('socialSection');
 const reconciliationSection = document.getElementById('reconciliationSection');
+const webHealthSection = document.getElementById('webHealthSection');
 const headerTitle = document.getElementById('headerTitle');
 const headerSubtitle = document.getElementById('headerSubtitle');
 const trafficDateSelector = document.getElementById('trafficDateSelector');
@@ -232,6 +234,19 @@ document.addEventListener('DOMContentLoaded', () => {
             loadReconciliationData();
         });
     }
+
+    if (navLinkWebHealth) {
+        navLinkWebHealth.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveTab(navLinkWebHealth, webHealthSection);
+            headerTitle.textContent = "Monitoreo Web & Agente Guardián";
+            headerSubtitle.textContent = "Auditoría en tiempo real de infraestructura, SSL, correo y GEO de clientes";
+            if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+            window.location.hash = 'web-health';
+            initWebHealthModule();
+            loadWebHealthOverview();
+        });
+    }
 });
 
 function showDashboard() {
@@ -246,7 +261,14 @@ function showDashboard() {
 
     // Detección de pestaña por URL hash (soporta recarga directa o enlaces profundos)
     const currentHash = (window.location.hash || '').toLowerCase();
-    if (currentHash === '#reconciliation' || currentHash === '#conciliacion') {
+    if (currentHash === '#web-health' || currentHash === '#webhealth' || currentHash === '#guardian') {
+        setActiveTab(navLinkWebHealth, webHealthSection);
+        headerTitle.textContent = "Monitoreo Web & Agente Guardián";
+        headerSubtitle.textContent = "Auditoría en tiempo real de infraestructura, SSL, correo y GEO de clientes";
+        if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+        initWebHealthModule();
+        loadWebHealthOverview();
+    } else if (currentHash === '#reconciliation' || currentHash === '#conciliacion') {
         setActiveTab(navLinkReconciliation, reconciliationSection);
         headerTitle.textContent = "Conciliación Bancaria & Fiscal";
         headerSubtitle.textContent = "Cruce inteligente de estados de cuenta BBVA contra facturas CFDI (SAT)";
@@ -1168,6 +1190,7 @@ function setActiveTab(activeLink, activeSection) {
     if (clientsSection) clientsSection.classList.add('hidden');
     if (socialSection) socialSection.classList.add('hidden');
     if (reconciliationSection) reconciliationSection.classList.add('hidden');
+    if (webHealthSection) webHealthSection.classList.add('hidden');
     
     if (activeSection) {
         activeSection.classList.remove('hidden');
@@ -8322,6 +8345,602 @@ window.openComprobarInvoiceModal = openComprobarInvoiceModal;
 window.closeComprobarInvoiceModal = closeComprobarInvoiceModal;
 window.submitComprobarInvoice = submitComprobarInvoice;
 window.revertComprobarInvoice = revertComprobarInvoice;
+
+// ==========================================================================
+// MÓDULO: MONITOREO WEB & AGENTE GUARDIÁN (Fleet Health)
+// ==========================================================================
+let currentWebHealthData = null;
+let currentWebHealthFilter = 'ALL';
+let currentWebHealthSearch = '';
+let isWebHealthAuditing = false;
+let activeModalDomain = null;
+let webHealthInitialized = false;
+
+function formatWebHealthMarkdown(text) {
+    if (!text) return '';
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 4px; font-family: monospace;">$1</code>')
+        .replace(/\n/g, '<br>');
+}
+
+function formatWebHealthDate(isoString) {
+    if (!isoString) return 'Sin auditorías registradas';
+    try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString;
+        return 'Última inspección: ' + d.toLocaleString('es-MX', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch {
+        return 'Última inspección: ' + isoString;
+    }
+}
+
+function initWebHealthModule() {
+    if (webHealthInitialized) return;
+    webHealthInitialized = true;
+
+    // Buscador en tiempo real
+    const searchInput = document.getElementById('webHealthSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            currentWebHealthSearch = (e.target.value || '').toLowerCase().trim();
+            renderWebHealthGrid();
+        });
+    }
+
+    // Botones de filtro por estatus
+    const filterBtns = document.querySelectorAll('.webhealth-filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentWebHealthFilter = btn.dataset.filter || 'ALL';
+            renderWebHealthGrid();
+        });
+    });
+
+    // Botón de recarga de datos
+    const btnRefresh = document.getElementById('btnRefreshWebHealth');
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', () => {
+            loadWebHealthOverview(true);
+        });
+    }
+
+    // Botón de auditar toda la flota
+    const btnRunFleet = document.getElementById('btnRunFleetAudit');
+    if (btnRunFleet) {
+        btnRunFleet.addEventListener('click', () => {
+            runFleetAudit();
+        });
+    }
+
+    // Eventos del Modal
+    const modal = document.getElementById('webHealthModal');
+    const btnCloseX = document.getElementById('btnCloseWebHealthModalX');
+    const btnClose = document.getElementById('btnCloseWebHealthModal');
+    const btnReaudit = document.getElementById('btnModalReauditDomain');
+
+    if (btnCloseX) btnCloseX.addEventListener('click', closeWebHealthModal);
+    if (btnClose) btnClose.addEventListener('click', closeWebHealthModal);
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeWebHealthModal();
+        });
+    }
+
+    if (btnReaudit) {
+        btnReaudit.addEventListener('click', () => {
+            if (activeModalDomain) {
+                runSingleSiteAudit(activeModalDomain, btnReaudit);
+            }
+        });
+    }
+
+    // Escape para cerrar modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            closeWebHealthModal();
+        }
+    });
+}
+
+async function loadWebHealthOverview(forceRefresh = false) {
+    const grid = document.getElementById('webHealthGrid');
+    if (grid) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 3.5rem; text-align: center; color: var(--text-muted);">
+                <div class="spinner" style="margin: 0 auto 0.85rem auto;"></div>
+                Cargando métricas de infraestructura y diagnóstico del Guardián...
+            </div>
+        `;
+    }
+
+    try {
+        const url = `${API_BASE}/web-health/overview?force_refresh=${forceRefresh ? 'true' : 'false'}`;
+        const res = await fetch(url, {
+            headers: getAuthHeaders()
+        });
+
+        if (!res.ok) {
+            if (res.status === 401) {
+                showLogin();
+                return;
+            }
+            throw new Error(`Error en el servidor: HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        currentWebHealthData = data;
+        renderWebHealthKPIs(data.kpis, data.agent_summary, data.last_audit_iso);
+        renderWebHealthGrid();
+    } catch (err) {
+        console.error('Error al cargar Monitoreo Web:', err);
+        if (grid) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25); border-radius: 12px;">
+                    <p style="color: #f87171; font-weight: 600; margin-bottom: 0.75rem;">No se pudieron cargar los datos de monitoreo web.</p>
+                    <button type="button" onclick="loadWebHealthOverview(true)" class="btn-primary-mini" style="background:#38bdf8; color:#0f172a; border:none; padding:0.5rem 1rem; border-radius:6px; font-weight:700; cursor:pointer;">
+                        Reintentar
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
+
+function renderWebHealthKPIs(kpis, agentSummary, lastAuditIso) {
+    if (!kpis) return;
+
+    const elTotal = document.getElementById('kpiWebHealthTotal');
+    const elRatio = document.getElementById('kpiWebHealthHealthyRatio');
+    const elUptime = document.getElementById('kpiWebHealthUptime');
+    const elCritical = document.getElementById('kpiWebHealthCriticalCount');
+    const elLatency = document.getElementById('kpiWebHealthLatency');
+    const elSslExp = document.getElementById('kpiWebHealthSslExpiring');
+    const elSmtp = document.getElementById('kpiWebHealthSmtp');
+    const elLlms = document.getElementById('kpiWebHealthLlms');
+    const elAgent = document.getElementById('webHealthAgentSummary');
+    const elTime = document.getElementById('webHealthLastAuditTime');
+
+    if (elTotal) elTotal.textContent = kpis.total_sites || 0;
+    if (elRatio) elRatio.textContent = `${kpis.healthy_sites || 0} saludables, ${kpis.warning_sites || 0} alertas`;
+
+    if (elUptime) {
+        const total = kpis.total_sites || 1;
+        const upCount = total - (kpis.critical_sites || 0);
+        const uptimePct = Math.round((upCount / total) * 100);
+        elUptime.textContent = `${uptimePct}%`;
+        elUptime.style.color = uptimePct === 100 ? '#34d399' : (uptimePct >= 90 ? '#fbbf24' : '#f87171');
+    }
+    if (elCritical) {
+        const crit = kpis.critical_sites || 0;
+        elCritical.textContent = crit === 0 ? '0 sitios caídos' : `${crit} sitio(s) con fallas críticas`;
+        elCritical.style.color = crit === 0 ? '#10b981' : '#f87171';
+    }
+
+    if (elLatency) elLatency.textContent = `${Math.round(kpis.avg_response_time_ms || 0)} ms`;
+    if (elSslExp) {
+        elSslExp.textContent = kpis.ssl_expiring_soon_count || 0;
+        elSslExp.style.color = (kpis.ssl_expiring_soon_count || 0) > 0 ? '#fbbf24' : '#34d399';
+    }
+    if (elSmtp) elSmtp.textContent = `${kpis.smtp_ok_count || 0} / ${kpis.total_sites || 0}`;
+    if (elLlms) elLlms.textContent = `${kpis.llms_txt_count || 0} / ${kpis.total_sites || 0}`;
+
+    if (elAgent) {
+        elAgent.innerHTML = formatWebHealthMarkdown(agentSummary || 'Auditoría completada sin novedades.');
+    }
+    if (elTime) {
+        elTime.textContent = formatWebHealthDate(lastAuditIso);
+    }
+
+    // Contadores de botones de filtro
+    const countAll = document.getElementById('webHealthCountAll');
+    const countHealthy = document.getElementById('webHealthCountHealthy');
+    const countWarning = document.getElementById('webHealthCountWarning');
+    const countCritical = document.getElementById('webHealthCountCritical');
+
+    if (countAll) countAll.textContent = kpis.total_sites || 0;
+    if (countHealthy) countHealthy.textContent = kpis.healthy_sites || 0;
+    if (countWarning) countWarning.textContent = kpis.warning_sites || 0;
+    if (countCritical) countCritical.textContent = kpis.critical_sites || 0;
+}
+
+function renderWebHealthGrid() {
+    const grid = document.getElementById('webHealthGrid');
+    if (!grid || !currentWebHealthData || !currentWebHealthData.sites) return;
+
+    const search = (currentWebHealthSearch || '').toLowerCase().trim();
+    const filteredSites = currentWebHealthData.sites.filter(site => {
+        if (currentWebHealthFilter !== 'ALL' && site.health_level !== currentWebHealthFilter) {
+            return false;
+        }
+        if (search) {
+            const matchDomain = (site.domain || '').toLowerCase().includes(search);
+            const matchClient = (site.client_name || '').toLowerCase().includes(search);
+            const matchUrl = (site.url || '').toLowerCase().includes(search);
+            if (!matchDomain && !matchClient && !matchUrl) return false;
+        }
+        return true;
+    });
+
+    if (filteredSites.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-muted);">
+                <p style="font-size: 1.1rem; margin-bottom: 0.35rem;">🔍 Sin resultados</p>
+                <p style="font-size: 0.85rem;">No se encontraron sitios con el filtro o búsqueda actual.</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = filteredSites.map(site => {
+        // Determinación de clases de badge y card
+        let badgeClass = 'badge-healthy';
+        let cardClass = 'status-healthy';
+        let badgeText = 'Saludable';
+        if (site.health_level === 'CRITICAL') {
+            badgeClass = 'badge-critical';
+            cardClass = 'status-critical';
+            badgeText = 'Crítico';
+        } else if (site.health_level === 'WARNING') {
+            badgeClass = 'badge-warning';
+            cardClass = 'status-warning';
+            badgeText = 'Advertencia';
+        }
+
+        // Chip SSL
+        let sslChipClass = site.ssl_valid ? 'chip-ok' : 'chip-err';
+        let sslChipText = 'SSL Válido';
+        if (!site.ssl_valid) {
+            sslChipText = 'Sin SSL / Inválido';
+        } else if (site.ssl_days_remaining != null) {
+            sslChipText = `SSL ${site.ssl_days_remaining}d`;
+            if (site.ssl_days_remaining < 30) {
+                sslChipClass = 'chip-warn';
+            }
+        }
+
+        // Chip SPF
+        let spfChipClass = site.dns_spf_status === 'OK' ? 'chip-ok' : 'chip-warn';
+        let spfChipText = `SPF ${site.dns_spf_status}`;
+
+        // Chip Maps
+        let mapsChipClass = 'chip-ok';
+        let mapsChipText = `Maps: ${site.maps_status}`;
+        if (site.maps_status === 'ERROR') mapsChipClass = 'chip-err';
+        else if (site.maps_status === 'NO_MAPS') {
+            mapsChipClass = '';
+            mapsChipText = 'Sin Maps';
+        }
+
+        // Chip LLMs
+        let llmsChipClass = site.has_llms_txt ? 'chip-ai' : 'chip-warn';
+        let llmsChipText = site.has_llms_txt ? 'llms.txt OK' : 'Sin llms.txt';
+
+        // Resumen de anomalías
+        let issuesHtml = '';
+        if (site.issues_summary && site.issues_summary.length > 0) {
+            const displayIssues = site.issues_summary.slice(0, 2);
+            const remaining = site.issues_summary.length - 2;
+            issuesHtml = `
+                <div style="display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.78rem; color: #fca5a5; background: rgba(239,68,68,0.06); padding: 0.5rem 0.65rem; border-radius: 6px; border: 1px solid rgba(239,68,68,0.2);">
+                    ${displayIssues.map(iss => `<div style="display: flex; align-items: flex-start; gap: 0.35rem;"><span>⚠️</span><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${iss}</span></div>`).join('')}
+                    ${remaining > 0 ? `<span style="font-size: 0.72rem; color: #f87171; margin-left: 1.2rem;">+ ${remaining} observación(es) más</span>` : ''}
+                </div>
+            `;
+        } else {
+            issuesHtml = `
+                <div style="font-size: 0.78rem; color: #34d399; display: flex; align-items: center; gap: 0.35rem;">
+                    <span>✓</span><span>Operatividad óptima, sin alertas críticas</span>
+                </div>
+            `;
+        }
+
+        const scoreColor = site.overall_score >= 80 ? '#34d399' : (site.overall_score >= 50 ? '#fbbf24' : '#f87171');
+        const latencyText = site.response_time_ms ? `${Math.round(site.response_time_ms)}ms` : 'N/D';
+
+        return `
+            <div class="webhealth-card ${cardClass}" id="siteCard_${site.domain.replace(/[^a-zA-Z0-9]/g, '_')}">
+                <!-- Header de Tarjeta -->
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;">
+                    <div style="min-width: 0; flex: 1;">
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.2rem 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${site.client_name || site.domain}
+                        </h3>
+                        <a href="${site.url || ('https://' + site.domain)}" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; text-decoration: none; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; font-family: monospace;">
+                            <span>${site.domain}</span>
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
+                        <span class="webhealth-badge ${badgeClass}">${badgeText}</span>
+                        <span style="font-size: 0.75rem; font-weight: 700; color: ${scoreColor};">${site.overall_score}/100</span>
+                    </div>
+                </div>
+
+                <!-- Métricas Clave -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; background: rgba(15,23,42,0.5); padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">HTTP & Latencia</div>
+                        <div style="font-size: 0.85rem; font-weight: 600; color: ${site.is_up ? '#34d399' : '#f87171'};">
+                            ${site.status_code || (site.is_up ? 200 : 'ERR')} • ${latencyText}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Certificado SSL</div>
+                        <div style="font-size: 0.85rem; font-weight: 600; color: ${site.ssl_valid ? (site.ssl_days_remaining < 30 ? '#fbbf24' : '#34d399') : '#f87171'};">
+                            ${site.ssl_valid ? (site.ssl_days_remaining != null ? `${site.ssl_days_remaining} días` : 'Válido') : 'Inválido'}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chips Técnicos -->
+                <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+                    <span class="webhealth-chip ${site.is_up ? 'chip-ok' : 'chip-err'}">🌐 ${site.status_code || 200}</span>
+                    <span class="webhealth-chip ${sslChipClass}">🔒 ${sslChipText}</span>
+                    <span class="webhealth-chip ${spfChipClass}">✉️ ${spfChipText}</span>
+                    <span class="webhealth-chip ${mapsChipClass}">🗺️ ${mapsChipText}</span>
+                    <span class="webhealth-chip ${llmsChipClass}">🤖 ${llmsChipText}</span>
+                </div>
+
+                <!-- Resumen de Auditoría -->
+                ${issuesHtml}
+
+                <!-- Botones de Acción -->
+                <div style="display: flex; gap: 0.5rem; margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--border-color);">
+                    <button type="button" onclick="openWebHealthDetailModal('${site.domain}')" class="btn-secondary-mini" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem; transition: all 0.2s;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Diagnóstico</span>
+                    </button>
+                    <button type="button" onclick="runSingleSiteAudit('${site.domain}', this)" style="background: rgba(0,229,255,0.12); color: #00e5ff; border: 1px solid rgba(0,229,255,0.3); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem; transition: all 0.2s;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <span>Auditar</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function runFleetAudit() {
+    if (isWebHealthAuditing) return;
+    isWebHealthAuditing = true;
+
+    const btn = document.getElementById('btnRunFleetAudit');
+    const btnText = document.getElementById('btnRunFleetAuditText');
+    const agentSummary = document.getElementById('webHealthAgentSummary');
+
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Auditoría en proceso...';
+    if (agentSummary) {
+        agentSummary.innerHTML = `⚡ <strong>El Agente Guardián está inspeccionando toda la flota en paralelo...</strong><br>Verificando respuestas HTTP, certificados TLS/SSL, registros DNS SPF/DMARC, APIs de Google Maps e índices semánticos /llms.txt. Esto puede tomar unos segundos.`;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/web-health/run-audit`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ use_ai: true })
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error en auditoría: HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        currentWebHealthData = data;
+        renderWebHealthKPIs(data.kpis, data.agent_summary, data.last_audit_iso);
+        renderWebHealthGrid();
+    } catch (err) {
+        console.error('Error al ejecutar auditoría de la flota:', err);
+        alert('Hubo un error al ejecutar la auditoría de la flota. Revisa la consola o reintenta.');
+    } finally {
+        isWebHealthAuditing = false;
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = 'Auditar Toda la Flota Ahora';
+    }
+}
+
+async function runSingleSiteAudit(domain, btnElement) {
+    if (!domain) return;
+
+    let originalHtml = '';
+    if (btnElement) {
+        originalHtml = btnElement.innerHTML;
+        btnElement.disabled = true;
+        btnElement.innerHTML = `<span>Auditando...</span>`;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/web-health/run-audit`, {
+            method: 'POST',
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ domain: domain, use_ai: true })
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error en auditoría individual: HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        currentWebHealthData = data;
+        renderWebHealthKPIs(data.kpis, data.agent_summary, data.last_audit_iso);
+        renderWebHealthGrid();
+
+        // Si el modal está abierto para este sitio, actualizar sus valores
+        const modal = document.getElementById('webHealthModal');
+        if (modal && !modal.classList.contains('hidden') && activeModalDomain === domain) {
+            openWebHealthDetailModal(domain);
+        }
+    } catch (err) {
+        console.error(`Error auditando ${domain}:`, err);
+        alert(`Error al auditar ${domain}. Verifica la conexión e intenta de nuevo.`);
+    } finally {
+        if (btnElement) {
+            btnElement.disabled = false;
+            btnElement.innerHTML = originalHtml;
+        }
+    }
+}
+
+function openWebHealthDetailModal(domain) {
+    if (!currentWebHealthData || !currentWebHealthData.sites) return;
+    const site = currentWebHealthData.sites.find(s => s.domain === domain);
+    if (!site) return;
+
+    activeModalDomain = domain;
+    const modal = document.getElementById('webHealthModal');
+    if (!modal) return;
+
+    // Encabezado
+    const elDomain = document.getElementById('modalWebHealthDomain');
+    const elClient = document.getElementById('modalWebHealthClientName');
+    const elBadge = document.getElementById('modalWebHealthBadge');
+    const elRec = document.getElementById('modalWebHealthRecommendation');
+    const elVisit = document.getElementById('modalWebHealthVisitBtn');
+
+    if (elDomain) elDomain.textContent = site.domain;
+    if (elClient) elClient.textContent = site.client_name || site.domain;
+    if (elVisit) elVisit.href = site.url || ('https://' + site.domain);
+
+    if (elBadge) {
+        elBadge.className = 'webhealth-badge';
+        if (site.health_level === 'CRITICAL') {
+            elBadge.classList.add('badge-critical');
+            elBadge.textContent = 'CRÍTICO';
+        } else if (site.health_level === 'WARNING') {
+            elBadge.classList.add('badge-warning');
+            elBadge.textContent = 'ADVERTENCIA';
+        } else {
+            elBadge.classList.add('badge-healthy');
+            elBadge.textContent = 'SALUDABLE';
+        }
+    }
+
+    if (elRec) {
+        elRec.innerHTML = formatWebHealthMarkdown(site.agent_recommendation || 'Sin recomendaciones específicas para este dominio.');
+    }
+
+    // Métricas del Servidor
+    const elStatus = document.getElementById('modalWebHealthStatusCode');
+    const elTime = document.getElementById('modalWebHealthResponseTime');
+    const elFinalUrl = document.getElementById('modalWebHealthFinalUrl');
+    const elScore = document.getElementById('modalWebHealthScore');
+
+    if (elStatus) elStatus.textContent = site.status_code ? `${site.status_code} ${site.status_code === 200 ? 'OK' : ''}` : (site.is_up ? '200 OK' : 'DOWN');
+    if (elTime) elTime.textContent = site.response_time_ms ? `${Math.round(site.response_time_ms)} ms` : 'N/D';
+    if (elFinalUrl) elFinalUrl.textContent = site.url || ('https://' + site.domain);
+    if (elScore) {
+        elScore.textContent = `${site.overall_score || 100} / 100`;
+        elScore.style.color = site.overall_score >= 80 ? '#34d399' : (site.overall_score >= 50 ? '#fbbf24' : '#f87171');
+    }
+
+    // SSL
+    const elSslVal = document.getElementById('modalWebHealthSslValid');
+    const elSslDays = document.getElementById('modalWebHealthSslDays');
+    const elSslIss = document.getElementById('modalWebHealthSslIssuer');
+
+    if (elSslVal) {
+        elSslVal.textContent = site.ssl_valid ? '✅ Válido y Operativo' : '❌ Certificado no válido o expirado';
+        elSslVal.style.color = site.ssl_valid ? '#34d399' : '#f87171';
+    }
+    if (elSslDays) {
+        elSslDays.textContent = site.ssl_days_remaining != null ? `${site.ssl_days_remaining} días restantes` : 'Desconocido';
+    }
+    if (elSslIss) elSslIss.textContent = site.ssl_issuer || 'No especificado';
+
+    // DNS / SMTP
+    const elSpfStatus = document.getElementById('modalWebHealthSpfStatus');
+    const elSpfRec = document.getElementById('modalWebHealthSpfRecord');
+    const elDmarcStatus = document.getElementById('modalWebHealthDmarcStatus');
+    const elDmarcRec = document.getElementById('modalWebHealthDmarcRecord');
+    const elSmtpStatus = document.getElementById('modalWebHealthSmtpStatus');
+
+    if (elSpfStatus) {
+        elSpfStatus.textContent = site.dns_spf_status || 'N/D';
+        elSpfStatus.style.color = site.dns_spf_status === 'OK' ? '#34d399' : '#fbbf24';
+    }
+    if (elSpfRec) elSpfRec.textContent = site.dns_spf_record || 'Sin registro SPF detectado (v=spf1...)';
+
+    if (elDmarcStatus) {
+        elDmarcStatus.textContent = site.dns_dmarc_status || 'N/D';
+        elDmarcStatus.style.color = site.dns_dmarc_status === 'OK' ? '#34d399' : '#fbbf24';
+    }
+    if (elDmarcRec) elDmarcRec.textContent = site.dns_dmarc_record || `Sin registro DMARC detectado (_dmarc.${site.domain})`;
+
+    if (elSmtpStatus) {
+        elSmtpStatus.textContent = site.smtp_status || 'OK';
+        elSmtpStatus.style.color = site.smtp_status === 'OK' ? '#34d399' : '#fbbf24';
+    }
+
+    // Google Maps
+    const elMapsStatus = document.getElementById('modalWebHealthMapsStatus');
+    const elMapsDetails = document.getElementById('modalWebHealthMapsDetails');
+    if (elMapsStatus) {
+        elMapsStatus.textContent = site.maps_status || 'OK';
+        elMapsStatus.style.color = site.maps_status === 'OK' ? '#34d399' : (site.maps_status === 'ERROR' ? '#f87171' : 'var(--text-muted)');
+    }
+    if (elMapsDetails) {
+        const mapsData = (site.details_json && site.details_json.maps) || {};
+        if (mapsData.has_google_maps) {
+            elMapsDetails.textContent = `Script o iframe de Google Maps integrado. ${mapsData.maps_errors && mapsData.maps_errors.length ? 'Errores detectados: ' + mapsData.maps_errors.join(', ') : 'Carga de mapas correcta sin avisos de cuota.'}`;
+        } else {
+            elMapsDetails.textContent = 'Este sitio no utiliza mapas externos ni SDK de Google Maps.';
+        }
+    }
+
+    // GEO / LLMs
+    const elLlmsStatus = document.getElementById('modalWebHealthLlmsStatus');
+    const elRobotsAi = document.getElementById('modalWebHealthRobotsAiStatus');
+    const elSnippet = document.getElementById('modalWebHealthLlmsSnippet');
+
+    if (elLlmsStatus) {
+        elLlmsStatus.textContent = site.has_llms_txt ? '✅ Archivo /llms.txt presente' : '⚠️ Sin archivo /llms.txt en raíz';
+        elLlmsStatus.style.color = site.has_llms_txt ? '#34d399' : '#fbbf24';
+    }
+    if (elRobotsAi) {
+        elRobotsAi.textContent = site.robots_allows_ai ? '✅ Permite rastreadores IA (Google-Extended, GPTBot, etc.)' : '⚠️ Restricción detectada en robots.txt';
+        elRobotsAi.style.color = site.robots_allows_ai ? '#34d399' : '#fbbf24';
+    }
+    if (elSnippet) {
+        const sample = site.details_json && site.details_json.ai_readiness && site.details_json.ai_readiness.llms_txt_sample;
+        elSnippet.textContent = sample || (site.has_llms_txt ? 'Archivo llms.txt presente en el servidor.' : 'Para optimizar el posicionamiento semántico ante Gemini, ChatGPT y Perplexity, se recomienda crear el archivo /llms.txt en Markdown indexando los servicios y especialidad del cliente.');
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeWebHealthModal() {
+    const modal = document.getElementById('webHealthModal');
+    if (modal) modal.classList.add('hidden');
+    activeModalDomain = null;
+}
+
+// Exposición global
+window.initWebHealthModule = initWebHealthModule;
+window.loadWebHealthOverview = loadWebHealthOverview;
+window.runFleetAudit = runFleetAudit;
+window.runSingleSiteAudit = runSingleSiteAudit;
+window.openWebHealthDetailModal = openWebHealthDetailModal;
+window.closeWebHealthModal = closeWebHealthModal;
+
 
 
 
