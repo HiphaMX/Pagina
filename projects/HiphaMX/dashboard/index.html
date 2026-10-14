@@ -68,6 +68,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     <span class="nav-text">Clientes & Retainers</span>
                 </a>
+                <a href="#" class="nav-link" id="navLinkQuotations" title="Cotizador & Propuestas PDF">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <span class="nav-text">Cotizador</span>
+                </a>
                 <a href="#" class="nav-link" id="navLinkTraffic" title="Resumen de Tráfico">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                     <span class="nav-text">Resumen Tráfico</span>
@@ -464,6 +468,222 @@
                     <div class="loading-state">
                         <div class="spinner"></div>
                         <p>Cargando directorio de clientes...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sección de Cotizador de Servicios y Propuestas PDF -->
+            <div class="quotations-section-container hidden" id="quotationsSection">
+                
+                <!-- Barra Superior de Navegación del Cotizador -->
+                <div class="quotations-toolbar glass-panel" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; padding:1.25rem 1.75rem; border-radius:14px; margin-bottom:1.5rem;">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <div style="background:linear-gradient(135deg, rgba(217,70,239,0.2), rgba(168,85,247,0.2)); border:1px solid rgba(217,70,239,0.4); padding:0.6rem; border-radius:10px; color:#f472b6;">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:0.5rem;">
+                                Cotizador Oficial Hipha
+                                <span style="font-size:0.72rem; font-weight:600; background:rgba(217,70,239,0.15); color:#f472b6; border:1px solid rgba(217,70,239,0.3); padding:0.15rem 0.55rem; border-radius:9999px;">PDF Membretado</span>
+                            </h3>
+                            <p style="margin:0.15rem 0 0 0; font-size:0.8rem; color:var(--text-muted);">Genera propuestas comerciales de alto impacto con plantilla oficial y cálculo automático de anticipos (50%).</p>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                        <button type="button" class="btn-primary-mini" id="tabBtnNewQuotation" style="background:#00e5ff; color:#0f172a; border:none; padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:700; display:inline-flex; align-items:center; gap:0.4rem;">
+                            <span>➕ Nueva Cotización</span>
+                        </button>
+                        <button type="button" class="btn-secondary-mini" id="tabBtnHistoryQuotations" style="background:rgba(255,255,255,0.05); color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.1rem; border-radius:8px; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:0.4rem;">
+                            <span>📁 Historial (<span id="quotationsHistoryBadge">0</span>)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pestaña 1: Generador / Formulario de Cotización -->
+                <div id="quotationBuilderView">
+                    <div style="display:grid; grid-template-columns: 360px 1fr; gap:1.5rem; align-items:start;" class="quotation-builder-grid">
+                        
+                        <!-- Columna Izquierda: Datos del Cliente, Folio y Condiciones -->
+                        <div class="glass-panel" style="padding:1.5rem; border-radius:14px; display:flex; flex-direction:column; gap:1.15rem;">
+                            <h4 style="margin:0; font-size:0.95rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:0.5rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem;">
+                                <span>👤 Datos del Cliente & Folio</span>
+                            </h4>
+
+                            <!-- Selector de Cliente Existente o Nuevo -->
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Autocompletar Cliente (Directorio Hipha)</label>
+                                <select id="quoteClientSelect" class="filter-select" style="width:100%; padding:0.55rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main);">
+                                    <option value="">-- O escribir prospecto nuevo manual --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Nombre del Cliente / Empresa *</label>
+                                <input type="text" id="quoteClientName" placeholder="Ej. Grupo Industrial Michoacano" required style="width:100%; padding:0.55rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.85rem;">
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Atención a (Contacto)</label>
+                                <input type="text" id="quoteClientContact" placeholder="Ej. Lic. Roberto Morales" style="width:100%; padding:0.55rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.85rem;">
+                            </div>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Correo</label>
+                                    <input type="email" id="quoteClientEmail" placeholder="contacto@empresa.mx" style="width:100%; padding:0.55rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.85rem;">
+                                </div>
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Teléfono</label>
+                                    <input type="text" id="quoteClientPhone" placeholder="443 123 4567" style="width:100%; padding:0.55rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.85rem;">
+                                </div>
+                            </div>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Folio</label>
+                                    <input type="text" id="quoteFolio" placeholder="Auto (ej. HIP-2026-0001)" style="width:100%; padding:0.55rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.85rem; font-family:monospace;">
+                                </div>
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Vigencia</label>
+                                    <select id="quoteValidityDays" class="filter-select" style="width:100%; padding:0.55rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.85rem;">
+                                        <option value="15">15 días</option>
+                                        <option value="30" selected>30 días</option>
+                                        <option value="60">60 días</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:10px; padding:0.85rem; display:flex; flex-direction:column; gap:0.6rem;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label for="quoteApplyTax" style="font-size:0.82rem; font-weight:600; color:var(--text-main); cursor:pointer; display:flex; align-items:center; gap:0.4rem;">
+                                        <input type="checkbox" id="quoteApplyTax" checked style="cursor:pointer; accent-color:#00e5ff; width:16px; height:16px;">
+                                        <span>Aplicar I.V.A. (16%)</span>
+                                    </label>
+                                    <span style="font-size:0.72rem; color:#60a5fa; background:rgba(96,165,250,0.1); padding:0.15rem 0.45rem; border-radius:4px;">Fiscal</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+                                    <span>Anticipo requerido:</span>
+                                    <strong style="color:#d946ef;">50% para inicio</strong>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.3rem; display:block;">Notas u Observaciones del Proyecto</label>
+                                <textarea id="quoteNotes" rows="3" placeholder="Ej. Tiempos de entrega estimados en 15 días hábiles a partir de la recepción completa de insumos." style="width:100%; padding:0.55rem 0.75rem; background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:8px; color:var(--text-main); font-size:0.82rem; resize:vertical;"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Catálogo con 1 Clic, Items Dinámicos y Totales -->
+                        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                            
+                            <!-- Barra de Acceso Rápido al Catálogo Oficial -->
+                            <div class="glass-panel" style="padding:1.25rem; border-radius:14px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                                    <span style="font-size:0.85rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:0.4rem;">
+                                        <span>⚡ Catálogo Oficial Hipha (1 Clic)</span>
+                                    </span>
+                                    <button type="button" id="btnAddCustomItem" style="background:linear-gradient(135deg, rgba(217,70,239,0.25), rgba(168,85,247,0.25)); border:1px solid rgba(217,70,239,0.5); color:#f472b6; padding:0.35rem 0.85rem; border-radius:8px; font-size:0.78rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:0.3rem;">
+                                        <span>✨ + Item Personalizado</span>
+                                    </button>
+                                </div>
+
+                                <!-- Chips de Catálogo Oficial Dinámicos -->
+                                <div id="catalogQuickChips" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                                    <div class="loading-state" style="padding:0.5rem; font-size:0.8rem; color:var(--text-muted);">Cargando catálogo oficial...</div>
+                                </div>
+                            </div>
+
+                            <!-- Tabla de Conceptos Cotizados -->
+                            <div class="glass-panel" style="padding:1.25rem; border-radius:14px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
+                                    <span style="font-size:0.88rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:0.4rem;">
+                                        <span>📋 Desglose de Conceptos (<span id="quoteItemsCount">0</span>)</span>
+                                    </span>
+                                    <span style="font-size:0.72rem; color:var(--text-muted);">Edita conceptos, entregables, cantidad y precio al instante</span>
+                                </div>
+
+                                <div id="quoteItemsListContainer" style="display:flex; flex-direction:column; gap:0.75rem;">
+                                    <!-- Items inyectados reactivamente -->
+                                </div>
+
+                                <div id="quoteItemsEmptyState" style="text-align:center; padding:2.5rem 1rem; border:1px dashed var(--border-color); border-radius:10px; background:rgba(0,0,0,0.15);">
+                                    <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted); margin-bottom:0.5rem;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                                    <p style="margin:0; font-size:0.88rem; font-weight:600; color:var(--text-main);">No has agregado ningún concepto aún</p>
+                                    <p style="margin:0.25rem 0 0 0; font-size:0.78rem; color:var(--text-muted);">Selecciona arriba un servicio del catálogo oficial o presiona "✨ + Item Personalizado".</p>
+                                </div>
+
+                                <!-- Resumen Financiero y Acciones -->
+                                <div style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border-color); display:grid; grid-template-columns: 1fr 340px; gap:1.5rem; align-items:center;" class="quote-totals-grid">
+                                    
+                                    <!-- Botones de Acción -->
+                                    <div style="display:flex; flex-wrap:wrap; gap:0.6rem; align-items:center;">
+                                        <button type="button" id="btnDownloadQuotationPdf" class="btn-primary-mini" style="background:#00e5ff; color:#0f172a; border:none; padding:0.7rem 1.4rem; border-radius:10px; cursor:pointer; font-weight:700; font-size:0.88rem; display:inline-flex; align-items:center; gap:0.5rem; box-shadow: 0 4px 14px rgba(0, 229, 255, 0.25);">
+                                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                            <span>Descargar Cotización en PDF</span>
+                                        </button>
+
+                                        <button type="button" id="btnPreviewQuotationPdf" class="btn-secondary-mini" style="background:rgba(255,255,255,0.06); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem 1.1rem; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.84rem; display:inline-flex; align-items:center; gap:0.4rem;">
+                                            <span>👁️ Previsualizar</span>
+                                        </button>
+
+                                        <button type="button" id="btnSaveQuotationHistory" class="btn-secondary-mini" style="background:rgba(255,255,255,0.06); color:var(--text-main); border:1px solid var(--border-color); padding:0.7rem 1.1rem; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.84rem; display:inline-flex; align-items:center; gap:0.4rem;">
+                                            <span>💾 Guardar</span>
+                                        </button>
+
+                                        <button type="button" id="btnClearQuotationForm" style="background:transparent; color:#ef4444; border:none; padding:0.7rem 0.9rem; cursor:pointer; font-size:0.8rem; font-weight:600;">
+                                            <span>Limpiar</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Tarjeta de Totales -->
+                                    <div style="background:rgba(0,0,0,0.3); border:1px solid var(--border-color); border-radius:12px; padding:1rem 1.25rem; display:flex; flex-direction:column; gap:0.4rem;">
+                                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--text-muted);">
+                                            <span>Subtotal:</span>
+                                            <strong id="quoteSummarySubtotal" style="color:var(--text-main);">$0.00 MXN</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--text-muted);">
+                                            <span>I.V.A. (16%):</span>
+                                            <strong id="quoteSummaryTax" style="color:var(--text-main);">$0.00 MXN</strong>
+                                        </div>
+                                        <div style="height:1px; background:var(--border-color); margin:0.2rem 0;"></div>
+                                        <div style="display:flex; justify-content:space-between; font-size:1.05rem; font-weight:700; color:var(--text-main);">
+                                            <span>TOTAL:</span>
+                                            <span id="quoteSummaryTotal" style="color:#00e5ff;">$0.00 MXN</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:600; color:#d946ef; background:rgba(217,70,239,0.1); padding:0.35rem 0.6rem; border-radius:6px; margin-top:0.25rem;">
+                                            <span>Anticipo 50%:</span>
+                                            <span id="quoteSummaryDownPayment">$0.00 MXN</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Pestaña 2: Historial de Cotizaciones Guardadas -->
+                <div id="quotationHistoryView" class="hidden">
+                    <div class="glass-panel" style="padding:1.5rem; border-radius:14px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.75rem;">
+                            <div>
+                                <h3 style="margin:0; font-size:1.05rem; font-weight:700; color:var(--text-main);">Cotizaciones Emitidas</h3>
+                                <p style="margin:0.2rem 0 0 0; font-size:0.78rem; color:var(--text-muted);">Consulta, descarga en PDF o elimina propuestas previas creadas para prospectos y clientes.</p>
+                            </div>
+                            <div style="display:flex; gap:0.6rem;">
+                                <button type="button" id="btnRefreshQuotationsHistory" class="btn-secondary-mini" style="background:rgba(255,255,255,0.06); color:var(--text-main); border:1px solid var(--border-color); padding:0.5rem 1rem; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.8rem;">
+                                    🔄 Actualizar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="quotationsHistoryTableContainer">
+                            <!-- Inyectado por JS -->
+                        </div>
                     </div>
                 </div>
 
@@ -2369,7 +2589,7 @@
     </div>
 
     <!-- Script de Lógica -->
-    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261014-2"></script>
+    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261014-3"></script>
 
 </body>
 </html>

@@ -4124,3 +4124,60 @@ select {
     border-color: rgba(56, 189, 248, 0.4);
 }
 
+/* ==========================================================================
+   COTIZADOR Y GENERADOR DE PROPUESTAS PDF OFICIAL HIPHA
+   ========================================================================== */
+
+.quotations-section-container {
+    animation: fadeIn 0.3s ease;
+}
+
+@media (max-width: 992px) {
+    .quotation-builder-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .quote-totals-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+.catalog-chip {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.catalog-chip:hover {
+    background: rgba(0, 229, 255, 0.1);
+    border-color: rgba(0, 229, 255, 0.4);
+    color: #00e5ff;
+    transform: translateY(-1px);
+}
+
+.catalog-chip .chip-price {
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #67e8f9;
+}
+
+.quote-item-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.2s;
+}
+
+.quote-item-card:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+
