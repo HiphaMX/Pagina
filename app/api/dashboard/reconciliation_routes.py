@@ -319,6 +319,24 @@ def get_reconciliation_overview(
     # 3. Balance Estimado de IVA (Cobrado en Ingresos - Acreditable en Gastos Comprobados)
     balance_iva_estimado = round(iva_trasladado_ingresos - iva_acreditable_egresos, 2)
 
+    # 4. Total de XMLs cargados en el mes (desglosado por ingresos y egresos)
+    all_month_cfdis = []
+    if start_dt and end_dt:
+        all_month_cfdis = db.query(CFDIInvoice).filter(
+            CFDIInvoice.account_rfc == effective_rfc,
+            CFDIInvoice.fecha_emision >= start_dt,
+            CFDIInvoice.fecha_emision < end_dt
+        ).all()
+    count_xml_ingresos = sum(1 for c in all_month_cfdis if c.tipo == "INGRESO")
+    count_xml_egresos = sum(1 for c in all_month_cfdis if c.tipo == "EGRESO")
+    total_xml_mes = len(all_month_cfdis)
+
+    # 5. Indicador de Estado de Cuenta Bancario Oficial Adjunto (BBVA Fiscal)
+    official_bbva_txs = [t for t in all_txs if (t.banco == "BBVA" or not t.banco) and t.saldo is not None]
+    has_bank_statement = len(official_bbva_txs) > 0 or len(all_txs) > 0
+    count_bank_statement_txs = len(official_bbva_txs) if len(official_bbva_txs) > 0 else len(all_txs)
+    bank_statement_name = "BBVA Fiscal"
+
     return {
         "entity": {
             "rfc": effective_rfc,
@@ -365,7 +383,13 @@ def get_reconciliation_overview(
             "iva_acreditable_egresos": iva_acreditable_egresos,
             "total_egresos_comprobados": total_egresos_comprobados,
             "count_egresos_comprobados": count_egresos_comprobados,
-            "balance_iva_estimado": balance_iva_estimado
+            "balance_iva_estimado": balance_iva_estimado,
+            "total_xml_mes": total_xml_mes,
+            "count_xml_ingresos": count_xml_ingresos,
+            "count_xml_egresos": count_xml_egresos,
+            "has_bank_statement": has_bank_statement,
+            "count_bank_statement_txs": count_bank_statement_txs,
+            "bank_statement_name": bank_statement_name
         }
     }
 

@@ -5996,12 +5996,23 @@ function initReconciliationModule() {
         });
     }
 
-    // Botón Sincronizar Buzón (manual y explícito)
-    const btnSyncMailbox = document.getElementById('btnSyncMailbox');
-    if (btnSyncMailbox) {
-        btnSyncMailbox.addEventListener('click', () => {
-            autoSyncMailbox(currentReconEntity, false);
+    // Clic en badge de XMLs abre el modal de facturas del buzón
+    const xmlMonthBadge = document.getElementById('reconXmlMonthBadge');
+    if (xmlMonthBadge) {
+        xmlMonthBadge.addEventListener('click', () => {
+            const btnMailbox = document.getElementById('btnViewMailboxInvoices');
+            if (btnMailbox) btnMailbox.click();
         });
+    }
+
+    // Clic en badge de estado de cuenta abre modal de carga de archivos
+    const bankStatementBadgeEl = document.getElementById('reconBankStatementBadge');
+    if (bankStatementBadgeEl) {
+        bankStatementBadgeEl.addEventListener('click', () => {
+            const btnUpload = document.getElementById('btnOpenUploadModal');
+            if (btnUpload) btnUpload.click();
+        });
+        bankStatementBadgeEl.style.cursor = 'pointer';
     }
 
     // Sincronización automática al abrir el módulo
@@ -6301,6 +6312,44 @@ async function loadReconciliationData(refreshMonths = true) {
         const mailboxBadge = document.getElementById('reconMailboxCountBadge');
         if (mailboxBadge) {
             mailboxBadge.textContent = currentReconMailboxCount;
+        }
+
+        // 1. Actualizar Indicador de XMLs cargados en el mes (Ingresos y Egresos)
+        const xmlBadge = document.getElementById('reconXmlMonthBadge');
+        const xmlTotalEl = document.getElementById('reconXmlTotalMonth');
+        const xmlIngresosEl = document.getElementById('reconXmlIngresosMonth');
+        const xmlEgresosEl = document.getElementById('reconXmlEgresosMonth');
+        if (xmlBadge) {
+            const totXml = k.total_xml_mes || 0;
+            const ingXml = k.count_xml_ingresos || 0;
+            const egrXml = k.count_xml_egresos || 0;
+            if (xmlTotalEl) xmlTotalEl.textContent = totXml;
+            if (xmlIngresosEl) xmlIngresosEl.textContent = `${ingXml} Ing`;
+            if (xmlEgresosEl) xmlEgresosEl.textContent = `${egrXml} Egr`;
+            xmlBadge.title = `Mes ${currentReconMonth || ''}: ${totXml} facturas CFDI (${ingXml} ingresos cobrados/emitidos · ${egrXml} egresos de proveedores). Clic para ver facturas del buzón.`;
+        }
+
+        // 2. Actualizar Indicador de Estado de Cuenta Adjunto (BBVA Fiscal)
+        const bankStatementBadge = document.getElementById('reconBankStatementBadge');
+        const bankStatementLabel = document.getElementById('reconBankStatementLabel');
+        if (bankStatementBadge && bankStatementLabel) {
+            const hasBank = Boolean(k.has_bank_statement);
+            const countBank = k.count_bank_statement_txs || 0;
+            const bankName = k.bank_statement_name || 'BBVA Fiscal';
+
+            if (hasBank && countBank > 0) {
+                bankStatementBadge.style.background = 'rgba(16, 185, 129, 0.08)';
+                bankStatementBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                bankStatementBadge.style.color = '#34d399';
+                bankStatementLabel.innerHTML = `🏦 ${bankName}: <strong style="color: #34d399;">✓ Adjunto (${countBank} movs)</strong>`;
+                bankStatementBadge.title = `Estado de cuenta oficial ${bankName} cargado con ${countBank} transacciones para este período.`;
+            } else {
+                bankStatementBadge.style.background = 'rgba(245, 158, 11, 0.08)';
+                bankStatementBadge.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+                bankStatementBadge.style.color = '#fbbf24';
+                bankStatementLabel.innerHTML = `🏦 ${bankName}: <strong style="color: #fbbf24;">⚠️ Sin estado de cuenta</strong>`;
+                bankStatementBadge.title = `Aún no se ha adjuntado el estado de cuenta bancario oficial (${bankName}) para este período. Haz clic para subir el archivo PDF/CSV.`;
+            }
         }
 
         // Cargar lista de transacciones

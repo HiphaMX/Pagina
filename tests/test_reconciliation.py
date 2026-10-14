@@ -196,6 +196,11 @@ def test_api_reconciliation_endpoints():
     assert "total_egresos_comprobados" in k
     assert "count_egresos_comprobados" in k
     assert "balance_iva_estimado" in k
+    assert "total_xml_mes" in k
+    assert "count_xml_ingresos" in k
+    assert "count_xml_egresos" in k
+    assert "has_bank_statement" in k
+    assert "count_bank_statement_txs" in k
 
     # AMDI Overview
     res_amdi = client.get("/api/dashboard/reconciliation/overview?account_rfc=MEHA850118Q96")
@@ -2371,6 +2376,109 @@ def test_deduplicate_spei_devuelto_and_sabana_consolidation():
         db.query(BankTransaction).filter(BankTransaction.account_rfc == test_rfc).delete()
         db.commit()
         db.close()
+
+
+def test_overview_xml_and_bank_statement_indicators():
+    """
+    Verifica que el endpoint /overview retorne correctamente el total de XMLs del mes
+    (diferenciando ingresos y egresos) y el indicador de estado de cuenta bancario adjunto (BBVA Fiscal).
+    """
+    db = SessionLocal()
+    test_rfc = "MEHA850118Q96"
+    test_month = "2026-11"
+
+    try:
+        # 1. Crear facturas XML en el mes: 1 Ingreso y 2 Egresos
+        inv_ing = CFDIInvoice(
+            uuid="CFDI-TEST-IND-ING-01",
+            account_rfc=test_rfc,
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            rfc_receptor="CLIENTE01",
+            fecha_emision=datetime(2026, 11, 5, 10, 0),
+            total=15000.0,
+            subtotal=12931.03,
+            iva_trasladado=2068.97,
+            conciliado=False,
+            comprobado=False
+        )
+        inv_egr1 = CFDIInvoice(
+            uuid="CFDI-TEST-IND-EGR-01",
+            account_rfc=test_rfc,
+            tipo="EGRESO",
+            rfc_emisor="PROV01",
+            rfc_receptor=test_rfc,
+            fecha_emision=datetime(2026, 11, 10, 12, 0),
+            total=3480.0,
+            subtotal=3000.0,
+            iva_trasladado=480.0,
+            conciliado=False,
+            comprobado=False
+        )
+        inv_egr2 = CFDIInvoice(
+            uuid="CFDI-TEST-IND-EGR-02",
+            account_rfc=test_rfc,
+            tipo="EGRESO",
+            rfc_emisor="PROV02",
+            rfc_receptor=test_rfc,
+            fecha_emision=datetime(2026, 11, 15, 15, 0),
+            total=1160.0,
+            subtotal=1000.0,
+            iva_trasladado=160.0,
+            conciliado=False,
+            comprobado=False
+        )
+        db.add_all([inv_ing, inv_egr1, inv_egr2])
+
+        # 2. Crear 2 transacciones oficiales de banco BBVA con saldo
+        t_banco1 = BankTransaction(
+            id_transaccion="tx_bbva_test_01",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 11, 5),
+            concepto="DEPOSITO CLIENTE TEST",
+            tipo="INGRESO",
+            monto=15000.0,
+            saldo=50000.0,
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+        t_banco2 = BankTransaction(
+            id_transaccion="tx_bbva_test_02",
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 11, 10),
+            concepto="PAGO PROVEEDOR 01",
+            tipo="EGRESO",
+            monto=3480.0,
+            saldo=46520.0,
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+        db.add_all([t_banco1, t_banco2])
+        db.commit()
+
+        # 3. Consultar overview para el mes
+        res = client.get(f"/api/dashboard/reconciliation/overview?account_rfc={test_rfc}&month={test_month}")
+        assert res.status_code == 200
+        k = res.json()["kpis"]
+
+        # Validar métricas de XMLs
+        assert k["total_xml_mes"] == 3
+        assert k["count_xml_ingresos"] == 1
+        assert k["count_xml_egresos"] == 2
+
+        # Validar indicador de estado de cuenta adjunto (BBVA Fiscal)
+        assert k["has_bank_statement"] is True
+        assert k["count_bank_statement_txs"] == 2
+        assert k["bank_statement_name"] == "BBVA Fiscal"
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.account_rfc == test_rfc, CFDIInvoice.uuid.like("CFDI-TEST-IND-%")).delete()
+        db.query(BankTransaction).filter(BankTransaction.account_rfc == test_rfc, BankTransaction.id_transaccion.like("tx_bbva_test_%")).delete()
+        db.commit()
+        db.close()
+
 
 
 
