@@ -173,6 +173,36 @@ def generate_quotation_pdf(
             pdf.set_font("Helvetica", "B", 9.5)
             pdf.cell(130, 5, " | ".join(contact_parts), align="L")
 
+        # Condiciones comerciales equilibradas y proporcionadas en pie de página
+        render_commercial_conditions()
+
+    def render_commercial_conditions():
+        # Cubrir las condiciones comerciales originales de la plantilla con fondo blanco
+        pdf.set_fill_color(255, 255, 255)
+        pdf.rect(14, 236, 188, 36, style="F")
+
+        # Redibujar condiciones comerciales con escala tipográfica sutil y equilibrada
+        pdf.set_xy(16, 241)
+        pdf.set_text_color(15, 23, 42)  # Slate 900
+        pdf.set_font("Helvetica", "B", 7.0)
+        pdf.cell(184, 3.5, "CONDICIONES COMERCIALES:", align="L")
+
+        pdf.set_text_color(100, 116, 139)  # Slate 500
+        pdf.set_font("Helvetica", "", 6.5)
+
+        pdf.set_xy(16, 245.5)
+        pdf.cell(184, 3.2, f"- Se requiere del {int(down_payment_rate * 100)}% como anticipo para iniciar, el tiempo de entrega se confirma al contratar.", align="L")
+
+        pdf.set_xy(16, 249.2)
+        pdf.cell(184, 3.2, "- Cualquier concepto no incluido en la presente cotización deberá cotizarse por separado.", align="L")
+
+        pdf.set_xy(16, 252.9)
+        iva_cond = "- Los precios mostrados no incluyen IVA." if not apply_tax else "- Precios en moneda nacional (MXN) con desglose de impuestos."
+        pdf.cell(184, 3.2, iva_cond, align="L")
+
+        pdf.set_xy(16, 256.6)
+        pdf.cell(184, 3.2, f"- Cotización válida por {validity_days} días naturales.", align="L")
+
     def render_table_header(y_pos: float):
         # Fondo redondeado azul marino para el encabezado
         pdf.set_fill_color(15, 23, 42)
