@@ -7312,21 +7312,25 @@ function filterAndRenderMailboxInvoices() {
 
     let filtered = cachedMailboxInvoices || [];
     if (currentMailboxFilter === 'PENDIENTE') {
-        filtered = filtered.filter(inv => 
-            !inv.comprobado && 
-            !inv.is_pagada_rep && 
-            inv.status_pago !== 'PAGADA_CON_REP' && 
-            !inv.complemento_pago_uuid && 
-            !(inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP'))
-        );
+        filtered = filtered.filter(inv => {
+            const isReconciled = !!inv.conciliado || inv.status_pago === 'PAGADA' || (inv.monto_vinculado && inv.monto_vinculado >= (inv.total || 0) && (inv.total || 0) > 0);
+            return !isReconciled &&
+                !inv.comprobado && 
+                !inv.is_pagada_rep && 
+                inv.status_pago !== 'PAGADA_CON_REP' && 
+                !inv.complemento_pago_uuid && 
+                !(inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP'));
+        });
     } else if (currentMailboxFilter === 'COMPROBADO') {
-        filtered = filtered.filter(inv => 
-            !!inv.comprobado || 
-            !!inv.is_pagada_rep || 
-            inv.status_pago === 'PAGADA_CON_REP' || 
-            !!inv.complemento_pago_uuid || 
-            (inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP'))
-        );
+        filtered = filtered.filter(inv => {
+            const isReconciled = !!inv.conciliado || inv.status_pago === 'PAGADA' || (inv.monto_vinculado && inv.monto_vinculado > 0);
+            return isReconciled ||
+                !!inv.comprobado || 
+                !!inv.is_pagada_rep || 
+                inv.status_pago === 'PAGADA_CON_REP' || 
+                !!inv.complemento_pago_uuid || 
+                (inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP'));
+        });
     }
 
     if (term) {
@@ -7375,6 +7379,7 @@ function renderMailboxInvoicesModal(invoices) {
         );
         const isComplemento = (inv.metodo_pago === 'PAGO');
         const isCashEgreso = (inv.tipo === 'EGRESO' && (String(inv.forma_pago || '').trim() === '01' || String(inv.forma_pago || '').toLowerCase().includes('efectivo') || inv.motivo_comprobacion === 'Pago efectivo'));
+        const isConciliadoBanco = !!inv.conciliado || inv.status_pago === 'PAGADA' || (inv.monto_vinculado && inv.monto_vinculado > 0);
 
         let estatusHtml = '';
         let accionHtml = '';
@@ -7410,6 +7415,17 @@ function renderMailboxInvoicesModal(invoices) {
             accionHtml = `
                 <div style="font-size: 0.74rem; color: #10b981; font-weight: 600; text-align: center;">
                     ✓ Pagado en efectivo
+                </div>
+            `;
+        } else if (isConciliadoBanco) {
+            estatusHtml = `
+                <span style="background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;" title="Factura conciliada con movimiento en cuenta fiscal bancaria">
+                    ✓ Conciliado Banco
+                </span>
+            `;
+            accionHtml = `
+                <div style="font-size: 0.74rem; color: #10b981; font-weight: 600; text-align: center;">
+                    ✓ Vinculada a banco
                 </div>
             `;
         } else if (isComprobado) {
