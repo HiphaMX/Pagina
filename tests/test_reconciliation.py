@@ -3170,6 +3170,63 @@ def test_split_payments_match_single_cfdi():
     assert resultados[1]["uuid_cfdi"] == "REP-TUKIPA-3213-UUID"
 
 
+def test_search_pending_invoices_by_folio():
+    """
+    Valida que el endpoint /pending-invoices permita buscar por folio y serie (ej. 'F-176' o '176')
+    y retorne la propiedad 'folio' extraída del comprobante.
+    """
+    db = SessionLocal()
+    test_uuid = "FOLIO-TEST-UUID-714038B0-176"
+    test_rfc = "DEGF851127TK1"
+
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).delete()
+        db.commit()
+
+        inv = CFDIInvoice(
+            uuid=test_uuid,
+            account_rfc=test_rfc,
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="FRANCISCO DE JESUS DELGADILLO GARCIA",
+            rfc_receptor="GAC260318SD7",
+            nombre_receptor="GRUPO AXIS COMERCIAL",
+            fecha_emision=datetime(2026, 6, 27, 9, 10),
+            subtotal=4190.48,
+            iva_trasladado=670.48,
+            retencion_isr=52.38,
+            retencion_iva=446.98,
+            total=4361.60,
+            metodo_pago="PUE",
+            forma_pago="03",
+            conceptos_resumen="[F-176] Consultoría en marketing estratégico",
+            conciliado=False,
+            comprobado=False,
+            xml_raw='<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" Serie="F" Folio="176" Total="4361.60"></cfdi:Comprobante>'
+        )
+        db.add(inv)
+        db.commit()
+
+        # 1. Búsqueda por folio compuesto: "F-176"
+        res_folio_full = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&search=F-176")
+        assert res_folio_full.status_code == 200
+        items = res_folio_full.json()
+        assert any(it["uuid"] == test_uuid for it in items)
+        target = next(it for it in items if it["uuid"] == test_uuid)
+        assert target["folio"] == "F-176"
+
+        # 2. Búsqueda por número de folio simple: "176"
+        res_folio_num = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&search=176")
+        assert res_folio_num.status_code == 200
+        assert any(it["uuid"] == test_uuid for it in res_folio_num.json())
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == test_uuid).delete()
+        db.commit()
+        db.close()
+
+
+
 
 
 

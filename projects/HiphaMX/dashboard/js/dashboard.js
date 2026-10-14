@@ -7030,6 +7030,7 @@ function renderMatchInvoicesList(filterText = '') {
             (f.rfc_emisor && f.rfc_emisor.toLowerCase().includes(s)) ||
             (f.rfc_receptor && f.rfc_receptor.toLowerCase().includes(s)) ||
             (f.uuid && f.uuid.toLowerCase().includes(s)) ||
+            (f.folio && f.folio.toLowerCase().includes(s)) ||
             (f.conceptos_resumen && f.conceptos_resumen.toLowerCase().includes(s)) ||
             (f.total && f.total.toString().includes(s))
         );
@@ -7049,6 +7050,10 @@ function renderMatchInvoicesList(filterText = '') {
             ? '<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700;">EMITIDA (Ingreso)</span>'
             : '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700;">RECIBIDA (Gasto)</span>';
 
+        const folioBadge = f.folio
+            ? `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; font-family: monospace;">Folio: ${escapeHtml(f.folio)}</span>`
+            : '';
+
         const multiPagoBadge = (f.pagos_vinculados_count && f.pagos_vinculados_count > 0)
             ? `<div style="margin-top: 0.3rem; font-size: 0.72rem; color: #38bdf8; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); padding: 0.25rem 0.5rem; border-radius: 5px; display: flex; justify-content: space-between;">
                 <span>🔗 Pagos vinculados: <strong>${f.pagos_vinculados_count}</strong> ($${Number(f.monto_vinculado).toLocaleString('es-MX', {minimumFractionDigits: 2})})</span>
@@ -7063,6 +7068,7 @@ function renderMatchInvoicesList(filterText = '') {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
                     <div style="display: flex; align-items: center; gap: 0.45rem;">
                         ${tipoBadge}
+                        ${folioBadge}
                         ${formatFormaPagoBadge(f.forma_pago, f.metodo_pago)}
                         <strong style="color: var(--text-main); font-size: 0.88rem;">${escapeHtml(contraparte || 'Sin nombre')}</strong>
                     </div>

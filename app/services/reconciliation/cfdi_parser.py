@@ -87,6 +87,8 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
     subtotal = float(root.attrib.get('SubTotal') or root.attrib.get('subtotal') or 0.0)
     metodo_pago = root.attrib.get('MetodoPago') or root.attrib.get('metodoPago') or 'PUE'
     forma_pago = root.attrib.get('FormaPago') or root.attrib.get('formaPago') or ''
+    serie = (root.attrib.get('Serie') or root.attrib.get('serie') or '').strip()
+    folio = (root.attrib.get('Folio') or root.attrib.get('folio') or '').strip()
 
     # 3. Emisor
     emisor = find_node(root, 'Emisor')
@@ -142,7 +144,8 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
             desc = c.attrib.get('Descripcion') or c.attrib.get('descripcion') or ''
             if desc:
                 conceptos_list.append(desc.strip())
-    conceptos_resumen = " | ".join(conceptos_list[:3]) if conceptos_list else ""
+    folio_tag = f"[{serie}-{folio}] " if (serie and folio) else (f"[{folio}] " if folio else (f"[{serie}] " if serie else ""))
+    conceptos_resumen = (folio_tag + " | ".join(conceptos_list[:3])).strip() if conceptos_list else folio_tag.strip()
 
     # 7. Soporte Avanzado para Complemento para Recepción de Pagos (Tipo 'P', CFDI 3.3 y 4.0)
     doctos_relacionados = []
@@ -316,6 +319,8 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
         "total": round(total, 2),
         "metodo_pago": metodo_pago,
         "forma_pago": forma_pago,
+        "serie": serie,
+        "folio": folio,
         "conceptos_resumen": conceptos_resumen[:500] if conceptos_resumen else "",
         "doctos_relacionados": doctos_relacionados,
         "es_pago": es_pago,

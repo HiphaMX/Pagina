@@ -629,14 +629,30 @@ def get_pending_invoices(
             pass
 
     if search:
-        s = f"%{search.strip()}%"
-        query = query.filter(
-            (CFDIInvoice.nombre_emisor.ilike(s)) |
-            (CFDIInvoice.nombre_receptor.ilike(s)) |
-            (CFDIInvoice.rfc_emisor.ilike(s)) |
-            (CFDIInvoice.rfc_receptor.ilike(s)) |
-            (CFDIInvoice.uuid.ilike(s))
-        )
+        term = search.strip()
+        s = f"%{term}%"
+        filters = [
+            CFDIInvoice.nombre_emisor.ilike(s),
+            CFDIInvoice.nombre_receptor.ilike(s),
+            CFDIInvoice.rfc_emisor.ilike(s),
+            CFDIInvoice.rfc_receptor.ilike(s),
+            CFDIInvoice.uuid.ilike(s),
+            CFDIInvoice.conceptos_resumen.ilike(s),
+            CFDIInvoice.xml_raw.ilike(s)
+        ]
+        # Soporte para búsqueda por serie y folio (ej. "F-176", "F 176", "176")
+        clean_parts = term.replace("-", " ").split()
+        if len(clean_parts) == 2:
+            p1, p2 = clean_parts[0], clean_parts[1]
+            filters.append(CFDIInvoice.xml_raw.ilike(f'%Folio="{p2}"%'))
+            filters.append(CFDIInvoice.xml_raw.ilike(f'%Folio="{p1}"%'))
+            filters.append(CFDIInvoice.xml_raw.ilike(f'%folio="{p2}"%'))
+            filters.append(CFDIInvoice.xml_raw.ilike(f'%folio="{p1}"%'))
+        else:
+            filters.append(CFDIInvoice.xml_raw.ilike(f'%Folio="{term}"%'))
+            filters.append(CFDIInvoice.xml_raw.ilike(f'%folio="{term}"%'))
+
+        query = query.filter(or_(*filters))
 
     effective_limit = min(limit, 2000) if limit is not None else (1000 if (include_comprobados or include_reconciled) else 300)
     invoices = query.order_by(desc(CFDIInvoice.fecha_emision)).limit(effective_limit).all()
@@ -665,8 +681,26 @@ def get_pending_invoices(
 
         status_pago_label = "PAGADA_CON_REP" if is_pagada_rep else ("PAGADA" if inv.conciliado or inv.comprobado else "PENDIENTE")
 
+        # Extraer serie y folio del xml_raw o conceptos_resumen
+        folio_str = ""
+        if inv.xml_raw and ('Folio=' in inv.xml_raw or 'folio=' in inv.xml_raw):
+            try:
+                m_folio = re.search(r'(?:Folio|folio)="([^"]+)"', inv.xml_raw)
+                m_serie = re.search(r'(?:Serie|serie)="([^"]+)"', inv.xml_raw)
+                serie_val = m_serie.group(1).strip() if m_serie else ""
+                folio_val = m_folio.group(1).strip() if m_folio else ""
+                if serie_val and folio_val:
+                    folio_str = f"{serie_val}-{folio_val}"
+                elif folio_val:
+                    folio_str = folio_val
+                elif serie_val:
+                    folio_str = serie_val
+            except Exception:
+                pass
+
         results.append({
             "uuid": inv.uuid,
+            "folio": folio_str,
             "account_rfc": inv.account_rfc,
             "area_proyecto": inv.area_proyecto,
             "tipo": inv.tipo,
