@@ -7016,7 +7016,12 @@ function renderMatchInvoicesList(filterText = '') {
     const listEl = document.getElementById('matchInvoicesList');
     if (!listEl) return;
 
-    let filtered = pendingInvoicesCache;
+    let filtered = (pendingInvoicesCache || []).filter(f => 
+        !f.is_pagada_rep && 
+        f.status_pago !== 'PAGADA_CON_REP' && 
+        !f.complemento_pago_uuid && 
+        !(f.motivo_comprobacion && f.motivo_comprobacion.includes('PAGADA_CON_REP'))
+    );
     if (filterText) {
         const s = filterText.toLowerCase();
         filtered = filtered.filter(f => 
@@ -7249,7 +7254,7 @@ async function openMailboxInvoicesModal() {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?account_rfc=${encodeURIComponent(currentReconEntity)}&include_comprobados=true`, {
+        const res = await fetch(`${API_BASE}/reconciliation/pending-invoices?account_rfc=${encodeURIComponent(currentReconEntity)}&include_comprobados=true&include_reconciled=true`, {
             headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -7273,11 +7278,23 @@ function filterAndRenderMailboxInvoices() {
     const searchInput = document.getElementById('mailboxModalSearchInput');
     const term = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-    let filtered = cachedMailboxInvoices;
+    let filtered = cachedMailboxInvoices || [];
     if (currentMailboxFilter === 'PENDIENTE') {
-        filtered = filtered.filter(inv => !inv.comprobado);
+        filtered = filtered.filter(inv => 
+            !inv.comprobado && 
+            !inv.is_pagada_rep && 
+            inv.status_pago !== 'PAGADA_CON_REP' && 
+            !inv.complemento_pago_uuid && 
+            !(inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP'))
+        );
     } else if (currentMailboxFilter === 'COMPROBADO') {
-        filtered = filtered.filter(inv => !!inv.comprobado);
+        filtered = filtered.filter(inv => 
+            !!inv.comprobado || 
+            !!inv.is_pagada_rep || 
+            inv.status_pago === 'PAGADA_CON_REP' || 
+            !!inv.complemento_pago_uuid || 
+            (inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP'))
+        );
     }
 
     if (term) {
@@ -7316,7 +7333,12 @@ function renderMailboxInvoicesModal(invoices) {
         const isIngreso = inv.tipo === 'INGRESO';
         const isComprobado = !!inv.comprobado;
         const motivo = inv.motivo_comprobacion || 'Sin banco';
-        const isPagadaRep = !!(inv.is_pagada_rep || (inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP')) || inv.status_pago === 'PAGADA_CON_REP');
+        const isPagadaRep = !!(
+            inv.is_pagada_rep || 
+            (inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP')) || 
+            inv.status_pago === 'PAGADA_CON_REP' || 
+            inv.complemento_pago_uuid
+        );
         const isComplemento = (inv.metodo_pago === 'PAGO');
 
         let estatusHtml = '';

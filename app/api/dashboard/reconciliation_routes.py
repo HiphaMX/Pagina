@@ -131,6 +131,9 @@ def get_reconciliation_overview(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
+    # Sincronizar automáticamente relaciones de Complementos de Pago (REPs)
+    sync_all_complementos_de_pago(db, effective_rfc)
+
     # Meses disponibles en la base de datos para esta entidad
     months_query = db.query(BankTransaction.periodo_mes).filter(
         BankTransaction.account_rfc == effective_rfc
@@ -284,16 +287,12 @@ def get_reconciliation_overview(
         for inv in linked_cfdis:
             ingresos_invoices_map[inv.uuid] = inv
 
-    # Regla Fiscal SAT / Flujo de Efectivo:
-    # Las facturas PPD amparadas por un Complemento de Pago (REP) se marcan como pagadas, pero NO duplican
-    # el ingreso facturado; el ingreso cobrado del período se computa en el Complemento de Pago / Abono bancario.
     def _is_ppd_covered_by_rep(inv: CFDIInvoice) -> bool:
-        if inv.metodo_pago == "PPD":
-            if getattr(inv, "complemento_pago_uuid", None):
-                return True
-            motivo = str(getattr(inv, "motivo_comprobacion", None) or "").upper()
-            if "PAGADA_CON_REP" in motivo or "PAGADA_CON_COMPLEMENTO" in motivo:
-                return True
+        if getattr(inv, "complemento_pago_uuid", None):
+            return True
+        motivo = str(getattr(inv, "motivo_comprobacion", None) or "").upper()
+        if "PAGADA_CON_REP" in motivo or "PAGADA_CON_COMPLEMENTO" in motivo:
+            return True
         return False
 
     ingresos_efectivos = [
@@ -587,6 +586,9 @@ def get_pending_invoices(
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
 
+    # Sincronizar automáticamente cualquier Complemento de Pago (REP) para que sus facturas no aparezcan como pendientes
+    sync_all_complementos_de_pago(db, effective_rfc)
+
     query = db.query(CFDIInvoice).filter(
         CFDIInvoice.account_rfc == effective_rfc
     )
@@ -649,9 +651,7 @@ def get_pending_invoices(
 
         motivo_comp = getattr(inv, "motivo_comprobacion", None) or ""
         rep_uuid = getattr(inv, "complemento_pago_uuid", None)
-        is_pagada_rep = False
-        if inv.metodo_pago == "PPD" and ("PAGADA_CON_REP" in motivo_comp.upper() or rep_uuid):
-            is_pagada_rep = True
+        is_pagada_rep = bool("PAGADA_CON_REP" in motivo_comp.upper() or rep_uuid)
 
         status_pago_label = "PAGADA_CON_REP" if is_pagada_rep else ("PAGADA" if inv.conciliado or inv.comprobado else "PENDIENTE")
 
@@ -692,24 +692,88 @@ def _process_complemento_de_pago_relations(
     rep_uuid: str,
     doctos_relacionados: List[Dict[str, Any]],
     effective_rfc: str
-):
+) -> int:
     """
     Marca las facturas PPD amparadas por un Complemento de Pago (REP) como pagadas,
-    vinculándolas al comprobante de pago y asegurando que no dupliquen ingresos fiscales.
+    vinculándolas al comprobante de pago y asegurando que no dupliquen ingresos fiscales
+    ni queden disponibles para vincular o justificar manualmente.
+    Soporta coincidencia insensible a mayúsculas y prefijos de UUID (8 chars o 36 chars).
     """
+    linked_count = 0
     for doc in (doctos_relacionados or []):
-        rel_uuid = doc.get("uuid")
-        if not rel_uuid or rel_uuid == rep_uuid:
+        rel_uuid = (doc.get("uuid") or "").strip()
+        if not rel_uuid or rel_uuid.upper() == rep_uuid.upper():
             continue
-        rel_f = db.query(CFDIInvoice).filter(
-            CFDIInvoice.uuid == rel_uuid,
-            CFDIInvoice.account_rfc == effective_rfc
-        ).first()
-        if rel_f and rel_f.metodo_pago == "PPD":
+
+        if len(rel_uuid) == 36:
+            candidates = db.query(CFDIInvoice).filter(
+                func.upper(CFDIInvoice.uuid) == rel_uuid.upper(),
+                CFDIInvoice.account_rfc == effective_rfc
+            ).all()
+        else:
+            candidates = db.query(CFDIInvoice).filter(
+                CFDIInvoice.uuid.ilike(f"{rel_uuid}%"),
+                CFDIInvoice.account_rfc == effective_rfc
+            ).all()
+
+        for rel_f in candidates:
+            if rel_f.uuid.upper() == rep_uuid.upper():
+                continue
+            # Marcar factura amparada como liquidada / pagada por el REP
             rel_f.conciliado = True
             rel_f.comprobado = True
             rel_f.motivo_comprobacion = f"PAGADA_CON_REP:{rep_uuid}"
             rel_f.complemento_pago_uuid = rep_uuid
+            linked_count += 1
+
+    return linked_count
+
+
+def sync_all_complementos_de_pago(db: Session, effective_rfc: Optional[str] = None) -> int:
+    """
+    Escanea todos los Complementos de Pago (metodo_pago == 'PAGO' o descripción con 'ampara N factura')
+    para la entidad indicada (o todas) y vincula/marca sus facturas hijas como PAGADA_CON_REP,
+    garantizando que queden justificadas de inmediato y no aparezcan como pendientes.
+    Soporta tanto xml_raw como fallback por regex en conceptos_resumen.
+    """
+    rep_query = db.query(CFDIInvoice).filter(
+        or_(
+            CFDIInvoice.metodo_pago == "PAGO",
+            CFDIInvoice.conceptos_resumen.ilike("%ampara%factura%")
+        )
+    )
+    if effective_rfc:
+        rep_query = rep_query.filter(CFDIInvoice.account_rfc == effective_rfc)
+
+    reps = rep_query.all()
+    total_linked = 0
+    for rep in reps:
+        target_docs = []
+        # 1. Extraer desde xml_raw si está presente
+        if rep.xml_raw:
+            try:
+                r_info = parse_cfdi_xml(rep.xml_raw.encode("utf-8"), mi_rfc=rep.account_rfc)
+                for d in r_info.get("doctos_relacionados", []):
+                    u = (d.get("uuid") or "").strip()
+                    if u and u.upper() != rep.uuid.upper():
+                        target_docs.append(d)
+            except Exception:
+                pass
+
+        # 2. Fallback robusto desde conceptos_resumen
+        if not target_docs and rep.conceptos_resumen:
+            matches = re.findall(r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})?", rep.conceptos_resumen)
+            for m in matches:
+                m_clean = m.strip()
+                if m_clean and m_clean.upper() != rep.uuid[:len(m_clean)].upper():
+                    target_docs.append({"uuid": m_clean})
+
+        if target_docs:
+            total_linked += _process_complemento_de_pago_relations(db, rep.uuid, target_docs, rep.account_rfc)
+
+    if total_linked > 0:
+        db.commit()
+    return total_linked
 
 
 def _run_reconciliation_pass(
@@ -728,20 +792,7 @@ def _run_reconciliation_pass(
     - Marca como conciliadas tanto las transacciones como todas las facturas hijas y consolidadas.
     """
     # 0. Pre-procesar todos los Complementos de Pago (REP) para marcar sus facturas hijas PPD como pagadas
-    rep_invoices = db.query(CFDIInvoice).filter(
-        CFDIInvoice.account_rfc == effective_rfc,
-        CFDIInvoice.metodo_pago == "PAGO"
-    ).all()
-    for r in rep_invoices:
-        if r.xml_raw:
-            try:
-                r_info = parse_cfdi_xml(r.xml_raw.encode("utf-8"), mi_rfc=effective_rfc)
-                docs_rel = r_info.get("doctos_relacionados", [])
-                if docs_rel:
-                    _process_complemento_de_pago_relations(db, r.uuid, docs_rel, effective_rfc)
-            except Exception:
-                pass
-    db.commit()
+    sync_all_complementos_de_pago(db, effective_rfc)
 
     facturas_query = db.query(CFDIInvoice).filter(
         CFDIInvoice.conciliado == False,
@@ -1997,6 +2048,28 @@ def cron_sync_all_mailboxes(
         "success": True,
         "hipha": res_hipha,
         "amdi": res_amdi
+    }
+
+
+@router.post("/sync-complementos-pago")
+def trigger_sync_complementos_pago(
+    account_rfc: str = Query("MEHA850118Q96"),
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Sincroniza y asocia de forma exhaustiva todas las facturas amparadas por complementos de pago (REP)
+    para la entidad indicada.
+    """
+    entity_cfg = get_reconciliation_entity_config(account_rfc)
+    effective_rfc = entity_cfg["rfc"]
+    count = sync_all_complementos_de_pago(db, effective_rfc)
+    return {
+        "success": True,
+        "entity": entity_cfg["name"],
+        "account_rfc": effective_rfc,
+        "facturas_vinculadas": count,
+        "message": f"Se sincronizaron y ampararon {count} facturas con sus Complementos de Pago."
     }
 
 

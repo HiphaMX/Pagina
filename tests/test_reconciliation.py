@@ -2831,6 +2831,119 @@ def test_complemento_pago_ampara_multiples_facturas_ppd():
         db.close()
 
 
+def test_sync_all_complementos_de_pago_and_no_disponibles_para_justificar():
+    """
+    Valida el caso exacto reportado con Daltile:
+    1. Dos facturas PPD en septiembre ($32,130 y $117,661.35)
+    2. Un complemento de pago en octubre amparando ambas facturas
+    3. Al consultar pending-invoices, las facturas quedan auto-sincronizadas,
+       marcadas como PAGADA_CON_REP y NO disponibles como pendientes de justificar.
+    """
+    db = SessionLocal()
+    test_rfc = "MEHA850118Q96"
+    uuid_daltile_1 = "EF11BFCC-AB76-43C4-8759-3F350F9FB30C"
+    uuid_daltile_2 = "2050DA55-A12F-470B-82F5-DA9FBB63583B"
+    uuid_rep = "ED7867A9-B4DA-4C5E-96A6-A3AF2D3EFE0C"
+
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_daltile_1, uuid_daltile_2, uuid_rep])).delete()
+        db.commit()
+
+        # 1. Facturas PPD iniciales
+        f1 = CFDIInvoice(
+            uuid=uuid_daltile_1,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="DMC160901KV5",
+            nombre_receptor="DAL-TILE MEXICO COMERCIAL",
+            fecha_emision=datetime(2026, 9, 9),
+            subtotal=28000.0,
+            iva_trasladado=4480.0,
+            retencion_isr=350.0,
+            total=32130.0,
+            metodo_pago="PPD",
+            conciliado=False,
+            comprobado=False
+        )
+        f2 = CFDIInvoice(
+            uuid=uuid_daltile_2,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="DMC160901KV5",
+            nombre_receptor="DAL-TILE MEXICO COMERCIAL",
+            fecha_emision=datetime(2026, 9, 8),
+            subtotal=101432.20,
+            iva_trasladado=16229.15,
+            total=117661.35,
+            metodo_pago="PPD",
+            conciliado=False,
+            comprobado=False
+        )
+        # 2. Complemento de Pago en octubre con conceptos_resumen conteniendo los prefijos
+        rep = CFDIInvoice(
+            uuid=uuid_rep,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="DMC160901KV5",
+            nombre_receptor="DAL-TILE MEXICO COMERCIAL",
+            fecha_emision=datetime(2026, 10, 6),
+            subtotal=128905.41,
+            iva_trasladado=20885.94,
+            total=149791.35,
+            metodo_pago="PAGO",
+            forma_pago="03",
+            conceptos_resumen=f"Complemento de Pago ($149,791.35) ampara 2 factura(s): {uuid_daltile_1[:8]} ($32,130.00), {uuid_daltile_2[:8]} ($117,661.35)",
+            conciliado=True,
+            comprobado=False
+        )
+        db.add_all([f1, f2, rep])
+        db.commit()
+
+        # 3. Consultar pending-invoices sin include_reconciled (como lo hace el modal de vincular)
+        res_pending = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&tipo=INGRESO")
+        assert res_pending.status_code == 200
+        pending_list = res_pending.json()
+        pending_uuids = [p["uuid"] for p in pending_list]
+        # NO deben aparecer como disponibles para vincular ni pendientes de banco
+        assert uuid_daltile_1 not in pending_uuids
+        assert uuid_daltile_2 not in pending_uuids
+
+        # 4. Consultar con include_reconciled e include_comprobados (como el modal de buzón completo)
+        res_all = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&include_reconciled=true&include_comprobados=true")
+        assert res_all.status_code == 200
+        all_items = {item["uuid"]: item for item in res_all.json()}
+
+        assert uuid_daltile_1 in all_items
+        assert uuid_daltile_2 in all_items
+        assert all_items[uuid_daltile_1]["is_pagada_rep"] is True
+        assert all_items[uuid_daltile_1]["status_pago"] == "PAGADA_CON_REP"
+        assert all_items[uuid_daltile_1]["complemento_pago_uuid"] == uuid_rep
+
+        assert all_items[uuid_daltile_2]["is_pagada_rep"] is True
+        assert all_items[uuid_daltile_2]["status_pago"] == "PAGADA_CON_REP"
+        assert all_items[uuid_daltile_2]["complemento_pago_uuid"] == uuid_rep
+
+        # 5. Probar endpoint de sincronización explícito
+        res_sync = client.post(f"/api/dashboard/reconciliation/sync-complementos-pago?account_rfc={test_rfc}")
+        assert res_sync.status_code == 200
+        assert res_sync.json()["success"] is True
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_daltile_1, uuid_daltile_2, uuid_rep])).delete()
+        db.commit()
+        db.close()
+
+
+
 
 
 
