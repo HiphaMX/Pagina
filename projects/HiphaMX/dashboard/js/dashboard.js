@@ -6038,6 +6038,14 @@ function initReconciliationModule() {
         bankStatementBadgeEl.style.cursor = 'pointer';
     }
 
+    // Botón de Auditar Mes con IA (Agente Auditor Fiscal)
+    const btnRunFiscal = document.getElementById('btnRunFiscalAudit');
+    if (btnRunFiscal) {
+        btnRunFiscal.addEventListener('click', () => {
+            loadFiscalAgentDiagnosis(currentReconMonth, currentReconEntity, true);
+        });
+    }
+
     // Sincronización automática al abrir el módulo
     autoSyncMailbox(currentReconEntity, true);
 
@@ -6378,8 +6386,93 @@ async function loadReconciliationData(refreshMonths = true) {
         // Cargar lista de transacciones
         await loadReconciliationTransactions();
 
+        // Cargar diagnóstico del Agente Auditor Fiscal de forma asíncrona
+        loadFiscalAgentDiagnosis(currentReconMonth, currentReconEntity);
+
     } catch (err) {
         console.error("Error al cargar conciliación:", err);
+    }
+}
+
+// ==========================================================================
+// AGENTE AUDITOR FISCAL & CONTABLE
+// ==========================================================================
+let isFiscalAgentAuditing = false;
+
+async function loadFiscalAgentDiagnosis(month, entityRfc, forceAi = false) {
+    if (!month || !entityRfc) return;
+
+    const summaryEl = document.getElementById('reconAgentSummary');
+    const badgeEl = document.getElementById('reconAgentStatusBadge');
+    const btnRun = document.getElementById('btnRunFiscalAudit');
+    const btnText = document.getElementById('btnRunFiscalAuditText');
+
+    if (forceAi) {
+        if (isFiscalAgentAuditing) return;
+        isFiscalAgentAuditing = true;
+        if (btnRun) btnRun.disabled = true;
+        if (btnText) btnText.textContent = 'Auditoría en proceso...';
+    }
+
+    if (summaryEl && forceAi) {
+        summaryEl.innerHTML = `<span style="color: #38bdf8;">⚡ <strong>El Agente Auditor Fiscal está analizando el periodo con Inteligencia Artificial...</strong><br>Evaluando balances de IVA, proyectando deducciones, detectando compras sin CFDI y vigilando complementos de pago PPD.</span>`;
+    }
+
+    try {
+        let data;
+        if (forceAi) {
+            const res = await fetch(`${API_BASE}/reconciliation/agent-audit`, {
+                method: 'POST',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    month: month,
+                    account_rfc: entityRfc,
+                    use_ai: true
+                })
+            });
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            data = await res.json();
+        } else {
+            const res = await fetch(`${API_BASE}/reconciliation/agent-diagnosis?month=${encodeURIComponent(month)}&account_rfc=${encodeURIComponent(entityRfc)}&use_ai=true`, {
+                headers: getAuthHeaders()
+            });
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            data = await res.json();
+        }
+
+        // Renderizar estatus del mes
+        if (badgeEl) {
+            badgeEl.className = 'webhealth-badge';
+            if (data.health_level === 'MES_COMPLETO') {
+                badgeEl.classList.add('badge-healthy');
+                badgeEl.textContent = 'MES COMPLETO (100%)';
+            } else if (data.health_level === 'ALERTA_FISCAL') {
+                badgeEl.classList.add('badge-critical');
+                badgeEl.textContent = 'ALERTA FISCAL';
+            } else {
+                badgeEl.classList.add('badge-warning');
+                badgeEl.textContent = `POR REVISAR (${data.completion_pct || 0}%)`;
+            }
+        }
+
+        // Renderizar resumen ejecutivo
+        if (summaryEl) {
+            summaryEl.innerHTML = formatWebHealthMarkdown(data.agent_summary);
+        }
+    } catch (err) {
+        console.error('Error al cargar diagnóstico del Agente Auditor Fiscal:', err);
+        if (summaryEl && forceAi) {
+            summaryEl.innerHTML = `<span style="color: #f87171;">⚠️ No se pudo completar la auditoría con IA. Reintenta en unos instantes.</span>`;
+        }
+    } finally {
+        if (forceAi) {
+            isFiscalAgentAuditing = false;
+            if (btnRun) btnRun.disabled = false;
+            if (btnText) btnText.textContent = 'Auditar Mes con IA';
+        }
     }
 }
 
@@ -8940,6 +9033,7 @@ window.runFleetAudit = runFleetAudit;
 window.runSingleSiteAudit = runSingleSiteAudit;
 window.openWebHealthDetailModal = openWebHealthDetailModal;
 window.closeWebHealthModal = closeWebHealthModal;
+window.loadFiscalAgentDiagnosis = loadFiscalAgentDiagnosis;
 
 
 

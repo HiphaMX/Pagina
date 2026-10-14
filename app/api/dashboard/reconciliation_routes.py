@@ -55,6 +55,12 @@ class ComprobarInvoiceRequest(BaseModel):
     motivo: str
 
 
+class FiscalAgentAuditRequest(BaseModel):
+    month: Optional[str] = None
+    account_rfc: str = "DEGF851127TK1"
+    use_ai: bool = True
+
+
 router = APIRouter()
 
 
@@ -414,6 +420,36 @@ def get_reconciliation_overview(
             "bank_statement_name": bank_statement_name
         }
     }
+
+
+@router.get("/agent-diagnosis")
+def get_fiscal_agent_diagnosis(
+    month: Optional[str] = Query(None, description="Mes en formato YYYY-MM"),
+    account_rfc: str = Query("DEGF851127TK1", description="RFC de la entidad: DEGF851127TK1 o MEHA850118Q96"),
+    use_ai: bool = Query(True, description="Utilizar Gemini AI para generar síntesis ejecutiva"),
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Retorna el diagnóstico ejecutivo del Agente Auditor Fiscal para el mes y entidad seleccionados.
+    """
+    effective_month = month or datetime.now().strftime("%Y-%m")
+    from app.services.reconciliation.fiscal_auditor_agent import audit_month_fiscal_health
+    return audit_month_fiscal_health(db=db, account_rfc=account_rfc, month=effective_month, use_ai=use_ai)
+
+
+@router.post("/agent-audit")
+def run_fiscal_agent_audit(
+    payload: FiscalAgentAuditRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Ejecuta auditoría en tiempo real del Agente Auditor Fiscal con IA de Gemini.
+    """
+    effective_month = payload.month or datetime.now().strftime("%Y-%m")
+    from app.services.reconciliation.fiscal_auditor_agent import audit_month_fiscal_health
+    return audit_month_fiscal_health(db=db, account_rfc=payload.account_rfc, month=effective_month, use_ai=payload.use_ai)
 
 
 @router.get("/transactions")

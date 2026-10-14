@@ -558,6 +558,33 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Tarjeta / Banner del Agente Auditor Fiscal -->
+                    <div class="webhealth-agent-banner" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(30,41,59,0.7) 100%); border: 1px solid rgba(56, 189, 248, 0.25);">
+                        <div class="webhealth-agent-avatar" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(56, 189, 248, 0.25)); border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);">
+                            ⚖️
+                            <div class="pulse-dot"></div>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <h3 style="font-size: 0.95rem; font-weight: 700; color: #38bdf8; margin: 0;">
+                                        Diagnóstico del Agente Auditor Fiscal
+                                    </h3>
+                                    <span id="reconAgentStatusBadge" class="webhealth-badge badge-healthy" style="font-size: 0.68rem; padding: 0.15rem 0.5rem;">
+                                        ANÁLISIS ACTIVO
+                                    </span>
+                                </div>
+                                <button type="button" id="btnRunFiscalAudit" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    <span id="btnRunFiscalAuditText">Auditar Mes con IA</span>
+                                </button>
+                            </div>
+                            <div id="reconAgentSummary" style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.5; white-space: pre-line;">
+                                Analizando la salud contable, balances de IVA y comprobación del mes...
+                            </div>
+                        </div>
+                    </div>
                     
                     <!-- KPI Cards Row 1: 3 Tarjetas Bancarias (Ingresos Verde, Egresos Amarillo, Faltante Rojo) -->
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
@@ -2342,7 +2369,7 @@
     </div>
 
     <!-- Script de Lógica -->
-    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261014-1"></script>
+    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261014-2"></script>
 
 </body>
 </html>
