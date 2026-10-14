@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Q
 from fastapi.responses import StreamingResponse, JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, func, and_, or_
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 import io
 import re
 import zipfile
@@ -284,10 +284,27 @@ def get_reconciliation_overview(
         for inv in linked_cfdis:
             ingresos_invoices_map[inv.uuid] = inv
 
-    subtotal_ingresos_facturados = round(sum(float(inv.subtotal or 0.0) for inv in ingresos_invoices_map.values()), 2)
-    iva_trasladado_ingresos = round(sum(float(inv.iva_trasladado or 0.0) for inv in ingresos_invoices_map.values()), 2)
-    total_ingresos_facturados = round(sum(float(inv.total or 0.0) for inv in ingresos_invoices_map.values()), 2)
-    count_ingresos_facturados = len(ingresos_invoices_map)
+    # Regla Fiscal SAT / Flujo de Efectivo:
+    # Las facturas PPD amparadas por un Complemento de Pago (REP) se marcan como pagadas, pero NO duplican
+    # el ingreso facturado; el ingreso cobrado del período se computa en el Complemento de Pago / Abono bancario.
+    def _is_ppd_covered_by_rep(inv: CFDIInvoice) -> bool:
+        if inv.metodo_pago == "PPD":
+            if getattr(inv, "complemento_pago_uuid", None):
+                return True
+            motivo = str(getattr(inv, "motivo_comprobacion", None) or "").upper()
+            if "PAGADA_CON_REP" in motivo or "PAGADA_CON_COMPLEMENTO" in motivo:
+                return True
+        return False
+
+    ingresos_efectivos = [
+        inv for inv in ingresos_invoices_map.values()
+        if not _is_ppd_covered_by_rep(inv)
+    ]
+
+    subtotal_ingresos_facturados = round(sum(float(inv.subtotal or 0.0) for inv in ingresos_efectivos), 2)
+    iva_trasladado_ingresos = round(sum(float(inv.iva_trasladado or 0.0) for inv in ingresos_efectivos), 2)
+    total_ingresos_facturados = round(sum(float(inv.total or 0.0) for inv in ingresos_efectivos), 2)
+    count_ingresos_facturados = len(ingresos_efectivos)
 
     # 2. Facturas de Egreso / Gastos Comprobados (CFDI Recibidos amparados vía banco o comprobados fuera de banco)
     egresos_invoices_map: Dict[str, CFDIInvoice] = {}
@@ -469,9 +486,9 @@ def get_reconciliation_transactions(
         iva_ing_val = 0.0
         ret_isr_val = 0.0
         iva_egr_val = 0.0
+        f = t.factura
 
-        if t.factura:
-            f = t.factura
+        if f:
             contraparte = f.nombre_receptor if t.tipo == "INGRESO" else f.nombre_emisor
             metodo_pago = f.metodo_pago or "PUE"
             subtotal_val = float(f.subtotal or 0.0)
@@ -496,7 +513,8 @@ def get_reconciliation_transactions(
                 "retencion_iva": getattr(f, "retencion_iva", 0.0),
                 "total": f.total,
                 "metodo_pago": f.metodo_pago,
-                "conceptos_resumen": f.conceptos_resumen
+                "conceptos_resumen": f.conceptos_resumen,
+                "is_complemento_pago": (f.metodo_pago == "PAGO")
             }
 
         area_proyecto = t.area_proyecto or entity_name
@@ -524,6 +542,7 @@ def get_reconciliation_transactions(
             "contraparte": contraparte,
             "concepto": t.concepto,
             "metodo_pago": metodo_pago,
+            "is_complemento_pago": bool(f and f.metodo_pago == "PAGO"),
             "ingresos": t.monto if t.tipo == "INGRESO" else 0.0,
             "egresos": t.monto if t.tipo == "EGRESO" else 0.0,
             "cfdi_status": cfdi_status_label,
@@ -628,6 +647,14 @@ def get_pending_invoices(
         total_inv = float(inv.total or 0)
         saldo_pendiente = max(0.0, round(total_inv - monto_vinculado, 2))
 
+        motivo_comp = getattr(inv, "motivo_comprobacion", None) or ""
+        rep_uuid = getattr(inv, "complemento_pago_uuid", None)
+        is_pagada_rep = False
+        if inv.metodo_pago == "PPD" and ("PAGADA_CON_REP" in motivo_comp.upper() or rep_uuid):
+            is_pagada_rep = True
+
+        status_pago_label = "PAGADA_CON_REP" if is_pagada_rep else ("PAGADA" if inv.conciliado or inv.comprobado else "PENDIENTE")
+
         results.append({
             "uuid": inv.uuid,
             "account_rfc": inv.account_rfc,
@@ -648,13 +675,41 @@ def get_pending_invoices(
             "conceptos_resumen": inv.conceptos_resumen,
             "conciliado": inv.conciliado,
             "comprobado": bool(getattr(inv, "comprobado", False)),
-            "motivo_comprobacion": getattr(inv, "motivo_comprobacion", None) or "",
+            "motivo_comprobacion": motivo_comp,
+            "complemento_pago_uuid": rep_uuid,
+            "is_pagada_rep": is_pagada_rep,
+            "status_pago": status_pago_label,
             "monto_vinculado": monto_vinculado,
             "saldo_pendiente": saldo_pendiente,
             "pagos_vinculados_count": len(txs_for_inv)
         })
 
     return results
+
+
+def _process_complemento_de_pago_relations(
+    db: Session,
+    rep_uuid: str,
+    doctos_relacionados: List[Dict[str, Any]],
+    effective_rfc: str
+):
+    """
+    Marca las facturas PPD amparadas por un Complemento de Pago (REP) como pagadas,
+    vinculándolas al comprobante de pago y asegurando que no dupliquen ingresos fiscales.
+    """
+    for doc in (doctos_relacionados or []):
+        rel_uuid = doc.get("uuid")
+        if not rel_uuid or rel_uuid == rep_uuid:
+            continue
+        rel_f = db.query(CFDIInvoice).filter(
+            CFDIInvoice.uuid == rel_uuid,
+            CFDIInvoice.account_rfc == effective_rfc
+        ).first()
+        if rel_f and rel_f.metodo_pago == "PPD":
+            rel_f.conciliado = True
+            rel_f.comprobado = True
+            rel_f.motivo_comprobacion = f"PAGADA_CON_REP:{rep_uuid}"
+            rel_f.complemento_pago_uuid = rep_uuid
 
 
 def _run_reconciliation_pass(
@@ -667,10 +722,27 @@ def _run_reconciliation_pass(
     Ejecuta el motor de conciliación avanzada sobre las facturas pendientes y movimientos
     bancarios pendientes de la entidad:
     - Extrae método de pago, conceptos y documentos relacionados de complementos de pago.
+    - Pre-procesa facturas PPD amparadas por REPs para marcarlas como pagadas.
     - Soporta matches 1:1 con ventana comercial flexible para transferencias de crédito.
     - Soporta pagos consolidados (1 depósito ampara 2 o 3 facturas).
     - Marca como conciliadas tanto las transacciones como todas las facturas hijas y consolidadas.
     """
+    # 0. Pre-procesar todos los Complementos de Pago (REP) para marcar sus facturas hijas PPD como pagadas
+    rep_invoices = db.query(CFDIInvoice).filter(
+        CFDIInvoice.account_rfc == effective_rfc,
+        CFDIInvoice.metodo_pago == "PAGO"
+    ).all()
+    for r in rep_invoices:
+        if r.xml_raw:
+            try:
+                r_info = parse_cfdi_xml(r.xml_raw.encode("utf-8"), mi_rfc=effective_rfc)
+                docs_rel = r_info.get("doctos_relacionados", [])
+                if docs_rel:
+                    _process_complemento_de_pago_relations(db, r.uuid, docs_rel, effective_rfc)
+            except Exception:
+                pass
+    db.commit()
+
     facturas_query = db.query(CFDIInvoice).filter(
         CFDIInvoice.conciliado == False,
         CFDIInvoice.comprobado == False,
@@ -697,7 +769,9 @@ def _run_reconciliation_pass(
         if f.metodo_pago == "PAGO" and f.xml_raw:
             try:
                 rep_data = parse_cfdi_xml(f.xml_raw.encode("utf-8"), mi_rfc=effective_rfc)
-                f_item["doctos_relacionados"] = rep_data.get("doctos_relacionados", [])
+                docs_rel = rep_data.get("doctos_relacionados", [])
+                f_item["doctos_relacionados"] = docs_rel
+                _process_complemento_de_pago_relations(db, f.uuid, docs_rel, effective_rfc)
             except Exception:
                 pass
         facturas_dict.append(f_item)
@@ -743,6 +817,10 @@ def _run_reconciliation_pass(
                             rel_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == rel_uuid).first()
                             if rel_f:
                                 rel_f.conciliado = True
+                                if rel_f.metodo_pago == "PPD":
+                                    rel_f.comprobado = True
+                                    rel_f.motivo_comprobacion = f"PAGADA_CON_REP:{res['uuid_cfdi']}"
+                                    rel_f.complemento_pago_uuid = res["uuid_cfdi"]
                     matches_creados += 1
             else:
                 if res.get("status_conciliacion") in ("NO_APLICA", "EXENTO"):
@@ -833,6 +911,11 @@ async def upload_reconciliation_files(
                                         existing.conceptos_resumen = cfdi_data["conceptos_resumen"]
                                     if not existing.xml_raw:
                                         existing.xml_raw = xml_bytes.decode("utf-8", errors="ignore")
+
+                                # Procesar documentos relacionados si es Complemento de Pago (REP)
+                                if cfdi_data.get("metodo_pago") == "PAGO" and cfdi_data.get("doctos_relacionados"):
+                                    _process_complemento_de_pago_relations(db, cfdi_data["uuid"], cfdi_data["doctos_relacionados"], effective_rfc)
+
                             except Exception as e_zip_xml:
                                 errors.append(f"{zip_info.filename}: {str(e_zip_xml)}")
             except Exception as e_zip:
@@ -884,6 +967,11 @@ async def upload_reconciliation_files(
                         existing.conceptos_resumen = cfdi_data["conceptos_resumen"]
                     if not existing.xml_raw:
                         existing.xml_raw = content.decode("utf-8", errors="ignore")
+
+                # Procesar documentos relacionados si es Complemento de Pago (REP)
+                if cfdi_data.get("metodo_pago") == "PAGO" and cfdi_data.get("doctos_relacionados"):
+                    _process_complemento_de_pago_relations(db, cfdi_data["uuid"], cfdi_data["doctos_relacionados"], effective_rfc)
+
             except Exception as e_xml:
                 errors.append(f"{filename}: {str(e_xml)}")
 

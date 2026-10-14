@@ -112,6 +112,14 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
             status_asignado = "CONCILIADO" if match_tier == 1 else "POR_REVISAR"
             facturas_pool.remove(ganador)
 
+            # Si el ganador es un Complemento de Pago (REP), enriquecer nota explícita
+            if ganador.get("metodo_pago") == "PAGO":
+                num_docs = len(related_cfdi_uuids)
+                if ganador.get("tipo") == "INGRESO":
+                    nota_revision = f"Pago recibido que ampara {num_docs} factura(s) PPD (Ingreso) - REP: {uuid_asignado[:8]}"
+                else:
+                    nota_revision = f"Pago emitido que ampara {num_docs} factura(s) PPD (Egreso) - REP: {uuid_asignado[:8]}"
+
             # Si el ganador ampara facturas hijas (REP), remover también las facturas hijas del pool
             if related_cfdi_uuids:
                 facturas_pool = [inv for inv in facturas_pool if inv["uuid"] not in related_cfdi_uuids]

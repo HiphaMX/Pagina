@@ -283,6 +283,17 @@ def parse_cfdi_xml(xml_content: bytes, mi_rfc: Optional[str] = None) -> Dict[str
         else:
             tipo = "INGRESO" if tipo_comprobante == 'I' else "EGRESO"
 
+    # Enriquecer conceptos_resumen para Complemento de Pago según clasificación fiscal
+    if es_pago and doctos_relacionados:
+        docs_summary = ", ".join([f"{d['uuid'][:8]} (${d['imp_pagado']:,.2f})" for d in doctos_relacionados[:3]])
+        extra = f" (+{len(doctos_relacionados)-3} más)" if len(doctos_relacionados) > 3 else ""
+        if tipo == "INGRESO":
+            conceptos_resumen = f"Pago recibido de ${total:,.2f} que ampara {len(doctos_relacionados)} factura(s) PPD (Ingreso): {docs_summary}{extra}"
+        else:
+            conceptos_resumen = f"Pago emitido a proveedor de ${total:,.2f} que ampara {len(doctos_relacionados)} factura(s) PPD (Egreso): {docs_summary}{extra}"
+    elif es_pago and not conceptos_resumen:
+        conceptos_resumen = f"Pago recibido de ${total:,.2f} (Ingreso)" if tipo == "INGRESO" else f"Pago emitido de ${total:,.2f} (Egreso)"
+
     iva_ingresos = round(iva_trasladado, 2) if tipo == "INGRESO" else 0.0
     iva_egresos = round(iva_trasladado, 2) if tipo == "EGRESO" else 0.0
 

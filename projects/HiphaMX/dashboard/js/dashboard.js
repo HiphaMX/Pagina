@@ -6523,9 +6523,11 @@ async function loadReconciliationTransactions() {
             let cfdiHtml = '';
             if (t.cfdi) {
                 const contraparte = isCargo ? (t.cfdi.nombre_emisor || t.cfdi.rfc_emisor) : (t.cfdi.nombre_receptor || t.cfdi.rfc_receptor);
+                const isRep = (t.metodo_pago === 'PAGO' || t.is_complemento_pago || (t.cfdi && t.cfdi.is_complemento_pago));
+                const repBadge = isRep ? `<span style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.4); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 0.68rem; margin-left: 4px;">📥 Pago Recibido (Ampara PPD)</span>` : '';
                 cfdiHtml = `
                     <div style="font-size: 0.83rem;">
-                        <div style="font-weight: 600; color: var(--text-main); line-height: 1.3;">${escapeHtml(contraparte || t.contraparte || 'Sin nombre')}</div>
+                        <div style="font-weight: 600; color: var(--text-main); line-height: 1.3;">${escapeHtml(contraparte || t.contraparte || 'Sin nombre')} ${repBadge}</div>
                         <div style="display: flex; gap: 0.4rem; align-items: center; margin-top: 3px; font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">
                             <span style="color: var(--accent-cyan);">${escapeHtml(t.metodo_pago || 'PUE')}</span>
                             <span>•</span>
@@ -7314,11 +7316,35 @@ function renderMailboxInvoicesModal(invoices) {
         const isIngreso = inv.tipo === 'INGRESO';
         const isComprobado = !!inv.comprobado;
         const motivo = inv.motivo_comprobacion || 'Sin banco';
+        const isPagadaRep = !!(inv.is_pagada_rep || (inv.motivo_comprobacion && inv.motivo_comprobacion.includes('PAGADA_CON_REP')) || inv.status_pago === 'PAGADA_CON_REP');
+        const isComplemento = (inv.metodo_pago === 'PAGO');
 
         let estatusHtml = '';
         let accionHtml = '';
 
-        if (isComprobado) {
+        if (isPagadaRep) {
+            estatusHtml = `
+                <span style="background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;" title="Factura PPD amparada y pagada mediante Complemento de Pago (REP). No duplica ingreso fiscal.">
+                    ✓ Pagada (REP)
+                </span>
+            `;
+            accionHtml = `
+                <div style="font-size: 0.74rem; color: #38bdf8; font-weight: 600; text-align: center;">
+                    Amparada por REP
+                </div>
+            `;
+        } else if (isComplemento) {
+            estatusHtml = `
+                <span style="background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4); padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;" title="Recibo Electrónico de Pago (Computado como movimiento de Ingreso)">
+                    📥 Pago Recibido
+                </span>
+            `;
+            accionHtml = `
+                <div style="font-size: 0.74rem; color: var(--text-muted); text-align: center;">
+                    Ampara facturas PPD
+                </div>
+            `;
+        } else if (isComprobado) {
             estatusHtml = `
                 <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;" title="Factura comprobada fuera de cuenta bancaria">
                     ✓ Comprobado: ${escapeHtml(motivo)}

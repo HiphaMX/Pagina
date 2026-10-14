@@ -29,6 +29,7 @@ class CFDIInvoice(Base):
     conciliado = Column(Boolean, default=False, index=True)
     comprobado = Column(Boolean, default=False, index=True)
     motivo_comprobacion = Column(String(100), nullable=True)
+    complemento_pago_uuid = Column(String(36), ForeignKey("cfdi_invoices.uuid", ondelete="SET NULL"), nullable=True, index=True)
     fuente = Column(String(50), default="DASHBOARD")  # EMAIL, DASHBOARD, HISTORICO, SAT
     xml_raw = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

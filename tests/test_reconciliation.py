@@ -2542,6 +2542,296 @@ def test_export_pdf_faltantes_with_xmls_sueltos():
     assert len(res.content) > 1000
 
 
+def test_complemento_de_pago_ampara_ppd_no_duplica_ingresos():
+    """Valida que un Complemento de Pago marque la factura PPD como pagada y NO duplique el ingreso en overview."""
+    db = SessionLocal()
+    test_rfc = "MEHA850118Q96"
+    test_month = "2026-11"
+
+    uuid_ppd = "CFDI-TEST-PPD-ORIGINAL-001"
+    uuid_rep = "CFDI-TEST-REP-COMPLEMENTO-001"
+    tx_id = "tx_bbva_test_abono_rep_01"
+
+    try:
+        # Limpieza previa defensiva
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_ppd, uuid_rep])).delete()
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx_id).delete()
+        db.commit()
+
+        # 1. Factura original PPD de ingreso por $100,000 + IVA $16,000 = $116,000 emitida en el mes
+        inv_ppd = CFDIInvoice(
+            uuid=uuid_ppd,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="CLI901010ABC",
+            nombre_receptor="CLIENTE CORPORATIVO SA DE CV",
+            fecha_emision=datetime(2026, 11, 5, 10, 0, 0),
+            subtotal=100000.0,
+            iva_trasladado=16000.0,
+            total=116000.0,
+            metodo_pago="PPD",
+            forma_pago="99",
+            conceptos_resumen="Servicios de Diseño y Construcción",
+            conciliado=False,
+            comprobado=False
+        )
+
+        # 2. Complemento de Pago (REP) emitido al recibir el pago por $116,000
+        # Simular XML con nodo DoctoRelacionado
+        rep_xml_content = f"""<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+    xmlns:pago20="http://www.sat.gob.mx/Pagos20"
+    xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+    Version="4.0" Fecha="2026-11-15T12:00:00" Total="0" SubTotal="0" TipoDeComprobante="P">
+    <cfdi:Emisor Rfc="{test_rfc}" Nombre="ADRIANA MEDINA HERNANDEZ" />
+    <cfdi:Receptor Rfc="CLI901010ABC" Nombre="CLIENTE CORPORATIVO SA DE CV" />
+    <cfdi:Complemento>
+        <pago20:Pagos Version="2.0">
+            <pago20:Totales MontoTotalPagos="116000.00" TotalTrasladosBaseIVA16="100000.00" TotalTrasladosImpuestoIVA16="16000.00" />
+            <pago20:Pago FechaPago="2026-11-15T11:30:00" FormaDePagoP="03" MonedaP="MXN" Monto="116000.00">
+                <pago20:DoctoRelacionado IdDocumento="{uuid_ppd}" ImpPagado="116000.00" ImpSaldoAnt="116000.00" ImpSaldoInsoluto="0.00" NumParcialidad="1" />
+            </pago20:Pago>
+        </pago20:Pagos>
+        <tfd:TimbreFiscalDigital UUID="{uuid_rep}" FechaTimbrado="2026-11-15T12:05:00" />
+    </cfdi:Complemento>
+</cfdi:Comprobante>"""
+
+        parsed_rep = parse_cfdi_xml(rep_xml_content.encode("utf-8"), mi_rfc=test_rfc)
+        assert parsed_rep["tipo"] == "INGRESO"
+        assert parsed_rep["total"] == 116000.0
+        assert "Pago recibido" in parsed_rep["conceptos_resumen"]
+        assert "(Ingreso)" in parsed_rep["conceptos_resumen"]
+        assert len(parsed_rep["doctos_relacionados"]) == 1
+
+        inv_rep = CFDIInvoice(
+            uuid=uuid_rep,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="CLI901010ABC",
+            nombre_receptor="CLIENTE CORPORATIVO SA DE CV",
+            fecha_emision=datetime(2026, 11, 15, 12, 0, 0),
+            subtotal=100000.0,
+            iva_trasladado=16000.0,
+            total=116000.0,
+            metodo_pago="PAGO",
+            forma_pago="03",
+            conceptos_resumen=parsed_rep["conceptos_resumen"],
+            conciliado=False,
+            comprobado=False,
+            xml_raw=rep_xml_content
+        )
+
+        # 3. Transacción bancaria de Abono (INGRESO) en BBVA por $116,000
+        tx_abono = BankTransaction(
+            id_transaccion=tx_id,
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 11, 15, 11, 30, 0),
+            concepto="SPEI RECIBIDO CLIENTE CORPORATIVO PAGO FACT 001",
+            monto=116000.0,
+            saldo=250000.0,
+            tipo="INGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+
+        db.add_all([inv_ppd, inv_rep, tx_abono])
+        db.commit()
+
+        # 4. Ejecutar conciliación pasante
+        from app.api.dashboard.reconciliation_routes import _run_reconciliation_pass
+        matches = _run_reconciliation_pass(db, effective_rfc=test_rfc, entity_name="AMDI", periodo_mes=test_month)
+        assert matches >= 1
+
+        # 5. Validar que la factura PPD se marcó como pagada con REP
+        db.refresh(inv_ppd)
+        db.refresh(inv_rep)
+        db.refresh(tx_abono)
+
+        assert inv_ppd.conciliado is True
+        assert inv_ppd.comprobado is True
+        assert inv_ppd.motivo_comprobacion == f"PAGADA_CON_REP:{uuid_rep}"
+        assert inv_ppd.complemento_pago_uuid == uuid_rep
+
+        assert tx_abono.status_conciliacion == "CONCILIADO"
+        assert tx_abono.uuid_cfdi == uuid_rep
+        assert "Pago recibido que ampara" in tx_abono.nota_revision
+        assert "(Ingreso)" in tx_abono.nota_revision
+
+        # 6. Consultar overview para el mes
+        res = client.get(f"/api/dashboard/reconciliation/overview?account_rfc={test_rfc}&month={test_month}")
+        assert res.status_code == 200
+        k = res.json()["kpis"]
+
+        # Validar que NO DUPLICA ingresos:
+        # El total de ingresos facturados debe ser exactamente $116,000 (proveniente del REP cobrado),
+        # y NO $232,000 (que sería duplicar PPD + REP).
+        assert k["total_ingresos_facturados"] == 116000.0
+        assert k["subtotal_ingresos_facturados"] == 100000.0
+        assert k["iva_trasladado_ingresos"] == 16000.0
+        assert k["count_ingresos_facturados"] == 1
+
+        # 7. Validar endpoint de facturas para la UI
+        res_invs = client.get(f"/api/dashboard/reconciliation/pending-invoices?account_rfc={test_rfc}&month={test_month}&include_reconciled=true&include_comprobados=true")
+        assert res_invs.status_code == 200
+        items = res_invs.json()
+        ppd_item = next(i for i in items if i["uuid"] == uuid_ppd)
+        assert ppd_item["is_pagada_rep"] is True
+        assert ppd_item["status_pago"] == "PAGADA_CON_REP"
+        assert ppd_item["complemento_pago_uuid"] == uuid_rep
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_ppd, uuid_rep])).delete()
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx_id).delete()
+        db.commit()
+        db.close()
+
+
+def test_complemento_pago_ampara_multiples_facturas_ppd():
+    """Valida que un Complemento de Pago que ampara múltiples facturas PPD las marque todas como pagadas sin duplicar."""
+    db = SessionLocal()
+    test_rfc = "MEHA850118Q96"
+    test_month = "2026-12"
+
+    uuid_ppd1 = "CFDI-TEST-PPD-MULTI-01"
+    uuid_ppd2 = "CFDI-TEST-PPD-MULTI-02"
+    uuid_rep = "CFDI-TEST-REP-MULTI-PAGO"
+    tx_id = "tx_bbva_test_abono_multi_rep"
+
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_ppd1, uuid_ppd2, uuid_rep])).delete()
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx_id).delete()
+        db.commit()
+
+        # 2 facturas PPD: $40,000 y $60,000 = $100,000 total
+        inv_ppd1 = CFDIInvoice(
+            uuid=uuid_ppd1,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="CLI901010ABC",
+            fecha_emision=datetime(2026, 12, 1),
+            subtotal=34482.76,
+            iva_trasladado=5517.24,
+            total=40000.0,
+            metodo_pago="PPD",
+            conciliado=False,
+            comprobado=False
+        )
+        inv_ppd2 = CFDIInvoice(
+            uuid=uuid_ppd2,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="CLI901010ABC",
+            fecha_emision=datetime(2026, 12, 2),
+            subtotal=51724.14,
+            iva_trasladado=8275.86,
+            total=60000.0,
+            metodo_pago="PPD",
+            conciliado=False,
+            comprobado=False
+        )
+
+        rep_xml_content = f"""<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+    xmlns:pago20="http://www.sat.gob.mx/Pagos20"
+    xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+    Version="4.0" Fecha="2026-12-10T12:00:00" Total="0" SubTotal="0" TipoDeComprobante="P">
+    <cfdi:Emisor Rfc="{test_rfc}" Nombre="ADRIANA MEDINA HERNANDEZ" />
+    <cfdi:Receptor Rfc="CLI901010ABC" Nombre="CLIENTE CORPORATIVO SA DE CV" />
+    <cfdi:Complemento>
+        <pago20:Pagos Version="2.0">
+            <pago20:Totales MontoTotalPagos="100000.00" TotalTrasladosBaseIVA16="86206.90" TotalTrasladosImpuestoIVA16="13793.10" />
+            <pago20:Pago FechaPago="2026-12-10T10:00:00" FormaDePagoP="03" MonedaP="MXN" Monto="100000.00">
+                <pago20:DoctoRelacionado IdDocumento="{uuid_ppd1}" ImpPagado="40000.00" ImpSaldoAnt="40000.00" ImpSaldoInsoluto="0.00" NumParcialidad="1" />
+                <pago20:DoctoRelacionado IdDocumento="{uuid_ppd2}" ImpPagado="60000.00" ImpSaldoAnt="60000.00" ImpSaldoInsoluto="0.00" NumParcialidad="1" />
+            </pago20:Pago>
+        </pago20:Pagos>
+        <tfd:TimbreFiscalDigital UUID="{uuid_rep}" FechaTimbrado="2026-12-10T12:05:00" />
+    </cfdi:Complemento>
+</cfdi:Comprobante>"""
+
+        parsed_rep = parse_cfdi_xml(rep_xml_content.encode("utf-8"), mi_rfc=test_rfc)
+        assert len(parsed_rep["doctos_relacionados"]) == 2
+
+        inv_rep = CFDIInvoice(
+            uuid=uuid_rep,
+            account_rfc=test_rfc,
+            area_proyecto="AMDI",
+            tipo="INGRESO",
+            rfc_emisor=test_rfc,
+            nombre_emisor="ADRIANA MEDINA HERNANDEZ",
+            rfc_receptor="CLI901010ABC",
+            nombre_receptor="CLIENTE CORPORATIVO SA DE CV",
+            fecha_emision=datetime(2026, 12, 10),
+            subtotal=86206.90,
+            iva_trasladado=13793.10,
+            total=100000.0,
+            metodo_pago="PAGO",
+            forma_pago="03",
+            conceptos_resumen=parsed_rep["conceptos_resumen"],
+            conciliado=False,
+            comprobado=False,
+            xml_raw=rep_xml_content
+        )
+
+        tx_abono = BankTransaction(
+            id_transaccion=tx_id,
+            account_rfc=test_rfc,
+            banco="BBVA",
+            fecha=datetime(2026, 12, 10),
+            concepto="SPEI CLIENTE CORPORATIVO PAGO FACTURAS 01 Y 02",
+            monto=100000.0,
+            saldo=150000.0,
+            tipo="INGRESO",
+            periodo_mes=test_month,
+            status_conciliacion="SIN_CFDI"
+        )
+
+        db.add_all([inv_ppd1, inv_ppd2, inv_rep, tx_abono])
+        db.commit()
+
+        from app.api.dashboard.reconciliation_routes import _run_reconciliation_pass
+        matches = _run_reconciliation_pass(db, effective_rfc=test_rfc, entity_name="AMDI", periodo_mes=test_month)
+        assert matches >= 1
+
+        db.refresh(inv_ppd1)
+        db.refresh(inv_ppd2)
+
+        # Ambas deben estar marcadas como pagadas con REP
+        assert inv_ppd1.conciliado is True
+        assert inv_ppd1.motivo_comprobacion == f"PAGADA_CON_REP:{uuid_rep}"
+        assert inv_ppd2.conciliado is True
+        assert inv_ppd2.motivo_comprobacion == f"PAGADA_CON_REP:{uuid_rep}"
+
+        # Consultar overview para validar no duplicidad
+        res = client.get(f"/api/dashboard/reconciliation/overview?account_rfc={test_rfc}&month={test_month}")
+        assert res.status_code == 200
+        k = res.json()["kpis"]
+
+        # Debe ser $100,000.0 (NO $200,000.0)
+        assert k["total_ingresos_facturados"] == 100000.0
+        assert k["count_ingresos_facturados"] == 1
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_([uuid_ppd1, uuid_ppd2, uuid_rep])).delete()
+        db.query(BankTransaction).filter(BankTransaction.id_transaccion == tx_id).delete()
+        db.commit()
+        db.close()
+
+
+
 
 
 
