@@ -580,6 +580,7 @@ def get_pending_invoices(
     include_comprobados: bool = Query(False, description="Incluir facturas marcadas como comprobadas fuera de banco"),
     comprobado_status: Optional[str] = Query("ALL", description="Filtrar por estatus de comprobación: ALL, PENDIENTE o COMPROBADO"),
     search: Optional[str] = Query(None),
+    limit: Optional[int] = Query(None, description="Límite máximo de facturas a retornar"),
     account_rfc: str = Query("DEGF851127TK1"),
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_active_user)
@@ -637,7 +638,8 @@ def get_pending_invoices(
             (CFDIInvoice.uuid.ilike(s))
         )
 
-    invoices = query.order_by(desc(CFDIInvoice.fecha_emision)).limit(150).all()
+    effective_limit = min(limit, 2000) if limit is not None else (1000 if (include_comprobados or include_reconciled) else 300)
+    invoices = query.order_by(desc(CFDIInvoice.fecha_emision)).limit(effective_limit).all()
 
     # Precalcular montos vinculados para facturas retornadas
     inv_uuids = [inv.uuid for inv in invoices]
