@@ -2480,6 +2480,69 @@ def test_overview_xml_and_bank_statement_indicators():
         db.close()
 
 
+def test_export_pdf_faltantes_with_xmls_sueltos():
+    """Valida la generación de PDF de discrepancias/faltantes incluyendo sección de XMLs sueltos."""
+    txs_banco = [
+        {
+            "fecha": "2026-09-05",
+            "concepto": "CARGO BBVA RETIRO EFECTIVO",
+            "tipo": "EGRESO",
+            "monto": 1500.0,
+            "status_conciliacion": "SIN_CFDI"
+        },
+        {
+            "fecha": "2026-09-12",
+            "concepto": "COMPRA SIN FACTURA PROVEEDOR X",
+            "tipo": "EGRESO",
+            "monto": 3480.0,
+            "status_conciliacion": "POR_REVISAR"
+        }
+    ]
+
+    facturas_sueltas = [
+        {
+            "uuid": "4A1E5211-1B2C-3D4E-5F6A-7B8C9D0E1F2A",
+            "fecha": "2026-09-10",
+            "tipo": "EGRESO",
+            "rfc_emisor": "THD970924V76",
+            "nombre_emisor": "THE HOME DEPOT MEXICO",
+            "concepto": "MATERIALES Y HERRAMIENTAS",
+            "total": 1250.50,
+            "forma_pago": "01",
+            "metodo_pago": "PUE"
+        },
+        {
+            "uuid": "5B2E6322-2C3D-4E5F-6A7B-8C9D0E1F2B3C",
+            "fecha": "2026-09-15",
+            "tipo": "INGRESO",
+            "rfc_emisor": "MEHA850118Q96",
+            "nombre_emisor": "AMDI SOLUCIONES",
+            "concepto": "SERVICIO DE CONSULTORIA",
+            "total": 23200.00,
+            "forma_pago": "03",
+            "metodo_pago": "PPD"
+        }
+    ]
+
+    # 1. Prueba directa de generación de PDF con XMLs sueltos
+    pdf_bytes = generate_discrepancies_pdf(
+        transacciones=txs_banco,
+        mes_label="TEST ENTITY (MEHA850118Q96) - 2026-09",
+        facturas_sueltas=facturas_sueltas
+    )
+
+    assert pdf_bytes.startswith(b"%PDF")
+    assert len(pdf_bytes) > 2000
+
+    # 2. Prueba de endpoint HTTP
+    res = client.get("/api/dashboard/reconciliation/export/pdf-faltantes?account_rfc=MEHA850118Q96&month=2026-09")
+    assert res.status_code == 200
+    assert res.headers["content-type"] == "application/pdf"
+    assert res.content.startswith(b"%PDF")
+    assert len(res.content) > 1000
+
+
+
 
 
 

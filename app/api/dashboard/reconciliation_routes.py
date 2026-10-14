@@ -2011,9 +2011,50 @@ def export_pdf_faltantes(
         "nota_revision": t.nota_revision
     } for t in txs]
 
+    # 2. Facturas CFDI (XMLs) sueltas del mes (sin movimiento bancario ni comprobadas)
+    start_dt = None
+    end_dt = None
+    if month:
+        try:
+            parts = month.strip().split("-")
+            y, m = int(parts[0]), int(parts[1])
+            start_dt = datetime(y, m, 1)
+            end_dt = datetime(y + 1, 1, 1) if m == 12 else datetime(y, m + 1, 1)
+        except Exception:
+            pass
+
+    inv_query = db.query(CFDIInvoice).filter(
+        CFDIInvoice.account_rfc == effective_rfc,
+        CFDIInvoice.conciliado == False,
+        CFDIInvoice.comprobado == False
+    )
+    if start_dt and end_dt:
+        inv_query = inv_query.filter(
+            CFDIInvoice.fecha_emision >= start_dt,
+            CFDIInvoice.fecha_emision < end_dt
+        )
+    facturas_sueltas_db = inv_query.order_by(desc(CFDIInvoice.fecha_emision), desc(CFDIInvoice.total)).all()
+
+    facturas_sueltas = [{
+        "uuid": inv.uuid,
+        "fecha": inv.fecha_emision,
+        "tipo": inv.tipo,
+        "rfc_emisor": inv.rfc_emisor,
+        "nombre_emisor": inv.nombre_emisor,
+        "rfc_receptor": inv.rfc_receptor,
+        "nombre_receptor": inv.nombre_receptor,
+        "concepto": inv.conceptos_resumen,
+        "subtotal": inv.subtotal,
+        "iva": inv.iva_trasladado,
+        "total": inv.total,
+        "metodo_pago": inv.metodo_pago,
+        "forma_pago": getattr(inv, "forma_pago", None) or ""
+    } for inv in facturas_sueltas_db]
+
     pdf_bytes = generate_discrepancies_pdf(
         tx_list,
-        mes_label=f"{entity_name} ({effective_rfc}) - {month or 'Actual'}"
+        mes_label=f"{entity_name} ({effective_rfc}) - {month or 'Actual'}",
+        facturas_sueltas=facturas_sueltas
     )
 
     clean_month = (month or 'Actual').replace('/', '-')
