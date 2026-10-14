@@ -177,59 +177,57 @@ def generate_quotation_pdf(
             pdf.set_font("Helvetica", "B", 9.5)
             pdf.cell(130, 5, " | ".join(contact_parts), align="L")
 
-        # Footer institucional balanceado a 2 columnas (Datos Bancarios + Condiciones Comerciales)
-        render_page2_footer()
-
-    def render_page2_footer():
-        footer_y = 239.0
-
-        # Cubrir fondo inferior de la plantilla (reemplaza las condiciones viejas de gran tamaño)
+        # Cubrir preventivamente el pie original de la plantilla
         pdf.set_fill_color(255, 255, 255)
-        pdf.rect(14, 235, 188, 38, style="F")
+        pdf.rect(14, 202, 188, 73, style="F")
 
-        # Columna Izquierda: Datos Bancarios y Fiscales (X=16 a X=104, ancho 88 mm)
+    def render_page2_footer(footer_y: float = 205.0):
+        # Cubrir fondo inferior de la plantilla original para ocultar textos estáticos previos
+        pdf.set_fill_color(255, 255, 255)
+        pdf.rect(14, footer_y - 3, 188, 75, style="F")
+
+        width_limit = 184
+
+        # 1. En primer lugar: CONDICIONES COMERCIALES (cargadas a la izquierda, tipografía mejorada)
         pdf.set_xy(16, footer_y)
         pdf.set_text_color(15, 23, 42)
-        pdf.set_font("Helvetica", "B", 7.0)
-        pdf.cell(88, 3.5, "DATOS BANCARIOS Y FISCALES:", align="L")
+        pdf.set_font("Helvetica", "B", 8.2)
+        pdf.cell(width_limit, 4.0, "CONDICIONES COMERCIALES:", align="L")
 
-        pdf.set_xy(16, footer_y + 4.2)
-        pdf.set_font("Helvetica", "B", 6.8)
-        pdf.set_text_color(30, 41, 59)
-        pdf.cell(88, 3.2, beneficiary_name, align="L")
-
-        pdf.set_xy(16, footer_y + 7.8)
-        pdf.set_font("Helvetica", "", 6.5)
         pdf.set_text_color(71, 85, 105)
-        pdf.cell(88, 3.2, rfc_regime, align="L")
+        pdf.set_font("Helvetica", "", 7.5)
+        pdf.set_xy(16, footer_y + 4.8)
+        pdf.cell(width_limit, 3.8, f"- Se requiere del {int(down_payment_rate * 100)}% como anticipo para iniciar, el tiempo de entrega se confirma al contratar.", align="L")
+        pdf.set_xy(16, footer_y + 8.8)
+        pdf.cell(width_limit, 3.8, "- Cualquier concepto no incluido en la presente cotización deberá cotizarse por separado.", align="L")
+        pdf.set_xy(16, footer_y + 12.8)
+        iva_cond = "- Precios en moneda nacional (MXN) con desglose de impuestos." if apply_tax else "- Los precios mostrados no incluyen IVA."
+        pdf.cell(width_limit, 3.8, iva_cond, align="L")
+        pdf.set_xy(16, footer_y + 16.8)
+        pdf.cell(width_limit, 3.8, f"- Cotización válida por {validity_days} días naturales.", align="L")
 
-        pdf.set_xy(16, footer_y + 11.4)
-        pdf.cell(88, 3.2, bank_account, align="L")
-
-        pdf.set_xy(16, footer_y + 15.0)
-        pdf.cell(88, 3.2, contact_bank, align="L")
-
-        # Columna Derecha: Condiciones Comerciales (X=112 a X=200, ancho 88 mm)
-        pdf.set_xy(112, footer_y)
+        # 2. Debajo: DATOS BANCARIOS Y FISCALES (cargados a la izquierda)
+        bank_y = footer_y + 24.5
+        pdf.set_xy(16, bank_y)
         pdf.set_text_color(15, 23, 42)
-        pdf.set_font("Helvetica", "B", 7.0)
-        pdf.cell(88, 3.5, "CONDICIONES COMERCIALES:", align="L")
+        pdf.set_font("Helvetica", "B", 8.2)
+        pdf.cell(width_limit, 4.0, "DATOS BANCARIOS Y FISCALES:", align="L")
 
+        pdf.set_xy(16, bank_y + 4.8)
+        pdf.set_font("Helvetica", "B", 7.8)
+        pdf.set_text_color(30, 41, 59)
+        pdf.cell(width_limit, 3.8, beneficiary_name, align="L")
+
+        pdf.set_xy(16, bank_y + 8.8)
+        pdf.set_font("Helvetica", "", 7.5)
         pdf.set_text_color(71, 85, 105)
-        pdf.set_font("Helvetica", "", 6.5)
+        pdf.cell(width_limit, 3.8, rfc_regime, align="L")
 
-        pdf.set_xy(112, footer_y + 4.2)
-        pdf.cell(88, 3.2, f"- Se requiere del {int(down_payment_rate * 100)}% como anticipo para iniciar el proyecto.", align="L")
+        pdf.set_xy(16, bank_y + 12.8)
+        pdf.cell(width_limit, 3.8, bank_account, align="L")
 
-        pdf.set_xy(112, footer_y + 7.8)
-        pdf.cell(88, 3.2, "- Cualquier concepto no incluido se cotiza por separado.", align="L")
-
-        pdf.set_xy(112, footer_y + 11.4)
-        iva_cond = "- Los precios mostrados no incluyen IVA." if not apply_tax else "- Precios en moneda nacional (MXN) con desglose de impuestos."
-        pdf.cell(88, 3.2, iva_cond, align="L")
-
-        pdf.set_xy(112, footer_y + 15.0)
-        pdf.cell(88, 3.2, f"- Cotización válida por {validity_days} días naturales.", align="L")
+        pdf.set_xy(16, bank_y + 16.8)
+        pdf.cell(width_limit, 3.8, contact_bank, align="L")
 
     def render_table_header(y_pos: float):
         # Fondo redondeado azul marino para el encabezado
@@ -321,11 +319,12 @@ def generate_quotation_pdf(
 
     # -------------------------------------------------------------
     # SECCIÓN TOTALES Y OBSERVACIONES
+    # Colocado por regla debajo (dejando un espacio en blanco) del último item cotizado
     # -------------------------------------------------------------
-    totals_start_y = max(current_y + 6, 145.0)
+    totals_start_y = current_y + 8.0
 
-    # Si por alguna razón queda muy pegado al pie (Y=235), saltar de página
-    if totals_start_y > 195.0:
+    # Si por acumulación de filas queda sin espacio en la página, saltar a nueva página
+    if totals_start_y > 172.0:
         pdf.add_page()
         render_page2_header()
         totals_start_y = 55.0
@@ -383,6 +382,10 @@ def generate_quotation_pdf(
     pdf.cell(38, 4.5, ant_pct_label, align="L")
     pdf.set_font("Helvetica", "B", 9.5)
     pdf.cell(38, 4.5, format_currency(down_payment_amount), align="R")
+
+    # Footer institucional: Condiciones Comerciales en 1er lugar y Datos Bancarios debajo
+    footer_pos_y = max(totals_start_y + 30.0, 205.0)
+    render_page2_footer(footer_pos_y)
 
     # -------------------------------------------------------------
     # 2. OVERLAY VECTORIAL CON PYPDF SOBRE LA PLANTILLA BASE
