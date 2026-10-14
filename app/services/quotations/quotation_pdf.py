@@ -134,41 +134,11 @@ def generate_quotation_pdf(
     # -------------------------------------------------------------
     pdf.add_page()
 
-    # Título superior / Categoría
-    pdf.set_xy(16, 175)
-    pdf.set_text_color(216, 180, 254)  # Púrpura suave elegante
-    pdf.set_font("Helvetica", "B", 11)
-    pdf.cell(184, 6, "PROPUESTA COMERCIAL & COTIZACION", align="C")
-
-    # Nombre del Cliente / Proyecto (grande, blanco)
-    pdf.set_xy(16, 184)
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font("Helvetica", "B", 20)
-    # Truncar o ajustar si es muy largo
-    display_client = client_name[:48].upper()
-    pdf.cell(184, 10, display_client, align="C")
-
-    # Persona de contacto o subtítulo
-    pdf.set_xy(16, 196)
-    pdf.set_text_color(203, 213, 225)  # Slate 300
-    pdf.set_font("Helvetica", "", 11)
-    if client_contact:
-        pdf.cell(184, 6, f"Atencion: {client_contact}", align="C")
-    else:
-        pdf.cell(184, 6, "Estrategia Digital | Diseno | Desarrollo Web & IA", align="C")
-
-    # Badge con Folio, Fecha y Vigencia
-    pdf.set_xy(16, 214)
-    pdf.set_text_color(148, 163, 184)  # Slate 400
-    pdf.set_font("Helvetica", "", 9)
-    metadata_line = f"FOLIO: {folio}   |   FECHA: {date_str.upper()}   |   VIGENCIA: {validity_days} DIAS"
-    pdf.cell(184, 6, metadata_line, align="C")
-
-    # Footer discreto de portada
-    pdf.set_xy(16, 264)
-    pdf.set_text_color(100, 116, 139)  # Slate 500
-    pdf.set_font("Helvetica", "B", 8)
-    pdf.cell(184, 5, "HIPHA MEDIA & TECH   |   MORELIA, MICHOACAN   |   HIPHA.MX", align="C")
+    # Solamente la URL institucional al pie de la portada oficial
+    pdf.set_xy(16, 258)
+    pdf.set_text_color(0, 229, 255)  # Cyan #00e5ff de Hipha sobre fondo azul oscuro
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(184, 6, "WWW.HIPHA.MX", align="C")
 
     # -------------------------------------------------------------
     # PÁGINA 2+: PROPUESTA Y DESGLOSE
@@ -215,8 +185,9 @@ def generate_quotation_pdf(
         pdf.cell(10, 7.5, "#", border=0, align="C", fill=False)
         pdf.cell(94, 7.5, "CONCEPTO Y ALCANCE", border=0, align="L", fill=False)
         pdf.cell(18, 7.5, "CANT", border=0, align="C", fill=False)
-        pdf.cell(31, 7.5, "P. UNITARIO", border=0, align="R", fill=False)
-        pdf.cell(31, 7.5, "IMPORTE", border=0, align="R", fill=False)
+        # Recorridos a la izquierda / centrados en su columna
+        pdf.cell(31, 7.5, "P. UNITARIO", border=0, align="C", fill=False)
+        pdf.cell(31, 7.5, "IMPORTE", border=0, align="C", fill=False)
         return y_pos + 7.5
 
     render_page2_header()
@@ -281,12 +252,12 @@ def generate_quotation_pdf(
 
         # Columna P. UNITARIO
         pdf.set_xy(16 + w_idx + w_concept + w_qty, current_y + 1.5)
-        pdf.cell(w_unit, 5, format_currency(it["unit_price"]), align="R")
+        pdf.cell(w_unit - 3, 5, format_currency(it["unit_price"]), align="R")
 
         # Columna IMPORTE
         pdf.set_xy(16 + w_idx + w_concept + w_qty + w_unit, current_y + 1.5)
         pdf.set_font("Helvetica", "B", 8.5)
-        pdf.cell(w_total, 5, format_currency(it["subtotal"]), align="R")
+        pdf.cell(w_total - 3, 5, format_currency(it["subtotal"]), align="R")
 
         current_y += row_h
 
@@ -371,9 +342,9 @@ def generate_quotation_pdf(
     pdf.set_font("Helvetica", "B", 10.5)
     pdf.cell(42, 5.5, format_currency(total), align="R")
 
-    # Anticipo Requerido (50%)
+    # Anticipo Requerido (50%) en Cyan Hipha
     pdf.set_xy(box_x, bottom_start_y + 19.0)
-    pdf.set_text_color(217, 70, 239)  # Magenta/fucsia de marca
+    pdf.set_text_color(0, 180, 216)  # Cyan oficial de marca Hipha
     pdf.set_font("Helvetica", "B", 8.0)
     ant_pct_label = f"ANTICIPO REQUERIDO ({int(down_payment_rate * 100)}%):"
     pdf.cell(38, 4.5, ant_pct_label, align="L")
