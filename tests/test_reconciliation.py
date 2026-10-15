@@ -3226,6 +3226,134 @@ def test_search_pending_invoices_by_folio():
         db.close()
 
 
+def test_parse_bank_pdf_statement_invex_credit_card():
+    from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+
+    with open("tests/fixtures/Invex_septiembre_2026.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    txs = parse_bank_pdf_statement(pdf_bytes, "Invex_septiembre_2026.pdf", account_rfc="MEHA850118Q96")
+    assert len(txs) == 30
+
+    # Banco y entidad asociada
+    for t in txs:
+        assert t["banco"] == "TC INVEX"
+        assert t["account_rfc"] == "MEHA850118Q96"
+        assert t["periodo_mes"] == "2026-09"
+
+    # Sumas de control exactas del estado de cuenta
+    total_cargos = sum(t["monto"] for t in txs if t["tipo"] == "EGRESO")
+    total_abonos = sum(t["monto"] for t in txs if t["tipo"] == "INGRESO")
+    assert total_cargos == pytest.approx(59275.05, 0.01)
+    assert total_abonos == pytest.approx(13597.00, 0.01)
+
+    # Identificación de plásticos (Titular y Digital)
+    conceptos = [t["concepto"] for t in txs]
+    assert any("[Tarjeta Titular 1330]" in c for c in conceptos)
+    assert any("[Tarjeta Digital 2569]" in c for c in conceptos)
+
+    # Pago de tarjeta clasificado como traspaso propio (NO_APLICA)
+    pago = next(t for t in txs if "SU PAGO POR SPEI" in t["concepto"])
+    assert pago["status_conciliacion"] == "NO_APLICA"
+    assert pago["confianza_score"] == 1.0
+    assert "Pago de Tarjeta" in pago["nota_revision"] or "Traspaso Propio" in pago["nota_revision"]
+
+
+def test_invex_reconciliation_matching():
+    from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement
+    from app.services.reconciliation.matching_engine import conciliar_movimientos
+
+    with open("tests/fixtures/Invex_septiembre_2026.pdf", "rb") as f:
+        pdf_bytes = f.read()
+
+    txs = parse_bank_pdf_statement(pdf_bytes, "Invex_septiembre_2026.pdf", account_rfc="MEHA850118Q96")
+
+    # CFDIs simulados correspondientes a los gastos de tarjeta en Septiembre 2026
+    facturas_mock = [
+        {
+            "uuid": "FB8D1374-1111-2222-3333-444444444444",
+            "tipo": "EGRESO",
+            "rfc_emisor": "CACX880324IAA",
+            "nombre_emisor": "ANA GABRIELA CASTELLANOS CERDA",
+            "rfc_receptor": "MEHA850118Q96",
+            "nombre_receptor": "ADRIANA MEDINA HERNANDEZ",
+            "fecha_emision": datetime(2026, 9, 22, 12, 0),
+            "total": 10712.16,
+            "metodo_pago": "PUE",
+            "forma_pago": "04",
+            "doctos_relacionados": []
+        },
+        {
+            "uuid": "5BE4116B-1111-2222-3333-444444444444",
+            "tipo": "EGRESO",
+            "rfc_emisor": "CACX880324IAA",
+            "nombre_emisor": "ANA GABRIELA CASTELLANOS CERDA",
+            "rfc_receptor": "MEHA850118Q96",
+            "nombre_receptor": "ADRIANA MEDINA HERNANDEZ",
+            "fecha_emision": datetime(2026, 9, 25, 12, 0),
+            "total": 2752.81,
+            "metodo_pago": "PUE",
+            "forma_pago": "04",
+            "doctos_relacionados": []
+        },
+        {
+            "uuid": "35BE005C-1111-2222-3333-444444444444",
+            "tipo": "EGRESO",
+            "rfc_emisor": "PAR050922GK3",
+            "nombre_emisor": "PLURAL ARQUITECTURA",
+            "rfc_receptor": "MEHA850118Q96",
+            "nombre_receptor": "ADRIANA MEDINA HERNANDEZ",
+            "fecha_emision": datetime(2026, 9, 24, 12, 0),
+            "total": 19106.12,
+            "metodo_pago": "PUE",
+            "forma_pago": "04",
+            "doctos_relacionados": []
+        },
+        {
+            "uuid": "15E0390A-1111-2222-3333-444444444444",
+            "tipo": "EGRESO",
+            "rfc_emisor": "HDM001017AS1",
+            "nombre_emisor": "HOME DEPOT MEXICO",
+            "rfc_receptor": "MEHA850118Q96",
+            "nombre_receptor": "ADRIANA MEDINA HERNANDEZ",
+            "fecha_emision": datetime(2026, 9, 26, 12, 0),
+            "total": 3332.00,
+            "metodo_pago": "PUE",
+            "forma_pago": "04",
+            "doctos_relacionados": []
+        }
+    ]
+
+    matched = conciliar_movimientos(txs, facturas_mock)
+
+    # 1. Pago de Tarjeta debe ser NO_APLICA
+    pago = next(m for m in matched if "SU PAGO POR SPEI" in m["concepto"])
+    assert pago["status_conciliacion"] == "NO_APLICA"
+    assert pago["confianza_score"] == 1.0
+
+    # 2. Las 4 facturas deben coincidir exactamente con Tier 1 (1.0 de confianza y CONCILIADO)
+    ferremate_1 = next(m for m in matched if abs(m["monto"] - 10712.16) <= 0.01)
+    assert ferremate_1["status_conciliacion"] == "CONCILIADO"
+    assert ferremate_1["uuid_cfdi"] == "FB8D1374-1111-2222-3333-444444444444"
+    assert ferremate_1["confianza_score"] == 1.0
+
+    ferremate_2 = next(m for m in matched if abs(m["monto"] - 2752.81) <= 0.01)
+    assert ferremate_2["status_conciliacion"] == "CONCILIADO"
+    assert ferremate_2["uuid_cfdi"] == "5BE4116B-1111-2222-3333-444444444444"
+    assert ferremate_2["confianza_score"] == 1.0
+
+    plural = next(m for m in matched if abs(m["monto"] - 19106.12) <= 0.01)
+    assert plural["status_conciliacion"] == "CONCILIADO"
+    assert plural["uuid_cfdi"] == "35BE005C-1111-2222-3333-444444444444"
+    assert plural["confianza_score"] == 1.0
+
+    home_depot = next(m for m in matched if abs(m["monto"] - 3332.00) <= 0.01)
+    assert home_depot["status_conciliacion"] == "CONCILIADO"
+    assert home_depot["uuid_cfdi"] == "15E0390A-1111-2222-3333-444444444444"
+    assert home_depot["confianza_score"] == 1.0
+
+
+
 
 
 

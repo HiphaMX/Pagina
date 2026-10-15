@@ -11,7 +11,18 @@ def _clean_text_tokens(text: str) -> List[str]:
     tokens = [t for t in cleaned.split() if len(t) >= 4 and t not in stopwords]
     return tokens
 
+# Mapeo de nombres comerciales y terminales TPV hacia razones sociales y RFCs de emisores CFDI
+TRADE_NAME_ALIASES = {
+    "FERREMATE": ["CASTELLANOS", "CACX880324IAA"],
+    "IKEA": ["IKANO", "IRM170428Q82", "HER170522M19"],
+    "HOME DEPOT": ["THE HOME DEPOT", "HDM001017AS1"],
+    "PLURAL": ["PLURAL ARQUITECTURA", "PAR150311N33", "PAR050922GK3"],
+    "ZARA": ["INDITEX", "ZARA MEXICO", "IMX0202206G1"],
+    "H&M": ["HENNES", "MAURITZ", "HM"],
+}
+
 def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_disponibles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+
     """
     Ejecuta el motor de conciliación determinista de 3 niveles entre movimientos bancarios y CFDIs disponibles.
     
@@ -87,8 +98,17 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                             tiene_coincidencia_texto = True
                             break
 
+                # Comprobar alias comerciales (nombres de tienda / marcas vs razón social CFDI)
+                if not tiene_coincidencia_texto:
+                    for alias_key, alias_targets in TRADE_NAME_ALIASES.items():
+                        if alias_key in concepto_upper:
+                            if any(target in nombre_contraparte or target == rfc_contraparte for target in alias_targets):
+                                tiene_coincidencia_texto = True
+                                break
+
                 # Relacionados si es Complemento de Pago
                 f_related = [d["uuid"] for d in f.get("doctos_relacionados", []) if d.get("uuid")]
+
 
                 # Ventana comercial flexible:
                 # - Con coincidencia de nombre/RFC: de -60 días (anticipos de clientes) a +90 días (crédito comercial y PPD)

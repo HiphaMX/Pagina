@@ -1644,12 +1644,13 @@ def deduplicate_transactions(
                             other.confianza_score = 1.0
                             break
 
-        # 2. Corregir periodo_mes si la fecha real no coincide (excepto TC Mercado Pago que va por corte mensual)
-        if t.fecha and t.banco != "TC MERCADO PAGO":
+        # 2. Corregir periodo_mes si la fecha real no coincide (excepto tarjetas TC que van por corte mensual)
+        if t.fecha and t.banco not in ("TC MERCADO PAGO", "TC INVEX"):
             real_period = t.fecha.strftime("%Y-%m")
             if t.periodo_mes != real_period:
                 t.periodo_mes = real_period
                 periods_fixed += 1
+
 
     db.commit()
 
@@ -1930,11 +1931,12 @@ def reprocess_entity_reconciliation(
             tx.tipo_categoria = "INGRESO"
             deposits_reclassified += 1
 
-        if tx.fecha and tx.banco != "TC MERCADO PAGO":
+        if tx.fecha and tx.banco not in ("TC MERCADO PAGO", "TC INVEX"):
             real_period = tx.fecha.strftime("%Y-%m")
             if tx.periodo_mes != real_period:
                 tx.periodo_mes = real_period
                 periods_fixed += 1
+
 
         is_own = is_own_account_transfer(tx.concepto, account_rfc=effective_rfc) or (tx.nota_revision and "Traspaso entre Cuentas Propias" in tx.nota_revision)
         if is_own:

@@ -165,9 +165,17 @@ def is_own_account_transfer(concepto: str, account_rfc: str = "") -> bool:
         "CAJERO AUTOMATICO",
         "DISPOSICION EN CAJERO",
         "DISPOSICION CAJERO",
+        "SU PAGO POR SPEI",
+        "SU PAGO POR SPEI_T",
+        "PAGO DE TARJETA",
+        "PAGO A TU TARJETA",
+        "PAGO TARJETA DE CREDITO",
+        "PAGO TARJETA",
+        "PAGO DEL RESUMEN",
     ]
     if any(kw in c_up for kw in transfer_keywords):
         return True
+
 
     # 2. Nombre del titular o contrapartes propias (Francisco Delgadillo y Adriana Medina)
     titulares = [
@@ -686,6 +694,173 @@ def _parse_mercadopago_statement(
     return result
 
 
+def _parse_invex_statement(
+    full_text: str,
+    pages_text: List[str],
+    filename: str,
+    account_rfc: str
+) -> List[Dict[str, Any]]:
+    """
+    Parsea estados de cuenta de tarjeta de crédito de Banco INVEX (ej. Volaris INVEX 0 - Clásica).
+    Extrae cargos y abonos regulares con su fecha de operación y tarjeta (Titular / Digital).
+    Asocia automáticamente al RFC efectivo (ej. MEHA850118Q96 para Adriana Medina).
+    Clasifica los pagos a la tarjeta ('SU PAGO POR SPEI') como traspaso propio (NO_APLICA).
+    """
+    full_text_up = full_text.upper()
+
+    # 1. RFC efectivo
+    effective_rfc = account_rfc or "DEGF851127TK1"
+    if any(k in full_text_up for k in ["ADRIANA MEDINA", "MEHA850118"]):
+        effective_rfc = "MEHA850118Q96"
+    elif any(k in full_text_up for k in ["FRANCISCO DELGADILLO", "DEGF851127"]):
+        effective_rfc = "DEGF851127TK1"
+
+    # 2. Período y fecha de corte
+    stmt_year = datetime.now().year
+    stmt_month = datetime.now().month
+
+    m_corte = re.search(r"Fecha de Corte:\s*(\d{1,2})[-/ ]([a-zA-Z]{3,})[-/ ](\d{4})", full_text, re.IGNORECASE)
+    if m_corte:
+        stmt_year = int(m_corte.group(3))
+        mon_str = m_corte.group(2).upper()[:3]
+        if mon_str in SPANISH_MONTHS:
+            stmt_month = int(SPANISH_MONTHS[mon_str])
+    else:
+        m_per = re.search(r"al\s+(\d{1,2})[-/ ]([a-zA-Z]{3,})[-/ ](\d{4})", full_text, re.IGNORECASE)
+        if m_per:
+            stmt_year = int(m_per.group(3))
+            mon_str = m_per.group(2).upper()[:3]
+            if mon_str in SPANISH_MONTHS:
+                stmt_month = int(SPANISH_MONTHS[mon_str])
+
+    periodo_mes_default = f"{stmt_year}-{stmt_month:02d}"
+
+    # 3. Procesar movimientos
+    date_line_re = re.compile(r"^(\d{2}-[A-Za-z]{3}-\d{4})\s+(\d{2}-[A-Za-z]{3}-\d{4})\s+(.+)$")
+    amount_re = re.compile(r"([+-])\s*\$\s*([\d,]+\.\d{2})\s*$")
+
+    current_card = "Tarjeta Titular"
+    raw_entries: List[Dict[str, Any]] = []
+    cur_entry: Optional[Dict[str, Any]] = None
+
+    for page_txt in pages_text:
+        txt_up = page_txt.upper()
+        if "DESGLOSE DE MOVIMIENTOS" not in txt_up and "CARGOS, ABONOS Y COMPRAS REGULARES" not in txt_up:
+            continue
+
+        for line in page_txt.split("\n"):
+            l = line.strip()
+            if not l:
+                continue
+
+            l_up = l.upper()
+            l_norm = re.sub(r"\s+", " ", l_up)
+            if "TARJETA TITULAR" in l_norm:
+                m_card = re.search(r"\*{4,}(\d{4})", l)
+                last4 = m_card.group(1) if m_card else ""
+                current_card = f"Tarjeta Titular {last4}".strip()
+            elif "TARJETA DIGITAL" in l_norm:
+                m_card = re.search(r"\*{4,}(\d{4})", l)
+                last4 = m_card.group(1) if m_card else ""
+                current_card = f"Tarjeta Digital {last4}".strip()
+            elif "TOTAL CARGOS" in l_up or "ATENCIÓN DE QUEJAS" in l_up or "ATENCION DE QUEJAS" in l_up:
+                if cur_entry:
+                    raw_entries.append(cur_entry)
+                    cur_entry = None
+                break
+
+            m_date = date_line_re.match(l)
+            if m_date:
+                if cur_entry:
+                    raw_entries.append(cur_entry)
+                f_op, f_cargo, rest = m_date.groups()
+                cur_entry = {
+                    "fecha_op": f_op,
+                    "fecha_cargo": f_cargo,
+                    "card": current_card,
+                    "text": rest
+                }
+                if amount_re.search(rest):
+                    raw_entries.append(cur_entry)
+                    cur_entry = None
+            elif cur_entry:
+                if not any(l_up.startswith(k) for k in [
+                    "NOTAS:", "VER NOTAS", "PÁGINA", "PAGINA", "NÚMERO DE CUENTA", "NUMERO DE CUENTA",
+                    "CARGOS, ABONOS", "DESGLOSE", "TARJETA", "FECHA DE", "OPERACIÓN", "OPERACION", "CARGO"
+                ]):
+                    cur_entry["text"] += " " + l
+                    if amount_re.search(cur_entry["text"]):
+                        raw_entries.append(cur_entry)
+                        cur_entry = None
+
+    if cur_entry:
+        raw_entries.append(cur_entry)
+
+    # 4. Formatear y construir transacciones
+    result: List[Dict[str, Any]] = []
+    for idx, e in enumerate(raw_entries):
+        m_amt = amount_re.search(e["text"])
+        if not m_amt:
+            continue
+
+        sign, amt_str = m_amt.groups()
+        monto_val = _parse_num(amt_str)
+        if not monto_val or monto_val <= 0:
+            continue
+
+        desc = e["text"][:m_amt.start()].strip()
+        desc_clean = re.sub(r"\s+", " ", desc).strip()
+        concepto_final = f"[{e['card']}] {desc_clean}"[:500]
+
+        tipo_val = "EGRESO" if sign == "+" else "INGRESO"
+
+        parts = e["fecha_op"].split("-")
+        day = int(parts[0])
+        mon_key = parts[1].upper()[:3]
+        mon = int(SPANISH_MONTHS.get(mon_key, stmt_month))
+        year = int(parts[2])
+        fecha_obj = datetime(year, mon, day)
+        date_str = fecha_obj.strftime("%Y-%m-%d")
+
+        periodo_mes = periodo_mes_default
+
+        hash_seed = f"{effective_rfc}|TC_INVEX|{date_str}|{concepto_final.upper()}|{monto_val:.2f}|{tipo_val}|{idx}"
+        id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
+
+        is_payment = ("SU PAGO" in concepto_final.upper() or "PAGO POR SPEI" in concepto_final.upper())
+        is_own = is_payment or is_own_account_transfer(concepto_final, account_rfc=effective_rfc)
+
+        if is_own:
+            status_conciliacion = "NO_APLICA"
+            nota_revision = "Pago de Tarjeta de Crédito / Traspaso Propio"
+            area_proyecto = "DELGADILLO MEDINA"
+            confianza_score = 1.0
+        else:
+            status_conciliacion = "SIN_CFDI"
+            nota_revision = None
+            confianza_score = 0.0
+            area_proyecto = _detect_area_project(concepto_final)
+
+        result.append({
+            "account_rfc": effective_rfc,
+            "id_transaccion": id_transaccion,
+            "banco": "TC INVEX",
+            "fecha": fecha_obj,
+            "concepto": concepto_final,
+            "monto": round(monto_val, 2),
+            "tipo": tipo_val,
+            "saldo": None,
+            "periodo_mes": periodo_mes,
+            "area_proyecto": area_proyecto,
+            "status_conciliacion": status_conciliacion,
+            "confianza_score": confianza_score,
+            "nota_revision": nota_revision,
+            "referencia_rastreo": None
+        })
+
+    return result
+
+
 def parse_bank_pdf_statement(
     file_content: bytes,
     filename: str,
@@ -722,11 +897,18 @@ def parse_bank_pdf_statement(
         if txs_mp:
             return txs_mp
 
-    # 2. Detectar si es Estado de Cuenta BBVA (ej. PyME con Detalle de Movimientos)
+    # 2. Detectar si es Estado de Cuenta de Tarjeta INVEX / Volaris INVEX
+    if any(k in full_text_up for k in ["INVEX", "BANCO INVEX", "VOLARIS INVEX"]):
+        txs_invex = _parse_invex_statement(full_text, pages_text, filename, account_rfc)
+        if txs_invex:
+            return txs_invex
+
+    # 3. Detectar si es Estado de Cuenta BBVA (ej. PyME con Detalle de Movimientos)
     if "DETALLE DE MOVIMIENTOS" in full_text_up or "MAESTRA PYME" in full_text_up or "ESTADO DE CUENTA" in full_text_up:
         txs_pyme = _parse_bbva_pyme_statement(full_text, filename, account_rfc)
         if txs_pyme:
             return txs_pyme
+
 
     # 3. Detectar si es un comprobante de operación individual / transferencia / traspaso
     is_comprobante = any(k in full_text_up for k in [
