@@ -924,7 +924,12 @@
                                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                 <span>+ Cargar XMLs / CSV</span>
                             </button>
+                            <button type="button" id="btnOpenMonthlySummaryModal" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); padding: 0.55rem 0.95rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.45rem; box-shadow: 0 2px 8px rgba(168,85,247,0.2); transition: all 0.2s;" title="Ver gráfico y resumen de facturas por método de pago y comprobación">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                                <span>📊 Resumen Comprobación</span>
+                            </button>
                             <button type="button" id="btnExportExcel" style="background: rgba(30, 41, 59, 0.8); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.55rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+
                                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                                 <span>Excel Maestro</span>
                             </button>
@@ -2360,8 +2365,251 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- MODAL: RESUMEN MENSUAL DE COMPROBACIÓN      -->
+    <!-- ========================================== -->
+    <div id="modalMonthlySummary" class="modal-overlay hidden" style="z-index: 10005;">
+        <style>
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+                #modalMonthlySummary, #modalMonthlySummary * {
+                    visibility: visible;
+                }
+                #modalMonthlySummary {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    background: white !important;
+                    color: black !important;
+                }
+                .modal-close-btn, #btnPrintSummaryReport, #btnCloseSummaryModal {
+                    display: none !important;
+                }
+            }
+            .summary-flow-card:hover {
+                border-color: rgba(168, 85, 247, 0.5) !important;
+                background: rgba(255,255,255,0.04) !important;
+            }
+            .summary-inv-row:hover {
+                background: rgba(255,255,255,0.03);
+            }
+        </style>
+        <div class="modal-dialog modal-lg" style="max-width: 1000px; width: 95%;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 1.1rem 1.5rem;">
+                <div>
+                    <h2 style="font-size:1.25rem; font-weight:700; color:var(--text-main); margin-bottom:0.25rem; display: flex; align-items: center; gap: 0.6rem;">
+                        <span>📊 Resumen Mensual de Comprobación y Pagos</span>
+                        <span id="summaryModalEntityBadge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 6px; font-weight: 700;">AMDI</span>
+                    </h2>
+                    <p id="summaryModalSubtitle" style="font-size:0.83rem; color:var(--text-muted); margin:0;">Corte y comprobación de facturas por método de pago para el período</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <button type="button" id="btnPrintSummaryReport" style="background: rgba(255,255,255,0.06); color: var(--text-main); border: 1px solid var(--border-color); padding: 0.45rem 0.8rem; border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.35rem;" title="Imprimir reporte">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <span>Imprimir</span>
+                    </button>
+                    <button type="button" id="btnCloseSummaryModalX" class="modal-close-btn" aria-label="Cerrar">&times;</button>
+                </div>
+            </div>
+
+            <div class="modal-body" id="summaryModalPrintArea" style="padding: 1.5rem; max-height: calc(85vh - 120px); overflow-y: auto;">
+                <!-- Loading State -->
+                <div id="summaryModalLoading" style="text-align: center; padding: 3rem 1rem;">
+                    <div class="spinner" style="margin: 0 auto 0.75rem auto;"></div>
+                    <span style="font-size: 0.9rem; color: var(--accent-cyan); font-weight: 600;">Cargando resumen de facturas y comprobación...</span>
+                </div>
+
+                <!-- Content Container -->
+                <div id="summaryModalContent" class="hidden">
+                    <!-- Top KPI Summary Cards -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.9rem; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                            <div style="font-size: 0.73rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 0.35rem;">Total de Facturas (Mes)</div>
+                            <div id="sumKpiTotalFacturas" style="font-size: 1.35rem; font-weight: 800; color: #ffffff;">0 <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">facturas</span></div>
+                            <div id="sumKpiTotalFacturasMonto" style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600; margin-top: 0.2rem;">$0.00 MXN</div>
+                        </div>
+
+                        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 1rem;">
+                            <div style="font-size: 0.73rem; text-transform: uppercase; color: #34d399; font-weight: 700; margin-bottom: 0.35rem;">Egresos Comprobados</div>
+                            <div id="sumKpiComprobadosMonto" style="font-size: 1.35rem; font-weight: 800; color: #10b981;">$0.00</div>
+                            <div id="sumKpiComprobadosPct" style="font-size: 0.82rem; color: #34d399; font-weight: 600; margin-top: 0.2rem;">0.0% de egresos cubiertos</div>
+                        </div>
+
+                        <div style="background: rgba(234, 179, 8, 0.05); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 10px; padding: 1rem;">
+                            <div style="font-size: 0.73rem; text-transform: uppercase; color: #facc15; font-weight: 700; margin-bottom: 0.35rem;">Facturas Pendientes</div>
+                            <div id="sumKpiPendientesCount" style="font-size: 1.35rem; font-weight: 800; color: #eab308;">0 <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">facturas</span></div>
+                            <div id="sumKpiPendientesMonto" style="font-size: 0.82rem; color: #facc15; font-weight: 600; margin-top: 0.2rem;">$0.00 MXN</div>
+                        </div>
+
+                        <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 10px; padding: 1rem;">
+                            <div style="font-size: 0.73rem; text-transform: uppercase; color: #f87171; font-weight: 700; margin-bottom: 0.35rem;">Banco / TC sin CFDI</div>
+                            <div id="sumKpiSinCfdiCount" style="font-size: 1.35rem; font-weight: 800; color: #ef4444;">0 <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">cargos</span></div>
+                            <div id="sumKpiSinCfdiMonto" style="font-size: 0.82rem; color: #f87171; font-weight: 600; margin-top: 0.2rem;">$0.00 MXN</div>
+                        </div>
+                    </div>
+
+                    <!-- Split Row: Donut Chart & Detailed Categories -->
+                    <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 1.5rem; align-items: start; margin-bottom: 1.5rem;">
+                        <!-- Left: Chart Card -->
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center;">
+                                <span>Distribución por Canal de Pago</span>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">% sobre egresos facturados</span>
+                            </div>
+                            <div style="position: relative; width: 240px; height: 240px; margin: 0 auto;">
+                                <canvas id="canvasReconMonthlyChart" width="240" height="240"></canvas>
+                                <div id="chartCenterOverlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                                    <div id="chartCenterPct" style="font-size: 1.6rem; font-weight: 800; color: #10b981; line-height: 1;">0%</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-top: 3px;">Comprobado</div>
+                                </div>
+                            </div>
+                            <div id="chartLegendCustom" style="margin-top: 1rem; width: 100%; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.78rem;"></div>
+                        </div>
+
+                        <!-- Right: Detailed Channel Cards with Progress Bars -->
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <!-- TC Invex -->
+                            <div class="summary-flow-card" id="cardFlowInvex" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">💳</span>
+                                        <strong style="color: var(--text-main); font-size: 0.88rem;">Facturas pagadas con TC Invex</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowInvexMonto" style="color: #c084fc; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowInvexBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 facturas</span>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; background: rgba(255,255,255,0.06); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 0.35rem;">
+                                    <div id="sumRowInvexBar" style="height: 100%; background: #a855f7; width: 0%; transition: width 0.4s;"></div>
+                                </div>
+                                <div id="listTcInvex" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed var(--border-color); padding-top: 0.6rem;"></div>
+                            </div>
+
+                            <!-- Efectivo -->
+                            <div class="summary-flow-card" id="cardFlowEfectivo" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">💵</span>
+                                        <strong style="color: var(--text-main); font-size: 0.88rem;">Facturas pagadas en efectivo</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowEfectivoMonto" style="color: #34d399; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowEfectivoBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 facturas</span>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; background: rgba(255,255,255,0.06); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 0.35rem;">
+                                    <div id="sumRowEfectivoBar" style="height: 100%; background: #10b981; width: 0%; transition: width 0.4s;"></div>
+                                </div>
+                                <div id="listEfectivo" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed var(--border-color); padding-top: 0.6rem;"></div>
+                            </div>
+
+                            <!-- Cuenta Fiscal (BBVA) -->
+                            <div class="summary-flow-card" id="cardFlowCuentaFiscal" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">🏦</span>
+                                        <strong style="color: var(--text-main); font-size: 0.88rem;">Facturas pagadas desde cuenta fiscal</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowFiscalMonto" style="color: #38bdf8; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowFiscalBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 facturas</span>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; background: rgba(255,255,255,0.06); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 0.35rem;">
+                                    <div id="sumRowFiscalBar" style="height: 100%; background: #0284c7; width: 0%; transition: width 0.4s;"></div>
+                                </div>
+                                <div id="listCuentaFiscal" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed var(--border-color); padding-top: 0.6rem;"></div>
+                            </div>
+
+                            <!-- TC BBVA / Otras TC -->
+                            <div class="summary-flow-card" id="cardFlowTcBbva" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">💳</span>
+                                        <strong style="color: var(--text-main); font-size: 0.88rem;">Facturas pagadas con TC BBVA / Otras</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowTcBbvaMonto" style="color: #60a5fa; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowTcBbvaBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(96, 165, 250, 0.15); color: #60a5fa; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 facturas</span>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; background: rgba(255,255,255,0.06); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 0.35rem;">
+                                    <div id="sumRowTcBbvaBar" style="height: 100%; background: #3b82f6; width: 0%; transition: width 0.4s;"></div>
+                                </div>
+                                <div id="listTcBbva" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed var(--border-color); padding-top: 0.6rem;"></div>
+                            </div>
+
+                            <!-- Cobradas a Cuenta Fiscal (Ingresos) -->
+                            <div class="summary-flow-card" id="cardFlowCobradasFiscal" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">📥</span>
+                                        <strong style="color: var(--text-main); font-size: 0.88rem;">Facturas cobradas a cuenta fiscal</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowCobradasMonto" style="color: #22d3ee; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowCobradasBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(34, 211, 238, 0.15); color: #22d3ee; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 facturas</span>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; background: rgba(255,255,255,0.06); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 0.35rem;">
+                                    <div id="sumRowCobradasBar" style="height: 100%; background: #06b6d4; width: 0%; transition: width 0.4s;"></div>
+                                </div>
+                                <div id="listCobradasFiscal" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed var(--border-color); padding-top: 0.6rem;"></div>
+                            </div>
+
+                            <!-- Pendientes de Comprobar -->
+                            <div class="summary-flow-card" id="cardFlowPendientes" style="background: rgba(234, 179, 8, 0.03); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">⚠️</span>
+                                        <strong style="color: #facc15; font-size: 0.88rem;">Facturas pendientes de comprobar</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowPendientesMonto" style="color: #eab308; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowPendientesBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(234, 179, 8, 0.15); color: #facc15; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 facturas</span>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; background: rgba(255,255,255,0.06); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 0.35rem;">
+                                    <div id="sumRowPendientesBar" style="height: 100%; background: #eab308; width: 0%; transition: width 0.4s;"></div>
+                                </div>
+                                <div id="listPendientes" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed rgba(234, 179, 8, 0.3); padding-top: 0.6rem;"></div>
+                            </div>
+
+                            <!-- Movimientos Bancarios sin CFDI -->
+                            <div class="summary-flow-card" id="cardFlowBancoSinCfdi" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 1.1rem;">🔍</span>
+                                        <strong style="color: #f87171; font-size: 0.88rem;">Cargos en banco / TC pendientes de factura</strong>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <strong id="sumRowBancoSinCfdiMonto" style="color: #ef4444; font-size: 0.95rem;">$0.00</strong>
+                                        <span id="sumRowBancoSinCfdiBadge" style="display: inline-block; margin-left: 0.4rem; background: rgba(239, 68, 68, 0.15); color: #f87171; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 6px; font-weight: 700;">0 cargos</span>
+                                    </div>
+                                </div>
+                                <div id="listBancoSinCfdi" class="hidden" style="margin-top: 0.75rem; border-top: 1px dashed rgba(239, 68, 68, 0.3); padding-top: 0.6rem;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.5rem; border-top: 1px solid var(--border-color);">
+                <div style="font-size: 0.78rem; color: var(--text-muted);">
+                    💡 Haz clic en cualquier categoría para expandir o contraer el listado detallado de facturas.
+                </div>
+                <button type="button" id="btnCloseSummaryModal" class="btn-secondary-mini" style="background:transparent; color:var(--text-main); border:1px solid var(--border-color); padding:0.55rem 1.25rem; border-radius:8px; cursor:pointer; font-weight:600;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Asignar Proyecto / Área a Movimiento -->
     <div id="modalEditProject" class="modal-overlay hidden" style="z-index: 10000;">
+
         <div class="modal-content" style="max-width: 500px; width: 92%;">
             <div class="modal-header">
                 <div>

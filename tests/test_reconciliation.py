@@ -3353,6 +3353,45 @@ def test_invex_reconciliation_matching():
     assert home_depot["confianza_score"] == 1.0
 
 
+def test_get_monthly_flow_summary_endpoint():
+    # Probar endpoint para AMDI en Septiembre 2026
+    res = client.get("/api/dashboard/reconciliation/monthly-flow-summary?account_rfc=MEHA850118Q96&month=2026-09")
+    assert res.status_code == 200
+    data = res.json()
+
+    assert data["month"] == "2026-09"
+    assert data["entity"]["name"] == "AMDI"
+    assert data["entity"]["rfc"] == "MEHA850118Q96"
+    assert "Septiembre 2026" in data["month_label"]
+
+    # Total de facturas
+    assert data["total_facturas"]["count"] == 19
+    assert data["total_facturas"]["monto"] == pytest.approx(58615.83, 0.01)
+
+    # Facturas pagadas con TC Invex
+    assert data["pagadas_tc_invex"]["count"] == 4
+    assert data["pagadas_tc_invex"]["monto"] == pytest.approx(35903.09, 0.01)
+    invex_uuids = [inv["uuid"] for inv in data["pagadas_tc_invex"]["invoices"]]
+    assert any("FB8D1374" in u for u in invex_uuids)
+    assert any("35BE005C" in u for u in invex_uuids)
+
+    # Facturas pagadas en efectivo
+    assert data["pagadas_efectivo"]["count"] == 10
+    assert data["pagadas_efectivo"]["monto"] == pytest.approx(9938.72, 0.01)
+
+    # Facturas pendientes de comprobar
+    assert data["pendientes_comprobacion"]["count"] == 5
+    assert data["pendientes_comprobacion"]["monto"] == pytest.approx(12774.02, 0.01)
+
+    # Cargos bancarios sin CFDI
+    assert data["banco_sin_cfdi"]["count"] >= 23
+
+    # Probar validación de mes inválido
+    bad_res = client.get("/api/dashboard/reconciliation/monthly-flow-summary?account_rfc=MEHA850118Q96&month=invalid-date")
+    assert bad_res.status_code == 400
+
+
+
 
 
 

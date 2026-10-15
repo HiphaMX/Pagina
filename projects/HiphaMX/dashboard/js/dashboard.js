@@ -6182,7 +6182,11 @@ function initReconciliationModule() {
 
     // Modales de Edición de Proyecto y Justificación (No Requiere CFDI)
     initProjectAndExemptionModals();
+
+    // Modal de Resumen Mensual de Comprobación y Flujo
+    initMonthlySummaryModal();
 }
+
 
 // Carga principal de datos y métricas
 async function loadReconciliationData(refreshMonths = true) {
@@ -7944,8 +7948,346 @@ function initReconBackfillModal() {
 }
 
 // -------------------------------------------------------------
+// MODAL: RESUMEN MENSUAL DE COMPROBACIÓN Y FLUJO
+// -------------------------------------------------------------
+let reconSummaryChartInstance = null;
+
+function initMonthlySummaryModal() {
+    const btnOpen = document.getElementById('btnOpenMonthlySummaryModal');
+    const modal = document.getElementById('modalMonthlySummary');
+    const btnCloseX = document.getElementById('btnCloseSummaryModalX');
+    const btnClose = document.getElementById('btnCloseSummaryModal');
+    const btnPrint = document.getElementById('btnPrintSummaryReport');
+
+    if (btnOpen) {
+        btnOpen.addEventListener('click', () => {
+            openMonthlySummaryModal();
+        });
+    }
+
+    const closeModal = () => {
+        if (modal) modal.classList.add('hidden');
+    };
+
+    if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
+    if (btnClose) btnClose.addEventListener('click', closeModal);
+
+    if (btnPrint) {
+        btnPrint.addEventListener('click', () => {
+            window.print();
+        });
+    }
+}
+
+async function openMonthlySummaryModal() {
+    const modal = document.getElementById('modalMonthlySummary');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+
+    const loading = document.getElementById('summaryModalLoading');
+    const content = document.getElementById('summaryModalContent');
+    const subtitle = document.getElementById('summaryModalSubtitle');
+    const badge = document.getElementById('summaryModalEntityBadge');
+
+    if (loading) loading.classList.remove('hidden');
+    if (content) content.classList.add('hidden');
+
+    const entityName = (currentReconEntity === 'MEHA850118Q96') ? 'AMDI' : 'HIPHA';
+    if (badge) {
+        badge.textContent = entityName;
+        badge.style.background = (currentReconEntity === 'MEHA850118Q96') ? 'rgba(168, 85, 247, 0.15)' : 'rgba(56, 189, 248, 0.15)';
+        badge.style.color = (currentReconEntity === 'MEHA850118Q96') ? '#c084fc' : '#38bdf8';
+        badge.style.borderColor = (currentReconEntity === 'MEHA850118Q96') ? 'rgba(168, 85, 247, 0.35)' : 'rgba(56, 189, 248, 0.35)';
+    }
+
+    try {
+        const targetMonth = currentReconMonth || `${currentReconYear}-${currentReconMonthNum}`;
+        const res = await fetch(`/api/dashboard/reconciliation/monthly-flow-summary?account_rfc=${encodeURIComponent(currentReconEntity)}&month=${encodeURIComponent(targetMonth)}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('dashboard_token')}`
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        renderMonthlySummaryData(data);
+    } catch (err) {
+        console.error("Error al cargar resumen mensual:", err);
+        if (loading) {
+            loading.innerHTML = `
+                <div style="color: #ef4444; font-size: 0.95rem; font-weight: 600;">⚠️ Error al obtener el resumen mensual</div>
+                <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.35rem;">${err.message || 'Error de conexión'}</div>
+            `;
+        }
+    }
+}
+
+function renderMonthlySummaryData(data) {
+    const loading = document.getElementById('summaryModalLoading');
+    const content = document.getElementById('summaryModalContent');
+    const subtitle = document.getElementById('summaryModalSubtitle');
+
+    if (loading) loading.classList.add('hidden');
+    if (content) content.classList.remove('hidden');
+
+    if (subtitle) {
+        subtitle.textContent = `Período: ${data.month_label} • Entidad: ${data.entity.name} (${data.entity.rfc})`;
+    }
+
+    // KPIs Superiores
+    const totalFacturas = data.total_facturas || {};
+    const totalFacturasCount = totalFacturas.count || 0;
+    const totalFacturasMonto = totalFacturas.monto || 0;
+    const pctComprobado = totalFacturas.pct_comprobado || 0;
+
+    const elTotalCount = document.getElementById('sumKpiTotalFacturas');
+    if (elTotalCount) elTotalCount.innerHTML = `${totalFacturasCount} <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">facturas (${totalFacturas.count_egresos || 0} Egr · ${totalFacturas.count_ingresos || 0} Ing)</span>`;
+
+    const elTotalMonto = document.getElementById('sumKpiTotalFacturasMonto');
+    if (elTotalMonto) elTotalMonto.textContent = `$${totalFacturasMonto.toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN`;
+
+    // Egresos comprobados
+    const invex = data.pagadas_tc_invex || {};
+    const efectivo = data.pagadas_efectivo || {};
+    const fiscal = data.pagadas_cuenta_fiscal || {};
+    const tcBbva = data.pagadas_tc_bbva || {};
+    const cobradas = data.cobradas_cuenta_fiscal || {};
+    const pendientes = data.pendientes_comprobacion || {};
+    const bancoSinCfdi = data.banco_sin_cfdi || {};
+
+    const totalComprobadoMonto = (invex.monto || 0) + (efectivo.monto || 0) + (fiscal.monto || 0) + (tcBbva.monto || 0);
+
+    const elCompMonto = document.getElementById('sumKpiComprobadosMonto');
+    if (elCompMonto) elCompMonto.textContent = `$${totalComprobadoMonto.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+
+    const elCompPct = document.getElementById('sumKpiComprobadosPct');
+    if (elCompPct) elCompPct.textContent = `${pctComprobado}% de egresos cubiertos`;
+
+    const elPendCount = document.getElementById('sumKpiPendientesCount');
+    if (elPendCount) elPendCount.innerHTML = `${pendientes.count || 0} <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">facturas</span>`;
+
+    const elPendMonto = document.getElementById('sumKpiPendientesMonto');
+    if (elPendMonto) elPendMonto.textContent = `$${(pendientes.monto || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN`;
+
+    const elSinCfdiCount = document.getElementById('sumKpiSinCfdiCount');
+    if (elSinCfdiCount) elSinCfdiCount.innerHTML = `${bancoSinCfdi.count || 0} <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">cargos</span>`;
+
+    const elSinCfdiMonto = document.getElementById('sumKpiSinCfdiMonto');
+    if (elSinCfdiMonto) elSinCfdiMonto.textContent = `$${(bancoSinCfdi.monto || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN`;
+
+    // Center Chart Overlay
+    const chartCenterPct = document.getElementById('chartCenterPct');
+    if (chartCenterPct) {
+        chartCenterPct.textContent = `${pctComprobado}%`;
+        chartCenterPct.style.color = (pctComprobado >= 99) ? '#10b981' : (pctComprobado >= 50 ? '#38bdf8' : '#eab308');
+    }
+
+    // Rows and Progress Bars (calculate % based on total egresos or total)
+    const egresosTot = (totalFacturas.monto_egresos && totalFacturas.monto_egresos > 0) ? totalFacturas.monto_egresos : (totalFacturasMonto || 1);
+
+    const updateRow = (montoId, badgeId, barId, count, monto) => {
+        const elMonto = document.getElementById(montoId);
+        const elBadge = document.getElementById(badgeId);
+        const elBar = document.getElementById(barId);
+        if (elMonto) elMonto.textContent = `$${(monto || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+        if (elBadge) elBadge.textContent = `${count || 0} facturas`;
+        if (elBar) {
+            const pct = Math.min(100, Math.round(((monto || 0) / egresosTot) * 100));
+            elBar.style.width = `${pct}%`;
+        }
+    };
+
+    updateRow('sumRowInvexMonto', 'sumRowInvexBadge', 'sumRowInvexBar', invex.count, invex.monto);
+    updateRow('sumRowEfectivoMonto', 'sumRowEfectivoBadge', 'sumRowEfectivoBar', efectivo.count, efectivo.monto);
+    updateRow('sumRowFiscalMonto', 'sumRowFiscalBadge', 'sumRowFiscalBar', fiscal.count, fiscal.monto);
+    updateRow('sumRowTcBbvaMonto', 'sumRowTcBbvaBadge', 'sumRowTcBbvaBar', tcBbva.count, tcBbva.monto);
+    updateRow('sumRowCobradasMonto', 'sumRowCobradasBadge', 'sumRowCobradasBar', cobradas.count, cobradas.monto);
+    updateRow('sumRowPendientesMonto', 'sumRowPendientesBadge', 'sumRowPendientesBar', pendientes.count, pendientes.monto);
+
+    // Banco sin CFDI row
+    const elSinMonto = document.getElementById('sumRowBancoSinCfdiMonto');
+    const elSinBadge = document.getElementById('sumRowBancoSinCfdiBadge');
+    if (elSinMonto) elSinMonto.textContent = `$${(bancoSinCfdi.monto || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+    if (elSinBadge) elSinBadge.textContent = `${bancoSinCfdi.count || 0} cargos`;
+
+    // Render lists inside accordion
+    renderCategoryInvoiceList('listTcInvex', invex.invoices, 'No hay facturas pagadas con TC Invex en este mes.');
+    renderCategoryInvoiceList('listEfectivo', efectivo.invoices, 'No hay facturas pagadas en efectivo.');
+    renderCategoryInvoiceList('listCuentaFiscal', fiscal.invoices, 'No hay facturas pagadas desde la cuenta fiscal BBVA.');
+    renderCategoryInvoiceList('listTcBbva', tcBbva.invoices, 'No hay facturas pagadas con TC BBVA.');
+    renderCategoryInvoiceList('listCobradasFiscal', cobradas.invoices, 'No hay facturas de ingreso cobradas en este mes.');
+    renderCategoryInvoiceList('listPendientes', pendientes.invoices, '¡Excelente! No hay facturas pendientes de comprobar.');
+    renderCategoryTransactionsList('listBancoSinCfdi', bancoSinCfdi.transactions, 'No hay movimientos bancarios sin factura.');
+
+    // Build Chart.js Donut Chart
+    renderSummaryChart(data);
+}
+
+function renderCategoryInvoiceList(containerId, invoices, emptyMsg) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!invoices || invoices.length === 0) {
+        el.innerHTML = `<div style="font-size: 0.78rem; color: var(--text-muted); font-style: italic; padding: 0.35rem 0;">${emptyMsg}</div>`;
+        return;
+    }
+
+    el.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 0.45rem; max-height: 200px; overflow-y: auto;">
+            ${invoices.map(inv => `
+                <div class="summary-inv-row" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.78rem;">
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%;">
+                        <strong style="color: var(--text-main);">${escapeHtml(inv.emisor || '')}</strong>
+                        <div style="color: var(--text-muted); font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(inv.conceptos || 'Sin concepto')}</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem;">${inv.fecha} • FP: ${inv.forma_pago || 'N/A'} • UUID: ${inv.folio || ''}</div>
+                    </div>
+                    <div style="text-align: right; white-space: nowrap;">
+                        <strong style="color: #ffffff; font-size: 0.85rem;">$${(inv.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function renderCategoryTransactionsList(containerId, transactions, emptyMsg) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!transactions || transactions.length === 0) {
+        el.innerHTML = `<div style="font-size: 0.78rem; color: var(--text-muted); font-style: italic; padding: 0.35rem 0;">${emptyMsg}</div>`;
+        return;
+    }
+
+    el.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 0.45rem; max-height: 200px; overflow-y: auto;">
+            ${transactions.map(tx => `
+                <div class="summary-inv-row" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.78rem;">
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%;">
+                        <strong style="color: #f87171;">${escapeHtml(tx.concepto || '')}</strong>
+                        <div style="color: var(--text-muted); font-size: 0.7rem;">${tx.fecha} • Banco: ${tx.banco || 'N/A'}</div>
+                    </div>
+                    <div style="text-align: right; white-space: nowrap;">
+                        <strong style="color: #ef4444; font-size: 0.85rem;">$${(tx.monto || 0).toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+window.toggleSummaryCategoryList = function(listId) {
+    const el = document.getElementById(listId);
+    if (!el) return;
+    el.classList.toggle('hidden');
+};
+
+function renderSummaryChart(data) {
+    const canvas = document.getElementById('canvasReconMonthlyChart');
+    if (!canvas) return;
+
+    if (reconSummaryChartInstance) {
+        reconSummaryChartInstance.destroy();
+        reconSummaryChartInstance = null;
+    }
+
+    const invex = (data.pagadas_tc_invex && data.pagadas_tc_invex.monto) || 0;
+    const efectivo = (data.pagadas_efectivo && data.pagadas_efectivo.monto) || 0;
+    const fiscal = (data.pagadas_cuenta_fiscal && data.pagadas_cuenta_fiscal.monto) || 0;
+    const tcBbva = (data.pagadas_tc_bbva && data.pagadas_tc_bbva.monto) || 0;
+    const pendientes = (data.pendientes_comprobacion && data.pendientes_comprobacion.monto) || 0;
+
+    const labels = [];
+    const chartData = [];
+    const colors = [];
+
+    if (invex > 0) {
+        labels.push('TC Invex');
+        chartData.push(invex);
+        colors.push('#a855f7');
+    }
+    if (efectivo > 0) {
+        labels.push('Efectivo');
+        chartData.push(efectivo);
+        colors.push('#10b981');
+    }
+    if (fiscal > 0) {
+        labels.push('Cuenta Fiscal (BBVA)');
+        chartData.push(fiscal);
+        colors.push('#0284c7');
+    }
+    if (tcBbva > 0) {
+        labels.push('TC BBVA / Otras');
+        chartData.push(tcBbva);
+        colors.push('#3b82f6');
+    }
+    if (pendientes > 0) {
+        labels.push('Pendientes de Comprobar');
+        chartData.push(pendientes);
+        colors.push('#eab308');
+    }
+
+    if (chartData.length === 0) {
+        labels.push('Sin Facturas');
+        chartData.push(1);
+        colors.push('#334155');
+    }
+
+    reconSummaryChartInstance = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: chartData,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: '#0f172a',
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const val = context.raw || 0;
+                            return ` $${val.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Custom HTML legend
+    const legendEl = document.getElementById('chartLegendCustom');
+    if (legendEl) {
+        legendEl.innerHTML = labels.map((lbl, idx) => {
+            const val = chartData[idx];
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 0.4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: ${colors[idx]}; flex-shrink: 0;"></span>
+                        <span style="color: var(--text-muted);">${lbl}</span>
+                    </div>
+                    <strong style="color: var(--text-main); font-size: 0.8rem;">$${val.toLocaleString('es-MX', {minimumFractionDigits: 2})}</strong>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+// -------------------------------------------------------------
 // SELECCIÓN MÚLTIPLE Y ACCIONES POR LOTE (BATCH RECONCILIATION)
 // -------------------------------------------------------------
+
 window.selectedReconTxIds = new Set();
 let isBatchMarkNoAplica = false;
 let isBatchEditProject = false;

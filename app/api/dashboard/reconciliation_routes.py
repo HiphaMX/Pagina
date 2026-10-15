@@ -2335,3 +2335,209 @@ def export_pdf_faltantes(
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+
+@router.get("/monthly-flow-summary")
+def get_monthly_flow_summary(
+    month: str = Query(..., description="Mes en formato YYYY-MM (ej. 2026-09)"),
+    account_rfc: str = Query("DEGF851127TK1", description="RFC de la entidad: DEGF851127TK1 (HIPHA) o MEHA850118Q96 (AMDI)"),
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """
+    Retorna el resumen mensual de facturas desglosado por método de pago / flujo de comprobación:
+    - Total de facturas (ingresos y egresos)
+    - Facturas pagadas con TC Invex
+    - Facturas pagadas en efectivo (Forma de pago 01)
+    - Facturas pagadas desde la cuenta fiscal (BBVA)
+    - Facturas pagadas con TC BBVA / Otras TC
+    - Facturas cobradas a cuenta fiscal (Ingresos BBVA)
+    - Facturas pendientes de comprobar / conciliar
+    - Movimientos bancarios / tarjeta pendientes de factura CFDI
+    """
+    entity_cfg = get_reconciliation_entity_config(account_rfc)
+    effective_rfc = entity_cfg["rfc"]
+    entity_name = entity_cfg["name"]
+
+    reclassify_invoices_by_fiscal_rfc(db)
+    auto_reconcile_cash_expenses(db, effective_rfc)
+    sync_all_complementos_de_pago(db, effective_rfc)
+
+    try:
+        parts = month.split("-")
+        y, m = int(parts[0]), int(parts[1])
+        start_dt = datetime(y, m, 1)
+        end_dt = datetime(y + 1, 1, 1) if m == 12 else datetime(y, m + 1, 1)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Formato de mes inválido. Utilice YYYY-MM.")
+
+    spanish_month_names = {
+        1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril", 5: "Mayo", 6: "Junio",
+        7: "Julio", 8: "Agosto", 9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+    }
+    month_label = f"{spanish_month_names.get(m, month)} {y}"
+
+    invoices = db.query(CFDIInvoice).filter(
+        CFDIInvoice.account_rfc == effective_rfc,
+        CFDIInvoice.fecha_emision >= start_dt,
+        CFDIInvoice.fecha_emision < end_dt
+    ).order_by(desc(CFDIInvoice.fecha_emision)).all()
+
+    bank_txs = db.query(BankTransaction).filter(
+        BankTransaction.account_rfc == effective_rfc,
+        BankTransaction.periodo_mes == month
+    ).order_by(desc(BankTransaction.fecha)).all()
+
+    cobradas_cuenta_fiscal = []
+    pagadas_cuenta_fiscal = []
+    pagadas_tc_invex = []
+    pagadas_tc_bbva = []
+    pagadas_efectivo = []
+    pendientes_comprobacion = []
+
+    for inv in invoices:
+        tx = db.query(BankTransaction).filter(BankTransaction.uuid_cfdi == inv.uuid).first()
+        banco_up = str(tx.banco).upper() if tx else ""
+
+        inv_item = {
+            "uuid": inv.uuid,
+            "folio": inv.uuid[:8],
+            "fecha": inv.fecha_emision.strftime("%Y-%m-%d"),
+            "tipo": inv.tipo,
+            "emisor": inv.nombre_emisor or inv.rfc_emisor,
+            "rfc_emisor": inv.rfc_emisor,
+            "receptor": inv.nombre_receptor or inv.rfc_receptor,
+            "rfc_receptor": inv.rfc_receptor,
+            "total": round(float(inv.total), 2),
+            "forma_pago": inv.forma_pago or "",
+            "metodo_pago": inv.metodo_pago or "",
+            "conceptos": inv.conceptos_resumen or "",
+            "banco_vinculado": tx.banco if tx else None,
+            "concepto_bancario": tx.concepto if tx else None,
+            "fecha_banco": tx.fecha.strftime("%Y-%m-%d") if tx and tx.fecha else None
+        }
+
+        if inv.tipo == "INGRESO":
+            if (tx and "BBVA" in banco_up and not banco_up.startswith("TC")) or inv.conciliado:
+                cobradas_cuenta_fiscal.append(inv_item)
+            else:
+                pendientes_comprobacion.append(inv_item)
+        else:
+            # EGRESO
+            if tx and "INVEX" in banco_up:
+                pagadas_tc_invex.append(inv_item)
+            elif tx and ("TC BBVA" in banco_up or (banco_up.startswith("TC") and "INVEX" not in banco_up)):
+                pagadas_tc_bbva.append(inv_item)
+            elif tx and "BBVA" in banco_up and not banco_up.startswith("TC"):
+                pagadas_cuenta_fiscal.append(inv_item)
+            elif inv.forma_pago == "01":
+                pagadas_efectivo.append(inv_item)
+            else:
+                pendientes_comprobacion.append(inv_item)
+
+    sin_cfdi_txs = [
+        {
+            "id": t.id,
+            "fecha": t.fecha.strftime("%Y-%m-%d"),
+            "monto": round(float(t.monto), 2),
+            "tipo": t.tipo,
+            "banco": t.banco,
+            "concepto": t.concepto,
+            "status": t.status_conciliacion,
+            "nota": t.nota_revision
+        }
+        for t in bank_txs
+        if t.status_conciliacion in ("SIN_CFDI", "POR_REVISAR") and not t.uuid_cfdi
+    ]
+
+    traspasos_txs = [
+        {
+            "id": t.id,
+            "fecha": t.fecha.strftime("%Y-%m-%d"),
+            "monto": round(float(t.monto), 2),
+            "tipo": t.tipo,
+            "banco": t.banco,
+            "concepto": t.concepto,
+            "nota": t.nota_revision
+        }
+        for t in bank_txs
+        if t.status_conciliacion == "NO_APLICA"
+    ]
+
+    total_facturas_monto = round(sum(inv.total for inv in invoices), 2)
+    egresos_facturas = [inv for inv in invoices if inv.tipo == "EGRESO"]
+    ingresos_facturas = [inv for inv in invoices if inv.tipo == "INGRESO"]
+
+    total_egresos_comprobados_monto = round(
+        sum(i["total"] for i in pagadas_tc_invex) +
+        sum(i["total"] for i in pagadas_tc_bbva) +
+        sum(i["total"] for i in pagadas_cuenta_fiscal) +
+        sum(i["total"] for i in pagadas_efectivo), 2
+    )
+
+    total_egresos_facturados_monto = round(sum(inv.total for inv in egresos_facturas), 2)
+    pct_egresos_comprobados = round((total_egresos_comprobados_monto / total_egresos_facturados_monto * 100), 1) if total_egresos_facturados_monto > 0 else 0.0
+
+    return {
+        "month": month,
+        "month_label": month_label,
+        "entity": {"rfc": effective_rfc, "name": entity_name},
+        "total_facturas": {
+            "count": len(invoices),
+            "monto": total_facturas_monto,
+            "count_ingresos": len(ingresos_facturas),
+            "monto_ingresos": round(sum(inv.total for inv in ingresos_facturas), 2),
+            "count_egresos": len(egresos_facturas),
+            "monto_egresos": total_egresos_facturados_monto,
+            "pct_comprobado": pct_egresos_comprobados
+        },
+        "cobradas_cuenta_fiscal": {
+            "label": "Facturas cobradas a cuenta fiscal",
+            "count": len(cobradas_cuenta_fiscal),
+            "monto": round(sum(i["total"] for i in cobradas_cuenta_fiscal), 2),
+            "invoices": cobradas_cuenta_fiscal
+        },
+        "pagadas_cuenta_fiscal": {
+            "label": "Facturas pagadas desde cuenta fiscal",
+            "count": len(pagadas_cuenta_fiscal),
+            "monto": round(sum(i["total"] for i in pagadas_cuenta_fiscal), 2),
+            "invoices": pagadas_cuenta_fiscal
+        },
+        "pagadas_tc_invex": {
+            "label": "Facturas pagadas con TC Invex",
+            "count": len(pagadas_tc_invex),
+            "monto": round(sum(i["total"] for i in pagadas_tc_invex), 2),
+            "invoices": pagadas_tc_invex
+        },
+        "pagadas_tc_bbva": {
+            "label": "Facturas pagadas con TC BBVA / Otras",
+            "count": len(pagadas_tc_bbva),
+            "monto": round(sum(i["total"] for i in pagadas_tc_bbva), 2),
+            "invoices": pagadas_tc_bbva
+        },
+        "pagadas_efectivo": {
+            "label": "Facturas pagadas en efectivo",
+            "count": len(pagadas_efectivo),
+            "monto": round(sum(i["total"] for i in pagadas_efectivo), 2),
+            "invoices": pagadas_efectivo
+        },
+        "pendientes_comprobacion": {
+            "label": "Facturas pendientes de comprobar",
+            "count": len(pendientes_comprobacion),
+            "monto": round(sum(i["total"] for i in pendientes_comprobacion), 2),
+            "invoices": pendientes_comprobacion
+        },
+        "banco_sin_cfdi": {
+            "label": "Cargos en banco / tarjeta pendientes de factura",
+            "count": len(sin_cfdi_txs),
+            "monto": round(sum(t["monto"] for t in sin_cfdi_txs), 2),
+            "transactions": sin_cfdi_txs
+        },
+        "traspasos_propios": {
+            "label": "Traspasos propios y pagos a tarjeta exentos",
+            "count": len(traspasos_txs),
+            "monto": round(sum(t["monto"] for t in traspasos_txs), 2),
+            "transactions": traspasos_txs
+        }
+    }
+
+
