@@ -23,7 +23,8 @@ from app.services.reconciliation.backfill import import_historical_excel
 from app.services.reconciliation.mail_listener import (
     sync_mailbox_invoices,
     reclassify_invoices_by_fiscal_rfc,
-    auto_reconcile_cash_expenses
+    auto_reconcile_cash_expenses,
+    sync_cfdi_conciliated_status
 )
 from app.services.reconciliation.pdf_parser import parse_bank_pdf_statement, is_own_account_transfer
 
@@ -141,10 +142,12 @@ def get_reconciliation_overview(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
-    # Reclasificar facturas por RFC fiscal, conciliar efectivo y sincronizar REPs
+    # Reclasificar facturas por RFC fiscal, conciliar efectivo y sincronizar REPs y conciliados
     reclassify_invoices_by_fiscal_rfc(db)
     auto_reconcile_cash_expenses(db, effective_rfc)
     sync_all_complementos_de_pago(db, effective_rfc)
+    sync_cfdi_conciliated_status(db, effective_rfc)
+
 
     # Meses disponibles en la base de datos para esta entidad
     months_query = db.query(BankTransaction.periodo_mes).filter(
@@ -629,10 +632,12 @@ def get_pending_invoices(
     entity_cfg = get_reconciliation_entity_config(account_rfc)
     effective_rfc = entity_cfg["rfc"]
 
-    # Reclasificar facturas por RFC fiscal, conciliar egresos en efectivo y sincronizar REPs
+    # Reclasificar facturas por RFC fiscal, conciliar egresos en efectivo y sincronizar REPs y conciliados
     reclassify_invoices_by_fiscal_rfc(db)
     auto_reconcile_cash_expenses(db, effective_rfc)
     sync_all_complementos_de_pago(db, effective_rfc)
+    sync_cfdi_conciliated_status(db, effective_rfc)
+
 
     query = db.query(CFDIInvoice).filter(
         CFDIInvoice.account_rfc == effective_rfc
@@ -2361,6 +2366,8 @@ def get_monthly_flow_summary(
     reclassify_invoices_by_fiscal_rfc(db)
     auto_reconcile_cash_expenses(db, effective_rfc)
     sync_all_complementos_de_pago(db, effective_rfc)
+    sync_cfdi_conciliated_status(db, effective_rfc)
+
 
     try:
         parts = month.split("-")

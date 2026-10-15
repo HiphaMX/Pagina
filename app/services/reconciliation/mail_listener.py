@@ -58,6 +58,38 @@ def auto_reconcile_cash_expenses(db: Session, effective_rfc: str = None) -> int:
     return count
 
 
+def sync_cfdi_conciliated_status(db: Session, effective_rfc: str = None) -> int:
+    """
+    Sincroniza el estatus 'conciliado' de CFDIInvoice con las transacciones bancarias.
+    Asegura que si un movimiento bancario o de tarjeta está en status 'CONCILIADO'
+    con un uuid_cfdi asignado, la factura correspondiente tenga conciliado = True.
+    """
+    from app.models.reconciliation import BankTransaction
+    query = db.query(BankTransaction).filter(
+        BankTransaction.status_conciliacion == "CONCILIADO",
+        BankTransaction.uuid_cfdi != None
+    )
+    if effective_rfc:
+        query = query.filter(BankTransaction.account_rfc == effective_rfc)
+
+    conciliated_txs = query.all()
+    conciliated_uuids = set(t.uuid_cfdi for t in conciliated_txs if t.uuid_cfdi)
+
+    updated = 0
+    if conciliated_uuids:
+        unmarked_invs = db.query(CFDIInvoice).filter(
+            CFDIInvoice.uuid.in_(conciliated_uuids),
+            CFDIInvoice.conciliado == False
+        ).all()
+        for inv in unmarked_invs:
+            inv.conciliado = True
+            updated += 1
+        if updated > 0:
+            db.commit()
+    return updated
+
+
+
 def reclassify_invoices_by_fiscal_rfc(db: Session) -> int:
     """
     Reclasifica las facturas CFDI en la base de datos a su entidad correcta según el RFC del receptor o emisor:

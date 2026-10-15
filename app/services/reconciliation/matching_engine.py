@@ -19,6 +19,11 @@ TRADE_NAME_ALIASES = {
     "PLURAL": ["PLURAL ARQUITECTURA", "PAR150311N33", "PAR050922GK3"],
     "ZARA": ["INDITEX", "ZARA MEXICO", "IMX0202206G1"],
     "H&M": ["HENNES", "MAURITZ", "HM"],
+    "UBER": ["DANIEL ALFREDO CHAVEZ", "CHMD850428", "FACTURIFY", "FAC1710188Q2", "UBER"],
+    "DLO*UBER": ["DANIEL ALFREDO CHAVEZ", "CHMD850428", "FACTURIFY", "FAC1710188Q2", "UBER"],
+    "ULTRAKLIN": ["BIOZONE CHEMICAL", "BIOZONE"],
+    "OFFICE Y SCHOOL": ["SILVA DE LA TORRE", "SITM7801129B4"],
+    "TUKIPA": ["ABEL ALEJANDRO MEDINA", "MEHA870222DY4"],
 }
 
 def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_disponibles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -285,6 +290,20 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
 
             contraparte_name = str((f.get("nombre_receptor") if f_tipo == "INGRESO" else f.get("nombre_emisor")) or "").upper().strip()
 
+            def _cand_matches_vendor(cand_idx: int) -> bool:
+                r_conc = str(resultados[cand_idx].get("concepto", "")).upper()
+                c_rfc = str((f.get("rfc_emisor") if f_tipo == "EGRESO" else f.get("rfc_receptor")) or "").upper().strip()
+                if c_rfc and len(c_rfc) >= 4 and c_rfc in r_conc:
+                    return True
+                for tok in _clean_text_tokens(contraparte_name):
+                    if tok in r_conc:
+                        return True
+                for alias_key, alias_targets in TRADE_NAME_ALIASES.items():
+                    if alias_key in r_conc:
+                        if any(target in contraparte_name or target == c_rfc for target in alias_targets):
+                            return True
+                return False
+
             cands_idx = []
             for u_idx in unmatched_indices:
                 r = resultados[u_idx]
@@ -307,6 +326,17 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 for j_pos in range(i_pos + 1, len(cands_idx)):
                     idx_a = cands_idx[i_pos]
                     idx_b = cands_idx[j_pos]
+                    # Para evitar falsos positivos, al menos uno de los movimientos debe corresponder al proveedor
+                    # o ambos movimientos deben compartir tokens específicos de referencia/emisor
+                    matches_vendor = _cand_matches_vendor(idx_a) or _cand_matches_vendor(idx_b)
+                    if not matches_vendor:
+                        c_a = str(resultados[idx_a].get("concepto", "")).upper()
+                        c_b = str(resultados[idx_b].get("concepto", "")).upper()
+                        stopwords = {"TARJETA", "TITULAR", "DIGITAL", "CIUDAD", "MEX", "PAGO", "CUENTA", "TERCERO", "SPEI", "ENVIADO", "RECIBIDO", "BNET", "TRANSFERENCIA", "ZAPOPAN", "JAL"}
+                        common_tokens = (set(_clean_text_tokens(c_a)) & set(_clean_text_tokens(c_b))) - stopwords
+                        if not common_tokens:
+                            continue
+
                     sum_monto = round(float(resultados[idx_a]["monto"]) + float(resultados[idx_b]["monto"]), 2)
                     if abs(sum_monto - f_total) <= 0.05:
                         found_combo = [idx_a, idx_b]
