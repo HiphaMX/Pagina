@@ -74,7 +74,7 @@ class Settings(BaseSettings):
     BOTICA_EMAILS_FROM_EMAIL: str = ""
     BOTICA_EMAILS_FROM_NAME: str = ""
     BOTICA_RECAPTCHA_SECRET_KEY: str = ""
-    BOTICA_ADMIN_PASSWORD: str = "Mibotic4_2026"
+    BOTICA_ADMIN_PASSWORD: str = ""
 
 
     # HEALTHYICE Specific SMTP settings
@@ -140,7 +140,7 @@ class Settings(BaseSettings):
     RECONCILIATION_IMAP_HOST: str = "mail.hipha.mx"
     RECONCILIATION_IMAP_PORT: Union[int, str] = 993
     RECONCILIATION_IMAP_USER: str = "factura@hipha.mx"
-    RECONCILIATION_IMAP_PASSWORD: str = "%k3]ALzqrsOj^X;="
+    RECONCILIATION_IMAP_PASSWORD: str = ""
     RECONCILIATION_IMAP_FOLDER: str = "INBOX"
 
     # Gemini / Imagen 3 API Configuration
@@ -152,7 +152,7 @@ class Settings(BaseSettings):
     HIPHA_RECON_IMAP_HOST: str = "mail.hipha.mx"
     HIPHA_RECON_IMAP_PORT: Union[int, str] = 993
     HIPHA_RECON_IMAP_USER: str = "factura@hipha.mx"
-    HIPHA_RECON_IMAP_PASSWORD: str = "%k3]ALzqrsOj^X;="
+    HIPHA_RECON_IMAP_PASSWORD: str = ""
     HIPHA_RECON_IMAP_FOLDER: str = "INBOX"
 
     # AMDI Entity
@@ -161,7 +161,7 @@ class Settings(BaseSettings):
     AMDI_RECON_IMAP_HOST: str = "mail.amdi.mx"
     AMDI_RECON_IMAP_PORT: Union[int, str] = 993
     AMDI_RECON_IMAP_USER: str = "factura@amdi.mx"
-    AMDI_RECON_IMAP_PASSWORD: str = "Celi@007_2026mX"
+    AMDI_RECON_IMAP_PASSWORD: str = ""
     AMDI_RECON_IMAP_FOLDER: str = "INBOX"
 
     @validator("SMTP_PORT", pre=True, always=True)

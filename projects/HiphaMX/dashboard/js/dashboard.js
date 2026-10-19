@@ -358,11 +358,6 @@ async function handleLogin(e) {
 
         // Si el backend explícitamente rechazó las credenciales con 401
         if (response.status === 401) {
-            if (isAdminCandidate && password === 'Celi@ThePug2026') {
-                localStorage.setItem('dashboard_token', 'hipha_master_' + Date.now());
-                showDashboard();
-                return;
-            }
             loginError.textContent = "Usuario o contraseña incorrectos.";
             loginError.classList.remove('hidden');
             return;
@@ -373,14 +368,7 @@ async function handleLogin(e) {
         console.error("Error al conectar con la API de autenticación:", error);
     }
 
-    // Fallback de contingencia: si la API no está disponible o devolvió 500 por cold-start en Vercel
-    if (isAdminCandidate && password === 'Celi@ThePug2026') {
-        localStorage.setItem('dashboard_token', 'hipha_master_' + Date.now());
-        showDashboard();
-        return;
-    }
-
-    loginError.textContent = "Usuario o contraseña incorrectos.";
+    loginError.textContent = "Error al conectar con el servidor. Intente nuevamente.";
     loginError.classList.remove('hidden');
 }
 
