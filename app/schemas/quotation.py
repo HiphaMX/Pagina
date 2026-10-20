@@ -24,9 +24,29 @@ class QuotationCreateSchema(BaseModel):
     items: List[QuotationItemSchema]
     apply_tax: bool = True
     tax_rate: float = 0.16
+    require_down_payment: bool = True
     down_payment_rate: float = 0.50
     notes: Optional[str] = None
     status: str = "BORRADOR"
+
+
+class QuotationUpdateSchema(BaseModel):
+    folio: Optional[str] = None
+    client_name: Optional[str] = None
+    client_contact: Optional[str] = None
+    client_email: Optional[str] = None
+    client_phone: Optional[str] = None
+    client_id: Optional[int] = None
+    date: Optional[datetime] = None
+    validity_days: Optional[int] = None
+    currency: Optional[str] = None
+    items: Optional[List[QuotationItemSchema]] = None
+    apply_tax: Optional[bool] = None
+    tax_rate: Optional[float] = None
+    require_down_payment: Optional[bool] = None
+    down_payment_rate: Optional[float] = None
+    notes: Optional[str] = None
+    status: Optional[str] = None
 
 
 class QuotationResponseSchema(BaseModel):
@@ -46,6 +66,7 @@ class QuotationResponseSchema(BaseModel):
     tax_rate: float
     tax_amount: float
     total: float
+    require_down_payment: bool = True
     down_payment_rate: float
     down_payment_amount: float
     notes: Optional[str] = None

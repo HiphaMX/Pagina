@@ -27,6 +27,7 @@ class Quotation(Base):
     tax_amount = Column(Float, default=0.0)
     total = Column(Float, nullable=False, default=0.0)
 
+    require_down_payment = Column(Boolean, default=True)
     down_payment_rate = Column(Float, default=0.50)  # 50% de anticipo
     down_payment_amount = Column(Float, default=0.0)
 

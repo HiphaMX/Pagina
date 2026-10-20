@@ -80,6 +80,9 @@ def generate_quotation_pdf(
     bank_account = sanitize_text(str(bank_info.get("bank_account_clabe") or "BBVA Bancomer | Cuenta: 0476919804 | Clabe: 0123 2000 4769 1980 40"))
     contact_bank = sanitize_text(str(bank_info.get("contact") or "Teléfono: 333 6762545 | Email: factura@hipha.mx"))
 
+    if hasattr(quotation_data, "model_dump"):
+        quotation_data = quotation_data.model_dump()
+
     folio = sanitize_text(str(quotation_data.get("folio") or "HIP-2026-0001"))
     client_name = sanitize_text(str(quotation_data.get("client_name") or "Cliente").strip())
     client_contact = sanitize_text(str(quotation_data.get("client_contact") or "").strip())
@@ -127,8 +130,18 @@ def generate_quotation_pdf(
     tax_amount = subtotal * tax_rate if apply_tax else 0.0
     total = subtotal + tax_amount
 
+    raw_require_down_payment = quotation_data.get("require_down_payment")
     down_payment_rate = float(quotation_data.get("down_payment_rate", 0.50))
-    down_payment_amount = total * down_payment_rate
+    if raw_require_down_payment is not None:
+        require_down_payment = bool(raw_require_down_payment) and (down_payment_rate > 0.0)
+    else:
+        require_down_payment = (down_payment_rate > 0.0)
+
+    if not require_down_payment:
+        down_payment_rate = 0.0
+        down_payment_amount = 0.0
+    else:
+        down_payment_amount = total * down_payment_rate
 
     # 1. Crear documento dinámico FPDF
     pdf = DynamicQuotationPDF()
@@ -196,18 +209,36 @@ def generate_quotation_pdf(
 
         pdf.set_text_color(71, 85, 105)
         pdf.set_font("Helvetica", "", 7.5)
-        pdf.set_xy(16, footer_y + 4.8)
-        pdf.cell(width_limit, 3.8, f"- Se requiere del {int(down_payment_rate * 100)}% como anticipo para iniciar, el tiempo de entrega se confirma al contratar.", align="L")
-        pdf.set_xy(16, footer_y + 8.8)
-        pdf.cell(width_limit, 3.8, "- Cualquier concepto no incluido en la presente cotización deberá cotizarse por separado.", align="L")
-        pdf.set_xy(16, footer_y + 12.8)
-        iva_cond = "- Precios en moneda nacional (MXN) con desglose de impuestos." if apply_tax else "- Los precios mostrados no incluyen IVA."
-        pdf.cell(width_limit, 3.8, iva_cond, align="L")
-        pdf.set_xy(16, footer_y + 16.8)
-        pdf.cell(width_limit, 3.8, f"- Cotización válida por {validity_days} días naturales.", align="L")
+
+        conditions_lines = []
+
+        # 1. Anticipo o confirmación de tiempo de entrega
+        if require_down_payment and down_payment_rate > 0:
+            pct_int = int(round(down_payment_rate * 100))
+            conditions_lines.append(f"- Se requiere del {pct_int}% como anticipo para iniciar, el tiempo de entrega se confirma al contratar.")
+        else:
+            conditions_lines.append("- Se requiere OC para iniciar con el trabajo y confirmar el tiempo de entrega.")
+
+        # 2. Conceptos no incluidos
+        conditions_lines.append("- Cualquier concepto no incluido en la presente cotización deberá cotizarse por separado.")
+
+        # 3. IVA: Si NO está habilitada la opción de IVA, se mantiene la leyenda:
+        # "- Los precios mostrados no incluyen IVA."
+        # Si sí está habilitada y reflejada en la cotización, se elimina ese texto de las condiciones comerciales.
+        if not apply_tax:
+            conditions_lines.append("- Los precios mostrados no incluyen IVA.")
+
+        # 4. Vigencia
+        conditions_lines.append(f"- Cotización válida por {validity_days} días naturales.")
+
+        cond_y = footer_y + 4.8
+        for line in conditions_lines:
+            pdf.set_xy(16, cond_y)
+            pdf.cell(width_limit, 3.8, line, align="L")
+            cond_y += 4.0
 
         # 2. Debajo: DATOS BANCARIOS Y FISCALES (cargados a la izquierda)
-        bank_y = footer_y + 24.5
+        bank_y = max(cond_y + 3.5, footer_y + 24.5)
         pdf.set_xy(16, bank_y)
         pdf.set_text_color(15, 23, 42)
         pdf.set_font("Helvetica", "B", 8.2)
@@ -344,47 +375,54 @@ def generate_quotation_pdf(
     # Desglose de Totales (Derecha: X=124 a X=200, ancho 76 mm)
     box_w = 76
     box_x = 124
+    curr_total_y = totals_start_y
 
     # Subtotal
-    pdf.set_xy(box_x, totals_start_y)
+    pdf.set_xy(box_x, curr_total_y)
     pdf.set_text_color(71, 85, 105)
     pdf.set_font("Helvetica", "", 8.5)
     pdf.cell(38, 4.5, "Subtotal:", align="L")
     pdf.set_text_color(15, 23, 42)
     pdf.set_font("Helvetica", "B", 8.5)
     pdf.cell(38, 4.5, format_currency(subtotal), align="R")
+    curr_total_y += 5.5
 
-    # IVA
-    pdf.set_xy(box_x, totals_start_y + 5.5)
-    pdf.set_text_color(71, 85, 105)
-    pdf.set_font("Helvetica", "", 8.5)
-    iva_label = f"I.V.A. ({int(tax_rate * 100)}%):" if apply_tax else "I.V.A.:"
-    pdf.cell(38, 4.5, iva_label, align="L")
-    pdf.set_text_color(15, 23, 42)
-    pdf.set_font("Helvetica", "B", 8.5)
-    iva_val_str = format_currency(tax_amount) if apply_tax else "No aplica"
-    pdf.cell(38, 4.5, iva_val_str, align="R")
+    # IVA (solo si apply_tax es True; si está deshabilitado no aparece en la cotización)
+    if apply_tax:
+        pdf.set_xy(box_x, curr_total_y)
+        pdf.set_text_color(71, 85, 105)
+        pdf.set_font("Helvetica", "", 8.5)
+        iva_label = f"I.V.A. ({int(tax_rate * 100)}%):"
+        pdf.cell(38, 4.5, iva_label, align="L")
+        pdf.set_text_color(15, 23, 42)
+        pdf.set_font("Helvetica", "B", 8.5)
+        pdf.cell(38, 4.5, format_currency(tax_amount), align="R")
+        curr_total_y += 6.5
 
     # TOTAL
-    pdf.set_xy(box_x, totals_start_y + 12.0)
+    pdf.set_xy(box_x, curr_total_y)
     pdf.set_text_color(15, 23, 42)
     pdf.set_font("Helvetica", "B", 10.0)
     pdf.cell(34, 5.5, "TOTAL:", align="L")
     pdf.set_text_color(15, 23, 42)
     pdf.set_font("Helvetica", "B", 10.5)
     pdf.cell(42, 5.5, format_currency(total), align="R")
+    curr_total_y += 7.0
 
-    # Anticipo Requerido (50%) en Cyan Hipha
-    pdf.set_xy(box_x, totals_start_y + 19.0)
-    pdf.set_text_color(0, 180, 216)  # Cyan oficial de marca Hipha
-    pdf.set_font("Helvetica", "B", 8.0)
-    ant_pct_label = f"ANTICIPO REQUERIDO ({int(down_payment_rate * 100)}%):"
-    pdf.cell(38, 4.5, ant_pct_label, align="L")
-    pdf.set_font("Helvetica", "B", 9.5)
-    pdf.cell(38, 4.5, format_currency(down_payment_amount), align="R")
+    # Anticipo Requerido en Cyan Hipha (solo si require_down_payment es True y down_payment_rate > 0)
+    if require_down_payment and down_payment_rate > 0:
+        pdf.set_xy(box_x, curr_total_y)
+        pdf.set_text_color(0, 180, 216)  # Cyan oficial de marca Hipha
+        pdf.set_font("Helvetica", "B", 8.0)
+        pct_int = int(round(down_payment_rate * 100))
+        ant_pct_label = f"ANTICIPO REQUERIDO ({pct_int}%):"
+        pdf.cell(38, 4.5, ant_pct_label, align="L")
+        pdf.set_font("Helvetica", "B", 9.5)
+        pdf.cell(38, 4.5, format_currency(down_payment_amount), align="R")
+        curr_total_y += 6.5
 
     # Footer institucional: Condiciones Comerciales en 1er lugar y Datos Bancarios debajo
-    footer_pos_y = max(totals_start_y + 30.0, 205.0)
+    footer_pos_y = max(curr_total_y + 10.0, 205.0)
     render_page2_footer(footer_pos_y)
 
     # -------------------------------------------------------------

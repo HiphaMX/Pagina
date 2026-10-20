@@ -14,6 +14,7 @@ from app.models.quotation import Quotation
 from app.schemas.quotation import (
     QuotationItemSchema,
     QuotationCreateSchema,
+    QuotationUpdateSchema,
     QuotationResponseSchema,
     CatalogServiceItem,
 )
@@ -259,6 +260,7 @@ def download_quotation_pdf_direct(
         "apply_tax": quotation.apply_tax,
         "tax_rate": quotation.tax_rate,
         "tax_amount": quotation.tax_amount,
+        "require_down_payment": getattr(quotation, "require_down_payment", True) if getattr(quotation, "require_down_payment", True) is not None else (quotation.down_payment_rate > 0),
         "down_payment_rate": quotation.down_payment_rate,
         "notes": quotation.notes,
     }
@@ -325,8 +327,13 @@ def create_quotation(
     tax_amount = round(subtotal * tax_rate, 2) if payload.apply_tax else 0.0
     total = round(subtotal + tax_amount, 2)
 
-    down_payment_rate = payload.down_payment_rate or 0.50
-    down_payment_amount = round(total * down_payment_rate, 2)
+    require_down_payment = getattr(payload, "require_down_payment", True)
+    if not require_down_payment:
+        down_payment_rate = 0.0
+        down_payment_amount = 0.0
+    else:
+        down_payment_rate = payload.down_payment_rate if payload.down_payment_rate is not None else 0.50
+        down_payment_amount = round(total * down_payment_rate, 2)
 
     new_quotation = Quotation(
         folio=folio,
@@ -344,6 +351,7 @@ def create_quotation(
         tax_rate=tax_rate,
         tax_amount=tax_amount,
         total=total,
+        require_down_payment=require_down_payment,
         down_payment_rate=down_payment_rate,
         down_payment_amount=down_payment_amount,
         notes=payload.notes,
@@ -366,6 +374,97 @@ def get_quotation_by_id(
     quotation = db.query(Quotation).filter(Quotation.id == quotation_id).first()
     if not quotation:
         raise HTTPException(status_code=404, detail="Cotización no encontrada")
+    return quotation
+
+
+@router.put("/{quotation_id}", response_model=QuotationResponseSchema)
+def update_quotation(
+    quotation_id: int,
+    payload: QuotationUpdateSchema,
+    db: Session = Depends(get_db),
+    current_user: Optional[UserSchema] = Depends(_get_flexible_user),
+):
+    """Actualiza una cotización existente y recalcula sus importes."""
+    quotation = db.query(Quotation).filter(Quotation.id == quotation_id).first()
+    if not quotation:
+        raise HTTPException(status_code=404, detail="Cotización no encontrada")
+
+    # Validar folio si cambió
+    if payload.folio and payload.folio.strip() and payload.folio.strip() != quotation.folio:
+        new_folio = payload.folio.strip()
+        collision = db.query(Quotation).filter(Quotation.folio == new_folio, Quotation.id != quotation_id).first()
+        if collision:
+            raise HTTPException(status_code=400, detail=f"El folio {new_folio} ya está en uso por otra cotización.")
+        quotation.folio = new_folio
+
+    if payload.client_name is not None:
+        quotation.client_name = payload.client_name
+    if payload.client_contact is not None:
+        quotation.client_contact = payload.client_contact
+    if payload.client_email is not None:
+        quotation.client_email = payload.client_email
+    if payload.client_phone is not None:
+        quotation.client_phone = payload.client_phone
+    if payload.client_id is not None:
+        quotation.client_id = payload.client_id
+    if payload.date is not None:
+        quotation.date = payload.date
+    if payload.validity_days is not None:
+        quotation.validity_days = payload.validity_days
+    if payload.currency is not None:
+        quotation.currency = payload.currency
+    if payload.notes is not None:
+        quotation.notes = payload.notes
+    if payload.status is not None:
+        quotation.status = payload.status
+
+    # Recalcular items e importes si se enviaron o mantener los actuales
+    if payload.items is not None:
+        items_to_process = payload.items
+    else:
+        raw_items = quotation.items_json or []
+        items_to_process = [QuotationItemSchema(**it) for it in raw_items]
+
+    apply_tax = payload.apply_tax if payload.apply_tax is not None else quotation.apply_tax
+    tax_rate = payload.tax_rate if payload.tax_rate is not None else quotation.tax_rate
+    require_down_payment = payload.require_down_payment if payload.require_down_payment is not None else getattr(quotation, "require_down_payment", True)
+
+    subtotal = 0.0
+    items_list = []
+    for it in items_to_process:
+        it_dict = it.model_dump()
+        qty = float(it_dict.get("quantity", 1.0))
+        unit = float(it_dict.get("unit_price", 0.0))
+        it_sub = round(qty * unit, 2)
+        it_dict["subtotal"] = it_sub
+        subtotal += it_sub
+        items_list.append(it_dict)
+
+    subtotal = round(subtotal, 2)
+    effective_tax_rate = tax_rate if apply_tax else 0.0
+    tax_amount = round(subtotal * effective_tax_rate, 2) if apply_tax else 0.0
+    total = round(subtotal + tax_amount, 2)
+
+    if not require_down_payment:
+        down_payment_rate = 0.0
+        down_payment_amount = 0.0
+    else:
+        down_payment_rate = payload.down_payment_rate if payload.down_payment_rate is not None else (quotation.down_payment_rate if quotation.down_payment_rate is not None else 0.50)
+        down_payment_amount = round(total * down_payment_rate, 2)
+
+    quotation.items_json = items_list
+    quotation.subtotal = subtotal
+    quotation.apply_tax = apply_tax
+    quotation.tax_rate = effective_tax_rate
+    quotation.tax_amount = tax_amount
+    quotation.total = total
+    quotation.require_down_payment = require_down_payment
+    quotation.down_payment_rate = down_payment_rate
+    quotation.down_payment_amount = down_payment_amount
+    quotation.updated_at = datetime.datetime.now()
+
+    db.commit()
+    db.refresh(quotation)
     return quotation
 
 

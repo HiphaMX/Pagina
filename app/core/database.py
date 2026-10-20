@@ -106,6 +106,7 @@ def ensure_db_initialized():
                         "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
                         "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS area_proyecto VARCHAR(100) DEFAULT NULL",
                         "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS tipo_categoria VARCHAR(50) DEFAULT NULL",
+                        "ALTER TABLE quotations ADD COLUMN IF NOT EXISTS require_down_payment BOOLEAN DEFAULT TRUE",
                     ]
                 else:
                     migration_stmts = [
@@ -130,6 +131,7 @@ def ensure_db_initialized():
                         "ALTER TABLE bank_transactions ADD COLUMN account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
                         "ALTER TABLE bank_transactions ADD COLUMN area_proyecto VARCHAR(100) DEFAULT NULL",
                         "ALTER TABLE bank_transactions ADD COLUMN tipo_categoria VARCHAR(50) DEFAULT NULL",
+                        "ALTER TABLE quotations ADD COLUMN require_down_payment BOOLEAN DEFAULT 1",
                     ]
 
                 for stmt in migration_stmts:

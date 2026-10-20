@@ -9448,12 +9448,14 @@ const DEFAULT_AGENCY_CLIENTS = [
 
 let quotationsCatalog = [...DEFAULT_OFFICIAL_CATALOG];
 let currentQuotationItems = [];
+let editingQuotationId = null;
 let quotationsClientsList = [...DEFAULT_AGENCY_CLIENTS];
 let quotationsInitialized = false;
 
 function saveQuotationDraftToStorage() {
     try {
         const draft = {
+            editingQuotationId: editingQuotationId,
             clientName: document.getElementById('quoteClientName')?.value || '',
             clientContact: document.getElementById('quoteClientContact')?.value || '',
             clientEmail: document.getElementById('quoteClientEmail')?.value || '',
@@ -9462,6 +9464,7 @@ function saveQuotationDraftToStorage() {
             validityDays: document.getElementById('quoteValidityDays')?.value || '30',
             notes: document.getElementById('quoteNotes')?.value || '',
             applyTax: document.getElementById('quoteApplyTax') ? document.getElementById('quoteApplyTax').checked : true,
+            requireDownPayment: document.getElementById('quoteRequireDownPayment') ? document.getElementById('quoteRequireDownPayment').checked : true,
             items: currentQuotationItems || []
         };
         if (draft.clientName || draft.clientContact || (draft.items && draft.items.length > 0)) {
@@ -9487,6 +9490,7 @@ function restoreQuotationDraftFromStorage() {
         const selectValidity = document.getElementById('quoteValidityDays');
         const inputNotes = document.getElementById('quoteNotes');
         const chkTax = document.getElementById('quoteApplyTax');
+        const chkDownPayment = document.getElementById('quoteRequireDownPayment');
 
         if (inputName && !inputName.value.trim() && draft.clientName) inputName.value = draft.clientName;
         if (inputContact && !inputContact.value.trim() && draft.clientContact) inputContact.value = draft.clientContact;
@@ -9496,9 +9500,26 @@ function restoreQuotationDraftFromStorage() {
         if (selectValidity && draft.validityDays) selectValidity.value = draft.validityDays;
         if (inputNotes && !inputNotes.value.trim() && draft.notes) inputNotes.value = draft.notes;
         if (chkTax && draft.applyTax !== undefined) chkTax.checked = Boolean(draft.applyTax);
+        if (chkDownPayment && draft.requireDownPayment !== undefined) chkDownPayment.checked = Boolean(draft.requireDownPayment);
 
         if (Array.isArray(draft.items) && draft.items.length > 0 && currentQuotationItems.length === 0) {
             currentQuotationItems = draft.items;
+        }
+
+        if (draft.editingQuotationId) {
+            editingQuotationId = draft.editingQuotationId;
+            const banner = document.getElementById('quotationEditModeBanner');
+            const bannerFolio = document.getElementById('quoteEditBannerFolio');
+            const bannerClient = document.getElementById('quoteEditBannerClient');
+            if (banner) banner.classList.remove('hidden');
+            if (bannerFolio) bannerFolio.textContent = draft.folio || '';
+            if (bannerClient) bannerClient.textContent = draft.clientName || '';
+            const btnSave = document.getElementById('btnSaveQuotationHistory');
+            if (btnSave) {
+                btnSave.innerHTML = '<span>💾 Actualizar Cotización</span>';
+                btnSave.style.background = '#d946ef';
+                btnSave.style.color = '#ffffff';
+            }
         }
     } catch (e) {
         console.warn('No se pudo restaurar borrador local de cotización:', e);
@@ -9688,6 +9709,14 @@ function setupQuotationFormEvents() {
         });
     }
 
+    // Checkbox de Anticipo
+    const chkDownPayment = document.getElementById('quoteRequireDownPayment');
+    if (chkDownPayment) {
+        chkDownPayment.addEventListener('change', () => {
+            recalculateQuotationTotals();
+        });
+    }
+
     // Auto-guardado en tiempo real en localStorage para proteger la cotización
     ['quoteClientName', 'quoteClientContact', 'quoteClientEmail', 'quoteClientPhone', 'quoteFolio', 'quoteValidityDays', 'quoteNotes'].forEach(id => {
         const el = document.getElementById(id);
@@ -9848,17 +9877,52 @@ function recalculateQuotationTotals() {
     const applyTax = chkTax ? chkTax.checked : true;
     const taxAmount = applyTax ? (subtotal * 0.16) : 0.0;
     const total = subtotal + taxAmount;
-    const downPayment = total * 0.50;
+
+    const chkDownPayment = document.getElementById('quoteRequireDownPayment');
+    const requireDownPayment = chkDownPayment ? chkDownPayment.checked : true;
+    const downPayment = requireDownPayment ? (total * 0.50) : 0.0;
 
     const elSub = document.getElementById('quoteSummarySubtotal');
+    const rowTax = document.getElementById('quoteSummaryTaxRow');
     const elTax = document.getElementById('quoteSummaryTax');
     const elTot = document.getElementById('quoteSummaryTotal');
+    const rowDown = document.getElementById('quoteSummaryDownPaymentRow');
     const elDown = document.getElementById('quoteSummaryDownPayment');
+    const badgeDown = document.getElementById('quoteDownPaymentBadge');
 
     if (elSub) elSub.textContent = `$${subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
-    if (elTax) elTax.textContent = applyTax ? `$${taxAmount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN` : 'No aplica';
+
+    if (rowTax) {
+        rowTax.style.display = applyTax ? 'flex' : 'none';
+        if (elTax) {
+            elTax.textContent = applyTax ? `$${taxAmount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN` : '';
+        }
+    } else if (elTax) {
+        elTax.textContent = applyTax ? `$${taxAmount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN` : '';
+    }
+
     if (elTot) elTot.textContent = `$${total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
-    if (elDown) elDown.textContent = `$${downPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+
+    if (rowDown) {
+        if (requireDownPayment) {
+            rowDown.style.display = 'flex';
+            if (elDown) elDown.textContent = `$${downPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+        } else {
+            rowDown.style.display = 'none';
+        }
+    }
+
+    if (badgeDown) {
+        if (requireDownPayment) {
+            badgeDown.textContent = '50% inicio';
+            badgeDown.style.color = '#d946ef';
+            badgeDown.style.background = 'rgba(217,70,239,0.1)';
+        } else {
+            badgeDown.textContent = 'Sin anticipo';
+            badgeDown.style.color = 'var(--text-muted)';
+            badgeDown.style.background = 'rgba(255,255,255,0.06)';
+        }
+    }
 
     saveQuotationDraftToStorage();
 }
@@ -9885,6 +9949,8 @@ function buildQuotationPayload() {
     const inputValidity = document.getElementById('quoteValidityDays');
     const inputNotes = document.getElementById('quoteNotes');
     const chkTax = document.getElementById('quoteApplyTax');
+    const chkDownPayment = document.getElementById('quoteRequireDownPayment');
+    const requireDownPayment = chkDownPayment ? chkDownPayment.checked : true;
 
     const items = currentQuotationItems.map(it => ({
         name: it.name.trim(),
@@ -9904,7 +9970,8 @@ function buildQuotationPayload() {
         items: items,
         apply_tax: chkTax ? chkTax.checked : true,
         tax_rate: 0.16,
-        down_payment_rate: 0.50,
+        require_down_payment: requireDownPayment,
+        down_payment_rate: requireDownPayment ? 0.50 : 0.0,
         notes: inputNotes ? inputNotes.value.trim() : '',
         status: 'BORRADOR'
     };
@@ -9981,17 +10048,21 @@ async function handleSaveQuotationToHistory() {
     const payload = buildQuotationPayload();
     if (!payload) return;
 
+    const isEditing = Boolean(editingQuotationId);
     const btnSave = document.getElementById('btnSaveQuotationHistory');
     const originalText = btnSave ? btnSave.innerHTML : '';
     if (btnSave) {
         btnSave.disabled = true;
-        btnSave.innerHTML = '<span>💾 Guardando...</span>';
+        btnSave.innerHTML = isEditing ? '<span>💾 Actualizando...</span>' : '<span>💾 Guardando...</span>';
     }
 
     try {
         const token = localStorage.getItem('dashboard_token');
-        const res = await fetch('/api/dashboard/quotations/', {
-            method: 'POST',
+        const url = isEditing ? `/api/dashboard/quotations/${editingQuotationId}` : '/api/dashboard/quotations/';
+        const method = isEditing ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -10006,7 +10077,7 @@ async function handleSaveQuotationToHistory() {
                 return;
             }
             const errData = await res.json().catch(() => ({}));
-            throw new Error(errData.detail || 'Error al guardar la cotización.');
+            throw new Error(errData.detail || (isEditing ? 'Error al actualizar la cotización.' : 'Error al guardar la cotización.'));
         }
 
         const saved = await res.json();
@@ -10014,8 +10085,21 @@ async function handleSaveQuotationToHistory() {
         if (inputFolio) inputFolio.value = saved.folio;
 
         clearQuotationDraftFromStorage();
-        alert(`¡Cotización ${saved.folio} para ${saved.client_name} guardada exitosamente en el historial!`);
+
+        if (isEditing) {
+            const downloadNow = confirm(`¡Cotización ${saved.folio} para ${saved.client_name} actualizada exitosamente!\n\n¿Deseas descargar el PDF actualizado ahora mismo?`);
+            if (downloadNow) {
+                downloadSavedQuotationPdf(saved.id, saved.folio);
+            }
+            cancelEditingQuotation(false);
+        } else {
+            alert(`¡Cotización ${saved.folio} para ${saved.client_name} guardada exitosamente en el historial!`);
+        }
         refreshQuotationsHistoryCount();
+        const histView = document.getElementById('quotationHistoryView');
+        if (histView && !histView.classList.contains('hidden')) {
+            loadQuotationsHistory();
+        }
     } catch (err) {
         console.error('Error guardando cotización:', err);
         alert(err.message || 'Error al guardar la cotización en el historial.');
@@ -10027,27 +10111,144 @@ async function handleSaveQuotationToHistory() {
     }
 }
 
-function handleClearQuotationForm() {
-    if (confirm('¿Deseas limpiar todos los campos del cotizador?')) {
-        clearQuotationDraftFromStorage();
-        currentQuotationItems = [];
+function handleClearQuotationForm(confirmFirst = true) {
+    if (confirmFirst && !confirm('¿Deseas limpiar todos los campos del cotizador?')) {
+        return;
+    }
+    clearQuotationDraftFromStorage();
+    editingQuotationId = null;
+
+    const banner = document.getElementById('quotationEditModeBanner');
+    if (banner) banner.classList.add('hidden');
+
+    const btnSave = document.getElementById('btnSaveQuotationHistory');
+    if (btnSave) {
+        btnSave.innerHTML = '<span>💾 Guardar</span>';
+        btnSave.style.background = 'rgba(255,255,255,0.06)';
+        btnSave.style.color = 'var(--text-main)';
+    }
+
+    currentQuotationItems = [];
+    const inputName = document.getElementById('quoteClientName');
+    const inputContact = document.getElementById('quoteClientContact');
+    const inputEmail = document.getElementById('quoteClientEmail');
+    const inputPhone = document.getElementById('quoteClientPhone');
+    const inputFolio = document.getElementById('quoteFolio');
+    const inputNotes = document.getElementById('quoteNotes');
+    const select = document.getElementById('quoteClientSelect');
+
+    if (inputName) inputName.value = '';
+    if (inputContact) inputContact.value = '';
+    if (inputEmail) inputEmail.value = '';
+    if (inputPhone) inputPhone.value = '';
+    if (inputFolio) inputFolio.value = '';
+    if (inputNotes) inputNotes.value = '';
+    if (select) select.value = '';
+
+    const chkTax = document.getElementById('quoteApplyTax');
+    const chkDownPayment = document.getElementById('quoteRequireDownPayment');
+    if (chkTax) chkTax.checked = true;
+    if (chkDownPayment) chkDownPayment.checked = true;
+
+    renderQuotationItems();
+    recalculateQuotationTotals();
+}
+
+function cancelEditingQuotation(resetForm = true) {
+    editingQuotationId = null;
+    const banner = document.getElementById('quotationEditModeBanner');
+    if (banner) banner.classList.add('hidden');
+
+    const btnSave = document.getElementById('btnSaveQuotationHistory');
+    if (btnSave) {
+        btnSave.innerHTML = '<span>💾 Guardar</span>';
+        btnSave.style.background = 'rgba(255,255,255,0.06)';
+        btnSave.style.color = 'var(--text-main)';
+    }
+
+    if (resetForm) {
+        handleClearQuotationForm(false);
+    }
+}
+
+async function editSavedQuotation(quotationId) {
+    try {
+        const token = localStorage.getItem('dashboard_token');
+        const res = await fetch(`/api/dashboard/quotations/${quotationId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+                handleSessionExpired("Tu sesión ha expirado. Por favor ingresa nuevamente.");
+                return;
+            }
+            throw new Error('No se pudo cargar la cotización para edición.');
+        }
+
+        const q = await res.json();
+        editingQuotationId = q.id;
+
+        // Cambiar a la pestaña de edición
+        const btnNew = document.getElementById('tabBtnNewQuotation');
+        if (btnNew) btnNew.click();
+
+        // Llenar campos
+        const inputFolio = document.getElementById('quoteFolio');
         const inputName = document.getElementById('quoteClientName');
         const inputContact = document.getElementById('quoteClientContact');
         const inputEmail = document.getElementById('quoteClientEmail');
         const inputPhone = document.getElementById('quoteClientPhone');
-        const inputFolio = document.getElementById('quoteFolio');
+        const inputDays = document.getElementById('quoteValidityDays');
         const inputNotes = document.getElementById('quoteNotes');
-        const select = document.getElementById('quoteClientSelect');
+        const chkTax = document.getElementById('quoteApplyTax');
+        const chkDown = document.getElementById('quoteRequireDownPayment');
 
-        if (inputName) inputName.value = '';
-        if (inputContact) inputContact.value = '';
-        if (inputEmail) inputEmail.value = '';
-        if (inputPhone) inputPhone.value = '';
-        if (inputFolio) inputFolio.value = '';
-        if (inputNotes) inputNotes.value = '';
-        if (select) select.value = '';
+        if (inputFolio) inputFolio.value = q.folio || '';
+        if (inputName) inputName.value = q.client_name || '';
+        if (inputContact) inputContact.value = q.client_contact || '';
+        if (inputEmail) inputEmail.value = q.client_email || '';
+        if (inputPhone) inputPhone.value = q.client_phone || '';
+        if (inputDays) inputDays.value = q.validity_days || 30;
+        if (inputNotes) inputNotes.value = q.notes || '';
+        if (chkTax) chkTax.checked = q.apply_tax !== undefined ? Boolean(q.apply_tax) : true;
+        if (chkDown) chkDown.checked = q.require_down_payment !== undefined ? Boolean(q.require_down_payment) : true;
+
+        // Cargar items
+        currentQuotationItems = (q.items || []).map((it, idx) => ({
+            id: it.id || (Date.now() + idx),
+            name: it.name || '',
+            description: it.description || '',
+            quantity: Number(it.quantity || 1),
+            unit_price: Number(it.unit_price || 0),
+            subtotal: Number(it.subtotal || 0)
+        }));
 
         renderQuotationItems();
+        recalculateQuotationTotals();
+
+        // Mostrar Banner de Edición
+        const banner = document.getElementById('quotationEditModeBanner');
+        const bannerFolio = document.getElementById('quoteEditBannerFolio');
+        const bannerClient = document.getElementById('quoteEditBannerClient');
+        if (banner) banner.classList.remove('hidden');
+        if (bannerFolio) bannerFolio.textContent = q.folio;
+        if (bannerClient) bannerClient.textContent = q.client_name;
+
+        // Actualizar botón de guardar
+        const btnSave = document.getElementById('btnSaveQuotationHistory');
+        if (btnSave) {
+            btnSave.innerHTML = '<span>💾 Actualizar Cotización</span>';
+            btnSave.style.background = '#d946ef';
+            btnSave.style.color = '#ffffff';
+        }
+
+        // Scroll suave al inicio del cotizador
+        document.getElementById('quotationsSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        console.error('Error al abrir cotización para editar:', err);
+        alert(err.message || 'Error al abrir la cotización.');
     }
 }
 
@@ -10119,7 +10320,7 @@ async function loadQuotationsHistory() {
                             <th style="padding:0.75rem 0.6rem; text-align:center;">Items</th>
                             <th style="padding:0.75rem 0.6rem; text-align:right;">Subtotal</th>
                             <th style="padding:0.75rem 0.6rem; text-align:right;">Total</th>
-                            <th style="padding:0.75rem 0.6rem; text-align:right;">Anticipo 50%</th>
+                            <th style="padding:0.75rem 0.6rem; text-align:right;">Anticipo</th>
                             <th style="padding:0.75rem 0.6rem; text-align:center;">Acciones</th>
                         </tr>
                     </thead>
@@ -10131,7 +10332,10 @@ async function loadQuotationsHistory() {
             const itemsCount = q.items ? q.items.length : 0;
             const subtotalStr = `$${Number(q.subtotal || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             const totalStr = `$${Number(q.total || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            const downStr = `$${Number(q.down_payment_amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            const hasDownPayment = Number(q.down_payment_amount || 0) > 0;
+            const downStr = hasDownPayment 
+                ? `$${Number(q.down_payment_amount).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                : '<span style="color:var(--text-muted); font-size:0.75rem;">Sin anticipo</span>';
 
             html += `
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.05); transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
@@ -10148,10 +10352,13 @@ async function loadQuotationsHistory() {
                     <td style="padding:0.75rem 0.6rem; text-align:right; font-weight:700; color:#00e5ff;">${totalStr}</td>
                     <td style="padding:0.75rem 0.6rem; text-align:right; font-weight:600; color:#d946ef;">${downStr}</td>
                     <td style="padding:0.75rem 0.6rem; text-align:center; white-space:nowrap;">
+                        <button type="button" onclick="editSavedQuotation(${q.id})" class="btn-secondary-mini" style="background:rgba(217,70,239,0.15); color:#f472b6; border:1px solid rgba(217,70,239,0.35); padding:0.35rem 0.65rem; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.75rem; margin-right:0.3rem;" title="Editar cotización">
+                            ✏️ Editar
+                        </button>
                         <button type="button" onclick="downloadSavedQuotationPdf(${q.id}, '${q.folio}')" class="btn-primary-mini" style="background:#00e5ff; color:#0f172a; border:none; padding:0.35rem 0.75rem; border-radius:6px; cursor:pointer; font-weight:700; font-size:0.75rem; margin-right:0.3rem;">
                             📥 PDF
                         </button>
-                        <button type="button" onclick="deleteSavedQuotation(${q.id}, '${q.folio}')" style="background:transparent; color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:0.35rem 0.6rem; border-radius:6px; cursor:pointer; font-size:0.75rem;">
+                        <button type="button" onclick="deleteSavedQuotation(${q.id}, '${q.folio}')" style="background:transparent; color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:0.35rem 0.6rem; border-radius:6px; cursor:pointer; font-size:0.75rem;" title="Eliminar cotización">
                             🗑️
                         </button>
                     </td>
@@ -10228,6 +10435,8 @@ function escapeHtmlQuotation(str) {
 window.initQuotationsModule = initQuotationsModule;
 window.downloadSavedQuotationPdf = downloadSavedQuotationPdf;
 window.deleteSavedQuotation = deleteSavedQuotation;
+window.editSavedQuotation = editSavedQuotation;
+window.cancelEditingQuotation = cancelEditingQuotation;
 
 
 

@@ -137,10 +137,122 @@ def test_quotations_crud():
     assert res_pdf.headers["content-type"] == "application/pdf"
     assert res_pdf.content.startswith(b"%PDF")
 
-    # 5. Eliminar cotización
+    # 5. Modificar / Actualizar cotización (PUT)
+    update_payload = dict(create_payload)
+    update_payload["client_name"] = "Consultoría Médica Avanzada Modificada"
+    update_payload["notes"] = "Nota actualizada para entrega urgente."
+    update_payload["items"] = [
+        {
+            "name": "Plan Web (Anual)",
+            "description": "Sitio web médico profesional con optimización SEO y GEO.",
+            "quantity": 1,
+            "unit_price": 8000.0,
+        }
+    ]
+    res_put = client.put(f"/api/dashboard/quotations/{q_id}", json=update_payload)
+    assert res_put.status_code == 200
+    updated = res_put.json()
+    assert updated["id"] == q_id
+    assert updated["client_name"] == "Consultoría Médica Avanzada Modificada"
+    assert updated["subtotal"] == 8000.0
+    assert updated["tax_amount"] == 1280.0
+    assert updated["total"] == 9280.0
+    assert len(updated["items"]) == 1
+
+    # Verificar que el GET refleja los cambios
+    res_verify_updated = client.get(f"/api/dashboard/quotations/{q_id}")
+    assert res_verify_updated.status_code == 200
+    assert res_verify_updated.json()["client_name"] == "Consultoría Médica Avanzada Modificada"
+    assert len(res_verify_updated.json()["items"]) == 1
+
+    # 6. Eliminar cotización
     res_del = client.delete(f"/api/dashboard/quotations/{q_id}")
     assert res_del.status_code == 200
 
     # Verificar que ya no existe
     res_verify = client.get(f"/api/dashboard/quotations/{q_id}")
     assert res_verify.status_code == 404
+
+
+def test_quotation_without_down_payment():
+    """Prueba que una cotización con require_down_payment=False no genere anticipo ni en BD ni en PDF."""
+    payload = {
+        "client_name": "Corporativo Horizonte",
+        "client_contact": "Ing. Sofía Morales",
+        "items": [
+            {
+                "name": "Consultoría Estratégica",
+                "description": "Sesión de planeación e implementación tecnológica.",
+                "quantity": 1,
+                "unit_price": 20000.0,
+            }
+        ],
+        "apply_tax": True,
+        "require_down_payment": False,
+    }
+
+    # 1. Test generate-pdf endpoint
+    res_pdf = client.post("/api/dashboard/quotations/generate-pdf", json=payload)
+    assert res_pdf.status_code == 200
+    assert res_pdf.content.startswith(b"%PDF")
+
+    import io
+    from pypdf import PdfReader
+    reader = PdfReader(io.BytesIO(res_pdf.content))
+    pdf_text = "\n".join(p.extract_text() for p in reader.pages)
+    assert "Se requiere OC para iniciar con el trabajo y confirmar el tiempo de entrega." in pdf_text
+    assert "ANTICIPO REQUERIDO" not in pdf_text
+
+    # 2. Test CRUD create
+    res_create = client.post("/api/dashboard/quotations/", json=payload)
+    assert res_create.status_code == 200
+    data = res_create.json()
+    assert data["require_down_payment"] is False
+    assert data["down_payment_rate"] == 0.0
+    assert data["down_payment_amount"] == 0.0
+
+    # 3. Direct PDF download
+    q_id = data["id"]
+    res_direct = client.get(f"/api/dashboard/quotations/direct-pdf/{q_id}")
+    assert res_direct.status_code == 200
+    assert res_direct.content.startswith(b"%PDF")
+    reader_direct = PdfReader(io.BytesIO(res_direct.content))
+    pdf_direct_text = "\n".join(p.extract_text() for p in reader_direct.pages)
+    assert "Se requiere OC para iniciar con el trabajo y confirmar el tiempo de entrega." in pdf_direct_text
+
+    # Cleanup
+    client.delete(f"/api/dashboard/quotations/{q_id}")
+
+
+def test_quotation_without_tax():
+    """Prueba que una cotización con apply_tax=False no imprima 'No aplica' en el PDF."""
+    payload = {
+        "client_name": "Corporativo San Ángel",
+        "client_contact": "Lic. Martín Domínguez",
+        "items": [
+            {
+                "name": "Servicio de Diseño Editorial",
+                "description": "Folleto corporativo y tríptico informativo.",
+                "quantity": 2,
+                "unit_price": 2500.0,
+            }
+        ],
+        "apply_tax": False,
+        "require_down_payment": True,
+    }
+
+    res_pdf = client.post("/api/dashboard/quotations/generate-pdf", json=payload)
+    assert res_pdf.status_code == 200
+
+    import io
+    from pypdf import PdfReader
+    reader = PdfReader(io.BytesIO(res_pdf.content))
+    pdf_text = "\n".join(p.extract_text() for p in reader.pages)
+
+    # No debe decir 'No aplica'
+    assert "No aplica" not in pdf_text
+    assert "no aplica" not in pdf_text.lower()
+    # Debe indicar en condiciones que los precios no incluyen IVA
+    assert "Los precios mostrados no incluyen IVA" in pdf_text
+
+

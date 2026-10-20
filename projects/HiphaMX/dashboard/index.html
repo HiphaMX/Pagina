@@ -503,6 +503,20 @@
 
                 <!-- Pestaña 1: Generador / Formulario de Cotización -->
                 <div id="quotationBuilderView">
+                    <!-- Banner de Modo Edición -->
+                    <div id="quotationEditModeBanner" class="hidden" style="margin-bottom:1.25rem; padding:0.85rem 1.25rem; background:rgba(217,70,239,0.12); border:1px solid rgba(217,70,239,0.35); border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+                        <div style="display:flex; align-items:center; gap:0.6rem;">
+                            <span style="font-size:1.2rem;">✏️</span>
+                            <div>
+                                <strong style="color:#f472b6; font-size:0.88rem;">Modo Edición Activado</strong>
+                                <span style="color:var(--text-muted); font-size:0.8rem; margin-left:0.4rem;">Estás modificando la cotización <strong id="quoteEditBannerFolio" style="color:#00e5ff; font-family:monospace; background:rgba(0,229,255,0.1); padding:0.15rem 0.45rem; border-radius:4px;"></strong> para <strong id="quoteEditBannerClient" style="color:var(--text-main);"></strong>.</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="cancelEditingQuotation()" style="background:rgba(255,255,255,0.08); color:var(--text-main); border:1px solid var(--border-color); padding:0.4rem 0.85rem; border-radius:6px; cursor:pointer; font-size:0.78rem; font-weight:600; display:inline-flex; align-items:center; gap:0.35rem; transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.2)'; this.style.borderColor='rgba(239,68,68,0.4)';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='var(--border-color)';">
+                            <span>✕ Salir de Edición / Nueva Cotización</span>
+                        </button>
+                    </div>
+
                     <div style="display:grid; grid-template-columns: 360px 1fr; gap:1.5rem; align-items:start;" class="quotation-builder-grid">
                         
                         <!-- Columna Izquierda: Datos del Cliente, Folio y Condiciones -->
@@ -563,9 +577,12 @@
                                     </label>
                                     <span style="font-size:0.72rem; color:#60a5fa; background:rgba(96,165,250,0.1); padding:0.15rem 0.45rem; border-radius:4px;">Fiscal</span>
                                 </div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
-                                    <span>Anticipo requerido:</span>
-                                    <strong style="color:#d946ef;">50% para inicio</strong>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label for="quoteRequireDownPayment" style="font-size:0.82rem; font-weight:600; color:var(--text-main); cursor:pointer; display:flex; align-items:center; gap:0.4rem;">
+                                        <input type="checkbox" id="quoteRequireDownPayment" checked style="cursor:pointer; accent-color:#d946ef; width:16px; height:16px;">
+                                        <span>Requerir Anticipo (50%)</span>
+                                    </label>
+                                    <span id="quoteDownPaymentBadge" style="font-size:0.72rem; color:#d946ef; background:rgba(217,70,239,0.1); padding:0.15rem 0.45rem; border-radius:4px;">50% inicio</span>
                                 </div>
                             </div>
 
@@ -643,7 +660,7 @@
                                             <span>Subtotal:</span>
                                             <strong id="quoteSummarySubtotal" style="color:var(--text-main);">$0.00 MXN</strong>
                                         </div>
-                                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--text-muted);">
+                                        <div id="quoteSummaryTaxRow" style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--text-muted);">
                                             <span>I.V.A. (16%):</span>
                                             <strong id="quoteSummaryTax" style="color:var(--text-main);">$0.00 MXN</strong>
                                         </div>
@@ -652,7 +669,7 @@
                                             <span>TOTAL:</span>
                                             <span id="quoteSummaryTotal" style="color:#00e5ff;">$0.00 MXN</span>
                                         </div>
-                                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:600; color:#d946ef; background:rgba(217,70,239,0.1); padding:0.35rem 0.6rem; border-radius:6px; margin-top:0.25rem;">
+                                        <div id="quoteSummaryDownPaymentRow" style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:600; color:#d946ef; background:rgba(217,70,239,0.1); padding:0.35rem 0.6rem; border-radius:6px; margin-top:0.25rem;">
                                             <span>Anticipo 50%:</span>
                                             <span id="quoteSummaryDownPayment">$0.00 MXN</span>
                                         </div>
@@ -2838,7 +2855,7 @@
     </div>
 
     <!-- Script de Lógica -->
-    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261014-3"></script>
+    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261020-1"></script>
 
 </body>
 </html>
