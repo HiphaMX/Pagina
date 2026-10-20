@@ -9628,7 +9628,7 @@ async function loadQuotationsClients() {
         const token = localStorage.getItem('dashboard_token');
         const headers = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        const res = await fetch('/api/dashboard/clients', { headers });
+        const res = await fetch('/api/dashboard/quotations/clients', { headers });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -9713,9 +9713,9 @@ function setupQuotationFormEvents() {
 
             if (inputName) inputName.value = clientName;
             if (clientObj) {
-                if (inputContact && clientObj.contact_name) inputContact.value = clientObj.contact_name;
-                if (inputEmail && clientObj.contact_email) inputEmail.value = clientObj.contact_email;
-                if (inputPhone && clientObj.contact_phone) inputPhone.value = clientObj.contact_phone;
+                if (inputContact) inputContact.value = clientObj.contact_name || '';
+                if (inputEmail) inputEmail.value = clientObj.contact_email || '';
+                if (inputPhone) inputPhone.value = clientObj.contact_phone || '';
             }
         });
     }
@@ -10127,6 +10127,7 @@ async function handleSaveQuotationToHistory() {
         } else {
             alert(`¡Cotización ${saved.folio} para ${saved.client_name} guardada exitosamente en el historial!`);
         }
+        loadQuotationsClients();
         refreshQuotationsHistoryCount();
         const histView = document.getElementById('quotationHistoryView');
         if (histView && !histView.classList.contains('hidden')) {

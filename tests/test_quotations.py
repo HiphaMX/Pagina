@@ -256,3 +256,85 @@ def test_quotation_without_tax():
     assert "Los precios mostrados no incluyen IVA" in pdf_text
 
 
+def test_quotation_clients_directory_and_auto_sync():
+    """Prueba que el endpoint /clients devuelva los clientes consolidados y que crear una cotización
+    guarde automáticamente el contacto en AgencyClient para su reutilización futura."""
+    from app.models.client import AgencyClient
+
+    # 1. Directorio inicial de clientes
+    res_clients = client.get("/api/dashboard/quotations/clients")
+    assert res_clients.status_code == 200
+    clients_list = res_clients.json()
+    assert isinstance(clients_list, list)
+    client_names = [c["name"] for c in clients_list]
+    assert "AMDI" in client_names
+    assert "Letrerama" in client_names
+
+    # 2. Crear cotización con cliente y contacto nuevos
+    test_client_name = "Constructora del Valle"
+    test_contact = "Arq. Ricardo Morales"
+    test_email = "ricardo@delvalle.com"
+    test_phone = "443-111-2233"
+
+    payload = {
+        "client_name": test_client_name,
+        "client_contact": test_contact,
+        "client_email": test_email,
+        "client_phone": test_phone,
+        "items": [
+            {
+                "name": "Identidad Gráfica",
+                "description": "Logotipo corporativo para desarrolladora inmobiliaria.",
+                "quantity": 1,
+                "unit_price": 3770.0,
+            }
+        ],
+    }
+
+    res_create = client.post("/api/dashboard/quotations/", json=payload)
+    assert res_create.status_code == 200
+    created = res_create.json()
+    q_id = created["id"]
+    assigned_client_id = created["client_id"]
+    assert assigned_client_id is not None
+
+    # 3. Verificar que se sincronizó en AgencyClient
+    db = SessionLocal()
+    try:
+        ac = db.query(AgencyClient).filter(AgencyClient.id == assigned_client_id).first()
+        assert ac is not None
+        assert ac.name == test_client_name
+        assert ac.contact_name == test_contact
+        assert ac.contact_email == test_email
+        assert ac.contact_phone == test_phone
+    finally:
+        db.close()
+
+    # 4. Verificar que el directorio /clients ahora lo incluye con todos sus datos de contacto
+    res_clients_after = client.get("/api/dashboard/quotations/clients")
+    assert res_clients_after.status_code == 200
+    after_list = res_clients_after.json()
+    found = next((c for c in after_list if c["name"] == test_client_name), None)
+    assert found is not None
+    assert found["contact_name"] == test_contact
+    assert found["contact_email"] == test_email
+    assert found["contact_phone"] == test_phone
+
+    # 5. Actualizar cotización con teléfono modificado y verificar sincronización
+    update_payload = dict(payload)
+    update_payload["client_phone"] = "443-999-8877"
+    res_update = client.put(f"/api/dashboard/quotations/{q_id}", json=update_payload)
+    assert res_update.status_code == 200
+
+    db2 = SessionLocal()
+    try:
+        ac_updated = db2.query(AgencyClient).filter(AgencyClient.id == assigned_client_id).first()
+        assert ac_updated.contact_phone == "443-999-8877"
+    finally:
+        db2.close()
+
+    # Cleanup
+    client.delete(f"/api/dashboard/quotations/{q_id}")
+
+
+

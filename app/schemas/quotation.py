@@ -86,3 +86,15 @@ class CatalogServiceItem(BaseModel):
     price: float
     unit_label: str  # "/ mes", "/ año", "x servicio", "x pieza", "x video"
     is_custom: bool = False
+
+
+class QuotationClientOption(BaseModel):
+    id: Optional[int] = None
+    name: str
+    contact_name: Optional[str] = ""
+    contact_email: Optional[str] = ""
+    contact_phone: Optional[str] = ""
+
+    class Config:
+        from_attributes = True
+
