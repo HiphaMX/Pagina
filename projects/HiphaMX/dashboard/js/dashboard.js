@@ -9452,6 +9452,37 @@ let editingQuotationId = null;
 let quotationsClientsList = [...DEFAULT_AGENCY_CLIENTS];
 let quotationsInitialized = false;
 
+function ensureDownPaymentCheckboxExists() {
+    let chk = document.getElementById('quoteRequireDownPayment');
+    if (chk) return chk;
+
+    const chkTax = document.getElementById('quoteApplyTax');
+    if (chkTax) {
+        const fiscalCard = chkTax.closest('div[style*="border-radius:10px"]') || chkTax.parentElement?.parentElement?.parentElement;
+        if (fiscalCard && fiscalCard.children.length >= 2) {
+            const secondRow = fiscalCard.children[1];
+            secondRow.style.display = 'flex';
+            secondRow.style.justifyContent = 'space-between';
+            secondRow.style.alignItems = 'center';
+            secondRow.innerHTML = `
+                <label for="quoteRequireDownPayment" style="font-size:0.82rem; font-weight:600; color:var(--text-main); cursor:pointer; display:flex; align-items:center; gap:0.4rem;">
+                    <input type="checkbox" id="quoteRequireDownPayment" checked style="cursor:pointer; accent-color:#d946ef; width:16px; height:16px;">
+                    <span>Requerir Anticipo (50%)</span>
+                </label>
+                <span id="quoteDownPaymentBadge" style="font-size:0.72rem; color:#d946ef; background:rgba(217,70,239,0.1); padding:0.15rem 0.45rem; border-radius:4px;">50% inicio</span>
+            `;
+            const newChk = document.getElementById('quoteRequireDownPayment');
+            if (newChk) {
+                newChk.addEventListener('change', () => {
+                    recalculateQuotationTotals();
+                });
+            }
+            return newChk;
+        }
+    }
+    return null;
+}
+
 function saveQuotationDraftToStorage() {
     try {
         const draft = {
@@ -9533,6 +9564,7 @@ function clearQuotationDraftFromStorage() {
 }
 
 function initQuotationsModule() {
+    ensureDownPaymentCheckboxExists();
     setupQuotationsSubtabs();
     loadQuotationsClients();
     loadQuotationsCatalog();
@@ -9709,8 +9741,8 @@ function setupQuotationFormEvents() {
         });
     }
 
-    // Checkbox de Anticipo
-    const chkDownPayment = document.getElementById('quoteRequireDownPayment');
+    // Checkbox de Anticipo (con fallback automático para cachés locales de navegador)
+    const chkDownPayment = ensureDownPaymentCheckboxExists() || document.getElementById('quoteRequireDownPayment');
     if (chkDownPayment) {
         chkDownPayment.addEventListener('change', () => {
             recalculateQuotationTotals();
