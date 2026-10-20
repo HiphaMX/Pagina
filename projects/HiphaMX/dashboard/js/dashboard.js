@@ -66,6 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('dashboard_token');
     if (token) {
         showDashboard();
+        // Verificar validez del token en segundo plano para evitar sesiones zombies expiradas
+        fetch('/api/auth/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => {
+            if (res.status === 401 || res.status === 403) {
+                handleSessionExpired("Tu sesión ha expirado. Por favor ingresa nuevamente.");
+            }
+        }).catch(err => {
+            console.warn('No se pudo verificar token en inicio:', err);
+        });
     } else {
         showLogin();
     }
@@ -370,6 +380,22 @@ async function handleLogin(e) {
 
     loginError.textContent = "Error al conectar con el servidor. Intente nuevamente.";
     loginError.classList.remove('hidden');
+}
+
+function handleSessionExpired(customMsg) {
+    if (typeof saveQuotationDraftToStorage === 'function') {
+        try {
+            saveQuotationDraftToStorage();
+        } catch (e) {
+            console.warn('Error guardando borrador al expirar sesión:', e);
+        }
+    }
+    localStorage.removeItem('dashboard_token');
+    showLogin();
+    if (loginError) {
+        loginError.textContent = customMsg || "Tu sesión ha expirado o no es válida. Por favor ingresa nuevamente.";
+        loginError.classList.remove('hidden');
+    }
 }
 
 function getAuthHeaders() {
@@ -9390,10 +9416,100 @@ window.loadFiscalAgentDiagnosis = loadFiscalAgentDiagnosis;
 // MÓDULO COTIZADOR Y GENERADOR DE PROPUESTAS PDF OFICIAL HIPHA
 // ==========================================================================
 
-let quotationsCatalog = [];
+const DEFAULT_OFFICIAL_CATALOG = [
+    { id: "identidad-grafica", name: "Identidad Gráfica", category: "Servicio Adicional", description: "Logotipo / ADN de marca y Manual de uso de marca.", price: 3770.0, unit_label: "x proyecto", is_custom: false },
+    { id: "diseno-grafico", name: "Diseño Gráfico", category: "Servicio Adicional", description: "Piezas para identidad y herramientas comerciales.", price: 770.0, unit_label: "base / hr", is_custom: false },
+    { id: "product-shot", name: "Product Shot", category: "Servicio Adicional", description: "Fotografía profesional de producto en estudio con retoque digital.", price: 470.0, unit_label: "x pz", is_custom: false },
+    { id: "registro-fotografico", name: "Registro Fotográfico", category: "Servicio Adicional", description: "Sesión en locación de espacios o producto en uso.", price: 2770.0, unit_label: "x sesión", is_custom: false },
+    { id: "video-ia", name: "Video IA", category: "Servicio Adicional", description: "Generación y edición de video con inteligencia artificial (máx 60 seg).", price: 770.0, unit_label: "x video", is_custom: false },
+    { id: "email-emprende", name: "E-mail Emprende", category: "Servicio Adicional", description: "5 cuentas de correo corporativo para clientes con sitio web.", price: 770.0, unit_label: "x paquete", is_custom: false },
+    { id: "plan-web-mensual", name: "Plan Web (Mensual)", category: "Suscripción", description: "Desarrollo web corporativo, hosting, dominio y soporte técnico continuo (12 meses obligatorios).", price: 770.0, unit_label: "/ mes", is_custom: false },
+    { id: "plan-web-anual", name: "Plan Web (Anual)", category: "Suscripción", description: "Desarrollo web corporativo completo, hosting de alta velocidad, dominio y mantenimiento anual.", price: 7760.0, unit_label: "/ año", is_custom: false },
+    { id: "plan-design", name: "Plan Design", category: "Suscripción", description: "Solicitudes ilimitadas de diseño gráfico, artes publicitarios y branding continuo.", price: 2770.0, unit_label: "/ mes", is_custom: false },
+    { id: "plan-mkt", name: "Plan MKT", category: "Suscripción", description: "Departamento de marketing externo integral: Web + Diseño ilimitado + Campañas y Correos.", price: 7760.0, unit_label: "/ mes", is_custom: false }
+];
+
+const DEFAULT_AGENCY_CLIENTS = [
+    { name: "AMDI", contact_name: "Adriana Medina", contact_email: "adrianamedina@amdi.mx" },
+    { name: "Letrerama", contact_name: "Alberto Letrerama", contact_email: "contacto@letrerama.com" },
+    { name: "HealthyIce", contact_name: "Ventas HealthyIce", contact_email: "ventas@healthyice.mx" },
+    { name: "Grupo Gari", contact_name: "Dirección Grupo Gari", contact_email: "contacto@grupo-gari.com" },
+    { name: "Jessica Mendoza", contact_name: "Jessica Mendoza", contact_email: "jessica@jessicamendozabienesraices.com" },
+    { name: "El Chile Chillón", contact_name: "Contacto El Chile Chillón", contact_email: "contacto@chilechillon.com" },
+    { name: "Valencia Servicios", contact_name: "Valencia Servicios", contact_email: "contacto@valenciaservicios.com" },
+    { name: "White Clean", contact_name: "White Clean", contact_email: "contacto@whiteclean.mx" },
+    { name: "Uro-Oncology", contact_name: "Dr. Jairo Domínguez", contact_email: "info@uro-oncology.com" },
+    { name: "Centro de Urología Avanzada", contact_name: "Dr. Jairo Domínguez", contact_email: "drjairo@urologia-avanzada.com.mx" },
+    { name: "Botica Silvestre", contact_name: "Botica Silvestre", contact_email: "contacto@boticasilvestre.com" },
+    { name: "DAM Pisos", contact_name: "DAM Pisos", contact_email: "info@dampisos.com" },
+    { name: "El Ofertón del Piso", contact_name: "El Ofertón del Piso", contact_email: "contacto@ofertondelpiso.com" },
+    { name: "Oncología Robótica", contact_name: "Oncología Robótica", contact_email: "citas@oncologiarobotica.com.mx" }
+];
+
+let quotationsCatalog = [...DEFAULT_OFFICIAL_CATALOG];
 let currentQuotationItems = [];
-let quotationsClientsList = [];
+let quotationsClientsList = [...DEFAULT_AGENCY_CLIENTS];
 let quotationsInitialized = false;
+
+function saveQuotationDraftToStorage() {
+    try {
+        const draft = {
+            clientName: document.getElementById('quoteClientName')?.value || '',
+            clientContact: document.getElementById('quoteClientContact')?.value || '',
+            clientEmail: document.getElementById('quoteClientEmail')?.value || '',
+            clientPhone: document.getElementById('quoteClientPhone')?.value || '',
+            folio: document.getElementById('quoteFolio')?.value || '',
+            validityDays: document.getElementById('quoteValidityDays')?.value || '30',
+            notes: document.getElementById('quoteNotes')?.value || '',
+            applyTax: document.getElementById('quoteApplyTax') ? document.getElementById('quoteApplyTax').checked : true,
+            items: currentQuotationItems || []
+        };
+        if (draft.clientName || draft.clientContact || (draft.items && draft.items.length > 0)) {
+            localStorage.setItem('hipha_quotation_draft', JSON.stringify(draft));
+        }
+    } catch (e) {
+        console.warn('No se pudo guardar borrador local de cotización:', e);
+    }
+}
+
+function restoreQuotationDraftFromStorage() {
+    try {
+        const raw = localStorage.getItem('hipha_quotation_draft');
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (!draft) return;
+
+        const inputName = document.getElementById('quoteClientName');
+        const inputContact = document.getElementById('quoteClientContact');
+        const inputEmail = document.getElementById('quoteClientEmail');
+        const inputPhone = document.getElementById('quoteClientPhone');
+        const inputFolio = document.getElementById('quoteFolio');
+        const selectValidity = document.getElementById('quoteValidityDays');
+        const inputNotes = document.getElementById('quoteNotes');
+        const chkTax = document.getElementById('quoteApplyTax');
+
+        if (inputName && !inputName.value.trim() && draft.clientName) inputName.value = draft.clientName;
+        if (inputContact && !inputContact.value.trim() && draft.clientContact) inputContact.value = draft.clientContact;
+        if (inputEmail && !inputEmail.value.trim() && draft.clientEmail) inputEmail.value = draft.clientEmail;
+        if (inputPhone && !inputPhone.value.trim() && draft.clientPhone) inputPhone.value = draft.clientPhone;
+        if (inputFolio && !inputFolio.value.trim() && draft.folio) inputFolio.value = draft.folio;
+        if (selectValidity && draft.validityDays) selectValidity.value = draft.validityDays;
+        if (inputNotes && !inputNotes.value.trim() && draft.notes) inputNotes.value = draft.notes;
+        if (chkTax && draft.applyTax !== undefined) chkTax.checked = Boolean(draft.applyTax);
+
+        if (Array.isArray(draft.items) && draft.items.length > 0 && currentQuotationItems.length === 0) {
+            currentQuotationItems = draft.items;
+        }
+    } catch (e) {
+        console.warn('No se pudo restaurar borrador local de cotización:', e);
+    }
+}
+
+function clearQuotationDraftFromStorage() {
+    try {
+        localStorage.removeItem('hipha_quotation_draft');
+    } catch (e) {}
+}
 
 function initQuotationsModule() {
     setupQuotationsSubtabs();
@@ -9401,6 +9517,7 @@ function initQuotationsModule() {
     loadQuotationsCatalog();
     setupQuotationFormEvents();
     refreshQuotationsHistoryCount();
+    restoreQuotationDraftFromStorage();
     renderQuotationItems();
 }
 
@@ -9434,26 +9551,40 @@ function setupQuotationsSubtabs() {
 
 async function loadQuotationsClients() {
     const select = document.getElementById('quoteClientSelect');
-    if (!select || select.options.length > 1) return;
+    if (!select) return;
+
+    const populateDropdown = (clients) => {
+        const currentVal = select.value;
+        select.innerHTML = '<option value="">-- O escribir prospecto nuevo manual --</option>';
+        clients.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.name;
+            opt.textContent = `${c.name} ${c.contact_name ? '(' + c.contact_name + ')' : ''}`;
+            select.appendChild(opt);
+        });
+        if (currentVal) select.value = currentVal;
+    };
+
+    // Si aún no hay opciones cargadas, poblar de inmediato con clientes oficiales
+    if (select.options.length <= 1) {
+        populateDropdown(DEFAULT_AGENCY_CLIENTS);
+        quotationsClientsList = DEFAULT_AGENCY_CLIENTS;
+    }
 
     try {
         const token = localStorage.getItem('dashboard_token');
-        const res = await fetch('/api/dashboard/clients', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch('/api/dashboard/clients', { headers });
         if (res.ok) {
-            quotationsClientsList = await res.json();
-            quotationsClientsList.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.name;
-                opt.textContent = `${c.name} ${c.contact_name ? '(' + c.contact_name + ')' : ''}`;
-                select.appendChild(opt);
-            });
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+                quotationsClientsList = data;
+                populateDropdown(data);
+            }
         }
     } catch (e) {
-        console.warn('Error cargando clientes para cotizador:', e);
+        console.warn('Uso de lista de clientes predeterminada:', e);
     }
 }
 
@@ -9461,30 +9592,26 @@ async function loadQuotationsCatalog() {
     const chipsContainer = document.getElementById('catalogQuickChips');
     if (!chipsContainer) return;
 
-    if (quotationsCatalog.length > 0) {
+    // Renderizar inmediatamente el catálogo oficial (cero tiempo de espera)
+    if (quotationsCatalog && quotationsCatalog.length > 0) {
         renderCatalogChips();
-        return;
     }
 
     try {
         const token = localStorage.getItem('dashboard_token');
-        const res = await fetch('/api/dashboard/quotations/catalog', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch('/api/dashboard/quotations/catalog', { headers });
 
         if (res.ok) {
-            quotationsCatalog = await res.json();
-            renderCatalogChips();
-        } else {
-            chipsContainer.innerHTML = '<span style="color:#ef4444; font-size:0.8rem;">No se pudo cargar el catálogo de servicios.</span>';
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+                quotationsCatalog = data;
+                renderCatalogChips();
+            }
         }
     } catch (e) {
-        console.warn('Error cargando catálogo oficial de cotizaciones:', e);
-        if (chipsContainer) {
-            chipsContainer.innerHTML = '<span style="color:#ef4444; font-size:0.8rem;">Error de conexión con el catálogo.</span>';
-        }
+        console.warn('Uso de catálogo oficial precargado:', e);
     }
 }
 
@@ -9560,6 +9687,15 @@ function setupQuotationFormEvents() {
             recalculateQuotationTotals();
         });
     }
+
+    // Auto-guardado en tiempo real en localStorage para proteger la cotización
+    ['quoteClientName', 'quoteClientContact', 'quoteClientEmail', 'quoteClientPhone', 'quoteFolio', 'quoteValidityDays', 'quoteNotes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', saveQuotationDraftToStorage);
+            el.addEventListener('change', saveQuotationDraftToStorage);
+        }
+    });
 
     // Botones de acción
     const btnDownload = document.getElementById('btnDownloadQuotationPdf');
@@ -9723,6 +9859,8 @@ function recalculateQuotationTotals() {
     if (elTax) elTax.textContent = applyTax ? `$${taxAmount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN` : 'No aplica';
     if (elTot) elTot.textContent = `$${total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
     if (elDown) elDown.textContent = `$${downPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+
+    saveQuotationDraftToStorage();
 }
 
 function buildQuotationPayload() {
@@ -9798,6 +9936,11 @@ async function handleDownloadOrPreviewQuotation(isPreview = false) {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+                saveQuotationDraftToStorage();
+                handleSessionExpired("Tu sesión ha expirado. Por favor ingresa nuevamente (tu cotización se conservará intacta).");
+                return;
+            }
             const errData = await res.json().catch(() => ({}));
             throw new Error(errData.detail || 'Error en el servidor al compilar la cotización.');
         }
@@ -9857,6 +10000,11 @@ async function handleSaveQuotationToHistory() {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+                saveQuotationDraftToStorage();
+                handleSessionExpired("Tu sesión ha expirado. Por favor ingresa nuevamente (tu cotización se conservará intacta).");
+                return;
+            }
             const errData = await res.json().catch(() => ({}));
             throw new Error(errData.detail || 'Error al guardar la cotización.');
         }
@@ -9865,6 +10013,7 @@ async function handleSaveQuotationToHistory() {
         const inputFolio = document.getElementById('quoteFolio');
         if (inputFolio) inputFolio.value = saved.folio;
 
+        clearQuotationDraftFromStorage();
         alert(`¡Cotización ${saved.folio} para ${saved.client_name} guardada exitosamente en el historial!`);
         refreshQuotationsHistoryCount();
     } catch (err) {
@@ -9880,6 +10029,7 @@ async function handleSaveQuotationToHistory() {
 
 function handleClearQuotationForm() {
     if (confirm('¿Deseas limpiar todos los campos del cotizador?')) {
+        clearQuotationDraftFromStorage();
         currentQuotationItems = [];
         const inputName = document.getElementById('quoteClientName');
         const inputContact = document.getElementById('quoteClientContact');
@@ -9935,6 +10085,10 @@ async function loadQuotationsHistory() {
         });
 
         if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+                handleSessionExpired("Tu sesión ha expirado. Por favor ingresa nuevamente.");
+                return;
+            }
             throw new Error('No se pudo consultar el historial.');
         }
 
@@ -10048,6 +10202,10 @@ async function deleteSavedQuotation(quotationId, folio) {
         if (res.ok) {
             loadQuotationsHistory();
         } else {
+            if (res.status === 401 || res.status === 403) {
+                handleSessionExpired("Tu sesión ha expirado. Por favor ingresa nuevamente.");
+                return;
+            }
             const data = await res.json().catch(() => ({}));
             alert(data.detail || 'No se pudo eliminar la cotización.');
         }
