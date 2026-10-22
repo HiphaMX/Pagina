@@ -271,6 +271,18 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
                     if existing.account_rfc != target_account_rfc:
                         existing.account_rfc = target_account_rfc
                         existing.area_proyecto = target_area_name
+                    if not existing.xml_raw:
+                        existing.xml_raw = xml_bytes.decode("utf-8", errors="ignore")
+                    if not existing.conceptos_resumen and cfdi_data.get("conceptos_resumen"):
+                        existing.conceptos_resumen = cfdi_data["conceptos_resumen"]
+                    if (not existing.forma_pago or existing.forma_pago == "") and cfdi_data.get("forma_pago"):
+                        existing.forma_pago = cfdi_data["forma_pago"]
+                    if (not existing.metodo_pago or existing.metodo_pago == "") and cfdi_data.get("metodo_pago"):
+                        existing.metodo_pago = cfdi_data["metodo_pago"]
+                    if (not getattr(existing, "retencion_isr", 0.0) or existing.retencion_isr == 0.0) and cfdi_data.get("retencion_isr"):
+                        existing.retencion_isr = cfdi_data.get("retencion_isr", 0.0)
+                    if (not getattr(existing, "retencion_iva", 0.0) or existing.retencion_iva == 0.0) and cfdi_data.get("retencion_iva"):
+                        existing.retencion_iva = cfdi_data.get("retencion_iva", 0.0)
                     if is_cash_egreso and (not existing.conciliado or not existing.comprobado or existing.motivo_comprobacion != "Pago efectivo"):
                         existing.conciliado = True
                         existing.comprobado = True

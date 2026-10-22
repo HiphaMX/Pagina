@@ -225,24 +225,26 @@ settings = Settings()
 
 
 def get_reconciliation_entity_config(account_rfc: Optional[str] = None) -> dict:
+    import os
     rfc = (account_rfc or "").strip().upper()
     if rfc == settings.AMDI_RECON_RFC.upper() or rfc == "AMDI":
         return {
             "rfc": settings.AMDI_RECON_RFC,
             "name": settings.AMDI_RECON_NAME,
-            "host": settings.AMDI_RECON_IMAP_HOST,
-            "port": int(settings.AMDI_RECON_IMAP_PORT or 993),
-            "user": settings.AMDI_RECON_IMAP_USER,
-            "password": settings.AMDI_RECON_IMAP_PASSWORD,
-            "folder": settings.AMDI_RECON_IMAP_FOLDER,
+            "host": settings.AMDI_RECON_IMAP_HOST or os.getenv("AMDI_RECON_IMAP_HOST", "mail.amdi.mx"),
+            "port": int(settings.AMDI_RECON_IMAP_PORT or os.getenv("AMDI_RECON_IMAP_PORT", 993) or 993),
+            "user": settings.AMDI_RECON_IMAP_USER or os.getenv("AMDI_RECON_IMAP_USER", "factura@amdi.mx"),
+            "password": settings.AMDI_RECON_IMAP_PASSWORD or os.getenv("AMDI_RECON_IMAP_PASSWORD", ""),
+            "folder": settings.AMDI_RECON_IMAP_FOLDER or os.getenv("AMDI_RECON_IMAP_FOLDER", "INBOX"),
         }
     # Default HIPHA
     return {
         "rfc": settings.HIPHA_RECON_RFC,
         "name": settings.HIPHA_RECON_NAME,
-        "host": settings.HIPHA_RECON_IMAP_HOST,
-        "port": int(settings.HIPHA_RECON_IMAP_PORT or 993),
-        "user": settings.HIPHA_RECON_IMAP_USER,
-        "password": settings.HIPHA_RECON_IMAP_PASSWORD,
-        "folder": settings.HIPHA_RECON_IMAP_FOLDER,
+        "host": settings.HIPHA_RECON_IMAP_HOST or os.getenv("HIPHA_RECON_IMAP_HOST", "mail.hipha.mx"),
+        "port": int(settings.HIPHA_RECON_IMAP_PORT or os.getenv("HIPHA_RECON_IMAP_PORT", 993) or 993),
+        "user": settings.HIPHA_RECON_IMAP_USER or os.getenv("HIPHA_RECON_IMAP_USER", "factura@hipha.mx"),
+        "password": settings.HIPHA_RECON_IMAP_PASSWORD or settings.RECONCILIATION_IMAP_PASSWORD or os.getenv("HIPHA_RECON_IMAP_PASSWORD", "") or os.getenv("RECONCILIATION_IMAP_PASSWORD", ""),
+        "folder": settings.HIPHA_RECON_IMAP_FOLDER or os.getenv("HIPHA_RECON_IMAP_FOLDER", "INBOX"),
     }
+
