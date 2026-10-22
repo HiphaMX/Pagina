@@ -6081,6 +6081,14 @@ function initReconciliationModule() {
         });
     }
 
+    // Botón de Sincronizar Correo IMAP manual
+    const btnSyncMailbox = document.getElementById('btnSyncMailbox');
+    if (btnSyncMailbox) {
+        btnSyncMailbox.addEventListener('click', () => {
+            autoSyncMailbox(currentReconEntity, false);
+        });
+    }
+
     // Sincronización automática al abrir el módulo
     autoSyncMailbox(currentReconEntity, true);
 
@@ -7501,13 +7509,19 @@ function filterAndRenderMailboxInvoices() {
     if (term) {
         filtered = filtered.filter(inv => {
             const emisor = (inv.nombre_emisor || '').toLowerCase();
-            const rfc = (inv.rfc_emisor || '').toLowerCase();
+            const receptor = (inv.nombre_receptor || '').toLowerCase();
+            const rfcE = (inv.rfc_emisor || '').toLowerCase();
+            const rfcR = (inv.rfc_receptor || '').toLowerCase();
+            const folio = (inv.folio || '').toLowerCase();
+            const serie = (inv.serie || '').toLowerCase();
+            const serieFolio = `${serie}-${folio}`.toLowerCase();
+            const folioClean = `${serie}${folio}`.toLowerCase();
             const conceptos = (inv.conceptos_resumen || '').toLowerCase();
             const uuid = (inv.uuid || '').toLowerCase();
             const motivo = (inv.motivo_comprobacion || '').toLowerCase();
             const formaPago = (inv.forma_pago || '').toLowerCase();
             const metodoPago = (inv.metodo_pago || '').toLowerCase();
-            return emisor.includes(term) || rfc.includes(term) || conceptos.includes(term) || uuid.includes(term) || motivo.includes(term) || formaPago.includes(term) || metodoPago.includes(term);
+            return emisor.includes(term) || receptor.includes(term) || rfcE.includes(term) || rfcR.includes(term) || folio.includes(term) || serieFolio.includes(term) || folioClean.includes(term) || conceptos.includes(term) || uuid.includes(term) || motivo.includes(term) || formaPago.includes(term) || metodoPago.includes(term);
         });
     }
 
@@ -7624,14 +7638,21 @@ function renderMailboxInvoicesModal(invoices) {
             `;
         }
 
+        const contraparteNombre = isIngreso ? (inv.nombre_receptor || 'Receptor Desconocido') : (inv.nombre_emisor || 'Emisor Desconocido');
+        const contraparteRfc = isIngreso ? (inv.rfc_receptor || '-') : (inv.rfc_emisor || '-');
+        const roleLabel = isIngreso ? 'Cliente' : 'Proveedor';
+        const folioBadge = inv.folio ? `<span style="background: rgba(255,255,255,0.06); padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; color: #38bdf8; font-family: monospace; font-size: 0.76rem; margin-right: 0.35rem;">[${escapeHtml(inv.folio)}]</span>` : '';
+
         html += `
             <tr style="border-bottom: 1px solid var(--border-color);">
                 <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
                     ${inv.fecha_emision || '-'}
                 </td>
                 <td style="padding: 0.75rem 0.9rem;">
-                    <div style="font-weight: 600; color: var(--text-main); font-size: 0.84rem;">${escapeHtml(inv.nombre_emisor || 'Emisor Desconocido')}</div>
-                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">RFC: ${inv.rfc_emisor || '-'} • UUID: ${(inv.uuid || '').slice(0, 8)}...</div>
+                    <div style="font-weight: 600; color: var(--text-main); font-size: 0.84rem; display: flex; align-items: center; gap: 0.2rem; flex-wrap: wrap;">
+                        ${folioBadge}<span>${escapeHtml(contraparteNombre)}</span>
+                    </div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">${roleLabel} • RFC: ${contraparteRfc} • UUID: ${(inv.uuid || '').slice(0, 8)}...</div>
                 </td>
                 <td style="padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--text-muted); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(inv.conceptos_resumen || '')}">
                     ${escapeHtml(inv.conceptos_resumen || '-')}
@@ -7661,9 +7682,25 @@ function initMailboxInvoicesModal() {
     const btnCloseX = document.getElementById('btnCloseMailboxModalX');
     const btnClose = document.getElementById('btnCloseMailboxModal');
     const searchInput = document.getElementById('mailboxModalSearchInput');
+    const btnModalSync = document.getElementById('btnModalSyncMailbox');
 
     if (btnOpen) {
         btnOpen.addEventListener('click', openMailboxInvoicesModal);
+    }
+
+    if (btnModalSync) {
+        btnModalSync.addEventListener('click', async () => {
+            const orig = btnModalSync.innerHTML;
+            btnModalSync.disabled = true;
+            btnModalSync.innerHTML = '<span class="spinner" style="width:12px;height:12px;display:inline-block;border-width:2px;"></span> Comprobando...';
+            try {
+                await autoSyncMailbox(currentReconEntity, false);
+                await openMailboxInvoicesModal();
+            } finally {
+                btnModalSync.disabled = false;
+                btnModalSync.innerHTML = orig;
+            }
+        });
     }
 
     const closeModal = () => {
