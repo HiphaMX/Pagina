@@ -26,22 +26,131 @@ TRADE_NAME_ALIASES = {
     "TUKIPA": ["ABEL ALEJANDRO MEDINA", "MEHA870222DY4"],
 }
 
-def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_disponibles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
+def _extract_cfdi_identifiers(f: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Ejecuta el motor de conciliación determinista de 3 niveles entre movimientos bancarios y CFDIs disponibles.
-    
-    Tolerancia: ±$0.05 MXN por redondeo bancario.
-    Ventana temporal: Entre -2 días y +7 días naturales respecto a la fecha del CFDI.
-    
-    Retorna la lista de transacciones con sus campos de conciliación asignados.
+    Extrae serie, folio, uuid y combinaciones serie-folio de la factura o complemento de pago.
     """
-    # Copia de trabajo de facturas para descartar en memoria las ya emparejadas
+    uuid_raw = str(f.get("uuid") or "").strip().upper()
+    uuid_short = uuid_raw[:8] if len(uuid_raw) >= 8 else ""
+
+    serie = str(f.get("serie") or "").strip().upper()
+    folio = str(f.get("folio") or "").strip().upper()
+
+    # Si no vienen explícitos, buscar en conceptos_resumen (ej. [F-176] o [176])
+    conceptos = str(f.get("conceptos_resumen") or "")
+    m_bracket = re.search(r'\[([A-Za-z0-9_-]+)\]', conceptos)
+    if m_bracket:
+        bracket_val = m_bracket.group(1).upper()
+        if "-" in bracket_val:
+            parts = bracket_val.split("-", 1)
+            if not serie and parts[0]:
+                serie = parts[0]
+            if not folio and parts[1]:
+                folio = parts[1]
+        elif not folio:
+            folio = bracket_val
+
+    # Si aún no hay folio/serie, buscar en xml_raw si existe
+    xml_raw = str(f.get("xml_raw") or "")
+    if xml_raw:
+        if not folio:
+            m_fol = re.search(r'(?:Folio|folio)="([^"]+)"', xml_raw)
+            if m_fol:
+                folio = m_fol.group(1).strip().upper()
+        if not serie:
+            m_ser = re.search(r'(?:Serie|serie)="([^"]+)"', xml_raw)
+            if m_ser:
+                serie = m_ser.group(1).strip().upper()
+
+    serie_folio_combos = []
+    if serie and folio:
+        serie_folio_combos.extend([
+            f"{serie}-{folio}",
+            f"{serie}{folio}",
+            f"{serie} {folio}"
+        ])
+    elif folio:
+        serie_folio_combos.append(folio)
+
+    return {
+        "uuid": uuid_raw,
+        "uuid_short": uuid_short,
+        "serie": serie,
+        "folio": folio,
+        "serie_folio_combos": serie_folio_combos
+    }
+
+
+def _matches_direct_reference(concepto_upper: str, cfdi_ids: Dict[str, Any]) -> Tuple[bool, str]:
+    """
+    Nivel 1: Verifica si el concepto bancario contiene explícitamente:
+    1. UUID completo o segmento UUID de 8 caracteres (uuid_short)
+    2. Serie-folio completo (ej. 'F-176', 'F176', 'F 176')
+    3. Folio numérico o alfanumérico coincidente con etiqueta bancaria (REF, FOLIO, FACTURA, BNET, RASTREO o entre corchetes)
+    """
+    uuid = cfdi_ids["uuid"]
+    uuid_short = cfdi_ids["uuid_short"]
+    folio = cfdi_ids["folio"]
+    combos = cfdi_ids["serie_folio_combos"]
+
+    # 1. Match por UUID completo
+    if uuid and len(uuid) == 36 and uuid in concepto_upper:
+        return True, f"UUID:{uuid[:8]}"
+
+    # 2. Match por UUID corto (8 caracteres hexadecimales)
+    if uuid_short and len(uuid_short) >= 8 and re.search(rf'\b{re.escape(uuid_short)}\b', concepto_upper):
+        return True, f"UUID:{uuid_short}"
+
+    # 3. Match por serie-folio compuesto (ej. 'F-176', 'F176')
+    for combo in combos:
+        if combo and len(combo) >= 3:
+            if re.search(rf'(?:\b|[_\s/-]){re.escape(combo)}(?:\b|[_\s/-])', concepto_upper):
+                return True, f"Folio:{combo}"
+
+    # 4. Match por Folio individual (ej. 176 o 49201)
+    if folio and len(folio) >= 2:
+        folio_unpadded = folio.lstrip('0') or '0'
+        explicit_patterns = [
+            rf'(?:REF|REFERENCIA|FOLIO|FAC|FACTURA|DOCTO|DOC)[:\s#]+0*{re.escape(folio_unpadded)}\b',
+            rf'\[0*{re.escape(folio_unpadded)}\]',
+            rf'RASTREO[:\s]+[0-9A-Z]*{re.escape(folio_unpadded)}'
+        ]
+        for pat in explicit_patterns:
+            if re.search(pat, concepto_upper):
+                return True, f"Folio:{folio}"
+
+        # Si el folio tiene 4 o más caracteres, admitir match como palabra completa
+        if len(folio) >= 4 and re.search(rf'\b0*{re.escape(folio_unpadded)}\b', concepto_upper):
+            return True, f"Folio:{folio}"
+
+    return False, ""
+
+
+def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_disponibles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Motor de Emparejamiento por Niveles (Cascada de Scoring):
+    
+    - Nivel 1: Match Exacto (Determinista)
+      Mismo monto exacto (±$0.05) + clave de rastreo / referencia bancaria coincide con folio o UUID + fecha ventana (±3 días).
+      Auto-conciliar sin intervención. Estatus: CONCILIADO_DIRECTO (confianza 1.0).
+      
+    - Nivel 2: Match Fuzzy (1 a 1)
+      Mismo monto exacto (±$0.05) + razón social / alias comercial coincide con concepto bancario validado contra RFC conocido, sin referencia explícita.
+      Estatus: CONCILIADO_POR_REGLA (confianza 0.95).
+      
+    - Nivel 3: Match Complejo (N a 1 o 1 a N)
+      - N a 1: Un depósito/pago cubre múltiples facturas PPD/PUE. Si la combinación es unívoca -> CONCILIADO; si hay ambigüedad -> POR_REVISAR.
+      - 1 a N: Factura pagada en 2 exhibiciones bancarias (split payments) -> Ambas transacciones CONCILIADO (confianza 1.0).
+      
+    - Nivel 4: Discrepancias y Huérfanos
+      Movimientos bancarios sin factura: auto-clasificación de fiscales/traspasos (NO_APLICA) y comisiones/gastos pendientes (SIN_CFDI).
+    """
     facturas_pool = list(facturas_disponibles)
     resultados = []
 
     for tx in transacciones_banco:
-        # Si la transacción ya está excluida/justificada (NO_APLICA, EXENTO) o es un traspaso entre cuentas propias
+        # Pre-descarte: Traspasos propios o justificados
         from app.services.reconciliation.pdf_parser import is_own_account_transfer
 
         if tx.get("status_conciliacion") in ("NO_APLICA", "EXENTO") or is_own_account_transfer(tx.get("concepto", ""), account_rfc=tx.get("account_rfc", "")) or (tx.get("nota_revision") and "Traspaso entre Cuentas Propias" in tx.get("nota_revision", "")):
@@ -54,7 +163,7 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
             resultados.append(resultado_tx)
             continue
 
-        # Extraer fecha bancaria
+        # Fechas y montos
         tx_fecha = tx["fecha"]
         if isinstance(tx_fecha, str):
             tx_fecha = datetime.strptime(tx_fecha[:10], "%Y-%m-%d")
@@ -73,9 +182,9 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
         delgadillo_area = None
 
         # -------------------------------------------------------------
-        # FASE 1: Búsqueda 1:1 (Exacta o con Complemento de Pago)
+        # FASE 1: Búsqueda 1:1 (Nivel 1 Determinista & Nivel 2 Fuzzy)
         # -------------------------------------------------------------
-        candidatos: List[Tuple[Dict[str, Any], int, str, float, List[str]]] = []
+        candidatos: List[Tuple[Dict[str, Any], int, str, float, str, List[str]]] = []
 
         for f in facturas_pool:
             f_tipo = f["tipo"]
@@ -94,6 +203,7 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 nombre_contraparte = str((f.get("nombre_emisor") if f_tipo == "EGRESO" else f.get("nombre_receptor")) or "").upper().strip()
                 tokens_nombre = _clean_text_tokens(nombre_contraparte)
 
+                # Coincidencia de texto (Razón social, RFC o Alias comercial)
                 tiene_coincidencia_texto = False
                 if rfc_contraparte and len(rfc_contraparte) >= 4 and rfc_contraparte in concepto_upper:
                     tiene_coincidencia_texto = True
@@ -103,7 +213,6 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                             tiene_coincidencia_texto = True
                             break
 
-                # Comprobar alias comerciales (nombres de tienda / marcas vs razón social CFDI)
                 if not tiene_coincidencia_texto:
                     for alias_key, alias_targets in TRADE_NAME_ALIASES.items():
                         if alias_key in concepto_upper:
@@ -111,67 +220,81 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                                 tiene_coincidencia_texto = True
                                 break
 
-                # Relacionados si es Complemento de Pago
+                # Coincidencia explícita de identificadores (Folio, Serie, Rastreo, UUID)
+                cfdi_ids = _extract_cfdi_identifiers(f)
+                is_direct_ref, matched_ref_tag = _matches_direct_reference(concepto_upper, cfdi_ids)
+
+                # Relacionados si es Complemento de Pago (REP)
                 f_related = [d["uuid"] for d in f.get("doctos_relacionados", []) if d.get("uuid")]
+                rep_tag = " [Complemento de Pago]" if f.get("metodo_pago") == "PAGO" else ""
 
+                # --- Evaluación en Cascada ---
+                # Nivel 1: Match Exacto (Determinista)
+                # Mismo monto exacto + clave de rastreo / referencia / folio o UUID + ventana ±3 días
+                if is_direct_ref and abs(delta_dias) <= 3:
+                    cand_status = "CONCILIADO_DIRECTO"
+                    cand_score = 1.0
+                    cand_nota = f"Match exacto determinista{rep_tag} por referencia/folio ({matched_ref_tag}) e importe (${tx_monto:,.2f}) a {delta_dias}d."
+                    candidatos.append((f, 1, cand_nota, cand_score, cand_status, f_related))
 
-                # Ventana comercial flexible:
-                # - Con coincidencia de nombre/RFC: de -60 días (anticipos de clientes) a +90 días (crédito comercial y PPD)
-                # - Sin coincidencia visible en concepto: ventana estricta de -3 a +7 días
-                if tiene_coincidencia_texto:
-                    if -60 <= delta_dias <= 90:
-                        rep_tag = " [Complemento de Pago]" if f.get("metodo_pago") == "PAGO" else ""
-                        ant_tag = " [Anticipo]" if delta_dias < 0 else ""
-                        candidatos.append((f, 1, f"Match exacto{rep_tag}{ant_tag} por importe (${tx_monto:,.2f}), fecha ({delta_dias}d) y coincidencia con {nombre_contraparte[:30]}.", 1.0, f_related))
-                    elif 91 <= delta_dias <= 150 or -90 <= delta_dias < -60:
-                        candidatos.append((f, 2, f"Monto (${tx_monto:,.2f}) y contraparte ({nombre_contraparte[:30]}) coinciden, pero con desfase de {delta_dias} días.", 0.8, f_related))
-                else:
-                    if -3 <= delta_dias <= 7:
-                        candidatos.append((f, 2, f"Monto (${tx_monto:,.2f}) y fecha coinciden con CFDI de {nombre_contraparte[:30]}, pero el concepto bancario no contiene el RFC/Nombre visible.", 0.7, f_related))
+                # Nivel 2: Match Fuzzy (1 a 1)
+                # Mismo monto exacto + razón social/alias comercial validado contra RFC, sin referencia explícita
+                elif tiene_coincidencia_texto and -60 <= delta_dias <= 90:
+                    cand_status = "CONCILIADO_POR_REGLA"
+                    cand_score = 0.95
+                    ant_tag = " [Anticipo]" if delta_dias < 0 else ""
+                    cand_nota = f"Match 1:1 por regla comercial{rep_tag}{ant_tag} con {nombre_contraparte[:30]} (RFC: {rfc_contraparte}) por importe (${tx_monto:,.2f}) a {delta_dias}d."
+                    candidatos.append((f, 2, cand_nota, cand_score, cand_status, f_related))
+
+                # Casos grises / desfasados -> POR_REVISAR
+                elif tiene_coincidencia_texto and (91 <= delta_dias <= 150 or -90 <= delta_dias < -60):
+                    candidatos.append((f, 3, f"Monto (${tx_monto:,.2f}) y contraparte ({nombre_contraparte[:30]}) coinciden, pero con desfase de {delta_dias} días.", 0.80, "POR_REVISAR", f_related))
+                elif not tiene_coincidencia_texto and -3 <= delta_dias <= 7:
+                    candidatos.append((f, 4, f"Monto (${tx_monto:,.2f}) y fecha coinciden con CFDI de {nombre_contraparte[:30]}, pero concepto bancario no contiene contraparte ni folio visible.", 0.70, "POR_REVISAR", f_related))
 
         if candidatos:
+            # Ordenar primero por Tier de coincidencia (1 = Directo, 2 = Regla, etc.) y luego por menor delta en días
             candidatos.sort(key=lambda x: (x[1], abs((tx_fecha - (datetime.strptime(x[0]["fecha_emision"][:10], "%Y-%m-%d") if isinstance(x[0]["fecha_emision"], str) else x[0]["fecha_emision"])).days)))
-            ganador, match_tier, nota_revision, confianza_score, related_cfdi_uuids = candidatos[0]
+            ganador, match_tier, nota_revision, confianza_score, status_asignado, related_cfdi_uuids = candidatos[0]
 
             uuid_asignado = ganador["uuid"]
-            status_asignado = "CONCILIADO" if match_tier == 1 else "POR_REVISAR"
             facturas_pool.remove(ganador)
 
-            # Si el ganador es un Complemento de Pago (REP), enriquecer nota explícita
+            # Si el ganador es un REP, enriquecer nota
             if ganador.get("metodo_pago") == "PAGO":
                 num_docs = len(related_cfdi_uuids)
                 if ganador.get("tipo") == "INGRESO":
-                    nota_revision = f"Pago recibido que ampara {num_docs} factura(s) PPD (Ingreso) - REP: {uuid_asignado[:8]}"
+                    nota_revision = f"Pago recibido que ampara {num_docs} factura(s) PPD (Ingreso) - REP: {uuid_asignado[:8]} | {nota_revision}"
                 else:
-                    nota_revision = f"Pago emitido que ampara {num_docs} factura(s) PPD (Egreso) - REP: {uuid_asignado[:8]}"
+                    nota_revision = f"Pago emitido que ampara {num_docs} factura(s) PPD (Egreso) - REP: {uuid_asignado[:8]} | {nota_revision}"
 
-            # Si el ganador ampara facturas hijas (REP), remover también las facturas hijas del pool
+            # Si ampara facturas hijas (REP), removerlas también del pool
             if related_cfdi_uuids:
                 facturas_pool = [inv for inv in facturas_pool if inv["uuid"] not in related_cfdi_uuids]
 
         # -------------------------------------------------------------
-        # FASE 2: Pagos Consolidados (Múltiples Facturas en 1 Solo Pago)
+        # FASE 2: Nivel 3 - Pagos Consolidados (N Facturas a 1 Banco)
         # -------------------------------------------------------------
-        elif tx_tipo == "INGRESO":
+        elif tx_tipo in ("INGRESO", "EGRESO") and tx_monto > 0:
             candidatos_combo = [
                 inv for inv in facturas_pool
-                if inv["tipo"] == "INGRESO" and 0 < round(float(inv["total"]), 2) < tx_monto
+                if inv["tipo"] == tx_tipo and 0 < round(float(inv["total"]), 2) < tx_monto
             ]
 
-            # Priorizar facturas cuya contraparte coincida con el concepto bancario
-            def _has_text_match(inv_cand):
-                nom = (inv_cand.get("nombre_receptor") or "").upper().strip()
-                rfc_c = (inv_cand.get("rfc_receptor") or "").upper().strip()
+            def _inv_has_text_match(inv_cand):
+                nom = (inv_cand.get("nombre_receptor" if tx_tipo == "INGRESO" else "nombre_emisor") or "").upper().strip()
+                rfc_c = (inv_cand.get("rfc_receptor" if tx_tipo == "INGRESO" else "rfc_emisor") or "").upper().strip()
                 if rfc_c and len(rfc_c) >= 4 and rfc_c in concepto_upper:
                     return True
                 for tok in _clean_text_tokens(nom):
                     if tok in concepto_upper:
                         return True
+                for alias_key, alias_targets in TRADE_NAME_ALIASES.items():
+                    if alias_key in concepto_upper:
+                        if any(target in nom or target == rfc_c for target in alias_targets):
+                            return True
                 return False
 
-            matched_combo: List[Dict[str, Any]] = []
-
-            # Filtrar por ventana temporal razonable (-15d a +90d respecto a la fecha del pago)
             valid_cands = []
             for c in candidatos_combo:
                 c_fec = c["fecha_emision"]
@@ -183,49 +306,69 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 if -60 <= d_days <= 90:
                     valid_cands.append(c)
 
-            # Ordenar primero los que coinciden en nombre/RFC
-            valid_cands.sort(key=lambda x: (0 if _has_text_match(x) else 1))
+            # En pagos consolidados N:1, las facturas DEBEN coincidir con la contraparte del movimiento bancario
+            # para evitar asociar facturas de un tercero no relacionado a un pago arbitrario
+            valid_cands = [c for c in valid_cands if _inv_has_text_match(c)]
 
-            # 1. Probar combinaciones de 2 facturas
+            # Buscar todas las combinaciones posibles que sumen el total pagado
+            matching_combos = []
+
+            # Combinaciones de 2 facturas
             for i in range(len(valid_cands)):
                 for j in range(i + 1, len(valid_cands)):
+                    same_counterparty = (
+                        (valid_cands[i].get("rfc_emisor") == valid_cands[j].get("rfc_emisor")) or
+                        (valid_cands[i].get("rfc_receptor") == valid_cands[j].get("rfc_receptor"))
+                    )
+                    if not same_counterparty:
+                        continue
+
                     s2 = round(float(valid_cands[i]["total"]) + float(valid_cands[j]["total"]), 2)
                     if abs(s2 - tx_monto) <= 0.05:
-                        matched_combo = [valid_cands[i], valid_cands[j]]
-                        break
-                if matched_combo:
-                    break
+                        matching_combos.append([valid_cands[i], valid_cands[j]])
 
-            # 2. Probar combinaciones de 3 facturas si no hubo par
-            if not matched_combo:
+            # Combinaciones de 3 facturas si no hay o si se evalúa exhaustivamente
+            if not matching_combos:
                 for i in range(len(valid_cands)):
                     for j in range(i + 1, len(valid_cands)):
                         for k in range(j + 1, len(valid_cands)):
+                            same_counterparty = (
+                                (valid_cands[i].get("rfc_emisor") == valid_cands[j].get("rfc_emisor") == valid_cands[k].get("rfc_emisor")) or
+                                (valid_cands[i].get("rfc_receptor") == valid_cands[j].get("rfc_receptor") == valid_cands[k].get("rfc_receptor")) or
+                                (_inv_has_text_match(valid_cands[i]) and _inv_has_text_match(valid_cands[j]) and _inv_has_text_match(valid_cands[k]))
+                            )
+                            if not same_counterparty:
+                                continue
+
                             s3 = round(float(valid_cands[i]["total"]) + float(valid_cands[j]["total"]) + float(valid_cands[k]["total"]), 2)
                             if abs(s3 - tx_monto) <= 0.05:
-                                matched_combo = [valid_cands[i], valid_cands[j], valid_cands[k]]
-                                break
-                        if matched_combo:
-                            break
-                    if matched_combo:
-                        break
+                                matching_combos.append([valid_cands[i], valid_cands[j], valid_cands[k]])
 
-            if matched_combo:
+            # Criterio Agentic de Ambigüedad:
+            # Si hay exactamente 1 combinación -> UNÍVOCO: CONCILIADO (confianza 1.0)
+            # Si hay múltiples combinaciones posibles de igual suma -> AMBIGUO: POR_REVISAR (confianza 0.7)
+            if len(matching_combos) == 1:
+                matched_combo = matching_combos[0]
                 uuid_asignado = matched_combo[0]["uuid"]
                 status_asignado = "CONCILIADO"
                 confianza_score = 1.0
                 related_cfdi_uuids = [inv["uuid"] for inv in matched_combo]
                 desc_combo = " + ".join([f"{inv['uuid'][:8]} (${float(inv['total']):,.2f})" for inv in matched_combo])
-                receptor_name = matched_combo[0].get("nombre_receptor", "")
-                nota_revision = f"Pago consolidado de {len(matched_combo)} facturas ({receptor_name[:25]}): {desc_combo}"
+                c_nom = matched_combo[0].get("nombre_receptor" if tx_tipo == "INGRESO" else "nombre_emisor", "")
+                nota_revision = f"Pago consolidado unívoco de {len(matched_combo)} facturas ({c_nom[:25]}): {desc_combo}"
 
-                # Remover todas las facturas consolidadas del pool
                 for inv_rem in matched_combo:
                     if inv_rem in facturas_pool:
                         facturas_pool.remove(inv_rem)
 
+            elif len(matching_combos) > 1:
+                uuid_asignado = matching_combos[0][0]["uuid"]
+                status_asignado = "POR_REVISAR"
+                confianza_score = 0.70
+                nota_revision = f"Posible pago consolidado ambiguo: se detectaron {len(matching_combos)} combinaciones de facturas que suman ${tx_monto:,.2f}."
+
         # -------------------------------------------------------------
-        # FASE 3: Clasificación Inteligente de Egresos sin CFDI
+        # FASE 3: Nivel 4 - Clasificación de Discrepancias y Huérfanos
         # -------------------------------------------------------------
         if status_asignado == "SIN_CFDI":
             banco_val = tx.get("banco", "")
@@ -256,7 +399,6 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
             else:
                 nota_revision = "Transacción bancaria sin CFDI registrado en el período."
 
-        # Construir registro resultado
         resultado_tx = dict(tx)
         resultado_tx["uuid_cfdi"] = uuid_asignado
         resultado_tx["status_conciliacion"] = status_asignado
@@ -269,7 +411,7 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
         resultados.append(resultado_tx)
 
     # -------------------------------------------------------------
-    # FASE 4: Múltiples Movimientos Bancarios para 1 solo CFDI / REP (Split Payments M:1)
+    # FASE 4: Nivel 3 (1 a N) - Split Payments (1 CFDI pagado en múltiples bancos)
     # -------------------------------------------------------------
     unmatched_indices = [
         idx for idx, r in enumerate(resultados)
@@ -326,8 +468,6 @@ def conciliar_movimientos(transacciones_banco: List[Dict[str, Any]], facturas_di
                 for j_pos in range(i_pos + 1, len(cands_idx)):
                     idx_a = cands_idx[i_pos]
                     idx_b = cands_idx[j_pos]
-                    # Para evitar falsos positivos, al menos uno de los movimientos debe corresponder al proveedor
-                    # o ambos movimientos deben compartir tokens específicos de referencia/emisor
                     matches_vendor = _cand_matches_vendor(idx_a) or _cand_matches_vendor(idx_b)
                     if not matches_vendor:
                         c_a = str(resultados[idx_a].get("concepto", "")).upper()

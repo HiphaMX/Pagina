@@ -64,7 +64,7 @@ def audit_month_fiscal_health(
     monto_sin_cfdi = sum(t.monto for t in sin_cfdi_egresos)
     count_sin_cfdi = len(sin_cfdi_egresos)
 
-    conciliados_egresos = [t for t in egresos_operativos if t.status_conciliacion in ("CONCILIADO", "COMPROBADO_FUERA", "COMPROBADO") or t.uuid_cfdi is not None]
+    conciliados_egresos = [t for t in egresos_operativos if t.status_conciliacion in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA", "COMPROBADO_FUERA", "COMPROBADO") or t.uuid_cfdi is not None]
     no_aplica_egresos = [t for t in egresos_operativos if t.status_conciliacion in ("NO_APLICA", "EXENTO")]
 
     total_egresos_comprobados_o_justificados = sum(t.monto for t in conciliados_egresos) + sum(t.monto for t in no_aplica_egresos)

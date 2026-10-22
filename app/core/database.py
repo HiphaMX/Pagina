@@ -106,6 +106,7 @@ def ensure_db_initialized():
                         "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS account_rfc VARCHAR(20) DEFAULT 'DEGF851127TK1'",
                         "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS area_proyecto VARCHAR(100) DEFAULT NULL",
                         "ALTER TABLE bank_transactions ADD COLUMN IF NOT EXISTS tipo_categoria VARCHAR(50) DEFAULT NULL",
+                        "ALTER TABLE bank_transactions ALTER COLUMN status_conciliacion TYPE VARCHAR(50)",
                         "ALTER TABLE quotations ADD COLUMN IF NOT EXISTS require_down_payment BOOLEAN DEFAULT TRUE",
                     ]
                 else:

@@ -221,8 +221,8 @@ def get_reconciliation_overview(
     total_traspasos_egresos = sum(t.monto for t in traspasos_egresos)
     count_traspasos_egresos = len(traspasos_egresos)
 
-    conciliados_ingresos = [t for t in ingresos_comerciales if t.status_conciliacion == "CONCILIADO"]
-    conciliados_egresos = [t for t in egresos_operativos if t.status_conciliacion == "CONCILIADO"]
+    conciliados_ingresos = [t for t in ingresos_comerciales if t.status_conciliacion in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA")]
+    conciliados_egresos = [t for t in egresos_operativos if t.status_conciliacion in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA")]
 
     sin_cfdi_egresos = [t for t in egresos_operativos if t.status_conciliacion == "SIN_CFDI"]
     monto_sin_cfdi = sum(t.monto for t in sin_cfdi_egresos)
@@ -493,7 +493,10 @@ def get_reconciliation_transactions(
         query = query.filter(BankTransaction.periodo_mes == month)
 
     if status and status != "ALL":
-        query = query.filter(BankTransaction.status_conciliacion == status)
+        if status == "CONCILIADO":
+            query = query.filter(BankTransaction.status_conciliacion.in_(["CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA"]))
+        else:
+            query = query.filter(BankTransaction.status_conciliacion == status)
 
     if tipo and tipo != "ALL":
         query = query.filter(BankTransaction.tipo == tipo)
@@ -902,6 +905,7 @@ def _run_reconciliation_pass(
             "total": f.total,
             "metodo_pago": f.metodo_pago,
             "conceptos_resumen": f.conceptos_resumen,
+            "xml_raw": f.xml_raw,
             "doctos_relacionados": []
         }
         if f.metodo_pago == "PAGO" and f.xml_raw:
@@ -915,7 +919,7 @@ def _run_reconciliation_pass(
         facturas_dict.append(f_item)
 
     tx_query = db.query(BankTransaction).filter(
-        BankTransaction.status_conciliacion.notin_(["CONCILIADO", "NO_APLICA", "EXENTO"]),
+        BankTransaction.status_conciliacion.notin_(["CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA", "NO_APLICA", "EXENTO"]),
         BankTransaction.account_rfc == effective_rfc
     )
     if periodo_mes:
@@ -946,7 +950,7 @@ def _run_reconciliation_pass(
                 db_tx.confianza_score = res["confianza_score"]
                 db_tx.nota_revision = res["nota_revision"]
 
-                if res["status_conciliacion"] == "CONCILIADO":
+                if res["status_conciliacion"] in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA"):
                     db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
                     if db_f:
                         db_f.conciliado = True
@@ -1948,7 +1952,7 @@ def reprocess_entity_reconciliation(
             tx.status_conciliacion = "NO_APLICA"
             tx.nota_revision = "Traspaso entre Cuentas Propias"
             tx.confianza_score = 1.0
-        elif (tx.status_conciliacion == "CONCILIADO" and tx.uuid_cfdi) or (tx.nota_revision and "Conciliado manualmente" in tx.nota_revision):
+        elif (tx.status_conciliacion in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA") and tx.uuid_cfdi) or (tx.nota_revision and "Conciliado manualmente" in tx.nota_revision):
             # Preservar transacciones ya conciliadas con su CFDI o vinculadas manualmente
             pass
         else:
@@ -1965,7 +1969,7 @@ def reprocess_entity_reconciliation(
     total_txs = len(all_txs)
     total_conciliados = db.query(BankTransaction).filter(
         BankTransaction.account_rfc == effective_rfc,
-        BankTransaction.status_conciliacion == "CONCILIADO"
+        BankTransaction.status_conciliacion.in_(["CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA"])
     ).count()
 
     msg = (

@@ -53,7 +53,7 @@ class BankTransaction(Base):
     tipo = Column(String(20), nullable=False, index=True)  # INGRESO (abono) o EGRESO (cargo)
     saldo = Column(Float, nullable=True)
     uuid_cfdi = Column(String(36), ForeignKey("cfdi_invoices.uuid", ondelete="SET NULL"), nullable=True, index=True)
-    status_conciliacion = Column(String(20), default="SIN_CFDI", index=True)  # CONCILIADO, POR_REVISAR, SIN_CFDI
+    status_conciliacion = Column(String(50), default="SIN_CFDI", index=True)  # CONCILIADO, CONCILIADO_DIRECTO, CONCILIADO_POR_REGLA, POR_REVISAR, SIN_CFDI, NO_APLICA
     confianza_score = Column(Float, default=0.0)
     nota_revision = Column(Text, nullable=True)
     periodo_mes = Column(String(7), nullable=False, index=True)  # YYYY-MM

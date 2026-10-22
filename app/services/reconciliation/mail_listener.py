@@ -66,7 +66,7 @@ def sync_cfdi_conciliated_status(db: Session, effective_rfc: str = None) -> int:
     """
     from app.models.reconciliation import BankTransaction
     query = db.query(BankTransaction).filter(
-        BankTransaction.status_conciliacion == "CONCILIADO",
+        BankTransaction.status_conciliacion.in_(["CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA"]),
         BankTransaction.uuid_cfdi != None
     )
     if effective_rfc:
@@ -385,12 +385,15 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
                 "fecha_emision": f.fecha_emision,
                 "subtotal": f.subtotal,
                 "iva": f.iva_trasladado,
-                "total": f.total
+                "total": f.total,
+                "metodo_pago": f.metodo_pago,
+                "conceptos_resumen": f.conceptos_resumen,
+                "xml_raw": f.xml_raw
             } for f in facturas_pendientes]
 
             # Transacciones bancarias pendientes de conciliar de la entidad
             tx_pendientes = db.query(BankTransaction).filter(
-                BankTransaction.status_conciliacion != "CONCILIADO",
+                BankTransaction.status_conciliacion.notin_(["CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA", "NO_APLICA", "EXENTO"]),
                 BankTransaction.account_rfc == entity_rfc
             ).all()
             tx_list = [{
@@ -415,7 +418,7 @@ def sync_mailbox_invoices(db: Session, account_rfc: str = "DEGF851127TK1", lookb
                             db_tx.confianza_score = res["confianza_score"]
                             db_tx.nota_revision = res["nota_revision"]
 
-                            if res["status_conciliacion"] == "CONCILIADO":
+                            if res["status_conciliacion"] in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA"):
                                 db_f = db.query(CFDIInvoice).filter(CFDIInvoice.uuid == res["uuid_cfdi"]).first()
                                 if db_f:
                                     db_f.conciliado = True

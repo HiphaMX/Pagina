@@ -215,7 +215,7 @@ def export_reconciliation_excel(
         # 9. CFDI
         c_cfdi = ws.cell(row=current_row, column=9, value=cfdi_label)
         c_cfdi.alignment = Alignment(horizontal='center')
-        if status == "CONCILIADO":
+        if status in ("CONCILIADO", "CONCILIADO_DIRECTO", "CONCILIADO_POR_REGLA"):
             c_cfdi.fill = fill_conciliado
             c_cfdi.font = font_conciliado
         elif status == "POR_REVISAR":

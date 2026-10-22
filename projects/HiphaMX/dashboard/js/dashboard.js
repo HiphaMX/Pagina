@@ -6664,7 +6664,11 @@ async function loadReconciliationTransactions() {
 
             // Status Badge
             let statusBadge = '';
-            if (t.status_conciliacion === 'CONCILIADO') {
+            if (t.status_conciliacion === 'CONCILIADO_DIRECTO') {
+                statusBadge = `<span style="background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16,185,129,0.4); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">⚡ Conciliado Directo</span>`;
+            } else if (t.status_conciliacion === 'CONCILIADO_POR_REGLA') {
+                statusBadge = `<span style="background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">📋 Conciliado x Regla</span>`;
+            } else if (t.status_conciliacion === 'CONCILIADO') {
                 statusBadge = `<span style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">✓ Conciliado</span>`;
             } else if (t.status_conciliacion === 'POR_REVISAR') {
                 statusBadge = `<span style="background: rgba(234, 179, 8, 0.12); color: #facc15; border: 1px solid rgba(234,179,8,0.3); padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">⏳ Por Revisar</span>`;
@@ -6754,7 +6758,7 @@ async function loadReconciliationTransactions() {
                         ${deleteBtnHtml}
                     </div>
                 `;
-            } else if (t.status_conciliacion === 'CONCILIADO') {
+            } else if (['CONCILIADO', 'CONCILIADO_DIRECTO', 'CONCILIADO_POR_REGLA'].includes(t.status_conciliacion)) {
                 actionsHtml = `
                     <div style="display: flex; gap: 0.35rem; justify-content: center; align-items: center; flex-wrap: wrap;">
                         <button type="button" onclick="unmatchTransaction(${t.id})" title="Desvincular factura" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.55rem; cursor: pointer; font-size: 0.72rem;">Desvincular</button>
