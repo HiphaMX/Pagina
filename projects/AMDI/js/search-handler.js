@@ -78,13 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             title: "Nosotros - Adriana Medina Diseño Interior",
             url: "nosotros",
-            image: "images/62ccb83546527a47ccda9cbf_AMDI0.svg",
+            image: "images/White-background.svg",
             desc: "Conoce al equipo de AMDI. Diseñamos una fórmula y reunimos el talento necesario para transformar tus ideas en proyectos factibles."
         },
         {
             title: "Servicios de Interiorismo Residencial y Comercial",
             url: "servicios",
-            image: "images/62ccb83546527a47ccda9cbf_AMDI0.svg",
+            image: "images/White-background.svg",
             desc: "Diseñamos distintos servicios que se ajustan a las necesidades de cada cliente: Concepto, Propuesta y Ejecución."
         }
     ];

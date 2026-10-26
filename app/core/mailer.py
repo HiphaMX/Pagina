@@ -2245,7 +2245,7 @@ async def send_amdi_contact_confirmation_email(form_data):
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
             
             <div style="background-color: #0A0E17; padding: 30px; text-align: center;">
-                <img src="https://www.amdi.mx/projects/AMDI/images/62ccb83546527a47ccda9cbf_AMDI0.svg" alt="AMDI Logo" style="height: 50px; margin: 0 auto; display: block;">
+                <img src="https://www.amdi.mx/images/Black-background.svg" alt="AMDI | Adriana Medina Diseño Interior" style="height: 48px; margin: 0 auto; display: block;">
             </div>
             
             <div style="padding: 40px 30px; line-height: 1.6;">
@@ -2310,7 +2310,8 @@ async def send_amdi_contact_notification_team(form_data):
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
             
             <div style="background-color: #0A0E17; padding: 25px; text-align: center;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                <img src="https://www.amdi.mx/images/Black-background.svg" alt="AMDI" style="height: 38px; margin: 0 auto 12px auto; display: block;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
                     AMDI <span style="color: #80ED99;">Lead</span>
                 </h1>
             </div>
@@ -2391,7 +2392,7 @@ async def send_amdi_newsletter_welcome(subscriber_email: str):
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
             
             <div style="background-color: #0A0E17; padding: 30px; text-align: center;">
-                <img src="https://www.amdi.mx/projects/AMDI/images/62ccb83546527a47ccda9cbf_AMDI0.svg" alt="AMDI Logo" style="height: 50px; margin: 0 auto; display: block;">
+                <img src="https://www.amdi.mx/images/Black-background.svg" alt="AMDI | Adriana Medina Diseño Interior" style="height: 48px; margin: 0 auto; display: block;">
             </div>
             
             <div style="padding: 40px 30px; line-height: 1.6;">
@@ -2448,7 +2449,8 @@ async def send_amdi_newsletter_notification_team(subscriber_email: str):
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
             
             <div style="background-color: #0A0E17; padding: 25px; text-align: center;">
-                <h1 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                <img src="https://www.amdi.mx/images/Black-background.svg" alt="AMDI" style="height: 38px; margin: 0 auto 12px auto; display: block;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
                     AMDI <span style="color: #80ED99;">Newsletter</span>
                 </h1>
             </div>

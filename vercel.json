@@ -100,7 +100,7 @@
       "dest": "/projects/AMDI/$1"
     },
     {
-      "src": "/(css|js|fonts|images|blog|proyectos|topic|arte-y-decoracion)/(.*)",
+      "src": "/(css|js|fonts|images|Assets|assets|blog|proyectos|topic|arte-y-decoracion)/(.*)",
       "has": [
         {
           "type": "host",
