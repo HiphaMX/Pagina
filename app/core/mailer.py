@@ -2356,23 +2356,28 @@ async def send_amdi_contact_notification_team(form_data):
     </html>
     """
 
-    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
-        project_prefix="AMDI",
-        from_name="AMDI Web",
-        from_email=from_email,
-        to_email="creativo@amdi.mx",
-        subject=f"📬 Nuevo mensaje de contacto desde AMDI: {form_data.nombre} {form_data.apellido}",
-        html_content=html_content,
-        domain="amdi.mx"
-    )
+    recipients = ["contacto@amdi.mx", "hola@hipha.mx"]
+    success = True
+    for recipient in recipients:
+        message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+            project_prefix="AMDI",
+            from_name="AMDI Web",
+            from_email=from_email,
+            to_email=recipient,
+            subject=f"📬 Nuevo mensaje de contacto desde AMDI: {form_data.nombre} {form_data.apellido}",
+            html_content=html_content,
+            domain="amdi.mx"
+        )
+        del message['Reply-To']
+        message['Reply-To'] = form_data.email
 
-    try:
-        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
-        logger.info(f"Notificación de contacto AMDI enviada al equipo para {form_data.nombre}")
-        return True
-    except Exception as e:
-        logger.error(f"Fallo al enviar notificación de contacto AMDI al equipo: {str(e)}")
-        return False
+        try:
+            await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+            logger.info(f"Notificación de contacto AMDI enviada al equipo ({recipient}) para {form_data.nombre}")
+        except Exception as e:
+            logger.error(f"Fallo al enviar notificación de contacto AMDI al equipo ({recipient}): {str(e)}")
+            success = False
+    return success
 
 
 async def send_amdi_newsletter_welcome(subscriber_email: str):
@@ -2477,23 +2482,28 @@ async def send_amdi_newsletter_notification_team(subscriber_email: str):
     </html>
     """
 
-    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
-        project_prefix="AMDI",
-        from_name="AMDI Web",
-        from_email=from_email,
-        to_email="creativo@amdi.mx",
-        subject=f"📰 Nuevo suscriptor al boletín de AMDI",
-        html_content=html_content,
-        domain="amdi.mx"
-    )
+    recipients = ["contacto@amdi.mx", "hola@hipha.mx"]
+    success = True
+    for recipient in recipients:
+        message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+            project_prefix="AMDI",
+            from_name="AMDI Web",
+            from_email=from_email,
+            to_email=recipient,
+            subject=f"📰 Nuevo suscriptor al boletín de AMDI",
+            html_content=html_content,
+            domain="amdi.mx"
+        )
+        del message['Reply-To']
+        message['Reply-To'] = subscriber_email
 
-    try:
-        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
-        logger.info(f"Notificación de nuevo suscriptor AMDI enviada al equipo para {subscriber_email}")
-        return True
-    except Exception as e:
-        logger.error(f"Fallo al enviar notificación de nuevo suscriptor AMDI al equipo: {str(e)}")
-        return False
+        try:
+            await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+            logger.info(f"Notificación de nuevo suscriptor AMDI enviada al equipo ({recipient}) para {subscriber_email}")
+        except Exception as e:
+            logger.error(f"Fallo al enviar notificación de nuevo suscriptor AMDI al equipo ({recipient}): {str(e)}")
+            success = False
+    return success
 
 
 async def send_chilechillon_order_customer(payer_name: str, payer_email: str, order_details: str, total: float):

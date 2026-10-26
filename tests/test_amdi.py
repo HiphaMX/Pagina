@@ -75,3 +75,71 @@ def test_amdi_newsletter_submit_with_honeypot():
     response = client.post("/api/contact/amdi/newsletter", json=payload)
     assert response.status_code == 200
     assert response.json() == {"message": "Suscripción a newsletter recibida correctamente"}
+
+def test_amdi_mailer_recipients_and_sender(monkeypatch):
+    import asyncio
+    from app.core import mailer
+    from app.api.projects.amdi import AMDIContactoForm
+    
+    sent_messages = []
+    async def mock_send_smtp(message, **kwargs):
+        sent_messages.append((message, kwargs))
+        return True
+
+    monkeypatch.setattr(mailer, "_send_smtp", mock_send_smtp)
+    # Ensure SMTP settings simulate configured environment
+    monkeypatch.setattr(mailer.settings, "SMTP_HOST", "smtp.test.com")
+    monkeypatch.setattr(mailer.settings, "SMTP_USER", "test@test.com")
+
+    async def run_checks():
+        # 1. Contact Confirmation to Customer
+        form_data = AMDIContactoForm(
+            nombre="Juan",
+            apellido="Pérez",
+            email="cliente@example.com",
+            telefono="3312345678",
+            mensaje="Hola proyecto"
+        )
+        sent_messages.clear()
+        res = await mailer.send_amdi_contact_confirmation_email(form_data)
+        assert res is True
+        assert len(sent_messages) == 1
+        msg, _ = sent_messages[0]
+        assert msg["To"] == "cliente@example.com"
+        assert "contacto@amdi.mx" in (msg["From"] or "") or msg["Reply-To"] == "contacto@amdi.mx"
+
+        # 2. Contact Notification to Team
+        sent_messages.clear()
+        res_team = await mailer.send_amdi_contact_notification_team(form_data)
+        assert res_team is True
+        team_recipients = [m[0]["To"] for m in sent_messages]
+        assert "contacto@amdi.mx" in team_recipients
+        assert "hola@hipha.mx" in team_recipients
+        for m, _ in sent_messages:
+            assert m["Reply-To"] == "cliente@example.com"
+
+        # 3. Newsletter Notification to Team
+        sent_messages.clear()
+        res_news = await mailer.send_amdi_newsletter_notification_team("nuevo@example.com")
+        assert res_news is True
+        news_recipients = [m[0]["To"] for m in sent_messages]
+        assert "contacto@amdi.mx" in news_recipients
+        assert "hola@hipha.mx" in news_recipients
+
+    asyncio.run(run_checks())
+
+def test_amdi_aviso_privacidad_content():
+    with open("projects/AMDI/aviso-de-privacidad.html", "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "www.dis-interior.com" not in content
+    assert "www.amdi.mx" in content
+    assert "marketing@adrianamedina.com.mx" not in content
+    assert "creativo@amdi.mx" not in content
+    assert "contacto@amdi.mx" in content
+
+def test_amdi_css_animation_styles():
+    with open("projects/AMDI/css/amdi-2022.webflow.shared.da6bb9481.min.css", "r", encoding="utf-8") as f:
+        css = f.read()
+    assert ".article-title-bg-anim{background-color:#000000 !important;background-image:none !important;" in css
+    assert "color:#ffffff !important;text-decoration-color:#ffffff !important;" in css
+

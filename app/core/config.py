@@ -26,8 +26,8 @@ class Settings(BaseSettings):
     AMDI_SMTP_PORT: Union[int, str] = 587
     AMDI_SMTP_USER: str = ""
     AMDI_SMTP_PASSWORD: str = ""
-    AMDI_EMAILS_FROM_EMAIL: str = ""
-    AMDI_EMAILS_FROM_NAME: str = ""
+    AMDI_EMAILS_FROM_EMAIL: str = "contacto@amdi.mx"
+    AMDI_EMAILS_FROM_NAME: str = "AMDI | Adriana Medina Diseño Interior"
     AMDI_RECAPTCHA_SECRET_KEY: str = ""
 
     # CHILECHILLON Specific SMTP settings
@@ -208,13 +208,13 @@ class Settings(BaseSettings):
     @classmethod
     def get_amdi_from_email(cls, v):
         import os
-        return v or os.getenv("AMDI2_EMAILS_FROM_EMAIL", "")
+        return v or os.getenv("AMDI2_EMAILS_FROM_EMAIL", "") or "contacto@amdi.mx"
 
     @validator("AMDI_EMAILS_FROM_NAME", pre=True, always=True)
     @classmethod
     def get_amdi_from_name(cls, v):
         import os
-        return v or os.getenv("AMDI2_EMAILS_FROM_NAME", "")
+        return v or os.getenv("AMDI2_EMAILS_FROM_NAME", "") or "AMDI | Adriana Medina Diseño Interior"
 
     class Config:
         env_file = ".env"
