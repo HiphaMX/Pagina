@@ -143,3 +143,44 @@ def test_amdi_css_animation_styles():
     assert ".article-title-bg-anim{background-color:#000000 !important;background-image:none !important;" in css
     assert "color:#ffffff !important;text-decoration-color:#ffffff !important;" in css
 
+def test_amdi_preguntas_frecuentes_accordion():
+    from html.parser import HTMLParser
+    with open("projects/AMDI/preguntas-frecuentes.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert 'data-wf-page="63976d0ddbb87185365a14e8"' in html
+    assert 'data-wf-site="62cc8b1fa4113031cfe18e42"' in html
+
+    class AccordionChecker(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.in_faq_section = False
+            self.depth = 0
+            self.direct_accordions = []
+            self.nested_accordions = []
+        def handle_starttag(self, tag, attrs):
+            d = dict(attrs)
+            classes = d.get("class", "").split()
+            if tag == "section" and "bg-white" in classes:
+                self.in_faq_section = True
+                self.depth = 0
+                return
+            if self.in_faq_section:
+                self.depth += 1
+                if tag == "div" and "accordion" in classes and "w-dropdown" in classes:
+                    if self.depth == 1:
+                        self.direct_accordions.append(d)
+                    else:
+                        self.nested_accordions.append(d)
+        def handle_endtag(self, tag):
+            if self.in_faq_section:
+                if self.depth == 0 and tag == "section":
+                    self.in_faq_section = False
+                else:
+                    self.depth -= 1
+
+    checker = AccordionChecker()
+    checker.feed(html)
+    assert len(checker.direct_accordions) == 8, f"Esperados 8 acordeones directos, encontrados {len(checker.direct_accordions)}"
+    assert len(checker.nested_accordions) == 0, f"No debe haber acordeones anidados, encontrados {len(checker.nested_accordions)}"
+
