@@ -184,3 +184,28 @@ def test_amdi_preguntas_frecuentes_accordion():
     assert len(checker.direct_accordions) == 8, f"Esperados 8 acordeones directos, encontrados {len(checker.direct_accordions)}"
     assert len(checker.nested_accordions) == 0, f"No debe haber acordeones anidados, encontrados {len(checker.nested_accordions)}"
 
+def test_amdi_mobile_logo_centering_css():
+    with open("projects/AMDI/css/amdi-2022.webflow.shared.da6bb9481.min.css", "r", encoding="utf-8") as f:
+        css = f.read()
+    assert "@media screen and (max-width:991px)" in css
+    assert ".nav-menu-2{display:none !important}" in css
+    assert "left:50% !important;top:50% !important;transform:translate(-50%,-50%) !important" in css
+
+def test_amdi_search_page_and_handler():
+    with open("projects/AMDI/search.html", "r", encoding="utf-8") as f:
+        html = f.read()
+    assert 'class="search-result-items"' in html
+    assert 'js/search-handler.js' in html
+
+    with open("projects/AMDI/js/search-handler.js", "r", encoding="utf-8") as f:
+        js = f.read()
+    assert "AMDI Search Handler Initialized." in js
+    assert "siteIndex" in js
+    assert "residencia-antares-areas-comunes" in js
+    assert "residencia-jesus-maria-areas-comunes" in js
+    assert "expo-obra-blanca-2023-cdmx" in js
+    assert "luz-natural-y-artificial-el-equilibrio-perfecto" in js
+    assert "normalize(str)" in js
+    assert "executeSearch" in js
+
+
