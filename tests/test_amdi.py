@@ -190,6 +190,7 @@ def test_amdi_mobile_logo_centering_css():
     assert "@media screen and (max-width:991px)" in css
     assert ".nav-menu-2{display:none !important}" in css
     assert "left:50% !important;top:50% !important;transform:translate(-50%,-50%) !important" in css
+    assert ".link-block-3 img,.link-block-3.w--current img{width:72px !important" in css
 
 def test_amdi_search_page_and_handler():
     with open("projects/AMDI/search.html", "r", encoding="utf-8") as f:
