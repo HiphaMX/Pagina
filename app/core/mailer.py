@@ -2341,7 +2341,7 @@ async def send_amdi_contact_notification_team(form_data):
                 </table>
                 
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://wa.me/{form_data.telefono.replace(' ', '').replace('+', '').replace('-', '')}" style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                    <a href="https://wa.me/{form_data.telefono.replace(' ', '').replace('+', '').replace('-', '')}" style="background-color: #000000; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
                         💬 Responder por WhatsApp
                     </a>
                 </div>

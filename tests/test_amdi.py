@@ -117,6 +117,7 @@ def test_amdi_mailer_recipients_and_sender(monkeypatch):
         assert "hola@hipha.mx" in team_recipients
         for m, _ in sent_messages:
             assert m["Reply-To"] == "cliente@example.com"
+            assert "background-color: #000000" in m.get_content()
 
         # 3. Newsletter Notification to Team
         sent_messages.clear()
