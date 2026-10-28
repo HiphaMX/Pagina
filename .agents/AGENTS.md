@@ -35,6 +35,7 @@
       - Botón Secundario: `Ver Demo Gráfico` (cierra el modal y permite recorrer la maqueta visualmente).
     - **Insignia Flotante (Floating Pill)**: Permanece visible en la esquina inferior (`[ ⚡ Demo Gráfico | WhatsApp ]`) permitiendo reabrir el aviso o abrir el chat de WhatsApp con un solo clic en cualquier momento.
     - **Neutralización de Hipervínculos**: Todos los enlaces (`<a>`) del sitio web se desactivan de forma estricta tanto en CSS (`pointer-events: none !important; cursor: default !important;`) como por intercepción de eventos en JavaScript. El único enlace interactivo permitido en toda la plataforma es el botón de WhatsApp a Hipha.
+    - **Compatibilidad con Cursores y Top-Layer**: Si el proyecto utiliza cursores personalizados (`cursor: none`), el script restablece el cursor del sistema sobre el diálogo y oculta los elementos del custom cursor para que no queden atrapados detrás del modal en el Top Layer del navegador.
   - **Formas de Activación**:
     1. **Vía Script Modular Rápido (Recomendado)**:
        Agregar en el `<head>` o antes del cierre de `</body>` de cualquier HTML:

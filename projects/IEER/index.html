@@ -2494,7 +2494,7 @@
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 10000000;
             transform: translate(-50%, -50%);
             opacity: 0;
             transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.3s ease;
@@ -2507,7 +2507,7 @@
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9998;
+            z-index: 9999999;
             transform: translate(-50%, -50%);
             opacity: 0;
             transition: transform 0.08s ease-out, width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s, opacity 0.3s ease;
@@ -4005,7 +4005,7 @@
             });
 
             // Hover effects on all interactive elements
-            const interactives = 'a, button, select, input, textarea, .btn, .sector-nav-btn, .blog-post-card, .hud-status, .social-link';
+            const interactives = 'a, button, select, input, textarea, .btn, .sector-nav-btn, .blog-post-card, .hud-status, .social-link, .hipha-demo-pill, .hipha-demo-pill *';
             document.body.addEventListener('mouseenter', (e) => {
                 if (e.target.matches && e.target.matches(interactives)) {
                     document.body.classList.add('cursor-hover');

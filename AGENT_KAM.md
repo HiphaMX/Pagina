@@ -357,6 +357,7 @@ Cuando un prospecto o cliente entra en **pausa operativa, evaluación prolongada
 3. **Botón Principal**: `contactarme con Hipha` vinculado directamente al WhatsApp oficial de la agencia (`wa.me/523336762545`).
 4. **Desactivación de Hipervínculos**: Todos los enlaces (`<a>`) se neutralizan (`pointer-events: none; cursor: default;`) para que la experiencia sea exclusivamente una muestra visual.
 5. **Insignia Flotante**: Permanece un badge discreto en la esquina inferior (`Demo Gráfico | WhatsApp`) para reabrir el aviso o contactar a la agencia.
+6. **Compatibilidad con Cursores y Top-Layer**: Si el proyecto implementa cursores personalizados (`cursor: none` o divs seguidores), el guard restablece el cursor nativo del sistema sobre el diálogo y oculta los elementos del custom cursor para evitar que se deslicen detrás del `<dialog>` en el Top Layer del navegador.
 
 #### Activación Rápida
 Insertar en el HTML del proyecto:

@@ -24,6 +24,7 @@ Este protocolo define el procedimiento formal para poner en **Modo DEMO Gráfico
 | **Insignia Flotante** | Badge discreto en la esquina inferior derecha (`[ ⚡ Demo Gráfico | WhatsApp ]`) que permite reabrir el modal o contactar a Hipha en cualquier momento. |
 | **Neutralización de Enlaces** | **Todos los hipervínculos (`<a>`) se desactivan** mediante CSS (`pointer-events: none !important; cursor: default !important;`) y captura en JS (`e.preventDefault()`). El único enlace activo en toda la web es el botón de WhatsApp a Hipha. |
 | **Formularios** | Bloqueo de envíos de formularios para evitar captura no autorizada de leads en maquetas en pausa. |
+| **Compatibilidad con Cursores** | Restauración automática del puntero nativo (`cursor: auto` / `pointer`) sobre el diálogo y suspensión de custom cursors DOM para evitar que el puntero se oculte detrás del `<dialog>` en el Top Layer del navegador. |
 
 ---
 

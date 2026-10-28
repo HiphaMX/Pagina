@@ -41,6 +41,47 @@
         cursor: pointer !important;
       }
 
+      /* --- COMPATIBILIDAD CON CURSORES PERSONALIZADOS & TOP-LAYER --- */
+      body.hipha-demo-modal-open,
+      body.hipha-demo-modal-open * {
+        cursor: auto !important;
+      }
+
+      body.hipha-demo-modal-open a,
+      body.hipha-demo-modal-open button,
+      body.hipha-demo-modal-open [role="button"],
+      body.hipha-demo-modal-open input,
+      body.hipha-demo-modal-open select {
+        cursor: pointer !important;
+      }
+
+      body.hipha-demo-modal-open .custom-cursor-dot,
+      body.hipha-demo-modal-open .custom-cursor-ring,
+      body.hipha-demo-modal-open [class*="custom-cursor"],
+      body.hipha-demo-modal-open [class*="cursor-dot"],
+      body.hipha-demo-modal-open [class*="cursor-ring"] {
+        opacity: 0 !important;
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      dialog.hipha-demo-dialog,
+      dialog.hipha-demo-dialog *,
+      dialog.hipha-demo-dialog::backdrop {
+        cursor: auto !important;
+      }
+
+      dialog.hipha-demo-dialog button,
+      dialog.hipha-demo-dialog a,
+      dialog.hipha-demo-dialog .hipha-demo-close-x,
+      dialog.hipha-demo-dialog .hipha-demo-wa-btn,
+      dialog.hipha-demo-dialog .hipha-demo-explore-btn,
+      .hipha-demo-pill,
+      .hipha-demo-pill * {
+        cursor: pointer !important;
+      }
+
       /* --- DIALOG MODAL DEMO GRÁFICO --- */
       dialog.hipha-demo-dialog {
         position: fixed;
@@ -394,6 +435,7 @@
     const exploreBtn = document.getElementById('hipha-demo-explore-action');
 
     function openModal() {
+      document.body.classList.add('hipha-demo-modal-open');
       if (pill) pill.style.display = 'none';
       if (typeof dialog.showModal === 'function') {
         dialog.showModal();
@@ -411,6 +453,7 @@
           dialog.removeAttribute('open');
         }
         dialog.classList.remove('closing');
+        document.body.classList.remove('hipha-demo-modal-open');
         if (pill) pill.style.display = 'inline-flex';
       }, 350);
     }
@@ -423,6 +466,7 @@
     });
 
     dialog.addEventListener('cancel', () => {
+      document.body.classList.remove('hipha-demo-modal-open');
       if (pill) pill.style.display = 'inline-flex';
     });
 
