@@ -342,6 +342,30 @@ KAM produce reportes ejecutivos que el usuario puede enviar directamente al clie
 
 ---
 
+### MÓDULO 6 — Protocolo DEMO & Standby Guard (Protección de Propiedad Intelectual)
+
+Cuando un prospecto o cliente entra en **pausa operativa, evaluación prolongada o estado de standby**, KAM es responsable de activar el **Modo DEMO Gráfico** para salvaguardar el trabajo desarrollado por Hipha y evitar que terceros hagan uso comercial, copia o despliegue no autorizado de la maqueta.
+
+#### Criterios de Activación
+- Propuestas o maquetas funcionales entregadas para revisión sin contrato o pago activo.
+- Proyectos en espera de decisión directiva ("lo van a ver pero no se activará en el corto plazo").
+- Sitios web de prospectos publicados bajo subcarpetas de la agencia (`hipha.mx/[proyecto]/`).
+
+#### Reglas del Modo DEMO Gráfico
+1. **Estética 100% visible**: No aplicar veladuras o capas de color multiplicadas invasivas si el cliente requiere evaluar el diseño; el sitio conserva su paleta original intacta.
+2. **Popup Modal Informativo**: Se despliega automáticamente explicando que es un prototipo conceptual de **Hipha** para el cliente, actualmente en standby para evaluación.
+3. **Botón Principal**: `contactarme con Hipha` vinculado directamente al WhatsApp oficial de la agencia (`wa.me/523336762545`).
+4. **Desactivación de Hipervínculos**: Todos los enlaces (`<a>`) se neutralizan (`pointer-events: none; cursor: default;`) para que la experiencia sea exclusivamente una muestra visual.
+5. **Insignia Flotante**: Permanece un badge discreto en la esquina inferior (`Demo Gráfico | WhatsApp`) para reabrir el aviso o contactar a la agencia.
+
+#### Activación Rápida
+Insertar en el HTML del proyecto:
+```html
+<script src="/js/hipha-demo-guard.js" data-project="[Nombre del Proyecto]" data-phone="523336762545"></script>
+```
+
+---
+
 ## 🔄 PROTOCOLO DE TRABAJO DE KAM
 
 ```

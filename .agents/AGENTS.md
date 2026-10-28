@@ -23,3 +23,24 @@
     - *Clientes Activos*: uro-oncology, urologia-avanzada, Oncología Robótica, el chile chillón, white clean, Valencia servicios, Botica silvestre, HealthyIce, Jessica Mendoza, Grupo Gari, Letrerama.
     - **Regla de Web Agéntica y GEO (llms.txt y robots.txt)**: Es un estándar obligatorio para todos los clientes activos implementar un archivo `/llms.txt` en Markdown en la raíz del sitio web de producción. Este archivo sirve como índice semántico para que los agentes de IA (ChatGPT, Gemini, Perplexity) consuman y citen los servicios del cliente de forma rápida. En `robots.txt`, para clientes comerciales que buscan visibilidad GEO, se debe permitir expresamente el acceso (`Allow: /`) a buscadores y agentes de grounding en tiempo real (`Google-Extended`, `GPTBot`, `OAI-SearchBot`, `PerplexityBot`, `ClaudeBot`), ya que bloquear `Google-Extended` inhabilita las búsquedas y respuestas de Google Gemini sobre el dominio.
 
+- **Protocolo de Protección / Modo DEMO para Proyectos en Standby**:
+  - **Objetivo**: Proteger la propiedad intelectual de la agencia y evitar que clientes, prospectos o terceros hagan mal uso comercial o despliegue no autorizado de propuestas de diseño y desarrollo web desarrolladas por Hipha mientras no estén formalizados o activos en el corto plazo.
+  - **Comportamiento del Modo DEMO**:
+    - **Visual**: El sitio web conserva su estética, contrastes, tipografía y fotografías originales intactas (sin veladuras ni capas invasivas de color) para permitir una evaluación visual fidedigna por parte de la directiva o tomadores de decisión.
+    - **Popup Emergente**: Al ingresar al sitio, se despliega un diálogo modal que comunica el estado del proyecto:
+      - Título: `Propuesta Web · Demo Gráfico`
+      - Mensaje: *"Este sitio web es un prototipo funcional y propuesta conceptual desarrollada por Hipha para [Proyecto]. Actualmente este proyecto se encuentra en pausa operativa (standby) para evaluación."*
+      - Ficha: `Desarrollo: Hipha`
+      - Botón Principal: `contactarme con Hipha` enlazado directamente al WhatsApp de la agencia (`https://wa.me/523336762545?text=...`).
+      - Botón Secundario: `Ver Demo Gráfico` (cierra el modal y permite recorrer la maqueta visualmente).
+    - **Insignia Flotante (Floating Pill)**: Permanece visible en la esquina inferior (`[ ⚡ Demo Gráfico | WhatsApp ]`) permitiendo reabrir el aviso o abrir el chat de WhatsApp con un solo clic en cualquier momento.
+    - **Neutralización de Hipervínculos**: Todos los enlaces (`<a>`) del sitio web se desactivan de forma estricta tanto en CSS (`pointer-events: none !important; cursor: default !important;`) como por intercepción de eventos en JavaScript. El único enlace interactivo permitido en toda la plataforma es el botón de WhatsApp a Hipha.
+  - **Formas de Activación**:
+    1. **Vía Script Modular Rápido (Recomendado)**:
+       Agregar en el `<head>` o antes del cierre de `</body>` de cualquier HTML:
+       `<script src="/js/hipha-demo-guard.js" data-project="Nombre del Proyecto" data-phone="523336762545"></script>`
+       (Inyecta automáticamente estilos encapsulados, modal accesible, floating pill, neutralización de enlaces y bloqueo de formularios sin tocar el CSS/JS del proyecto).
+    2. **Vía Integración Nativa (Código del Proyecto)**:
+       Implementar la lógica directamente en el `app.js` y `style.css` del proyecto, siguiendo el patrón de referencia implementado en `projects/Centro Escolar El Paraiso/web/`.
+
+
