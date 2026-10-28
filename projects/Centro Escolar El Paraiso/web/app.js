@@ -2594,20 +2594,10 @@ function initBlogArticleModal() {
 }
 
 /* ==========================================================================
-   18. STANDBY DEMO MODE & MULTIPLY OVERLAY (70% Navy Blue)
+   18. STANDBY DEMO MODE (Demo Gráfico sin capa azul marino, enlaces desactivados)
    ========================================================================== */
 function initStandbyDemoMode() {
-  // 1. Asegurar o inyectar capa de color azul marino con 70% opacidad y multiply
-  let overlay = document.getElementById('standby-multiply-overlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'standby-multiply-overlay';
-    overlay.className = 'standby-overlay';
-    overlay.setAttribute('aria-hidden', 'true');
-    document.body.prepend(overlay);
-  }
-
-  // 2. Asegurar o inyectar diálogo modal de Standby Demo
+  // 1. Asegurar o inyectar diálogo modal de Standby Demo Gráfico
   let dialog = document.getElementById('standby-demo-dialog');
   if (!dialog) {
     dialog = document.createElement('dialog');
@@ -2617,38 +2607,25 @@ function initStandbyDemoMode() {
     dialog.setAttribute('closedby', 'any');
     dialog.innerHTML = `
       <div class="standby-modal_inner">
-        <button type="button" class="standby-modal_close-btn" id="standby-close-x" aria-label="Cerrar aviso y explorar demo">
+        <button type="button" class="standby-modal_close-btn" id="standby-close-x" aria-label="Cerrar aviso y ver demo gráfico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
 
-        <div class="standby-badge">
-          <span class="standby-badge_dot"></span>
-          <span>PROYECTO EN STANDBY // DEMO</span>
-        </div>
-
         <h2 class="standby-title" id="standby-dialog-title">
-          Propuesta Web · Versión Demo
+          Propuesta Web · Demo Gráfico
         </h2>
 
         <p class="standby-desc">
-          Este sitio web es un prototipo funcional y propuesta conceptual desarrollada por <strong>Hipha</strong> para <strong>Centro Escolar El Paraíso</strong>. Actualmente este proyecto se encuentra en pausa operativa (standby) para evaluación y no se activará en el corto plazo.
+          Este sitio web es un prototipo funcional y propuesta conceptual desarrollada por <strong>Hipha</strong> para <strong>Centro Escolar El Paraíso</strong>. Actualmente este proyecto se encuentra en pausa operativa (standby) para evaluación.
         </p>
 
         <div class="standby-info-box">
           <div class="standby-info-row">
-            <span class="standby-info-label">Estado</span>
-            <span class="standby-info-val" style="color: #fbbf24;">En Standby (Pausa)</span>
-          </div>
-          <div class="standby-info-row">
             <span class="standby-info-label">Desarrollo</span>
-            <span class="standby-info-val">Hipha Media &amp; Software</span>
-          </div>
-          <div class="standby-info-row">
-            <span class="standby-info-label">Modo</span>
-            <span class="standby-info-val">Demostración Activa</span>
+            <span class="standby-info-val">Hipha</span>
           </div>
         </div>
 
@@ -2665,7 +2642,7 @@ function initStandbyDemoMode() {
           </a>
 
           <button type="button" class="standby-explore-btn" id="standby-explore-action">
-            <span>Explorar propuesta (Ver Demo)</span>
+            <span>Ver Demo Gráfico</span>
           </button>
         </div>
       </div>
@@ -2673,7 +2650,7 @@ function initStandbyDemoMode() {
     document.body.appendChild(dialog);
   }
 
-  // 3. Floating Pill / Badge cuando el modal está cerrado
+  // 2. Floating Pill / Badge cuando el modal está cerrado
   let pill = document.getElementById('standby-floating-pill');
   if (!pill) {
     pill = document.createElement('div');
@@ -2684,7 +2661,7 @@ function initStandbyDemoMode() {
     pill.setAttribute('aria-label', 'Información de Demo en Standby - Contactar Hipha');
     pill.innerHTML = `
       <span class="standby-badge_dot"></span>
-      <span>Demo en Standby</span>
+      <span>Demo Gráfico</span>
       <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20me%20comunico%20desde%20el%20demo%20de%20Centro%20Escolar%20El%20Para%C3%ADso." 
          target="_blank" 
          rel="noopener noreferrer" 
@@ -2752,6 +2729,17 @@ function initStandbyDemoMode() {
     }
   });
 
+  // 3. Deshabilitar todos los hipervínculos para modo Demo Gráfico (excepto WhatsApp a Hipha)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    if (link.href && link.href.includes('3336762545')) {
+      return; // Permitir enlace a WhatsApp de Hipha
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
   // Mostrar el popup con temporizador suave
   // Si hay splash screen en index.html, esperar a que comience su fade-out
   const splash = document.getElementById('loading-splash');
@@ -2760,4 +2748,5 @@ function initStandbyDemoMode() {
     openStandbyModal();
   }, openDelay);
 }
+
 

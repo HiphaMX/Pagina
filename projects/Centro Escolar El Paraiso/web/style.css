@@ -7286,20 +7286,13 @@ body.theme-dark .area-quote-box {
 }
 
 /* ==========================================================================
-   STANDBY DEMO MODE & MULTIPLY OVERLAY (70% Navy Blue Multiply)
+   MODO DEMO GRÁFICO (Sin capa azul marino, hipervínculos desactivados)
    ========================================================================== */
 
-/* 1. Capa de color azul marino con 70% de opacidad y modo multiply */
-.standby-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #07162c; /* Azul marino profundo */
-  opacity: 0.70;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-  z-index: 99990;
+/* Desactivar todos los hipervínculos para visualización de demo gráfico */
+a:not(.standby-whatsapp-btn):not(.standby-floating-pill_wa):not([href*="3336762545"]) {
+  pointer-events: none !important;
+  cursor: default !important;
 }
 
 /* 2. Dialog Modal para aviso de Demo en Standby */
