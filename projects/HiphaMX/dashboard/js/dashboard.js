@@ -1416,7 +1416,6 @@ const WORKFLOW_MONTHLY_RETAINER_CLIENTS = [
 ];
 
 const CLIENT_COLOR_PALETTE = {
-    'healthyice': { bg: 'rgba(56, 189, 248, 0.15)', text: '#38bdf8', border: 'rgba(56, 189, 248, 0.35)' },
     'tukipa fitness': { bg: 'rgba(249, 115, 22, 0.15)', text: '#fb923c', border: 'rgba(249, 115, 22, 0.35)' },
     'el chile chillón': { bg: 'rgba(239, 68, 68, 0.15)', text: '#f87171', border: 'rgba(239, 68, 68, 0.35)' },
     'chile chillón': { bg: 'rgba(239, 68, 68, 0.15)', text: '#f87171', border: 'rgba(239, 68, 68, 0.35)' },
@@ -8991,6 +8990,19 @@ async function loadWebHealthOverview(forceRefresh = false) {
         }
 
         const data = await res.json();
+        if (data && Array.isArray(data.sites)) {
+            data.sites = data.sites.filter(site => {
+                const dom = (site.domain || '').toLowerCase();
+                const name = (site.client_name || '').toLowerCase();
+                return !dom.includes('healthyice') && !name.includes('healthyice');
+            });
+            if (data.kpis) {
+                data.kpis.total_sites = data.sites.length;
+                data.kpis.healthy_sites = data.sites.filter(s => s.health_level === 'HEALTHY').length;
+                data.kpis.warning_sites = data.sites.filter(s => s.health_level === 'WARNING').length;
+                data.kpis.critical_sites = data.sites.filter(s => s.health_level === 'CRITICAL').length;
+            }
+        }
         currentWebHealthData = data;
         renderWebHealthKPIs(data.kpis, data.agent_summary, data.last_audit_iso);
         renderWebHealthGrid();
@@ -9072,6 +9084,10 @@ function renderWebHealthGrid() {
 
     const search = (currentWebHealthSearch || '').toLowerCase().trim();
     const filteredSites = currentWebHealthData.sites.filter(site => {
+        const dom = (site.domain || '').toLowerCase();
+        const name = (site.client_name || '').toLowerCase();
+        if (dom.includes('healthyice') || name.includes('healthyice')) return false;
+
         if (currentWebHealthFilter !== 'ALL' && site.health_level !== currentWebHealthFilter) {
             return false;
         }

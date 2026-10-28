@@ -64,6 +64,12 @@ def get_web_health_overview(
             )
 
             if records:
+                # Excluir clientes dados de baja
+                records = [
+                    r for r in records
+                    if r.domain not in ("healthyice.mx", "www.healthyice.mx")
+                    and "healthyice" not in (r.client_name or "").lower()
+                ]
                 sites = []
                 for r in records:
                     issues = []
@@ -153,6 +159,8 @@ def run_fleet_audit(
     domain_to_audit = payload.domain if payload else None
     if domain_to_audit:
         clean = clean_domain_string(domain_to_audit)
+        if "healthyice" in clean.lower():
+            raise HTTPException(status_code=400, detail="El dominio indicado no es un cliente activo de la agencia.")
         site_info = {
             "name": clean,
             "domain": clean,

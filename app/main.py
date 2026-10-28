@@ -88,7 +88,6 @@ def startup_db_setup():
                 print("Sembrando clientes iniciales de agencia...")
                 initial_clients = [
                     {"name": "Letrerama", "service_type": "web_design", "billing_day": 22, "monthly_fee": 6500.0, "start_date": "2024-01-15", "contact_email": "contacto@letrerama.com"},
-                    {"name": "HealthyIce", "service_type": "web_design", "billing_day": 1, "monthly_fee": 7000.0, "start_date": "2024-02-01", "contact_email": "ventas@healthyice.mx"},
                     {"name": "Grupo Gari", "service_type": "complete", "billing_day": 28, "monthly_fee": 12000.0, "start_date": "2023-11-01", "contact_email": "contacto@grupo-gari.com"},
                     {"name": "AMDI", "service_type": "web_design", "billing_day": 15, "monthly_fee": 5500.0, "start_date": "2024-03-01", "contact_email": "adrianamedina@amdi.mx"},
                     {"name": "Jessica Mendoza", "service_type": "web_design", "billing_day": 10, "monthly_fee": 6000.0, "start_date": "2024-01-10", "contact_email": "jessica@jessicamendozabienesraices.com"},

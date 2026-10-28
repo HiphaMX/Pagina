@@ -19,7 +19,6 @@ async def validate_smtp_alignment():
         {"prefix": "GRUPOGARI", "domain": "grupo-gari.com", "name": "Grupo Gari"},
         {"prefix": "VALENCIA", "domain": "valenciaservicios.com", "name": "Valencia Servicios"},
         {"prefix": "BOTICA", "domain": "boticasilvestre.com", "name": "Botica Silvestre"},
-        {"prefix": "HEALTHYICE", "domain": "healthyice.mx", "name": "HealthyIce"},
         {"prefix": "LETRERAMA", "domain": "letrerama.com", "name": "Letrerama"},
     ]
 

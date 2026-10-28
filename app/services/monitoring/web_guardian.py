@@ -29,7 +29,6 @@ DEFAULT_CLIENT_SITES = [
     {"name": "El Chile Chillón", "domain": "elchilechillon.mx", "url": "https://www.elchilechillon.mx"},
     {"name": "White Clean", "domain": "whiteclean.com.mx", "url": "https://www.whiteclean.com.mx"},
     {"name": "Valencia Servicios", "domain": "valenciaservicios.mx", "url": "https://www.valenciaservicios.mx"},
-    {"name": "HealthyIce", "domain": "healthyice.mx", "url": "https://www.healthyice.mx"},
     {"name": "Botica Silvestre", "domain": "botica-silvestre.com", "url": "https://www.botica-silvestre.com"},
     {"name": "Jessica Mendoza Bienes Raíces", "domain": "jessicamendozabienesraices.com", "url": "https://www.jessicamendozabienesraices.com"},
     {"name": "Grupo Gari", "domain": "grupo-gari.com", "url": "https://www.grupo-gari.com"},
@@ -355,6 +354,8 @@ def audit_all_fleet(db: Session, use_ai: bool = True) -> Dict[str, Any]:
     # Agregar primero los predeterminados para asegurar cobertura total
     for item in DEFAULT_CLIENT_SITES:
         d_clean = clean_domain_string(item["domain"])
+        if "healthyice" in d_clean.lower() or "healthyice" in item["name"].lower():
+            continue
         fleet_map[d_clean] = {
             "name": item["name"],
             "domain": d_clean,
@@ -364,9 +365,11 @@ def audit_all_fleet(db: Session, use_ai: bool = True) -> Dict[str, Any]:
 
     # Combinar con los registrados en base de datos
     for c in db_clients:
+        if "healthyice" in c.name.lower():
+            continue
         if c.website_url:
             d_clean = clean_domain_string(c.website_url)
-            if d_clean:
+            if d_clean and "healthyice" not in d_clean.lower():
                 fleet_map[d_clean] = {
                     "name": c.name,
                     "domain": d_clean,
