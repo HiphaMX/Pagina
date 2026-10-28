@@ -31,6 +31,16 @@
         cursor: default !important;
       }
 
+      /* Ocultar botones flotantes de WhatsApp externos del cliente para evitar superposición */
+      .floating-whatsapp, .whatsapp-float, .floating-wa, [class*="floating-whatsapp"] {
+        display: none !important;
+      }
+
+      /* En modo demo gráfico, los botones de envío de formularios no procesan leads */
+      form button[type="submit"]:not(.hipha-demo-wa-btn), form input[type="submit"] {
+        cursor: pointer !important;
+      }
+
       /* --- DIALOG MODAL DEMO GRÁFICO --- */
       dialog.hipha-demo-dialog {
         position: fixed;
@@ -435,7 +445,14 @@
       e.stopPropagation();
     }, true);
 
-    // 5. Apertura suave tras carga
+    // 5. Bloquear envíos de formularios para evitar captura no autorizada de leads
+    document.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal();
+    }, true);
+
+    // 6. Apertura suave tras carga
     setTimeout(() => {
       openModal();
     }, 600);
