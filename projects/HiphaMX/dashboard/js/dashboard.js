@@ -1408,7 +1408,6 @@ const WORKFLOW_WEEKLY_LIMIT = 20.0; // 5 días x 4 horas
 
 // Clientes exclusivos con iguala mensual para el flujo de trabajo semanal
 const WORKFLOW_MONTHLY_RETAINER_CLIENTS = [
-    'HealthyIce',
     'Tukipa Fitness',
     'El Chile Chillón',
     'DAM Pisos',
@@ -1854,7 +1853,7 @@ function updateClientFilterOptions() {
     const clientsSet = new Set();
     
     // Lista base
-    ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+    ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
     
     // Clientes del directorio de la agencia
     if (Array.isArray(clientsDirectoryData)) {
@@ -1883,7 +1882,7 @@ function updateClientFilterOptions() {
 function syncAllClientsDropdowns() {
     const clientsSet = new Set();
     // Clientes base
-    ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+    ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
 
     // Clientes del directorio de la agencia
     if (Array.isArray(clientsDirectoryData)) {
@@ -2437,7 +2436,7 @@ function openWorkflowTaskModal(day = 'monday') {
             opt.textContent = c;
             clientSelect.appendChild(opt);
         });
-        clientSelect.value = WORKFLOW_MONTHLY_RETAINER_CLIENTS[0] || 'HealthyIce';
+        clientSelect.value = WORKFLOW_MONTHLY_RETAINER_CLIENTS[0] || 'Tukipa Fitness';
     }
 
     document.getElementById('taskInputId').value = '';
@@ -3059,7 +3058,7 @@ function openMonthlyReportModal() {
     if (selectClient && selectClient.options.length <= 1) {
         selectClient.innerHTML = '<option value="all">Todos los clientes</option>';
         const clientsSet = new Set();
-        ['Letrerama', 'HealthyIce', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+        ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
         
         workflowTasks.forEach(t => {
             if (t.client_name) clientsSet.add(t.client_name.trim());
@@ -9473,7 +9472,6 @@ const DEFAULT_OFFICIAL_CATALOG = [
 const DEFAULT_AGENCY_CLIENTS = [
     { name: "AMDI", contact_name: "Adriana Medina", contact_email: "adrianamedina@amdi.mx" },
     { name: "Letrerama", contact_name: "Alberto Letrerama", contact_email: "contacto@letrerama.com" },
-    { name: "HealthyIce", contact_name: "Ventas HealthyIce", contact_email: "ventas@healthyice.mx" },
     { name: "Grupo Gari", contact_name: "Dirección Grupo Gari", contact_email: "contacto@grupo-gari.com" },
     { name: "Jessica Mendoza", contact_name: "Jessica Mendoza", contact_email: "jessica@jessicamendozabienesraices.com" },
     { name: "El Chile Chillón", contact_name: "Contacto El Chile Chillón", contact_email: "contacto@chilechillon.com" },

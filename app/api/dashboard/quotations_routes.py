@@ -185,7 +185,6 @@ def _get_flexible_user(
 DEFAULT_QUOTATION_CLIENTS = [
     {"name": "AMDI", "contact_name": "Adriana Medina", "contact_email": "adrianamedina@amdi.mx", "contact_phone": ""},
     {"name": "Letrerama", "contact_name": "Alberto Letrerama", "contact_email": "contacto@letrerama.com", "contact_phone": ""},
-    {"name": "HealthyIce", "contact_name": "Ventas HealthyIce", "contact_email": "ventas@healthyice.mx", "contact_phone": ""},
     {"name": "Grupo Gari", "contact_name": "Dirección Grupo Gari", "contact_email": "contacto@grupo-gari.com", "contact_phone": ""},
     {"name": "Jessica Mendoza", "contact_name": "Jessica Mendoza", "contact_email": "jessica@jessicamendozabienesraices.com", "contact_phone": ""},
     {"name": "El Chile Chillón", "contact_name": "Contacto El Chile Chillón", "contact_email": "contacto@chilechillon.com", "contact_phone": ""},

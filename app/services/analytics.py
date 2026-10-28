@@ -16,7 +16,6 @@ CLIENTS = {
     "Uro Oncology": "449411973",
     "White Clean": "291043945",
     "Hipha": "536740396",
-    "HealthyIce": "537288803",
     "AMDI": "274628817",
     "Dr. Jairo Domínguez": "274579082",
     "Centro de Urología Avanzada": "274665439",
@@ -92,13 +91,14 @@ def get_discovered_clients():
             discovered = {}
             for acc in data.get("accountSummaries", []):
                 for prop in acc.get("propertySummaries", []):
-                    prop_id = prop.get("property", "").replace("properties/", "")
-                    # Omitir propiedad de prueba inactiva
-                    if prop_id == "437684943":
+                    # Omitir propiedad de prueba inactiva y ex-clientes dados de baja
+                    if prop_id in ("437684943", "537288803"):
                         continue
                     display_name = prop.get("displayName", f"Propiedad {prop_id}")
                     # Normalizar nombres limpios
                     display_name = display_name.replace(" - GA4", "").strip()
+                    if display_name.lower() in ("healthyice", "healthy ice"):
+                        continue
                     if display_name == "Jessica Mendoza Bienes Raices":
                         display_name = "Jessica Mendoza"
                     elif display_name == "EL OFERTON DEL PISO":

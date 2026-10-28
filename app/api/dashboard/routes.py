@@ -108,6 +108,8 @@ def list_clients(
     try:
         db_clients = db.query(AgencyClient).filter(AgencyClient.status == "active").all()
         for c in db_clients:
+            if c.name.lower().strip() in ("healthyice", "healthy ice"):
+                continue
             if c.name not in combined:
                 combined[c.name] = {
                     "name": c.name,
