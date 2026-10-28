@@ -27,9 +27,17 @@ def _format_forma_pago(fp: str, mp: str = "") -> str:
 
 
 class ReporteFaltantesPDF(FPDF):
-    def __init__(self, mes_label: str = ""):
+    def __init__(self, mes_label: str = "", entity_name: str = "HIPHA"):
         super().__init__(orientation='P', unit='mm', format='A4')
         self.mes_label = mes_label
+        # Si mes_label contiene "ENTIDAD (RFC)", inferir entity_name si no se proveyó uno específico
+        if not entity_name or entity_name == "HIPHA":
+            if mes_label and "(" in mes_label:
+                self.entity_name = mes_label.split("(")[0].strip() or "HIPHA"
+            else:
+                self.entity_name = entity_name or "HIPHA"
+        else:
+            self.entity_name = entity_name
 
     def header(self):
         self.set_fill_color(15, 23, 42)  # Slate 900
@@ -38,12 +46,12 @@ class ReporteFaltantesPDF(FPDF):
         self.set_xy(10, 6)
         self.set_font('Helvetica', 'B', 14)
         self.set_text_color(255, 255, 255)
-        self.cell(0, 7, 'HIPHA - CONTROL CONTABLE & FISCAL', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.cell(0, 7, f'{self.entity_name} - CONTROL CONTABLE & FISCAL', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
         self.set_xy(10, 13)
         self.set_font('Helvetica', '', 9)
         self.set_text_color(148, 163, 184)  # Slate 400
-        self.cell(0, 5, f'REPORTE EJECUTIVO DE DISCREPANCIAS Y FALTANTES | {self.mes_label or "PERÍODO ACTUAL"}', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        self.cell(0, 5, f'REPORTE MOVIMIENTOS BANCARIOS Y CFDI FALTANTES | {self.mes_label or "PERÍODO ACTUAL"}', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
         self.ln(12)
 
@@ -57,7 +65,8 @@ class ReporteFaltantesPDF(FPDF):
 def generate_discrepancies_pdf(
     transacciones: List[Dict[str, Any]],
     mes_label: str = "",
-    facturas_sueltas: Optional[List[Dict[str, Any]]] = None
+    facturas_sueltas: Optional[List[Dict[str, Any]]] = None,
+    entity_name: Optional[str] = None
 ) -> bytes:
     """
     Genera un informe ejecutivo en PDF con:
@@ -67,7 +76,7 @@ def generate_discrepancies_pdf(
     if facturas_sueltas is None:
         facturas_sueltas = []
 
-    pdf = ReporteFaltantesPDF(mes_label=mes_label)
+    pdf = ReporteFaltantesPDF(mes_label=mes_label, entity_name=entity_name or "HIPHA")
     pdf.alias_nb_pages()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=20)

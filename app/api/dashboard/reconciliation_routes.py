@@ -2333,7 +2333,8 @@ def export_pdf_faltantes(
     pdf_bytes = generate_discrepancies_pdf(
         tx_list,
         mes_label=f"{entity_name} ({effective_rfc}) - {month or 'Actual'}",
-        facturas_sueltas=facturas_sueltas
+        facturas_sueltas=facturas_sueltas,
+        entity_name=entity_name
     )
 
     clean_month = (month or 'Actual').replace('/', '-')
