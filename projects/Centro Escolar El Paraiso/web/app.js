@@ -4,6 +4,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initStandbyDemoMode();
   initSplashLoader();
   initNavigation();
   initChatbot();
@@ -2591,3 +2592,172 @@ function initBlogArticleModal() {
     document.body.classList.remove('body-no-scroll');
   });
 }
+
+/* ==========================================================================
+   18. STANDBY DEMO MODE & MULTIPLY OVERLAY (70% Navy Blue)
+   ========================================================================== */
+function initStandbyDemoMode() {
+  // 1. Asegurar o inyectar capa de color azul marino con 70% opacidad y multiply
+  let overlay = document.getElementById('standby-multiply-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'standby-multiply-overlay';
+    overlay.className = 'standby-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.prepend(overlay);
+  }
+
+  // 2. Asegurar o inyectar diálogo modal de Standby Demo
+  let dialog = document.getElementById('standby-demo-dialog');
+  if (!dialog) {
+    dialog = document.createElement('dialog');
+    dialog.id = 'standby-demo-dialog';
+    dialog.className = 'standby-modal';
+    dialog.setAttribute('aria-labelledby', 'standby-dialog-title');
+    dialog.setAttribute('closedby', 'any');
+    dialog.innerHTML = `
+      <div class="standby-modal_inner">
+        <button type="button" class="standby-modal_close-btn" id="standby-close-x" aria-label="Cerrar aviso y explorar demo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="standby-badge">
+          <span class="standby-badge_dot"></span>
+          <span>PROYECTO EN STANDBY // DEMO</span>
+        </div>
+
+        <h2 class="standby-title" id="standby-dialog-title">
+          Propuesta Web · Versión Demo
+        </h2>
+
+        <p class="standby-desc">
+          Este sitio web es un prototipo funcional y propuesta conceptual desarrollada por <strong>Hipha</strong> para <strong>Centro Escolar El Paraíso</strong>. Actualmente este proyecto se encuentra en pausa operativa (standby) para evaluación y no se activará en el corto plazo.
+        </p>
+
+        <div class="standby-info-box">
+          <div class="standby-info-row">
+            <span class="standby-info-label">Estado</span>
+            <span class="standby-info-val" style="color: #fbbf24;">En Standby (Pausa)</span>
+          </div>
+          <div class="standby-info-row">
+            <span class="standby-info-label">Desarrollo</span>
+            <span class="standby-info-val">Hipha Media &amp; Software</span>
+          </div>
+          <div class="standby-info-row">
+            <span class="standby-info-label">Modo</span>
+            <span class="standby-info-val">Demostración Activa</span>
+          </div>
+        </div>
+
+        <div class="standby-actions">
+          <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20me%20comunico%20desde%20el%20demo%20de%20Centro%20Escolar%20El%20Para%C3%ADso." 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="standby-whatsapp-btn"
+             id="standby-whatsapp-cta">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.983.541 1.777.781 2.791.781 3.182 0 5.768-2.587 5.768-5.766.001-3.181-2.585-5.767-5.768-5.767zm7.553 5.766c-.001 4.165-3.39 7.554-7.553 7.554-1.258 0-2.457-.319-3.522-.888l-4.509 1.182 1.205-4.398c-.663-1.127-1.026-2.433-1.026-3.791.001-4.165 3.39-7.553 7.553-7.553 4.164 0 7.552 3.388 7.552 7.554z"/>
+            </svg>
+            <span>contactarme con Hipha</span>
+          </a>
+
+          <button type="button" class="standby-explore-btn" id="standby-explore-action">
+            <span>Explorar propuesta (Ver Demo)</span>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+  }
+
+  // 3. Floating Pill / Badge cuando el modal está cerrado
+  let pill = document.getElementById('standby-floating-pill');
+  if (!pill) {
+    pill = document.createElement('div');
+    pill.id = 'standby-floating-pill';
+    pill.className = 'standby-floating-pill';
+    pill.setAttribute('role', 'button');
+    pill.setAttribute('tabindex', '0');
+    pill.setAttribute('aria-label', 'Información de Demo en Standby - Contactar Hipha');
+    pill.innerHTML = `
+      <span class="standby-badge_dot"></span>
+      <span>Demo en Standby</span>
+      <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20me%20comunico%20desde%20el%20demo%20de%20Centro%20Escolar%20El%20Para%C3%ADso." 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="standby-floating-pill_wa" 
+         title="Contactarme con Hipha por WhatsApp"
+         onclick="event.stopPropagation();">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.983.541 1.777.781 2.791.781 3.182 0 5.768-2.587 5.768-5.766.001-3.181-2.585-5.767-5.768-5.767zm7.553 5.766c-.001 4.165-3.39 7.554-7.553 7.554-1.258 0-2.457-.319-3.522-.888l-4.509 1.182 1.205-4.398c-.663-1.127-1.026-2.433-1.026-3.791.001-4.165 3.39-7.553 7.553-7.553 4.164 0 7.552 3.388 7.552 7.554z"/>
+        </svg>
+      </a>
+    `;
+    pill.style.display = 'none';
+    document.body.appendChild(pill);
+  }
+
+  // Lógica de apertura y cierre
+  const closeBtn = document.getElementById('standby-close-x');
+  const exploreBtn = document.getElementById('standby-explore-action');
+
+  function openStandbyModal() {
+    if (pill) pill.style.display = 'none';
+    if (typeof dialog.showModal === 'function') {
+      dialog.showModal();
+    } else {
+      dialog.setAttribute('open', '');
+    }
+  }
+
+  function closeStandbyModal() {
+    dialog.classList.add('closing');
+    setTimeout(() => {
+      if (typeof dialog.close === 'function') {
+        dialog.close();
+      } else {
+        dialog.removeAttribute('open');
+      }
+      dialog.classList.remove('closing');
+      if (pill) pill.style.display = 'inline-flex';
+    }, 350);
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', closeStandbyModal);
+  if (exploreBtn) exploreBtn.addEventListener('click', closeStandbyModal);
+
+  // Click fuera del diálogo en el backdrop
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      closeStandbyModal();
+    }
+  });
+
+  // Tecla Escape (cancel event)
+  dialog.addEventListener('cancel', () => {
+    if (pill) pill.style.display = 'inline-flex';
+  });
+
+  // Reabrir modal al dar clic al pill flotante
+  pill.addEventListener('click', () => {
+    openStandbyModal();
+  });
+  pill.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openStandbyModal();
+    }
+  });
+
+  // Mostrar el popup con temporizador suave
+  // Si hay splash screen en index.html, esperar a que comience su fade-out
+  const splash = document.getElementById('loading-splash');
+  const openDelay = splash ? 1400 : 450;
+  setTimeout(() => {
+    openStandbyModal();
+  }, openDelay);
+}
+
