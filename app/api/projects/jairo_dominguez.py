@@ -38,11 +38,11 @@ async def submit_jairo_dominguez_form(form_data: JairoDominguezForm):
             logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for Dr. Jairo Domínguez (email: {form_data.email}).")
             return {"message": "Solicitud recibida correctamente"}
 
-    # Enviar correo de confirmación al paciente
-    customer_email_sent = await send_jairodominguez_confirmation_email(form_data)
-
-    # Enviar correo de notificación al consultorio médico
+    # 1. Enviar correo de notificación directo al Dr. Jairo Domínguez y copia a Hipha
     team_email_sent = await send_jairodominguez_notification_team(form_data)
+
+    # 2. Enviar correo de confirmación al paciente
+    customer_email_sent = await send_jairodominguez_confirmation_email(form_data)
 
     if not customer_email_sent and not team_email_sent:
         raise HTTPException(status_code=500, detail="Error al enviar correos de notificación")
