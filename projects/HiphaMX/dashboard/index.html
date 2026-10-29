@@ -2403,13 +2403,14 @@
     <div id="modalMonthlySummary" class="modal-overlay hidden" style="z-index: 10005;">
         <style>
             @media print {
-                body * {
+                body.is-printing-summary * {
                     visibility: hidden;
                 }
-                #modalMonthlySummary, #modalMonthlySummary * {
+                body.is-printing-summary #modalMonthlySummary,
+                body.is-printing-summary #modalMonthlySummary * {
                     visibility: visible;
                 }
-                #modalMonthlySummary {
+                body.is-printing-summary #modalMonthlySummary {
                     position: absolute;
                     left: 0;
                     top: 0;
@@ -2417,7 +2418,9 @@
                     background: white !important;
                     color: black !important;
                 }
-                .modal-close-btn, #btnPrintSummaryReport, #btnCloseSummaryModal {
+                body.is-printing-summary .modal-close-btn,
+                body.is-printing-summary #btnPrintSummaryReport,
+                body.is-printing-summary #btnCloseSummaryModal {
                     display: none !important;
                 }
             }

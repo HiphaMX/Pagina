@@ -171,25 +171,46 @@ def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date:
         return {"error": str(e), "summary": {"newUsers": 0, "activeUsers": 0, "views": 0}, "trend": []}
 
 def get_top_sections(property_id: str, start_date: str = "30daysAgo", end_date: str = "today", limit: int = 10):
-    """Obtiene las 10 secciones más visitadas."""
+    """Obtiene las secciones más visitadas consolidando visitas por URL canónica."""
     try:
         client = get_ga4_client()
         request = RunReportRequest(
             property=f"properties/{property_id}",
-            dimensions=[Dimension(name="pageTitle"), Dimension(name="pagePath")],
+            dimensions=[Dimension(name="pagePath"), Dimension(name="pageTitle")],
             metrics=[Metric(name="screenPageViews")],
             date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
-            limit=limit
+            limit=100
         )
         response = client.run_report(request)
-        results = []
+        
+        aggregated = {}
         for row in response.rows:
-            results.append({
-                "title": row.dimension_values[0].value,
-                "path": row.dimension_values[1].value,
-                "views": int(row.metric_values[0].value)
-            })
-        return results
+            raw_path = row.dimension_values[0].value or "/"
+            # Normalizar path: remover query parameters y barra final innecesaria
+            clean_path = raw_path.split('?')[0].split('#')[0].rstrip('/') or '/'
+            title = (row.dimension_values[1].value or clean_path).strip()
+            views = int(row.metric_values[0].value) if row.metric_values else 0
+
+            if clean_path not in aggregated:
+                aggregated[clean_path] = {
+                    "path": clean_path,
+                    "title": title,
+                    "views": views,
+                    "max_views": views
+                }
+            else:
+                aggregated[clean_path]["views"] += views
+                # Preservar el título asociado al mayor volumen de visitas
+                if views > aggregated[clean_path]["max_views"]:
+                    aggregated[clean_path]["title"] = title
+                    aggregated[clean_path]["max_views"] = views
+
+        sorted_sections = sorted(aggregated.values(), key=lambda s: s["views"], reverse=True)
+        return [{
+            "path": s["path"],
+            "title": s["title"],
+            "views": s["views"]
+        } for s in sorted_sections[:limit]]
     except Exception as e:
         print(f"Error fetching top sections for property {property_id}: {str(e)}")
         return []

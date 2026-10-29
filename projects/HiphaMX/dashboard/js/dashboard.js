@@ -596,6 +596,38 @@ async function loadClientDetails(propertyId, clientName) {
 }
 
 
+function consolidateTopSections(sections) {
+    if (!sections || !Array.isArray(sections)) return [];
+    const map = new Map();
+    sections.forEach(sec => {
+        if (!sec) return;
+        const rawPath = sec.path || '/';
+        const cleanPath = (rawPath.split('?')[0].split('#')[0].replace(/\/+$/, '') || '/');
+        const title = (sec.title || cleanPath).trim();
+        const views = parseInt(sec.views, 10) || 0;
+
+        if (!map.has(cleanPath)) {
+            map.set(cleanPath, {
+                path: cleanPath,
+                title: title,
+                views: views,
+                maxViewsForTitle: views
+            });
+        } else {
+            const existing = map.get(cleanPath);
+            existing.views += views;
+            if (views > existing.maxViewsForTitle) {
+                existing.title = title;
+                existing.maxViewsForTitle = views;
+            }
+        }
+    });
+
+    return Array.from(map.values())
+        .sort((a, b) => b.views - a.views)
+        .map(({ path, title, views }) => ({ path, title, views }));
+}
+
 function renderDetails(data) {
     currentClientDetailsData = data;
     elClientName.textContent = data.client.name;
@@ -605,15 +637,17 @@ function renderDetails(data) {
     elKpiActiveUsers.textContent = (data.metrics.summary.activeUsers || 0).toLocaleString();
     elKpiViews.textContent = (data.metrics.summary.views || 0).toLocaleString();
     
-    // Top 10 List
+    // Top 10 List (Consolidado por URL canónica para evitar duplicados por títulos históricos)
     elTopList.innerHTML = '';
-    if (data.top_sections && data.top_sections.length > 0) {
-        data.top_sections.forEach(sec => {
+    const consolidated = consolidateTopSections(data.top_sections);
+    data.top_sections = consolidated;
+    if (consolidated && consolidated.length > 0) {
+        consolidated.slice(0, 10).forEach(sec => {
             const li = document.createElement('li');
             li.className = 'top-section-item';
             
-            // Limitar longitud del título
-            let title = sec.title;
+            // Limitar longitud del título y limpiar sufijo de precio si existe
+            let title = (sec.title || sec.path).replace(/\s*\$\d+(?:\.\d+)?.*$/, '').trim();
             if(title.length > 40) title = title.substring(0, 40) + '...';
             
             li.innerHTML = `
@@ -992,7 +1026,8 @@ function openClientReportModal() {
     const reportTableBody = document.getElementById('reportTableBody');
     if (reportTableBody) {
         reportTableBody.innerHTML = '';
-        const topSections = data.top_sections || [];
+        const topSections = consolidateTopSections(data.top_sections || []);
+        data.top_sections = topSections;
         const maxViews = topSections.length > 0 ? topSections[0].views : 1;
 
         if (topSections.length === 0) {
@@ -1003,6 +1038,9 @@ function openClientReportModal() {
                 const percent = Math.min(100, Math.max(1, Math.round((sec.views / Math.max(1, maxViews)) * 100)));
                 let rawTitle = (sec.title || sec.path || 'Página').trim();
                 
+                // Limpieza inteligente de precios en el título si existen (ej. "Salsa Chile de Árbol Artesanal $35" -> "Salsa Chile de Árbol Artesanal")
+                rawTitle = rawTitle.replace(/\s*\$\d+(?:\.\d+)?.*$/, '').trim();
+
                 // Limpieza inteligente de sufijos repetitivos de marca / portal (ej. "Pisos y recubrimientos | Distribuidor Azulejero de México")
                 if (rawTitle.includes(' | ')) {
                     const parts = rawTitle.split(' | ');
@@ -1015,7 +1053,7 @@ function openClientReportModal() {
                         rawTitle = parts[0].trim();
                     }
                 }
-                if (sec.path === '/' && rawTitle.toLowerCase().includes('distribuidor')) {
+                if (sec.path === '/' && (rawTitle.toLowerCase().includes('distribuidor') || rawTitle.toLowerCase().includes('chile chillón') || rawTitle.toLowerCase().includes('inicio'))) {
                     rawTitle = 'Página Principal (Inicio)';
                 }
                 
@@ -1105,7 +1143,10 @@ function printClientReport() {
     // 2. Activar clase de impresión para compatibilidad total
     document.body.classList.add('is-printing-report');
 
+    let cleaned = false;
     const cleanUpPrint = () => {
+        if (cleaned) return;
+        cleaned = true;
         document.body.classList.remove('is-printing-report');
         document.title = originalTitle;
         window.removeEventListener('afterprint', cleanUpPrint);
@@ -1115,7 +1156,7 @@ function printClientReport() {
     // Micro-pausa (150ms) para garantizar que el navegador haya decodificado el bitmap antes de congelar para imprimir
     setTimeout(() => {
         window.print();
-        setTimeout(cleanUpPrint, 1200);
+        setTimeout(cleanUpPrint, 60000);
     }, 150);
 }
 
@@ -8027,7 +8068,17 @@ function initMonthlySummaryModal() {
 
     if (btnPrint) {
         btnPrint.addEventListener('click', () => {
+            document.body.classList.add('is-printing-summary');
+            let cleaned = false;
+            const cleanUp = () => {
+                if (cleaned) return;
+                cleaned = true;
+                document.body.classList.remove('is-printing-summary');
+                window.removeEventListener('afterprint', cleanUp);
+            };
+            window.addEventListener('afterprint', cleanUp);
             window.print();
+            setTimeout(cleanUp, 45000);
         });
     }
 }

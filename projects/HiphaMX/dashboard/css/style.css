@@ -3215,6 +3215,11 @@ select {
 /* ==========================================================================
    Reglas de Impresión (@media print) para Descarga Limpia de PDF
    ========================================================================== */
+@page {
+    size: letter portrait;
+    margin: 6mm 8mm;
+}
+
 @media print {
     * {
         -webkit-print-color-adjust: exact !important;
@@ -3229,12 +3234,25 @@ select {
     #workflowMonthlyReportModal,
     #clientModal,
     #sendAgencyEmailModal,
+    #addSocialModal,
+    #manualSnapshotModal,
+    #modalUploadReconciliation,
+    #modalMatchManual,
+    #modalMailboxInvoices,
+    #modalComprobarInvoice,
+    #modalBackfillHistorical,
+    #modalMonthlySummary,
+    #modalEditProject,
+    #modalMarkNoAplica,
+    #webHealthModal,
+    #cotizadorPdfModal,
     .sidebar,
     .mobile-top-bar,
     .top-header,
     .report-modal-header,
     .report-toolbar,
     .report-modal-footer,
+    .modal-close-btn,
     .no-print,
     .no-print-screen {
         display: none !important;
@@ -3249,16 +3267,19 @@ select {
         height: auto !important;
         min-height: auto !important;
         overflow: visible !important;
-    }
-
-    body {
         font-family: 'Outfit', sans-serif !important;
     }
 
-    /* Mostrar el modal del reporte en flujo normal sin overlay fijo */
-    #clientReportModal {
+    /* Mostrar únicamente el reporte ejecutivo cuando esté en modo impresión */
+    body.is-printing-report > *:not(#clientReportModal) {
+        display: none !important;
+    }
+
+    body.is-printing-report #clientReportModal,
+    body:not(.is-printing-summary) #clientReportModal:not(.hidden) {
         position: static !important;
         display: block !important;
+        visibility: visible !important;
         background: transparent !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
@@ -3268,6 +3289,11 @@ select {
         padding: 0 !important;
         margin: 0 !important;
         z-index: auto !important;
+    }
+
+    body.is-printing-report #clientReportModal *,
+    body:not(.is-printing-summary) #clientReportModal:not(.hidden) * {
+        visibility: visible !important;
     }
 
     .report-modal-dialog {
@@ -3763,6 +3789,7 @@ select {
         gap: 0.35rem !important;
         font-size: 0.60rem !important;
     }
+}
 
 
 /* ==========================================================================
