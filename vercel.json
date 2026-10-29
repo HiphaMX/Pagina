@@ -546,7 +546,7 @@
           "value": "^(www\\.)?jairodominguez-urologo\\.com$"
         }
       ],
-      "dest": "/projects/Dr. Jairo Dominguez/index.html"
+      "dest": "/projects/Dr. Jairo Dominguez/"
     },
     {
       "src": "/amdi",
@@ -738,7 +738,7 @@
     },
     {
       "src": "/jairo-dominguez/",
-      "dest": "/projects/Dr. Jairo Dominguez/index.html"
+      "dest": "/projects/Dr. Jairo Dominguez/"
     },
     {
       "src": "/jairo-dominguez/(.*)",
