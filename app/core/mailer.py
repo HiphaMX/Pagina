@@ -3173,3 +3173,181 @@ async def send_oncologiarobotica_notification_team(form_data):
         return False
 
 
+async def send_jairodominguez_confirmation_email(form_data):
+    jairo_configured = bool(settings.JAIRODOMINGUEZ_SMTP_HOST and settings.JAIRODOMINGUEZ_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not jairo_configured and not global_configured:
+        logger.warning("SMTP no configurado. Simulando envío de confirmación de valoración de Dr. Jairo Domínguez al paciente")
+        return True
+
+    from_name = settings.JAIRODOMINGUEZ_EMAILS_FROM_NAME or "Dr. Jairo Domínguez Arroyo | Cirujano Urólogo"
+    from_email = settings.JAIRODOMINGUEZ_EMAILS_FROM_EMAIL or "r2urodominguez@hotmail.com"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recibimos tu solicitud — Dr. Jairo Domínguez</title>
+    </head>
+    <body style="font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #333333; background-color: #f7fafc; margin: 0; padding: 30px 15px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border-top: 4px solid #1a365d;">
+            
+            <div style="text-align: center; padding: 24px; border-bottom: 1px solid #e2e8f0; background-color: #ffffff;">
+                <h2 style="margin: 0; color: #1a365d; font-size: 20px; font-weight: 700;">Dr. Jairo Domínguez Arroyo</h2>
+                <p style="margin: 6px 0 0 0; color: #4299e1; font-size: 13px; font-weight: 600; text-transform: uppercase;">
+                    Especialista en Urología · Cirugía Robótica y de Mínima Invasión
+                </p>
+            </div>
+
+            <div style="padding: 30px 24px;">
+                <p style="font-size: 16px; line-height: 1.6; color: #2d3748; margin: 0 0 16px 0;">
+                    Estimado(a) <strong>{form_data.nombre}</strong>,
+                </p>
+                <p style="font-size: 15px; line-height: 1.6; color: #4a5568; margin: 0 0 20px 0;">
+                    Hemos recibido correctamente tu solicitud de consulta. Nuestro equipo se comunicará contigo a la brevedad para confirmar la disponibilidad de horario en nuestras sedes de Morelia (Hospital Ángeles y Sanatorio La Luz).
+                </p>
+
+                <div style="background-color: #ebf8ff; border-left: 4px solid #3182ce; border-radius: 6px; padding: 14px 18px; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #2b6cb0;">
+                        <strong>📍 Sedes de atención en Morelia:</strong><br>
+                        • Hospital Ángeles Morelia: Torre B consultorio 409.<br>
+                        • Sanatorio La Luz: Gral. Nicolás Bravo No. 50, Chapultepec Norte.
+                    </p>
+                </div>
+
+                <div style="text-align: center; margin: 28px 0;">
+                    <a href="https://wa.me/523316612086?text=Hola,%20solicito%20informaci%C3%B3n%20sobre%20mi%20cita%20con%20el%20Dr.%20Jairo%20Dom%C3%ADnguez" 
+                       style="background: #25D366; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 14px; display: inline-block;">
+                        💬 Contactar por WhatsApp: 331 661 2086
+                    </a>
+                </div>
+
+                <div style="border-top: 1px solid #edf2f7; margin-top: 24px; padding-top: 16px; text-align: center;">
+                    <p style="font-size: 12px; color: #718096; margin: 0;">
+                        Teléfonos de atención: 443 725 5650 y 331 661 2086 · <a href="https://www.jairodominguez-urologo.com" style="color: #3182ce; text-decoration: none;">jairodominguez-urologo.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="JAIRODOMINGUEZ",
+        from_name=from_name,
+        from_email=from_email,
+        to_email=form_data.email,
+        subject="Recibimos tu solicitud de consulta — Dr. Jairo Domínguez",
+        html_content=html_content,
+        domain="jairodominguez-urologo.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Confirmación de Dr. Jairo Domínguez enviada con éxito a {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar confirmación de Dr. Jairo Domínguez a {form_data.email}: {str(e)}")
+        return False
+
+
+async def send_jairodominguez_notification_team(form_data):
+    jairo_configured = bool(settings.JAIRODOMINGUEZ_SMTP_HOST and settings.JAIRODOMINGUEZ_SMTP_USER)
+    global_configured = bool(settings.SMTP_HOST and settings.SMTP_USER)
+
+    if not jairo_configured and not global_configured:
+        logger.warning("SMTP no configurado. Simulando envío de notificación al equipo médico de Dr. Jairo Domínguez")
+        return True
+
+    from_email = settings.JAIRODOMINGUEZ_EMAILS_FROM_EMAIL or "r2urodominguez@hotmail.com"
+    to_email = settings.JAIRODOMINGUEZ_NOTIFICATION_EMAIL or "r2urodominguez@hotmail.com"
+    cc_email = settings.JAIRODOMINGUEZ_CC_EMAIL or "hola@hipha.mx"
+
+    telefono_clean = "".join([c for c in form_data.telefono if c.isdigit()])
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nuevo Paciente Potencial — Dr. Jairo Domínguez</title>
+    </head>
+    <body style="font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2d3748; background-color: #f7fafc; margin: 0; padding: 30px 15px;">
+        <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border-top: 4px solid #3182ce;">
+            
+            <div style="padding: 24px; border-bottom: 1px solid #e2e8f0; background-color: #ebf8ff;">
+                <h2 style="margin: 0; color: #2b6cb0; font-size: 18px; font-weight: 700;">
+                    ⚡ NUEVA SOLICITUD DE CITA WEB
+                </h2>
+                <p style="margin: 4px 0 0 0; color: #4a5568; font-size: 13px;">
+                    Portal: <strong>jairodominguez-urologo.com</strong>
+                </p>
+            </div>
+
+            <div style="padding: 24px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <tr style="border-bottom: 1px solid #edf2f7;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #718096; width: 35%;">Paciente:</td>
+                        <td style="padding: 10px 0; color: #1a202c; font-weight: 600;">{form_data.nombre}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #edf2f7;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #718096;">Teléfono:</td>
+                        <td style="padding: 10px 0; color: #1a202c;">
+                            <a href="tel:{telefono_clean}" style="color: #3182ce; text-decoration: none; font-weight: bold;">{form_data.telefono}</a>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #edf2f7;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #718096;">Correo:</td>
+                        <td style="padding: 10px 0; color: #1a202c;">
+                            <a href="mailto:{form_data.email}" style="color: #3182ce; text-decoration: none;">{form_data.email}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; font-weight: bold; color: #718096; vertical-align: top;">Mensaje:</td>
+                        <td style="padding: 10px 0; color: #2d3748; line-height: 1.5;">{form_data.mensaje or 'Sin mensaje adicional'}</td>
+                    </tr>
+                </table>
+
+                <div style="text-align: center; margin: 24px 0 10px 0;">
+                    <a href="https://wa.me/52{telefono_clean}?text=Hola%20{form_data.nombre},%20nos%20comunicamos%20del%20consultorio%20del%20Dr.%20Jairo%20Dom%C3%ADnguez%20para%20coordinar%20tu%20cita" 
+                       style="background: #25D366; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 14px; display: inline-block;">
+                        💬 Abrir WhatsApp con el Paciente
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="JAIRODOMINGUEZ",
+        from_name="Dr. Jairo Domínguez Arroyo",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"⚡ NUEVA SOLICITUD DE CITA: {form_data.nombre}",
+        html_content=html_content,
+        domain="jairodominguez-urologo.com"
+    )
+
+    if cc_email:
+        message["Cc"] = cc_email
+
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Notificación de Dr. Jairo Domínguez enviada con éxito a {to_email} (CC: {cc_email})")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación al equipo médico de Dr. Jairo Domínguez: {str(e)}")
+        return False
+
+
+

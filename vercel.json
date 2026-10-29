@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama|Dr\\. Jairo Dominguez)/'",
   "functions": {
     "api/**/*.py": {
       "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}",
@@ -499,6 +499,56 @@
       "dest": "/projects/OncologiaRobotica/"
     },
     {
+      "src": "/(assets)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jairodominguez-urologo\\.com$"
+        }
+      ],
+      "dest": "/projects/Dr. Jairo Dominguez/assets/$2"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt|sitemap\\.xml)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jairodominguez-urologo\\.com$"
+        }
+      ],
+      "dest": "/projects/Dr. Jairo Dominguez/$1"
+    },
+    {
+      "src": "/(post)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jairodominguez-urologo\\.com$"
+        }
+      ],
+      "dest": "/projects/Dr. Jairo Dominguez/post/$2"
+    },
+    {
+      "src": "/(diagnostico|cirugias|blog|aviso-de-privacidad|preguntas-frecuentes|trayectoria-profesional|gracias-por-contactarnos|404|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jairodominguez-urologo\\.com$"
+        }
+      ],
+      "dest": "/projects/Dr. Jairo Dominguez/$1$2"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jairodominguez-urologo\\.com$"
+        }
+      ],
+      "dest": "/projects/Dr. Jairo Dominguez/index.html"
+    },
+    {
       "src": "/amdi",
       "status": 308,
       "headers": { "Location": "/amdi/" }
@@ -680,6 +730,19 @@
       "src": "/jessica-mendoza/(.*)",
       "status": 301,
       "headers": { "Location": "https://www.jessicamendozabienesraices.com/$1" }
+    },
+    {
+      "src": "/jairo-dominguez",
+      "status": 308,
+      "headers": { "Location": "/jairo-dominguez/" }
+    },
+    {
+      "src": "/jairo-dominguez/",
+      "dest": "/projects/Dr. Jairo Dominguez/index.html"
+    },
+    {
+      "src": "/jairo-dominguez/(.*)",
+      "dest": "/projects/Dr. Jairo Dominguez/$1"
     },
     {
       "handle": "filesystem"

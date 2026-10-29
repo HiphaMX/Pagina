@@ -133,6 +133,17 @@ class Settings(BaseSettings):
     ONCOLOGIAROBOTICA_CC_EMAIL: str = "hola@hipha.mx"
     ONCOLOGIAROBOTICA_RECAPTCHA_SECRET_KEY: str = ""
 
+    # JAIRODOMINGUEZ Specific SMTP settings (Pendiente de credenciales)
+    JAIRODOMINGUEZ_SMTP_HOST: str = ""
+    JAIRODOMINGUEZ_SMTP_PORT: Union[int, str] = 587
+    JAIRODOMINGUEZ_SMTP_USER: str = ""
+    JAIRODOMINGUEZ_SMTP_PASSWORD: str = ""
+    JAIRODOMINGUEZ_EMAILS_FROM_EMAIL: str = "r2urodominguez@hotmail.com"
+    JAIRODOMINGUEZ_EMAILS_FROM_NAME: str = "Dr. Jairo Domínguez Arroyo | Cirujano Urólogo"
+    JAIRODOMINGUEZ_NOTIFICATION_EMAIL: str = "r2urodominguez@hotmail.com"
+    JAIRODOMINGUEZ_CC_EMAIL: str = "hola@hipha.mx"
+    JAIRODOMINGUEZ_RECAPTCHA_SECRET_KEY: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
     # RECONCILIATION Specific Settings (Multi-Entity)
