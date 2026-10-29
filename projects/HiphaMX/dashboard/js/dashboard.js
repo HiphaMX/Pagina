@@ -881,7 +881,7 @@ function openClientReportModal() {
             return `
                 <div class="legend-item-row">
                     <span><span class="legend-color-dot" style="background:${srcColors[idx % srcColors.length]};"></span>${escapeHtml(s.source)}</span>
-                    <strong style="color:#ffffff;">${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${s.views.toLocaleString()})</span></strong>
+                    <strong style="color:#ffffff;">${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${s.views.toLocaleString()} vistas)</span></strong>
                 </div>
             `;
         }).join('');
@@ -933,7 +933,7 @@ function openClientReportModal() {
                 return `
                     <div class="legend-item-row">
                         <span><span class="legend-color-dot" style="background:${devColors[i % devColors.length]};"></span>${icon} ${d.device}</span>
-                        <strong style="color:#ffffff;">${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${d.users.toLocaleString()})</span></strong>
+                        <strong style="color:#ffffff;">${pct}% <span style="font-size:0.65rem; color:#94a3b8; font-weight:normal;">(${d.users.toLocaleString()} usuarios)</span></strong>
                     </div>
                 `;
             }).join('');

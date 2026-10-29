@@ -8,6 +8,7 @@ from google.analytics.data_v1beta.types import (
     Dimension,
     Metric,
     RunReportRequest,
+    MetricAggregation,
 )
 
 # Diccionario de clientes y sus IDs de propiedad (Fallback estático completo)
@@ -129,6 +130,7 @@ def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date:
                 Metric(name="screenPageViews")
             ],
             date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+            metric_aggregations=[MetricAggregation.TOTAL]
         )
         response = client.run_report(request)
         
@@ -157,12 +159,23 @@ def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date:
             
         # Ordenar por fecha
         dates_data.sort(key=lambda x: x["date"])
+
+        # Usar totales consolidados desduplicados oficiales de GA4
+        if response.totals:
+            tot = response.totals[0]
+            summary_new = int(tot.metric_values[0].value)
+            summary_active = int(tot.metric_values[1].value)
+            summary_views = int(tot.metric_values[2].value)
+        else:
+            summary_new = total_new_users
+            summary_active = total_active_users
+            summary_views = total_views
             
         return {
             "summary": {
-                "newUsers": total_new_users,
-                "activeUsers": total_active_users,
-                "views": total_views
+                "newUsers": summary_new,
+                "activeUsers": summary_active,
+                "views": summary_views
             },
             "trend": dates_data
         }
@@ -215,28 +228,71 @@ def get_top_sections(property_id: str, start_date: str = "30daysAgo", end_date: 
         print(f"Error fetching top sections for property {property_id}: {str(e)}")
         return []
 
+def normalize_traffic_source(source_raw: str) -> str:
+    """Normaliza y unifica orígenes de tráfico (ej. subdominios móviles de redes sociales)."""
+    s = (source_raw or "").strip().lower()
+    if s in ("(direct)", "direct"):
+        return "Directo"
+    if "google" in s:
+        return "Google"
+    if "facebook" in s or s.startswith("fb") or "fb.me" in s:
+        return "Facebook"
+    if "instagram" in s:
+        return "Instagram"
+    if "whatsapp" in s or "wa.me" in s:
+        return "WhatsApp"
+    if "chatgpt" in s or "openai" in s:
+        return "ChatGPT / AI"
+    if "bing" in s:
+        return "Bing"
+    if "yahoo" in s:
+        return "Yahoo"
+    if "tiktok" in s:
+        return "TikTok"
+    if "linkedin" in s:
+        return "LinkedIn"
+    if "twitter" in s or "t.co" in s or "x.com" in s:
+        return "X (Twitter)"
+    return source_raw.capitalize()
+
 def get_traffic_sources(property_id: str, start_date: str = "30daysAgo", end_date: str = "today", limit: int = 5):
-    """Obtiene los orígenes de tráfico principales."""
+    """Obtiene los orígenes de tráfico principales consolidando subdominios y fuentes afines."""
     try:
         client = get_ga4_client()
         request = RunReportRequest(
             property=f"properties/{property_id}",
             dimensions=[Dimension(name="sessionSource")],
-            metrics=[Metric(name="screenPageViews")],
+            metrics=[
+                Metric(name="screenPageViews"),
+                Metric(name="sessions"),
+                Metric(name="activeUsers")
+            ],
             date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
-            limit=limit
+            limit=50
         )
         response = client.run_report(request)
-        results = []
+        aggregated = {}
         for row in response.rows:
-            source = row.dimension_values[0].value
-            if source == '(direct)':
-                source = 'Directo'
-            results.append({
-                "source": source.capitalize(),
-                "views": int(row.metric_values[0].value)
-            })
-        return results
+            raw_source = row.dimension_values[0].value
+            norm_source = normalize_traffic_source(raw_source)
+            views = int(row.metric_values[0].value) if len(row.metric_values) > 0 else 0
+            sessions = int(row.metric_values[1].value) if len(row.metric_values) > 1 else 0
+            users = int(row.metric_values[2].value) if len(row.metric_values) > 2 else 0
+
+            if norm_source not in aggregated:
+                aggregated[norm_source] = {
+                    "source": norm_source,
+                    "views": views,
+                    "sessions": sessions,
+                    "users": users
+                }
+            else:
+                aggregated[norm_source]["views"] += views
+                aggregated[norm_source]["sessions"] += sessions
+                aggregated[norm_source]["users"] += users
+
+        sorted_sources = sorted(aggregated.values(), key=lambda s: s["views"], reverse=True)
+        return sorted_sources[:limit]
     except Exception as e:
         print(f"Error fetching traffic sources for property {property_id}: {str(e)}")
         return []
