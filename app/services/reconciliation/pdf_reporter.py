@@ -139,7 +139,7 @@ def generate_discrepancies_pdf(
     pdf.set_xy(14, 35)
     pdf.set_font('Helvetica', 'B', 10)
     pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 5, _clean(f'RESUMEN EJECUTIVO DE CONCILIACIÓN, CONTROL FISCAL & RIESGO | {entity_name or "HIPHA"}'), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(0, 5, _clean(f'RESUMEN EJECUTIVO DE CONCILIACIÓN | {entity_name or "HIPHA"}'), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
     pdf.set_xy(14, 43)
     pdf.set_font('Helvetica', 'B', 8.5)
@@ -171,7 +171,7 @@ def generate_discrepancies_pdf(
     pdf.cell(95, 5, _clean(f'- Movimientos bancarios por revisar: {len(por_revisar)} transacciones.'), new_x=XPos.RIGHT, new_y=YPos.TOP)
     pdf.set_font('Helvetica', 'I', 7.5)
     pdf.set_text_color(37, 99, 235)
-    pdf.cell(95, 5, _clean('[i] Haz clic en el UUID de cualquier factura para abrirla en el Dashboard'), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(95, 5, _clean('[i] Haz clic en cualquier factura o UUID para ver el CFDI oficial y descargar XML'), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
     pdf.set_y(80)
 
