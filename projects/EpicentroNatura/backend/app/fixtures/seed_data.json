@@ -1,0 +1,687 @@
+{
+  "communities": [
+    {
+      "name": "Natura Bosque Residencial",
+      "slug": "natura-bosque-residencial",
+      "type": "coto_natura",
+      "is_active": true
+    },
+    {
+      "name": "Los Robles",
+      "slug": "los-robles",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Bosque de la primavera",
+      "slug": "bosque-primavera",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "El Fortín",
+      "slug": "el-fortin",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Luna Bosque",
+      "slug": "luna-bosque",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "La Granja",
+      "slug": "la-granja",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Puerta del Bosque",
+      "slug": "puerta-del-bosque",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Punta de Otero",
+      "slug": "punta-de-otero",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Monte Verde",
+      "slug": "monte-verde",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Misión la Floresta",
+      "slug": "mision-la-floresta",
+      "type": "fraccionamiento_vecino",
+      "is_active": true
+    },
+    {
+      "name": "Casa de la Cultura - Parque Central",
+      "slug": "casa-de-la-cultura-parque-central",
+      "type": "espacio_publico",
+      "is_active": true
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Comida y Delivery",
+      "slug": "comida-delivery",
+      "icon_name": "Utensils"
+    },
+    {
+      "id": 2,
+      "name": "Farmacias",
+      "slug": "farmacias",
+      "icon_name": "Pill"
+    },
+    {
+      "id": 3,
+      "name": "Mascotas",
+      "slug": "mascotas",
+      "icon_name": "Dog"
+    },
+    {
+      "id": 4,
+      "name": "Postres y café",
+      "slug": "postres-cafe",
+      "icon_name": "Coffee"
+    },
+    {
+      "id": 5,
+      "name": "Productos artesanales",
+      "slug": "productos-artesanales",
+      "icon_name": "Sparkles"
+    },
+    {
+      "id": 6,
+      "name": "Servicios hogar",
+      "slug": "servicios-hogar",
+      "icon_name": "Wrench"
+    },
+    {
+      "id": 7,
+      "name": "Atención médica",
+      "slug": "atencion-medica",
+      "icon_name": "Stethoscope"
+    },
+    {
+      "id": 8,
+      "name": "Veterinarias",
+      "slug": "veterinarias",
+      "icon_name": "HeartPulse"
+    },
+    {
+      "id": 9,
+      "name": "Clases particulares",
+      "slug": "clases-particulares",
+      "icon_name": "GraduationCap"
+    },
+    {
+      "id": 10,
+      "name": "Fitness",
+      "slug": "fitness",
+      "icon_name": "Dumbbell"
+    },
+    {
+      "id": 11,
+      "name": "Escuelas",
+      "slug": "escuelas",
+      "icon_name": "GraduationCap"
+    },
+    {
+      "id": 12,
+      "name": "Hogar",
+      "slug": "hogar",
+      "icon_name": "Home"
+    }
+  ],
+  "businesses": [
+    {
+      "name": "Taquería El Pastor de Otero",
+      "slug": "taqueria-el-pastor-de-otero",
+      "category_slug": "comida-delivery",
+      "community_slug": "natura-bosque-residencial",
+      "description": "Tacos al pastor al carbón, suadero, gringas y volcanes con queso. Servicio a domicilio a casetas de cotos.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Av. Prolongación Mariano Otero esq. Bosque Real",
+      "phone_number": "33 1555 0202",
+      "whatsapp_number": "+523315550202",
+      "delivery_available": true,
+      "delivery_scope": "Cotos Natura y Fracc. El Fortín",
+      "has_km0_badge": false,
+      "km0_reason": null,
+      "opening_hours": {
+        "mon": { "open": "18:00", "close": "00:00" },
+        "tue": { "open": "18:00", "close": "00:00" },
+        "wed": { "open": "18:00", "close": "00:00" },
+        "thu": { "open": "18:00", "close": "01:00" },
+        "fri": { "open": "18:00", "close": "01:30" },
+        "sat": { "open": "18:00", "close": "01:30" },
+        "sun": { "open": "18:00", "close": "23:30" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "Pizzas a la Leña Coto Roble",
+      "slug": "pizzas-a-la-lena-coto-roble",
+      "category_slug": "comida-delivery",
+      "community_slug": "natura-bosque-residencial",
+      "description": "Pizzas artesanales de masa madre horneadas a la leña en piedra. Entrega directa a tu cochera.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Interior Coto Roble",
+      "phone_number": "33 1555 0105",
+      "whatsapp_number": "+523315550105",
+      "delivery_available": true,
+      "delivery_scope": "Coto Roble, Encino, Ceiba, Fresno",
+      "has_km0_badge": true,
+      "km0_reason": "Entrega a pie y en bicicleta dentro de cotos",
+      "opening_hours": {
+        "mon": null,
+        "tue": null,
+        "wed": null,
+        "thu": { "open": "19:00", "close": "23:00" },
+        "fri": { "open": "19:00", "close": "23:30" },
+        "sat": { "open": "19:00", "close": "23:30" },
+        "sun": { "open": "19:00", "close": "22:30" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "Farmacia Mariano Otero 24 Horas",
+      "slug": "farmacia-mariano-otero-24-horas",
+      "category_slug": "farmacias",
+      "community_slug": "punta-de-otero",
+      "description": "Medicamentos genéricos y de patente, curaciones menores, toma de presión y surtido de recetas.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Prolongación Mariano Otero #4500 (Frente al ingreso Coto Encino)",
+      "phone_number": "33 1555 0201",
+      "whatsapp_number": "+523315550201",
+      "delivery_available": true,
+      "delivery_scope": "Radio 3km / Cotos Mariano Otero",
+      "has_km0_badge": true,
+      "km0_reason": "Reparto limpio en bici de carga a casetas de cotos",
+      "opening_hours": {
+        "mon": { "open": "00:00", "close": "23:59" },
+        "tue": { "open": "00:00", "close": "23:59" },
+        "wed": { "open": "00:00", "close": "23:59" },
+        "thu": { "open": "00:00", "close": "23:59" },
+        "fri": { "open": "00:00", "close": "23:59" },
+        "sat": { "open": "00:00", "close": "23:59" },
+        "sun": { "open": "00:00", "close": "23:59" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "Pet Shop & Estética Canina Natura",
+      "slug": "pet-shop-estetica-canina-natura",
+      "category_slug": "mascotas",
+      "community_slug": "los-robles",
+      "description": "Alimentos premium, accesorios, premios y baño canino con secado profesional. Recogida y entrega.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Plaza Natura Local 3",
+      "phone_number": "33 1555 0206",
+      "whatsapp_number": "+523315550206",
+      "delivery_available": true,
+      "delivery_scope": "Cotos Natura",
+      "has_km0_badge": true,
+      "km0_reason": "Recogida y entrega de mascotas en carrito eléctrico",
+      "opening_hours": {
+        "mon": { "open": "09:00", "close": "19:00" },
+        "tue": { "open": "09:00", "close": "19:00" },
+        "wed": { "open": "09:00", "close": "19:00" },
+        "thu": { "open": "09:00", "close": "19:00" },
+        "fri": { "open": "09:00", "close": "19:00" },
+        "sat": { "open": "09:00", "close": "18:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Repostería Artesanal Dulce Bosque",
+      "slug": "reposteria-artesanal-dulce-bosque",
+      "category_slug": "postres-cafe",
+      "community_slug": "luna-bosque",
+      "description": "Pasteles de zanahoria, pays de frutos rojos, galletas chispas de chocolate y brownies artesanales.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Coto Roble, Casa 42",
+      "phone_number": "33 1555 0101",
+      "whatsapp_number": "+523315550101",
+      "delivery_available": true,
+      "delivery_scope": "Coto Roble, Encino, Ceiba, Fresno",
+      "has_km0_badge": true,
+      "km0_reason": "Horneado casero y entrega a pie a tu puerta",
+      "opening_hours": {
+        "mon": { "open": "10:00", "close": "20:00" },
+        "tue": { "open": "10:00", "close": "20:00" },
+        "wed": { "open": "10:00", "close": "20:00" },
+        "thu": { "open": "10:00", "close": "20:00" },
+        "fri": { "open": "10:00", "close": "21:00" },
+        "sat": { "open": "11:00", "close": "19:00" },
+        "sun": { "open": "11:00", "close": "16:00" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "Velas & Jabones Botánicos La Primavera",
+      "slug": "velas-jabones-botanicos-la-primavera",
+      "category_slug": "productos-artesanales",
+      "community_slug": "el-fortin",
+      "description": "Jabones de avena y miel, velas de cera de soya aromatizadas con esencias de pino y lavanda del bosque.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Coto Ceiba, Casa 12",
+      "phone_number": "33 1555 0107",
+      "whatsapp_number": "+523315550107",
+      "delivery_available": true,
+      "delivery_scope": "Cotos Natura",
+      "has_km0_badge": true,
+      "km0_reason": "Cero emisiones; entrega a mano en cotos Natura",
+      "opening_hours": {
+        "mon": { "open": "10:00", "close": "18:00" },
+        "tue": { "open": "10:00", "close": "18:00" },
+        "wed": { "open": "10:00", "close": "18:00" },
+        "thu": { "open": "10:00", "close": "18:00" },
+        "fri": { "open": "10:00", "close": "18:00" },
+        "sat": { "open": "11:00", "close": "15:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "VoltTech Electricistas & Plomería Exprés",
+      "slug": "volttech-electricistas-plomeria-expres",
+      "category_slug": "servicios-hogar",
+      "community_slug": "la-granja",
+      "description": "Reparación de cortocircuitos, bombas de agua, hidroneumáticos, fugas de gas y calentadores solares.",
+      "business_type": "servicios_profesionales",
+      "is_home_based": false,
+      "address_reference": "Prolongación Mariano Otero #4210",
+      "phone_number": "33 1555 0203",
+      "whatsapp_number": "+523315550203",
+      "delivery_available": true,
+      "delivery_scope": "Urgencias en cotos de Mariano Otero",
+      "has_km0_badge": true,
+      "km0_reason": "Desplazamiento local en scooter eléctrico sin gasolina",
+      "opening_hours": {
+        "mon": { "open": "00:00", "close": "23:59" },
+        "tue": { "open": "00:00", "close": "23:59" },
+        "wed": { "open": "00:00", "close": "23:59" },
+        "thu": { "open": "00:00", "close": "23:59" },
+        "fri": { "open": "00:00", "close": "23:59" },
+        "sat": { "open": "00:00", "close": "23:59" },
+        "sun": { "open": "00:00", "close": "23:59" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "AquaClean Lavado Ecológico en Cochera",
+      "slug": "aquaclean-lavado-ecologico",
+      "category_slug": "servicios-hogar",
+      "community_slug": "puerta-del-bosque",
+      "description": "Detallado de autos y camionetas en tu cochera. Desinfección de interiores y encerado sin agua residual.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Coto Ceiba casa 18",
+      "phone_number": "33 1555 0103",
+      "whatsapp_number": "+523315550103",
+      "delivery_available": true,
+      "delivery_scope": "Todos los cotos de Natura y El Fortín",
+      "has_km0_badge": true,
+      "km0_reason": "Lavado en seco sin gasolina ni desperdicio de agua",
+      "opening_hours": {
+        "mon": { "open": "08:00", "close": "18:00" },
+        "tue": { "open": "08:00", "close": "18:00" },
+        "wed": { "open": "08:00", "close": "18:00" },
+        "thu": { "open": "08:00", "close": "18:00" },
+        "fri": { "open": "08:00", "close": "18:00" },
+        "sat": { "open": "09:00", "close": "15:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Consultorio Dra. Sandra Morales",
+      "slug": "consultorio-dra-sandra-morales",
+      "category_slug": "atencion-medica",
+      "community_slug": "monte-verde",
+      "description": "Consulta médica general, certificados médicos, control de glucosa y presión arterial, suturas menores.",
+      "business_type": "servicios_profesionales",
+      "is_home_based": false,
+      "address_reference": "Prol. Mariano Otero #4500 (Interior Farmacia)",
+      "phone_number": "33 1555 0201",
+      "whatsapp_number": "+523315550201",
+      "delivery_available": false,
+      "delivery_scope": null,
+      "has_km0_badge": false,
+      "km0_reason": null,
+      "opening_hours": {
+        "mon": { "open": "00:00", "close": "23:59" },
+        "tue": { "open": "00:00", "close": "23:59" },
+        "wed": { "open": "00:00", "close": "23:59" },
+        "thu": { "open": "00:00", "close": "23:59" },
+        "fri": { "open": "00:00", "close": "23:59" },
+        "sat": { "open": "00:00", "close": "23:59" },
+        "sun": { "open": "00:00", "close": "23:59" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "Clínica Veterinaria Bosque Vivo",
+      "slug": "clinica-veterinaria-bosque-vivo",
+      "category_slug": "veterinarias",
+      "community_slug": "mision-la-floresta",
+      "description": "Cirugía veterinaria, rayos X, vacunas, desparasitaciones y atención de emergencias para perros y gatos.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Plaza Natura Local 2",
+      "phone_number": "33 1555 0207",
+      "whatsapp_number": "+523315550207",
+      "delivery_available": true,
+      "delivery_scope": "Cotos Natura y El Fortín",
+      "has_km0_badge": false,
+      "km0_reason": null,
+      "opening_hours": {
+        "mon": { "open": "09:00", "close": "20:00" },
+        "tue": { "open": "09:00", "close": "20:00" },
+        "wed": { "open": "09:00", "close": "20:00" },
+        "thu": { "open": "09:00", "close": "20:00" },
+        "fri": { "open": "09:00", "close": "20:00" },
+        "sat": { "open": "09:00", "close": "18:00" },
+        "sun": { "open": "10:00", "close": "15:00" }
+      },
+      "status": "active"
+    },
+    {
+      "name": "Clases de Matemáticas & Física Ing. Alejandro Ruiz",
+      "slug": "clases-matematicas-fisica-alejandro-ruiz",
+      "category_slug": "clases-particulares",
+      "community_slug": "bosque-primavera",
+      "description": "Regularización y preparación para exámenes de secundaria, preparatoria y universidad. 10 años de experiencia.",
+      "business_type": "servicios_profesionales",
+      "is_home_based": true,
+      "address_reference": "Coto Encino (A domicilio o casa club)",
+      "phone_number": "33 1555 0108",
+      "whatsapp_number": "+523315550108",
+      "delivery_available": true,
+      "delivery_scope": "Cotos Natura a pie",
+      "has_km0_badge": true,
+      "km0_reason": "Profesor residente en el coto; desplazamiento a pie",
+      "opening_hours": {
+        "mon": { "open": "14:00", "close": "20:00" },
+        "tue": { "open": "14:00", "close": "20:00" },
+        "wed": { "open": "14:00", "close": "20:00" },
+        "thu": { "open": "14:00", "close": "20:00" },
+        "fri": { "open": "14:00", "close": "20:00" },
+        "sat": { "open": "09:00", "close": "14:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Sesiones de Yoga & Mindfulness en Terraza",
+      "slug": "sesiones-yoga-mindfulness-terraza",
+      "category_slug": "clases-particulares",
+      "community_slug": "natura-bosque-residencial",
+      "description": "Hatha Yoga y respiración consciente en grupos reducidos de 6 vecinas con vista panorámica al bosque.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Coto Encino casa 7",
+      "phone_number": "33 1555 0104",
+      "whatsapp_number": "+523315550104",
+      "delivery_available": false,
+      "delivery_scope": null,
+      "has_km0_badge": true,
+      "km0_reason": "Práctica vecinal en casa club sin uso de vehículos",
+      "opening_hours": {
+        "mon": { "open": "07:00", "close": "12:00" },
+        "tue": { "open": "07:00", "close": "12:00" },
+        "wed": { "open": "07:00", "close": "12:00" },
+        "thu": { "open": "07:00", "close": "12:00" },
+        "fri": { "open": "07:00", "close": "12:00" },
+        "sat": { "open": "08:00", "close": "11:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "VitalFit Studio Natura",
+      "slug": "vitalfit-studio-natura",
+      "category_slug": "fitness",
+      "community_slug": "natura-bosque-residencial",
+      "description": "Gimnasio boutique, entrenamiento funcional HIIT, pilates reformer y asesoría deportiva personalizada con instructores certificados.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Av. Prolongación Mariano Otero #4350 (Plaza Coto Ceiba)",
+      "phone_number": "33 1555 0310",
+      "whatsapp_number": "+523315550310",
+      "delivery_available": false,
+      "delivery_scope": null,
+      "has_km0_badge": false,
+      "km0_reason": null,
+      "opening_hours": {
+        "mon": { "open": "06:00", "close": "22:00" },
+        "tue": { "open": "06:00", "close": "22:00" },
+        "wed": { "open": "06:00", "close": "22:00" },
+        "thu": { "open": "06:00", "close": "22:00" },
+        "fri": { "open": "06:00", "close": "21:00" },
+        "sat": { "open": "07:00", "close": "14:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Coach David - Entrenamiento Cero Emisiones",
+      "slug": "coach-david-entrenamiento-cero-emisiones",
+      "category_slug": "fitness",
+      "community_slug": "los-robles",
+      "description": "Entrenador personal a domicilio en cotos Natura, Los Robles y El Fortín. Calistenia, acondicionamiento físico y planes metabólicos.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Atención a domicilio en cotos de Mariano Otero",
+      "phone_number": "33 1555 0311",
+      "whatsapp_number": "+523315550311",
+      "delivery_available": true,
+      "delivery_scope": "Cotos Natura, Los Robles, Luna Bosque y El Fortín",
+      "has_km0_badge": true,
+      "km0_reason": "Desplazamiento 100% en bicicleta entre cotos",
+      "opening_hours": {
+        "mon": { "open": "06:30", "close": "19:30" },
+        "tue": { "open": "06:30", "close": "19:30" },
+        "wed": { "open": "06:30", "close": "19:30" },
+        "thu": { "open": "06:30", "close": "19:30" },
+        "fri": { "open": "06:30", "close": "19:30" },
+        "sat": { "open": "08:00", "close": "13:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Instituto Tepeyac Campus Mariano Otero",
+      "slug": "instituto-tepeyac-mariano-otero",
+      "category_slug": "escuelas",
+      "community_slug": "natura-bosque-residencial",
+      "description": "Educación bilingüe desde Maternal hasta Preparatoria. Vanguardia pedagógica, canchas deportivas, laboratorios y transporte escolar en cotos.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Prolongación Mariano Otero #4200 (Frente al corredor residencial)",
+      "phone_number": "33 1555 0320",
+      "whatsapp_number": "+523315550320",
+      "delivery_available": false,
+      "delivery_scope": "Transporte escolar privado para cotos de la zona",
+      "has_km0_badge": false,
+      "km0_reason": null,
+      "opening_hours": {
+        "mon": { "open": "07:00", "close": "17:00" },
+        "tue": { "open": "07:00", "close": "17:00" },
+        "wed": { "open": "07:00", "close": "17:00" },
+        "thu": { "open": "07:00", "close": "17:00" },
+        "fri": { "open": "07:00", "close": "16:00" },
+        "sat": null,
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Colegio Finlandés - Campus Bosque",
+      "slug": "colegio-finlandes-campus-bosque",
+      "category_slug": "escuelas",
+      "community_slug": "los-robles",
+      "description": "Metodología activa nórdica centrada en el bienestar infantil, bilingüe, aulas al aire libre frente al bosque, Preescolar y Primaria.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Av. Los Robles #310 (Ingreso fraccionamiento)",
+      "phone_number": "33 1555 0321",
+      "whatsapp_number": "+523315550321",
+      "delivery_available": false,
+      "delivery_scope": "Atención para familias de Los Robles y Natura",
+      "has_km0_badge": true,
+      "km0_reason": "Rutas seguras peatonales y ciclistas para alumnos de coto",
+      "opening_hours": {
+        "mon": { "open": "07:30", "close": "16:00" },
+        "tue": { "open": "07:30", "close": "16:00" },
+        "wed": { "open": "07:30", "close": "16:00" },
+        "thu": { "open": "07:30", "close": "16:00" },
+        "fri": { "open": "07:30", "close": "15:00" },
+        "sat": null,
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Persianas, Toldos & Cancelería Natura",
+      "slug": "persianas-toldos-canceleria-natura",
+      "category_slug": "hogar",
+      "community_slug": "natura-bosque-residencial",
+      "description": "Fabricación e instalación de persianas sheer elegance, blackout, toldos retráctiles, mosquiteros y canceles de baño en cristal templado para casas de coto.",
+      "business_type": "local_establecido",
+      "is_home_based": false,
+      "address_reference": "Plaza Natura Local 5 (Prolongación Mariano Otero)",
+      "phone_number": "33 1555 0330",
+      "whatsapp_number": "+523315550330",
+      "delivery_available": true,
+      "delivery_scope": "Cotización e instalación sin costo en cotos",
+      "has_km0_badge": false,
+      "km0_reason": null,
+      "opening_hours": {
+        "mon": { "open": "09:00", "close": "19:00" },
+        "tue": { "open": "09:00", "close": "19:00" },
+        "wed": { "open": "09:00", "close": "19:00" },
+        "thu": { "open": "09:00", "close": "19:00" },
+        "fri": { "open": "09:00", "close": "19:00" },
+        "sat": { "open": "09:30", "close": "15:00" },
+        "sun": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Vivero & Jardines Paisajismo Bosque Vivo",
+      "slug": "vivero-jardines-paisajismo-bosque-vivo",
+      "category_slug": "hogar",
+      "community_slug": "luna-bosque",
+      "description": "Plantas de ornato, pasto en rollo, suculentas, macetas de autor y mantenimiento de jardinería para cocheras y terrazas en cotos privados.",
+      "business_type": "emprendimiento",
+      "is_home_based": true,
+      "address_reference": "Luna Bosque Coto 2 casa 18 (Vivero demostrativo)",
+      "phone_number": "33 1555 0331",
+      "whatsapp_number": "+523315550331",
+      "delivery_available": true,
+      "delivery_scope": "Entrega en bicicleta de carga a cotos",
+      "has_km0_badge": true,
+      "km0_reason": "Traslado ecológico en bici de carga sin emisiones",
+      "opening_hours": {
+        "mon": { "open": "09:00", "close": "18:30" },
+        "tue": { "open": "09:00", "close": "18:30" },
+        "wed": { "open": "09:00", "close": "18:30" },
+        "thu": { "open": "09:00", "close": "18:30" },
+        "fri": { "open": "09:00", "close": "18:30" },
+        "sat": { "open": "09:00", "close": "17:00" },
+        "sun": { "open": "10:00", "close": "14:00" }
+      },
+      "status": "active"
+    }
+  ],
+  "cultural_events": [
+    {
+      "title": "Taller Infantil de Escultura en Barro & Pintura",
+      "slug": "taller-infantil-escultura-barro-pintura",
+      "organizer": "Casa de la Cultura Natura",
+      "description": "Modelado con arcilla natural de la zona y acuarelas sobre caballete al aire libre.",
+      "days_ahead_start": 2,
+      "duration_hours": 2,
+      "location_name": "Kiosco Parque Central Natura",
+      "target_audience": "kids",
+      "capacity_limit": 25,
+      "current_rsvp_count": 14,
+      "is_cancelled": false
+    },
+    {
+      "title": "Noche de Cine Vecinal al Aire Libre",
+      "slug": "noche-cine-vecinal-aire-libre",
+      "organizer": "Comité de Cultura y Vecinos Natura",
+      "description": "Proyección en pantalla gigante bajo las estrellas. Palomitas gratis para niños de cotos.",
+      "days_ahead_start": 4,
+      "duration_hours": 3,
+      "location_name": "Explanada Verde Parque Central",
+      "target_audience": "family",
+      "capacity_limit": 80,
+      "current_rsvp_count": 42,
+      "is_cancelled": false
+    },
+    {
+      "title": "Clases Semanales de Danza Folclórica & Ritmos",
+      "slug": "clases-danza-folclorica-ritmos",
+      "organizer": "Salud Animal Zapopan & Casa de la Cultura",
+      "description": "Grupos infantiles y de adultos mayores con instructores del Instituto de Cultura Zapopan.",
+      "days_ahead_start": 6,
+      "duration_hours": 4,
+      "location_name": "Salón Polivalente Casa de Cultura",
+      "target_audience": "all",
+      "capacity_limit": 100,
+      "current_rsvp_count": 28,
+      "is_cancelled": false
+    }
+  ],
+  "civic_notices": [
+    {
+      "title": "Nuevo tag vehicular de residentes en Natura",
+      "content": "A partir del lunes se requiere el nuevo tag RFID con chip para acceso automatizado por la pluma.",
+      "type": "comunicado_oficial",
+      "community_slug": "natura-bosque-residencial",
+      "contact_whatsapp": "+523315550999",
+      "is_official": true,
+      "days_valid": 20,
+      "status": "active"
+    },
+    {
+      "title": "Perrito Schnauzer gris extraviado cerca de El Fortín",
+      "content": "Responde a 'Max', llevaba collar azul con placa. Si lo viste por favor comunícate a caseta o vía WhatsApp.",
+      "type": "mascota_perdida",
+      "community_slug": "el-fortin",
+      "contact_whatsapp": "+523318889901",
+      "is_official": false,
+      "days_valid": 14,
+      "status": "active"
+    },
+    {
+      "title": "Se solicita apoyo para jardinería y mantenimiento",
+      "content": "Para áreas comunes de coto privado 3 días a la semana. Enviar mensaje por WhatsApp con referencias.",
+      "type": "empleo_local",
+      "community_slug": "los-robles",
+      "contact_whatsapp": "+523318889902",
+      "is_official": false,
+      "days_valid": 12,
+      "status": "active"
+    }
+  ]
+}

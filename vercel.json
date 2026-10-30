@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama|Dr\\. Jairo Dominguez)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|AMDI-preview|urologia-avanzada|GrupoGari|uro-oncology|IEER|Pumpapa|JessicaMendoza|Letrerama|Dr\\. Jairo Dominguez)/'",
   "functions": {
     "api/**/*.py": {
       "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}",
@@ -562,6 +562,19 @@
       "dest": "/projects/AMDI/$1"
     },
     {
+      "src": "/amdi-preview",
+      "status": 308,
+      "headers": { "Location": "/amdi-preview/" }
+    },
+    {
+      "src": "/amdi-preview/",
+      "dest": "/projects/AMDI-preview/"
+    },
+    {
+      "src": "/amdi-preview/(.*)",
+      "dest": "/projects/AMDI-preview/$1"
+    },
+    {
       "src": "/urologia-avanzada",
       "status": 308,
       "headers": { "Location": "/urologia-avanzada/" }
@@ -743,6 +756,45 @@
     {
       "src": "/jairo-dominguez/(.*)",
       "dest": "/projects/Dr. Jairo Dominguez/$1"
+    },
+    {
+      "src": "/epicentro",
+      "status": 308,
+      "headers": { "Location": "/epicentro/" }
+    },
+    {
+      "src": "/epicentro/",
+      "dest": "/projects/Epicentro/index.html"
+    },
+    {
+      "src": "/epicentro/natura",
+      "status": 308,
+      "headers": { "Location": "/epicentro/natura/" }
+    },
+    {
+      "src": "/epicentro/natura/",
+      "dest": "/projects/EpicentroNatura/index.html"
+    },
+    {
+      "src": "/epicentro/natura/categoria",
+      "dest": "/projects/EpicentroNatura/categoria.html"
+    },
+    {
+      "src": "/epicentro/natura/cultura-natura",
+      "dest": "/projects/EpicentroNatura/cultura-natura.html"
+    },
+    {
+      "src": "/epicentro/natura/comunidad-natura",
+      "dest": "/projects/EpicentroNatura/comunidad-natura.html"
+    },
+    {
+      "src": "/epicentro/natura/(.*)",
+      "dest": "/projects/EpicentroNatura/$1"
+    },
+    {
+      "src": "/(epicentro-natura|EpicentroNatura)",
+      "status": 301,
+      "headers": { "Location": "/epicentro/natura/" }
     },
     {
       "handle": "filesystem"

@@ -1,0 +1,67 @@
+# Epicentro Natura - Directorio Hiperlocal y Comercial
+
+> Guía comercial hiperlocal de cotos en Natura Bosque Residencial, Prolongación Mariano Otero, Los Robles, El Fortín y zonas aledañas en Zapopan, Jalisco, México.
+
+Epicentro Natura promueve la economía de proximidad, pedidos directos por WhatsApp sin comisiones abusivas de plataformas intermediarias, y entregas limpias con distintivo "Km 0" (cero emisiones en bicicleta eléctrica o a pie).
+
+## Cobertura Geográfica
+- Natura Bosque Residencial (Epicentro del corredor)
+- Los Robles
+- Bosque de la Primavera
+- El Fortín
+- Luna Bosque
+- La Granja
+- Puerta del Bosque
+- Punta de Otero
+- Monte Verde
+- Misión la Floresta
+
+## Categorías de Servicios y Comercios
+
+### 1. Comida y Delivery
+- **Taquería El Pastor de Otero**: Tacos al pastor al carbón, gringas, volcanes y aguas frescas. Local establecido en Av. Prolongación Mariano Otero #4320. Pedidos: Tel / WhatsApp 33 2145 6789.
+- **Pizzas a la Leña Coto Roble**: Masa madre fermentada 48 hrs, quesos artesanales e ingredientes de huerto local. Emprendimiento Km 0. Pedidos: WhatsApp 33 4567 8901.
+
+### 2. Farmacias
+- **Farmacia Mariano Otero 24 Horas**: Medicamentos de patente y genéricos, servicio nocturno a caseta de cotos. Av. Prol. Mariano Otero #4010. Tel / WhatsApp 33 5678 9012.
+
+### 3. Mascotas
+- **Pet Shop & Estética Canina Natura**: Baño con ozono, corte de raza, alimentos premium y accesorios para perros y gatos. Av. Los Robles #220. Tel / WhatsApp 33 6789 0123.
+
+### 4. Postres y Café
+- **Repostería Artesanal Dulce Bosque**: Tartas rústicas, brownies y repostería casera para eventos vecinales. Emprendimiento Km 0. Pedidos: WhatsApp 33 7890 1234.
+
+### 5. Productos Artesanales
+- **Velas & Jabones Botánicos La Primavera**: Productos aromáticos 100% biodegradables y veganos con extractos naturales del bosque. Emprendimiento Km 0. Pedidos: WhatsApp 33 8901 2345.
+
+### 6. Servicios Hogar
+- **VoltTech Electricistas & Plomería Exprés**: Instalación de lámparas, cortocircuitos, bombas de agua y mantenimiento urgente para casas de coto. Servicios profesionales. WhatsApp 33 9012 3456.
+- **AquaClean Lavado Ecológico en Cochera**: Carwash a domicilio con productos biodegradables y lavado en seco en la cochera de tu coto. Emprendimiento Km 0. WhatsApp 33 0123 4567.
+
+### 7. Atención Médica
+- **Consultorio Dra. Sandra Morales**: Médico Cirujano y Partero por la UdeG. Consulta general, control de diabetes y recetas médicas a domicilio. Servicios profesionales. Tel / WhatsApp 33 1122 3344.
+
+### 8. Veterinarias
+- **Clínica Veterinaria Bosque Vivo**: Cirugía, rayos X, laboratorio y medicina preventiva para mascotas. C. Paseo de las Flores #102. Tel / WhatsApp 33 2233 4455.
+
+### 9. Clases Particulares
+- **Clases de Matemáticas & Física Ing. Alejandro Ruiz**: Asesoría para secundaria, preparatoria y exámenes de admisión universitaria. Servicios profesionales. WhatsApp 33 3344 5566.
+- **Sesiones de Yoga & Mindfulness en Terraza**: Clases matutinas y vespertinas al aire libre frente al bosque. Emprendimiento Km 0. WhatsApp 33 4455 6677.
+
+### 10. Fitness
+- **VitalFit Studio Natura**: Entrenamiento funcional, indoor cycling, acondicionamiento y coaching nutricional en coto. Local establecido. Tel / WhatsApp 33 5566 7788.
+- **Coach David - Entrenamiento Cero Emisiones**: Entrenador personal a domicilio que se traslada en bicicleta eléctrica por todos los cotos. Emprendimiento Km 0. WhatsApp 33 6677 8899.
+
+### 11. Escuelas
+- **Instituto Tepeyac Campus Mariano Otero**: Educación bilingüe desde Maternal hasta Preparatoria. Vanguardia pedagógica, canchas deportivas, laboratorios y transporte escolar en cotos. Local establecido en Prol. Mariano Otero #4200. Tel / WhatsApp 33 1555 0320.
+- **Colegio Finlandés - Campus Bosque**: Metodología activa nórdica centrada en el bienestar infantil, bilingüe, aulas al aire libre frente al bosque, Preescolar y Primaria. Local establecido en Av. Los Robles #310. Tel / WhatsApp 33 1555 0321. Distintivo Km 0 por rutas peatonales y ciclistas seguras.
+
+### 12. Hogar
+- **Persianas, Toldos & Cancelería Natura**: Fabricación e instalación de persianas sheer elegance, blackout, toldos retráctiles, mosquiteros y canceles de baño en cristal templado para casas de coto. Local establecido en Plaza Natura Local 5. Tel / WhatsApp 33 1555 0330.
+- **Vivero & Jardines Paisajismo Bosque Vivo**: Plantas de ornato, pasto en rollo, suculentas, macetas de autor y mantenimiento de jardinería para cocheras y terrazas en cotos privados. Emprendimiento Km 0 con traslado ecológico en bici de carga sin emisiones. WhatsApp 33 1555 0331.
+
+## Enlaces del Directorio
+- Portada y Sliders Comerciales: https://hipha.mx/EpicentroNatura/index.html
+- Explorador Dinámico con Geolocalización: https://hipha.mx/EpicentroNatura/categoria.html
+- Casa de la Cultura Natura (Agenda y Talleres): https://hipha.mx/EpicentroNatura/cultura-natura.html
+- Comunidad Natura (Tablero y Avisos Vecinales): https://hipha.mx/EpicentroNatura/comunidad-natura.html

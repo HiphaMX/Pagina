@@ -1,0 +1,1046 @@
+/* ==========================================================================
+   AMDI ARCHITECTURAL & EDITORIAL STYLESHEET (v2 - ESTUDIO BANG INSPIRATION)
+   Preview Environment for AMDI (Adriana Medina Diseño Interior)
+   ========================================================================== */
+
+:root {
+  --amdi-bg: #fafaf8;
+  --amdi-surface: #ffffff;
+  --amdi-surface-alt: #f3f3ef;
+  --amdi-ink: #141414;
+  --amdi-ink-secondary: #2b2b29;
+  --amdi-muted: #72726c;
+  --amdi-light-muted: #9e9e96;
+  --amdi-border: rgba(20, 20, 20, 0.12);
+  --amdi-border-light: rgba(20, 20, 20, 0.06);
+  --amdi-accent: #c49a6c;
+  --amdi-accent-dark: #9f7547;
+  --amdi-accent-subtle: #f5ede4;
+  
+  --font-serif: "PPEditorialNew", "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Neue Haas Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 9999px;
+  
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+  --transition-fast: 0.2s var(--ease-out-expo);
+  --transition-normal: 0.35s var(--ease-out-expo);
+  --transition-slow: 0.6s var(--ease-out-expo);
+}
+
+/* Reset / Global Editorial Canvas */
+body.amdi-editorial-theme {
+  background-color: var(--amdi-bg) !important;
+  color: var(--amdi-ink) !important;
+  font-family: var(--font-sans) !important;
+  letter-spacing: -0.015em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body.amdi-editorial-theme * {
+  box-sizing: border-box;
+}
+
+/* Typography Presets */
+.amdi-mono-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--amdi-muted);
+}
+
+.amdi-serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Preview Environment Floating Banner */
+.amdi-preview-banner {
+  background: #141414;
+  color: #fafaf8;
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 10001;
+}
+
+.amdi-preview-banner a {
+  color: #c49a6c;
+  text-decoration: underline;
+  margin-left: 12px;
+}
+
+.amdi-preview-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.amdi-preview-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: amdiPulse 2s infinite;
+}
+
+@keyframes amdiPulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================================================================
+   MINIMALIST EDITORIAL HEADER / NAV CHROME (Estudio Bang Style)
+   ========================================================================== */
+.amdi-chrome {
+  position: sticky;
+  top: 33px; /* sits right below preview banner */
+  z-index: 9999;
+  background-color: rgba(250, 250, 248, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--amdi-border);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.amdi-chrome-inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.amdi-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.amdi-logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.amdi-brand-logo {
+  height: 32px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.amdi-clock-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--amdi-muted);
+  background: rgba(20, 20, 20, 0.04);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--amdi-border-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.amdi-clock-pill .time-val {
+  font-weight: 600;
+  color: var(--amdi-ink);
+}
+
+.amdi-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.amdi-nav-link {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--amdi-ink-secondary);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  position: relative;
+  padding: 4px 0;
+  transition: color var(--transition-fast);
+}
+
+.amdi-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1.5px;
+  background-color: var(--amdi-ink);
+  transition: width var(--transition-normal);
+}
+
+.amdi-nav-link:hover,
+.amdi-nav-link.active {
+  color: var(--amdi-ink);
+}
+
+.amdi-nav-link:hover::after,
+.amdi-nav-link.active::after {
+  width: 100%;
+}
+
+.amdi-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.amdi-btn-editorial {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition-normal);
+  cursor: pointer;
+  border: none;
+}
+
+.amdi-btn-editorial-dark {
+  background-color: var(--amdi-ink);
+  color: #fafaf8;
+  border: 1px solid var(--amdi-ink);
+}
+
+.amdi-btn-editorial-dark:hover {
+  background-color: transparent;
+  color: var(--amdi-ink);
+  transform: translateY(-1px);
+}
+
+.amdi-btn-editorial-outline {
+  background-color: transparent;
+  color: var(--amdi-ink);
+  border: 1px solid var(--amdi-border);
+}
+
+.amdi-btn-editorial-outline:hover {
+  background-color: var(--amdi-ink);
+  color: #fafaf8;
+  border-color: var(--amdi-ink);
+}
+
+.amdi-mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* ==========================================================================
+   HERO EDITORIAL SECTION (Fase 1: Home)
+   ========================================================================== */
+.amdi-hero-editorial {
+  padding: 72px 32px 48px;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.amdi-hero-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--amdi-border);
+  padding-bottom: 16px;
+  margin-bottom: 40px;
+}
+
+.amdi-hero-headline-wrap {
+  margin-bottom: 56px;
+}
+
+.amdi-hero-headline {
+  font-family: var(--font-sans);
+  font-size: clamp(2.5rem, 5.2vw, 5.4rem);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: var(--amdi-ink);
+  max-width: 1200px;
+  margin: 0 0 32px;
+}
+
+.amdi-hero-headline strong {
+  font-weight: 500;
+  color: var(--amdi-ink);
+}
+
+.amdi-hero-headline em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.amdi-hero-sub-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 48px;
+  align-items: start;
+  padding-top: 16px;
+}
+
+.amdi-hero-desc {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--amdi-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+.amdi-hero-desc strong {
+  color: var(--amdi-ink);
+  font-weight: 500;
+}
+
+.amdi-hero-credentials {
+  display: flex;
+  gap: 40px;
+  justify-content: flex-end;
+}
+
+.amdi-credential-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.amdi-credential-number {
+  font-family: var(--font-sans);
+  font-size: 2.4rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--amdi-ink);
+}
+
+.amdi-credential-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--amdi-muted);
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+}
+
+/* ==========================================================================
+   INTERACTIVE PREVIEW STRIP (Direct Estudio Bang Reference)
+   ========================================================================== */
+.amdi-preview-strip-section {
+  max-width: 1480px;
+  margin: 0 auto 80px;
+  padding: 0 32px;
+}
+
+.amdi-strip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.amdi-strip-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.amdi-strip-item {
+  background: var(--amdi-surface);
+  border: 1px solid var(--amdi-border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.amdi-strip-item:hover {
+  transform: translateY(-4px);
+  border-color: var(--amdi-ink);
+  box-shadow: 0 16px 32px rgba(20, 20, 20, 0.06);
+}
+
+.amdi-strip-thumb-wrap {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background-color: var(--amdi-surface-alt);
+  position: relative;
+}
+
+.amdi-strip-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.amdi-strip-item:hover .amdi-strip-thumb {
+  transform: scale(1.05);
+}
+
+.amdi-strip-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--amdi-muted);
+  text-transform: uppercase;
+}
+
+.amdi-strip-title {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--amdi-ink);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.amdi-strip-arrow {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all var(--transition-fast);
+}
+
+.amdi-strip-item:hover .amdi-strip-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   CURATED ASYMMETRIC SHOWCASE (Home Editorial Grid)
+   ========================================================================== */
+.amdi-curated-section {
+  max-width: 1480px;
+  margin: 0 auto 100px;
+  padding: 0 32px;
+}
+
+.amdi-section-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-top: 1px solid var(--amdi-border);
+  padding-top: 24px;
+  margin-bottom: 40px;
+}
+
+.amdi-section-title {
+  font-family: var(--font-sans);
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.amdi-curated-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+}
+
+.amdi-curated-hero-card {
+  position: relative;
+  background: var(--amdi-surface);
+  border: 1px solid var(--amdi-border);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.amdi-curated-img-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background: var(--amdi-surface-alt);
+}
+
+.amdi-curated-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+
+.amdi-curated-hero-card:hover img {
+  transform: scale(1.03);
+}
+
+.amdi-curated-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.amdi-material-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.amdi-chip {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  background: var(--amdi-surface-alt);
+  border: 1px solid var(--amdi-border-light);
+  border-radius: var(--radius-pill);
+  color: var(--amdi-ink-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.amdi-swatch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.amdi-curated-col {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.amdi-curated-subcard {
+  background: var(--amdi-surface);
+  border: 1px solid var(--amdi-border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.amdi-curated-subcard:hover {
+  transform: translateY(-3px);
+  border-color: var(--amdi-ink);
+}
+
+.amdi-subcard-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-xs);
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   EDITORIAL METHODOLOGY / 3 STAGES
+   ========================================================================== */
+.amdi-method-section {
+  background-color: var(--amdi-ink);
+  color: #fafaf8;
+  padding: 100px 32px;
+  margin-bottom: 80px;
+}
+
+.amdi-method-inner {
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.amdi-method-header {
+  margin-bottom: 64px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 24px;
+}
+
+.amdi-method-header h2 {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 3.8vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: #fafaf8;
+}
+
+.amdi-method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.amdi-method-card {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.amdi-method-num {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--amdi-accent);
+  letter-spacing: 0.08em;
+}
+
+.amdi-method-title {
+  font-family: var(--font-sans);
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #fafaf8;
+}
+
+.amdi-method-text {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #b0b0a8;
+  margin: 0;
+}
+
+/* ==========================================================================
+   LE CORBUSIER MANIFESTO STATEMENT
+   ========================================================================== */
+.amdi-manifesto-section {
+  max-width: 1100px;
+  margin: 0 auto 100px;
+  padding: 60px 32px;
+  text-align: center;
+}
+
+.amdi-manifesto-quote {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  font-style: italic;
+  line-height: 1.3;
+  color: var(--amdi-ink);
+  margin: 0 0 24px;
+}
+
+.amdi-manifesto-author {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amdi-muted);
+}
+
+/* ==========================================================================
+   FASE 2: PROYECTOS MOSAICO & MOODBOARD (proyectos.html)
+   ========================================================================== */
+.amdi-projects-hero {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 64px 32px 32px;
+}
+
+.amdi-filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--amdi-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.amdi-filters-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.amdi-filter-pill {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--amdi-border);
+  background: var(--amdi-surface);
+  color: var(--amdi-ink-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.amdi-filter-pill:hover,
+.amdi-filter-pill.active {
+  background: var(--amdi-ink);
+  color: #fafaf8;
+  border-color: var(--amdi-ink);
+}
+
+/* Asymmetric Mosaic Grid */
+.amdi-mosaic-container {
+  max-width: 1480px;
+  margin: 40px auto 120px;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 28px;
+}
+
+.amdi-mosaic-card {
+  position: relative;
+  background: var(--amdi-surface);
+  border: 1px solid var(--amdi-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+  cursor: pointer;
+}
+
+.amdi-mosaic-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--amdi-ink);
+  box-shadow: 0 20px 40px rgba(20, 20, 20, 0.08);
+}
+
+/* Column Spans for Asymmetry */
+.amdi-span-8 { grid-column: span 8; }
+.amdi-span-4 { grid-column: span 4; }
+.amdi-span-6 { grid-column: span 6; }
+.amdi-span-12 { grid-column: span 12; }
+.amdi-span-7 { grid-column: span 7; }
+.amdi-span-5 { grid-column: span 5; }
+
+.amdi-mosaic-media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--amdi-surface-alt);
+}
+
+.amdi-aspect-hero { aspect-ratio: 16 / 10; }
+.amdi-aspect-tall { aspect-ratio: 4 / 5; }
+.amdi-aspect-wide { aspect-ratio: 16 / 9; }
+.amdi-aspect-square { aspect-ratio: 1 / 1; }
+
+.amdi-mosaic-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+.amdi-mosaic-card:hover .amdi-mosaic-media img {
+  transform: scale(1.04);
+}
+
+/* Moodboard Overlays & Badges */
+.amdi-moodboard-complement {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(250, 250, 248, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.amdi-moodboard-complement span {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--amdi-ink);
+  font-weight: 500;
+}
+
+.amdi-mosaic-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.amdi-mosaic-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.amdi-mosaic-title {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--amdi-ink);
+  margin: 0;
+}
+
+.amdi-mosaic-summary {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--amdi-muted);
+  margin: 0;
+}
+
+.amdi-mosaic-swatches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--amdi-border-light);
+}
+
+/* ==========================================================================
+   QUICK-VIEW PROJECT DRAWER / MODAL
+   ========================================================================== */
+.amdi-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 100000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s ease;
+}
+
+.amdi-drawer-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.amdi-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(880px, 92vw);
+  background: var(--amdi-bg);
+  z-index: 100001;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform 0.45s var(--ease-out-expo);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.amdi-drawer.active {
+  transform: translateX(0);
+}
+
+.amdi-drawer-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--amdi-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: rgba(250, 250, 248, 0.94);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.amdi-drawer-close {
+  background: transparent;
+  border: 1px solid var(--amdi-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--amdi-ink);
+  transition: all var(--transition-fast);
+}
+
+.amdi-drawer-close:hover {
+  background: var(--amdi-ink);
+  color: #fafaf8;
+}
+
+.amdi-drawer-content {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.amdi-drawer-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.amdi-drawer-img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--amdi-border);
+}
+
+.amdi-palette-board {
+  background: var(--amdi-surface);
+  border: 1px solid var(--amdi-border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+
+.amdi-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.amdi-palette-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.amdi-palette-swatch {
+  height: 54px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(20, 20, 20, 0.1);
+}
+
+.amdi-palette-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--amdi-ink);
+}
+
+.amdi-palette-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--amdi-muted);
+}
+
+/* ==========================================================================
+   RESPONSIVE QUERIES
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .amdi-strip-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .amdi-curated-grid {
+    grid-template-columns: 1fr;
+  }
+  .amdi-method-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .amdi-hero-sub-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .amdi-hero-credentials {
+    justify-content: flex-start;
+  }
+  .amdi-span-8, .amdi-span-7, .amdi-span-6, .amdi-span-5 {
+    grid-column: span 12;
+  }
+  .amdi-span-4 {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 768px) {
+  .amdi-chrome-inner {
+    padding: 14px 20px;
+  }
+  .amdi-nav-links {
+    display: none;
+  }
+  .amdi-mobile-menu-btn {
+    display: block;
+  }
+  .amdi-hero-editorial {
+    padding: 40px 20px 32px;
+  }
+  .amdi-preview-strip-section,
+  .amdi-curated-section,
+  .amdi-projects-hero,
+  .amdi-mosaic-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .amdi-strip-container {
+    grid-template-columns: 1fr;
+  }
+  .amdi-span-4 {
+    grid-column: span 12;
+  }
+  .amdi-mosaic-container {
+    gap: 20px;
+  }
+}

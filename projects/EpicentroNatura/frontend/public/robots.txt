@@ -1,0 +1,22 @@
+# robots.txt for Epicentro Natura - Zapopan, Jalisco
+User-agent: *
+Allow: /
+
+# GEO Grounding & AI Agents
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Sitemaps and LLMs Index
+Sitemap: https://hipha.mx/EpicentroNatura/sitemap.xml

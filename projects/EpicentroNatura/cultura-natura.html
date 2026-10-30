@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cultura Natura | Casa de la Cultura y Agenda Artística en Parque Central | Epicentro Natura</title>
+  <meta name="description" content="Agenda cultural, cartelera de eventos al aire libre, talleres infantiles de barro, cine bajo las estrellas y clases en la Casa de la Cultura Natura y Parque Central, Zapopan.">
+  <meta name="robots" content="index, follow">
+  
+  <!-- OPEN GRAPH / SOCIAL -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Cultura Natura | Casa de la Cultura & Eventos en Parque Central">
+  <meta property="og:description" content="Descubre la oferta cultural, talleres artísticos, cine vecinal y actividades comunitarias en Natura Bosque Residencial.">
+  <meta property="og:locale" content="es_MX">
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- TAILWIND CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              emerald: '#059669',
+              forest: '#064e3b',
+              mint: '#34d399',
+              softMint: '#ecfdf5',
+              slate: '#1e293b',
+              black: '#090d0b',
+              vibrant: '#10b981',
+              amber: '#b45309',
+              warmAmber: '#fef3c7',
+            },
+            snow: {
+              100: '#ffffff',
+              200: '#f8fafc',
+              300: '#f1f5f9',
+              400: '#e2e8f0',
+              500: '#cbd5e1'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          boxShadow: {
+            'rappi-card': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02)',
+            'rappi-hover': '0 12px 30px -4px rgba(180, 83, 9, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- LUCIDE ICONS CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- SCHEMA.ORG JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Cartelera Casa de la Cultura Natura",
+    "description": "Actividades artísticas, talleres y cine al aire libre en Parque Central Natura",
+    "itemListElement": [
+      {
+        "@type": "Event",
+        "name": "Taller Infantil de Barro & Pintura Botánica",
+        "startDate": "2026-11-08T11:00:00-06:00",
+        "location": {
+          "@type": "Place",
+          "name": "Kiosco Parque Central Natura",
+          "address": "Prolongación Mariano Otero, Zapopan, Jalisco"
+        }
+      },
+      {
+        "@type": "Event",
+        "name": "Noche de Cine Vecinal al Aire Libre",
+        "startDate": "2026-11-15T19:30:00-06:00",
+        "location": {
+          "@type": "Place",
+          "name": "Explanada Verde Parque Central",
+          "address": "Prolongación Mariano Otero, Zapopan, Jalisco"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .cat-filter-btn.is-active {
+      background-color: #090d0b !important;
+      color: #ffffff !important;
+      border-color: #090d0b !important;
+    }
+    .cat-filter-btn.is-active:hover {
+      background-color: #1e2923 !important;
+    }
+    .cat-filter-btn:not(.is-active) {
+      background-color: #ffffff !important;
+      color: #334155 !important;
+      border-color: #e2e8f0 !important;
+    }
+    .cat-filter-btn:not(.is-active):hover {
+      background-color: #fef3c7 !important;
+      color: #b45309 !important;
+      border-color: #fde68a !important;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-snow-200 text-slate-900 font-sans flex flex-col antialiased selection:bg-amber-500 selection:text-white">
+
+  <!-- TOP BAR COMUNITARIA -->
+  <aside class="bg-slate-950 text-white text-xs py-2 px-4 border-b border-slate-800 text-center">
+    <div class="max-w-7xl mx-auto flex items-center justify-center">
+      <span class="font-extrabold tracking-wide text-xs">Comunidad Epicentro Natura</span>
+    </div>
+  </aside>
+
+  <!-- HEADER / NAVBAR -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-snow-400 shadow-2xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-3">
+        
+        <!-- LOGO -->
+        <a href="index.html" class="flex items-center gap-2 group shrink-0" title="Ir a la portada de Epicentro Natura">
+          <div class="w-10 h-10 rounded-2xl bg-amber-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-amber-600/20 group-hover:scale-105 transition-transform">
+            <i data-lucide="palette" class="w-5 h-5"></i>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-1.5">
+              <span class="text-lg font-black tracking-tight text-slate-950">Epicentro</span>
+              <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/40">natura</span>
+            </div>
+            <span class="text-[10px] font-semibold text-slate-500">Cultura Natura</span>
+          </div>
+        </a>
+
+        <!-- ACCIONES RÁPIDAS -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a href="comunidad-natura.html" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors">
+            <i data-lucide="megaphone" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span class="hidden sm:inline">Comunidad Natura</span>
+            <span class="sm:hidden">Avisos</span>
+          </a>
+          <a href="categoria.html?cat=all" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors">
+            <i data-lucide="store" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span class="hidden sm:inline">Directorio Comercial</span>
+            <span class="sm:hidden">Directorio</span>
+          </a>
+          <a href="index.html" class="inline-flex items-center gap-1 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-slate-950 hover:bg-slate-800 transition-all shadow-xs">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span class="hidden md:inline">Inicio</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- BREADCRUMBS -->
+    <nav class="flex items-center gap-2 text-xs font-medium text-slate-500 py-1" aria-label="Breadcrumb">
+      <a href="index.html" class="hover:text-amber-700 transition-colors flex items-center gap-1">
+        <i data-lucide="home" class="w-3.5 h-3.5"></i>
+        <span>Inicio</span>
+      </a>
+      <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
+      <span class="font-bold text-slate-900">Cultura Natura</span>
+    </nav>
+
+    <!-- MEGA HERO DE CULTURA NATURA -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-950 via-slate-950 to-slate-900 text-white p-8 sm:p-12 border border-amber-900/40 shadow-2xl">
+      <!-- Decorative Glow -->
+      <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-amber-500/15 blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-3xl space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold tracking-wide">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+          <span>ESPACIO CULTURAL COMUNITARIO · PARQUE CENTRAL</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white">
+          Cultura Natura
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+          El punto de encuentro artístico, recreativo y formativo para familias y vecinos de Natura Bosque Residencial, Los Robles y Prolongación Mariano Otero. Talleres semanales, cine al aire libre y actividades al pie del bosque.
+        </p>
+
+        <div class="pt-2 flex flex-wrap items-center gap-3">
+          <button onclick="document.getElementById('cartelera-section').scrollIntoView({behavior: 'smooth'})" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all active:scale-95">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+            <span>Ver Cartelera de Eventos</span>
+          </button>
+          <button onclick="openProposeModal()" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 backdrop-blur-md transition-all active:scale-95">
+            <i data-lucide="plus-circle" class="w-4 h-4 text-amber-300"></i>
+            <span>Proponer un Taller o Clase</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE CARTELERA CULTURAL -->
+    <section id="cartelera-section" class="space-y-6">
+      
+      <!-- ENCABEZADO Y FILTROS POR CATEGORÍA CULTURAL -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-snow-400 pb-4">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight flex items-center gap-2">
+            <i data-lucide="palette" class="w-6 h-6 text-amber-600"></i>
+            <span>Cartelera de Actividades & Talleres</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">
+            Reserva tu lugar gratuito o de aportación simbólica para ti y tu familia.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span id="events-count-badge" class="text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+            6 actividades activas
+          </span>
+        </div>
+      </div>
+
+      <!-- BOTONES DE FILTRO -->
+      <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+        <button onclick="setCategoryFilter('all')" id="btn-all" class="cat-filter-btn is-active px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
+          Todos los Eventos
+        </button>
+        <button onclick="setCategoryFilter('Talleres Infantiles & Juveniles')" id="btn-infantiles" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
+          🎨 Talleres Infantiles
+        </button>
+        <button onclick="setCategoryFilter('Cine al Aire Libre')" id="btn-cine" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
+          🎬 Cine al Aire Libre
+        </button>
+        <button onclick="setCategoryFilter('Danza y Música')" id="btn-musica" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
+          🎵 Danza y Música
+        </button>
+        <button onclick="setCategoryFilter('Clases Formativas')" id="btn-formativas" class="cat-filter-btn px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
+          🌱 Huertos & Clases
+        </button>
+      </div>
+
+      <!-- GRID DE EVENTOS CULTURALES -->
+      <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Generado dinámicamente por JavaScript -->
+      </div>
+    </section>
+
+    <!-- BANNER: ¿ERES ARTISTA O TALLERISTA LOCAL? -->
+    <section class="rounded-3xl bg-white border border-snow-400 p-8 sm:p-10 shadow-rappi-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 max-w-xl">
+        <span class="text-[11px] font-mono font-extrabold uppercase tracking-widest text-amber-700 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
+          CONVOCATORIA ABIERTA
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+          ¿Impartes clases, talleres de arte o música?
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          La Casa de la Cultura Natura y las terrazas del Parque Central están abiertas a propuestas de residentes y talleristas profesionales para enriquecer la vida comunitaria.
+        </p>
+      </div>
+      <button onclick="openProposeModal()" class="shrink-0 px-6 py-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm transition-all shadow-md active:scale-95">
+        Proponer una Actividad
+      </button>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE RESERVA / INSCRIPCIÓN -->
+  <div id="rsvp-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-snow-400 shadow-2xl relative">
+      <button onclick="closeRsvpModal()" class="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-snow-300 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+          <i data-lucide="calendar-check" class="w-6 h-6 stroke-[2.2]"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">RESERVA DE ASISTENCIA</span>
+          <h3 id="rsvp-modal-title" class="text-base font-black text-slate-950 leading-tight">Título del Evento</h3>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-snow-300 text-xs text-slate-700 space-y-1.5 mb-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span id="rsvp-modal-datetime" class="font-bold">Fecha</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span id="rsvp-modal-location">Ubicación</span>
+        </div>
+      </div>
+
+      <form onsubmit="handleRsvpSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1">Nombre Completo del Asistente *</label>
+          <input type="text" id="rsvp-name" required placeholder="Ej. Ana Sofía Martínez" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Coto de Residencia *</label>
+            <input type="text" id="rsvp-coto" required placeholder="Ej. Natura Coto Roble" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">No. Asistentes *</label>
+            <select id="rsvp-count" class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs bg-white">
+              <option value="1">1 persona</option>
+              <option value="2">2 personas</option>
+              <option value="3">3 personas</option>
+              <option value="4">4 personas</option>
+              <option value="5+">5 o más</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1">Teléfono / WhatsApp de Confirmación *</label>
+          <input type="tel" id="rsvp-phone" required placeholder="33 1234 5678" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden">
+        </div>
+
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900">
+          🌿 Te enviaremos un mensaje de confirmación por WhatsApp antes de la actividad.
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs shadow-md transition-all active:scale-95">
+          Confirmar Lugar en Cartelera
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE PROPONER ACTIVIDAD -->
+  <div id="propose-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-snow-400 shadow-2xl relative">
+      <button onclick="closeProposeModal()" class="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-snow-300 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+          <i data-lucide="sparkles" class="w-6 h-6 stroke-[2.2]"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">CONVOCATORIA CULTURAL</span>
+          <h3 class="text-base sm:text-lg font-black text-slate-950">Proponer Taller o Actividad</h3>
+        </div>
+      </div>
+
+      <form onsubmit="handleProposeSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1">Nombre de la Actividad o Taller *</label>
+          <input type="text" required placeholder="Ej. Taller de Acuarela Inicial / Club de Ajedrez" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Público Objetivo *</label>
+            <select class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs bg-white">
+              <option>Para niños (5-12)</option>
+              <option>Jóvenes y adultos</option>
+              <option>Adultos mayores</option>
+              <option>Toda la familia</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Espacio Sugerido *</label>
+            <select class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs bg-white">
+              <option>Kiosco Parque Central</option>
+              <option>Explanada Verde</option>
+              <option>Salón Polivalente</option>
+              <option>Jardín Botánico</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1">Descripción Breve del Taller *</label>
+          <textarea rows="3" required placeholder="Objetivo, materiales necesarios y dinámica de las sesiones..." class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1">WhatsApp del Instructor o Vecino *</label>
+          <input type="tel" required placeholder="33 1234 5678" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden">
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all active:scale-95">
+          Enviar Propuesta al Comité Cultural
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-brand-black text-white text-xs py-8 px-4 border-t border-brand-slate mt-12">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-base font-black text-white">Epicentro</span>
+        <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-brand-softMint text-brand-forest">natura</span>
+        <span class="text-slate-400 text-xs ml-2">© 2026 Plataforma Hiperlocal Comunitaria</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400 text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
+        <a href="categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
+        <a href="comunidad-natura.html" class="hover:text-white transition-colors">Comunidad Natura</a>
+        <a href="index.html#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT DE CARTELERA CULTURAL -->
+  <script>
+    const CULTURAL_EVENTS = [
+      {
+        id: "e1",
+        title: "Taller Infantil de Barro & Pintura Botánica",
+        category: "Talleres Infantiles & Juveniles",
+        datetime: "Sábado 08 · 11:00 a 13:00 hrs",
+        location: "Kiosco Parque Central Natura",
+        description: "Modelado con arcilla natural de la zona y acuarelas sobre caballete al aire libre.",
+        spots: 11,
+        instructor: "Colectivo Raíces del Bosque",
+        cost: "Gratuito con registro",
+        age: "Niños de 5 a 14 años",
+        badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+      },
+      {
+        id: "e2",
+        title: "Noche de Cine Vecinal al Aire Libre",
+        category: "Cine al Aire Libre",
+        datetime: "Sábado 15 · 19:30 hrs",
+        location: "Explanada Verde Parque Central",
+        description: "Proyección en pantalla gigante bajo las estrellas. Trae tu tapete o silla de camping. Palomitas de maíz gratuitas para niños de cotos.",
+        spots: 38,
+        instructor: "Comité Cultural Natura",
+        cost: "Gratuito",
+        age: "Todo público / Familiar",
+        badgeColor: "bg-rose-100 text-rose-800 border-rose-300"
+      },
+      {
+        id: "e3",
+        title: "Clases Semanales de Danza Folclórica & Ritmos",
+        category: "Danza y Música",
+        datetime: "Martes y Jueves · 17:00 hrs",
+        location: "Salón Polivalente Casa de Cultura",
+        description: "Grupos infantiles y de adultos mayores con instructores del Instituto de Cultura Zapopan.",
+        spots: 15,
+        instructor: "Mtra. Carmen Salcedo (ICZ)",
+        cost: "Aportación solidaria $30",
+        age: "Infantil (17:00) y Adultos (18:15)",
+        badgeColor: "bg-purple-100 text-purple-800 border-purple-300"
+      },
+      {
+        id: "e4",
+        title: "Taller de Huertos Urbanos y Compostaje en Casa",
+        category: "Clases Formativas",
+        datetime: "Domingo 16 · 10:00 hrs",
+        location: "Jardín Botánico del Parque Central",
+        description: "Aprende a cultivar hortalizas en espacios reducidos, control orgánico de plagas y elaboración de composta vecinal.",
+        spots: 20,
+        instructor: "Biol. Héctor Navarro",
+        cost: "Gratuito",
+        age: "Jóvenes y adultos",
+        badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
+      },
+      {
+        id: "e5",
+        title: "Ensamble Acústico al Atardecer: Cuerdas en el Bosque",
+        category: "Danza y Música",
+        datetime: "Domingo 23 · 18:00 hrs",
+        location: "Kiosco Parque Central Natura",
+        description: "Concierto íntimo con cuarteto de cuerdas interpretando música clásica y canciones mexicanas mientras cae el sol en el bosque.",
+        spots: 50,
+        instructor: "Ensamble Filarmónico Bosque de la Primavera",
+        cost: "Entrada libre",
+        age: "Todo público",
+        badgeColor: "bg-purple-100 text-purple-800 border-purple-300"
+      },
+      {
+        id: "e6",
+        title: "Círculo de Lectura y Creación Literaria Vecinal",
+        category: "Clases Formativas",
+        datetime: "Miércoles · 18:30 hrs",
+        location: "Terraza de la Casa de la Cultura",
+        description: "Lectura colectiva, análisis de cuentos contemporáneos y ejercicios guiados de redacción poética y narrativa.",
+        spots: 12,
+        instructor: "Lic. Claudia Morales",
+        cost: "Gratuito",
+        age: "A partir de 15 años",
+        badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300"
+      }
+    ];
+
+    let currentCategory = "all";
+    let selectedEventForRsvp = null;
+
+    function renderEvents() {
+      const filtered = currentCategory === "all" 
+        ? CULTURAL_EVENTS 
+        : CULTURAL_EVENTS.filter(e => e.category === currentCategory);
+
+      document.getElementById("events-count-badge").textContent = `${filtered.length} actividad${filtered.length === 1 ? '' : 'es'} activa${filtered.length === 1 ? '' : 's'}`;
+
+      const grid = document.getElementById("events-grid");
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-white rounded-3xl border border-snow-400 p-12 text-center">
+            <i data-lucide="palette" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+            <h4 class="text-base font-bold text-slate-800">No hay actividades en esta categoría por ahora</h4>
+            <p class="text-xs text-slate-500 mt-1">Selecciona 'Todos los Eventos' para ver toda la agenda.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      grid.innerHTML = filtered.map(ev => `
+        <div class="bg-white rounded-3xl border border-snow-400 p-6 sm:p-7 flex flex-col justify-between shadow-rappi-card hover:shadow-rappi-hover hover:border-amber-400 transition-all group">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-extrabold px-3 py-1 rounded-full border ${ev.badgeColor}">
+                ${ev.category}
+              </span>
+              <span class="text-xs font-extrabold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                ${ev.spots} cupos
+              </span>
+            </div>
+
+            <h3 class="text-lg font-black text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
+              ${ev.title}
+            </h3>
+
+            <p class="text-xs text-slate-600 leading-relaxed">
+              ${ev.description}
+            </p>
+
+            <div class="pt-3 border-t border-snow-300 space-y-1.5 text-xs text-slate-500">
+              <div class="flex items-center gap-2">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
+                <span class="font-bold text-slate-800">${ev.datetime}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
+                <span>${ev.location}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="user" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
+                <span>Imparte: <strong class="text-slate-700">${ev.instructor}</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="tag" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
+                <span class="text-emerald-700 font-extrabold">${ev.cost} · ${ev.age}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-5 mt-4 border-t border-snow-300">
+            <button onclick="openRsvpModal('${ev.id}')" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1.5">
+              <i data-lucide="ticket" class="w-4 h-4"></i>
+              <span>Inscribirse / Reservar Asistencia</span>
+            </button>
+          </div>
+        </div>
+      `).join("");
+
+      lucide.createIcons();
+    }
+
+    function setCategoryFilter(cat) {
+      currentCategory = cat;
+      document.querySelectorAll(".cat-filter-btn").forEach(btn => btn.classList.remove("is-active"));
+      if (cat === "all") document.getElementById("btn-all").classList.add("is-active");
+      if (cat === "Talleres Infantiles & Juveniles") document.getElementById("btn-infantiles").classList.add("is-active");
+      if (cat === "Cine al Aire Libre") document.getElementById("btn-cine").classList.add("is-active");
+      if (cat === "Danza y Música") document.getElementById("btn-musica").classList.add("is-active");
+      if (cat === "Clases Formativas") document.getElementById("btn-formativas").classList.add("is-active");
+      renderEvents();
+    }
+
+    function openRsvpModal(eventId) {
+      const ev = CULTURAL_EVENTS.find(e => e.id === eventId);
+      if (!ev) return;
+      selectedEventForRsvp = ev;
+      document.getElementById("rsvp-modal-title").textContent = ev.title;
+      document.getElementById("rsvp-modal-datetime").textContent = ev.datetime;
+      document.getElementById("rsvp-modal-location").textContent = ev.location;
+
+      const modal = document.getElementById("rsvp-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function closeRsvpModal() {
+      const modal = document.getElementById("rsvp-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function handleRsvpSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("rsvp-name").value;
+      const coto = document.getElementById("rsvp-coto").value;
+      const count = document.getElementById("rsvp-count").value;
+      alert(`¡Gracias ${name}! Tu lugar en "${selectedEventForRsvp.title}" (${count} asistencia(s), ${coto}) ha quedado reservado en Casa de la Cultura Natura.`);
+      closeRsvpModal();
+    }
+
+    function openProposeModal() {
+      const modal = document.getElementById("propose-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function closeProposeModal() {
+      const modal = document.getElementById("propose-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function handleProposeSubmit(e) {
+      e.preventDefault();
+      alert("¡Gracias por tu propuesta cultural! El Comité de la Casa de la Cultura Natura revisará los requerimientos de espacio y se pondrá en contacto por WhatsApp.");
+      closeProposeModal();
+    }
+
+    // INICIALIZACIÓN
+    window.addEventListener("DOMContentLoaded", () => {
+      renderEvents();
+    });
+  </script>
+</body>
+</html>

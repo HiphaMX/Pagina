@@ -81,10 +81,15 @@
             </a>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-7">
                 <a href="#soluciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Ecosistema de Soluciones</a>
                 <a href="#suscripciones" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Suscripciones</a>
                 <a href="#about" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Nuestra Raíz</a>
+                <a href="/epicentro" class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-500/50 px-3.5 py-1.5 rounded-full transition-all shadow-[0_0_15px_rgba(16,185,129,0.15)] group">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 group-hover:scale-125 transition-transform animate-pulse"></span>
+                    <span>Epicentro</span>
+                    <span class="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">RED</span>
+                </a>
                 <button onclick="openGeneralContact()" class="text-sm font-medium bg-gradient-to-r from-primary-600 to-fuchsia-600 hover:from-primary-500 hover:to-fuchsia-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(192,38,211,0.5)] hover:shadow-[0_0_30px_rgba(192,38,211,0.8)]">
                     Conecta con Nosotros
                 </button>
@@ -113,6 +118,13 @@
             <a href="#suscripciones" class="mobile-nav-link" onclick="closeMobileMenu()">Suscripciones</a>
             <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Nuestra Raíz</a>
             <a href="#valores" class="mobile-nav-link" onclick="closeMobileMenu()">Filosofía</a>
+            <a href="/epicentro" class="mobile-nav-link text-emerald-400 flex items-center justify-between" onclick="closeMobileMenu()">
+                <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Epicentro de Hiphas
+                </span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30">NUEVO</span>
+            </a>
             <button onclick="openGeneralContact(); closeMobileMenu();" class="mobile-nav-cta">
                 Conecta con Nosotros
                 <i class="ph-bold ph-arrow-right"></i>
