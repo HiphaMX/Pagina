@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query, Header
 from fastapi.responses import StreamingResponse, JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import desc, func, and_, or_
 from typing import Optional, List, Dict, Tuple, Any
 import io
@@ -2276,19 +2276,43 @@ def export_pdf_faltantes(
     effective_rfc = entity_cfg["rfc"]
     entity_name = entity_cfg["name"]
 
-    query = db.query(BankTransaction).filter(BankTransaction.account_rfc == effective_rfc)
+    query = db.query(BankTransaction).options(joinedload(BankTransaction.factura)).filter(BankTransaction.account_rfc == effective_rfc)
     if month:
         query = query.filter(BankTransaction.periodo_mes == month)
     txs = query.order_by(desc(BankTransaction.fecha), desc(BankTransaction.id)).all()
 
-    tx_list = [{
-        "fecha": t.fecha,
-        "concepto": t.concepto,
-        "tipo": t.tipo,
-        "monto": t.monto,
-        "status_conciliacion": t.status_conciliacion,
-        "nota_revision": t.nota_revision
-    } for t in txs]
+    # Pre-cargar cualquier CFDIInvoice por uuid_cfdi en caso de que t.factura sea None
+    missing_uuids = [t.uuid_cfdi for t in txs if t.uuid_cfdi and not t.factura]
+    fallback_map = {}
+    if missing_uuids:
+        invoices = db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_(missing_uuids)).all()
+        fallback_map = {inv.uuid: inv for inv in invoices}
+
+    tx_list = []
+    for t in txs:
+        inv = t.factura or (fallback_map.get(t.uuid_cfdi) if t.uuid_cfdi else None)
+        item = {
+            "id": t.id,
+            "fecha": t.fecha,
+            "concepto": t.concepto,
+            "tipo": t.tipo,
+            "monto": t.monto,
+            "status_conciliacion": t.status_conciliacion,
+            "nota_revision": t.nota_revision,
+            "uuid_cfdi": t.uuid_cfdi or (inv.uuid if inv else None),
+            "nombre_emisor": inv.nombre_emisor if inv else None,
+            "rfc_emisor": inv.rfc_emisor if inv else None,
+            "nombre_receptor": inv.nombre_receptor if inv else None,
+            "rfc_receptor": inv.rfc_receptor if inv else None,
+            "cfdi_total": inv.total if inv else None,
+            "cfdi_subtotal": inv.subtotal if inv else None,
+            "cfdi_iva": inv.iva_trasladado if inv else None,
+            "cfdi_metodo": inv.metodo_pago if inv else None,
+            "cfdi_forma": getattr(inv, "forma_pago", None) if inv else None,
+            "cfdi_concepto": inv.conceptos_resumen if inv else None,
+            "cfdi_fecha": inv.fecha_emision if inv else None,
+        }
+        tx_list.append(item)
 
     # 2. Facturas CFDI (XMLs) sueltas del mes (sin movimiento bancario ni comprobadas)
     start_dt = None
@@ -2338,7 +2362,7 @@ def export_pdf_faltantes(
     )
 
     clean_month = (month or 'Actual').replace('/', '-')
-    filename = f"Reporte_Faltantes_{entity_name}_{clean_month}.pdf"
+    filename = f"Reporte_Conciliacion_y_Faltantes_{entity_name}_{clean_month}.pdf"
     return StreamingResponse(
         io.BytesIO(pdf_bytes),
         media_type="application/pdf",

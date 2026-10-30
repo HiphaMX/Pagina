@@ -1,3 +1,4 @@
+import io
 import pytest
 from datetime import datetime
 from fastapi.testclient import TestClient
@@ -2540,6 +2541,82 @@ def test_export_pdf_faltantes_with_xmls_sueltos():
     assert res.headers["content-type"] == "application/pdf"
     assert res.content.startswith(b"%PDF")
     assert len(res.content) > 1000
+
+
+def test_pdf_report_includes_reconciled_movements_section():
+    """Valida que el reporte en PDF incluya la sección de movimientos bancarios conciliados con CFDI y sus folios fiscales."""
+    import pypdf
+
+    txs = [
+        {
+            "fecha": datetime(2026, 10, 15),
+            "concepto": "PAGO SERVICIO CLOUD AWS",
+            "tipo": "EGRESO",
+            "monto": 15800.50,
+            "status_conciliacion": "CONCILIADO",
+            "uuid_cfdi": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+            "nombre_emisor": "AMAZON WEB SERVICES MEXICO",
+            "rfc_emisor": "AWS190101XYZ",
+            "cfdi_total": 15800.50,
+            "cfdi_metodo": "PUE",
+            "cfdi_forma": "03",
+            "cfdi_concepto": "Servicios de infraestructura en la nube"
+        },
+        {
+            "fecha": datetime(2026, 10, 18),
+            "concepto": "DEPOSITO FACTURA CLIENTE ACME",
+            "tipo": "INGRESO",
+            "monto": 58000.00,
+            "status_conciliacion": "CONCILIADO",
+            "uuid_cfdi": "B2C3D4E5-F6A7-8901-BCDE-F12345678901",
+            "nombre_receptor": "ACME CORPORATION SA DE CV",
+            "rfc_receptor": "ACM900101ABC",
+            "cfdi_total": 58000.00,
+            "cfdi_metodo": "PPD",
+            "cfdi_forma": "99",
+            "cfdi_concepto": "Desarrollo web y consultoria mensual"
+        },
+        {
+            "fecha": datetime(2026, 10, 20),
+            "concepto": "RETIRO CAJERO AUTOMATICO BBVA",
+            "tipo": "EGRESO",
+            "monto": 3500.00,
+            "status_conciliacion": "SIN_CFDI"
+        }
+    ]
+
+    xmls = [
+        {
+            "uuid": "C3D4E5F6-A7B8-9012-CDEF-123456789012",
+            "fecha": datetime(2026, 10, 25),
+            "tipo": "EGRESO",
+            "rfc_emisor": "OFF950101999",
+            "nombre_emisor": "OFFICE DEPOT DE MEXICO",
+            "concepto": "Papeleria y consumibles",
+            "total": 1450.00,
+            "metodo_pago": "PUE",
+            "forma_pago": "04"
+        }
+    ]
+
+    pdf_bytes = generate_discrepancies_pdf(
+        transacciones=txs,
+        mes_label="HIPHA (DEGF851127TK1) - 2026-10",
+        facturas_sueltas=xmls,
+        entity_name="HIPHA"
+    )
+
+    assert pdf_bytes.startswith(b"%PDF")
+    reader = pypdf.PdfReader(io.BytesIO(pdf_bytes))
+    full_text = "\n".join([p.extract_text() for p in reader.pages])
+
+    assert "1. MOVIMIENTOS BANCARIOS CONCILIADOS CON FACTURA CFDI" in full_text
+    assert "AMAZON WEB SERVICES" in full_text
+    assert "ACME CORPORATION" in full_text
+    assert "A1B2C3D4-E5F6-7890-ABCD-EF1234567890" in full_text
+    assert "2. EGRESOS BANCARIOS SIN FACTURA CFDI" in full_text
+    assert "3. FACTURAS CFDI (XMLs) SUELTAS DEL MES" in full_text
+    assert "4. RECOMENDACIONES AUTOMATIZADAS DEL AGENTE" in full_text
 
 
 def test_complemento_de_pago_ampara_ppd_no_duplica_ingresos():
