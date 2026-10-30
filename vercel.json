@@ -758,13 +758,9 @@
       "dest": "/projects/Dr. Jairo Dominguez/$1"
     },
     {
-      "src": "/epicentro",
-      "status": 308,
-      "headers": { "Location": "/epicentro/" }
-    },
-    {
-      "src": "/epicentro/",
-      "dest": "/projects/Epicentro/index.html"
+      "src": "/(epicentro-natura|EpicentroNatura)",
+      "status": 301,
+      "headers": { "Location": "/epicentro/natura/" }
     },
     {
       "src": "/epicentro/natura",
@@ -773,28 +769,24 @@
     },
     {
       "src": "/epicentro/natura/",
-      "dest": "/projects/EpicentroNatura/index.html"
-    },
-    {
-      "src": "/epicentro/natura/categoria",
-      "dest": "/projects/EpicentroNatura/categoria.html"
-    },
-    {
-      "src": "/epicentro/natura/cultura-natura",
-      "dest": "/projects/EpicentroNatura/cultura-natura.html"
-    },
-    {
-      "src": "/epicentro/natura/comunidad-natura",
-      "dest": "/projects/EpicentroNatura/comunidad-natura.html"
+      "dest": "/projects/EpicentroNatura/"
     },
     {
       "src": "/epicentro/natura/(.*)",
       "dest": "/projects/EpicentroNatura/$1"
     },
     {
-      "src": "/(epicentro-natura|EpicentroNatura)",
-      "status": 301,
-      "headers": { "Location": "/epicentro/natura/" }
+      "src": "/epicentro",
+      "status": 308,
+      "headers": { "Location": "/epicentro/" }
+    },
+    {
+      "src": "/epicentro/",
+      "dest": "/projects/Epicentro/"
+    },
+    {
+      "src": "/epicentro/(.*)",
+      "dest": "/projects/Epicentro/$1"
     },
     {
       "handle": "filesystem"
