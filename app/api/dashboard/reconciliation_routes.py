@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query, Header
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse, HTMLResponse, Response
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import desc, func, and_, or_
 from typing import Optional, List, Dict, Tuple, Any
@@ -14,6 +14,8 @@ from app.api.deps import get_current_active_user
 from app.schemas.user import User as UserSchema
 from app.core.config import settings, get_reconciliation_entity_config
 from app.models.reconciliation import CFDIInvoice, BankTransaction
+from app.models.sat import SatInvoice
+from app.services.reconciliation.invoice_viewer import parse_cfdi_for_view, render_invoice_html
 from app.services.reconciliation.cfdi_parser import parse_cfdi_xml
 from app.services.reconciliation.bbva_parser import parse_bbva_statement
 from app.services.reconciliation.matching_engine import conciliar_movimientos
@@ -2281,12 +2283,17 @@ def export_pdf_faltantes(
         query = query.filter(BankTransaction.periodo_mes == month)
     txs = query.order_by(desc(BankTransaction.fecha), desc(BankTransaction.id)).all()
 
-    # Pre-cargar cualquier CFDIInvoice por uuid_cfdi en caso de que t.factura sea None
+    # Pre-cargar cualquier CFDIInvoice o SatInvoice por uuid_cfdi en caso de que t.factura sea None
     missing_uuids = [t.uuid_cfdi for t in txs if t.uuid_cfdi and not t.factura]
     fallback_map = {}
     if missing_uuids:
         invoices = db.query(CFDIInvoice).filter(CFDIInvoice.uuid.in_(missing_uuids)).all()
         fallback_map = {inv.uuid: inv for inv in invoices}
+        still_missing = [u for u in missing_uuids if u not in fallback_map]
+        if still_missing:
+            sat_invoices = db.query(SatInvoice).filter(SatInvoice.uuid.in_(still_missing)).all()
+            for si in sat_invoices:
+                fallback_map[si.uuid] = si
 
     tx_list = []
     for t in txs:
@@ -2299,18 +2306,18 @@ def export_pdf_faltantes(
             "monto": t.monto,
             "status_conciliacion": t.status_conciliacion,
             "nota_revision": t.nota_revision,
-            "uuid_cfdi": t.uuid_cfdi or (inv.uuid if inv else None),
-            "nombre_emisor": inv.nombre_emisor if inv else None,
-            "rfc_emisor": inv.rfc_emisor if inv else None,
-            "nombre_receptor": inv.nombre_receptor if inv else None,
-            "rfc_receptor": inv.rfc_receptor if inv else None,
-            "cfdi_total": inv.total if inv else None,
-            "cfdi_subtotal": inv.subtotal if inv else None,
-            "cfdi_iva": inv.iva_trasladado if inv else None,
-            "cfdi_metodo": inv.metodo_pago if inv else None,
+            "uuid_cfdi": t.uuid_cfdi or (getattr(inv, "uuid", None) if inv else None),
+            "nombre_emisor": (getattr(inv, "nombre_emisor", None) or getattr(inv, "emisor_nombre", None)) if inv else None,
+            "rfc_emisor": (getattr(inv, "rfc_emisor", None) or getattr(inv, "emisor_rfc", None)) if inv else None,
+            "nombre_receptor": (getattr(inv, "nombre_receptor", None) or getattr(inv, "receptor_nombre", None)) if inv else None,
+            "rfc_receptor": (getattr(inv, "rfc_receptor", None) or getattr(inv, "receptor_rfc", None)) if inv else None,
+            "cfdi_total": getattr(inv, "total", None) if inv else None,
+            "cfdi_subtotal": getattr(inv, "subtotal", None) if inv else None,
+            "cfdi_iva": getattr(inv, "iva_trasladado", None) if inv else None,
+            "cfdi_metodo": getattr(inv, "metodo_pago", None) if inv else None,
             "cfdi_forma": getattr(inv, "forma_pago", None) if inv else None,
-            "cfdi_concepto": inv.conceptos_resumen if inv else None,
-            "cfdi_fecha": inv.fecha_emision if inv else None,
+            "cfdi_concepto": getattr(inv, "conceptos_resumen", None) if inv else None,
+            "cfdi_fecha": getattr(inv, "fecha_emision", None) if inv else None,
         }
         tx_list.append(item)
 
@@ -2575,5 +2582,72 @@ def get_monthly_flow_summary(
             "transactions": traspasos_txs
         }
     }
+
+
+@router.get("/invoices/{uuid}/view", response_class=HTMLResponse)
+def view_invoice_html(
+    uuid: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Visor oficial web interactivo e imprimible de la factura CFDI.
+    Accesible directamente por Folio Fiscal (UUID) para hipervínculos en reportes PDF.
+    Busca primero en facturas del sistema (CFDIInvoice) y con fallback en SatInvoice.
+    """
+    clean_uuid = uuid.strip()
+    inv = db.query(CFDIInvoice).filter(func.lower(CFDIInvoice.uuid) == clean_uuid.lower()).first()
+    xml_content = None
+    fallback_obj = None
+
+    if inv:
+        xml_content = inv.xml_raw
+        fallback_obj = inv
+    else:
+        sat_inv = db.query(SatInvoice).filter(func.lower(SatInvoice.uuid) == clean_uuid.lower()).first()
+        if sat_inv:
+            xml_content = sat_inv.xml_content
+            fallback_obj = sat_inv
+
+    if not fallback_obj and not xml_content:
+        raise HTTPException(status_code=404, detail=f"Factura CFDI con UUID {clean_uuid} no encontrada en el sistema.")
+
+    invoice_data = parse_cfdi_for_view(xml_content, fallback_obj)
+    html_content = render_invoice_html(invoice_data)
+    return HTMLResponse(content=html_content, status_code=200)
+
+
+@router.get("/invoices/{uuid}/xml")
+def download_invoice_xml(
+    uuid: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Descarga directa del archivo XML oficial de la factura CFDI.
+    """
+    clean_uuid = uuid.strip()
+    inv = db.query(CFDIInvoice).filter(func.lower(CFDIInvoice.uuid) == clean_uuid.lower()).first()
+    xml_content = None
+
+    if inv and inv.xml_raw:
+        xml_content = inv.xml_raw
+    else:
+        sat_inv = db.query(SatInvoice).filter(func.lower(SatInvoice.uuid) == clean_uuid.lower()).first()
+        if sat_inv and sat_inv.xml_content:
+            xml_content = sat_inv.xml_content
+
+    if not xml_content:
+        raise HTTPException(status_code=404, detail=f"Archivo XML para el Folio Fiscal {clean_uuid} no disponible en el sistema.")
+
+    clean_filename = f"Factura_{clean_uuid.upper()}.xml"
+    content_bytes = xml_content.encode("utf-8") if isinstance(xml_content, str) else xml_content
+
+    return Response(
+        content=content_bytes,
+        media_type="application/xml",
+        headers={
+            "Content-Disposition": f'attachment; filename="{clean_filename}"'
+        }
+    )
+
 
 

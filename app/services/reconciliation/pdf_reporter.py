@@ -234,7 +234,7 @@ def generate_discrepancies_pdf(
 
             cfdi_total = float(tx.get("cfdi_total") or monto_num)
             uuid_str = str(tx.get("uuid_cfdi") or "").strip()
-            url_link = f"https://www.hipha.mx/projects/HiphaMX/dashboard/?search={uuid_str}" if uuid_str else None
+            url_link = f"https://www.hipha.mx/api/dashboard/reconciliation/invoices/{uuid_str}/view" if uuid_str else None
 
             pago_str = _format_forma_pago(str(tx.get("cfdi_forma") or ""), str(tx.get("cfdi_metodo") or ""))
             cfdi_concepto = str(tx.get("cfdi_concepto") or "").strip()
@@ -255,11 +255,11 @@ def generate_discrepancies_pdf(
             pdf.cell(54, 6, _clean(cp_display), 'TLR', align='L', fill=fill_recon, new_x=XPos.RIGHT, new_y=YPos.TOP)
             pdf.cell(26, 6, f"${cfdi_total:,.2f}", 'TLR', align='R', fill=fill_recon, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-            # Renglón 2: UUID con enlace interactivo y detalles de método de pago
+            # Renglón 2: UUID con enlace interactivo al visor oficial y detalles de pago
             pdf.set_font('Helvetica', '', 6)
             pdf.set_text_color(5, 150, 105)
             if uuid_str:
-                subrow_label = f"   UUID: {uuid_str}  |  Pago: {pago_str}  |  Concepto: {cfdi_concepto_trunc}  [Abrir]"
+                subrow_label = f"   UUID: {uuid_str}  |  Pago: {pago_str}  |  Concepto: {cfdi_concepto_trunc}  [Ver Factura Oficial & XML]"
                 pdf.cell(190, 4.5, _clean(subrow_label), 'BLR', align='L', fill=fill_recon, link=url_link, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             else:
                 subrow_label = f"   Conciliado por regla / comprobación  |  {tx.get('nota_revision') or 'Amparado fiscalmente'}"
@@ -386,8 +386,8 @@ def generate_discrepancies_pdf(
             pago_str = _format_forma_pago(str(f.get("forma_pago") or ""), str(f.get("metodo_pago") or ""))
             uuid_str = str(f.get("uuid") or "").strip()
 
-            url_link = f"https://www.hipha.mx/projects/HiphaMX/dashboard/?search={uuid_str}"
-
+            url_link = f"https://www.hipha.mx/api/dashboard/reconciliation/invoices/{uuid_str}/view"
+ 
             pdf.set_fill_color(240, 249, 255) if fill_xml else pdf.set_fill_color(255, 255, 255)
             pdf.set_text_color(15, 23, 42)
             pdf.set_font('Helvetica', '', 7)
@@ -400,10 +400,10 @@ def generate_discrepancies_pdf(
             pdf.cell(26, 6, _clean(pago_str[:17]), 'TLR', align='C', fill=fill_xml, new_x=XPos.RIGHT, new_y=YPos.TOP)
             pdf.cell(26, 6, f"${total_num:,.2f}", 'TLR', align='R', fill=fill_xml, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-            # Renglón 2: UUID con hipervínculo clickeable al dashboard
+            # Renglón 2: UUID con hipervínculo clickeable al visor oficial
             pdf.set_font('Helvetica', '', 6)
             pdf.set_text_color(37, 99, 235)  # Azul hipervínculo
-            uuid_label = f"   Folio Fiscal UUID: {uuid_str}  [Clic para abrir e inspeccionar en Dashboard]"
+            uuid_label = f"   Folio Fiscal UUID: {uuid_str}  [Ver Factura Oficial & XML]"
             pdf.cell(190, 4.5, _clean(uuid_label), 'BLR', align='L', fill=fill_xml, link=url_link, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
             fill_xml = not fill_xml

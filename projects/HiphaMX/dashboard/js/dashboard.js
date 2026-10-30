@@ -283,9 +283,25 @@ function showDashboard() {
     loadClientsDirectory(); // Carga en background para sincronizar los selectores de clientes
     initWorkflowModule();
 
-    // Detección de pestaña por URL hash (soporta recarga directa o enlaces profundos)
+    // Detección de pestaña por URL hash o parámetro de búsqueda (soporta recarga directa o enlaces profundos)
+    const urlParams = new URLSearchParams(window.location.search);
+    const deepSearch = urlParams.get('search') || urlParams.get('uuid');
     const currentHash = (window.location.hash || '').toLowerCase();
-    if (currentHash === '#web-health' || currentHash === '#webhealth' || currentHash === '#guardian') {
+    if (deepSearch || currentHash === '#reconciliation' || currentHash === '#conciliacion') {
+        setActiveTab(navLinkReconciliation, reconciliationSection);
+        headerTitle.textContent = "Conciliación Bancaria & Fiscal";
+        headerSubtitle.textContent = "Cruce inteligente de estados de cuenta BBVA contra facturas CFDI (SAT)";
+        if (trafficDateSelector) trafficDateSelector.classList.add('hidden');
+        if (deepSearch) {
+            currentReconSearch = deepSearch.trim();
+        }
+        initReconciliationModule();
+        if (deepSearch) {
+            const searchInput = document.getElementById('reconSearchInput');
+            if (searchInput) searchInput.value = currentReconSearch;
+        }
+        loadReconciliationData();
+    } else if (currentHash === '#web-health' || currentHash === '#webhealth' || currentHash === '#guardian') {
         setActiveTab(navLinkWebHealth, webHealthSection);
         headerTitle.textContent = "Monitoreo Web & Agente Guardián";
         headerSubtitle.textContent = "Auditoría en tiempo real de infraestructura, SSL, correo y GEO de clientes";
@@ -6083,6 +6099,16 @@ function initReconciliationModule() {
     // Buscador
     const searchInput = document.getElementById('reconSearchInput');
     if (searchInput) {
+        if (currentReconSearch && !searchInput.value) {
+            searchInput.value = currentReconSearch;
+        } else {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlSearch = urlParams.get('search') || urlParams.get('uuid');
+            if (urlSearch && !searchInput.value) {
+                searchInput.value = urlSearch.trim();
+                currentReconSearch = urlSearch.trim();
+            }
+        }
         let timeout;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(timeout);

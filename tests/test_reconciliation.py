@@ -3667,6 +3667,127 @@ def test_cascada_scoring_nivel_4_discrepancias_y_huerfanos():
     assert "sin cfdi" in tx_gasto["nota_revision"].lower()
 
 
+def test_invoice_viewer_endpoints():
+    """
+    Verifica que los endpoints públicos por UUID:
+    - /api/dashboard/reconciliation/invoices/{uuid}/view (HTML interactivo e imprimible)
+    - /api/dashboard/reconciliation/invoices/{uuid}/xml (Descarga directa de XML)
+    funcionen con CFDIInvoice, con fallback a SatInvoice, y devuelvan 404 para UUIDs inexistentes.
+    """
+    from app.models.sat import SatInvoice
+    db = SessionLocal()
+    cfdi_uuid = "ABCDEF12-3456-7890-ABCD-123456789012"
+    sat_uuid = "FEDCBA98-7654-3210-FEDC-987654321098"
+
+    dummy_xml = """<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" Version="4.0" Serie="A" Folio="1001" Fecha="2026-10-20T10:00:00" FormaPago="03" SubTotal="1000.00" Moneda="MXN" Total="1160.00" TipoDeComprobante="I" MetodoPago="PUE" LugarExpedicion="44100" Sello="DUMMY_SELLO_CFD">
+  <cfdi:Emisor Rfc="DEGF851127TK1" Nombre="HIPHA CONSULTING SA DE CV" RegimenFiscal="601"/>
+  <cfdi:Receptor Rfc="XAXX010101000" Nombre="PUBLICO EN GENERAL" DomicilioFiscalReceptor="44100" RegimenFiscalReceptor="616" UsoCFDI="G03"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="82101504" Cantidad="1" ClaveUnidad="E48" Unidad="Servicio" Descripcion="Campaña Publicitaria Digital" ValorUnitario="1000.00" Importe="1000.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1000.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="160.00"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="160.00">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="1000.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="160.00"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital UUID="ABCDEF12-3456-7890-ABCD-123456789012" FechaTimbrado="2026-10-20T10:05:00" RfcProvCertif="SAT970701NN3" SelloCFD="DUMMY_SELLO_CFD" NoCertificadoSAT="00001000000500000000" SelloSAT="DUMMY_SELLO_SAT" Version="1.1"/>
+  </cfdi:Complemento>
+</cfdi:Comprobante>"""
+
+    try:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == cfdi_uuid).delete()
+        db.query(SatInvoice).filter(SatInvoice.uuid == sat_uuid).delete()
+        db.commit()
+
+        # 1. Crear CFDIInvoice
+        cfdi_inv = CFDIInvoice(
+            uuid=cfdi_uuid,
+            account_rfc="DEGF851127TK1",
+            tipo="INGRESO",
+            rfc_emisor="DEGF851127TK1",
+            nombre_emisor="HIPHA CONSULTING SA DE CV",
+            rfc_receptor="XAXX010101000",
+            nombre_receptor="PUBLICO EN GENERAL",
+            fecha_emision=datetime(2026, 10, 20, 10, 0, 0),
+            subtotal=1000.0,
+            iva_trasladado=160.0,
+            total=1160.0,
+            metodo_pago="PUE",
+            forma_pago="03",
+            xml_raw=dummy_xml
+        )
+        db.add(cfdi_inv)
+
+        # 2. Crear SatInvoice
+        sat_inv = SatInvoice(
+            account_rfc="MEHA850118Q96",
+            uuid=sat_uuid,
+            emisor_rfc="PUM980101ABC",
+            emisor_nombre="PROVEEDOR SAT SA DE CV",
+            receptor_rfc="MEHA850118Q96",
+            receptor_nombre="ADRIANA MEDINA HERNANDEZ",
+            fecha_emision=datetime(2026, 10, 21, 12, 0, 0),
+            tipo_comprobante="I",
+            subtotal=500.0,
+            total=580.0,
+            iva_trasladado=80.0,
+            tipo_cfdi="recibida",
+            xml_content=dummy_xml.replace(cfdi_uuid, sat_uuid)
+        )
+        db.add(sat_inv)
+        db.commit()
+
+        # Test CFDIInvoice view
+        resp1 = client.get(f"/api/dashboard/reconciliation/invoices/{cfdi_uuid}/view")
+        assert resp1.status_code == 200
+        assert "text/html" in resp1.headers["content-type"]
+        assert "CFDI" in resp1.text
+        assert cfdi_uuid in resp1.text
+        assert "HIPHA CONSULTING SA DE CV" in resp1.text
+        assert "$1,160.00" in resp1.text
+        assert "Descargar XML" in resp1.text
+
+        # Test CFDIInvoice xml download
+        resp2 = client.get(f"/api/dashboard/reconciliation/invoices/{cfdi_uuid}/xml")
+        assert resp2.status_code == 200
+        assert "xml" in resp2.headers["content-type"]
+        assert f'attachment; filename="Factura_{cfdi_uuid}.xml"' in resp2.headers["content-disposition"]
+        assert cfdi_uuid in resp2.text
+
+        # Test SatInvoice fallback view
+        resp3 = client.get(f"/api/dashboard/reconciliation/invoices/{sat_uuid}/view")
+        assert resp3.status_code == 200
+        assert "text/html" in resp3.headers["content-type"]
+        assert sat_uuid in resp3.text
+
+        # Test SatInvoice fallback xml download
+        resp4 = client.get(f"/api/dashboard/reconciliation/invoices/{sat_uuid}/xml")
+        assert resp4.status_code == 200
+        assert sat_uuid in resp4.text
+
+        # Test 404 for non-existent UUID
+        resp5 = client.get("/api/dashboard/reconciliation/invoices/NON-EXISTENT-UUID-12345/view")
+        assert resp5.status_code == 404
+
+        resp6 = client.get("/api/dashboard/reconciliation/invoices/NON-EXISTENT-UUID-12345/xml")
+        assert resp6.status_code == 404
+
+    finally:
+        db.query(CFDIInvoice).filter(CFDIInvoice.uuid == cfdi_uuid).delete()
+        db.query(SatInvoice).filter(SatInvoice.uuid == sat_uuid).delete()
+        db.commit()
+        db.close()
+
+
+
 
 
 
