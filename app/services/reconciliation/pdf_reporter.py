@@ -247,13 +247,13 @@ def generate_discrepancies_pdf(
             pdf.set_text_color(15, 23, 42)
             pdf.set_font('Helvetica', '', 7)
 
-            # Renglón 1: Datos principales
-            pdf.cell(20, 6, _clean(fecha_str), 'TLR', align='C', fill=fill_recon, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(50, 6, _clean(concepto_trunc), 'TLR', align='L', fill=fill_recon, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(16, 6, _clean(tipo_str), 'TLR', align='C', fill=fill_recon, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(24, 6, f"${monto_num:,.2f}", 'TLR', align='R', fill=fill_recon, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(54, 6, _clean(cp_display), 'TLR', align='L', fill=fill_recon, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(26, 6, f"${cfdi_total:,.2f}", 'TLR', align='R', fill=fill_recon, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            # Renglón 1: Datos principales (toda la fila es clickeable hacia el visor oficial si hay factura)
+            pdf.cell(20, 6, _clean(fecha_str), 'TLR', align='C', fill=fill_recon, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(50, 6, _clean(concepto_trunc), 'TLR', align='L', fill=fill_recon, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(16, 6, _clean(tipo_str), 'TLR', align='C', fill=fill_recon, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(24, 6, f"${monto_num:,.2f}", 'TLR', align='R', fill=fill_recon, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(54, 6, _clean(cp_display), 'TLR', align='L', fill=fill_recon, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(26, 6, f"${cfdi_total:,.2f}", 'TLR', align='R', fill=fill_recon, link=url_link, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
             # Renglón 2: UUID con enlace interactivo al visor oficial y detalles de pago
             pdf.set_font('Helvetica', '', 6)
@@ -392,13 +392,13 @@ def generate_discrepancies_pdf(
             pdf.set_text_color(15, 23, 42)
             pdf.set_font('Helvetica', '', 7)
 
-            # Renglón 1: Datos principales
-            pdf.cell(20, 6, _clean(fecha_str), 'TLR', align='C', fill=fill_xml, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(18, 6, _clean(tipo_str), 'TLR', align='C', fill=fill_xml, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(54, 6, _clean(emisor_trunc[:36]), 'TLR', align='L', fill=fill_xml, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(46, 6, _clean(concepto_trunc[:30]), 'TLR', align='L', fill=fill_xml, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(26, 6, _clean(pago_str[:17]), 'TLR', align='C', fill=fill_xml, new_x=XPos.RIGHT, new_y=YPos.TOP)
-            pdf.cell(26, 6, f"${total_num:,.2f}", 'TLR', align='R', fill=fill_xml, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            # Renglón 1: Datos principales (toda la fila es clickeable hacia el visor oficial)
+            pdf.cell(20, 6, _clean(fecha_str), 'TLR', align='C', fill=fill_xml, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(18, 6, _clean(tipo_str), 'TLR', align='C', fill=fill_xml, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(54, 6, _clean(emisor_trunc[:36]), 'TLR', align='L', fill=fill_xml, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(46, 6, _clean(concepto_trunc[:30]), 'TLR', align='L', fill=fill_xml, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(26, 6, _clean(pago_str[:17]), 'TLR', align='C', fill=fill_xml, link=url_link, new_x=XPos.RIGHT, new_y=YPos.TOP)
+            pdf.cell(26, 6, f"${total_num:,.2f}", 'TLR', align='R', fill=fill_xml, link=url_link, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
             # Renglón 2: UUID con hipervínculo clickeable al visor oficial
             pdf.set_font('Helvetica', '', 6)
