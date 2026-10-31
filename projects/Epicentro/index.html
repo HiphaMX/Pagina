@@ -1,28 +1,22 @@
 <!DOCTYPE html>
-<html lang="es" class="dark overflow-x-hidden w-full">
+<html lang="es" class="dark overflow-hidden w-full h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epicentro de Hiphas | Red de Plataformas Comerciales e Hiperlocales</title>
-    <meta name="description" content="Epicentro de Hiphas es la red de dinamización comercial hiperlocal que conecta comunidades residenciales y cotos con el comercio de proximidad, entrega directa sin comisiones y vida cultural activa.">
-    <meta name="keywords" content="Epicentro Hipha, Comercio Hiperlocal, Directorio Comercial Cotos, Natura Bosque Residencial, Bugambilias, Hipha Marketing, Delivery Directo">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <title>Epicentro de Hiphas | La Red Comercial Hiperlocal que Conecta tu Comunidad</title>
+    <meta name="description" content="El Epicentro de Hiphas conecta cotos, fraccionamientos y barrios con el comercio de proximidad Km 0, sin comisiones del 30%, pedidos directos por WhatsApp y vida cultural activa.">
+    <meta name="keywords" content="Epicentro Hipha, Comercio Hiperlocal, Km 0, Natura Bosque Residencial, Bugambilias, Zona Real, Delivery sin comisiones">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://hipha.mx/epicentro">
 
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Epicentro de Hiphas | Red de Dinamización Comercial Hiperlocal">
-    <meta property="og:description" content="Conectamos cotos y comunidades residenciales con sus comercios locales, delivery limpio y oferta cultural.">
+    <meta property="og:description" content="La rebelión contra el algoritmo. Cero comisiones a negocios, pedidos directos por WhatsApp y entrega en 5 minutos.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://hipha.mx/epicentro">
     <meta property="og:image" content="https://hipha.mx/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg">
-    <meta property="og:locale" content="es_MX">
 
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Epicentro de Hiphas | Red Comercial Hiperlocal">
-    <meta name="twitter:description" content="Plataformas hiperlocales desarrolladas y operadas por Hipha para comunidades residenciales.">
-
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN & Config -->
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script src="/js/tailwind-config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -31,223 +25,294 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
-    <link rel="stylesheet" href="/css/style.css?v=3">
+    <link rel="stylesheet" href="/css/style.css?v=5">
 
     <style>
-        .epicentro-glow {
-            box-shadow: 0 0 50px -10px rgba(16, 185, 129, 0.25);
+        /* Bloqueo estricto del scroll nativo para el deck fullscreen */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #050810;
         }
-        .epicentro-border {
-            border: 1px solid rgba(16, 185, 129, 0.3);
+
+        /* Cursor personalizado */
+        #cursor-dot {
+            position: fixed;
+            top: 0; left: 0;
+            width: 6px; height: 6px;
+            background: #06b6d4;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s, height 0.15s;
         }
-        .epicentro-border:hover {
-            border-color: rgba(16, 185, 129, 0.7);
+        #cursor-ring {
+            position: fixed;
+            top: 0; left: 0;
+            width: 38px; height: 38px;
+            border: 1.5px solid rgba(6, 182, 212, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width 0.22s ease, height 0.22s ease,
+                        border-color 0.22s ease, background 0.22s ease,
+                        transform 0.1s ease;
+        }
+        #cursor-ring.hovering {
+            width: 58px; height: 58px;
+            border-color: rgba(16, 185, 129, 0.9);
+            background: rgba(16, 185, 129, 0.12);
+        }
+        #cursor-ring.clicking {
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+        @media (pointer: coarse) {
+            #cursor-dot, #cursor-ring { display: none !important; }
+        }
+
+        /* Slides Track */
+        #slides-track {
+            will-change: transform;
+        }
+        #slides-track.smooth-scroll {
+            transition: transform 0.75s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        /* Efectos visuales de cada diapositiva */
+        .slide-glow-emerald {
+            box-shadow: 0 0 60px -10px rgba(16, 185, 129, 0.2);
+        }
+        .slide-glow-cyan {
+            box-shadow: 0 0 60px -10px rgba(6, 182, 212, 0.2);
+        }
+        .slide-glow-fuchsia {
+            box-shadow: 0 0 60px -10px rgba(192, 38, 211, 0.2);
+        }
+
+        /* Modal Dialog Styling */
+        dialog#epicentros-modal {
+            max-width: 960px;
+            width: calc(100% - 1.5rem);
+            max-height: 90vh;
+            border: none;
+            background: transparent;
+            padding: 0;
+            margin: auto;
+            overscroll-behavior: contain;
+        }
+        dialog#epicentros-modal::backdrop {
+            background: rgba(3, 6, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Pulsos e indicadores */
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.08); opacity: 0.4; }
+        }
+        .pulse-slow {
+            animation: pulseSlow 3s infinite ease-in-out;
+        }
+
+        @keyframes bounceScroll {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(6px); }
+            60% { transform: translateY(3px); }
+        }
+        .bounce-scroll {
+            animation: bounceScroll 2.2s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="relative min-h-screen overflow-x-hidden w-full antialiased selection:bg-emerald-500 selection:text-white bg-[#050810] text-[#f8fafc]">
+<body class="w-full h-full text-slate-100 select-none antialiased">
 
-    <!-- Background Blobs -->
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
+    <!-- ─── CURSOR BIOLUMINISCENTE ─── -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
 
-    <!-- Navigation -->
-    <nav class="relative z-40 glass-panel sticky top-0 w-full border-b border-white/10 px-6 py-4 transition-all" id="navbar">
+    <!-- ─── CABECERA FIJA SUPERIOR (HIPHA × EPICENTRO MIMETIZADOS) ─── -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 transition-colors duration-500" id="deck-header">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <!-- Logo Hipha -->
-            <a href="/" class="flex items-center gap-3 group">
-                <img id="nav-logo" src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha Logo" class="h-10 md:h-12 transition-transform group-hover:scale-105">
-                <span class="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    EPICENTRO
-                </span>
-            </a>
+            
+            <!-- Dual Logo: Hipha + Divisor + Epicentro -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <a href="/" class="flex items-center group" title="Regresar al Home de Hipha">
+                    <img id="nav-hipha-logo" src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha" class="h-6 sm:h-8 transition-transform group-hover:scale-105">
+                </a>
+                <span id="nav-divider" class="text-slate-500 font-extralight text-lg sm:text-2xl select-none">/</span>
+                <div class="flex items-center">
+                    <img id="nav-epicentro-logo" src="/projects/Epicentro/Assets/Epicentro.svg" alt="Epicentro" class="h-4 sm:h-6 transition-transform group-hover:scale-105">
+                </div>
+            </div>
 
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center gap-7">
-                <a href="#como-funciona" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">¿Cómo Funciona?</a>
-                <a href="#zonas-activas" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Zonas & Comunidades</a>
-                <a href="#para-comercios" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Para Comercios</a>
-                <a href="/" class="text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors flex items-center gap-1">
+            <!-- Controles a la derecha -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="openEpicentrosModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all shadow-sm" id="header-cta-btn">
+                    <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="hidden sm:inline">Explorar Nodos</span>
+                    <span class="sm:hidden">Nodos</span>
+                    <i class="ph-bold ph-compass text-xs sm:text-sm"></i>
+                </button>
+                <a href="/" id="nav-agency-link" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors hidden md:inline-flex items-center gap-1">
                     <span>← Agencia Hipha</span>
                 </a>
-                <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20me%20interesa%20llevar%20un%20Epicentro%20a%20mi%20fraccionamiento%20o%20registrar%20mi%20negocio" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-5 py-2 rounded-full transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] flex items-center gap-2">
-                    <i class="ph-bold ph-whatsapp-logo text-lg"></i>
-                    <span>Contactar con Hipha</span>
-                </a>
             </div>
 
-            <!-- Hamburger Button (Mobile) -->
-            <div class="flex items-center gap-2 md:hidden">
-                <button id="ham-btn" onclick="toggleMobileMenu()" class="text-white p-2 transition-colors hover:text-emerald-400" aria-label="Abrir menú de navegación">
-                    <i class="ph ph-list text-2xl"></i>
-                </button>
-            </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="mobile-nav" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-        <div class="mobile-nav-inner">
-            <div class="flex justify-between items-center mb-8">
-                <img src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha" class="h-10">
-                <button onclick="closeMobileMenu()" class="text-slate-400 hover:text-white p-2" aria-label="Cerrar menú">
-                    <i class="ph ph-x text-2xl"></i>
-                </button>
-            </div>
-            <a href="#como-funciona" class="mobile-nav-link" onclick="closeMobileMenu()">¿Cómo Funciona?</a>
-            <a href="#zonas-activas" class="mobile-nav-link" onclick="closeMobileMenu()">Zonas & Comunidades</a>
-            <a href="#para-comercios" class="mobile-nav-link" onclick="closeMobileMenu()">Para Comercios</a>
-            <a href="/" class="mobile-nav-link text-slate-400" onclick="closeMobileMenu()">← Volver a Agencia Hipha</a>
-            <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20me%20interesa%20el%20Epicentro" target="_blank" rel="noopener noreferrer" class="mobile-nav-cta bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-center gap-2 mt-4">
-                <i class="ph-bold ph-whatsapp-logo text-xl"></i>
-                <span>Contactar con Hipha</span>
-            </a>
-        </div>
-    </div>
+    <!-- ─── NAVEGADOR LATERAL DE DIAPOSITIVAS (DOTS 01-04) ─── -->
+    <aside class="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-4" aria-label="Navegación de diapositivas">
+        <button onclick="goToSlide(0)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 1: Manifiesto">
+            <span class="slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">01 Manifiesto</span>
+            <span class="slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-600 transition-all"></span>
+        </button>
+        <button onclick="goToSlide(1)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 2: ¿Qué es un Epicentro?">
+            <span class="slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">02 ¿Qué es?</span>
+            <span class="slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-600 transition-all"></span>
+        </button>
+        <button onclick="goToSlide(2)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 3: Conexión de Hiphas">
+            <span class="slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">03 Conexión</span>
+            <span class="slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-600 transition-all"></span>
+        </button>
+        <button onclick="goToSlide(3)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 4: Red en Vivo">
+            <span class="slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">04 Explorar</span>
+            <span class="slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-600 transition-all"></span>
+        </button>
+    </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="relative z-10">
+    <!-- ─── TRACK PRINCIPAL DE PANTALLA COMPLETA ─── -->
+    <main id="slides-track" class="w-full h-full">
 
-        <!-- 1. HERO SECTION -->
-        <section class="relative pt-16 md:pt-28 pb-20 px-6 overflow-hidden">
-            <div class="max-w-7xl mx-auto text-center space-y-8">
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- PANTALLA 1: EL MANIFIESTO (LA REBELIÓN CONTRA EL ALGORITMO) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <section class="slide-section w-full h-screen relative flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-[#050810]" id="slide-0">
+            <!-- Blobs bioluminiscentes de fondo -->
+            <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/15 blur-[120px] pointer-events-none pulse-slow"></div>
+            <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-fuchsia-500/15 blur-[120px] pointer-events-none pulse-slow"></div>
+
+            <div class="relative z-10 max-w-5xl mx-auto text-center space-y-4 sm:space-y-8 pt-8 sm:pt-12 w-full min-w-0">
                 
-                <!-- Badge Superior con pulso bioluminiscente -->
-                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>RED DE DINAMIZACIÓN COMERCIAL HIPERLOCAL · BY HIPHA</span>
+                <!-- Tag Superior -->
+                <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+                    <span>MANIFIESTO · REVOLUCIÓN DEL MICELIO</span>
                 </div>
 
-                <!-- Título H1 -->
-                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08] max-w-5xl mx-auto">
-                    El <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">Epicentro de Hiphas</span> que conecta tu comunidad.
+                <!-- H1 Monumental -->
+                <h1 class="text-3xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[1.1]">
+                    El algoritmo nos separó.<br />
+                    El <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">micelio nos vuelve a conectar</span>.
                 </h1>
 
-                <!-- Subtítulo -->
-                <p class="text-slate-300 text-base sm:text-xl max-w-3xl mx-auto leading-relaxed font-normal">
-                    Transformamos cotos, fraccionamientos y zonas residenciales en <strong class="text-white">ecosistemas comerciales vivos</strong>: entrega a domicilio directa, compras Km 0 sin comisiones abusivas y vida cultural vecinal, todo respaldado por la tecnología de Hipha.
+                <!-- Argumento de Ruptura contra Apps -->
+                <p class="text-slate-300 text-xs sm:text-lg max-w-3xl mx-auto leading-relaxed font-normal">
+                    Las plataformas tradicionales cobran hasta un <strong class="text-white font-bold">30% de comisión</strong> por llevarte una hamburguesa a 3 cuadras. Convierten a los vecinos en datos y a los comercios en rehenes. Hipha activa el <strong class="text-emerald-400 font-bold">Epicentro</strong>: la red comercial hiperlocal directa, humana y sin peajes.
                 </p>
 
-                <!-- Botones de Acción -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                    <a href="/epicentro/natura" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-base shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:shadow-[0_0_45px_rgba(16,185,129,0.7)] transition-all transform hover:-translate-y-0.5">
-                        <i class="ph-bold ph-compass text-xl"></i>
-                        <span>Explorar Epicentro Natura (En Vivo)</span>
-                        <i class="ph-bold ph-arrow-right"></i>
-                    </a>
-                    <a href="#zonas-activas" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white/5 hover:bg-white/10 text-white font-semibold text-sm border border-white/10 hover:border-emerald-500/40 transition-all">
-                        <i class="ph-bold ph-map-pin text-emerald-400 text-lg"></i>
-                        <span>Ver Nodos & Próximas Zonas</span>
-                    </a>
+                <!-- 3 Métricas Rápidas -->
+                <div class="pt-1 sm:pt-2 grid grid-cols-3 gap-2 sm:gap-3 max-w-2xl mx-auto w-full min-w-0">
+                    <div class="min-w-0 p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+                        <div class="text-base sm:text-2xl font-black text-emerald-400">0%</div>
+                        <div class="text-[9px] sm:text-[11px] text-slate-400 font-medium truncate">Comisión</div>
+                    </div>
+                    <div class="min-w-0 p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+                        <div class="text-base sm:text-2xl font-black text-cyan-400">Km 0</div>
+                        <div class="text-[9px] sm:text-[11px] text-slate-400 font-medium truncate">Vecinos</div>
+                    </div>
+                    <div class="min-w-0 p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+                        <div class="text-base sm:text-2xl font-black text-fuchsia-400">WhatsApp</div>
+                        <div class="text-[9px] sm:text-[11px] text-slate-400 font-medium truncate">Directo</div>
+                    </div>
                 </div>
 
-                <!-- Métricas Clave Pills -->
-                <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-                    <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
-                        <div class="text-2xl font-black text-emerald-400">0%</div>
-                        <div class="text-xs text-slate-400 font-medium mt-0.5">Comisiones a Negocios</div>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
-                        <div class="text-2xl font-black text-cyan-400">Km 0</div>
-                        <div class="text-xs text-slate-400 font-medium mt-0.5">Consumo Local Genuino</div>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
-                        <div class="text-2xl font-black text-fuchsia-400">WhatsApp</div>
-                        <div class="text-xs text-slate-400 font-medium mt-0.5">Pedidos Directos Sin Apps</div>
-                    </div>
-                    <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
-                        <div class="text-2xl font-black text-teal-400">Agéntico</div>
-                        <div class="text-xs text-slate-400 font-medium mt-0.5">SEO & GEO con IA</div>
+                <!-- Indicador de Scroll hacia abajo -->
+                <div class="pt-2 sm:pt-6 flex flex-col items-center justify-center gap-1.5 cursor-pointer group" onclick="goToSlide(1)">
+                    <span class="text-[10px] sm:text-[11px] font-mono tracking-widest text-slate-500 group-hover:text-emerald-400 transition-colors uppercase">Baja el mouse para descubrir cómo</span>
+                    <div class="w-5 h-8 sm:w-6 sm:h-10 rounded-full border-2 border-slate-600 group-hover:border-emerald-400 flex items-start justify-center p-1 transition-colors">
+                        <div class="w-1.5 h-2 rounded-full bg-emerald-400 bounce-scroll"></div>
                     </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- 2. ¿CÓMO FUNCIONA EL EPICENTRO DE HIPHAS? -->
-        <section id="como-funciona" class="py-20 px-6 border-t border-white/5 relative">
-            <div class="max-w-7xl mx-auto">
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- PANTALLA 2: ¿QUÉ ES UN EPICENTRO? (EL MICELIO HIPERLOCAL KM 0)-->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <section class="slide-section w-full h-screen relative flex items-center justify-center px-4 sm:px-6 overflow-y-auto md:overflow-hidden bg-[#03060f]" id="slide-1">
+            <div class="absolute -top-32 right-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-[130px] pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-6xl mx-auto w-full space-y-4 sm:space-y-8 py-16 sm:py-0">
                 
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-                    <span class="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3.5 py-1 rounded-full border border-emerald-500/20">
-                        ARQUITECTURA DE LA PLATAFORMA
+                <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3">
+                    <span class="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                        01 · ANATOMÍA DEL EPICENTRO
                     </span>
-                    <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                        ¿Cómo funciona nuestro Epicentro?
+                    <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+                        Cero apps que descargar.<br />
+                        Entrega directa a caseta en 5 minutos.
                     </h2>
-                    <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-                        Eliminamos la fricción de las grandes aplicaciones extranjeras y devolvemos la fuerza económica al barrio. Cada Epicentro es un ecosistema digital hiperlocal operado con precisión:
+                    <p class="text-slate-400 text-xs sm:text-base leading-relaxed">
+                        Un Epicentro no es otro directorio genérico. Es un portal vivo delimitado con exactitud a tu coto y fraccionamiento:
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
                     
-                    <!-- Pilar 1 -->
-                    <div class="glass-panel p-7 rounded-3xl border border-white/10 hover:border-emerald-500/50 transition-all flex flex-col justify-between group">
-                        <div>
-                            <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
-                                <i class="ph-bold ph-crosshair text-2xl"></i>
+                    <div class="glass-panel p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all flex flex-col justify-between group">
+                        <div class="space-y-2 sm:space-y-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-navigation-arrow"></i>
                             </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400">Pilar 01</span>
-                            <h3 class="text-xl font-bold text-white mt-1 mb-3">Hiperlocalidad Absoluta (Km 0)</h3>
+                            <span class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400">Pilar 01</span>
+                            <h3 class="text-base sm:text-xl font-bold text-white">Proximidad Real (Km 0)</h3>
                             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Cada Epicentro delimita un radio geográfico exacto de cotos y colonias vecinas. No mostramos comercios a 20 km de distancia, sino los que están a 5 minutos de tu casa.
+                                Solo la cafetería, el médico, la farmacia o el plomero que están a pasos de tu caseta.
                             </p>
                         </div>
-                        <div class="mt-6 pt-4 border-t border-white/5 text-[11px] font-mono text-emerald-300">
-                            ✓ Entregas rápidas a caseta
+                        <div class="pt-2 sm:pt-4 mt-3 sm:mt-6 border-t border-white/5 text-[10px] sm:text-[11px] font-mono text-emerald-300">
+                            ✓ Menor tiempo de espera
                         </div>
                     </div>
 
-                    <!-- Pilar 2 -->
-                    <div class="glass-panel p-7 rounded-3xl border border-white/10 hover:border-cyan-500/50 transition-all flex flex-col justify-between group">
-                        <div>
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
-                                <i class="ph-bold ph-chats-circle text-2xl"></i>
+                    <div class="glass-panel p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-cyan-500/40 transition-all flex flex-col justify-between group">
+                        <div class="space-y-2 sm:space-y-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-chats-circle"></i>
                             </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400">Pilar 02</span>
-                            <h3 class="text-xl font-bold text-white mt-1 mb-3">Trato Directo Sin Comisiones</h3>
+                            <span class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400">Pilar 02</span>
+                            <h3 class="text-base sm:text-xl font-bold text-white">Trato Humano por WhatsApp</h3>
                             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Todos los pedidos y contrataciones se hacen directo por WhatsApp o llamada. Sin retenciones del 30% a los restaurantes. El precio es el real y el dinero va íntegro al negocio.
+                                Sin carritos inflados. Hablas directo con el dueño y el dinero se queda en tu colonia.
                             </p>
                         </div>
-                        <div class="mt-6 pt-4 border-t border-white/5 text-[11px] font-mono text-cyan-300">
-                            ✓ Cero cargos ocultos
+                        <div class="pt-2 sm:pt-4 mt-3 sm:mt-6 border-t border-white/5 text-[10px] sm:text-[11px] font-mono text-cyan-300">
+                            ✓ 100% ganancia al negocio
                         </div>
                     </div>
 
-                    <!-- Pilar 3 -->
-                    <div class="glass-panel p-7 rounded-3xl border border-white/10 hover:border-fuchsia-500/50 transition-all flex flex-col justify-between group">
-                        <div>
-                            <div class="w-14 h-14 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 mb-6 group-hover:scale-110 transition-transform">
-                                <i class="ph-bold ph-sparkle text-2xl"></i>
+                    <div class="glass-panel p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-fuchsia-500/40 transition-all flex flex-col justify-between group">
+                        <div class="space-y-2 sm:space-y-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform">
+                                <i class="ph-bold ph-shield-check"></i>
                             </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-fuchsia-400">Pilar 03</span>
-                            <h3 class="text-xl font-bold text-white mt-1 mb-3">Cultura & Tejido Comunitario</h3>
+                            <span class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-fuchsia-400">Pilar 03</span>
+                            <h3 class="text-base sm:text-xl font-bold text-white">Geocercas de Confianza</h3>
                             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                No es solo un directorio: incluye la cartelera oficial de la Casa de la Cultura, talleres vecinales y un Tablón Cívico de avisos comunitarios verificados para los residentes.
+                                Para la dinámica de cotos cerrados: repartidores que conocen el acceso y las casetas.
                             </p>
                         </div>
-                        <div class="mt-6 pt-4 border-t border-white/5 text-[11px] font-mono text-fuchsia-300">
-                            ✓ Identidad y convivencia
-                        </div>
-                    </div>
-
-                    <!-- Pilar 4 -->
-                    <div class="glass-panel p-7 rounded-3xl border border-white/10 hover:border-teal-500/50 transition-all flex flex-col justify-between group">
-                        <div>
-                            <div class="w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 mb-6 group-hover:scale-110 transition-transform">
-                                <i class="ph-bold ph-brain text-2xl"></i>
-                            </div>
-                            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-teal-400">Pilar 04</span>
-                            <h3 class="text-xl font-bold text-white mt-1 mb-3">Tecnología Agéntica & GEO</h3>
-                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Desarrollado por Hipha con indexación semántica en tiempo real (`llms.txt`), geolocalización nativa y visibilidad para que los motores de IA (ChatGPT, Gemini) recomienden los negocios de la zona.
-                            </p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-white/5 text-[11px] font-mono text-teal-300">
-                            ✓ Respaldado por Hipha
+                        <div class="pt-2 sm:pt-4 mt-3 sm:mt-6 border-t border-white/5 text-[10px] sm:text-[11px] font-mono text-fuchsia-300">
+                            ✓ Mayor seguridad vecinal
                         </div>
                     </div>
 
@@ -256,239 +321,111 @@
             </div>
         </section>
 
-        <!-- 3. MENÚ DE EPICENTROS / ELIGE TU ZONA -->
-        <section id="zonas-activas" class="py-20 px-6 border-t border-white/5 bg-[#03060c]">
-            <div class="max-w-7xl mx-auto">
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- PANTALLA 3: CÓMO CONECTA LAS HIPHAS (LA RED INTELIGENTE) -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <section class="slide-section w-full h-screen relative flex items-center justify-center px-4 sm:px-6 overflow-y-auto md:overflow-hidden bg-[#050810]" id="slide-2">
+            <div class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-teal-500/15 blur-[120px] pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-6xl mx-auto w-full space-y-4 sm:space-y-8 py-16 sm:py-0">
                 
-                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-                    <div class="space-y-3">
-                        <span class="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3.5 py-1 rounded-full border border-emerald-500/20">
-                            NODOS & DESPLIEGUE TERRITORIAL
-                        </span>
-                        <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                            Elige tu Epicentro
-                        </h2>
-                        <p class="text-slate-400 text-sm sm:text-base max-w-2xl leading-relaxed">
-                            Explora las comunidades activas o postula tu fraccionamiento para habilitar su propio Epicentro.
-                        </p>
-                    </div>
-
-                    <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20quiero%20postular%20una%20nueva%20zona%20para%20Epicentro" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 text-xs font-bold transition-all self-start md:self-auto">
-                        <i class="ph-bold ph-plus-circle text-base"></i>
-                        <span>Postular nueva zona</span>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    
-                    <!-- NODO 1: NATURA BOSQUE RESIDENCIAL (ACTIVO) -->
-                    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-2 border-emerald-500/50 p-8 shadow-xl flex flex-col justify-between group hover:border-emerald-400 transition-all epicentro-glow">
-                        <div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-emerald-500/15 blur-2xl pointer-events-none group-hover:bg-emerald-500/25 transition-all"></div>
-
-                        <div class="relative z-10 space-y-5">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-mono font-extrabold uppercase tracking-wider border border-emerald-400/40">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                    EN LÍNEA · NODO PILOTO
-                                </span>
-                                <span class="text-xs font-mono text-slate-500 font-bold">Zapopan Sur</span>
-                            </div>
-
-                            <div>
-                                <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                                    Epicentro Natura
-                                </h3>
-                                <p class="text-xs font-mono text-emerald-400 mt-1">
-                                    Prolongación Mariano Otero & Bosque La Primavera
-                                </p>
-                            </div>
-
-                            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                                Plataforma en producción para los residentes de Natura y cotos vecinos. Directorio clasificado en 12 categorías, delivery directo a caseta, agenda de Cultura Natura y tablón cívico vecinal.
-                            </p>
-
-                            <!-- Cotos integrados -->
-                            <div class="p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 space-y-1.5">
-                                <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">Cotos conectados:</div>
-                                <div class="text-xs text-slate-300 leading-relaxed font-medium">
-                                    Natura (Ceiba), Los Robles, El Fortín, Luna Bosque, La Granja, Puerta del Bosque, Monte Verde, Punta de Otero, Misión la Floresta.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center justify-between">
-                            <div class="text-xs text-slate-400 font-semibold">
-                                <span class="text-emerald-400 font-bold">12</span> categorías activas
-                            </div>
-                            <a href="/epicentro/natura" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-all shadow-md shadow-emerald-500/20">
-                                <span>Entrar al Epicentro</span>
-                                <i class="ph-bold ph-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- NODO 2: BUGAMBILIAS & EL PALOMAR (EN PREPARACIÓN) -->
-                    <div class="relative overflow-hidden rounded-3xl bg-slate-900/60 border border-white/10 p-8 shadow-xl flex flex-col justify-between group hover:border-amber-500/40 transition-all">
-                        <div class="relative z-10 space-y-5">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-300 text-[11px] font-mono font-extrabold uppercase tracking-wider border border-amber-400/30">
-                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                                    PRÓXIMAMENTE · MAPEO
-                                </span>
-                                <span class="text-xs font-mono text-slate-500 font-bold">López Mateos Sur</span>
-                            </div>
-
-                            <div>
-                                <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                                    Epicentro Bugambilias
-                                </h3>
-                                <p class="text-xs font-mono text-amber-400 mt-1">
-                                    Bugambilias Panorámica, Ciudad Bugambilias & El Palomar
-                                </p>
-                            </div>
-
-                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Actualmente integrando a los restaurantes de terrazas panorámicas, cafeterías locales, servicios del hogar, veterinarias y colegios de la cordillera sur de Zapopan y Tlajomulco.
-                            </p>
-
-                            <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1.5">
-                                <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">Estado del nodo:</div>
-                                <div class="text-xs text-slate-300 leading-relaxed font-medium">
-                                    Fase de convocatoria y registro temprano de negocios locales sin costo.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center justify-between">
-                            <span class="text-xs text-slate-400 font-medium">Lanzamiento Q4 2026</span>
-                            <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20tengo%20un%20negocio%20en%20Bugambilias/Palomar%20y%20quiero%20registrarlo%20al%20Epicentro" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-amber-500/20 text-amber-300 hover:text-amber-200 border border-amber-500/30 text-xs font-bold transition-all">
-                                <span>Registrar mi negocio</span>
-                                <i class="ph-bold ph-plus"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- NODO 3: VALLE REAL & ZONA REAL (FASE DE EXPLORACIÓN) -->
-                    <div class="relative overflow-hidden rounded-3xl bg-slate-900/40 border border-white/10 p-8 shadow-xl flex flex-col justify-between group hover:border-cyan-500/40 transition-all">
-                        <div class="relative z-10 space-y-5">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-[11px] font-mono font-extrabold uppercase tracking-wider border border-cyan-400/20">
-                                    FASE DE POSTULACIÓN
-                                </span>
-                                <span class="text-xs font-mono text-slate-500 font-bold">Zapopan Norte</span>
-                            </div>
-
-                            <div>
-                                <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                                    Epicentro Zona Real
-                                </h3>
-                                <p class="text-xs font-mono text-cyan-400 mt-1">
-                                    Valle Real, Solares & Av. Aviación
-                                </p>
-                            </div>
-
-                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Preparando la propuesta para conectar la alta densidad de cotos residenciales de Zona Real con comercio de autor, servicios premium para el hogar y gastronomía local.
-                            </p>
-
-                            <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1.5">
-                                <div class="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">Participación vecinal:</div>
-                                <div class="text-xs text-slate-300 leading-relaxed font-medium">
-                                    Estamos recibiendo firmas y postulaciones de vecinos para abrir este nodo.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative z-10 pt-6 mt-6 border-t border-white/10 flex items-center justify-between">
-                            <span class="text-xs text-slate-400 font-medium">¿Vives aquí?</span>
-                            <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20quiero%20votar%20para%20abrir%20Epicentro%20Zona%20Real" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 border border-cyan-500/30 text-xs font-bold transition-all">
-                                <span>Votar por esta zona</span>
-                                <i class="ph-bold ph-thumbs-up"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- CARD HORIZONTAL: LLEVA UN EPICENTRO A TU COTO / FRACCIONAMIENTO -->
-                <div class="mt-12 p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-slate-950 border border-emerald-500/30 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
-                    <div class="space-y-4 max-w-2xl">
-                        <span class="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                            PARA COMITÉS DE COLONOS & ADMINISTRACIONES
-                        </span>
-                        <h3 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                            ¿Quieres un Epicentro en tu Fraccionamiento?
-                        </h3>
-                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                            Hipha diseña, implementa y dinamiza la plataforma digital de tu zona residencial en menos de <strong class="text-emerald-400">7 días</strong>. Sin costo de instalación para los residentes, con geocercas seguras y canal oficial de comunicación para la mesa directiva.
-                        </p>
-                    </div>
-
-                    <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20soy%20administrador/vecino%20y%20quiero%20solicitar%20un%20Epicentro%20para%20mi%20coto" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(16,185,129,0.3)] shrink-0">
-                        <i class="ph-bold ph-buildings text-xl"></i>
-                        <span>Solicitar Epicentro para mi Comunidad</span>
-                        <i class="ph-bold ph-arrow-right"></i>
-                    </a>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- 4. PARA COMERCIOS: ¿POR QUÉ SUMARTE A LA RED? -->
-        <section id="para-comercios" class="py-20 px-6 border-t border-white/5 relative">
-            <div class="max-w-7xl mx-auto">
-                
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-                    <span class="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3.5 py-1 rounded-full border border-emerald-500/20">
-                        OPORTUNIDAD COMERCIAL
+                <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3">
+                    <span class="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-teal-400 uppercase bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/20">
+                        02 · LA RED QUE NUTRE
                     </span>
-                    <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                        ¿Tienes un negocio o servicio local?
+                    <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+                        Cada coto es un nodo.<br />
+                        Así se conectan las Hiphas.
                     </h2>
-                    <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-                        Deja de depender de volantes en papel que terminan en la basura o de comisiones excesivas en apps tradicionales. Así te impulsa Epicentro:
+                    <p class="text-slate-400 text-xs sm:text-base leading-relaxed">
+                        Como las hifas de los hongos bajo la tierra, Hipha enlaza tres dimensiones en cada fraccionamiento:
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
                     
-                    <div class="glass-panel p-8 rounded-3xl border border-white/10 space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-emerald-400 text-2xl">
-                            <i class="ph-bold ph-users-three"></i>
+                    <div class="glass-panel p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10 space-y-2 sm:space-y-4">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 flex items-center justify-center text-teal-400 text-xl sm:text-2xl">
+                            <i class="ph-bold ph-storefront"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-white">Audiencia Cautiva y Vecina</h4>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Llegas directamente a las familias que viven en los cotos alrededor de tu local. Vecinos con poder adquisitivo que buscan resolver comida, farmacia, servicios y mantenimiento sin desplazarse lejos.
+                        <h4 class="text-base sm:text-xl font-bold text-white">12 Categorías Curadas</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Desde postres y comida preparada hasta veterinarias, clases, atención médica y oficios de confianza.
                         </p>
                     </div>
 
-                    <div class="glass-panel p-8 rounded-3xl border border-white/10 space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-cyan-400 text-2xl">
-                            <i class="ph-bold ph-money"></i>
+                    <div class="glass-panel p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10 space-y-2 sm:space-y-4">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 flex items-center justify-center text-fuchsia-400 text-xl sm:text-2xl">
+                            <i class="ph-bold ph-sparkle"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-white">Cero Comisión por Pedido</h4>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            El cliente te escribe directo a tu propio WhatsApp o te llama por teléfono. Tú fijas tus precios, tus métodos de cobro y tus zonas de reparto. Hipha no se queda con ningún porcentaje de tus ventas.
+                        <h4 class="text-base sm:text-xl font-bold text-white">Cultura & Tablón Cívico</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Cartelera oficial de la Casa de la Cultura, talleres vecinales, ferias y avisos cívicos verificados.
                         </p>
                     </div>
 
-                    <div class="glass-panel p-8 rounded-3xl border border-white/10 space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-fuchsia-400 text-2xl">
-                            <i class="ph-bold ph-rocket-launch"></i>
+                    <div class="glass-panel p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10 space-y-2 sm:space-y-4">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 flex items-center justify-center text-emerald-400 text-xl sm:text-2xl">
+                            <i class="ph-bold ph-brain"></i>
                         </div>
-                        <h4 class="text-xl font-bold text-white">Potencia de Agencia Hipha</h4>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Al formar parte de la red, tienes acceso preferencial al equipo de Hipha para crear tu identidad de marca, optimizar tus campañas de pauta en Meta/Google y posicionarte en buscadores con IA.
+                        <h4 class="text-base sm:text-xl font-bold text-white">IA Agéntica & GEO</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Infraestructura técnica optimizada con `llms.txt` y geoposicionamiento para motores como ChatGPT y Gemini.
                         </p>
                     </div>
 
                 </div>
 
-                <div class="mt-12 text-center">
-                    <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20quiero%20registrar%20mi%20negocio%20al%20Epicentro" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all">
-                        <i class="ph-bold ph-whatsapp-logo text-lg"></i>
-                        <span>Quiero dar de alta mi negocio</span>
-                    </a>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- PANTALLA 4: DESIGN FLOW BLANCO (EMERGEMOS A LA SUPERFICIE)  -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <section class="slide-section w-full h-screen relative flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-[#fafafc] text-slate-900" id="slide-3">
+            
+            <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 sm:space-y-8 pt-8 sm:pt-0">
+                
+                <!-- Logo Epicentro en versión oscura sobre blanco -->
+                <div class="flex justify-center">
+                    <img src="/projects/Epicentro/Assets/Epicentro2.svg" alt="Epicentro" class="h-8 sm:h-12 drop-shadow-sm">
+                </div>
+
+                <!-- Tag Superior en blanco -->
+                <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-emerald-500/15 border border-emerald-600/30 text-emerald-800 text-[10px] sm:text-xs font-mono font-bold tracking-wider">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                    <span>EL FUTURO DEL COMERCIO ES LOCAL</span>
+                </div>
+
+                <!-- H2 Monumental -->
+                <h2 class="text-2xl sm:text-5xl lg:text-6xl font-black text-slate-950 tracking-tight leading-[1.1]">
+                    Salimos de las sombras.<br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700">El poder vuelve al barrio.</span>
+                </h2>
+
+                <p class="text-slate-600 text-xs sm:text-lg max-w-2xl mx-auto leading-relaxed font-normal">
+                    La tecnología de Hipha florece a la luz del día: interfaces limpias, compras sin peajes y una red viva de cotos que se respaldan mutuamente.
+                </p>
+
+                <!-- BOTÓN PRINCIPAL REQUERIDO: "Explorar los epicentros de hiphas" -->
+                <div class="pt-2 sm:pt-4 flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
+                    <button onclick="openEpicentrosModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 sm:gap-4 px-6 sm:px-9 py-3.5 sm:py-5 rounded-full bg-slate-950 hover:bg-emerald-600 text-white font-black text-sm sm:text-lg transition-all shadow-[0_12px_40px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_50px_rgba(16,185,129,0.35)] transform hover:-translate-y-1 group">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                        <span>Explorar los Epicentros de Hiphas</span>
+                        <i class="ph-bold ph-arrow-right text-base sm:text-xl group-hover:translate-x-1.5 transition-transform shrink-0"></i>
+                    </button>
+                    <span class="text-[10px] sm:text-xs font-mono text-slate-500">
+                        Haz clic para ver las zonas activas y en preparación
+                    </span>
+                </div>
+
+                <!-- Footer de Autor -->
+                <div class="pt-4 sm:pt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-slate-500 font-mono">
+                    <a href="/" class="hover:text-slate-800 transition-colors">Hipha Marketing Digital</a>
+                    <span>·</span>
+                    <span>Zapopan & Guadalajara, México</span>
+                    <span>·</span>
+                    <a href="/aviso-de-privacidad" class="hover:text-slate-800 transition-colors">Privacidad</a>
                 </div>
 
             </div>
@@ -496,89 +433,318 @@
 
     </main>
 
-    <!-- FOOTER OFICIAL DE HIPHA -->
-    <footer id="site-footer" class="relative z-10">
-        <div class="h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
-        <div class="bg-[#050810]/95 backdrop-blur-xl pt-16 pb-10">
-            <div class="max-w-7xl mx-auto px-6 relative">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-                    
-                    <!-- Branding & Info -->
-                    <div class="space-y-5">
-                        <a href="/" class="inline-block group">
-                            <img src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha Logo" class="h-12 transition-transform group-hover:scale-105">
-                        </a>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Tu departamento de marketing externo. Desarrollamos y operamos plataformas hiperlocales y estrategias de crecimiento digital impulsadas por agentes e inteligencia artificial.
-                        </p>
-                        <p class="text-xs text-slate-600 italic border-l-2 border-emerald-500/40 pl-3 leading-relaxed">
-                            &ldquo;El micelio que todo conecta · Red Epicentro Hipha.&rdquo;
-                        </p>
-                    </div>
+    <!-- ─── MODAL EMERGENTE INTERACTIVO DE EPICENTROS (DIALOG NATIVO) ─── -->
+    <dialog id="epicentros-modal" aria-labelledby="modal-title">
+        <div class="glass-panel p-5 sm:p-10 rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl relative bg-[#070c18]/95 backdrop-blur-2xl text-white space-y-4 sm:space-y-6 max-h-[85vh] overflow-y-auto">
+            
+            <!-- Botón Cerrar (Top Right) -->
+            <button onclick="closeEpicentrosModal()" class="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-colors" aria-label="Cerrar ventana">
+                <i class="ph-bold ph-x text-lg"></i>
+            </button>
 
-                    <!-- Contacto Directo -->
-                    <div>
-                        <h4 class="text-white font-semibold mb-6 flex items-center gap-2">
-                            <i class="ph-fill ph-envelope-simple-open text-emerald-500"></i> Contacto Directo
-                        </h4>
-                        <div class="space-y-3">
-                            <a href="mailto:hola@hipha.mx" class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors text-sm group">
-                                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/20 group-hover:text-emerald-400 transition-colors">
-                                    <i class="ph ph-envelope text-base"></i>
-                                </div>
-                                hola@hipha.mx
-                            </a>
-                            <a href="https://wa.me/523336762545" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 text-slate-400 hover:text-white transition-colors text-sm group">
-                                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/20 group-hover:text-emerald-400 transition-colors">
-                                    <i class="ph-bold ph-whatsapp-logo text-base"></i>
-                                </div>
-                                +52 33 3676 2545
-                            </a>
-                            <div class="flex items-center gap-3 text-slate-400 text-sm">
-                                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                                    <i class="ph ph-map-pin text-base"></i>
-                                </div>
-                                Guadalajara & Zapopan, Jalisco, México
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Bottom Bar -->
-                <div class="pt-8 mt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p class="text-slate-500 text-sm text-center md:text-left">
-                        &copy; 2026 Hipha. Todos los derechos reservados · Epicentro de Hiphas.
-                    </p>
-                    <div class="flex items-center gap-6">
-                        <a href="/aviso-de-privacidad" class="text-slate-500 hover:text-slate-300 transition-colors text-sm">Aviso de Privacidad</a>
-                        <a href="/terminos-y-condiciones" class="text-slate-500 hover:text-slate-300 transition-colors text-sm">Términos y Condiciones</a>
-                    </div>
-                </div>
+            <!-- Encabezado del Modal -->
+            <div class="space-y-2 pr-10">
+                <span class="text-[11px] font-mono font-bold tracking-widest text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                    RED TERRITORIAL ACTIVA
+                </span>
+                <h3 id="modal-title" class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                    Elige tu Epicentro
+                </h3>
+                <p class="text-slate-400 text-xs sm:text-sm">
+                    Selecciona tu comunidad para acceder a su oferta local o postula tu zona.
+                </p>
             </div>
-        </div>
-    </footer>
 
-    <!-- Sub-footer (Desarrollado por) -->
-    <div class="relative z-10 bg-[#0A0F1C] py-3.5 border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6 flex justify-center items-center">
-            <a href="https://www.hipha.mx/" class="opacity-80 hover:opacity-100 transition-opacity">
-                <img src="/projects/HiphaMX/HiphaIdentidad/desarrollado-por.svg" alt="Desarrollado por Hipha" class="h-6 md:h-8">
-            </a>
-        </div>
-    </div>
+            <!-- Grilla de Nodos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                
+                <!-- NODO 1: NATURA BOSQUE RESIDENCIAL (ACTIVO) -->
+                <div class="p-5 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-emerald-500/60 shadow-lg flex flex-col justify-between space-y-4 hover:border-emerald-400 transition-all">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold uppercase border border-emerald-400/40">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                EN VIVO · ACTIVO
+                            </span>
+                            <span class="text-[10px] font-mono text-slate-500">Zapopan Sur</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">Epicentro Natura</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Cotos Ceiba, Los Robles, El Fortín, Luna Bosque, La Granja y Monte Verde. 12 categorías, delivery directo y Cultura Natura.
+                        </p>
+                    </div>
+                    <a href="/epicentro/natura" class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-all shadow-md">
+                        <span>Entrar al Epicentro</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
 
-    <!-- Mobile Menu Script -->
+                <!-- NODO 2: BUGAMBILIAS & EL PALOMAR (MAPEO) -->
+                <div class="p-5 rounded-2xl bg-slate-900/60 border border-white/10 shadow-lg flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition-all">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 text-[10px] font-mono font-bold uppercase border border-amber-400/30">
+                                PRÓXIMAMENTE
+                            </span>
+                            <span class="text-[10px] font-mono text-slate-500">López Mateos Sur</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">Bugambilias & Palomar</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Mapeando restaurantes de terrazas panorámicas, cafeterías, veterinarias y colegios locales.
+                        </p>
+                    </div>
+                    <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20tengo%20un%20negocio%20en%20Bugambilias/Palomar%20y%20quiero%20registrarlo%20al%20Epicentro" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-xs transition-all">
+                        <span>Registrar mi negocio</span>
+                        <i class="ph-bold ph-whatsapp-logo"></i>
+                    </a>
+                </div>
+
+                <!-- NODO 3: VALLE REAL & ZONA REAL (POSTULACIÓN) -->
+                <div class="p-5 rounded-2xl bg-slate-900/40 border border-white/10 shadow-lg flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 text-[10px] font-mono font-bold uppercase border border-cyan-400/20">
+                                EN POSTULACIÓN
+                            </span>
+                            <span class="text-[10px] font-mono text-slate-500">Zapopan Norte</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">Zona Real & Solares</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Recibiendo firmas y postulaciones de vecinos para abrir el nodo comercial y gastronómico.
+                        </p>
+                    </div>
+                    <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20quiero%20votar%20para%20abrir%20Epicentro%20Zona%20Real" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold text-xs transition-all">
+                        <span>Votar por esta zona</span>
+                        <i class="ph-bold ph-thumbs-up"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Card Horizontal: Para Administraciones de Fraccionamientos -->
+            <div class="p-5 rounded-2xl bg-white/[0.03] border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="space-y-1 text-center sm:text-left">
+                    <span class="text-[10px] font-mono uppercase text-emerald-400 font-bold">Para Comités de Colonos</span>
+                    <h5 class="text-sm sm:text-base font-bold text-white">¿Quieres habilitar un Epicentro en tu Fraccionamiento?</h5>
+                    <p class="text-xs text-slate-400">Hipha lo instala y dinamiza en 7 días sin costo inicial para los residentes.</p>
+                </div>
+                <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20quiero%20un%20Epicentro%20para%20mi%20coto" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-all">
+                    <i class="ph-bold ph-buildings text-base"></i>
+                    <span>Solicitar para mi Fraccionamiento</span>
+                </a>
+            </div>
+
+        </div>
+    </dialog>
+
+    <!-- ─── JAVASCRIPT: SLIDE DECK FULLSCREEN, CURSOR & MODAL ─── -->
     <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('active');
-            menu.setAttribute('aria-hidden', !menu.classList.contains('active'));
+        // ─── 1. CONTROLADOR DE DIAPOSITIVAS FULLSCREEN ──────────────────
+        let currentSlide = 0;
+        const totalSlides = 4;
+        let isAnimating = false;
+        const track = document.getElementById('slides-track');
+        const dots = document.querySelectorAll('.slide-dot');
+        const header = document.getElementById('deck-header');
+        const headerCta = document.getElementById('header-cta-btn');
+        const hiphaLogo = document.getElementById('nav-hipha-logo');
+        const epicentroLogo = document.getElementById('nav-epicentro-logo');
+        const navDivider = document.getElementById('nav-divider');
+
+        function updateSlideUI() {
+            // Desplazamiento vertical de 1 pantalla
+            track.style.transform = `translateY(-${currentSlide * 100}vh)`;
+
+            // Adaptación de la cabecera y dots según la diapositiva
+            const isWhiteSlide = (currentSlide === 3);
+
+            // Actualizar estado de los dots laterales
+            dots.forEach((dot, idx) => {
+                const indicator = dot.querySelector('.slide-dot-indicator');
+                const label = dot.querySelector('.slide-dot-label');
+                
+                if (label) {
+                    label.className = isWhiteSlide
+                        ? 'slide-dot-label text-[10px] font-mono tracking-widest text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity uppercase'
+                        : 'slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase';
+                }
+
+                if (idx === currentSlide) {
+                    indicator.className = isWhiteSlide
+                        ? 'slide-dot-indicator w-2.5 h-2.5 rounded-full bg-emerald-600 scale-125 shadow-[0_0_12px_#059669] transition-all'
+                        : 'slide-dot-indicator w-2.5 h-2.5 rounded-full bg-emerald-400 scale-125 shadow-[0_0_12px_#34d399] transition-all';
+                } else {
+                    indicator.className = isWhiteSlide
+                        ? 'slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-300 transition-all'
+                        : 'slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-600 transition-all';
+                }
+            });
+
+            // Adaptación de la cabecera según la diapositiva
+            const agencyLink = document.getElementById('nav-agency-link');
+            if (isWhiteSlide) {
+                // Diapositiva 4 (White Theme)
+                header.className = 'fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm';
+                headerCta.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-md bg-slate-950 text-white hover:bg-emerald-600';
+                hiphaLogo.src = '/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaDark.svg';
+                epicentroLogo.src = '/projects/Epicentro/Assets/Epicentro2.svg';
+                navDivider.className = 'text-slate-400 font-extralight text-xl sm:text-2xl select-none';
+                if (agencyLink) agencyLink.className = 'text-xs font-semibold text-slate-600 hover:text-slate-950 transition-colors hidden md:inline-flex items-center gap-1';
+            } else {
+                // Diapositivas 1, 2 y 3 (Dark Theme)
+                header.className = 'fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500 bg-transparent border-b border-transparent';
+                headerCta.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 hover:bg-emerald-500/30';
+                hiphaLogo.src = '/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg';
+                epicentroLogo.src = '/projects/Epicentro/Assets/Epicentro.svg';
+                navDivider.className = 'text-slate-500 font-extralight text-xl sm:text-2xl select-none';
+                if (agencyLink) agencyLink.className = 'text-xs font-semibold text-slate-400 hover:text-white transition-colors hidden md:inline-flex items-center gap-1';
+            }
         }
-        function closeMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.remove('active');
-            menu.setAttribute('aria-hidden', 'true');
+
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides || isAnimating) return;
+            isAnimating = true;
+            track.classList.add('smooth-scroll');
+            currentSlide = index;
+            updateSlideUI();
+            setTimeout(() => { isAnimating = false; }, 750);
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        // Evento rueda del mouse (Wheel) con debounce
+        window.addEventListener('wheel', (e) => {
+            // No activar cambio de diapositiva si el modal está abierto
+            const modal = document.getElementById('epicentros-modal');
+            if (modal.open) return;
+
+            if (Math.abs(e.deltaY) < 25) return;
+            if (e.deltaY > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }, { passive: true });
+
+        // Evento táctil (Touch Swipe para móviles)
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            const modal = document.getElementById('epicentros-modal');
+            if (modal.open) return;
+
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            if (Math.abs(diff) > 45) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        }, { passive: true });
+
+        // Navegación con teclado (Flechas arriba / abajo / barra espaciadora)
+        window.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('epicentros-modal');
+            if (modal.open) return;
+
+            if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // ─── 2. CURSOR BIOLUMINISCENTE ─────────────────────────────────
+        (function initCursor() {
+            const dot = document.getElementById('cursor-dot');
+            const ring = document.getElementById('cursor-ring');
+            if (!dot || !ring || !window.matchMedia('(pointer: fine)').matches) return;
+
+            let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+            let rx = cx, ry = cy;
+
+            document.addEventListener('mousemove', e => {
+                cx = e.clientX; cy = e.clientY;
+                dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
+            });
+
+            function lerp() {
+                rx += (cx - rx) * 0.14;
+                ry += (cy - ry) * 0.14;
+                ring.style.left = rx + 'px';
+                ring.style.top = ry + 'px';
+                requestAnimationFrame(lerp);
+            }
+            requestAnimationFrame(lerp);
+
+            document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+            document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+            const attachHover = () => {
+                document.querySelectorAll('a, button, [role="button"], input, select, .slide-dot').forEach(el => {
+                    if (!el.dataset.cursorBound) {
+                        el.dataset.cursorBound = 'true';
+                        el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+                        el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+                    }
+                });
+            };
+            attachHover();
+            new MutationObserver(attachHover).observe(document.body, { childList: true, subtree: true });
+        })();
+
+        // ─── 3. MODAL NATIVO (<dialog>) ────────────────────────────────
+        const modal = document.getElementById('epicentros-modal');
+
+        function openEpicentrosModal() {
+            if (modal && typeof modal.showModal === 'function') {
+                modal.showModal();
+            }
+        }
+
+        function closeEpicentrosModal() {
+            if (modal && typeof modal.close === 'function') {
+                modal.close();
+            }
+        }
+
+        // Cierre con clic fuera del contenido (Light Dismiss per modern-web-guidance)
+        modal.addEventListener('click', (e) => {
+            const rect = modal.getBoundingClientRect();
+            const isInDialog = (
+                rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+                rect.left <= e.clientX && e.clientX <= rect.left + rect.width
+            );
+            if (!isInDialog) {
+                closeEpicentrosModal();
+            }
+        });
+
+
+        // Inicializar estado con soporte para deep linking (?slide=0..3 & ?modal=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialSlide = parseInt(urlParams.get('slide'), 10);
+        if (!isNaN(initialSlide) && initialSlide >= 0 && initialSlide < totalSlides) {
+            currentSlide = initialSlide;
+        }
+        updateSlideUI(true);
+
+        if (urlParams.get('modal') === 'true' || urlParams.get('modal') === '1') {
+            openEpicentrosModal();
         }
     </script>
 </body>
