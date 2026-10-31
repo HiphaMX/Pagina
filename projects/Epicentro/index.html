@@ -138,30 +138,25 @@
     <div id="cursor-ring"></div>
 
     <!-- ─── CABECERA FIJA SUPERIOR (HIPHA × EPICENTRO MIMETIZADOS) ─── -->
-    <header class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 transition-colors duration-500" id="deck-header">
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 transition-all duration-500" id="deck-header">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             
             <!-- Dual Logo: Hipha + Divisor + Epicentro -->
             <div class="flex items-center gap-2 sm:gap-4">
                 <a href="/" class="flex items-center group" title="Regresar al Home de Hipha">
-                    <img id="nav-hipha-logo" src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha" class="h-6 sm:h-8 transition-transform group-hover:scale-105">
+                    <img id="nav-hipha-logo" src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha" class="h-10 md:h-14 transition-transform group-hover:scale-105 w-auto object-contain">
                 </a>
-                <span id="nav-divider" class="text-slate-500 font-extralight text-lg sm:text-2xl select-none">/</span>
+                <span id="nav-divider" class="text-slate-500 font-extralight text-2xl md:text-3xl select-none">/</span>
                 <div class="flex items-center">
-                    <img id="nav-epicentro-logo" src="/projects/Epicentro/Assets/Epicentro.svg" alt="Epicentro" class="h-4 sm:h-6 transition-transform group-hover:scale-105">
+                    <img id="nav-epicentro-logo" src="/projects/Epicentro/Assets/Epicentro.svg" alt="Epicentro" class="h-7 md:h-10 transition-transform group-hover:scale-105 w-auto object-contain">
                 </div>
             </div>
 
-            <!-- Controles a la derecha -->
+            <!-- Controles a la derecha (Regreso al home de la agencia) -->
             <div class="flex items-center gap-2 sm:gap-4">
-                <button onclick="openEpicentrosModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all shadow-sm" id="header-cta-btn">
-                    <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="hidden sm:inline">Explorar Nodos</span>
-                    <span class="sm:hidden">Nodos</span>
-                    <i class="ph-bold ph-compass text-xs sm:text-sm"></i>
-                </button>
-                <a href="/" id="nav-agency-link" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors hidden md:inline-flex items-center gap-1">
-                    <span>← Agencia Hipha</span>
+                <a href="/" id="nav-agency-link" class="text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10">
+                    <i class="ph-bold ph-arrow-left text-xs"></i>
+                    <span>Agencia Hipha</span>
                 </a>
             </div>
 
@@ -170,8 +165,8 @@
 
     <!-- ─── NAVEGADOR LATERAL DE DIAPOSITIVAS (DOTS 01-04) ─── -->
     <aside class="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-4" aria-label="Navegación de diapositivas">
-        <button onclick="goToSlide(0)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 1: Manifiesto">
-            <span class="slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">01 Manifiesto</span>
+        <button onclick="goToSlide(0)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 1: Revolución del micelio">
+            <span class="slide-dot-label text-[10px] font-mono tracking-widest text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">01 Revolución</span>
             <span class="slide-dot-indicator w-2.5 h-2.5 rounded-full bg-slate-600 transition-all"></span>
         </button>
         <button onclick="goToSlide(1)" class="slide-dot group flex items-center justify-end gap-3 text-right" aria-label="Ir a diapositiva 2: ¿Qué es un Epicentro?">
@@ -192,7 +187,7 @@
     <main id="slides-track" class="w-full h-full">
 
         <!-- ══════════════════════════════════════════════════════════════ -->
-        <!-- PANTALLA 1: EL MANIFIESTO (LA REBELIÓN CONTRA EL ALGORITMO) -->
+        <!-- PANTALLA 1: LA REVOLUCIÓN DEL MICELIO                       -->
         <!-- ══════════════════════════════════════════════════════════════ -->
         <section class="slide-section w-full h-screen relative flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-[#050810]" id="slide-0">
             <!-- Blobs bioluminiscentes de fondo -->
@@ -204,7 +199,7 @@
                 <!-- Tag Superior -->
                 <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[10px] sm:text-xs font-mono font-bold tracking-wider shadow-[0_0_20px_rgba(6,182,212,0.2)]">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
-                    <span>MANIFIESTO · REVOLUCIÓN DEL MICELIO</span>
+                    <span>REVOLUCIÓN DEL MICELIO</span>
                 </div>
 
                 <!-- H1 Monumental -->
@@ -274,9 +269,9 @@
                                 <i class="ph-bold ph-navigation-arrow"></i>
                             </div>
                             <span class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400">Pilar 01</span>
-                            <h3 class="text-base sm:text-xl font-bold text-white">Proximidad Real (Km 0)</h3>
+                            <h3 class="text-base sm:text-xl font-bold text-white">Proximidad Real · Máx. 3 km</h3>
                             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Solo la cafetería, el médico, la farmacia o el plomero que están a pasos de tu caseta.
+                                Nuestra zona de influencia son máx. 3 km del epicentro, eso nos permite que nuestra vida transcurra de forma tranquila.
                             </p>
                         </div>
                         <div class="pt-2 sm:pt-4 mt-3 sm:mt-6 border-t border-white/5 text-[10px] sm:text-[11px] font-mono text-emerald-300">
@@ -348,7 +343,7 @@
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 flex items-center justify-center text-teal-400 text-xl sm:text-2xl">
                             <i class="ph-bold ph-storefront"></i>
                         </div>
-                        <h4 class="text-base sm:text-xl font-bold text-white">12 Categorías Curadas</h4>
+                        <h4 class="text-base sm:text-xl font-bold text-white">12 Categorías</h4>
                         <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
                             Desde postres y comida preparada hasta veterinarias, clases, atención médica y oficios de confianza.
                         </p>
@@ -358,7 +353,7 @@
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 flex items-center justify-center text-fuchsia-400 text-xl sm:text-2xl">
                             <i class="ph-bold ph-sparkle"></i>
                         </div>
-                        <h4 class="text-base sm:text-xl font-bold text-white">Cultura & Tablón Cívico</h4>
+                        <h4 class="text-base sm:text-xl font-bold text-white">Arte & Cultura</h4>
                         <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
                             Cartelera oficial de la Casa de la Cultura, talleres vecinales, ferias y avisos cívicos verificados.
                         </p>
@@ -386,9 +381,11 @@
             
             <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 sm:space-y-8 pt-8 sm:pt-0">
                 
-                <!-- Logo Epicentro en versión oscura sobre blanco -->
-                <div class="flex justify-center">
-                    <img src="/projects/Epicentro/Assets/Epicentro2.svg" alt="Epicentro" class="h-8 sm:h-12 drop-shadow-sm">
+                <!-- Logos Hipha & Epicentro mimetizados sin cortes -->
+                <div class="flex items-center justify-center gap-3 sm:gap-5">
+                    <img src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaDark.svg" alt="Hipha" class="h-9 sm:h-14 drop-shadow-sm w-auto object-contain">
+                    <span class="text-slate-400 font-extralight text-2xl sm:text-4xl select-none">/</span>
+                    <img src="/projects/Epicentro/Assets/Epicentro2.svg" alt="Epicentro" class="h-7 sm:h-10 drop-shadow-sm w-auto object-contain">
                 </div>
 
                 <!-- Tag Superior en blanco -->
@@ -407,11 +404,11 @@
                     La tecnología de Hipha florece a la luz del día: interfaces limpias, compras sin peajes y una red viva de cotos que se respaldan mutuamente.
                 </p>
 
-                <!-- BOTÓN PRINCIPAL REQUERIDO: "Explorar los epicentros de hiphas" -->
+                <!-- BOTÓN PRINCIPAL REQUERIDO: "Explorar epicentros" -->
                 <div class="pt-2 sm:pt-4 flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
                     <button onclick="openEpicentrosModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 sm:gap-4 px-6 sm:px-9 py-3.5 sm:py-5 rounded-full bg-slate-950 hover:bg-emerald-600 text-white font-black text-sm sm:text-lg transition-all shadow-[0_12px_40px_rgba(0,0,0,0.25)] hover:shadow-[0_16px_50px_rgba(16,185,129,0.35)] transform hover:-translate-y-1 group">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                        <span>Explorar los Epicentros de Hiphas</span>
+                        <span>Explorar epicentros</span>
                         <i class="ph-bold ph-arrow-right text-base sm:text-xl group-hover:translate-x-1.5 transition-transform shrink-0"></i>
                     </button>
                     <span class="text-[10px] sm:text-xs font-mono text-slate-500">
@@ -546,10 +543,10 @@
         const track = document.getElementById('slides-track');
         const dots = document.querySelectorAll('.slide-dot');
         const header = document.getElementById('deck-header');
-        const headerCta = document.getElementById('header-cta-btn');
         const hiphaLogo = document.getElementById('nav-hipha-logo');
         const epicentroLogo = document.getElementById('nav-epicentro-logo');
         const navDivider = document.getElementById('nav-divider');
+        const agencyLink = document.getElementById('nav-agency-link');
 
         function updateSlideUI() {
             // Desplazamiento vertical de 1 pantalla
@@ -581,23 +578,24 @@
             });
 
             // Adaptación de la cabecera según la diapositiva
-            const agencyLink = document.getElementById('nav-agency-link');
             if (isWhiteSlide) {
                 // Diapositiva 4 (White Theme)
-                header.className = 'fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm';
-                headerCta.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-md bg-slate-950 text-white hover:bg-emerald-600';
+                header.className = 'fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 transition-all duration-500 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm';
                 hiphaLogo.src = '/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaDark.svg';
                 epicentroLogo.src = '/projects/Epicentro/Assets/Epicentro2.svg';
-                navDivider.className = 'text-slate-400 font-extralight text-xl sm:text-2xl select-none';
-                if (agencyLink) agencyLink.className = 'text-xs font-semibold text-slate-600 hover:text-slate-950 transition-colors hidden md:inline-flex items-center gap-1';
+                navDivider.className = 'text-slate-400 font-extralight text-2xl md:text-3xl select-none';
+                if (agencyLink) {
+                    agencyLink.className = 'text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-300';
+                }
             } else {
                 // Diapositivas 1, 2 y 3 (Dark Theme)
-                header.className = 'fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500 bg-transparent border-b border-transparent';
-                headerCta.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all shadow-sm bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 hover:bg-emerald-500/30';
+                header.className = 'fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 transition-all duration-500 bg-transparent border-b border-transparent';
                 hiphaLogo.src = '/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg';
                 epicentroLogo.src = '/projects/Epicentro/Assets/Epicentro.svg';
-                navDivider.className = 'text-slate-500 font-extralight text-xl sm:text-2xl select-none';
-                if (agencyLink) agencyLink.className = 'text-xs font-semibold text-slate-400 hover:text-white transition-colors hidden md:inline-flex items-center gap-1';
+                navDivider.className = 'text-slate-500 font-extralight text-2xl md:text-3xl select-none';
+                if (agencyLink) {
+                    agencyLink.className = 'text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10';
+                }
             }
         }
 
