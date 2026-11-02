@@ -1117,7 +1117,7 @@ export default function EpicentroNaturaCleanLight() {
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-[11px] font-mono font-extrabold uppercase tracking-wider border border-blue-400/40">
                     <Megaphone className="w-3.5 h-3.5" />
-                    <span>CANAL VECINAL · AVISOS EN COTOS</span>
+                    <span>CANAL DE AVISOS COMUNITARIOS EPICENTRO</span>
                   </span>
                   <span className="text-[11px] font-bold text-blue-400/80 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
                     Enlace Directo
@@ -1129,20 +1129,20 @@ export default function EpicentroNaturaCleanLight() {
                 </h3>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  Muro vecinal para reporte urgente de mascotas extraviadas, comunicados de comités de colonos, ofertas de empleo local y causas solidarias de nuestra zona.
+                  Canal de comunicación vecinal para reporte urgente de mascotas extraviadas, ofertas de empleo local y causas solidarias de nuestra zona.
                 </p>
               </div>
 
               <div className="relative z-10 pt-6 mt-6 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <span className="text-xs font-semibold text-blue-300 flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Contacto directo entre residentes por WhatsApp</span>
+                  <span>Avisos a la comunidad por whatsapp</span>
                 </span>
                 <Link
                   href="/comunidad-natura"
                   className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs transition-all shadow-md active:scale-95"
                 >
-                  <span>Ir a Avisos Vecinales</span>
+                  <span>Entrar al canal</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
