@@ -124,9 +124,18 @@
 <body class="min-h-screen bg-snow-200 text-slate-900 font-sans flex flex-col antialiased selection:bg-amber-500 selection:text-white">
 
   <!-- TOP BAR COMUNITARIA -->
-  <aside class="bg-slate-950 text-white text-xs py-2 px-4 border-b border-slate-800 text-center">
-    <div class="max-w-7xl mx-auto flex items-center justify-center">
-      <span class="font-extrabold tracking-wide text-xs">Comunidad Epicentro Natura</span>
+  <aside class="bg-brand-black text-white text-xs py-2 px-4 border-b border-brand-slate">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="/epicentro" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition-colors text-xs font-semibold">
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+        <span>Red Epicentros Hipha</span>
+      </a>
+      <span class="font-bold text-slate-200 tracking-wide text-xs sm:text-[13px]">
+        Comunidad Epicentro Natura
+      </span>
+      <a href="https://hipha.mx" class="hidden sm:inline-flex items-center gap-1 text-[11px] font-mono text-slate-400 hover:text-white transition-colors">
+        <span>by Hipha</span>
+      </a>
     </div>
   </aside>
 
@@ -136,17 +145,14 @@
       <div class="flex items-center justify-between h-20 gap-3">
         
         <!-- LOGO -->
-        <a href="index.html" class="flex items-center gap-2 group shrink-0" title="Ir a la portada de Epicentro Natura">
-          <div class="w-10 h-10 rounded-2xl bg-amber-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-amber-600/20 group-hover:scale-105 transition-transform">
-            <i data-lucide="palette" class="w-5 h-5"></i>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex items-center gap-1.5">
-              <span class="text-lg font-black tracking-tight text-slate-950">Epicentro</span>
-              <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/40">natura</span>
-            </div>
-            <span class="text-[10px] font-semibold text-slate-500">Cultura Natura</span>
-          </div>
+        <a href="index.html" class="flex items-center gap-2.5 group shrink-0" title="Ir a la portada de Epicentro Natura">
+          <img src="Assets/Epicentro2.svg" alt="Epicentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/30">
+            natura
+          </span>
+          <span class="text-xs font-bold text-amber-600 hidden sm:inline-block px-2.5 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+            Cultura & Deportes
+          </span>
         </a>
 
         <!-- ACCIONES RÁPIDAS -->
@@ -412,20 +418,48 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-brand-black text-white text-xs py-8 px-4 border-t border-brand-slate mt-12">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2">
-        <span class="text-base font-black text-white">Epicentro</span>
-        <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-brand-softMint text-brand-forest">natura</span>
-        <span class="text-slate-400 text-xs ml-2">© 2026 Plataforma Hiperlocal Comunitaria</span>
+  <!-- FOOTER AZUL MARINO (ESTILO NAVBAR HIPHA) -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-[#050810] text-slate-400 py-12 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Fila Principal: Logo Epicentro Natura + Enlaces Actualizados -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Logo Epicentro + Natura -->
+        <div class="flex items-center gap-3">
+          <img src="Assets/Epicentro.svg" alt="Epicentro" class="h-6 sm:h-7 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            natura
+          </span>
+          <span class="text-slate-600 hidden sm:inline">|</span>
+          <span class="text-slate-400 text-xs hidden sm:inline">Prolongación Mariano Otero, Zapopan, Jal.</span>
+        </div>
+
+        <!-- Enlaces Footer -->
+        <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6 text-slate-300 font-medium">
+          <a href="categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
+          <a href="cultura-natura.html" class="hover:text-amber-400 transition-colors">Cultura & Deportes</a>
+          <a href="comunidad-natura.html" class="hover:text-cyan-400 transition-colors">Comunidad</a>
+          <a href="index.html#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
+        </div>
       </div>
-      <div class="flex items-center gap-4 text-slate-400 text-xs">
-        <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
-        <a href="categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
-        <a href="comunidad-natura.html" class="hover:text-white transition-colors">Comunidad Natura</a>
-        <a href="index.html#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
+
+      <!-- Divisor sutil -->
+      <div class="border-t border-white/10"></div>
+
+      <!-- Subfooter Copyright -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-[11px] sm:text-xs">
+        <div>
+          Copyright 2026 © Epicentro · Red Territorial de Comercio Hiperlocal
+        </div>
+        <div class="flex items-center gap-2">
+          <span>Diseño by</span>
+          <a href="https://hipha.mx" target="_blank" class="inline-flex items-center hover:opacity-80 transition-opacity" title="Hipha">
+            <img src="Assets/HiphaWhite.svg" alt="Hipha" class="h-5 w-auto object-contain">
+          </a>
+        </div>
       </div>
+
     </div>
   </footer>
 

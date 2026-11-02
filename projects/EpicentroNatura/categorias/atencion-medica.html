@@ -101,11 +101,18 @@
 <body class="min-h-screen flex flex-col bg-snow-200 text-slate-900 selection:bg-brand-vibrant selection:text-white antialiased font-sans">
 
   <!-- TOP BAR COMUNITARIA -->
-  <aside class="bg-brand-black text-white text-xs py-2 px-4 border-b border-brand-slate text-center">
-    <div class="max-w-7xl mx-auto flex items-center justify-center">
+  <aside class="bg-brand-black text-white text-xs py-2 px-4 border-b border-brand-slate">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="/epicentro" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition-colors text-xs font-semibold">
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+        <span>Red Epicentros Hipha</span>
+      </a>
       <span class="font-bold text-slate-200 tracking-wide text-xs sm:text-[13px]">
         Comunidad Epicentro Natura
       </span>
+      <a href="https://hipha.mx" class="hidden sm:inline-flex items-center gap-1 text-[11px] font-mono text-slate-400 hover:text-white transition-colors">
+        <span>by Hipha</span>
+      </a>
     </div>
   </aside>
 
@@ -114,24 +121,23 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
       <div class="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
         
-        <!-- Fila Superior / Izquierda: Logo y Enlace a Home -->
+        <!-- Fila Superior / Izquierda: Logo y Botón Registrar Móvil -->
         <div class="w-full md:w-auto flex items-center justify-between gap-4">
-          <a href="index.html" class="flex items-center gap-2.5 group shrink-0">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-brand-forest to-brand-emerald text-white flex items-center justify-center shadow-md shadow-brand-emerald/20 group-hover:scale-105 transition-transform">
-              <i data-lucide="trees" class="w-6 h-6 stroke-[2.2]"></i>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xl font-black tracking-tight text-slate-950">Epicentro</span>
-              <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/30">
-                natura
-              </span>
-            </div>
+          <!-- Logo Requerido: Epicentro (Azul) + etiqueta natura -->
+          <a href="../index.html" class="flex items-center gap-2.5 group shrink-0" title="Epicentro Natura">
+            <img src="../Assets/Epicentro2.svg" alt="Epicentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
+            <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/30">
+              natura
+            </span>
           </a>
 
-          <a href="index.html" class="inline-flex md:hidden items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors">
-            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-            <span>Inicio</span>
-          </a>
+          <!-- Botón Registrar en móvil -->
+          <div class="flex md:hidden items-center gap-2">
+            <button onclick="openRegisterModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-brand-emerald hover:bg-brand-forest transition-all shadow-sm">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Registrar</span>
+            </button>
+          </div>
         </div>
 
         <!-- BUSCADOR CON SELECTOR DE CERCANÍA GEOGRÁFICA Y BOTÓN CERCA DE MÍ -->
@@ -151,14 +157,14 @@
 
             <!-- SELECTOR DE CERCANÍA GEOGRÁFICA -->
             <div class="relative shrink-0 border-l border-snow-400 pl-2 sm:pl-3 pr-1 flex items-center gap-1.5">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400"></i>
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand-forest shrink-0"></i>
               <select 
                 id="coto-select" 
                 onchange="applyAllFilters()" 
-                class="bg-transparent text-[11px] sm:text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-4 appearance-none"
+                class="bg-transparent text-[11px] sm:text-xs font-bold text-slate-800 focus:outline-none cursor-pointer max-w-[105px] sm:max-w-[170px] truncate"
               >
-                <option value="all">Toda la zona (Mariano Otero)</option>
-                <option value="natura-bosque-residencial">Natura Bosque Residencial (Epicentro)</option>
+                <option value="all">Toda la zona</option>
+                <option value="natura-bosque-residencial">Natura Bosque Residencial</option>
                 <option value="los-robles">Los Robles</option>
                 <option value="bosque-primavera">Bosque de la primavera</option>
                 <option value="el-fortin">El Fortín</option>
@@ -169,28 +175,32 @@
                 <option value="monte-verde">Monte Verde</option>
                 <option value="mision-la-floresta">Misión la Floresta</option>
               </select>
-              <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400 pointer-events-none absolute right-1"></i>
             </div>
 
             <!-- BOTÓN CERCA DE MÍ (GEOLOCALIZACIÓN) -->
             <button 
+              type="button" 
               id="near-me-btn" 
               onclick="detectNearMe()" 
               title="Detectar por GPS el coto o fraccionamiento más cercano a ti" 
-              class="shrink-0 ml-1.5 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-softMint hover:bg-emerald-100 text-brand-forest border border-brand-mint/40 text-[11px] font-extrabold transition-all active:scale-95"
+              class="shrink-0 ml-1.5 inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-brand-forest bg-brand-softMint hover:bg-brand-mint/40 border border-brand-mint/40 hover:border-brand-emerald transition-all active:scale-95 shadow-2xs"
             >
-              <i data-lucide="crosshair" class="w-3.5 h-3.5 text-brand-emerald"></i>
-              <span class="hidden sm:inline">Cerca de mí</span>
+              <i data-lucide="crosshair" id="near-me-icon" class="w-3.5 h-3.5 text-brand-emerald"></i>
+              <span id="near-me-text" class="whitespace-nowrap">Cerca de mí</span>
             </button>
           </div>
         </div>
 
-        <!-- Botón Volver a Inicio Escritorio -->
-        <div class="hidden md:flex items-center gap-2">
-          <a href="index.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Volver al Inicio</span>
+        <!-- Botones en Escritorio -->
+        <div class="hidden md:flex items-center gap-2.5 shrink-0">
+          <a href="../index.html" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors" title="Volver al Inicio de Epicentro Natura">
+            <i data-lucide="home" class="w-4 h-4 text-slate-500"></i>
+            <span>Inicio</span>
           </a>
+          <button onclick="openRegisterModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-emerald hover:bg-brand-forest active:scale-95 transition-all shadow-md shadow-brand-emerald/20">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Registrar Negocio</span>
+          </button>
         </div>
 
       </div>
@@ -202,12 +212,12 @@
 
     <!-- BREADCRUMBS SEMÁNTICOS -->
     <nav class="flex items-center gap-2 text-xs font-medium text-slate-500 py-1" aria-label="Breadcrumb">
-      <a href="index.html" class="hover:text-brand-emerald transition-colors flex items-center gap-1">
+      <a href="../index.html" class="hover:text-brand-emerald transition-colors flex items-center gap-1">
         <i data-lucide="home" class="w-3.5 h-3.5"></i>
         <span>Inicio</span>
       </a>
       <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
-      <a href="index.html#seccion-categorias" class="hover:text-brand-emerald transition-colors">
+      <a href="../index.html#seccion-categorias" class="hover:text-brand-emerald transition-colors">
         Categorías
       </a>
       <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
@@ -424,20 +434,48 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="bg-brand-black text-white text-xs py-8 px-4 border-t border-brand-slate mt-12">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2">
-        <span class="text-base font-black text-white">Epicentro</span>
-        <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-brand-softMint text-brand-forest">natura</span>
-        <span class="text-slate-400 text-xs ml-2">© 2026 Plataforma Hiperlocal Comunitaria</span>
+  <!-- FOOTER AZUL MARINO (ESTILO NAVBAR HIPHA) -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-[#050810] text-slate-400 py-12 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Fila Principal: Logo Epicentro Natura + Enlaces Actualizados -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Logo Epicentro + Natura -->
+        <div class="flex items-center gap-3">
+          <img src="../Assets/Epicentro.svg" alt="Epicentro" class="h-6 sm:h-7 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            natura
+          </span>
+          <span class="text-slate-600 hidden sm:inline">|</span>
+          <span class="text-slate-400 text-xs hidden sm:inline">Prolongación Mariano Otero, Zapopan, Jal.</span>
+        </div>
+
+        <!-- Enlaces Footer -->
+        <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6 text-slate-300 font-medium">
+          <a href="../categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
+          <a href="../cultura-natura.html" class="hover:text-amber-400 transition-colors">Cultura & Deportes</a>
+          <a href="../comunidad-natura.html" class="hover:text-cyan-400 transition-colors">Comunidad</a>
+          <a href="../index.html#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
+        </div>
       </div>
-      <div class="flex items-center gap-4 text-slate-400 text-xs">
-        <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
-        <a href="index.html#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
-        <a href="cultura-natura.html" class="hover:text-amber-400 transition-colors">Cultura Natura</a>
-        <a href="comunidad-natura.html" class="hover:text-blue-400 transition-colors">Comunidad Natura</a>
+
+      <!-- Divisor sutil -->
+      <div class="border-t border-white/10"></div>
+
+      <!-- Subfooter Copyright -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-[11px] sm:text-xs">
+        <div>
+          Copyright 2026 © Epicentro · Red Territorial de Comercio Hiperlocal
+        </div>
+        <div class="flex items-center gap-2">
+          <span>Diseño by</span>
+          <a href="https://hipha.mx" target="_blank" class="inline-flex items-center hover:opacity-80 transition-opacity" title="Hipha">
+            <img src="../Assets/HiphaWhite.svg" alt="Hipha" class="h-5 w-auto object-contain">
+          </a>
+        </div>
       </div>
+
     </div>
   </footer>
 
@@ -1021,7 +1059,7 @@
     };
 
     // ESTADO DE FILTROS EN ESTA PÁGINA
-    let currentCategorySlug = "comida-delivery";
+    let currentCategorySlug = "atencion-medica";
     let currentTypeFilter = "all";
     let currentKm0Filter = false;
 
