@@ -119,17 +119,12 @@
         
         <!-- Fila Superior / Izquierda: Logo y Botón Registrar Móvil -->
         <div class="w-full md:w-auto flex items-center justify-between gap-4">
-          <!-- Logo Requerido: Epicentro + etiqueta natura (sin subtítulo) -->
-          <a href="#" class="flex items-center gap-2.5 group shrink-0">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-brand-forest to-brand-emerald text-white flex items-center justify-center shadow-md shadow-brand-emerald/20 group-hover:scale-105 transition-transform">
-              <i data-lucide="trees" class="w-6 h-6 stroke-[2.2]"></i>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xl font-black tracking-tight text-slate-950">Epicentro</span>
-              <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/30">
-                natura
-              </span>
-            </div>
+          <!-- Logo Requerido: Epicentro (Azul) + etiqueta natura -->
+          <a href="/epicentro/natura/" class="flex items-center gap-2.5 group shrink-0" title="Epicentro Natura">
+            <img src="Assets/Epicentro2.svg" alt="Epicentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
+            <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/30">
+              natura
+            </span>
           </a>
 
           <!-- Botón Registrar en móvil -->
@@ -234,21 +229,21 @@
                 target="_blank" 
                 class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
               >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
                 <span>Haz tu pedido por WhatsApp</span>
               </a>
               <a 
                 href="tel:+523315550202" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="phone" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <span>Llamar</span>
               </a>
               <button 
                 onclick="showLocationModal('El Güero Taquero', 'Prol. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)', 'Entrega en caseta de todos los cotos Natura y El Fortín')" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="map-pin" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>Ver ubicación</span>
               </button>
             </div>
@@ -277,21 +272,21 @@
                 target="_blank" 
                 class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
               >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
                 <span>Haz tu pedido por WhatsApp</span>
               </a>
               <a 
                 href="tel:+523315550207" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="phone" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <span>Llamar</span>
               </a>
               <button 
                 onclick="showLocationModal('Veterinaria Huellitas Natura', 'Plaza Natura Local 2 (Junto a Parque Central)', 'Atención presencial y servicio a domicilio en cotos')" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="map-pin" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>Ver ubicación</span>
               </button>
             </div>
@@ -320,21 +315,21 @@
                 target="_blank" 
                 class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
               >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
                 <span>Haz tu pedido por WhatsApp</span>
               </a>
               <a 
                 href="tel:+523315550208" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="phone" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <span>Llamar</span>
               </a>
               <button 
                 onclick="showLocationModal('Planchaduría Doña Mary', 'Coto Roble Casa 24 / Servicio en toda la zona Natura', 'Recolección y entrega sin costo adicional en cotos')" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="map-pin" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>Ver ubicación</span>
               </button>
             </div>
@@ -363,21 +358,21 @@
                 target="_blank" 
                 class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
               >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
                 <span>Haz tu pedido por WhatsApp</span>
               </a>
               <a 
                 href="tel:+523315550103" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="phone" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <span>Llamar</span>
               </a>
               <button 
                 onclick="showLocationModal('AquaWash Detallado en Cochera', 'Servicio móvil a domicilio en todos los cotos Natura', 'Llegamos con equipo autónomo y productos biodegradables')" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="map-pin" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>Ver ubicación</span>
               </button>
             </div>
@@ -406,21 +401,21 @@
                 target="_blank" 
                 class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
               >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
                 <span>Haz tu pedido por WhatsApp</span>
               </a>
               <a 
                 href="tel:+523315550105" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="phone" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <span>Llamar</span>
               </a>
               <button 
                 onclick="showLocationModal('Pizzas a la Leña La Cantera', 'Prol. Mariano Otero esq. Las Rosas', 'Horno de piedra rústico con entrega a caseta de cotos')" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="map-pin" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>Ver ubicación</span>
               </button>
             </div>
@@ -449,21 +444,21 @@
                 target="_blank" 
                 class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
               >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
                 <span>Haz tu pedido por WhatsApp</span>
               </a>
               <a 
                 href="tel:+523315550209" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="phone" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <span>Llamar</span>
               </a>
               <button 
                 onclick="showLocationModal('Valeria Rivas Asesoría Inmobiliaria', 'Prol. Mariano Otero #4500 (Oficina Coto Encino)', 'Atención presencial en cotos de la zona previa cita')" 
                 class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
               >
-                <i data-lucide="map-pin" class="w-4 h-4 text-brand-mint stroke-[2.2]"></i>
+                <svg class="w-4 h-4 text-brand-mint shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <span>Ver ubicación</span>
               </button>
             </div>
@@ -691,7 +686,7 @@
             </div>
 
             <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
-              Cultura Natura
+              Oferta cultural & Deportiva
             </h3>
 
             <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -727,7 +722,7 @@
             </div>
 
             <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
-              Comunidad Natura
+              Comunidad
             </h3>
 
             <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -771,24 +766,48 @@
 
   </main>
 
-  <!-- FOOTER LIMPIO -->
-  <footer class="mt-auto border-t border-snow-400 bg-white py-10 text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-xl bg-brand-emerald text-white flex items-center justify-center">
-          <i data-lucide="trees" class="w-4 h-4"></i>
+  <!-- FOOTER AZUL MARINO (ESTILO NAVBAR HIPHA) -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-[#050810] text-slate-400 py-12 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <!-- Fila Principal: Logo Epicentro Natura + Enlaces Actualizados -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Logo Epicentro + Natura -->
+        <div class="flex items-center gap-3">
+          <img src="Assets/Epicentro.svg" alt="Epicentro" class="h-6 sm:h-7 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            natura
+          </span>
+          <span class="text-slate-600 hidden sm:inline">|</span>
+          <span class="text-slate-400 text-xs hidden sm:inline">Prolongación Mariano Otero, Zapopan, Jal.</span>
         </div>
-        <strong class="text-slate-900 font-bold">Epicentro Natura</strong>
-        <span>·</span>
-        <span>Prolongación Mariano Otero, Zapopan, Jalisco</span>
+
+        <!-- Enlaces Footer -->
+        <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6 text-slate-300 font-medium">
+          <a href="categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
+          <a href="cultura-natura.html" class="hover:text-amber-400 transition-colors">Oferta cultural & Deportiva</a>
+          <a href="comunidad-natura.html" class="hover:text-cyan-400 transition-colors">Comunidad</a>
+          <a href="#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
+        </div>
       </div>
-      <div class="flex flex-wrap items-center justify-center gap-4 text-slate-600 font-semibold">
-        <a href="categoria.html?cat=all" class="hover:text-brand-emerald transition-colors">Directorio Comercial</a>
-        <a href="cultura-natura.html" class="hover:text-amber-700 transition-colors">Cultura Natura</a>
-        <a href="comunidad-natura.html" class="hover:text-blue-700 transition-colors">Comunidad Natura</a>
-        <a href="#anunciate" class="hover:text-slate-950 transition-colors">Publicidad & Sliders</a>
+
+      <!-- Divisor sutil -->
+      <div class="border-t border-white/10"></div>
+
+      <!-- Subfooter Copyright -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-[11px] sm:text-xs">
+        <div>
+          Copyright 2026 © Epicentro · Red Territorial de Comercio Hiperlocal
+        </div>
+        <div class="flex items-center gap-2">
+          <span>Diseño by</span>
+          <a href="https://hipha.mx" target="_blank" class="inline-flex items-center hover:opacity-80 transition-opacity" title="Hipha">
+            <img src="Assets/HiphaWhite.svg" alt="Hipha" class="h-5 w-auto object-contain">
+          </a>
+        </div>
       </div>
-      <p class="text-slate-400 text-center md:text-right">© 2026 Plataforma Hiperlocal Comunitaria.</p>
+
     </div>
   </footer>
 
