@@ -101,9 +101,8 @@
         }
 
         /* Modal Dialog Styling */
-        dialog#epicentros-modal,
-        dialog#epicentro-contact-dialog {
-            max-width: 960px;
+        dialog#epicentros-modal {
+            max-width: 820px;
             width: calc(100% - 1.5rem);
             max-height: 90vh;
             border: none;
@@ -114,6 +113,13 @@
         }
         dialog#epicentro-contact-dialog {
             max-width: 540px;
+            width: calc(100% - 1.5rem);
+            max-height: 90vh;
+            border: none;
+            background: transparent;
+            padding: 0;
+            margin: auto;
+            overscroll-behavior: contain;
         }
         dialog#epicentros-modal::backdrop,
         dialog#epicentro-contact-dialog::backdrop {
@@ -404,7 +410,7 @@
                         <i class="ph-bold ph-arrow-right group-hover:translate-x-1.5 transition-transform text-xl"></i>
                     </button>
                     <span class="text-xs text-slate-500 font-medium">
-                        Haz clic para ver las zonas activas y en preparación
+                        Haz clic para acceder al Epicentro activo
                     </span>
                 </div>
 
@@ -440,74 +446,33 @@
                     Elige tu Epicentro
                 </h3>
                 <p class="text-slate-400 text-sm">
-                    Selecciona tu comunidad para acceder a su oferta local o postula tu zona.
+                    Comunidad activa para acceder a su oferta local y red de comercio vecinal.
                 </p>
             </div>
 
-            <!-- Grilla de Nodos -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-                
-                <!-- NODO 1: NATURA BOSQUE RESIDENCIAL (ACTIVO) -->
-                <div class="glass-panel p-5 rounded-2xl border border-primary-500/50 shadow-lg flex flex-col justify-between space-y-4 hover:border-primary-400 transition-all">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
+            <!-- Epicentro Activo: Natura -->
+            <div class="pt-1">
+                <div class="glass-panel p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-primary-500/50 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-primary-400 transition-all bg-gradient-to-br from-primary-950/30 via-white/[0.02] to-transparent">
+                    <div class="space-y-3 text-center sm:text-left flex-1">
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-500/20 text-primary-300 text-xs font-semibold uppercase border border-primary-400/40">
                                 <span class="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse"></span>
                                 EN VIVO · ACTIVO
                             </span>
-                            <span class="text-xs text-slate-500">Zapopan Sur</span>
+                            <span class="text-xs text-slate-400">Zapopan Sur · Km 0</span>
                         </div>
-                        <h4 class="text-lg font-bold text-white">Epicentro Natura</h4>
-                        <p class="text-xs text-slate-300 leading-relaxed">
+                        <h4 class="text-xl sm:text-2xl font-bold text-white">Epicentro Natura</h4>
+                        <p class="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
                             Cotos Ceiba, Los Robles, El Fortín, Luna Bosque, La Granja y Monte Verde. 12 categorías, delivery directo y Cultura Natura.
                         </p>
                     </div>
-                    <a href="/epicentro/natura" class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-semibold text-xs sm:text-sm transition-all shadow-md">
-                        <span>Entrar al Epicentro</span>
-                        <i class="ph-bold ph-arrow-right"></i>
-                    </a>
-                </div>
-
-                <!-- NODO 2: BUGAMBILIAS & EL PALOMAR (MAPEO) -->
-                <div class="glass-panel p-5 rounded-2xl border border-white/10 shadow-lg flex flex-col justify-between space-y-4 hover:border-fuchsia-500/40 transition-all">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-fuchsia-500/20 text-fuchsia-300 text-xs font-semibold uppercase border border-fuchsia-400/40">
-                                PRÓXIMAMENTE
-                            </span>
-                            <span class="text-xs text-slate-500">López Mateos Sur</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-white">Bugambilias & Palomar</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Mapeando restaurantes de terrazas panorámicas, cafeterías, veterinarias y colegios locales.
-                        </p>
+                    <div class="shrink-0 w-full sm:w-auto">
+                        <a href="/epicentro/natura" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all shadow-md group">
+                            <span>Entrar al Epicentro</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
                     </div>
-                    <button type="button" onclick="openEpicentroContactForm('Bugambilias & Palomar - Registro de negocio', 'Hola Hipha, tengo un negocio en Bugambilias / Palomar y quiero registrarlo al Epicentro.')" class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 hover:bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30 font-semibold text-xs sm:text-sm transition-all cursor-pointer">
-                        <span>Registrar mi negocio</span>
-                        <i class="ph-bold ph-storefront"></i>
-                    </button>
                 </div>
-
-                <!-- NODO 3: VALLE REAL & ZONA REAL (POSTULACIÓN) -->
-                <div class="glass-panel p-5 rounded-2xl border border-white/10 shadow-lg flex flex-col justify-between space-y-4 hover:border-purple-500/40 transition-all">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold uppercase border border-purple-400/40">
-                                EN POSTULACIÓN
-                            </span>
-                            <span class="text-xs text-slate-500">Zapopan Norte</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-white">Zona Real & Solares</h4>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Recibiendo firmas y postulaciones de vecinos para abrir el nodo comercial y gastronómico.
-                        </p>
-                    </div>
-                    <button type="button" onclick="openEpicentroContactForm('Zona Real & Solares - Votar por zona', 'Hola Hipha, quiero votar para abrir el Epicentro en Zona Real y Solares.')" class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold text-xs sm:text-sm transition-all cursor-pointer">
-                        <span>Votar por esta zona</span>
-                        <i class="ph-bold ph-thumbs-up"></i>
-                    </button>
-                </div>
-
             </div>
 
             <!-- Card Horizontal: Para Administraciones de Fraccionamientos -->
