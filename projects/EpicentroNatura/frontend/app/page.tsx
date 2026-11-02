@@ -1022,7 +1022,7 @@ export default function EpicentroNaturaCleanLight() {
                   EXPLORAR CATEGORÍAS
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Encuentra comercios, servicios y delivery hiperlocal clasificado en cotos de Natura y Prolongación Mariano Otero
+                  Encuentra comercios, servicios y delivery hiperlocal
                 </p>
               </div>
               <span className="text-xs text-emerald-800 font-bold self-start sm:self-auto bg-emerald-50 px-3 py-1 rounded-full border border-emerald-300">
@@ -1078,7 +1078,7 @@ export default function EpicentroNaturaCleanLight() {
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-mono font-extrabold uppercase tracking-wider border border-amber-400/40">
                     <Palette className="w-3.5 h-3.5" />
-                    <span>CASA DE LA CULTURA · PARQUE CENTRAL</span>
+                    <span>OFERTA DEL EPICENTRO</span>
                   </span>
                   <span className="text-[11px] font-bold text-amber-400/80 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
                     Cartelera Abierta
@@ -1086,11 +1086,11 @@ export default function EpicentroNaturaCleanLight() {
                 </div>
 
                 <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
-                  Cultura Natura
+                  Cultura & Deportes
                 </h3>
 
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  Talleres infantiles de barro, cine vecinal bajo las estrellas, danza y conciertos acústicos al aire libre en el Kiosco y Explanada Verde del Parque Central.
+                  Clases y talleres para toda la familia, eventos de la comunidad, conciertos y exposiciones.
                 </p>
               </div>
 
