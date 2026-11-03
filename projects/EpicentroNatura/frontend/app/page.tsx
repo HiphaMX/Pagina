@@ -651,7 +651,7 @@ export default function EpicentroNaturaCleanLight() {
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Haz tu pedido por WhatsApp</span>
+                    <span>Enviar WhatsApp</span>
                   </a>
                   <a
                     href="tel:+523315550202"
@@ -711,7 +711,7 @@ export default function EpicentroNaturaCleanLight() {
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Haz tu pedido por WhatsApp</span>
+                    <span>Enviar WhatsApp</span>
                   </a>
                   <a
                     href="tel:+523315550207"
@@ -771,7 +771,7 @@ export default function EpicentroNaturaCleanLight() {
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Haz tu pedido por WhatsApp</span>
+                    <span>Enviar WhatsApp</span>
                   </a>
                   <a
                     href="tel:+523315550208"
@@ -831,7 +831,7 @@ export default function EpicentroNaturaCleanLight() {
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Haz tu pedido por WhatsApp</span>
+                    <span>Enviar WhatsApp</span>
                   </a>
                   <a
                     href="tel:+523315550103"
@@ -891,7 +891,7 @@ export default function EpicentroNaturaCleanLight() {
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Haz tu pedido por WhatsApp</span>
+                    <span>Enviar WhatsApp</span>
                   </a>
                   <a
                     href="tel:+523315550105"
@@ -951,7 +951,7 @@ export default function EpicentroNaturaCleanLight() {
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    <span>Haz tu pedido por WhatsApp</span>
+                    <span>Enviar WhatsApp</span>
                   </a>
                   <a
                     href="tel:+523315550209"

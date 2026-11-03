@@ -873,7 +873,7 @@ export default function CategoryPage() {
                       className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all"
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span>Haz tu pedido por WhatsApp</span>
+                      <span>Enviar WhatsApp</span>
                     </a>
                   </div>
                 </div>
