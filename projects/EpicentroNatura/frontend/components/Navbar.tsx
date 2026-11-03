@@ -88,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold bg-natura-700 hover:bg-natura-800 text-white transition-all shadow-sm shadow-natura-800/20 active:scale-95"
             >
               <PlusCircle className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Registrar Negocio</span>
+              <span className="hidden sm:inline">Registrar</span>
               <span className="sm:hidden">Negocio</span>
             </button>
           </div>

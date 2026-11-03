@@ -603,7 +603,7 @@ export default function EpicentroNaturaCleanLight() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-95 transition-all shadow-md shadow-emerald-600/20"
               >
                 <PlusCircle className="w-4 h-4" />
-                <span>Registrar Negocio</span>
+                <span>Registrar</span>
               </button>
             </div>
 
