@@ -52,6 +52,8 @@ interface CommercialBusiness {
   type_label: string;
   has_delivery?: boolean;
   has_pickup?: boolean;
+  lat?: number;
+  lng?: number;
   address: string;
   community_slug: string;
   community_name: string;
@@ -77,6 +79,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Av. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
+    lat: 20.6276,
+    lng: -103.4678,
     phone: "33 1555 0202",
     whatsapp: "+523315550202",
     hours: "Abierto hoy · 18:00 a 01:30 hrs",
@@ -98,6 +102,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)",
     community_slug: "los-robles",
     community_name: "Los Robles",
+    lat: 20.6192,
+    lng: -103.4729,
     phone: "33 1555 0105",
     whatsapp: "+523315550105",
     hours: "Martes a Domingo · 18:30 a 23:30 hrs",
@@ -121,6 +127,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Prol. Mariano Otero #4500 (Zona El Fortín)",
     community_slug: "el-fortin",
     community_name: "El Fortín",
+    lat: 20.6385,
+    lng: -103.4552,
     phone: "33 1555 0201",
     whatsapp: "+523315550201",
     hours: "Abierto 24 Horas",
@@ -144,6 +152,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Plaza Natura Local 2 (Junto a Parque Central)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
+    lat: 20.6268,
+    lng: -103.4688,
     phone: "33 1555 0207",
     whatsapp: "+523315550207",
     hours: "Lunes a Sábado · 09:00 a 20:00 hrs · Urgencias 24h",
@@ -167,6 +177,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Luna Bosque Residencial · Casa 42",
     community_slug: "luna-bosque",
     community_name: "Luna Bosque",
+    lat: 20.6298,
+    lng: -103.4652,
     phone: "33 1555 0101",
     whatsapp: "+523315550101",
     hours: "Pedidos con 24h · Lunes a Domingo",
@@ -190,6 +202,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Entorno Bosque de la Primavera · Taller Botánico",
     community_slug: "bosque-primavera",
     community_name: "Bosque de la primavera",
+    lat: 20.6215,
+    lng: -103.4795,
     phone: "33 1555 0107",
     whatsapp: "+523315550107",
     hours: "Bajo pedido semanal",
@@ -213,6 +227,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "La Granja (Prolongación Mariano Otero)",
     community_slug: "la-granja",
     community_name: "La Granja",
+    lat: 20.6352,
+    lng: -103.4588,
     phone: "33 1555 0208",
     whatsapp: "+523315550208",
     hours: "Lunes a Viernes · 08:00 a 19:00 hrs",
@@ -234,6 +250,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Puerta del Bosque y cotos vecinos",
     community_slug: "puerta-del-bosque",
     community_name: "Puerta del Bosque",
+    lat: 20.6342,
+    lng: -103.4604,
     phone: "33 1555 0103",
     whatsapp: "+523315550103",
     hours: "Lunes a Sábado · 08:00 a 18:00 hrs",
@@ -257,6 +275,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Punta de Otero #120 (Consultorios Médicos)",
     community_slug: "punta-de-otero",
     community_name: "Punta de Otero",
+    lat: 20.6322,
+    lng: -103.4621,
     phone: "33 1555 0201",
     whatsapp: "+523315550201",
     hours: "Lunes a Domingo · 24 Horas",
@@ -278,6 +298,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Monte Verde Coto 3",
     community_slug: "monte-verde",
     community_name: "Monte Verde",
+    lat: 20.6362,
+    lng: -103.4578,
     phone: "33 1555 0203",
     whatsapp: "+523315550203",
     hours: "Servicio de Urgencias 24/7",
@@ -299,6 +321,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Misión la Floresta esq. Prol. Mariano Otero",
     community_slug: "mision-la-floresta",
     community_name: "Misión la Floresta",
+    lat: 20.6368,
+    lng: -103.4568,
     phone: "33 1555 0209",
     whatsapp: "+523315550209",
     hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
@@ -320,6 +344,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Natura Bosque Residencial (Coto Encino)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
+    lat: 20.6282,
+    lng: -103.4670,
     phone: "33 1555 0108",
     whatsapp: "+523315550108",
     hours: "Tardes · Lunes a Viernes",
@@ -421,6 +447,17 @@ export default function EpicentroNaturaCleanLight() {
   const [isNearMeLoading, setIsNearMeLoading] = useState(false);
   const [isNearMeActive, setIsNearMeActive] = useState(false);
   const [geoToast, setGeoToast] = useState<{ message: string; isSuccess: boolean } | null>(null);
+
+  // Map filter states
+  const [mapCoto, setMapCoto] = useState("all");
+  const [mapCategory, setMapCategory] = useState("all");
+  const [selectedMapBusiness, setSelectedMapBusiness] = useState<CommercialBusiness | null>(ALL_BUSINESSES[0]);
+
+  const filteredMapBusinesses = ALL_BUSINESSES.filter((b) => {
+    if (mapCoto !== "all" && b.community_name !== mapCoto) return false;
+    if (mapCategory !== "all" && b.category_slug !== mapCategory) return false;
+    return true;
+  });
 
   const handleDetectNearMe = () => {
     if (typeof window === "undefined" || !navigator.geolocation) {
@@ -1171,6 +1208,176 @@ export default function EpicentroNaturaCleanLight() {
                 </Link>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* SECCIÓN: MAPA COMERCIAL HIPERLOCAL */}
+        <section id="seccion-mapa" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 lg:p-10 border border-slate-200 shadow-sm">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-extrabold tracking-wide uppercase">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span>Geolocalización Hiperlocal</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  Mapa Comercial de la Zona
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Ubica fácilmente comercios, servicios y puntos de atención a lo largo de Prolongación Mariano Otero y sus cotos residenciales.
+                </p>
+              </div>
+
+              {/* Controles y Filtros */}
+              <div className="flex flex-wrap items-center gap-3">
+                <select
+                  value={mapCoto}
+                  onChange={(e) => setMapCoto(e.target.value)}
+                  className="bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-xl px-3.5 py-2.5 transition-colors focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">📍 Todos los cotos / zonas</option>
+                  <option value="Natura Bosque Residencial">Natura Bosque Residencial</option>
+                  <option value="Los Robles">Los Robles</option>
+                  <option value="El Fortín">El Fortín</option>
+                  <option value="Luna Bosque">Luna Bosque</option>
+                  <option value="Punta de Otero">Punta de Otero</option>
+                  <option value="Bosque de la primavera">Bosque de la Primavera</option>
+                  <option value="Puerta del Bosque">Puerta del Bosque</option>
+                  <option value="La Granja">La Granja</option>
+                  <option value="Monte Verde">Monte Verde</option>
+                  <option value="Misión la Floresta">Misión la Floresta</option>
+                </select>
+
+                <select
+                  value={mapCategory}
+                  onChange={(e) => setMapCategory(e.target.value)}
+                  className="bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-xl px-3.5 py-2.5 transition-colors focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
+                >
+                  <option value="all">🏷️ Todas las categorías</option>
+                  <option value="comida-delivery">Comida y Delivery</option>
+                  <option value="farmacias">Farmacias</option>
+                  <option value="veterinarias">Veterinarias</option>
+                  <option value="postres-cafe">Postres y Café</option>
+                  <option value="productos-artesanales">Productos Artesanales</option>
+                  <option value="servicios-hogar">Servicios Hogar</option>
+                  <option value="atencion-medica">Atención Médica</option>
+                  <option value="servicios-profesionales">Servicios Profesionales</option>
+                  <option value="clases-particulares">Clases Particulares</option>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMapCoto("all");
+                    setMapCategory("all");
+                    setSelectedMapBusiness(ALL_BUSINESSES[0]);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <Crosshair className="w-4 h-4" />
+                  <span>Recentrar</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Leyenda y Contador */}
+            <div className="py-3.5 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-600 font-semibold border-b border-slate-200">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Categorías:</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Comida</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Farmacias</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cyan-500"></span> Veterinarias</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-pink-500"></span> Postres</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Artesanal</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Servicios</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500"></span> Salud</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Profesionales</span>
+              </div>
+              <span className="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                {filteredMapBusinesses.length} comercio{filteredMapBusinesses.length === 1 ? "" : "s"} ubicado{filteredMapBusinesses.length === 1 ? "" : "s"}
+              </span>
+            </div>
+
+            {/* Contenedor del Mapa con Iframe OpenStreetMap y panel lateral del comercio seleccionado */}
+            <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3">
+              <div className="lg:col-span-2 relative h-[420px] sm:h-[480px] rounded-xl overflow-hidden border border-slate-200 shadow-inner">
+                <iframe
+                  title="Mapa de comercios en Prolongación Mariano Otero"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=-103.4900%2C20.6120%2C-103.4450%2C20.6450&amp;layer=mapnik&amp;marker=${selectedMapBusiness?.lat || 20.6276}%2C${selectedMapBusiness?.lng || -103.4678}`}
+                ></iframe>
+              </div>
+
+              {/* Tarjeta del Comercio Activo en Mapa */}
+              <div className="space-y-3 p-4 bg-white rounded-xl border border-slate-200 flex flex-col justify-between shadow-sm">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {selectedMapBusiness?.category_label || "Comercio"}
+                    </span>
+                    {selectedMapBusiness?.has_km0_badge && (
+                      <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        🌱 Km 0
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="text-base font-black text-slate-950">
+                      {selectedMapBusiness?.name || "Selecciona un comercio"}
+                    </h4>
+                    <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                      📍 {selectedMapBusiness?.community_name}
+                    </p>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {selectedMapBusiness?.address}
+                  </p>
+                  <p className="text-xs text-slate-500 italic">
+                    {selectedMapBusiness?.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
+                      {selectedMapBusiness?.type_label}
+                    </span>
+                    {selectedMapBusiness?.has_delivery && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        🛵 A domicilio
+                      </span>
+                    )}
+                    {selectedMapBusiness?.has_pickup && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
+                        🛍️ Recoger
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-3 border-t border-slate-100">
+                  <a
+                    href={`https://wa.me/${(selectedMapBusiness?.whatsapp || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hola ${selectedMapBusiness?.name}, vi su información en el mapa de Epicentro Natura y me interesa más información.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs transition-all shadow-sm active:scale-95"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Contactar por WhatsApp</span>
+                  </a>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${selectedMapBusiness?.name} ${selectedMapBusiness?.address} Zapopan Jalisco`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all"
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>Ver en Google Maps</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 

@@ -15,6 +15,10 @@
   
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Leaflet CSS & JS CDN (Mapa Interactivo Hiperlocal) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
   <script>
     tailwind.config = {
@@ -91,6 +95,65 @@
       background-color: #f8fafc !important;
       color: #6366f1 !important;
       border-color: #cbd5e1 !important;
+    }
+
+    /* Estilos pulidos para Mapa Interactivo Leaflet */
+    .leaflet-container {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      z-index: 10;
+    }
+    .epicentro-marker-pin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 0 3px #ffffff;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+    .epicentro-marker-pin:hover {
+      transform: scale(1.2) translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 4px #ffffff;
+      z-index: 999 !important;
+    }
+    .leaflet-popup-content-wrapper {
+      padding: 0 !important;
+      border-radius: 20px !important;
+      overflow: hidden !important;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25) !important;
+      border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    }
+    .leaflet-popup-content {
+      margin: 0 !important;
+      line-height: normal !important;
+      width: 290px !important;
+    }
+    .leaflet-popup-tip {
+      background: #ffffff !important;
+      box-shadow: 0 3px 14px rgba(0, 0, 0, 0.15) !important;
+    }
+    .leaflet-container a.leaflet-popup-close-button {
+      top: 10px !important;
+      right: 10px !important;
+      color: #64748b !important;
+      padding: 4px !important;
+      width: 24px !important;
+      height: 24px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 9999px !important;
+      background: rgba(241, 245, 249, 0.9) !important;
+      backdrop-filter: blur(4px) !important;
+      font-size: 16px !important;
+      transition: all 0.15s ease !important;
+    }
+    .leaflet-container a.leaflet-popup-close-button:hover {
+      background: #050810 !important;
+      color: #ffffff !important;
     }
   </style>
 </head>
@@ -206,8 +269,8 @@
     <section class="relative w-full px-3 sm:px-6 lg:px-8 pt-4">
       <div class="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-slate-950 border border-slate-800 shadow-billboard">
         
-        <!-- Slider Container: Altura 82vh en escritorio / 78vh en móvil -->
-        <div id="mega-hero-slider" class="relative min-h-[76vh] sm:min-h-[82vh] flex items-stretch">
+        <!-- Slider Container: Altura balanceada y responsive -->
+        <div id="mega-hero-slider" class="relative min-h-[520px] sm:min-h-[600px] h-[72vh] max-h-[680px] flex items-stretch">
           
           <!-- SLIDE 1: TAQUERÍA (El Güero Taquero) -->
           <div class="hero-slide absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between opacity-100 slide-fade bg-cover bg-center text-white" style="background-image: linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=1920&q=80');">
@@ -749,6 +812,102 @@
       </div>
     </section>
 
+    <!-- SECCIÓN: MAPA INTERACTIVO DE LA ZONA (PROLONGACIÓN MARIANO OTERO Y COTOS) -->
+    <section id="seccion-mapa" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 lg:p-10 border border-snow-400 shadow-rappi-card">
+        
+        <!-- Header del Mapa con Filtros -->
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-snow-300">
+          <div class="space-y-2 max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-extrabold tracking-wide uppercase">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <span>Geolocalización Hiperlocal</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              Mapa Comercial de la Zona
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Ubica fácilmente comercios, servicios y puntos de atención a lo largo de Prolongación Mariano Otero y sus cotos residenciales.
+            </p>
+          </div>
+
+          <!-- Controles y Filtros Rápidos del Mapa -->
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Filtro de Coto en el Mapa -->
+            <div class="relative min-w-[200px]">
+              <select id="map-coto-filter" class="w-full appearance-none bg-snow-100 hover:bg-snow-200 border border-snow-400 text-slate-800 text-xs font-bold rounded-xl px-3.5 py-2.5 pr-8 transition-colors focus:ring-2 focus:ring-brand-emerald focus:outline-none cursor-pointer">
+                <option value="all">📍 Todos los cotos / zonas</option>
+                <option value="Natura Bosque Residencial">Natura Bosque Residencial</option>
+                <option value="Los Robles">Los Robles</option>
+                <option value="El Fortín">El Fortín</option>
+                <option value="Luna Bosque">Luna Bosque</option>
+                <option value="Punta de Otero">Punta de Otero</option>
+                <option value="Bosque de la primavera">Bosque de la Primavera</option>
+                <option value="Puerta del Bosque">Puerta del Bosque</option>
+                <option value="La Granja">La Granja</option>
+                <option value="Monte Verde">Monte Verde</option>
+                <option value="Misión la Floresta">Misión la Floresta</option>
+              </select>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-2.5 top-3 pointer-events-none"></i>
+            </div>
+
+            <!-- Filtro de Categoría en el Mapa -->
+            <div class="relative min-w-[190px]">
+              <select id="map-category-filter" class="w-full appearance-none bg-snow-100 hover:bg-snow-200 border border-snow-400 text-slate-800 text-xs font-bold rounded-xl px-3.5 py-2.5 pr-8 transition-colors focus:ring-2 focus:ring-brand-emerald focus:outline-none cursor-pointer">
+                <option value="all">🏷️ Todas las categorías</option>
+                <option value="comida-delivery">Comida y Delivery</option>
+                <option value="farmacias">Farmacias</option>
+                <option value="veterinarias">Veterinarias</option>
+                <option value="postres-cafe">Postres y Café</option>
+                <option value="productos-artesanales">Productos Artesanales</option>
+                <option value="servicios-hogar">Servicios Hogar</option>
+                <option value="atencion-medica">Atención Médica</option>
+                <option value="servicios-profesionales">Servicios Profesionales</option>
+                <option value="clases-particulares">Clases Particulares</option>
+              </select>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-2.5 top-3 pointer-events-none"></i>
+            </div>
+
+            <!-- Botón Recentrar Mapa -->
+            <button id="map-reset-btn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer" title="Recentrar mapa en la zona">
+              <i data-lucide="crosshair" class="w-4 h-4"></i>
+              <span>Recentrar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Leyenda Rápida y Contador -->
+        <div class="py-3.5 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-600 font-semibold border-b border-snow-200">
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Categorías:</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Comida</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Farmacias</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span> Veterinarias</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span> Postres</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Artesanal</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Servicios</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Salud</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Profesionales</span>
+          </div>
+          <span id="map-counter-badge" class="text-xs font-bold text-slate-700 bg-snow-300 px-3 py-1 rounded-full">
+            12 comercios ubicados
+          </span>
+        </div>
+
+        <!-- Contenedor del Mapa Leaflet -->
+        <div class="relative w-full mt-4 rounded-2xl overflow-hidden border border-snow-400 shadow-inner bg-slate-100">
+          <div id="epicentro-map" class="w-full h-[460px] sm:h-[520px] md:h-[580px] z-10"></div>
+          
+          <!-- Tip Flotante en la esquina inferior izquierda del mapa -->
+          <div class="hidden sm:flex absolute bottom-3 left-3 z-[400] bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-snow-400 text-[11px] font-semibold text-slate-700 shadow-md items-center gap-2 pointer-events-none">
+            <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span>Haz clic en los pines para ver detalles, dirección exacta y WhatsApp directo</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- BANNER DE CIERRE COMERCIAL -->
     <section id="anunciate" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
       <div class="rounded-3xl bg-gradient-to-r from-slate-950 via-brand-black to-slate-900 text-white p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
@@ -992,7 +1151,7 @@
 
   <!-- JAVASCRIPT: DATOS, FILTRADOS Y CONTROL DEL MEGA HERO SLIDER -->
   <script>
-    // BASE DE DATOS DE LA OFERTA CLASIFICADA EXACTA
+    // BASE DE DATOS DE LA OFERTA CLASIFICADA EXACTA (CON COORDENADAS HIPERLOCALES)
     const ALL_BUSINESSES = [
       // 1. Comida y Delivery
       {
@@ -1005,6 +1164,8 @@
         address: "Av. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
+        lat: 20.6276,
+        lng: -103.4678,
         phone: "33 1555 0202",
         whatsapp: "+523315550202",
         hours: "Abierto hoy · 18:00 a 01:30 hrs",
@@ -1026,6 +1187,8 @@
         address: "Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)",
         community_slug: "los-robles",
         community_name: "Los Robles",
+        lat: 20.6192,
+        lng: -103.4729,
         phone: "33 1555 0105",
         whatsapp: "+523315550105",
         hours: "Martes a Domingo · 18:30 a 23:30 hrs",
@@ -1049,6 +1212,8 @@
         address: "Prol. Mariano Otero #4500 (Zona El Fortín)",
         community_slug: "el-fortin",
         community_name: "El Fortín",
+        lat: 20.6385,
+        lng: -103.4552,
         phone: "33 1555 0201",
         whatsapp: "+523315550201",
         hours: "Abierto 24 Horas",
@@ -1072,6 +1237,8 @@
         address: "Plaza Natura Local 2 (Junto a Parque Central)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
+        lat: 20.6268,
+        lng: -103.4688,
         phone: "33 1555 0207",
         whatsapp: "+523315550207",
         hours: "Lunes a Sábado · 09:00 a 20:00 hrs · Urgencias 24h",
@@ -1095,6 +1262,8 @@
         address: "Luna Bosque Residencial · Casa 42",
         community_slug: "luna-bosque",
         community_name: "Luna Bosque",
+        lat: 20.6298,
+        lng: -103.4652,
         phone: "33 1555 0101",
         whatsapp: "+523315550101",
         hours: "Pedidos con 24h · Lunes a Domingo",
@@ -1118,6 +1287,8 @@
         address: "Entorno Bosque de la Primavera · Taller Botánico",
         community_slug: "bosque-primavera",
         community_name: "Bosque de la primavera",
+        lat: 20.6215,
+        lng: -103.4795,
         phone: "33 1555 0107",
         whatsapp: "+523315550107",
         hours: "Bajo pedido semanal",
@@ -1141,6 +1312,8 @@
         address: "La Granja (Prolongación Mariano Otero)",
         community_slug: "la-granja",
         community_name: "La Granja",
+        lat: 20.6352,
+        lng: -103.4588,
         phone: "33 1555 0208",
         whatsapp: "+523315550208",
         hours: "Lunes a Viernes · 08:00 a 19:00 hrs",
@@ -1162,6 +1335,8 @@
         address: "Puerta del Bosque y cotos vecinos",
         community_slug: "puerta-del-bosque",
         community_name: "Puerta del Bosque",
+        lat: 20.6342,
+        lng: -103.4604,
         phone: "33 1555 0103",
         whatsapp: "+523315550103",
         hours: "Lunes a Sábado · 08:00 a 18:00 hrs",
@@ -1185,6 +1360,8 @@
         address: "Punta de Otero #120 (Consultorios Médicos)",
         community_slug: "punta-de-otero",
         community_name: "Punta de Otero",
+        lat: 20.6322,
+        lng: -103.4621,
         phone: "33 1555 0201",
         whatsapp: "+523315550201",
         hours: "Lunes a Domingo · 24 Horas",
@@ -1206,6 +1383,8 @@
         address: "Monte Verde Coto 3",
         community_slug: "monte-verde",
         community_name: "Monte Verde",
+        lat: 20.6362,
+        lng: -103.4578,
         phone: "33 1555 0203",
         whatsapp: "+523315550203",
         hours: "Servicio de Urgencias 24/7",
@@ -1227,6 +1406,8 @@
         address: "Misión la Floresta esq. Prol. Mariano Otero",
         community_slug: "mision-la-floresta",
         community_name: "Misión la Floresta",
+        lat: 20.6368,
+        lng: -103.4568,
         phone: "33 1555 0209",
         whatsapp: "+523315550209",
         hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
@@ -1248,6 +1429,8 @@
         address: "Natura Bosque Residencial (Coto Encino)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
+        lat: 20.6282,
+        lng: -103.4670,
         phone: "33 1555 0108",
         whatsapp: "+523315550108",
         hours: "Tardes · Lunes a Viernes",
@@ -1816,11 +1999,230 @@
       }
     }
 
+    // ==========================================
+    // MAPA COMERCIAL HIPERLOCAL (LEAFLET.JS)
+    // ==========================================
+    let epicentroMap = null;
+    let epicentroMarkersGroup = null;
+
+    // Configuración estética de pines e iconos por categoría
+    const MAP_CATEGORY_CONFIG = {
+      "comida-delivery": {
+        bg: "#f59e0b",
+        badgeBg: "bg-amber-50 text-amber-800 border-amber-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>`
+      },
+      "farmacias": {
+        bg: "#f43f5e",
+        badgeBg: "bg-rose-50 text-rose-800 border-rose-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 8.5 7 7"/></svg>`
+      },
+      "veterinarias": {
+        bg: "#06b6d4",
+        badgeBg: "bg-cyan-50 text-cyan-800 border-cyan-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.996 1 1.157-.365 2.035-1.08 2.704-2.08M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.996 1-1.157-.365-2.035-1.08-2.704-2.08M12 14c-3 0-5 2-5 4 0 2.5 2.5 3.5 5 3.5s5-1 5-3.5c0-2-2-4-5-4Z"/></svg>`
+      },
+      "postres-cafe": {
+        bg: "#ec4899",
+        badgeBg: "bg-pink-50 text-pink-800 border-pink-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8ZM6 2v2M10 2v2M14 2v2"/></svg>`
+      },
+      "productos-artesanales": {
+        bg: "#a855f7",
+        badgeBg: "bg-purple-50 text-purple-800 border-purple-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg>`
+      },
+      "servicios-hogar": {
+        bg: "#3b82f6",
+        badgeBg: "bg-blue-50 text-blue-800 border-blue-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`
+      },
+      "atencion-medica": {
+        bg: "#ef4444",
+        badgeBg: "bg-red-50 text-red-800 border-red-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14c1.66 0 3-1.34 3-3V5h-2v6c0 .55-.45 1-1 1s-1-.45-1-1V5h-2v6c0 2.21 1.79 4 4 4ZM4.5 12h3M6 10.5v3M10 18a6 6 0 0 0 12 0v-1h-2v1a4 4 0 0 1-8 0v-4H8.5A6.5 6.5 0 0 0 2 20.5V21h2v-.5A4.5 4.5 0 0 1 8.5 16H10v2Z"/></svg>`
+      },
+      "servicios-profesionales": {
+        bg: "#6366f1",
+        badgeBg: "bg-indigo-50 text-indigo-800 border-indigo-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`
+      },
+      "clases-particulares": {
+        bg: "#8b5cf6",
+        badgeBg: "bg-purple-50 text-purple-800 border-purple-200",
+        svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h10M6 10h10"/></svg>`
+      }
+    };
+
+    function initEpicentroMap() {
+      const mapEl = document.getElementById("epicentro-map");
+      if (!mapEl || typeof L === "undefined") return;
+
+      // Centro general del corredor Prolongación Mariano Otero (Zapopan)
+      const defaultCenter = [20.6295, -103.4650];
+      const defaultZoom = 14;
+
+      epicentroMap = L.map("epicentro-map", {
+        center: defaultCenter,
+        zoom: defaultZoom,
+        scrollWheelZoom: false
+      });
+
+      // OpenStreetMap tiles estándar sin marca de agua
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+      }).addTo(epicentroMap);
+
+      epicentroMarkersGroup = L.featureGroup().addTo(epicentroMap);
+
+      renderMapMarkers();
+
+      // Listeners de controles del mapa
+      document.getElementById("map-coto-filter")?.addEventListener("change", renderMapMarkers);
+      document.getElementById("map-category-filter")?.addEventListener("change", renderMapMarkers);
+      document.getElementById("map-reset-btn")?.addEventListener("click", () => {
+        const cotoSel = document.getElementById("map-coto-filter");
+        const catSel = document.getElementById("map-category-filter");
+        if (cotoSel) cotoSel.value = "all";
+        if (catSel) catSel.value = "all";
+        renderMapMarkers();
+        epicentroMap.setView(defaultCenter, defaultZoom, { animate: true });
+      });
+
+      // Asegurar redibujado correcto y abrir popup destacado
+      setTimeout(() => {
+        if (epicentroMap) epicentroMap.invalidateSize();
+        const layers = epicentroMarkersGroup?.getLayers();
+        if (layers && layers.length > 0) {
+          layers[0].openPopup();
+        }
+      }, 600);
+    }
+
+    function renderMapMarkers() {
+      if (!epicentroMap || !epicentroMarkersGroup) return;
+
+      epicentroMarkersGroup.clearLayers();
+
+      const selectedCoto = document.getElementById("map-coto-filter")?.value || "all";
+      const selectedCategory = document.getElementById("map-category-filter")?.value || "all";
+
+      const filtered = ALL_BUSINESSES.filter(b => {
+        if (!b.lat || !b.lng) return false;
+        if (selectedCoto !== "all" && b.community_name !== selectedCoto) return false;
+        if (selectedCategory !== "all" && b.category_slug !== selectedCategory) return false;
+        return true;
+      });
+
+      // Actualizar contador del mapa
+      const counterEl = document.getElementById("map-counter-badge");
+      if (counterEl) {
+        counterEl.textContent = `${filtered.length} comercio${filtered.length === 1 ? '' : 's'} ubicado${filtered.length === 1 ? '' : 's'}`;
+      }
+
+      filtered.forEach(b => {
+        const config = MAP_CATEGORY_CONFIG[b.category_slug] || {
+          bg: "#4f46e5",
+          badgeBg: "bg-indigo-50 text-indigo-800 border-indigo-200",
+          svg: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>`
+        };
+
+        const customIcon = L.divIcon({
+          className: "custom-leaflet-pin",
+          html: `
+            <div class="epicentro-marker-pin" style="background-color: ${config.bg};" title="${b.name}">
+              ${config.svg}
+            </div>
+          `,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+          popupAnchor: [0, -20]
+        });
+
+        const marker = L.marker([b.lat, b.lng], { icon: customIcon });
+
+        // Popup interactivo Apple Card
+        const whatsappMsg = encodeURIComponent(`Hola ${b.name}, vi su información en el mapa de Epicentro Natura y me interesa más información.`);
+        const whatsappUrl = `https://wa.me/${b.whatsapp.replace(/[^0-9]/g, "")}?text=${whatsappMsg}`;
+
+        const tagsHtml = `
+          <div class="flex flex-wrap items-center gap-1.5 pt-1.5">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${b.type_slug === 'local-establecido' ? 'bg-slate-100 text-slate-800 border border-slate-300' : 'bg-purple-50 text-purple-800 border border-purple-200'}">
+              ${b.type_label}
+            </span>
+            ${b.has_delivery ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">🛵 A domicilio</span>' : ''}
+            ${b.has_pickup ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">🛍️ Recoger</span>' : ''}
+          </div>
+        `;
+
+        const popupContent = `
+          <div class="p-4 space-y-3 bg-white text-slate-900">
+            <!-- Header Popup -->
+            <div class="flex items-center justify-between gap-2 pr-6">
+              <span class="text-[10px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full border ${config.badgeBg}">
+                ${b.category_label}
+              </span>
+              ${b.has_km0_badge ? '<span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🌱 Km 0</span>' : ''}
+            </div>
+
+            <!-- Nombre y Coto -->
+            <div>
+              <h4 class="text-sm font-black text-slate-950 leading-tight">${b.name}</h4>
+              <p class="text-[11px] font-semibold text-slate-500 flex items-center gap-1 mt-0.5">
+                <span>📍 ${b.community_name}</span>
+              </p>
+            </div>
+
+            <!-- Dirección -->
+            <p class="text-xs text-slate-600 leading-snug">
+              ${b.address}
+            </p>
+
+            ${tagsHtml}
+
+            <!-- Horario -->
+            <div class="text-[11px] text-slate-500 font-medium pt-1.5 border-t border-slate-100 flex items-center gap-1">
+              <span>⏰ ${b.hours}</span>
+            </div>
+
+            <!-- Botón WhatsApp CTA -->
+            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs transition-all shadow-sm active:scale-95">
+              <span>Pedir / Contactar por WhatsApp</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+            </a>
+          </div>
+        `;
+
+        marker.bindPopup(popupContent, { maxWidth: 300 });
+        epicentroMarkersGroup.addLayer(marker);
+      });
+
+      // Ajustar vista a marcadores si se aplicó filtro
+      if (filtered.length > 0 && (selectedCoto !== "all" || selectedCategory !== "all")) {
+        epicentroMap.fitBounds(epicentroMarkersGroup.getBounds(), { padding: [40, 40], maxZoom: 16 });
+      } else if (filtered.length > 0) {
+        // Abrir popup de bienvenida en el primer comercio registrado
+        const firstLayer = epicentroMarkersGroup.getLayers()[0];
+        if (firstLayer) {
+          firstLayer.openPopup();
+        }
+      }
+    }
+
     // INICIALIZACIÓN
     document.addEventListener("DOMContentLoaded", () => {
       renderDirectory();
       showHeroSlide(0);
+      initEpicentroMap();
       lucide.createIcons();
+
+      if (window.location.hash === "#seccion-mapa" || window.location.search.includes("map=1")) {
+        const mapSec = document.getElementById("seccion-mapa");
+        if (mapSec) {
+          mapSec.scrollIntoView({ behavior: "instant" });
+        }
+      }
     });
   </script>
 </body>
