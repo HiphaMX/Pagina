@@ -165,7 +165,7 @@ const ALL_CATEGORIES = [
     icon: Stethoscope,
     bg: "bg-gradient-to-br from-teal-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-600 shadow-teal-500/10",
     h1: "Atención médica",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Profesionales de la salud cerca de tu hogar en Prolongación Mariano Otero.",
   },
   {
@@ -174,7 +174,7 @@ const ALL_CATEGORIES = [
     icon: GraduationCap,
     bg: "bg-gradient-to-br from-indigo-50 via-indigo-50/70 to-indigo-100/60 border border-indigo-200/70 text-indigo-600 shadow-indigo-500/10",
     h1: "Clases particulares",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Aprende cerca de casa con maestros residentes en la zona.",
   },
   {
@@ -183,7 +183,7 @@ const ALL_CATEGORIES = [
     icon: Utensils,
     bg: "bg-gradient-to-br from-orange-50 via-orange-50/70 to-orange-100/60 border border-orange-200/70 text-orange-600 shadow-orange-500/10",
     h1: "Comida y Delivery",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Encuentra la mejor oferta gastronómica local en Prolongación Mariano Otero con entrega limpia directa a caseta de cotos.",
   },
   {
@@ -192,7 +192,7 @@ const ALL_CATEGORIES = [
     icon: GraduationCap,
     bg: "bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-600 shadow-blue-500/10",
     h1: "Escuelas",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Encuentra la mejor opción educativa cerca de tu hogar en Prolongación Mariano Otero.",
   },
   {
@@ -201,7 +201,7 @@ const ALL_CATEGORIES = [
     icon: Pill,
     bg: "bg-gradient-to-br from-emerald-50 via-emerald-50/70 to-emerald-100/60 border border-emerald-200/70 text-emerald-600 shadow-emerald-500/10",
     h1: "Farmacias",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Farmacias cercanas a Natura Bosque Residencial con surtido de recetas y medicamentos de patente.",
   },
   {
@@ -210,7 +210,7 @@ const ALL_CATEGORIES = [
     icon: Dumbbell,
     bg: "bg-gradient-to-br from-cyan-50 via-cyan-50/70 to-cyan-100/60 border border-cyan-200/70 text-cyan-600 shadow-cyan-500/10",
     h1: "Fitness",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Actívate sin salir de la zona con entrenadores y gimnasios locales.",
   },
   {
@@ -219,7 +219,7 @@ const ALL_CATEGORIES = [
     icon: Home,
     bg: "bg-gradient-to-br from-emerald-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-700 shadow-teal-500/10",
     h1: "Hogar",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Mejora y decora tu casa en cotos residenciales con persianerías y viveros locales.",
   },
   {
@@ -228,7 +228,7 @@ const ALL_CATEGORIES = [
     icon: Dog,
     bg: "bg-gradient-to-br from-amber-50 via-amber-50/70 to-amber-100/60 border border-amber-200/70 text-amber-600 shadow-amber-500/10",
     h1: "Mascotas",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Todo para tu mejor amigo en Natura Bosque Residencial y cotos vecinos.",
   },
   {
@@ -237,7 +237,7 @@ const ALL_CATEGORIES = [
     icon: Coffee,
     bg: "bg-gradient-to-br from-rose-50 via-rose-50/70 to-rose-100/60 border border-rose-200/70 text-rose-600 shadow-rose-500/10",
     h1: "Postres y café",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Emprendimientos reposteros y café gourmet en cotos residenciales de Mariano Otero.",
   },
   {
@@ -246,7 +246,7 @@ const ALL_CATEGORIES = [
     icon: Sparkles,
     bg: "bg-gradient-to-br from-purple-50 via-purple-50/70 to-purple-100/60 border border-purple-200/70 text-purple-600 shadow-purple-500/10",
     h1: "Productos artesanales",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Consume local con productos hechos a mano en las faldas del Bosque La Primavera.",
   },
   {
@@ -255,7 +255,7 @@ const ALL_CATEGORIES = [
     icon: Wrench,
     bg: "bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-700 shadow-blue-500/10",
     h1: "Servicios hogar",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Servicios para el hogar en Mariano Otero y cotos Natura.",
   },
   {
@@ -264,7 +264,7 @@ const ALL_CATEGORIES = [
     icon: HeartPulse,
     bg: "bg-gradient-to-br from-red-50 via-red-50/70 to-red-100/60 border border-red-200/70 text-red-600 shadow-red-500/10",
     h1: "Veterinarias",
-    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
+    desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
     seo: "Atención veterinaria integral y responsable para mascotas en cotos de Zapopan.",
   },
 ];
@@ -771,7 +771,7 @@ export default function CategoryPage() {
                     {currentCategory.name}
                   </h1>
                   <p className="text-xs sm:text-sm text-slate-200 mt-2 max-w-2xl leading-relaxed font-medium">
-                    Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.
+                    Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.
                   </p>
                 </div>
               </div>
