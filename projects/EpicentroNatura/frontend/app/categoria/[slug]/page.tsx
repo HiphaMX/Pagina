@@ -1030,6 +1030,60 @@ export default function CategoryPage() {
           )}
         </div>
 
+        {/* 2. EXPLORAR CATEGORÍAS (ENLACE A PÁGINAS INDEPENDIENTES) */}
+        <section id="seccion-categorias" className="pt-10 pb-4 space-y-6">
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 px-1">
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">
+                  EXPLORAR CATEGORÍAS
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Encuentra comercios, servicios y delivery hiperlocal
+                </p>
+              </div>
+              <span className="text-xs text-indigo-950 font-bold self-start sm:self-auto bg-purple-50 px-3 py-1 rounded-full border border-purple-200">
+                12 Categorías Activas
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+              {[
+                { id: "atencion-medica", label: "Atención médica", hoverBorder: "hover:border-teal-500", textHover: "group-hover:text-teal-600", bg: "bg-gradient-to-br from-teal-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-600 shadow-teal-500/10" },
+                { id: "clases-particulares", label: "Clases particulares", hoverBorder: "hover:border-indigo-500", textHover: "group-hover:text-indigo-600", bg: "bg-gradient-to-br from-indigo-50 via-indigo-50/70 to-indigo-100/60 border border-indigo-200/70 text-indigo-600 shadow-indigo-500/10" },
+                { id: "comida-delivery", label: "Comida y Delivery", hoverBorder: "hover:border-orange-500", textHover: "group-hover:text-orange-600", bg: "bg-gradient-to-br from-orange-50 via-orange-50/70 to-orange-100/60 border border-orange-200/70 text-orange-600 shadow-orange-500/10" },
+                { id: "escuelas", label: "Escuelas", hoverBorder: "hover:border-blue-500", textHover: "group-hover:text-blue-600", bg: "bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-600 shadow-blue-500/10" },
+                { id: "farmacias", label: "Farmacias", hoverBorder: "hover:border-emerald-500", textHover: "group-hover:text-emerald-600", bg: "bg-gradient-to-br from-emerald-50 via-emerald-50/70 to-emerald-100/60 border border-emerald-200/70 text-emerald-600 shadow-emerald-500/10" },
+                { id: "fitness", label: "Fitness", hoverBorder: "hover:border-cyan-500", textHover: "group-hover:text-cyan-600", bg: "bg-gradient-to-br from-cyan-50 via-cyan-50/70 to-cyan-100/60 border border-cyan-200/70 text-cyan-600 shadow-cyan-500/10" },
+                { id: "hogar", label: "Hogar", hoverBorder: "hover:border-teal-600", textHover: "group-hover:text-teal-700", bg: "bg-gradient-to-br from-teal-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-700 shadow-teal-500/10" },
+                { id: "mascotas", label: "Mascotas", hoverBorder: "hover:border-amber-500", textHover: "group-hover:text-amber-600", bg: "bg-gradient-to-br from-amber-50 via-amber-50/70 to-amber-100/60 border border-amber-200/70 text-amber-600 shadow-amber-500/10" },
+                { id: "postres-cafe", label: "Postres y café", hoverBorder: "hover:border-rose-500", textHover: "group-hover:text-rose-600", bg: "bg-gradient-to-br from-rose-50 via-rose-50/70 to-rose-100/60 border border-rose-200/70 text-rose-600 shadow-rose-500/10" },
+                { id: "productos-artesanales", label: "Productos artesanales", hoverBorder: "hover:border-purple-500", textHover: "group-hover:text-purple-600", bg: "bg-gradient-to-br from-purple-50 via-purple-50/70 to-purple-100/60 border border-purple-200/70 text-purple-600 shadow-purple-500/10" },
+                { id: "servicios-hogar", label: "Servicios hogar", hoverBorder: "hover:border-blue-600", textHover: "group-hover:text-blue-700", bg: "bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-700 shadow-blue-500/10" },
+                { id: "veterinarias", label: "Veterinarias", hoverBorder: "hover:border-red-500", textHover: "group-hover:text-red-600", bg: "bg-gradient-to-br from-red-50 via-red-50/70 to-red-100/60 border border-red-200/70 text-red-600 shadow-red-500/10" },
+              ].map((cat) => {
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/categoria/${cat.id}`}
+                    className={`p-4 rounded-2xl bg-white border border-slate-200 ${cat.hoverBorder} hover:shadow-md transition-all text-center flex flex-col items-center justify-between group min-h-[128px]`}
+                  >
+                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 group-hover:shadow-md transition-all shadow-xs ${cat.bg}`}>
+                      <AbstractCategoryIcon id={cat.id} className="w-7 h-7 transition-transform group-hover:scale-110 duration-200" />
+                    </div>
+                    <span className={`text-xs font-bold text-slate-800 ${cat.textHover} leading-tight`}>
+                      {cat.label}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-semibold mt-1">
+                      Ver directorio →
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* Sección SEO Grounding */}
         <section className="mt-12 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-4">
           <div className="flex items-center gap-2 text-emerald-800">
