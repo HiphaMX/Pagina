@@ -61,88 +61,88 @@ interface CommercialBusiness {
 
 const CATEGORY_THEMES: Record<string, { heroCard: string; glow1: string; glow2: string; badge: string; iconBox: string }> = {
   "atencion-medica": {
-    heroCard: "bg-gradient-to-br from-teal-600 via-teal-800 to-slate-950 border border-teal-400/30",
-    glow1: "bg-teal-400/25",
-    glow2: "bg-cyan-400/20",
-    badge: "bg-teal-400/20 text-teal-100 border border-teal-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-teal-500 via-teal-600 to-teal-800 border border-teal-400/40",
+    glow1: "bg-teal-300/20",
+    glow2: "bg-teal-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "clases-particulares": {
-    heroCard: "bg-gradient-to-br from-indigo-600 via-indigo-800 to-slate-950 border border-indigo-400/30",
-    glow1: "bg-indigo-400/25",
-    glow2: "bg-purple-400/20",
-    badge: "bg-indigo-400/20 text-indigo-100 border border-indigo-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-indigo-500 via-indigo-600 to-indigo-800 border border-indigo-400/40",
+    glow1: "bg-indigo-300/20",
+    glow2: "bg-indigo-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "comida-delivery": {
-    heroCard: "bg-gradient-to-br from-orange-600 via-amber-700 to-stone-950 border border-orange-400/30",
-    glow1: "bg-orange-400/25",
-    glow2: "bg-amber-400/20",
-    badge: "bg-orange-400/20 text-orange-100 border border-orange-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-orange-500 via-orange-600 to-amber-700 border border-orange-400/40",
+    glow1: "bg-amber-300/20",
+    glow2: "bg-orange-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "escuelas": {
-    heroCard: "bg-gradient-to-br from-blue-600 via-blue-800 to-slate-950 border border-blue-400/30",
-    glow1: "bg-blue-400/25",
-    glow2: "bg-indigo-400/20",
-    badge: "bg-blue-400/20 text-blue-100 border border-blue-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-blue-500 via-blue-600 to-blue-800 border border-blue-400/40",
+    glow1: "bg-blue-300/20",
+    glow2: "bg-blue-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "farmacias": {
-    heroCard: "bg-gradient-to-br from-emerald-600 via-emerald-800 to-slate-950 border border-emerald-400/30",
-    glow1: "bg-emerald-400/25",
-    glow2: "bg-teal-400/20",
-    badge: "bg-emerald-400/20 text-emerald-100 border border-emerald-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-800 border border-emerald-400/40",
+    glow1: "bg-emerald-300/20",
+    glow2: "bg-emerald-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "fitness": {
-    heroCard: "bg-gradient-to-br from-cyan-600 via-teal-700 to-slate-950 border border-cyan-400/30",
-    glow1: "bg-cyan-400/25",
-    glow2: "bg-blue-400/20",
-    badge: "bg-cyan-400/20 text-cyan-100 border border-cyan-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-cyan-500 via-cyan-600 to-teal-700 border border-cyan-400/40",
+    glow1: "bg-cyan-300/20",
+    glow2: "bg-cyan-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "hogar": {
-    heroCard: "bg-gradient-to-br from-teal-700 via-emerald-900 to-slate-950 border border-teal-400/30",
-    glow1: "bg-teal-400/25",
-    glow2: "bg-emerald-400/20",
-    badge: "bg-teal-400/20 text-teal-100 border border-teal-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-900 border border-teal-400/40",
+    glow1: "bg-teal-300/20",
+    glow2: "bg-teal-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "mascotas": {
-    heroCard: "bg-gradient-to-br from-amber-600 via-orange-800 to-stone-950 border border-amber-400/30",
-    glow1: "bg-amber-400/25",
-    glow2: "bg-orange-400/20",
-    badge: "bg-amber-400/20 text-amber-100 border border-amber-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-amber-500 via-amber-600 to-orange-700 border border-amber-400/40",
+    glow1: "bg-amber-300/20",
+    glow2: "bg-amber-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "postres-cafe": {
-    heroCard: "bg-gradient-to-br from-rose-600 via-pink-800 to-zinc-950 border border-rose-400/30",
-    glow1: "bg-rose-400/25",
-    glow2: "bg-pink-400/20",
-    badge: "bg-rose-400/20 text-rose-100 border border-rose-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-rose-500 via-rose-600 to-pink-700 border border-rose-400/40",
+    glow1: "bg-rose-300/20",
+    glow2: "bg-rose-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "productos-artesanales": {
-    heroCard: "bg-gradient-to-br from-purple-600 via-fuchsia-800 to-indigo-950 border border-purple-400/30",
-    glow1: "bg-purple-400/25",
-    glow2: "bg-fuchsia-400/20",
-    badge: "bg-purple-400/20 text-purple-100 border border-purple-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-purple-500 via-purple-600 to-purple-800 border border-purple-400/40",
+    glow1: "bg-purple-300/20",
+    glow2: "bg-purple-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "servicios-hogar": {
-    heroCard: "bg-gradient-to-br from-blue-700 via-sky-800 to-slate-950 border border-blue-400/30",
-    glow1: "bg-blue-400/25",
-    glow2: "bg-sky-400/20",
-    badge: "bg-blue-400/20 text-blue-100 border border-blue-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    heroCard: "bg-gradient-to-br from-sky-500 via-blue-600 to-blue-800 border border-blue-400/40",
+    glow1: "bg-sky-300/20",
+    glow2: "bg-blue-400/20",
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   },
   "veterinarias": {
-    heroCard: "bg-gradient-to-br from-red-600 via-rose-800 to-stone-950 border border-red-400/30",
-    glow1: "bg-red-400/25",
+    heroCard: "bg-gradient-to-br from-red-500 via-red-600 to-rose-700 border border-red-400/40",
+    glow1: "bg-red-300/20",
     glow2: "bg-rose-400/20",
-    badge: "bg-red-400/20 text-red-100 border border-red-300/40",
-    iconBox: "bg-white/15 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shrink-0 shadow-lg"
+    badge: "bg-white/20 text-white border border-white/30",
+    iconBox: "bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg"
   }
 };
 
