@@ -1139,7 +1139,7 @@ export default function EpicentroNaturaCleanLight() {
                   <span>Avisos a la comunidad por whatsapp</span>
                 </span>
                 <Link
-                  href="/comunidad-natura"
+                  href="https://wa.me/523336762545?text=Hola%20Epicentro,%20quiero%20unirme%20al%20Canal%20de%20WhatsApp%20de%20Natura" target="_blank"
                   className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs transition-all shadow-md active:scale-95"
                 >
                   <span>Entrar al canal</span>
