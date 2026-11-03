@@ -774,7 +774,7 @@
     {
       "src": "/epicentro/natura/(comunidad-natura|comunidad)(.*)",
       "status": 302,
-      "headers": { "Location": "https://wa.me/523336762545?text=Hola%20Epicentro,%20quiero%20unirme%20al%20Canal%20de%20WhatsApp%20de%20Natura" }
+      "headers": { "Location": "https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" }
     },
     {
       "src": "/epicentro/natura/(.*)",

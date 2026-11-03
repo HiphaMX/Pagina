@@ -170,7 +170,7 @@ export default function CulturaNaturaPage() {
             {/* ACCIONES RÁPIDAS */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
-                href="https://wa.me/523336762545?text=Hola%20Epicentro,%20quiero%20unirme%20al%20Canal%20de%20WhatsApp%20de%20Natura" target="_blank"
+                href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" target="_blank"
                 className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
               >
                 <Megaphone className="w-3.5 h-3.5 text-blue-600" />
@@ -550,7 +550,7 @@ export default function CulturaNaturaPage() {
           <div className="flex items-center gap-4 text-slate-400 text-xs">
             <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
             <Link href="/categoria/comida-delivery" className="hover:text-white transition-colors">Directorio Comercial</Link>
-            <Link href="https://wa.me/523336762545?text=Hola%20Epicentro,%20quiero%20unirme%20al%20Canal%20de%20WhatsApp%20de%20Natura" target="_blank" className="hover:text-white transition-colors">Comunidad Natura</Link>
+            <Link href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" target="_blank" className="hover:text-white transition-colors">Comunidad Natura</Link>
           </div>
         </div>
       </footer>
