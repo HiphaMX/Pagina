@@ -740,10 +740,7 @@ export default function CategoryPage() {
           <Link href="/" className="hover:text-indigo-600 transition-colors">
             Inicio
           </Link>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <Link href="/#seccion-categorias" className="hover:text-indigo-600 transition-colors">
-            Categorías
-          </Link>
+
           <ChevronRight className="w-3 h-3 text-slate-400" />
           <span className="font-bold text-slate-900">{currentCategory.name}</span>
         </nav>
