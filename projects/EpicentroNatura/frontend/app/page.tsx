@@ -1174,22 +1174,22 @@ export default function EpicentroNaturaCleanLight() {
           </div>
         </section>
 
-        {/* 6. BANNER DE CIERRE COMERCIAL: VENDEMOS PUBLICIDAD PAPI */}
+        {/* 6. BANNER DE CIERRE COMERCIAL: SLIDERS PUBLICITARIOS */}
         <section id="anunciate" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800">
             <div className="space-y-2 max-w-xl">
               <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">
-                VENDEMOS PUBLICIDAD PAPI
+                SLIDERS PUBLICITARIOS
               </span>
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight leading-snug">
-                ¿Quieres que tu negocio esté en el Slider Gigante del inicio?
+                ¿Quieres que tu negocio aparezca en el slider del inicio?
               </h3>
               <p className="text-xs sm:text-sm text-slate-300">
-                Aparece en el billboard principal que ven todos los residentes al ingresar. Campañas mensuales con link directo a WhatsApp y llamadas telefónicas.
+                Destaca de entre todos en el inicio principal, conecta con tus clientes de una manera fácil y atractiva.
               </p>
             </div>
             <a
-              href="https://wa.me/523315550000?text=Hola,%20me%20interesa%20contratar%20el%20Slider%20Gigante%20en%20Epicentro%20Natura"
+              href="https://wa.me/523315550000?text=Hola,%20me%20interesa%20contratar%20un%20Slider%20Publicitario%20en%20Epicentro%20Natura"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm shadow-lg transition-all active:scale-95 shrink-0"
