@@ -176,10 +176,7 @@
           <div class="flex items-center gap-2 mb-2">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider border border-indigo-400/30">
               <i data-lucide="sparkles" class="w-3 h-3 text-indigo-400"></i>
-              <span>Categoría Epicentro</span>
-            </span>
-            <span id="cat-badge-count" class="text-[10px] sm:text-[11px] font-bold text-slate-300 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
-              2 negocios
+              <span>Directorio</span>
             </span>
           </div>
           <h1 id="cat-hero-title" class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
@@ -1090,7 +1087,7 @@
         return matchCat && matchText && matchCoto && matchType && matchKm0;
       });
 
-      document.getElementById("cat-badge-count").textContent = `${filtered.length} negocio${filtered.length === 1 ? '' : 's'}`;
+      const countEl = document.getElementById("cat-badge-count"); if (countEl) countEl.textContent = `${filtered.length} negocio${filtered.length === 1 ? "" : "s"}`;
       updateStructuredData(filtered);
 
       const grid = document.getElementById("category-businesses-grid");
