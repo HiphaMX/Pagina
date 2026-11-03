@@ -279,10 +279,7 @@
           🏪 Local establecido
         </button>
         <button onclick="setTypeFilter('emprendimiento')" id="type-btn-emprendimiento" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
-          🛵 Emprendimiento (entrega a domicilio)
-        </button>
-        <button onclick="setTypeFilter('servicios-profesionales')" id="type-btn-servicios-profesionales" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
-          💼 Servicios profesionales
+          🛵 Solo servicio a domicilio
         </button>
       </div>
 
@@ -297,25 +294,6 @@
     <div id="category-businesses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
       <!-- Renderizado dinámico vía JavaScript -->
     </div>
-
-    <!-- SECCIÓN DE GROUNDING SEO Y POSICIONAMIENTO ORGÁNICO -->
-    <section class="mt-12 p-6 sm:p-8 rounded-3xl bg-white border border-snow-400 shadow-xs space-y-4">
-      <div class="flex items-center gap-2 text-brand-forest">
-        <i data-lucide="shield-check" class="w-5 h-5 text-brand-emerald"></i>
-        <h3 class="text-base sm:text-lg font-bold text-slate-900" id="seo-section-title">
-          Guía Local y Cobertura de Cotos
-        </h3>
-      </div>
-      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed" id="seo-section-content">
-        En Epicentro Natura impulsamos la economía hiperlocal conectando a residentes de Natura Bosque Residencial, Coto Roble, Coto Encino, Coto Ceiba, Coto Fresno, Coto Olivo, Los Robles, El Fortín y Luna Bosque con proveedores locales confiables. Todos los comercios ofrecen atención directa sin comisiones de intermediarios y entrega rápida a casetas residenciales.
-      </p>
-      <div class="pt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-500 font-medium">
-        <span class="bg-snow-300 px-2.5 py-1 rounded-lg">📍 Natura Bosque Residencial</span>
-        <span class="bg-snow-300 px-2.5 py-1 rounded-lg">🌲 Prolongación Mariano Otero</span>
-        <span class="bg-snow-300 px-2.5 py-1 rounded-lg">🛵 Entregas a Casetas</span>
-        <span class="bg-snow-300 px-2.5 py-1 rounded-lg">🌱 Red Km 0 Cero Emisiones</span>
-      </div>
-    </section>
 
   </main>
 
@@ -395,8 +373,7 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Negocio</label>
             <select class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
               <option value="local-establecido">Local establecido</option>
-              <option value="emprendimiento">Emprendimiento a domicilio</option>
-              <option value="servicios-profesionales">Servicios profesionales</option>
+              <option value="emprendimiento">Solo servicio a domicilio</option>
             </select>
           </div>
         </div>
@@ -748,7 +725,7 @@
         category_slug: "postres-cafe",
         category_label: "Postres y café",
         type_slug: "emprendimiento",
-        type_label: "Emprendimiento (solo entrega a domicilio)",
+        type_label: "Solo servicio a domicilio",
         address: "Luna Bosque Residencial · Casa 42",
         community_slug: "luna-bosque",
         community_name: "Luna Bosque",
@@ -769,7 +746,7 @@
         category_slug: "productos-artesanales",
         category_label: "Productos artesanales",
         type_slug: "emprendimiento",
-        type_label: "Emprendimiento (solo entrega a domicilio)",
+        type_label: "Solo servicio a domicilio",
         address: "Natura Bosque Residencial (Coto Ceiba casa 14)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -809,7 +786,7 @@
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
         type_slug: "emprendimiento",
-        type_label: "Emprendimiento (solo entrega a domicilio)",
+        type_label: "Solo servicio a domicilio",
         address: "Atención directa en la cochera de tu coto",
         community_slug: "bosque-primavera",
         community_name: "Bosque de la primavera",
@@ -827,8 +804,8 @@
         name: "Electricista y Mantenimiento Residencial Morales",
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
-        type_slug: "servicios-profesionales",
-        type_label: "Servicios profesionales",
+        type_slug: "emprendimiento",
+        type_label: "Solo servicio a domicilio",
         address: "Servicio a domicilio en todos los cotos de Mariano Otero",
         community_slug: "el-fortin",
         community_name: "El Fortín",
@@ -890,8 +867,8 @@
         name: "Profesor de Matemáticas e Inglés Coto Ceiba",
         category_slug: "clases-particulares",
         category_label: "Clases particulares",
-        type_slug: "servicios-profesionales",
-        type_label: "Servicios profesionales",
+        type_slug: "emprendimiento",
+        type_label: "Solo servicio a domicilio",
         address: "Natura Bosque Residencial (Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -910,7 +887,7 @@
         category_slug: "clases-particulares",
         category_label: "Clases particulares",
         type_slug: "emprendimiento",
-        type_label: "Emprendimiento (solo entrega a domicilio)",
+        type_label: "Solo servicio a domicilio",
         address: "Natura Bosque Residencial (Coto Encino casa 7)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -950,7 +927,7 @@
         category_slug: "fitness",
         category_label: "Fitness",
         type_slug: "emprendimiento",
-        type_label: "Emprendimiento (solo entrega a domicilio)",
+        type_label: "Solo servicio a domicilio",
         address: "Atención a domicilio en áreas verdes de cotos",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -1030,7 +1007,7 @@
         category_slug: "hogar",
         category_label: "Hogar",
         type_slug: "emprendimiento",
-        type_label: "Emprendimiento (solo entrega a domicilio)",
+        type_label: "Solo servicio a domicilio",
         address: "Luna Bosque Coto 2 casa 18 (Vivero demostrativo)",
         community_slug: "luna-bosque",
         community_name: "Luna Bosque",
@@ -1118,8 +1095,10 @@
       iconBox.innerHTML = CATEGORY_ABSTRACT_SVGS[catObj.slug] ? CATEGORY_ABSTRACT_SVGS[catObj.slug]("w-9 h-9 sm:w-11 sm:h-11 transition-transform group-hover:scale-105") : `<i data-lucide="${catObj.icon}" class="w-8 h-8 sm:w-10 sm:h-10 stroke-[2.2]"></i>`;
 
       // SEO Section
-      document.getElementById("seo-section-title").textContent = `Directorio de ${catObj.name} en Natura y Cotos Aledaños`;
-      document.getElementById("seo-section-content").textContent = `${catObj.seo} En Epicentro Natura promovemos la economía local, pedidos directos por WhatsApp y la entrega limpia cero emisiones a casetas en Natura Bosque Residencial, Los Robles, Luna Bosque y El Fortín.`;
+      const seoTitleEl = document.getElementById("seo-section-title");
+      if (seoTitleEl) seoTitleEl.textContent = `Directorio de ${catObj.name} en Natura y Cotos Aledaños`;
+      const seoContentEl = document.getElementById("seo-section-content");
+      if (seoContentEl) seoContentEl.textContent = `${catObj.seo} En Epicentro Natura promovemos la economía local, pedidos directos por WhatsApp y la entrega limpia cero emisiones a casetas en Natura Bosque Residencial, Los Robles, Luna Bosque y El Fortín.`;
 
       // Renderizar Switcher de Categorías
       renderCategorySwitcher();
