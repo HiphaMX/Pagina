@@ -698,6 +698,16 @@ export default function CategoryPage() {
     }
   }, [rawSlug]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const q = urlParams.get("q");
+      const coto = urlParams.get("coto");
+      if (q) setSearchQuery(q);
+      if (coto) setSelectedCommunity(coto);
+    }
+  }, []);
+
   const filteredBusinesses = ALL_BUSINESSES.filter((b) => {
     const matchCat =
       currentCategory.slug === "all" || b.category_slug === currentCategory.slug;
@@ -720,7 +730,9 @@ export default function CategoryPage() {
       !searchQuery ||
       b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       b.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.address.toLowerCase().includes(searchQuery.toLowerCase());
+      b.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (b.category_label && b.category_label.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (b.community_name && b.community_name.toLowerCase().includes(searchQuery.toLowerCase()));
 
     return matchCat && matchType && matchDelivery && matchPickup && matchCommunity && matchQuery;
   });
@@ -761,6 +773,33 @@ export default function CategoryPage() {
                 </span>
               </div>
             </Link>
+
+            {/* Search Bar & Coto Filter */}
+            <div className="flex-1 max-w-xl mx-2 hidden sm:flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="¿Qué buscas? (ej. tacos, farmacia, veterinaria...)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-500 rounded-xl outline-none transition-colors"
+                />
+              </div>
+              <select
+                value={selectedCommunity}
+                onChange={(e) => setSelectedCommunity(e.target.value)}
+                className="text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              >
+                <option value="all">📍 Todos los cotos / zonas</option>
+                <option value="natura-bosque-residencial">Natura Bosque Residencial</option>
+                <option value="los-robles">Los Robles</option>
+                <option value="punta-de-otero">Punta de Otero</option>
+                <option value="luna-bosque">Luna Bosque</option>
+                <option value="el-fortin">El Fortín</option>
+                <option value="bosque-primavera">Bosque de la Primavera</option>
+              </select>
+            </div>
 
             <div className="flex items-center gap-2.5 shrink-0">
               <Link
@@ -885,16 +924,26 @@ export default function CategoryPage() {
               <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
                 Prueba restableciendo los filtros o seleccionando otra categoría.
               </p>
-              <button
-                onClick={() => {
-                  setSelectedType("all");
-                  setSelectedCommunity("all");
-                  setSearchQuery("");
-                }}
-                className="mt-4 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold"
-              >
-                Restablecer Filtros
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+                <button
+                  onClick={() => {
+                    setSelectedType("all");
+                    setSelectedCommunity("all");
+                    setSearchQuery("");
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors"
+                >
+                  Restablecer Filtros
+                </button>
+                {searchQuery && currentCategory.slug !== "all" && (
+                  <Link
+                    href={`/categoria/all?q=${encodeURIComponent(searchQuery)}`}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors"
+                  >
+                    Buscar &quot;{searchQuery}&quot; en todas las categorías
+                  </Link>
+                )}
+              </div>
             </div>
           ) : (
             filteredBusinesses.map((b) => {
