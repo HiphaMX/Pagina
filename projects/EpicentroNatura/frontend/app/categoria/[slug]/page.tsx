@@ -277,7 +277,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "comida-delivery",
     category_label: "Comida y Delivery",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Av. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
@@ -296,7 +296,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "comida-delivery",
     category_label: "Comida y Delivery",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)",
     community_slug: "los-robles",
     community_name: "Los Robles",
@@ -316,7 +316,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "farmacias",
     category_label: "Farmacias",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Prol. Mariano Otero #4500 (Frente al ingreso Coto Encino)",
     community_slug: "punta-de-otero",
     community_name: "Punta de Otero",
@@ -336,7 +336,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "mascotas",
     category_label: "Mascotas",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Plaza Natura Local 3 (Prol. Mariano Otero #4250)",
     community_slug: "los-robles",
     community_name: "Los Robles",
@@ -355,7 +355,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     name: "Repostería Artesanal Dulce Bosque",
     category_slug: "postres-cafe",
     category_label: "Postres y café",
-    type_slug: "emprendimiento",
+    type_slug: "sin_punto_venta",
     type_label: "Emprendimiento (solo entrega a domicilio)",
     address: "Luna Bosque Residencial · Casa 42",
     community_slug: "luna-bosque",
@@ -375,7 +375,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     name: "Miel & Jabones Artesanales del Bosque",
     category_slug: "productos-artesanales",
     category_label: "Productos artesanales",
-    type_slug: "emprendimiento",
+    type_slug: "sin_punto_venta",
     type_label: "Emprendimiento (solo entrega a domicilio)",
     address: "Natura Bosque Residencial (Coto Ceiba casa 14)",
     community_slug: "natura-bosque-residencial",
@@ -396,7 +396,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "servicios-hogar",
     category_label: "Servicios hogar",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Prol. Mariano Otero #4300 (Plaza Ceiba)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
@@ -414,7 +414,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     name: "AquaWash Carwash Ecológico a Domicilio",
     category_slug: "servicios-hogar",
     category_label: "Servicios hogar",
-    type_slug: "emprendimiento",
+    type_slug: "sin_punto_venta",
     type_label: "Emprendimiento (solo entrega a domicilio)",
     address: "Atención directa en la cochera de tu coto",
     community_slug: "bosque-primavera",
@@ -454,7 +454,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "atencion-medica",
     category_label: "Atención médica",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Plaza Coto Encino Local 2 (Prol. Mariano Otero #4480)",
     community_slug: "punta-de-otero",
     community_name: "Punta de Otero",
@@ -474,7 +474,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "veterinarias",
     category_label: "Veterinarias",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Prol. Mariano Otero #4280 (Plaza Olivo)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
@@ -514,7 +514,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "fitness",
     category_label: "Fitness",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Av. Prolongación Mariano Otero #4350 (Plaza Coto Ceiba)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
@@ -532,7 +532,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     name: "Coach David - Entrenamiento Cero Emisiones",
     category_slug: "fitness",
     category_label: "Fitness",
-    type_slug: "emprendimiento",
+    type_slug: "sin_punto_venta",
     type_label: "Emprendimiento (solo entrega a domicilio)",
     address: "Atención a domicilio en áreas verdes de cotos",
     community_slug: "los-robles",
@@ -553,7 +553,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "escuelas",
     category_label: "Escuelas",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Prolongación Mariano Otero #4200 (Frente al corredor residencial)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
@@ -572,7 +572,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "escuelas",
     category_label: "Escuelas",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Av. Los Robles #310 (Ingreso fraccionamiento)",
     community_slug: "los-robles",
     community_name: "Los Robles",
@@ -592,7 +592,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     category_slug: "hogar",
     category_label: "Hogar",
     type_slug: "local_establecido",
-    type_label: "Local establecido",
+    type_label: "Punto de venta fijo",
     address: "Plaza Natura Local 5 (Prolongación Mariano Otero)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
@@ -610,7 +610,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     name: "Vivero & Jardines Paisajismo Bosque Vivo",
     category_slug: "hogar",
     category_label: "Hogar",
-    type_slug: "emprendimiento",
+    type_slug: "sin_punto_venta",
     type_label: "Emprendimiento (solo entrega a domicilio)",
     address: "Luna Bosque Coto 2 casa 18 (Vivero demostrativo)",
     community_slug: "luna-bosque",
@@ -661,7 +661,17 @@ export default function CategoryPage() {
   const filteredBusinesses = ALL_BUSINESSES.filter((b) => {
     const matchCat =
       currentCategory.slug === "all" || b.category_slug === currentCategory.slug;
-    const matchType = selectedType === "all" || b.type_slug === selectedType;
+    const matchType =
+      selectedType === "all" ||
+      (selectedType === "local_establecido" &&
+        (b.type_slug === "local_establecido" ||
+          b.type_slug === "local-establecido" ||
+          b.type_slug === "punto_venta_fijo")) ||
+      (selectedType === "sin_punto_venta" &&
+        (b.type_slug === "sin_punto_venta" ||
+          b.type_slug === "sin-punto-venta" ||
+          b.type_slug === "emprendimiento")) ||
+      b.type_slug === selectedType;
     const matchCommunity =
       selectedCommunity === "all" || b.community_slug === selectedCommunity;
     const matchQuery =
@@ -773,9 +783,9 @@ export default function CategoryPage() {
         <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             {[
-              { id: "all", label: "Toda la Oferta" },
-              { id: "local_establecido", label: "🏪 Local establecido" },
-              { id: "emprendimiento", label: "🛵 Solo servicio a domicilio" },
+              { id: "all", label: "Ver todo" },
+              { id: "local_establecido", label: "🏪 Punto de venta fijo" },
+              { id: "sin_punto_venta", label: "Sin punto de venta" },
             ].map((tab) => {
               const active = selectedType === tab.id;
               return (

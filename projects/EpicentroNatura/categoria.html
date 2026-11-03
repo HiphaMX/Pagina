@@ -194,13 +194,13 @@
       <!-- Pestañas de Tipo de Negocio -->
       <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
         <button onclick="setTypeFilter('all')" id="type-btn-all" class="type-pill is-active px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
-          Toda la Oferta
+          Ver todo
         </button>
         <button onclick="setTypeFilter('local-establecido')" id="type-btn-local-establecido" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
-          🏪 Local establecido
+          🏪 Punto de venta fijo
         </button>
-        <button onclick="setTypeFilter('emprendimiento')" id="type-btn-emprendimiento" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
-          🛵 Solo servicio a domicilio
+        <button onclick="setTypeFilter('sin-punto-venta')" id="type-btn-sin-punto-venta" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
+          Sin punto de venta
         </button>
       </div>
     </div>
@@ -287,8 +287,8 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Negocio</label>
             <select class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
-              <option value="local-establecido">Local establecido</option>
-              <option value="emprendimiento">Solo servicio a domicilio</option>
+              <option value="local-establecido">Punto de venta fijo</option>
+              <option value="sin-punto-venta">Sin punto de venta</option>
             </select>
           </div>
         </div>
@@ -657,7 +657,7 @@
         category_slug: "comida-delivery",
         category_label: "Comida y Delivery",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Av. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -676,7 +676,7 @@
         category_slug: "comida-delivery",
         category_label: "Comida y Delivery",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -697,7 +697,7 @@
         category_slug: "farmacias",
         category_label: "Farmacias",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Prol. Mariano Otero #4500 (Frente al ingreso Coto Encino)",
         community_slug: "punta-de-otero",
         community_name: "Punta de Otero",
@@ -718,7 +718,7 @@
         category_slug: "mascotas",
         category_label: "Mascotas",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Plaza Natura Local 3 (Prol. Mariano Otero #4250)",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -738,8 +738,8 @@
         name: "Repostería Artesanal Dulce Bosque",
         category_slug: "postres-cafe",
         category_label: "Postres y café",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Luna Bosque Residencial · Casa 42",
         community_slug: "luna-bosque",
         community_name: "Luna Bosque",
@@ -759,8 +759,8 @@
         name: "Miel & Jabones Artesanales del Bosque",
         category_slug: "productos-artesanales",
         category_label: "Productos artesanales",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Natura Bosque Residencial (Coto Ceiba casa 14)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -781,7 +781,7 @@
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Prol. Mariano Otero #4300 (Plaza Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -799,8 +799,8 @@
         name: "AquaWash Carwash Ecológico a Domicilio",
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Atención directa en la cochera de tu coto",
         community_slug: "bosque-primavera",
         community_name: "Bosque de la primavera",
@@ -818,8 +818,8 @@
         name: "Electricista y Mantenimiento Residencial Morales",
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Servicio a domicilio en todos los cotos de Mariano Otero",
         community_slug: "el-fortin",
         community_name: "El Fortín",
@@ -840,7 +840,7 @@
         category_slug: "atencion-medica",
         category_label: "Atención médica",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Plaza Coto Encino Local 2 (Prol. Mariano Otero #4480)",
         community_slug: "punta-de-otero",
         community_name: "Punta de Otero",
@@ -861,7 +861,7 @@
         category_slug: "veterinarias",
         category_label: "Veterinarias",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Prol. Mariano Otero #4280 (Plaza Olivo)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -881,8 +881,8 @@
         name: "Profesor de Matemáticas e Inglés Coto Ceiba",
         category_slug: "clases-particulares",
         category_label: "Clases particulares",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Natura Bosque Residencial (Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -900,8 +900,8 @@
         name: "Sesiones de Yoga & Mindfulness en Terraza",
         category_slug: "clases-particulares",
         category_label: "Clases particulares",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Natura Bosque Residencial (Coto Encino casa 7)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -922,7 +922,7 @@
         category_slug: "fitness",
         category_label: "Fitness",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Av. Prolongación Mariano Otero #4350 (Plaza Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -940,8 +940,8 @@
         name: "Coach David - Entrenamiento Cero Emisiones",
         category_slug: "fitness",
         category_label: "Fitness",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Atención a domicilio en áreas verdes de cotos",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -962,7 +962,7 @@
         category_slug: "escuelas",
         category_label: "Escuelas",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Prolongación Mariano Otero #4200 (Frente al corredor residencial)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -981,7 +981,7 @@
         category_slug: "escuelas",
         category_label: "Escuelas",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Av. Los Robles #310 (Ingreso fraccionamiento)",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -1002,7 +1002,7 @@
         category_slug: "hogar",
         category_label: "Hogar",
         type_slug: "local-establecido",
-        type_label: "Local establecido",
+        type_label: "Punto de venta fijo",
         address: "Plaza Natura Local 5 (Prolongación Mariano Otero)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -1020,8 +1020,8 @@
         name: "Vivero & Jardines Paisajismo Bosque Vivo",
         category_slug: "hogar",
         category_label: "Hogar",
-        type_slug: "emprendimiento",
-        type_label: "Solo servicio a domicilio",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
         address: "Luna Bosque Coto 2 casa 18 (Vivero demostrativo)",
         community_slug: "luna-bosque",
         community_name: "Luna Bosque",
@@ -1180,7 +1180,9 @@
         const matchCat = (currentCategorySlug === "all") || (b.category_slug === currentCategorySlug);
         const matchText = !q || b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q) || b.address.toLowerCase().includes(q);
         const matchCoto = (coto === "all") || (b.community_slug === coto);
-        const matchType = (currentTypeFilter === "all") || (b.type_slug === currentTypeFilter);
+        const matchType = (currentTypeFilter === "all") ||
+          (currentTypeFilter === "local-establecido" && (b.type_slug === "local-establecido" || b.type_slug === "local_establecido" || b.type_slug === "punto-venta-fijo")) ||
+          (currentTypeFilter === "sin-punto-venta" && (b.type_slug === "sin-punto-venta" || b.type_slug === "sin_punto_venta" || b.type_slug === "emprendimiento"));
 
         return matchCat && matchText && matchCoto && matchType;
       });
@@ -1345,8 +1347,10 @@
       document.querySelectorAll(".type-pill").forEach(btn => btn.classList.remove("is-active"));
       document.getElementById("type-btn-all").classList.add("is-active");
       const km0Btn = document.getElementById("km0-btn");
-      km0Btn.classList.add("bg-white", "text-slate-700", "border-snow-400");
-      km0Btn.classList.remove("bg-indigo-600", "text-white", "border-indigo-600", "shadow-sm");
+      if (km0Btn) {
+        km0Btn.classList.add("bg-white", "text-slate-700", "border-snow-400");
+        km0Btn.classList.remove("bg-indigo-600", "text-white", "border-indigo-600", "shadow-sm");
+      }
       applyAllFilters();
     }
 

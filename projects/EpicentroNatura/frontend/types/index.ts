@@ -17,7 +17,7 @@ export interface BusinessCategory {
 
 export type BusinessStatus = "pending_approval" | "active" | "suspended";
 
-export type BusinessType = "local_establecido" | "emprendimiento" | "servicios_profesionales";
+export type BusinessType = "local_establecido" | "emprendimiento" | "servicios_profesionales" | "sin_punto_venta" | "punto_venta_fijo";
 
 export interface Business {
   id: string;
