@@ -351,7 +351,7 @@
 
         <!-- Enlaces Footer -->
         <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6 text-slate-300 font-medium">
-          <a href="categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
+          <a href="index.html" class="hover:text-white transition-colors">Directorio Comercial</a>
           <a href="cultura-natura.html" class="hover:text-amber-400 transition-colors">Cultura & Deportes</a>
           <a href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" target="_blank" class="hover:text-cyan-400 transition-colors">Comunidad</a>
           <a href="index.html#anunciate" class="hover:text-white transition-colors">Anúnciate en Epicentro</a>
@@ -383,6 +383,11 @@
     
     // DICCIONARIO DE ICONOS ABSTRACTOS LINE ART "DESIGN FLOW"
     const CATEGORY_ABSTRACT_SVGS = {
+      "all": (cls) => `<svg viewBox="0 0 48 48" fill="none" class="${cls}" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 16l4-8h28l4 8" stroke="currentColor" stroke-width="2.8" />
+        <path d="M6 16v22a2 2 0 0 0 2 2h32a2 2 0 0 0 2-2V16" stroke="currentColor" stroke-width="2.8" />
+        <path d="M20 24h8v16h-8z" stroke="currentColor" stroke-width="2.4" />
+      </svg>`,
       "atencion-medica": (cls) => `<svg viewBox="0 0 48 48" fill="none" class="${cls}" stroke-linecap="round" stroke-linejoin="round">
         <path d="M24 10v28" stroke="currentColor" stroke-width="3" />
         <path d="M10 24h6.5l2.5-6 5 12 2.5-6h11.5" stroke="currentColor" stroke-width="2.8" />
@@ -444,6 +449,14 @@
     };
 
     const CATEGORY_THEMES = {
+      "all": {
+        heroCard: "relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 p-6 sm:p-10 text-white shadow-xl flex items-center justify-between gap-6",
+        glow1: "absolute -right-16 -top-16 w-64 h-64 rounded-full bg-blue-500/20 blur-3xl pointer-events-none",
+        glow2: "absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-purple-500/20 blur-3xl pointer-events-none",
+        badge: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30 text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider",
+        iconBox: "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg",
+        btnPrimary: "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-indigo-500/20"
+      },
       "atencion-medica": {
         heroCard: "relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-500 via-teal-600 to-teal-800 border border-teal-400/40 p-6 sm:p-10 text-white shadow-xl flex items-center justify-between gap-6",
         glow1: "absolute -right-16 -top-16 w-64 h-64 rounded-full bg-teal-300/20 blur-3xl pointer-events-none",
@@ -1155,7 +1168,20 @@
 
     // RENDERIZAR LA VISTA DE LA CATEGORÍA ACTUAL
     function renderCategoryView() {
-      const catObj = ALL_CATEGORIES.find(c => c.slug === currentCategorySlug) || ALL_CATEGORIES[0];
+      let catObj;
+      if (currentCategorySlug === "all") {
+        catObj = {
+          slug: "all",
+          name: "Directorio Comercial",
+          icon: "store",
+          bg: "bg-slate-900 text-white",
+          h1: "Directorio Comercial",
+          desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
+          seo: "Directorio comercial completo de todos los negocios y servicios en Natura Bosque Residencial y cotos aledaños."
+        };
+      } else {
+        catObj = ALL_CATEGORIES.find(c => c.slug === currentCategorySlug) || ALL_CATEGORIES[0];
+      }
 
       // Actualizar Título y Metadatos de la página
       document.title = `${catObj.name} en Natura Bosque Residencial & Mariano Otero | Epicentro Natura`;
