@@ -373,7 +373,6 @@ export default function EpicentroNaturaCleanLight() {
   const [selectedCoto, setSelectedCoto] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedType, setSelectedType] = useState<"all" | BusinessType>("all");
-  const [km0Only, setKm0Only] = useState(false);
 
   // Modals
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
@@ -491,8 +490,7 @@ export default function EpicentroNaturaCleanLight() {
     const matchCoto = selectedCoto === "all" || b.community_slug === selectedCoto;
     const matchCat = selectedCategory === "all" || b.category_slug === selectedCategory;
     const matchType = selectedType === "all" || b.type_slug === selectedType;
-    const matchKm0 = !km0Only || b.has_km0_badge;
-    return matchText && matchCoto && matchCat && matchType && matchKm0;
+    return matchText && matchCoto && matchCat && matchType;
   });
 
   return (

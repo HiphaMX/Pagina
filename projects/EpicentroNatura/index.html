@@ -877,15 +877,7 @@
           </div>
         </div>
 
-        <div class="p-3 rounded-xl bg-brand-softMint/50 border border-brand-softMint flex items-start gap-2">
-          <input type="checkbox" id="reg-km0" class="w-4 h-4 rounded text-brand-emerald mt-0.5">
-          <div>
-            <label for="reg-km0" class="text-xs font-bold text-brand-forest block">
-              Distintivo "Sello Verde Km 0 (0 Emisiones)"
-            </label>
-            <span class="text-[11px] text-slate-600">Marca si tu entrega se hace a pie, bicicleta o vehículo 100% eléctrico dentro de cotos.</span>
-          </div>
-        </div>
+        
 
         <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-brand-emerald hover:bg-brand-forest text-white font-bold text-sm shadow-md transition-all active:scale-95">
           Enviar Registro Comercial
@@ -1307,7 +1299,6 @@
     // ESTADO DE FILTRADO
     let currentCategoryFilter = "all";
     let currentTypeFilter = "all";
-    let currentKm0Filter = false;
 
     // RENDERIZADO DEL DIRECTORIO
     function renderDirectory() {
@@ -1324,9 +1315,8 @@
         // Tipo de negocio (3 tipos)
         const matchType = currentTypeFilter === "all" || b.type_slug === currentTypeFilter;
         // Km 0
-        const matchKm0 = !currentKm0Filter || b.has_km0_badge;
 
-        return matchText && matchCoto && matchCat && matchType && matchKm0;
+        return matchText && matchCoto && matchCat && matchType;
       });
 
       const grid = document.getElementById("directory-grid");
@@ -1438,15 +1428,7 @@
                   <span>${b.hours}</span>
                 </div>
 
-                ${b.has_km0_badge ? `
-                  <div class="mt-2.5 p-2 rounded-xl bg-brand-softMint/70 border border-brand-softMint flex items-start gap-2 text-[11px] text-brand-forest">
-                    <i data-lucide="leaf" class="w-4 h-4 text-brand-emerald flex-shrink-0 mt-0.5"></i>
-                    <div>
-                      <strong class="font-extrabold block">Sello Verde Km 0 (0 Emisiones)</strong>
-                      <span class="text-[10px] text-slate-700">${b.km0_reason}</span>
-                    </div>
-                  </div>
-                ` : ''}
+                
               </div>
             </div>
 
@@ -1531,18 +1513,7 @@
       applyAllFilters();
     }
 
-    function toggleKm0Filter() {
-      currentKm0Filter = !currentKm0Filter;
-      const btn = document.getElementById("km0-btn");
-      if (currentKm0Filter) {
-        btn.classList.add("bg-brand-softMint", "border-brand-emerald", "text-brand-forest");
-        btn.classList.remove("bg-white", "text-slate-700", "border-snow-400");
-      } else {
-        btn.classList.remove("bg-brand-softMint", "border-brand-emerald", "text-brand-forest");
-        btn.classList.add("bg-white", "text-slate-700", "border-snow-400");
-      }
-      applyAllFilters();
-    }
+    function toggleKm0Filter() {}
 
     function handleHomeSearchKeydown(e) {
       if (e.key === "Enter") {
@@ -1677,7 +1648,6 @@
       document.getElementById("coto-select").value = "all";
       currentCategoryFilter = "all";
       currentTypeFilter = "all";
-      currentKm0Filter = false;
       const nearMeBtn = document.getElementById("near-me-btn");
       const nearMeText = document.getElementById("near-me-text");
       if (nearMeBtn) {

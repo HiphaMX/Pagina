@@ -622,7 +622,6 @@ export default function CategoryPage() {
     ALL_CATEGORIES.find((c) => c.slug === rawSlug) || ALL_CATEGORIES[0]
   );
   const [selectedType, setSelectedType] = useState<string>("all");
-  const [isKm0Active, setIsKm0Active] = useState<boolean>(false);
   const [selectedCommunity, setSelectedCommunity] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -651,7 +650,6 @@ export default function CategoryPage() {
     const matchCat =
       currentCategory.slug === "all" || b.category_slug === currentCategory.slug;
     const matchType = selectedType === "all" || b.type_slug === selectedType;
-    const matchKm0 = !isKm0Active || b.has_km0_badge;
     const matchCommunity =
       selectedCommunity === "all" || b.community_slug === selectedCommunity;
     const matchQuery =
@@ -660,7 +658,7 @@ export default function CategoryPage() {
       b.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       b.address.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchCat && matchType && matchKm0 && matchCommunity && matchQuery;
+    return matchCat && matchType && matchCommunity && matchQuery;
   });
 
   const handleCopyAddress = (addr: string) => {
@@ -783,18 +781,6 @@ export default function CategoryPage() {
               );
             })}
           </div>
-
-          <button
-            onClick={() => setIsKm0Active(!isKm0Active)}
-            className={`self-start md:self-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
-              isKm0Active
-                ? "bg-emerald-600 text-white border-emerald-600"
-                : "bg-white text-slate-700 border-slate-200 hover:border-emerald-600 hover:text-emerald-600"
-            }`}
-          >
-            <Leaf className="w-3.5 h-3.5" />
-            <span>Solo Distintivo Km 0 (0 Emisiones)</span>
-          </button>
         </div>
 
         {/* Grid de Fichas Comerciales */}
@@ -811,7 +797,6 @@ export default function CategoryPage() {
               <button
                 onClick={() => {
                   setSelectedType("all");
-                  setIsKm0Active(false);
                   setSelectedCommunity("all");
                   setSearchQuery("");
                 }}
@@ -841,12 +826,6 @@ export default function CategoryPage() {
                           {b.name}
                         </h3>
                       </div>
-                      {b.has_km0_badge && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                          <Leaf className="w-3 h-3 text-emerald-600" />
-                          <span>Km 0</span>
-                        </span>
-                      )}
                     </div>
 
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700">
