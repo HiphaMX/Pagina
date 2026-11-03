@@ -1056,7 +1056,7 @@ export default function EpicentroNaturaCleanLight() {
                       {cat.label}
                     </span>
                     <span className="text-[10px] text-slate-400 font-semibold mt-1">
-                      Ver negocios →
+                      Ver directorio →
                     </span>
                   </Link>
                 );
