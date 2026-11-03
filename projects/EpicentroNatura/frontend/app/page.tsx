@@ -627,8 +627,8 @@ export default function EpicentroNaturaCleanLight() {
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-amber-400 block mb-2">
-                    Comida & Delivery
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-orange-400 block mb-2">
+                    Comida y Delivery
                   </span>
                 </div>
 
@@ -646,7 +646,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="https://wa.me/523315550202?text=Hola%20El%20G%C3%BCero%20Taquero,%20quiero%20hacer%20un%20pedido%20a%20domicilio%20en%20mi%20coto"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
@@ -655,7 +655,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="tel:+523315550202"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <button
@@ -670,7 +670,7 @@ export default function EpicentroNaturaCleanLight() {
                     }
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <MapPin className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Ver ubicación</span>
                   </button>
                 </div>
@@ -687,7 +687,7 @@ export default function EpicentroNaturaCleanLight() {
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-emerald-400 block mb-2">
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-red-400 block mb-2">
                     Veterinarias
                   </span>
                 </div>
@@ -706,7 +706,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="https://wa.me/523315550207?text=Hola%20Veterinaria%20Huellitas%20Natura,%20necesito%20atenci%C3%B3n%20para%20mi%20mascota"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-red-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
@@ -715,7 +715,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="tel:+523315550207"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-red-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <button
@@ -730,7 +730,7 @@ export default function EpicentroNaturaCleanLight() {
                     }
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <MapPin className="w-4 h-4 text-red-400 stroke-[2.2]" />
                     <span>Ver ubicación</span>
                   </button>
                 </div>
@@ -747,7 +747,7 @@ export default function EpicentroNaturaCleanLight() {
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-blue-400 block mb-2">
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-sky-400 block mb-2">
                     Servicios hogar
                   </span>
                 </div>
@@ -766,7 +766,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="https://wa.me/523315550208?text=Hola%20Do%C3%B1a%20Mary,%20tengo%20ropa%20para%20planchar%20en%20mi%20coto"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
@@ -775,7 +775,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="tel:+523315550208"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <button
@@ -790,7 +790,7 @@ export default function EpicentroNaturaCleanLight() {
                     }
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <MapPin className="w-4 h-4 text-sky-400 stroke-[2.2]" />
                     <span>Ver ubicación</span>
                   </button>
                 </div>
@@ -807,7 +807,7 @@ export default function EpicentroNaturaCleanLight() {
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-teal-400 block mb-2">
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-sky-400 block mb-2">
                     Servicios hogar
                   </span>
                 </div>
@@ -826,7 +826,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="https://wa.me/523315550103?text=Hola%20AquaWash,%20quiero%20agendar%20un%20lavado%20en%20mi%20cochera"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
@@ -835,7 +835,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="tel:+523315550103"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <button
@@ -850,7 +850,7 @@ export default function EpicentroNaturaCleanLight() {
                     }
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <MapPin className="w-4 h-4 text-sky-400 stroke-[2.2]" />
                     <span>Ver ubicación</span>
                   </button>
                 </div>
@@ -868,7 +868,7 @@ export default function EpicentroNaturaCleanLight() {
               >
                 <div>
                   <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-orange-400 block mb-2">
-                    Comida & Delivery
+                    Comida y Delivery
                   </span>
                 </div>
 
@@ -886,7 +886,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="https://wa.me/523315550105?text=Hola%20Pizzas%20La%20Cantera,%20quiero%20hacer%20un%20pedido%20a%20domicilio"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
@@ -895,7 +895,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="tel:+523315550105"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <button
@@ -910,7 +910,7 @@ export default function EpicentroNaturaCleanLight() {
                     }
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <MapPin className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Ver ubicación</span>
                   </button>
                 </div>
@@ -927,8 +927,8 @@ export default function EpicentroNaturaCleanLight() {
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-indigo-400 block mb-2">
-                    Servicios profesionales
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-teal-400 block mb-2">
+                    Hogar · Bienes Raíces
                   </span>
                 </div>
 
@@ -946,7 +946,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="https://wa.me/523315550209?text=Hola%20Valeria,%20me%20interesa%20asesor%C3%ADa%20inmobiliaria%20en%20Natura"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-700 hover:from-teal-700 hover:to-emerald-800 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-teal-600/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
@@ -955,7 +955,7 @@ export default function EpicentroNaturaCleanLight() {
                     href="tel:+523315550209"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-teal-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <button
@@ -970,7 +970,7 @@ export default function EpicentroNaturaCleanLight() {
                     }
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <MapPin className="w-4 h-4 text-emerald-300 stroke-[2.2]" />
+                    <MapPin className="w-4 h-4 text-teal-400 stroke-[2.2]" />
                     <span>Ver ubicación</span>
                   </button>
                 </div>
@@ -1002,7 +1002,7 @@ export default function EpicentroNaturaCleanLight() {
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
                     className={`h-1.5 rounded-full transition-all ${
-                      currentSlide === idx ? "w-8 bg-emerald-400" : "w-3 bg-slate-700 hover:bg-slate-600"
+                      currentSlide === idx ? `w-8 ${["bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]", "bg-gradient-to-r from-red-500 to-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]", "bg-gradient-to-r from-sky-500 to-blue-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]", "bg-gradient-to-r from-sky-500 to-blue-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]", "bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]", "bg-gradient-to-r from-teal-500 to-emerald-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]"][idx]}` : "w-3 bg-slate-700 hover:bg-slate-600"
                     }`}
                   />
                 ))}
