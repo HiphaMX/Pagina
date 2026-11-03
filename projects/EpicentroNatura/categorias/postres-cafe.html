@@ -70,22 +70,22 @@
   </script>
 
   <style>
-    .type-pill.is-active {
+    .type-pill.is-active, .modality-pill.is-active {
       background-color: #050810 !important;
       color: #ffffff !important;
       border-color: #050810 !important;
     }
-    .type-pill.is-active:hover {
+    .type-pill.is-active:hover, .modality-pill.is-active:hover {
       background-color: #1e1b4b !important;
       color: #ffffff !important;
       border-color: #1e1b4b !important;
     }
-    .type-pill:not(.is-active) {
+    .type-pill:not(.is-active), .modality-pill:not(.is-active) {
       background-color: #ffffff !important;
       color: #334155 !important;
       border-color: #e2e8f0 !important;
     }
-    .type-pill:not(.is-active):hover {
+    .type-pill:not(.is-active):hover, .modality-pill:not(.is-active):hover {
       background-color: #f8fafc !important;
       color: #6366f1 !important;
       border-color: #cbd5e1 !important;
@@ -189,14 +189,23 @@
     <div class="p-4 rounded-2xl bg-white border border-snow-400 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
       <!-- Pestañas de Tipo de Negocio -->
       <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
-        <button onclick="setTypeFilter('all')" id="type-btn-all" class="type-pill is-active px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
+        <button onclick="setTypeFilter('all')" id="type-btn-all" class="type-pill is-active px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
           Ver todo
         </button>
-        <button onclick="setTypeFilter('local-establecido')" id="type-btn-local-establecido" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
-          🏪 Punto de venta fijo
+        <button onclick="setTypeFilter('local-establecido')" id="type-btn-local-establecido" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
+          Punto de venta fijo
         </button>
-        <button onclick="setTypeFilter('sin-punto-venta')" id="type-btn-sin-punto-venta" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border">
+        <button onclick="setTypeFilter('sin-punto-venta')" id="type-btn-sin-punto-venta" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
           Sin punto de venta
+        </button>
+
+        <div class="h-5 w-px bg-snow-400 shrink-0 mx-1"></div>
+
+        <button onclick="toggleDeliveryFilter()" id="filter-btn-delivery" class="modality-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
+          Servicio a domicilio
+        </button>
+        <button onclick="togglePickupFilter()" id="filter-btn-pickup" class="modality-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
+          Recoger en punto de venta
         </button>
       </div>
     </div>
@@ -664,6 +673,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: true,
         description: "Tacos y costras de suadero, pastor con piña asada al carbón, carnaza, arrachera, pancita y tripita dorada con salsas caseras."
       },
       {
@@ -683,6 +694,8 @@
         has_km0_badge: true,
         km0_reason: "Entrega limpia en bici y moto eléctrica a cotos",
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: true,
         description: "Pizzas rústicas horneadas al momento en horno de piedra con masa madre fermentada 48 horas, salsa San Marzano y quesos finos."
       },
 
@@ -704,6 +717,8 @@
         has_km0_badge: true,
         km0_reason: "Reparto limpio en bici de carga a casetas de cotos",
         cta_type: "call_and_whatsapp",
+        has_delivery: true,
+        has_pickup: true,
         description: "Medicamentos genéricos y de patente, curaciones menores, toma de presión arterial, fórmulas lácteas y surtido de recetas."
       },
 
@@ -725,6 +740,8 @@
         has_km0_badge: true,
         km0_reason: "Recogida y entrega de mascotas en carrito eléctrico",
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: true,
         description: "Alimentos súper premium, premios naturales, correas, camas y estética canina profesional con baño relajante medicado."
       },
 
@@ -746,6 +763,8 @@
         has_km0_badge: true,
         km0_reason: "Horneado casero y entrega a pie a tu puerta",
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: false,
         description: "Pasteles de zanahoria con betún de queso crema, pays de frutos rojos, galletas chispas de chocolate y brownies artesanales."
       },
 
@@ -767,6 +786,8 @@
         has_km0_badge: true,
         km0_reason: "Cosecha local y entrega peatonal entre cotos",
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: false,
         description: "Miel pura 100% de abeja de la Primavera, propóleo, jabones saponificados en frío con avena, romero y lavanda."
       },
 
@@ -788,6 +809,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: true,
         description: "Servicio de planchaduría profesional por docena, tintorería, almidonado de camisas y desmanchado de prendas delicadas."
       },
       {
@@ -807,6 +830,8 @@
         has_km0_badge: true,
         km0_reason: "Lavado en seco sin uso de mangueras ni emisiones",
         cta_type: "service_whatsapp",
+        has_delivery: true,
+        has_pickup: false,
         description: "Lavado de autos en seco en tu propia cochera con polímeros biodegradables que no rayan la pintura y ahorran 150 litros de agua."
       },
       {
@@ -826,6 +851,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "service_whatsapp",
+        has_delivery: true,
+        has_pickup: false,
         description: "Instalaciones eléctricas 110V/220V, balanceo de cargas, bombas presurizadoras, ventiladores de techo y cortos circuitos."
       },
 
@@ -847,6 +874,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "call_and_whatsapp",
+        has_delivery: false,
+        has_pickup: true,
         description: "Medicina general, control de diabetes e hipertensión, odontología preventiva, resinas, limpiezas con ultrasonido y blanqueamiento."
       },
 
@@ -868,6 +897,8 @@
         has_km0_badge: true,
         km0_reason: "Atención de urgencia a pie y bici a cotos cercanos",
         cta_type: "call_and_whatsapp",
+        has_delivery: true,
+        has_pickup: true,
         description: "Consultas médicas veterinarias, cuadro completo de vacunas, desparasitaciones, cirugías menores y estética canina profesional."
       },
 
@@ -889,6 +920,8 @@
         has_km0_badge: true,
         km0_reason: "Profesor residente en el coto; desplazamiento a pie",
         cta_type: "service_whatsapp",
+        has_delivery: true,
+        has_pickup: false,
         description: "Clases particulares de regularización en matemáticas, álgebra, física e inglés para primaria, secundaria y preparatoria."
       },
       {
@@ -908,6 +941,8 @@
         has_km0_badge: true,
         km0_reason: "Práctica vecinal en casa club sin uso de vehículos",
         cta_type: "service_whatsapp",
+        has_delivery: true,
+        has_pickup: false,
         description: "Hatha Yoga, vinyasa suave y respiración consciente en grupos reducidos con vista panorámica al bosque."
       },
 
@@ -929,6 +964,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "call_and_whatsapp",
+        has_delivery: false,
+        has_pickup: true,
         description: "Gimnasio boutique, entrenamiento funcional HIIT, pilates reformer y asesoría deportiva con instructores certificados."
       },
       {
@@ -948,6 +985,8 @@
         has_km0_badge: true,
         km0_reason: "Desplazamiento 100% en bicicleta entre cotos",
         cta_type: "service_whatsapp",
+        has_delivery: true,
+        has_pickup: false,
         description: "Entrenador personal a domicilio en cotos Natura, Los Robles y El Fortín. Calistenia, acondicionamiento y planes metabólicos."
       },
 
@@ -969,6 +1008,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "call_and_whatsapp",
+        has_delivery: false,
+        has_pickup: true,
         description: "Educación bilingüe desde Maternal hasta Preparatoria. Vanguardia pedagógica, canchas deportivas, laboratorios y transporte escolar en cotos."
       },
       {
@@ -988,6 +1029,8 @@
         has_km0_badge: true,
         km0_reason: "Rutas seguras peatonales y ciclistas para alumnos de coto",
         cta_type: "call_and_whatsapp",
+        has_delivery: false,
+        has_pickup: true,
         description: "Metodología activa nórdica centrada en el bienestar infantil, bilingüe, aulas al aire libre frente al bosque, Preescolar y Primaria."
       },
 
@@ -1009,6 +1052,8 @@
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "service_whatsapp",
+        has_delivery: true,
+        has_pickup: true,
         description: "Fabricación e instalación de persianas sheer elegance, blackout, toldos retráctiles, mosquiteros y canceles de baño en cristal templado para casas de coto."
       },
       {
@@ -1028,6 +1073,8 @@
         has_km0_badge: true,
         km0_reason: "Traslado ecológico en bici de carga sin emisiones",
         cta_type: "whatsapp_order",
+        has_delivery: true,
+        has_pickup: true,
         description: "Plantas de ornato, pasto en rollo, suculentas, macetas de autor y mantenimiento de jardinería para cocheras y terrazas en cotos privados."
       }
     ];
@@ -1049,6 +1096,8 @@
     // ESTADO DE FILTROS EN ESTA PÁGINA
     let currentCategorySlug = "postres-cafe";
     let currentTypeFilter = "all";
+    let filterDelivery = false;
+    let filterPickup = false;
 
     // INICIALIZACIÓN
     window.addEventListener("DOMContentLoaded", () => {
@@ -1069,6 +1118,28 @@
       }
       if (cotoParam && document.querySelector(`#coto-select option[value="${cotoParam}"]`)) {
         document.getElementById("coto-select").value = cotoParam;
+      }
+
+      const typeParam = urlParams.get("type");
+      if (typeParam) {
+        currentTypeFilter = typeParam;
+        document.querySelectorAll(".type-pill").forEach(btn => btn.classList.remove("is-active"));
+        const activeBtn = document.getElementById(`type-btn-${typeParam}`);
+        if (activeBtn) activeBtn.classList.add("is-active");
+      }
+
+      const delivParam = urlParams.get("delivery");
+      if (delivParam === "1" || delivParam === "true") {
+        filterDelivery = true;
+        const delivBtn = document.getElementById("filter-btn-delivery");
+        if (delivBtn) delivBtn.classList.add("is-active");
+      }
+
+      const pickParam = urlParams.get("pickup");
+      if (pickParam === "1" || pickParam === "true") {
+        filterPickup = true;
+        const pickBtn = document.getElementById("filter-btn-pickup");
+        if (pickBtn) pickBtn.classList.add("is-active");
       }
 
       renderCategoryView();
@@ -1179,8 +1250,10 @@
         const matchType = (currentTypeFilter === "all") ||
           (currentTypeFilter === "local-establecido" && (b.type_slug === "local-establecido" || b.type_slug === "local_establecido" || b.type_slug === "punto-venta-fijo")) ||
           (currentTypeFilter === "sin-punto-venta" && (b.type_slug === "sin-punto-venta" || b.type_slug === "sin_punto_venta" || b.type_slug === "emprendimiento"));
+        const matchDelivery = !filterDelivery || (b.has_delivery === true);
+        const matchPickup = !filterPickup || (b.has_pickup === true);
 
-        return matchCat && matchText && matchCoto && matchType;
+        return matchCat && matchText && matchCoto && matchType && matchDelivery && matchPickup;
       });
 
       const countEl = document.getElementById("cat-badge-count"); if (countEl) countEl.textContent = `${filtered.length} negocio${filtered.length === 1 ? "" : "s"}`;
@@ -1259,8 +1332,12 @@
                 </div>
               </div>
 
-              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-snow-300 text-slate-700">
-                <span>${b.type_label}</span>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-snow-300 text-slate-700">
+                  ${b.type_label}
+                </span>
+                ${b.has_delivery ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">Servicio a domicilio</span>` : ''}
+                ${b.has_pickup ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">Recoger en punto de venta</span>` : ''}
               </div>
 
               <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">
@@ -1323,12 +1400,37 @@
       schemaTag.textContent = JSON.stringify(schemaData);
     }
 
-    // MANEJO DE FILTRO POR TIPO DE NEGOCIO
+    // MANEJO DE FILTRO POR TIPO DE NEGOCIO Y MODALIDADES
     function setTypeFilter(type) {
       currentTypeFilter = type;
+      if (type === "all") {
+        filterDelivery = false;
+        filterPickup = false;
+        document.querySelectorAll(".modality-pill").forEach(btn => btn.classList.remove("is-active"));
+      }
       document.querySelectorAll(".type-pill").forEach(btn => btn.classList.remove("is-active"));
       const activeBtn = document.getElementById(`type-btn-${type}`);
       if (activeBtn) activeBtn.classList.add("is-active");
+      applyAllFilters();
+    }
+
+    function toggleDeliveryFilter() {
+      filterDelivery = !filterDelivery;
+      const btn = document.getElementById("filter-btn-delivery");
+      if (btn) {
+        if (filterDelivery) btn.classList.add("is-active");
+        else btn.classList.remove("is-active");
+      }
+      applyAllFilters();
+    }
+
+    function togglePickupFilter() {
+      filterPickup = !filterPickup;
+      const btn = document.getElementById("filter-btn-pickup");
+      if (btn) {
+        if (filterPickup) btn.classList.add("is-active");
+        else btn.classList.remove("is-active");
+      }
       applyAllFilters();
     }
 

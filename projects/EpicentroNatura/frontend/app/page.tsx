@@ -50,6 +50,8 @@ interface CommercialBusiness {
   category_label: string;
   type_slug: BusinessType;
   type_label: string;
+  has_delivery?: boolean;
+  has_pickup?: boolean;
   address: string;
   community_slug: string;
   community_name: string;
@@ -82,6 +84,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Tacos y costras de suadero, pastor con piña asada al carbón, carnaza, arrachera, pancita y tripita dorada. Servidos con tortillas calientitas y salsas caseras.",
   },
   {
@@ -101,6 +105,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Entrega limpia en bici y moto eléctrica a cotos",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Pizzas rústicas horneadas al momento en horno de piedra con masa madre fermentada 48 horas, salsa San Marzano y quesos artesanales.",
   },
 
@@ -122,6 +128,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Reparto limpio en bici de carga a casetas de cotos",
     cta_type: "call_and_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Medicamentos de patente, genéricos, material de curación y fórmulas para bebés con servicio a domicilio.",
   },
 
@@ -143,6 +151,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Atención y traslado en coto en carrito eléctrico",
     cta_type: "call_and_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Consultas médicas veterinarias, cuadro completo de vacunas, desparasitaciones, cirugías menores y estética canina profesional.",
   },
 
@@ -164,6 +174,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Horneado casero y entrega a pie a tu puerta",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: false,
     description: "Pasteles de zanahoria, pays de frutos rojos, galletas chispas de chocolate y brownies artesanales.",
   },
 
@@ -185,6 +197,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Cero emisiones; entrega a mano en cotos Natura",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: false,
     description: "Jabones de avena y miel, velas de cera de soya aromatizadas con esencias de pino y lavanda del bosque.",
   },
 
@@ -206,6 +220,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Recolección y entrega a pie en cotos Natura",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Planchado profesional por docena en prendas de vestir, camisas y uniformes escolares con almidón ligero y entrega protegida en ganchos.",
   },
   {
@@ -225,6 +241,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Lavado en seco sin gasolina ni desperdicio de agua",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Lavado automotriz en seco, abrillantado, encerado cerámico y aspirado profundo de tapicería directo en la cochera de tu casa.",
   },
 
@@ -246,6 +264,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "call_and_whatsapp",
+    has_delivery: false,
+    has_pickup: true,
     description: "Consulta médica general, certificados médicos, control de glucosa y presión arterial, suturas menores.",
   },
   {
@@ -265,6 +285,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Desplazamiento local en scooter eléctrico sin gasolina",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Reparación de cortocircuitos, bombas de agua, hidroneumáticos, fugas de gas y calentadores solares.",
   },
   {
@@ -284,6 +306,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Atención vecinal a pie dentro de cotos Natura",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Especialista en compra, venta y arrendamiento de casas residenciales en cotos de Mariano Otero y El Fortín. Valuación comercial sin costo.",
   },
   {
@@ -303,6 +327,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Profesor residente en el coto; desplazamiento a pie",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Regularización y preparación para exámenes de secundaria, preparatoria y universidad. 10 años de experiencia.",
   },
 ];

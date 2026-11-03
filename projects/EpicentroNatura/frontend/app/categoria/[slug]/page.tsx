@@ -46,6 +46,8 @@ interface CommercialBusiness {
   category_label: string;
   type_slug: BusinessType;
   type_label: string;
+  has_delivery?: boolean;
+  has_pickup?: boolean;
   address: string;
   community_slug: string;
   community_name: string;
@@ -288,6 +290,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Tacos y costras de suadero, pastor con piña asada al carbón, carnaza, arrachera, pancita y tripita dorada.",
   },
   {
@@ -307,6 +311,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Entrega limpia en bici y moto eléctrica a cotos",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Pizzas rústicas horneadas al momento en horno de piedra con masa madre fermentada 48 horas y salsa San Marzano.",
   },
   // 2. Farmacias
@@ -327,6 +333,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Reparto limpio en bici de carga a casetas de cotos",
     cta_type: "call_and_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Medicamentos genéricos y de patente, curaciones menores, toma de presión y surtido de recetas.",
   },
   // 3. Mascotas
@@ -347,6 +355,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Recogida y entrega de mascotas en carrito eléctrico",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Alimentos súper premium, accesorios, premios naturales y baño con secado profesional.",
   },
   // 4. Postres
@@ -367,6 +377,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Horneado casero y entrega a pie a tu puerta",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: false,
     description: "Pasteles de zanahoria, pays de frutos rojos, galletas chispas y brownies artesanales.",
   },
   // 5. Artesanales
@@ -387,6 +399,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Cosecha local y entrega peatonal entre cotos",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: false,
     description: "Miel pura 100% de abeja de la Primavera, propóleo, jabones de avena, romero y lavanda.",
   },
   // 6. Servicios hogar
@@ -407,6 +421,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Servicio de planchaduría profesional por docena, tintorería y almidonado de camisas.",
   },
   {
@@ -426,6 +442,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Lavado en seco sin uso de mangueras ni emisiones",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Lavado de autos en seco en tu cochera con polímeros biodegradables que cuidan el agua.",
   },
   {
@@ -445,6 +463,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Instalaciones eléctricas 110V/220V, balanceo de cargas, bombas presurizadoras y cortos.",
   },
   // 7. Atención Médica
@@ -465,6 +485,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "call_and_whatsapp",
+    has_delivery: false,
+    has_pickup: true,
     description: "Medicina general, odontología preventiva, resinas, limpiezas y blanqueamiento dental.",
   },
   // 8. Veterinarias
@@ -485,6 +507,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Atención de urgencia a pie y bici a cotos cercanos",
     cta_type: "call_and_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Consultas médicas veterinarias, vacunas, desparasitaciones y cirugías menores.",
   },
   // 9. Clases particulares
@@ -505,6 +529,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Profesor residente en el coto; desplazamiento a pie",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Clases particulares de regularización en matemáticas, álgebra, física e inglés.",
   },
   // 10. Fitness
@@ -525,6 +551,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "call_and_whatsapp",
+    has_delivery: false,
+    has_pickup: true,
     description: "Gimnasio boutique, entrenamiento funcional HIIT, pilates reformer y asesoría deportiva.",
   },
   {
@@ -544,6 +572,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Desplazamiento 100% en bicicleta entre cotos",
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: false,
     description: "Entrenador personal a domicilio en cotos Natura, Los Robles y El Fortín. Calistenia y acondicionamiento.",
   },
   // 11. Escuelas
@@ -564,6 +594,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "call_and_whatsapp",
+    has_delivery: false,
+    has_pickup: true,
     description: "Educación bilingüe desde Maternal hasta Preparatoria. Vanguardia pedagógica, canchas deportivas, laboratorios y transporte escolar en cotos.",
   },
   {
@@ -583,6 +615,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Rutas seguras peatonales y ciclistas para alumnos de coto",
     cta_type: "call_and_whatsapp",
+    has_delivery: false,
+    has_pickup: true,
     description: "Metodología activa nórdica centrada en el bienestar infantil, bilingüe, aulas al aire libre frente al bosque, Preescolar y Primaria.",
   },
   // 12. Hogar
@@ -603,6 +637,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: false,
     km0_reason: null,
     cta_type: "service_whatsapp",
+    has_delivery: true,
+    has_pickup: true,
     description: "Fabricación e instalación de persianas sheer elegance, blackout, toldos retráctiles, mosquiteros y canceles de baño en cristal templado para casas de coto.",
   },
   {
@@ -622,6 +658,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     has_km0_badge: true,
     km0_reason: "Traslado ecológico en bici de carga sin emisiones",
     cta_type: "whatsapp_order",
+    has_delivery: true,
+    has_pickup: true,
     description: "Plantas de ornato, pasto en rollo, suculentas, macetas de autor y mantenimiento de jardinería para cocheras y terrazas en cotos privados.",
   },
 ];
@@ -634,6 +672,8 @@ export default function CategoryPage() {
     ALL_CATEGORIES.find((c) => c.slug === rawSlug) || ALL_CATEGORIES[0]
   );
   const [selectedType, setSelectedType] = useState<string>("all");
+  const [filterDelivery, setFilterDelivery] = useState<boolean>(false);
+  const [filterPickup, setFilterPickup] = useState<boolean>(false);
   const [selectedCommunity, setSelectedCommunity] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -674,13 +714,15 @@ export default function CategoryPage() {
       b.type_slug === selectedType;
     const matchCommunity =
       selectedCommunity === "all" || b.community_slug === selectedCommunity;
+    const matchDelivery = !filterDelivery || b.has_delivery === true;
+    const matchPickup = !filterPickup || b.has_pickup === true;
     const matchQuery =
       !searchQuery ||
       b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       b.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       b.address.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchCat && matchType && matchCommunity && matchQuery;
+    return matchCat && matchType && matchDelivery && matchPickup && matchCommunity && matchQuery;
   });
 
   const handleCopyAddress = (addr: string) => {
@@ -778,18 +820,24 @@ export default function CategoryPage() {
 
         {/* Filtros por tipo de negocio y Km 0 */}
         <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
             {[
               { id: "all", label: "Ver todo" },
-              { id: "local_establecido", label: "🏪 Punto de venta fijo" },
+              { id: "local_establecido", label: "Punto de venta fijo" },
               { id: "sin_punto_venta", label: "Sin punto de venta" },
             ].map((tab) => {
               const active = selectedType === tab.id;
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setSelectedType(tab.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all ${
+                  onClick={() => {
+                    setSelectedType(tab.id);
+                    if (tab.id === "all") {
+                      setFilterDelivery(false);
+                      setFilterPickup(false);
+                    }
+                  }}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all shrink-0 ${
                     active
                       ? "bg-slate-950 text-white border-slate-950 hover:bg-slate-800"
                       : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-indigo-600 hover:border-slate-300"
@@ -799,6 +847,30 @@ export default function CategoryPage() {
                 </button>
               );
             })}
+
+            <div className="h-5 w-px bg-slate-200 shrink-0 mx-1" />
+
+            <button
+              onClick={() => setFilterDelivery(!filterDelivery)}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all shrink-0 ${
+                filterDelivery
+                  ? "bg-slate-950 text-white border-slate-950 hover:bg-slate-800"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-indigo-600 hover:border-slate-300"
+              }`}
+            >
+              Servicio a domicilio
+            </button>
+
+            <button
+              onClick={() => setFilterPickup(!filterPickup)}
+              className={`px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all shrink-0 ${
+                filterPickup
+                  ? "bg-slate-950 text-white border-slate-950 hover:bg-slate-800"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-indigo-600 hover:border-slate-300"
+              }`}
+            >
+              Recoger en punto de venta
+            </button>
           </div>
         </div>
 
@@ -847,8 +919,20 @@ export default function CategoryPage() {
                       </div>
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700">
-                      <span>{b.type_label}</span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700">
+                        {b.type_label}
+                      </span>
+                      {b.has_delivery && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                          Servicio a domicilio
+                        </span>
+                      )}
+                      {b.has_pickup && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
+                          Recoger en punto de venta
+                        </span>
+                      )}
                     </div>
 
                     <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
