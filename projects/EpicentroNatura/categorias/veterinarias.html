@@ -117,88 +117,26 @@
     </div>
   </aside>
 
-  <!-- NAVBAR LIMPIO APPLE / RAPPI -->
+    <!-- NAVBAR LIMPIO APPLE / RAPPI -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-snow-400 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <div class="flex items-center justify-between gap-4">
         
-        <!-- Fila Superior / Izquierda: Logo y Botón Registrar Móvil -->
-        <div class="w-full md:w-auto flex items-center justify-between gap-4">
-          <!-- Logo Requerido: Epicentro (Azul) + etiqueta natura -->
-          <a href="../index.html" class="flex items-center gap-2.5 group shrink-0" title="Epicentro Natura">
-            <img src="../Assets/Epicentro2.svg" alt="Epicentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
-            <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-brand-softMint text-brand-forest border border-brand-mint/30">
-              natura
-            </span>
-          </a>
+        <!-- Logo Requerido: Epicentro (Azul) + etiqueta natura -->
+        <a href="../index.html" class="flex items-center gap-2.5 group shrink-0" title="Epicentro Natura">
+          <img src="../Assets/Epicentro2.svg" alt="Epicentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-purple-50 text-indigo-950 border border-purple-200">
+            natura
+          </span>
+        </a>
 
-          <!-- Botón Registrar en móvil -->
-          <div class="flex md:hidden items-center gap-2">
-            <button onclick="openRegisterModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-brand-emerald hover:bg-brand-forest transition-all shadow-sm">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
-              <span>Registrar</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- BUSCADOR CON SELECTOR DE CERCANÍA GEOGRÁFICA Y BOTÓN CERCA DE MÍ -->
-        <div class="w-full md:flex-1 md:max-w-2xl lg:max-w-3xl">
-          <div class="relative flex items-center bg-snow-200/80 hover:bg-snow-200 focus-within:bg-white rounded-2xl border border-snow-400 focus-within:border-brand-emerald focus-within:ring-2 focus-within:ring-brand-emerald/20 transition-all p-1.5 sm:p-2">
-            <div class="pl-2.5 pr-2 text-brand-emerald shrink-0">
-              <i data-lucide="search" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]"></i>
-            </div>
-            
-            <input 
-              type="text" 
-              id="search-input" 
-              oninput="applyAllFilters()" 
-              placeholder="Buscar en esta categoría..." 
-              class="w-full bg-transparent text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none pr-2"
-            >
-
-            <!-- SELECTOR DE CERCANÍA GEOGRÁFICA -->
-            <div class="relative shrink-0 border-l border-snow-400 pl-2 sm:pl-3 pr-1 flex items-center gap-1.5">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand-forest shrink-0"></i>
-              <select 
-                id="coto-select" 
-                onchange="applyAllFilters()" 
-                class="bg-transparent text-[11px] sm:text-xs font-bold text-slate-800 focus:outline-none cursor-pointer max-w-[105px] sm:max-w-[170px] truncate"
-              >
-                <option value="all">Toda la zona</option>
-                <option value="natura-bosque-residencial">Natura Bosque Residencial</option>
-                <option value="los-robles">Los Robles</option>
-                <option value="bosque-primavera">Bosque de la primavera</option>
-                <option value="el-fortin">El Fortín</option>
-                <option value="luna-bosque">Luna Bosque</option>
-                <option value="la-granja">La Granja</option>
-                <option value="puerta-del-bosque">Puerta del Bosque</option>
-                <option value="punta-de-otero">Punta de Otero</option>
-                <option value="monte-verde">Monte Verde</option>
-                <option value="mision-la-floresta">Misión la Floresta</option>
-              </select>
-            </div>
-
-            <!-- BOTÓN CERCA DE MÍ (GEOLOCALIZACIÓN) -->
-            <button 
-              type="button" 
-              id="near-me-btn" 
-              onclick="detectNearMe()" 
-              title="Detectar por GPS el coto o fraccionamiento más cercano a ti" 
-              class="shrink-0 ml-1.5 inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-brand-forest bg-brand-softMint hover:bg-brand-mint/40 border border-brand-mint/40 hover:border-brand-emerald transition-all active:scale-95 shadow-2xs"
-            >
-              <i data-lucide="crosshair" id="near-me-icon" class="w-3.5 h-3.5 text-brand-emerald"></i>
-              <span id="near-me-text" class="whitespace-nowrap">Cerca de mí</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Botones en Escritorio -->
-        <div class="hidden md:flex items-center gap-2.5 shrink-0">
-          <a href="../index.html" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors" title="Volver al Inicio de Epicentro Natura">
+        <!-- Botones de Acción -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+          <a href="../index.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors" title="Volver al Inicio de Epicentro Natura">
             <i data-lucide="home" class="w-4 h-4 text-slate-500"></i>
-            <span>Inicio</span>
+            <span class="hidden sm:inline">Inicio</span>
           </a>
-          <button onclick="openRegisterModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-emerald hover:bg-brand-forest active:scale-95 transition-all shadow-md shadow-brand-emerald/20">
+          <button onclick="openRegisterModal()" class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 hover:from-blue-800 hover:to-purple-700 active:scale-95 transition-all shadow-md shadow-indigo-500/25">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
             <span>Registrar Negocio</span>
           </button>
@@ -225,46 +163,39 @@
       <span id="breadcrumb-current" class="font-bold text-slate-900">Comida y Delivery</span>
     </nav>
 
-    <!-- HERO HEADER DE LA CATEGORÍA -->
-    <div class="p-6 sm:p-8 rounded-3xl bg-white border border-snow-400 shadow-rappi-card flex flex-col md:flex-row md:items-center justify-between gap-6">
-      <div class="flex items-start sm:items-center gap-4">
-        <div id="cat-hero-icon-box" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 shadow-sm">
+        <!-- HERO HEADER DE LA CATEGORÍA (ESTILO HIPHA AZUL MARINO/MORADO) -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#060a17] via-[#0b112c] to-[#050810] border border-indigo-500/25 p-6 sm:p-10 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-purple-500/10 blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex items-start sm:items-center gap-4 sm:gap-5">
+        <div id="cat-hero-icon-box" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-indigo-300 flex items-center justify-center shrink-0 shadow-lg">
           <i id="cat-hero-icon" data-lucide="utensils" class="w-8 h-8 sm:w-10 sm:h-10 stroke-[2.2]"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="text-[11px] font-mono font-extrabold uppercase tracking-widest text-brand-forest bg-brand-softMint px-2.5 py-0.5 rounded-full border border-brand-mint/40">
-              Directorio Especializado
+          <div class="flex items-center gap-2 mb-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider border border-indigo-400/30">
+              <i data-lucide="sparkles" class="w-3 h-3 text-indigo-400"></i>
+              <span>Categoría Epicentro</span>
             </span>
-            <span id="cat-badge-count" class="text-[11px] font-bold text-slate-500 bg-snow-300 px-2 py-0.5 rounded-full">
+            <span id="cat-badge-count" class="text-[10px] sm:text-[11px] font-bold text-slate-300 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
               2 negocios
             </span>
           </div>
-          <h1 id="cat-hero-title" class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 tracking-tight leading-tight">
-            Comida y Delivery en Natura Bosque Residencial & Prol. Mariano Otero
+          <h1 id="cat-hero-title" class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+            Veterinarias
           </h1>
-          <p id="cat-hero-desc" class="text-xs sm:text-sm text-slate-600 mt-2 max-w-3xl leading-relaxed">
-            Taquerías, pizzas a la leña, hamburguesas rústicas y comida casera con entrega directa a la caseta de tu coto en Natura, Los Robles y El Fortín.
+          <p id="cat-hero-desc" class="text-xs sm:text-sm text-slate-300 mt-2 max-w-2xl leading-relaxed font-medium">
+            Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.
           </p>
         </div>
       </div>
 
-      <div class="shrink-0 flex sm:flex-col items-center sm:items-end gap-2">
-        <button onclick="openRegisterModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 hover:from-blue-800 hover:to-purple-700 text-white text-xs font-bold transition-all shadow-md active:scale-95">
+      <div class="relative z-10 shrink-0 flex sm:flex-col items-center sm:items-end gap-2">
+        <button onclick="openRegisterModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-xs font-extrabold transition-all shadow-lg shadow-indigo-600/30 active:scale-95">
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
           <span>Registrar negocio aquí</span>
         </button>
-      </div>
-    </div>
-
-    <!-- TIRA HORIZONTAL DE CAMBIO RÁPIDO ENTRE CATEGORÍAS -->
-    <div class="space-y-2">
-      <div class="flex items-center justify-between px-1">
-        <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500">Cambiar de Categoría</span>
-        <span class="text-[11px] text-slate-400 font-medium">12 categorías disponibles</span>
-      </div>
-      <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1" id="category-switcher-container">
-        <!-- Renderizado dinámico vía JS -->
       </div>
     </div>
 
@@ -434,7 +365,7 @@
           <a href="../categoria.html?cat=all" class="hover:text-white transition-colors">Directorio Comercial</a>
           <a href="../cultura-natura.html" class="hover:text-amber-400 transition-colors">Cultura & Deportes</a>
           <a href="https://wa.me/523336762545?text=Hola%20Epicentro,%20quiero%20unirme%20al%20Canal%20de%20WhatsApp%20de%20Natura" target="_blank" class="hover:text-cyan-400 transition-colors">Comunidad</a>
-          <a href="../index.html#anunciate" class="hover:text-white transition-colors">Publicidad & Sliders</a>
+          <a href="../index.html#anunciate" class="hover:text-white transition-colors">Anúnciate en Epicentro</a>
         </div>
       </div>
 
@@ -529,8 +460,8 @@
         name: "Atención médica",
         icon: "stethoscope",
         bg: "bg-teal-100 text-teal-700",
-        h1: "Atención Médica, Dental y Consultorios en Mariano Otero",
-        desc: "Médicos generales, odontología preventiva, ortodoncia y pediatría con consultorios ubicados en las plazas de ingreso a cotos.",
+        h1: "Atención médica",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Profesionales de la salud cerca de tu hogar. Consultas médicas, limpiezas dentales y atención familiar sobre Prolongación Mariano Otero."
       },
       {
@@ -538,8 +469,8 @@
         name: "Clases particulares",
         icon: "graduation-cap",
         bg: "bg-indigo-100 text-indigo-600",
-        h1: "Clases Particulares, Regularización y Talleres en Natura",
-        desc: "Profesores de matemáticas, inglés, yoga en terraza y regularización escolar para niños y jóvenes residentes de cotos.",
+        h1: "Clases particulares",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Aprende cerca de casa con maestros residentes en la zona. Regularización para primaria, secundaria, idiomas y clases de bienestar."
       },
       {
@@ -547,8 +478,8 @@
         name: "Comida y Delivery",
         icon: "utensils",
         bg: "bg-orange-100 text-orange-600",
-        h1: "Comida y Delivery en Natura Bosque Residencial & Mariano Otero",
-        desc: "Taquerías, pizzas a la leña de masa madre, hamburguesas rústicas, cortes y comida para llevar con entrega a caseta de cotos en Natura, Los Robles y El Fortín.",
+        h1: "Comida y Delivery",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Encuentra la mejor oferta gastronómica local en Prolongación Mariano Otero. Pide directo por WhatsApp a taquerías, pizzerías y cocinas locales sin comisiones excesivas."
       },
       {
@@ -556,8 +487,8 @@
         name: "Escuelas",
         icon: "graduation-cap",
         bg: "bg-blue-100 text-blue-700",
-        h1: "Escuelas, Colegios y Estancias Infantiles en Mariano Otero",
-        desc: "Colegios bilingües, preescolar, primaria, secundaria y preparatoria con metodología activa y rutas escolares seguras en cotos.",
+        h1: "Escuelas",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Encuentra la mejor opción educativa cerca de tu hogar. Colegios de vanguardia pedagógica, canchas deportivas e instalaciones de primer nivel sobre Prolongación Mariano Otero."
       },
       {
@@ -565,8 +496,8 @@
         name: "Farmacias",
         icon: "pill",
         bg: "bg-emerald-100 text-brand-emerald",
-        h1: "Farmacias y Medicamentos 24 Horas en Mariano Otero",
-        desc: "Farmacias con servicio 24 horas, toma de presión, curaciones menores y entrega de medicamentos a cotos sobre Prolongación Mariano Otero.",
+        h1: "Farmacias",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Farmacias cercanas a Natura Bosque Residencial con surtido de recetas, medicamentos genéricos, patentes y artículos de cuidado de la salud."
       },
       {
@@ -574,8 +505,8 @@
         name: "Fitness",
         icon: "dumbbell",
         bg: "bg-cyan-100 text-cyan-700",
-        h1: "Fitness, Gimnasios y Entrenadores Personales en Natura",
-        desc: "Gimnasios boutique, entrenamiento funcional HIIT, calistenia, pilates reformer y coaches a domicilio en cotos de Mariano Otero.",
+        h1: "Fitness",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Actívate sin salir de la zona. Encuentra entrenadores personales que se trasladan en bicicleta a tu coto y gimnasios sobre Prolongación Mariano Otero."
       },
       {
@@ -583,8 +514,8 @@
         name: "Hogar",
         icon: "home",
         bg: "bg-teal-100 text-teal-800",
-        h1: "Hogar, Persianas, Canceles y Jardinería en Mariano Otero",
-        desc: "Fabricación de persianas, canceles de baño, toldos retráctiles, plantas de ornato, pasto en rollo y paisajismo para casas de cotos.",
+        h1: "Hogar",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Mejora y decora tu casa en cotos residenciales. Persianas sheer elegance, blackout, cancelería en cristal templado y viveros locales con entrega a tu puerta."
       },
       {
@@ -592,8 +523,8 @@
         name: "Mascotas",
         icon: "dog",
         bg: "bg-amber-100 text-amber-700",
-        h1: "Alimentos, Accesorios y Estética Canina en Natura",
-        desc: "Tiendas de mascotas, croquetas premium, baño y estética canina profesional con servicio de recogida y entrega en cotos de la zona.",
+        h1: "Mascotas",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Todo para tu mejor amigo en Natura Bosque Residencial y cotos vecinos: alimentos libres de grano, accesorios, juguetes y estética canina."
       },
       {
@@ -601,8 +532,8 @@
         name: "Postres y café",
         icon: "coffee",
         bg: "bg-rose-100 text-rose-600",
-        h1: "Pastelería Artesanal, Postres y Café en Cotos Natura",
-        desc: "Pasteles de zanahoria, pays de frutos rojos, galletas chispas recién horneadas y café de especialidad para disfrutar en casa.",
+        h1: "Postres y café",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Emprendimientos reposteros y café gourmet en cotos residenciales de Mariano Otero. Repostería horneada bajo pedido y entregada a tu puerta."
       },
       {
@@ -610,8 +541,8 @@
         name: "Productos artesanales",
         icon: "sparkles",
         bg: "bg-purple-100 text-purple-600",
-        h1: "Productos Artesanales y Botica Natural de la Zona",
-        desc: "Miel pura de floración de la primavera, jabones botánicos en barra, velas de cera de soya y cosmética natural elaborada por vecinas.",
+        h1: "Productos artesanales",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Consume local con productos hechos a mano en las faldas del Bosque La Primavera. Cosmética limpia, jabones orgánicos y conservas artesanales."
       },
       {
@@ -619,8 +550,8 @@
         name: "Servicios hogar",
         icon: "wrench",
         bg: "bg-blue-100 text-blue-600",
-        h1: "Mantenimiento del Hogar, Planchaduría y Limpieza en Cotos",
-        desc: "Planchaduría por docena, electricistas residenciales certificados, lavado ecológico de autos y técnicos de confianza en cotos.",
+        h1: "Servicios hogar",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Servicios para el hogar en Mariano Otero y cotos Natura. Plomeros, electricistas, lavado de autos a domicilio y planchaduría exprés."
       },
       {
@@ -628,8 +559,8 @@
         name: "Veterinarias",
         icon: "heart-pulse",
         bg: "bg-red-100 text-red-600",
-        h1: "Clínicas Veterinarias y Urgencias en Natura Bosque Residencial",
-        desc: "Consultas médicas veterinarias, vacunas, desparasitaciones, cirugías menores y atención de urgencias para perros y gatos.",
+        h1: "Veterinarias",
+        desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
         seo: "Atención veterinaria integral y responsable para mascotas en cotos de Prolongación Mariano Otero y fraccionamientos vecinos."
       }
     ];
@@ -1056,7 +987,7 @@
       }
 
       if (qParam) {
-        document.getElementById("search-input").value = qParam;
+        if (document.getElementById("search-input")) document.getElementById("search-input").value = qParam;
       }
       if (cotoParam && document.querySelector(`#coto-select option[value="${cotoParam}"]`)) {
         document.getElementById("coto-select").value = cotoParam;
@@ -1087,11 +1018,11 @@
       document.getElementById("breadcrumb-current").textContent = catObj.name;
 
       // Hero Header
-      document.getElementById("cat-hero-title").textContent = catObj.h1;
-      document.getElementById("cat-hero-desc").textContent = catObj.desc;
+      document.getElementById("cat-hero-title").textContent = catObj.name;
+      document.getElementById("cat-hero-desc").textContent = "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.";
       
       const iconBox = document.getElementById("cat-hero-icon-box");
-      iconBox.className = `w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${catObj.bg}`;
+      iconBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-indigo-300 flex items-center justify-center shrink-0 shadow-lg";
       iconBox.innerHTML = CATEGORY_ABSTRACT_SVGS[catObj.slug] ? CATEGORY_ABSTRACT_SVGS[catObj.slug]("w-9 h-9 sm:w-11 sm:h-11 transition-transform group-hover:scale-105") : `<i data-lucide="${catObj.icon}" class="w-8 h-8 sm:w-10 sm:h-10 stroke-[2.2]"></i>`;
 
       // SEO Section
@@ -1144,8 +1075,10 @@
 
     // APLICAR TODOS LOS FILTROS
     function applyAllFilters() {
-      const q = document.getElementById("search-input").value.toLowerCase().trim();
-      const coto = document.getElementById("coto-select").value;
+      const searchInput = document.getElementById("search-input");
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : "";
+      const cotoSelect = document.getElementById("coto-select");
+      const coto = cotoSelect ? cotoSelect.value : "all";
 
       const filtered = ALL_BUSINESSES.filter(b => {
         const matchCat = (currentCategorySlug === "all") || (b.category_slug === currentCategorySlug);
@@ -1328,8 +1261,8 @@
 
     // RESTABLECER FILTROS
     function resetFilters() {
-      document.getElementById("search-input").value = "";
-      document.getElementById("coto-select").value = "all";
+      const searchInput = document.getElementById("search-input"); if (searchInput) searchInput.value = "";
+      const cotoSelect = document.getElementById("coto-select"); if (cotoSelect) cotoSelect.value = "all";
       currentTypeFilter = "all";
       currentKm0Filter = false;
       document.querySelectorAll(".type-pill").forEach(btn => btn.classList.remove("is-active"));

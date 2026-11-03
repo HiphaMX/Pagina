@@ -65,8 +65,8 @@ const ALL_CATEGORIES = [
     name: "Atención médica",
     icon: Stethoscope,
     bg: "bg-gradient-to-br from-teal-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-600 shadow-teal-500/10",
-    h1: "Atención Médica, Dental y Consultorios en Mariano Otero",
-    desc: "Médicos generales, odontología preventiva, ortodoncia y pediatría con consultorios ubicados en las plazas de ingreso a cotos.",
+    h1: "Atención médica",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Profesionales de la salud cerca de tu hogar en Prolongación Mariano Otero.",
   },
   {
@@ -74,8 +74,8 @@ const ALL_CATEGORIES = [
     name: "Clases particulares",
     icon: GraduationCap,
     bg: "bg-gradient-to-br from-indigo-50 via-indigo-50/70 to-indigo-100/60 border border-indigo-200/70 text-indigo-600 shadow-indigo-500/10",
-    h1: "Clases Particulares, Regularización y Talleres en Natura",
-    desc: "Profesores de matemáticas, inglés, yoga en terraza y regularización escolar para niños y jóvenes residentes de cotos.",
+    h1: "Clases particulares",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Aprende cerca de casa con maestros residentes en la zona.",
   },
   {
@@ -83,8 +83,8 @@ const ALL_CATEGORIES = [
     name: "Comida y Delivery",
     icon: Utensils,
     bg: "bg-gradient-to-br from-orange-50 via-orange-50/70 to-orange-100/60 border border-orange-200/70 text-orange-600 shadow-orange-500/10",
-    h1: "Comida y Delivery en Natura Bosque Residencial & Mariano Otero",
-    desc: "Taquerías, pizzas a la leña de masa madre, hamburguesas rústicas y comida con entrega a caseta de cotos en Natura, Los Robles y El Fortín.",
+    h1: "Comida y Delivery",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Encuentra la mejor oferta gastronómica local en Prolongación Mariano Otero con entrega limpia directa a caseta de cotos.",
   },
   {
@@ -92,8 +92,8 @@ const ALL_CATEGORIES = [
     name: "Escuelas",
     icon: GraduationCap,
     bg: "bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-600 shadow-blue-500/10",
-    h1: "Escuelas, Colegios y Estancias Infantiles en Mariano Otero",
-    desc: "Colegios bilingües, preescolar, primaria, secundaria y preparatoria con metodología activa y rutas escolares seguras en cotos.",
+    h1: "Escuelas",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Encuentra la mejor opción educativa cerca de tu hogar en Prolongación Mariano Otero.",
   },
   {
@@ -101,8 +101,8 @@ const ALL_CATEGORIES = [
     name: "Farmacias",
     icon: Pill,
     bg: "bg-gradient-to-br from-emerald-50 via-emerald-50/70 to-emerald-100/60 border border-emerald-200/70 text-emerald-600 shadow-emerald-500/10",
-    h1: "Farmacias y Medicamentos 24 Horas en Mariano Otero",
-    desc: "Farmacias con servicio 24 horas, toma de presión, curaciones menores y entrega de medicamentos a cotos sobre Prolongación Mariano Otero.",
+    h1: "Farmacias",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Farmacias cercanas a Natura Bosque Residencial con surtido de recetas y medicamentos de patente.",
   },
   {
@@ -110,8 +110,8 @@ const ALL_CATEGORIES = [
     name: "Fitness",
     icon: Dumbbell,
     bg: "bg-gradient-to-br from-cyan-50 via-cyan-50/70 to-cyan-100/60 border border-cyan-200/70 text-cyan-600 shadow-cyan-500/10",
-    h1: "Fitness, Gimnasios y Entrenadores Personales en Natura",
-    desc: "Gimnasios boutique, entrenamiento funcional HIIT, calistenia, pilates reformer y coaches a domicilio en cotos de Mariano Otero.",
+    h1: "Fitness",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Actívate sin salir de la zona con entrenadores y gimnasios locales.",
   },
   {
@@ -119,8 +119,8 @@ const ALL_CATEGORIES = [
     name: "Hogar",
     icon: Home,
     bg: "bg-gradient-to-br from-emerald-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-700 shadow-teal-500/10",
-    h1: "Hogar, Persianas, Canceles y Jardinería en Mariano Otero",
-    desc: "Fabricación de persianas, canceles de baño, toldos retráctiles, plantas de ornato, pasto en rollo y paisajismo para casas de cotos.",
+    h1: "Hogar",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Mejora y decora tu casa en cotos residenciales con persianerías y viveros locales.",
   },
   {
@@ -128,8 +128,8 @@ const ALL_CATEGORIES = [
     name: "Mascotas",
     icon: Dog,
     bg: "bg-gradient-to-br from-amber-50 via-amber-50/70 to-amber-100/60 border border-amber-200/70 text-amber-600 shadow-amber-500/10",
-    h1: "Alimentos, Accesorios y Estética Canina en Natura",
-    desc: "Tiendas de mascotas, croquetas premium, baño y estética canina profesional con servicio de recogida y entrega en cotos de la zona.",
+    h1: "Mascotas",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Todo para tu mejor amigo en Natura Bosque Residencial y cotos vecinos.",
   },
   {
@@ -137,8 +137,8 @@ const ALL_CATEGORIES = [
     name: "Postres y café",
     icon: Coffee,
     bg: "bg-gradient-to-br from-rose-50 via-rose-50/70 to-rose-100/60 border border-rose-200/70 text-rose-600 shadow-rose-500/10",
-    h1: "Pastelería Artesanal, Postres y Café en Cotos Natura",
-    desc: "Pasteles de zanahoria, pays de frutos rojos, galletas chispas recién horneadas y café de especialidad para disfrutar en casa.",
+    h1: "Postres y café",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Emprendimientos reposteros y café gourmet en cotos residenciales de Mariano Otero.",
   },
   {
@@ -146,8 +146,8 @@ const ALL_CATEGORIES = [
     name: "Productos artesanales",
     icon: Sparkles,
     bg: "bg-gradient-to-br from-purple-50 via-purple-50/70 to-purple-100/60 border border-purple-200/70 text-purple-600 shadow-purple-500/10",
-    h1: "Productos Artesanales y Botica Natural de la Zona",
-    desc: "Miel pura de floración de la primavera, jabones botánicos en barra, velas de cera de soya y cosmética natural elaborada por vecinas.",
+    h1: "Productos artesanales",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Consume local con productos hechos a mano en las faldas del Bosque La Primavera.",
   },
   {
@@ -155,8 +155,8 @@ const ALL_CATEGORIES = [
     name: "Servicios hogar",
     icon: Wrench,
     bg: "bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-700 shadow-blue-500/10",
-    h1: "Mantenimiento del Hogar, Planchaduría y Limpieza en Cotos",
-    desc: "Planchaduría por docena, electricistas residenciales certificados, lavado ecológico de autos y técnicos de confianza en cotos.",
+    h1: "Servicios hogar",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Servicios para el hogar en Mariano Otero y cotos Natura.",
   },
   {
@@ -164,8 +164,8 @@ const ALL_CATEGORIES = [
     name: "Veterinarias",
     icon: HeartPulse,
     bg: "bg-gradient-to-br from-red-50 via-red-50/70 to-red-100/60 border border-red-200/70 text-red-600 shadow-red-500/10",
-    h1: "Clínicas Veterinarias y Urgencias en Natura Bosque Residencial",
-    desc: "Consultas médicas veterinarias, vacunas, desparasitaciones, cirugías menores y atención de urgencias para perros y gatos.",
+    h1: "Veterinarias",
+    desc: "Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.",
     seo: "Atención veterinaria integral y responsable para mascotas en cotos de Zapopan.",
   },
 ];
@@ -597,73 +597,29 @@ export default function CategoryPage() {
 
       {/* 2. NAVBAR */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
-            <div className="w-full md:w-auto flex items-center justify-between gap-4">
-              <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-800 to-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 group-hover:scale-105 transition-transform">
-                  <Trees className="w-6 h-6 stroke-[2.2]" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-black tracking-tight text-slate-950">
-                    Epicentro
-                  </span>
-                  <span className="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
-                    natura
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                href="/"
-                className="inline-flex md:hidden items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Inicio</span>
-              </Link>
-            </div>
-
-            {/* BUSCADOR */}
-            <div className="w-full md:flex-1 md:max-w-2xl lg:max-w-3xl">
-              <div className="relative flex items-center bg-slate-100 hover:bg-slate-200/70 focus-within:bg-white rounded-2xl border border-slate-200 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20 transition-all p-1.5 sm:p-2">
-                <div className="pl-2.5 pr-2 text-emerald-600 shrink-0">
-                  <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-                </div>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar en esta categoría..."
-                  className="w-full bg-transparent text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none pr-2"
-                />
-
-                <div className="relative shrink-0 border-l border-slate-300 pl-2 sm:pl-3 pr-1 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
-                  <select
-                    value={selectedCommunity}
-                    onChange={(e) => setSelectedCommunity(e.target.value)}
-                    className="bg-transparent text-[11px] sm:text-xs font-bold text-slate-700 focus:outline-none cursor-pointer pr-4 appearance-none"
-                  >
-                    <option value="all">Toda la zona (Mariano Otero)</option>
-                    <option value="natura-bosque-residencial">
-                      Natura Bosque Residencial
-                    </option>
-                    <option value="los-robles">Los Robles</option>
-                    <option value="bosque-primavera">Bosque de la primavera</option>
-                    <option value="el-fortin">El Fortín</option>
-                    <option value="luna-bosque">Luna Bosque</option>
-                  </select>
-                </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/20 group-hover:scale-105 transition-transform">
+                <Trees className="w-6 h-6 stroke-[2.2]" />
               </div>
-            </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-black tracking-tight text-slate-950">
+                  Epicentro
+                </span>
+                <span className="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-purple-50 text-indigo-950 border border-purple-200">
+                  natura
+                </span>
+              </div>
+            </Link>
 
-            <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-2.5 shrink-0">
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Volver al Inicio</span>
+                <Home className="w-4 h-4 text-slate-500" />
+                <span className="hidden sm:inline">Inicio</span>
               </Link>
             </div>
           </div>
@@ -674,11 +630,11 @@ export default function CategoryPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs font-medium text-slate-500 py-1">
-          <Link href="/" className="hover:text-emerald-600 transition-colors">
+          <Link href="/" className="hover:text-indigo-600 transition-colors">
             Inicio
           </Link>
           <ChevronRight className="w-3 h-3 text-slate-400" />
-          <Link href="/#seccion-categorias" className="hover:text-emerald-600 transition-colors">
+          <Link href="/#seccion-categorias" className="hover:text-indigo-600 transition-colors">
             Categorías
           </Link>
           <ChevronRight className="w-3 h-3 text-slate-400" />
@@ -686,58 +642,32 @@ export default function CategoryPage() {
         </nav>
 
         {/* Hero Header de Categoría */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-start sm:items-center gap-4">
-            <div
-              className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${currentCategory.bg}`}
-            >
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#060a17] via-[#0b112c] to-[#050810] border border-indigo-500/25 p-6 sm:p-10 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none"></div>
+          <div className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-purple-500/10 blur-3xl pointer-events-none"></div>
+
+          <div className="relative z-10 flex items-start sm:items-center gap-4 sm:gap-5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-indigo-300 flex items-center justify-center shrink-0 shadow-lg">
               <AbstractCategoryIcon id={currentCategory.slug} className="w-9 h-9 sm:w-11 sm:h-11 transition-transform group-hover:scale-105" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
-                  Directorio Especializado
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider border border-indigo-400/30">
+                  <Sparkles className="w-3 h-3 text-indigo-400" />
+                  <span>Categoría Epicentro</span>
                 </span>
-                <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] sm:text-[11px] font-bold text-slate-300 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
                   {filteredBusinesses.length} negocio
                   {filteredBusinesses.length === 1 ? "" : "s"}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 tracking-tight leading-tight">
-                {currentCategory.h1}
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                {currentCategory.name}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-3xl leading-relaxed">
-                {currentCategory.desc}
+              <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-2xl leading-relaxed font-medium">
+                Los negocios y emprendimientos registrados tienen servicio dentro del epicentro.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* Tira rápida de categorías */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-widest text-slate-500">
-              Explorar otras categorías
-            </span>
-          </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            {ALL_CATEGORIES.map((c) => {
-              const isActive = c.slug === currentCategory.slug;
-              return (
-                <button
-                  key={c.slug}
-                  onClick={() => setCurrentCategory(c)}
-                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
-                    isActive
-                      ? "bg-slate-950 text-white border-slate-950 shadow-sm"
-                      : "bg-white text-slate-700 border-slate-200 hover:border-emerald-600 hover:text-emerald-600"
-                  }`}
-                >
-                  <AbstractCategoryIcon id={c.slug} className={`w-3.5 h-3.5 ${isActive ? "text-emerald-400" : ""}`} />
-                  <span>{c.name}</span>
-                </button>
-              );
-            })}
           </div>
         </div>
 
@@ -747,8 +677,7 @@ export default function CategoryPage() {
             {[
               { id: "all", label: "Toda la Oferta" },
               { id: "local_establecido", label: "🏪 Local establecido" },
-              { id: "emprendimiento", label: "🛵 Emprendimiento (a domicilio)" },
-              { id: "servicios_profesionales", label: "💼 Servicios profesionales" },
+              { id: "emprendimiento", label: "🛵 Solo servicio a domicilio" },
             ].map((tab) => {
               const active = selectedType === tab.id;
               return (
@@ -758,7 +687,7 @@ export default function CategoryPage() {
                   className={`px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all ${
                     active
                       ? "bg-slate-950 text-white border-slate-950 hover:bg-slate-800"
-                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-emerald-600 hover:border-slate-300"
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-indigo-600 hover:border-slate-300"
                   }`}
                 >
                   {tab.label}
