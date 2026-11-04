@@ -11,6 +11,8 @@ import {
   Store,
   Megaphone,
   MessageCircle,
+  X,
+  Send,
 } from "lucide-react";
 
 interface CulturalEvent {
@@ -109,6 +111,46 @@ const CULTURAL_EVENTS: CulturalEvent[] = [
 
 export default function CulturaNaturaPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactData, setContactData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    title: "",
+    category: "Baile y Fitness",
+    audience: "Infantil (4 a 12 años)",
+    schedule: "",
+    description: "",
+  });
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const waMsg = encodeURIComponent(
+      `Hola Epicentro Natura, deseo proponer un taller / clase para Cultura Natura:\n\n` +
+      `👤 Instructor / Colectivo: ${contactData.name}\n` +
+      `📞 Teléfono / WhatsApp: ${contactData.phone}\n` +
+      (contactData.email ? `✉️ Correo: ${contactData.email}\n` : ``) +
+      `🎨 Taller propuesto: ${contactData.title}\n` +
+      `🏷️ Disciplina: ${contactData.category}\n` +
+      `👥 Público: ${contactData.audience}\n` +
+      `⏰ Horario sugerido: ${contactData.schedule || "Por definir"}\n` +
+      `📝 Descripción / Requerimientos: ${contactData.description || "Sin detalles adicionales"}`
+    );
+
+    window.open(`https://wa.me/523333883199?text=${waMsg}`, "_blank");
+    alert("¡Gracias por tu interés! Tu propuesta ha sido registrada y enviada al equipo de Epicentro Natura.");
+    setIsContactModalOpen(false);
+    setContactData({
+      name: "",
+      phone: "",
+      email: "",
+      title: "",
+      category: "Baile y Fitness",
+      audience: "Infantil (4 a 12 años)",
+      schedule: "",
+      description: "",
+    });
+  };
 
   const filteredEvents =
     selectedCategory === "all"
@@ -317,26 +359,179 @@ export default function CulturaNaturaPage() {
         <section className="rounded-3xl bg-white border border-slate-200 p-8 sm:p-10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-amber-700 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
-              CASA DE LA CULTURA NATURA
+              CULTURA NATURA
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
               ¿Impartes clases, talleres o actividades formativas?
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              La Casa de la Cultura Natura está abierta para recibir propuestas de instructores y talleristas para enriquecer la vida comunitaria de los cotos.
+              Cultura Natura es un espacio abierto para recibir propuestas de instructores y talleristas para enriquecer la vida comunitaria de nuestro epicentro
             </p>
           </div>
-          <a
-            href="https://wa.me/523333883199?text=Hola,%20me%20gustar%C3%ADa%20proponer%20o%20impartir%20un%20taller%20o%20clase%20en%20Casa%20de%20la%20Cultura"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="shrink-0 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95 inline-flex items-center gap-2"
+          <button
+            type="button"
+            onClick={() => setIsContactModalOpen(true)}
+            className="shrink-0 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95 inline-flex items-center gap-2 cursor-pointer"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>Pedir informes o proponer taller</span>
-          </a>
+            <span>Contácta a Epicentro</span>
+          </button>
         </section>
       </main>
+
+      {/* MODAL: CONTACTA A EPICENTRO */}
+      {isContactModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto border border-slate-200">
+            <button
+              type="button"
+              onClick={() => setIsContactModalOpen(false)}
+              className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              aria-label="Cerrar modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="mb-5 space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-[10px] font-extrabold uppercase tracking-wide">
+                <Sparkles className="w-3 h-3 text-amber-600" />
+                <span>CULTURA NATURA · CONVOCATORIA</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                Contácta a Epicentro
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Cuéntanos sobre tu clase, curso o actividad formativa. Nuestro equipo evaluará tu propuesta para integrarla a la cartelera cultural.
+              </p>
+            </div>
+
+            <form onSubmit={handleContactSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Nombre completo o Colectivo *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Profa. Ana Martínez / Colectivo Danza Viva"
+                  value={contactData.name}
+                  onChange={(e) => setContactData({ ...contactData, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Teléfono / WhatsApp *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="33 1234 5678"
+                    value={contactData.phone}
+                    onChange={(e) => setContactData({ ...contactData, phone: e.target.value })}
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Correo Electrónico (opcional)</label>
+                  <input
+                    type="email"
+                    placeholder="correo@ejemplo.com"
+                    value={contactData.email}
+                    onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Nombre de la clase o taller propuesto *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Taller de Acuarela / Yoga Restaurativo / Fútbol Kids"
+                  value={contactData.title}
+                  onChange={(e) => setContactData({ ...contactData, title: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Disciplina / Categoría *</label>
+                  <select
+                    value={contactData.category}
+                    onChange={(e) => setContactData({ ...contactData, category: e.target.value })}
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer"
+                  >
+                    <option value="Baile y Fitness">💃 Baile & Fitness</option>
+                    <option value="Deportes">⚽ Deportes y Fútbol</option>
+                    <option value="Arte y Música">🎨 Arte, Música y Fotografía</option>
+                    <option value="Bienestar">🧘 Bienestar y Mindfulness</option>
+                    <option value="Académico / Idiomas">📚 Formación / Idiomas / Ajedrez</option>
+                    <option value="Otro">✨ Otra disciplina</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Público objetivo *</label>
+                  <select
+                    value={contactData.audience}
+                    onChange={(e) => setContactData({ ...contactData, audience: e.target.value })}
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer"
+                  >
+                    <option value="Infantil (4 a 12 años)">Infantil (4 a 12 años)</option>
+                    <option value="Jóvenes y Adolescentes">Jóvenes y Adolescentes</option>
+                    <option value="Adultos">Adultos</option>
+                    <option value="Adultos Mayores">Adultos Mayores</option>
+                    <option value="Familiar / Todas las edades">Familiar / Todas las edades</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Días u horarios sugeridos</label>
+                <input
+                  type="text"
+                  placeholder="Ej. Martes y Jueves 17:00 hrs / Sábados 10:00 hrs"
+                  value={contactData.schedule}
+                  onChange={(e) => setContactData({ ...contactData, schedule: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-800 mb-1">Breve descripción de la propuesta o requerimientos</label>
+                <textarea
+                  rows={3}
+                  placeholder="Cuéntanos brevemente de qué trata la actividad, requerimientos de espacio o materiales..."
+                  value={contactData.description}
+                  onChange={(e) => setContactData({ ...contactData, description: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors resize-none"
+                />
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                <button
+                  type="submit"
+                  className="w-full py-3.5 px-4 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Send className="w-4 h-4 text-amber-400" />
+                  <span>Enviar Propuesta a Epicentro</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsContactModalOpen(false)}
+                  className="w-full sm:w-auto py-3.5 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+                >
+                  Cancelar
+                </button>
+              </div>
+
+              <p className="text-[11px] text-slate-400 text-center pt-1">
+                Al enviar, se abrirá también una copia en WhatsApp para contacto directo con el equipo.
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* FOOTER */}
       <footer className="bg-slate-950 text-white text-xs py-8 px-4 border-t border-slate-800 mt-12">
