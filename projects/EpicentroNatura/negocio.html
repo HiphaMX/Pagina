@@ -460,6 +460,12 @@
 
   <script>
     lucide.createIcons();
+    if (window.location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView();
+      }, 50);
+    }
   </script>
 </body>
 </html>
