@@ -51,8 +51,11 @@ interface CommercialBusiness {
   address: string;
   community_slug: string;
   community_name: string;
-  phone: string;
-  whatsapp: string;
+  phone?: string | null;
+  whatsapp?: string | null;
+  location_url?: string | null;
+  website_url?: string | null;
+  microsite_url?: string | null;
   hours: string;
   is_open_now: boolean;
   has_km0_badge: boolean;
@@ -285,6 +288,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     community_name: "Natura Bosque Residencial",
     phone: "33 1555 0202",
     whatsapp: "+523315550202",
+    location_url: "https://maps.google.com/?q=Av.+Mariano+Otero+4290+Zapopan",
+    website_url: null,
     hours: "Abierto hoy · 18:00 a 01:30 hrs",
     is_open_now: true,
     has_km0_badge: false,
@@ -306,6 +311,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     community_name: "Los Robles",
     phone: "33 1555 0105",
     whatsapp: "+523315550105",
+    location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+esq.+Las+Rosas+Zapopan",
+    website_url: "/negocio.html",
     hours: "Martes a Domingo · 18:30 a 23:30 hrs",
     is_open_now: true,
     has_km0_badge: true,
@@ -328,6 +335,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     community_name: "Punta de Otero",
     phone: "33 1555 0201",
     whatsapp: "+523315550201",
+    location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4500+Zapopan",
+    website_url: null,
     hours: "Abierto 24 Horas · Lunes a Domingo",
     is_open_now: true,
     has_km0_badge: true,
@@ -350,6 +359,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     community_name: "Los Robles",
     phone: "33 1555 0206",
     whatsapp: "+523315550206",
+    location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
+    website_url: null,
     hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
     is_open_now: true,
     has_km0_badge: true,
@@ -370,8 +381,10 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Luna Bosque Residencial · Casa 42",
     community_slug: "luna-bosque",
     community_name: "Luna Bosque",
-    phone: "33 1555 0101",
+    phone: null,
     whatsapp: "+523315550101",
+    location_url: null,
+    website_url: null,
     hours: "Pedidos con 24h · Lunes a Domingo",
     is_open_now: true,
     has_km0_badge: true,
@@ -392,8 +405,10 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     address: "Natura Bosque Residencial (Coto Ceiba casa 14)",
     community_slug: "natura-bosque-residencial",
     community_name: "Natura Bosque Residencial",
-    phone: "33 1555 0102",
+    phone: null,
     whatsapp: "+523315550102",
+    location_url: null,
+    website_url: "https://instagram.com/mieldelbosque_natura",
     hours: "Lunes a Sábado · 10:00 a 18:00 hrs",
     is_open_now: true,
     has_km0_badge: true,
@@ -663,6 +678,143 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     description: "Plantas de ornato, pasto en rollo, suculentas, macetas de autor y mantenimiento de jardinería para cocheras y terrazas en cotos privados.",
   },
 ];
+
+function renderBusinessCardButtons(b: CommercialBusiness, themeBtnClass?: string) {
+  const btnClass = themeBtnClass || "bg-emerald-600 hover:bg-emerald-700 text-white";
+  const buttons: { key: string; el: React.ReactNode; isWa?: boolean }[] = [];
+
+  // 1. Llamar (phone)
+  if (b.phone && String(b.phone).trim() !== "") {
+    const cleanPhone = String(b.phone).replace(/\s/g, "");
+    buttons.push({
+      key: "call",
+      el: (
+        <a
+          href={`tel:${cleanPhone}`}
+          className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 transition-colors w-full"
+        >
+          <Phone className="w-3.5 h-3.5 text-slate-600" />
+          <span>Llamar</span>
+        </a>
+      ),
+    });
+  }
+
+  // 2. Ver Ubicación (location_url)
+  if (b.location_url && String(b.location_url).trim() !== "") {
+    buttons.push({
+      key: "location",
+      el: (
+        <a
+          href={b.location_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 transition-colors w-full"
+        >
+          <MapPin className="w-3.5 h-3.5 text-slate-600" />
+          <span>Ver Ubicación</span>
+        </a>
+      ),
+    });
+  }
+
+  // 3. Ver más (website_url o microsite_url)
+  const rawWebUrl = b.website_url || b.microsite_url;
+  if (rawWebUrl && String(rawWebUrl).trim() !== "") {
+    const isExternal = String(rawWebUrl).startsWith("http");
+    buttons.push({
+      key: "website",
+      el: (
+        <a
+          href={rawWebUrl}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full"
+        >
+          <ExternalLink className="w-3.5 h-3.5 text-slate-300" />
+          <span>Ver más</span>
+        </a>
+      ),
+    });
+  }
+
+  // 4. Enviar WhatsApp (whatsapp)
+  if (b.whatsapp && String(b.whatsapp).trim() !== "") {
+    let waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría solicitar información.`;
+    if (b.cta_type === "service_whatsapp") {
+      waText = `Hola ${b.name}, necesito una cotización / servicio en mi coto en Mariano Otero.`;
+    } else if (b.cta_type === "whatsapp_order") {
+      waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría hacer un pedido / solicitar información.`;
+    }
+    const cleanWa = String(b.whatsapp).replace(/\D/g, "");
+    const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
+    buttons.push({
+      key: "whatsapp",
+      isWa: true,
+      el: (
+        <a
+          href={waUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full`}
+        >
+          <MessageCircle className="w-3.5 h-3.5" />
+          <span>Enviar WhatsApp</span>
+        </a>
+      ),
+    });
+  }
+
+  if (buttons.length === 0) return null;
+
+  if (buttons.length === 1) {
+    return <div className="pt-3 border-t border-slate-200/80 w-full">{buttons[0].el}</div>;
+  }
+
+  if (buttons.length === 2) {
+    return (
+      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-200/80">
+        <div>{buttons[0].el}</div>
+        <div>{buttons[1].el}</div>
+      </div>
+    );
+  }
+
+  if (buttons.length === 3) {
+    const wa = buttons.find((item) => item.isWa);
+    const others = buttons.filter((item) => !item.isWa);
+    if (wa && others.length === 2) {
+      return (
+        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-200/80">
+          <div>{others[0].el}</div>
+          <div>{others[1].el}</div>
+          <div className="col-span-2">{wa.el}</div>
+        </div>
+      );
+    }
+    return (
+      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-200/80">
+        <div>{buttons[0].el}</div>
+        <div>{buttons[1].el}</div>
+        <div className="col-span-2">{buttons[2].el}</div>
+      </div>
+    );
+  }
+
+  const callBtn = buttons.find((item) => item.key === "call") || buttons[0];
+  const locBtn = buttons.find((item) => item.key === "location") || buttons[1];
+  const webBtn = buttons.find((item) => item.key === "website") || buttons[2];
+  const waBtn = buttons.find((item) => item.key === "whatsapp") || buttons[3];
+
+  return (
+    <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-200/80">
+      <div>{callBtn.el}</div>
+      <div>{locBtn.el}</div>
+      <div>{webBtn.el}</div>
+      <div>{waBtn.el}</div>
+    </div>
+  );
+}
 
 export default function CategoryPage() {
   const params = useParams();
@@ -946,14 +1098,9 @@ export default function CategoryPage() {
               </div>
             </div>
           ) : (
-            filteredBusinesses.map((b) => {
-              const waUrl = `https://wa.me/${b.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-                `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría solicitar información.`
-              )}`;
-
-              return (
-                <div
-                  key={b.id}
+            filteredBusinesses.map((b) => (
+              <div
+                key={b.id}
                   className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-emerald-600 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
                 >
                   <div className="space-y-3">
@@ -1013,22 +1160,13 @@ export default function CategoryPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100">
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl ${CATEGORY_THEMES[b.category_slug]?.btnPrimary || "bg-emerald-600 hover:bg-emerald-700"} text-white font-bold text-xs shadow-sm transition-all`}
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>Enviar WhatsApp</span>
-                    </a>
+                  <div className="mt-4">
+                    {renderBusinessCardButtons(b, CATEGORY_THEMES[b.category_slug]?.btnPrimary)}
                   </div>
                 </div>
-              );
-            })
-          )}
-        </div>
+              ))
+            )}
+          </div>
 
         {/* 2. EXPLORAR CATEGORÍAS (ENLACE A PÁGINAS INDEPENDIENTES) */}
         <section id="seccion-categorias" className="pt-10 pb-4 space-y-6">

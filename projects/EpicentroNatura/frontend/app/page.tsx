@@ -57,8 +57,11 @@ interface CommercialBusiness {
   address: string;
   community_slug: string;
   community_name: string;
-  phone: string;
-  whatsapp: string;
+  phone?: string | null;
+  whatsapp?: string | null;
+  location_url?: string | null;
+  website_url?: string | null;
+  microsite_url?: string | null;
   hours: string;
   is_open_now: boolean;
   has_km0_badge: boolean;
@@ -83,6 +86,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     lng: -103.4678,
     phone: "33 1555 0202",
     whatsapp: "+523315550202",
+    location_url: "https://maps.google.com/?q=Av.+Mariano+Otero+4290+Zapopan",
+    website_url: null,
     hours: "Abierto hoy · 18:00 a 01:30 hrs",
     is_open_now: true,
     has_km0_badge: false,
@@ -106,6 +111,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     lng: -103.4729,
     phone: "33 1555 0105",
     whatsapp: "+523315550105",
+    location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+esq.+Las+Rosas+Zapopan",
+    website_url: "/negocio.html",
     hours: "Martes a Domingo · 18:30 a 23:30 hrs",
     is_open_now: true,
     has_km0_badge: true,
@@ -131,6 +138,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     lng: -103.4552,
     phone: "33 1555 0201",
     whatsapp: "+523315550201",
+    location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4500+Zapopan",
+    website_url: null,
     hours: "Abierto 24 Horas",
     is_open_now: true,
     has_km0_badge: true,
@@ -156,6 +165,8 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     lng: -103.4688,
     phone: "33 1555 0207",
     whatsapp: "+523315550207",
+    location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
+    website_url: null,
     hours: "Lunes a Sábado · 09:00 a 20:00 hrs · Urgencias 24h",
     is_open_now: true,
     has_km0_badge: true,
@@ -179,8 +190,10 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     community_name: "Luna Bosque",
     lat: 20.6298,
     lng: -103.4652,
-    phone: "33 1555 0101",
+    phone: null,
     whatsapp: "+523315550101",
+    location_url: null,
+    website_url: null,
     hours: "Pedidos con 24h · Lunes a Domingo",
     is_open_now: true,
     has_km0_badge: true,
@@ -204,8 +217,10 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
     community_name: "Bosque de la primavera",
     lat: 20.6215,
     lng: -103.4795,
-    phone: "33 1555 0107",
+    phone: null,
     whatsapp: "+523315550107",
+    location_url: null,
+    website_url: "https://instagram.com/mieldelbosque_natura",
     hours: "Bajo pedido semanal",
     is_open_now: true,
     has_km0_badge: true,

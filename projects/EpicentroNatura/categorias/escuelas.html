@@ -899,6 +899,8 @@
         community_name: "Natura Bosque Residencial",
         phone: "33 1555 0202",
         whatsapp: "+523315550202",
+        location_url: "https://maps.google.com/?q=Av.+Mariano+Otero+4290+Zapopan",
+        website_url: null,
         hours: "Abierto hoy · 18:00 a 01:30 hrs",
         is_open_now: true,
         has_km0_badge: false,
@@ -920,6 +922,8 @@
         community_name: "Los Robles",
         phone: "33 1555 0105",
         whatsapp: "+523315550105",
+        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+esq.+Las+Rosas+Zapopan",
+        website_url: "negocio.html",
         hours: "Martes a Domingo · 18:30 a 23:30 hrs",
         is_open_now: true,
         has_km0_badge: true,
@@ -943,6 +947,8 @@
         community_name: "Punta de Otero",
         phone: "33 1555 0201",
         whatsapp: "+523315550201",
+        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4500+Zapopan",
+        website_url: null,
         hours: "Abierto 24 Horas · Lunes a Domingo",
         is_open_now: true,
         has_km0_badge: true,
@@ -966,6 +972,8 @@
         community_name: "Los Robles",
         phone: "33 1555 0206",
         whatsapp: "+523315550206",
+        location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
+        website_url: null,
         hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
         is_open_now: true,
         has_km0_badge: true,
@@ -987,8 +995,10 @@
         address: "Luna Bosque Residencial · Casa 42",
         community_slug: "luna-bosque",
         community_name: "Luna Bosque",
-        phone: "33 1555 0101",
+        phone: null,
         whatsapp: "+523315550101",
+        location_url: null,
+        website_url: null,
         hours: "Pedidos con 24h · Lunes a Domingo",
         is_open_now: true,
         has_km0_badge: true,
@@ -1010,8 +1020,10 @@
         address: "Natura Bosque Residencial (Coto Ceiba casa 14)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
-        phone: "33 1555 0102",
+        phone: null,
         whatsapp: "+523315550102",
+        location_url: null,
+        website_url: "https://instagram.com/mieldelbosque_natura",
         hours: "Atención Lunes a Sábado · 10:00 a 18:00 hrs",
         is_open_now: true,
         has_km0_badge: true,
@@ -1474,6 +1486,126 @@
       }
     }
 
+    // CONSTRUCTOR HOMOLOGADO DE BOTONES DE ACCIÓN (WhatsApp, Llamar, Ver Ubicación, Ver más)
+    function buildBusinessActionButtons(b, theme) {
+      const btnClass = (theme && theme.btnPrimary) ? theme.btnPrimary : "bg-emerald-600 hover:bg-emerald-700 text-white";
+      const buttons = [];
+
+      // Detectar si estamos en un subdirectorio como /categorias/
+      const isSubfolder = window.location.pathname.includes('/categorias/') || window.location.href.includes('/categorias/');
+
+      // 1. Llamar (phone)
+      if (b.phone && String(b.phone).trim() !== "") {
+        const cleanPhone = String(b.phone).replace(/\s/g, '');
+        buttons.push({
+          type: "call",
+          html: `
+            <a href="tel:${cleanPhone}" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 transition-colors w-full">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-600"></i>
+              <span>Llamar</span>
+            </a>
+          `
+        });
+      }
+
+      // 2. Ver Ubicación (location_url)
+      if (b.location_url && String(b.location_url).trim() !== "") {
+        buttons.push({
+          type: "location",
+          html: `
+            <a href="${b.location_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 transition-colors w-full">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-600"></i>
+              <span>Ver Ubicación</span>
+            </a>
+          `
+        });
+      }
+
+      // 3. Ver más (website_url o microsite_url)
+      const rawWebUrl = b.website_url || b.microsite_url;
+      if (rawWebUrl && String(rawWebUrl).trim() !== "") {
+        const isExternal = String(rawWebUrl).startsWith("http");
+        const resolvedWebUrl = (!isExternal && !rawWebUrl.startsWith('/') && isSubfolder) ? '../' + rawWebUrl : rawWebUrl;
+        buttons.push({
+          type: "website",
+          html: `
+            <a href="${resolvedWebUrl}" ${isExternal ? 'target="_blank" rel="noopener"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
+              <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-300"></i>
+              <span>Ver más</span>
+            </a>
+          `
+        });
+      }
+
+      // 4. Enviar WhatsApp (whatsapp)
+      if (b.whatsapp && String(b.whatsapp).trim() !== "") {
+        let waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría solicitar información.`;
+        if (b.cta_type === "service_whatsapp") {
+          waText = `Hola ${b.name}, necesito una cotización / servicio en mi coto en Mariano Otero.`;
+        } else if (b.cta_type === "whatsapp_order") {
+          waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría hacer un pedido / solicitar información.`;
+        }
+        const cleanWa = String(b.whatsapp).replace(/\D/g, '');
+        const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
+        buttons.push({
+          type: "whatsapp",
+          html: `
+            <a href="${waUrl}" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+              <span>Enviar WhatsApp</span>
+            </a>
+          `
+        });
+      }
+
+      if (buttons.length === 0) return "";
+
+      if (buttons.length === 1) {
+        return `<div class="pt-3 border-t border-snow-300 w-full">${buttons[0].html}</div>`;
+      }
+
+      if (buttons.length === 2) {
+        return `<div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">${buttons[0].html}${buttons[1].html}</div>`;
+      }
+
+      if (buttons.length === 3) {
+        const waBtn = buttons.find(item => item.type === "whatsapp");
+        const otherBtns = buttons.filter(item => item.type !== "whatsapp");
+        if (waBtn) {
+          return `
+            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
+              ${otherBtns[0].html}
+              ${otherBtns[1].html}
+              <div class="col-span-2">${waBtn.html}</div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
+              ${buttons[0].html}
+              ${buttons[1].html}
+              <div class="col-span-2">${buttons[2].html}</div>
+            </div>
+          `;
+        }
+      }
+
+      // 4 botones: Cuadrícula simétrica 2x2
+      const callBtn = buttons.find(item => item.type === "call");
+      const locBtn = buttons.find(item => item.type === "location");
+      const webBtn = buttons.find(item => item.type === "website");
+      const waBtn = buttons.find(item => item.type === "whatsapp");
+
+      return `
+        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
+          ${callBtn ? callBtn.html : buttons[0].html}
+          ${locBtn ? locBtn.html : buttons[1].html}
+          ${webBtn ? webBtn.html : buttons[2].html}
+          ${waBtn ? waBtn.html : buttons[3].html}
+        </div>
+      `;
+    }
+
     // APLICAR TODOS LOS FILTROS
     function applyAllFilters() {
       const searchInput = document.getElementById("search-input");
@@ -1537,47 +1669,8 @@
       }
 
       grid.innerHTML = filtered.map(b => {
-        let waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría hacer un pedido / solicitar información.`;
-        if (b.cta_type === "service_whatsapp") {
-          waText = `Hola ${b.name}, necesito una cotización / servicio urgente en mi coto en Mariano Otero.`;
-        }
-        const waUrl = `https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(waText)}`;
         const theme = (typeof CATEGORY_THEMES !== "undefined" && CATEGORY_THEMES[b.category_slug || (typeof currentCategory !== "undefined" && currentCategory && currentCategory.slug)]) ? CATEGORY_THEMES[b.category_slug || (typeof currentCategory !== "undefined" && currentCategory && currentCategory.slug)] : (typeof CATEGORY_THEMES !== "undefined" ? CATEGORY_THEMES["comida-delivery"] : null);
-        const btnClass = (theme && theme.btnPrimary) ? theme.btnPrimary : "bg-brand-emerald hover:bg-brand-forest text-white";
-
-        let ctaButtonHtml = "";
-        if (b.cta_type === "call_and_whatsapp") {
-          ctaButtonHtml = `
-            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
-              <a href="tel:${b.phone.replace(/\s/g, '')}" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-snow-300 hover:bg-snow-400 text-slate-800 font-bold text-xs border border-snow-400 transition-colors">
-                <i data-lucide="phone" class="w-3.5 h-3.5 text-brand-emerald"></i>
-                <span>Llamar</span>
-              </a>
-              <a href="${waUrl}" target="_blank" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-sm transition-all active:scale-95">
-                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                <span>Enviar WhatsApp</span>
-              </a>
-            </div>
-          `;
-        } else if (b.cta_type === "service_whatsapp") {
-          ctaButtonHtml = `
-            <div class="pt-3 border-t border-snow-300">
-              <a href="${waUrl}" target="_blank" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl ${btnClass} font-bold text-xs shadow-sm transition-all active:scale-95">
-                <i data-lucide="wrench" class="w-3.5 h-3.5 text-brand-mint"></i>
-                <span>Enviar WhatsApp</span>
-              </a>
-            </div>
-          `;
-        } else {
-          ctaButtonHtml = `
-            <div class="pt-3 border-t border-snow-300">
-              <a href="${waUrl}" target="_blank" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl ${btnClass} font-bold text-xs shadow-sm transition-all active:scale-95">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                <span>Enviar WhatsApp</span>
-              </a>
-            </div>
-          `;
-        }
+        const ctaButtonHtml = buildBusinessActionButtons(b, theme);
 
         return `
           <div class="p-6 rounded-3xl bg-white border border-snow-400 hover:border-brand-emerald shadow-rappi-card hover:shadow-rappi-hover transition-all flex flex-col justify-between group">
