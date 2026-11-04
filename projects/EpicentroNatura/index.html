@@ -1444,31 +1444,55 @@
       }
     ];
 
-    // CASA DE LA CULTURA NATURA (OFERTA CULTURAL, EVENTOS Y CLASES)
+    // CASA DE LA CULTURA NATURA (OFERTA CULTURAL Y CLASES REALES)
     const CULTURAL_OFFERINGS = [
       {
-        title: "Taller Infantil de Escultura en Barro & Pintura",
-        category: "Taller Infantil (5 a 12 años)",
-        datetime: "Sábados · 10:00 a 12:00 hrs",
-        location: "Kiosco Parque Central Natura",
-        description: "Modelado con arcilla natural de la zona y acuarelas sobre caballete al aire libre.",
-        spots: 11
+        title: "Baile Trend & Ritmos Modernos",
+        category: "Baile y Fitness",
+        datetime: "Miércoles · 19:00 a 20:00 hrs",
+        location: "Casa de la Cultura",
+        cost: "$60 individual / $100 pareja",
+        description: "Clases dinámicas de ritmos urbanos, coreografías en tendencia y expresión corporal para jóvenes y adultos."
       },
       {
-        title: "Noche de Cine Vecinal al Aire Libre",
-        category: "Para Toda la Familia",
-        datetime: "Sábado 15 · 19:30 hrs",
-        location: "Explanada Verde Parque Central",
-        description: "Proyección en pantalla gigante bajo las estrellas. Palomitas gratis para niños de cotos.",
-        spots: 38
+        title: "Fútbol Infantil (4 a 12 años)",
+        category: "Deportes",
+        datetime: "Viernes · 17:00 a 20:00 hrs",
+        location: "Casa de la Cultura",
+        cost: "Consultar informes al WhatsApp",
+        description: "Iniciación deportiva formativa, coordinación motriz, desarrollo técnico de control de balón y compañerismo."
       },
       {
-        title: "Clases Semanales de Danza Folclórica & Ritmos",
-        category: "Clases Presenciales",
-        datetime: "Martes y Jueves · 17:00 hrs",
-        location: "Salón Polivalente Casa de Cultura",
-        description: "Grupos infantiles y de adultos mayores con instructores del Instituto de Cultura Zapopan.",
-        spots: 15
+        title: "Latin Fit & Acondicionamiento Físico",
+        category: "Baile y Fitness",
+        datetime: "Martes y Jueves · 08:00 a 09:00 hrs",
+        location: "Casa de la Cultura",
+        cost: "$50 MXN por sesión",
+        description: "Activación física matutina al ritmo de música latina, cardio, tonificación muscular y movilidad articular."
+      },
+      {
+        title: "Fotografía Básica",
+        category: "Arte y Fotografía",
+        datetime: "Viernes · 17:00 a 18:00 hrs",
+        location: "Casa de la Cultura",
+        cost: "Consultar informes al WhatsApp",
+        description: "Aprende encuadre, iluminación, composición visual y manejo de cámara o smartphone en sesiones prácticas."
+      },
+      {
+        title: "Meditación & Sesiones de Respiración",
+        category: "Bienestar",
+        datetime: "Sábados · 10:00 a 11:30 hrs",
+        location: "Casa de la Cultura",
+        cost: "Consultar informes al WhatsApp",
+        description: "Sesión de relajación guiada, respiración consciente (pranayama) y mindfulness para reducir el estrés."
+      },
+      {
+        title: "Clases de Música: Guitarra y Teclado",
+        category: "Música",
+        datetime: "Sábados · 11:30 a 13:00 hrs",
+        location: "Casa de la Cultura",
+        cost: "Consultar informes al WhatsApp",
+        description: "Iniciación instrumental, lectura de acordes, ritmo y ensambles prácticos para principiantes e intermedios."
       }
     ];
 
@@ -1652,25 +1676,33 @@
     // RENDERIZADO DE CASA DE LA CULTURA NATURA
     function renderCultura() {
       const container = document.getElementById("cultural-events-grid");
-      container.innerHTML = CULTURAL_OFFERINGS.map(ev => `
-        <div class="bg-white rounded-3xl border border-snow-400 p-6 flex flex-col justify-between shadow-rappi-card">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-bold text-brand-forest bg-brand-softMint px-2.5 py-1 rounded-full">${ev.category}</span>
-              <span class="text-xs font-semibold text-brand-emerald">${ev.spots} lugares disponibles</span>
+      if (!container) return;
+      container.innerHTML = CULTURAL_OFFERINGS.map(ev => {
+        const whatsappMsg = encodeURIComponent(`Hola, me interesa pedir más información sobre la clase de ${ev.title} en Casa de la Cultura`);
+        const whatsappUrl = `https://wa.me/523333883199?text=${whatsappMsg}`;
+
+        return `
+          <div class="bg-white rounded-3xl border border-snow-400 p-6 flex flex-col justify-between shadow-rappi-card hover:shadow-rappi-hover transition-all">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-amber-900 bg-amber-100 px-2.5 py-1 rounded-full border border-amber-300">${ev.category}</span>
+                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">${ev.cost}</span>
+              </div>
+              <h3 class="text-lg font-black text-slate-900 mb-2">${ev.title}</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mb-4">${ev.description}</p>
+              <div class="text-xs text-slate-600 space-y-2 pt-3 border-t border-snow-300 mb-4">
+                <div class="flex items-center gap-2">⏰ <span class="font-bold text-slate-900">${ev.datetime}</span></div>
+                <div class="flex items-center gap-2">📍 <span class="font-semibold text-slate-700">Casa de la Cultura</span></div>
+                <div class="flex items-center gap-2">💵 <span class="font-bold text-emerald-700">${ev.cost}</span></div>
+              </div>
             </div>
-            <h3 class="text-lg font-black text-slate-900 mb-2">${ev.title}</h3>
-            <p class="text-xs sm:text-sm text-slate-600 mb-4">${ev.description}</p>
-            <div class="text-xs text-slate-500 space-y-1.5 pt-3 border-t border-snow-300 mb-4">
-              <div class="flex items-center gap-2">📅 <span>${ev.datetime}</span></div>
-              <div class="flex items-center gap-2">📍 <span>${ev.location}</span></div>
-            </div>
+            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-sm flex items-center justify-center gap-2">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Pedir más información por WhatsApp</span>
+            </a>
           </div>
-          <button onclick="alert('¡Lugar reservado con éxito en Casa de la Cultura Natura!')" class="w-full py-3 rounded-xl bg-brand-emerald hover:bg-brand-forest text-white font-bold text-xs transition-all shadow-sm">
-            Inscribirse / Reservar Asistencia (Gratuito)
-          </button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
       lucide.createIcons();
     }
 

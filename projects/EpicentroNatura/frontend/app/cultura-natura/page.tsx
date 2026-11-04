@@ -11,12 +11,8 @@ import {
   ArrowLeft,
   Store,
   Megaphone,
-  User,
-  Ticket,
-  PlusCircle,
-  X,
   Tag,
-  CheckCircle2,
+  MessageCircle,
 } from "lucide-react";
 
 interface CulturalEvent {
@@ -26,124 +22,112 @@ interface CulturalEvent {
   datetime: string;
   location: string;
   description: string;
-  spots: number;
-  instructor: string;
   cost: string;
-  age: string;
   badgeColor: string;
 }
 
 const CULTURAL_EVENTS: CulturalEvent[] = [
   {
-    id: "e1",
-    title: "Taller Infantil de Barro & Pintura Botánica",
-    category: "Talleres Infantiles & Juveniles",
-    datetime: "Sábado 08 · 11:00 a 13:00 hrs",
-    location: "Kiosco Parque Central Natura",
-    description: "Modelado con arcilla natural de la zona y acuarelas sobre caballete al aire libre.",
-    spots: 11,
-    instructor: "Colectivo Raíces del Bosque",
-    cost: "Gratuito con registro",
-    age: "Niños de 5 a 14 años",
+    id: "c1",
+    title: "Baile Trend & Ritmos Modernos",
+    category: "Baile y Fitness",
+    datetime: "Miércoles · 19:00 a 20:00 hrs",
+    location: "Casa de la Cultura",
+    description: "Clases dinámicas de ritmos urbanos, coreografías en tendencia y expresión corporal para jóvenes y adultos.",
+    cost: "$60 MXN individual / $100 MXN pareja",
+    badgeColor: "bg-purple-100 text-purple-800 border-purple-300",
+  },
+  {
+    id: "c2",
+    title: "Fútbol Infantil (Categoría 4 a 7 años)",
+    category: "Deportes",
+    datetime: "Viernes · 17:00 a 18:30 hrs",
+    location: "Casa de la Cultura",
+    description: "Iniciación formativa, coordinación motriz, desarrollo técnico de control de balón y compañerismo en equipo.",
+    cost: "Consultar informes al WhatsApp",
+    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+  },
+  {
+    id: "c3",
+    title: "Fútbol Infantil (Categoría 8 a 12 años)",
+    category: "Deportes",
+    datetime: "Viernes · 18:30 a 20:00 hrs",
+    location: "Casa de la Cultura",
+    description: "Entrenamiento táctico, fundamentos técnicos, resistencia física y partidos de práctica formativos.",
+    cost: "Consultar informes al WhatsApp",
+    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+  },
+  {
+    id: "c4",
+    title: "Fotografía Básica",
+    category: "Arte y Música",
+    datetime: "Viernes · 17:00 a 18:00 hrs",
+    location: "Casa de la Cultura",
+    description: "Aprende encuadre, iluminación, composición visual y manejo de cámara o smartphone en sesiones teórico-prácticas.",
+    cost: "Consultar informes al WhatsApp",
     badgeColor: "bg-amber-100 text-amber-800 border-amber-300",
   },
   {
-    id: "e2",
-    title: "Noche de Cine Vecinal al Aire Libre",
-    category: "Cine al Aire Libre",
-    datetime: "Sábado 15 · 19:30 hrs",
-    location: "Explanada Verde Parque Central",
-    description: "Proyección en pantalla gigante bajo las estrellas. Trae tu tapete o silla de camping. Palomitas de maíz gratuitas para niños de cotos.",
-    spots: 38,
-    instructor: "Comité Cultural Natura",
-    cost: "Gratuito",
-    age: "Todo público / Familiar",
-    badgeColor: "bg-rose-100 text-rose-800 border-rose-300",
-  },
-  {
-    id: "e3",
-    title: "Clases Semanales de Danza Folclórica & Ritmos",
-    category: "Danza y Música",
-    datetime: "Martes y Jueves · 17:00 hrs",
-    location: "Salón Polivalente Casa de Cultura",
-    description: "Grupos infantiles y de adultos mayores con instructores del Instituto de Cultura Zapopan.",
-    spots: 15,
-    instructor: "Mtra. Carmen Salcedo (ICZ)",
-    cost: "Aportación solidaria $30",
-    age: "Infantil (17:00) y Adultos (18:15)",
+    id: "c5",
+    title: "Latin Fit & Acondicionamiento Físico",
+    category: "Baile y Fitness",
+    datetime: "Martes y Jueves · 08:00 a 09:00 hrs",
+    location: "Casa de la Cultura",
+    description: "Activación física matutina al ritmo de música latina, cardio, tonificación muscular y movilidad articular.",
+    cost: "$50 MXN por sesión",
     badgeColor: "bg-purple-100 text-purple-800 border-purple-300",
   },
   {
-    id: "e4",
-    title: "Taller de Huertos Urbanos y Compostaje en Casa",
-    category: "Clases Formativas",
-    datetime: "Domingo 16 · 10:00 hrs",
-    location: "Jardín Botánico del Parque Central",
-    description: "Aprende a cultivar hortalizas en espacios reducidos, control orgánico de plagas y elaboración de composta vecinal.",
-    spots: 20,
-    instructor: "Biol. Héctor Navarro",
-    cost: "Gratuito",
-    age: "Jóvenes y adultos",
-    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    id: "c6",
+    title: "Meditación & Sesiones de Respiración",
+    category: "Bienestar",
+    datetime: "Sábados · 10:00 a 11:30 hrs",
+    location: "Casa de la Cultura",
+    description: "Sesión de relajación guiada, técnicas de respiración consciente (pranayama) y mindfulness para reducir el estrés.",
+    cost: "Consultar informes al WhatsApp",
+    badgeColor: "bg-cyan-100 text-cyan-800 border-cyan-300",
   },
   {
-    id: "e5",
-    title: "Ensamble Acústico al Atardecer: Cuerdas en el Bosque",
-    category: "Danza y Música",
-    datetime: "Domingo 23 · 18:00 hrs",
-    location: "Kiosco Parque Central Natura",
-    description: "Concierto íntimo con cuarteto de cuerdas interpretando música clásica y canciones mexicanas mientras cae el sol en el bosque.",
-    spots: 50,
-    instructor: "Ensamble Filarmónico Bosque de la Primavera",
-    cost: "Entrada libre",
-    age: "Todo público",
-    badgeColor: "bg-purple-100 text-purple-800 border-purple-300",
+    id: "c7",
+    title: "Taller de Música: Guitarra y Teclado",
+    category: "Arte y Música",
+    datetime: "Sábados · 11:30 a 13:00 hrs",
+    location: "Casa de la Cultura",
+    description: "Iniciación instrumental, lectura de acordes, ritmo y ensambles prácticos para principiantes e intermedios.",
+    cost: "Consultar informes al WhatsApp",
+    badgeColor: "bg-amber-100 text-amber-800 border-amber-300",
   },
   {
-    id: "e6",
-    title: "Círculo de Lectura y Creación Literaria Vecinal",
-    category: "Clases Formativas",
-    datetime: "Miércoles · 18:30 hrs",
-    location: "Terraza de la Casa de la Cultura",
-    description: "Lectura colectiva, análisis de cuentos contemporáneos y ejercicios guiados de redacción poética y narrativa.",
-    spots: 12,
-    instructor: "Lic. Claudia Morales",
-    cost: "Gratuito",
-    age: "A partir de 15 años",
-    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    id: "c8",
+    title: "Taller de Constelaciones Familiares & Bienestar",
+    category: "Bienestar",
+    datetime: "Sábados programados · 16:00 a 19:00 hrs",
+    location: "Casa de la Cultura",
+    description: "Taller vivencial de desarrollo personal, dinámicas sistémicas y reconciliación emocional en grupo guiado.",
+    cost: "Consultar informes al WhatsApp",
+    badgeColor: "bg-cyan-100 text-cyan-800 border-cyan-300",
   },
 ];
 
 export default function CulturaNaturaPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [rsvpModalEvent, setRsvpModalEvent] = useState<CulturalEvent | null>(null);
-  const [isProposeOpen, setIsProposeOpen] = useState<boolean>(false);
-  const [rsvpForm, setRsvpForm] = useState({ name: "", coto: "", count: "1", phone: "" });
 
   const filteredEvents =
     selectedCategory === "all"
       ? CULTURAL_EVENTS
       : CULTURAL_EVENTS.filter((e) => e.category === selectedCategory);
 
-  const handleRsvpSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(`¡Gracias ${rsvpForm.name}! Tu asistencia a "${rsvpModalEvent?.title}" (${rsvpForm.count} personas, ${rsvpForm.coto}) ha quedado registrada.`);
-    setRsvpModalEvent(null);
-    setRsvpForm({ name: "", coto: "", count: "1", phone: "" });
-  };
-
-  const handleProposeSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("¡Gracias por tu propuesta cultural! El Comité de la Casa de la Cultura Natura revisará los requerimientos de espacio y se pondrá en contacto.");
-    setIsProposeOpen(false);
-  };
-
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans flex flex-col antialiased selection:bg-amber-500 selection:text-white">
       {/* TOP BAR */}
       <aside className="bg-slate-950 text-white text-xs py-2 px-4 border-b border-slate-800 text-center">
-        <div className="max-w-7xl mx-auto flex items-center justify-center">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-slate-400 hover:text-purple-400 transition-colors text-xs font-semibold">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Volver a Inicio</span>
+          </Link>
           <span className="font-extrabold tracking-wide text-xs">Comunidad Epicentro Natura</span>
+          <span className="text-[11px] font-mono text-slate-400">by Hipha</span>
         </div>
       </aside>
 
@@ -170,7 +154,8 @@ export default function CulturaNaturaPage() {
             {/* ACCIONES RÁPIDAS */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
-                href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" target="_blank"
+                href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b"
+                target="_blank"
                 className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
               >
                 <Megaphone className="w-3.5 h-3.5 text-blue-600" />
@@ -224,7 +209,7 @@ export default function CulturaNaturaPage() {
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-              El punto de encuentro artístico, recreativo y formativo para familias y vecinos de Natura Bosque Residencial, Los Robles y Prolongación Mariano Otero. Talleres semanales, cine al aire libre y actividades al pie del bosque.
+              El punto de encuentro artístico, formativo, deportivo y de bienestar para familias y vecinos de Natura Bosque Residencial, Los Robles y Prolongación Mariano Otero. Conoce los talleres y clases presenciales en la Casa de la Cultura.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -233,18 +218,20 @@ export default function CulturaNaturaPage() {
                   const el = document.getElementById("cartelera-section");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all active:scale-95"
               >
                 <Calendar className="w-4 h-4" />
-                <span>Ver Cartelera de Eventos</span>
+                <span>Ver Clases y Talleres</span>
               </button>
-              <button
-                onClick={() => setIsProposeOpen(true)}
+              <a
+                href="https://wa.me/523333883199?text=Hola,%20me%20gustar%C3%ADa%20pedir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20las%20clases%20y%20talleres%20en%20Casa%20de%20la%20Cultura"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 backdrop-blur-md transition-all active:scale-95"
               >
-                <PlusCircle className="w-4 h-4 text-amber-300" />
-                <span>Proponer un Taller o Clase</span>
-              </button>
+                <MessageCircle className="w-4 h-4 text-emerald-400" />
+                <span>Pedir Información por WhatsApp</span>
+              </a>
             </div>
           </div>
         </div>
@@ -255,16 +242,16 @@ export default function CulturaNaturaPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight flex items-center gap-2">
                 <Palette className="w-6 h-6 text-amber-600" />
-                <span>Cartelera de Actividades & Talleres</span>
+                <span>Clases & Talleres en Casa de la Cultura</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Reserva tu lugar gratuito o de aportación simbólica para ti y tu familia.
+                Consulta horarios y costos. Pide informes directos al WhatsApp de Casa de la Cultura (33 3388 3199).
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-                {filteredEvents.length} actividades activas
+                {filteredEvents.length} clases activas
               </span>
             </div>
           </div>
@@ -272,11 +259,11 @@ export default function CulturaNaturaPage() {
           {/* BOTONES DE FILTRO */}
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
             {[
-              { id: "all", label: "Todos los Eventos" },
-              { id: "Talleres Infantiles & Juveniles", label: "🎨 Talleres Infantiles" },
-              { id: "Cine al Aire Libre", label: "🎬 Cine al Aire Libre" },
-              { id: "Danza y Música", label: "🎵 Danza y Música" },
-              { id: "Clases Formativas", label: "🌱 Huertos & Clases" },
+              { id: "all", label: "Todas las Clases" },
+              { id: "Baile y Fitness", label: "💃 Baile & Fitness" },
+              { id: "Deportes", label: "⚽ Fútbol Infantil" },
+              { id: "Arte y Música", label: "📸 Arte & Música" },
+              { id: "Bienestar", label: "🧘 Bienestar" },
             ].map((f) => {
               const isActive = selectedCategory === f.id;
               return (
@@ -297,62 +284,63 @@ export default function CulturaNaturaPage() {
 
           {/* GRID DE EVENTOS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map((ev) => (
-              <div
-                key={ev.id}
-                className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-400 transition-all group"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border ${ev.badgeColor}`}>
-                      {ev.category}
-                    </span>
-                    <span className="text-xs font-extrabold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-                      {ev.spots} cupos
-                    </span>
-                  </div>
+            {filteredEvents.map((ev) => {
+              const whatsappMsg = encodeURIComponent(
+                `Hola, me interesa pedir más información sobre la clase de ${ev.title} en Casa de la Cultura`
+              );
+              const whatsappUrl = `https://wa.me/523333883199?text=${whatsappMsg}`;
 
-                  <h3 className="text-lg font-black text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
-                    {ev.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 leading-relaxed">{ev.description}</p>
-
-                  <div className="pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span className="font-bold text-slate-800">{ev.datetime}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span>{ev.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <User className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span>
-                        Imparte: <strong className="text-slate-700">{ev.instructor}</strong>
+              return (
+                <div
+                  key={ev.id}
+                  className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-400 transition-all group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border ${ev.badgeColor}`}>
+                        {ev.category}
+                      </span>
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        {ev.cost.includes("$") ? ev.cost.split("/")[0].trim() : "Informes WhatsApp"}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Tag className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span className="text-emerald-700 font-extrabold">
-                        {ev.cost} · {ev.age}
-                      </span>
+
+                    <h3 className="text-lg font-black text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
+                      {ev.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-600 leading-relaxed">{ev.description}</p>
+
+                    <div className="pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span className="font-bold text-slate-900">{ev.datetime}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span className="font-semibold text-slate-700">Casa de la Cultura</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Tag className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span className="font-bold text-emerald-700">{ev.cost}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="pt-5 mt-4 border-t border-slate-100">
-                  <button
-                    onClick={() => setRsvpModalEvent(ev)}
-                    className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1.5"
-                  >
-                    <Ticket className="w-4 h-4" />
-                    <span>Inscribirse / Reservar Asistencia</span>
-                  </button>
+                  <div className="pt-5 mt-4 border-t border-slate-100">
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Pedir más información por WhatsApp</span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -360,182 +348,26 @@ export default function CulturaNaturaPage() {
         <section className="rounded-3xl bg-white border border-slate-200 p-8 sm:p-10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-amber-700 bg-amber-100 px-3 py-1 rounded-full border border-amber-300">
-              CONVOCATORIA ABIERTA
+              CASA DE LA CULTURA NATURA
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
-              ¿Impartes clases, talleres de arte o música?
+              ¿Impartes clases, talleres o actividades formativas?
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              La Casa de la Cultura Natura y las terrazas del Parque Central están abiertas a propuestas de residentes y talleristas profesionales para enriquecer la vida comunitaria.
+              La Casa de la Cultura Natura está abierta para recibir propuestas de instructores y talleristas para enriquecer la vida comunitaria de los cotos.
             </p>
           </div>
-          <button
-            onClick={() => setIsProposeOpen(true)}
-            className="shrink-0 px-6 py-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs sm:text-sm transition-all shadow-md active:scale-95"
+          <a
+            href="https://wa.me/523333883199?text=Hola,%20me%20gustar%C3%ADa%20proponer%20o%20impartir%20un%20taller%20o%20clase%20en%20Casa%20de%20la%20Cultura"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95 inline-flex items-center gap-2"
           >
-            Proponer una Actividad
-          </button>
+            <MessageCircle className="w-4 h-4" />
+            <span>Pedir informes o proponer taller</span>
+          </a>
         </section>
       </main>
-
-      {/* MODAL RSVP */}
-      {rsvpModalEvent && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-slate-200 shadow-2xl relative">
-            <button
-              onClick={() => setRsvpModalEvent(null)}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">RESERVA DE ASISTENCIA</span>
-                <h3 className="text-base font-black text-slate-950 leading-tight">{rsvpModalEvent.title}</h3>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-slate-100 text-xs text-slate-700 space-y-1.5 mb-4">
-              <div className="flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 text-amber-700" />
-                <span className="font-bold">{rsvpModalEvent.datetime}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-amber-700" />
-                <span>{rsvpModalEvent.location}</span>
-              </div>
-            </div>
-
-            <form onSubmit={handleRsvpSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">Nombre Completo *</label>
-                <input
-                  type="text"
-                  required
-                  value={rsvpForm.name}
-                  onChange={(e) => setRsvpForm({ ...rsvpForm, name: e.target.value })}
-                  placeholder="Ej. Ana Sofía Martínez"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1">Coto de Residencia *</label>
-                  <input
-                    type="text"
-                    required
-                    value={rsvpForm.coto}
-                    onChange={(e) => setRsvpForm({ ...rsvpForm, coto: e.target.value })}
-                    placeholder="Ej. Natura Coto Roble"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1">No. Asistentes *</label>
-                  <select
-                    value={rsvpForm.count}
-                    onChange={(e) => setRsvpForm({ ...rsvpForm, count: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white"
-                  >
-                    <option value="1">1 persona</option>
-                    <option value="2">2 personas</option>
-                    <option value="3">3 personas</option>
-                    <option value="4">4 personas</option>
-                    <option value="5+">5 o más</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">WhatsApp de Confirmación *</label>
-                <input
-                  type="tel"
-                  required
-                  value={rsvpForm.phone}
-                  onChange={(e) => setRsvpForm({ ...rsvpForm, phone: e.target.value })}
-                  placeholder="33 1234 5678"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs shadow-md transition-all active:scale-95"
-              >
-                Confirmar Lugar en Cartelera
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL PROPONER */}
-      {isProposeOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-slate-200 shadow-2xl relative">
-            <button
-              onClick={() => setIsProposeOpen(false)}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
-                <Sparkles className="w-6 h-6 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">CONVOCATORIA CULTURAL</span>
-                <h3 className="text-base sm:text-lg font-black text-slate-950">Proponer Taller o Actividad</h3>
-              </div>
-            </div>
-
-            <form onSubmit={handleProposeSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">Nombre de la Actividad o Taller *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ej. Taller de Acuarela Inicial / Club de Ajedrez"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">Descripción Breve *</label>
-                <textarea
-                  rows={3}
-                  required
-                  placeholder="Objetivo, materiales necesarios y dinámica de las sesiones..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">WhatsApp del Instructor *</label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="33 1234 5678"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all active:scale-95"
-              >
-                Enviar Propuesta al Comité Cultural
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* FOOTER */}
       <footer className="bg-slate-950 text-white text-xs py-8 px-4 border-t border-slate-800 mt-12">
