@@ -84,7 +84,11 @@
         </span>
         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/10 text-slate-300 border border-white/20 text-xs font-bold">
           <i data-lucide="bike" class="w-3.5 h-3.5 text-orange-400"></i>
-          <span>Delivery Limpio en Cotos</span>
+          <span>Entrega a domicilio disponible</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 border border-white/20 text-xs font-bold">
+          <i data-lucide="credit-card" class="w-3.5 h-3.5 text-orange-400"></i>
+          <span>Efectivo, Tarjeta y SPEI</span>
         </span>
       </div>
 
@@ -98,15 +102,19 @@
         </p>
       </div>
 
-      <!-- UBICACIÓN Y HORARIOS RÁPIDOS -->
+      <!-- UBICACIÓN, HORARIOS Y FORMAS DE PAGO RÁPIDOS -->
       <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
         <div class="flex items-center gap-2">
-          <i data-lucide="map-pin" class="w-4 h-4 text-orange-400"></i>
+          <i data-lucide="map-pin" class="w-4 h-4 text-orange-400 shrink-0"></i>
           <span>Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)</span>
         </div>
         <div class="flex items-center gap-2">
-          <i data-lucide="clock" class="w-4 h-4 text-orange-400"></i>
+          <i data-lucide="clock" class="w-4 h-4 text-orange-400 shrink-0"></i>
           <span>Martes a Domingo · 18:30 a 23:30 hrs</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="credit-card" class="w-4 h-4 text-orange-400 shrink-0"></i>
+          <span class="text-slate-300"><strong class="text-white">Formas de pago:</strong> Efectivo, transferencia SPEI y tarjeta</span>
         </div>
       </div>
 
@@ -149,105 +157,135 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- Pizza 1 -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
-          <div class="space-y-3">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="text-lg font-black text-slate-900">La Cantera Especial</h3>
-              <span class="text-base font-extrabold text-orange-600"></span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Jamón serrano español, queso gouda artesanal, higos frescos caramelizados, arúgula orgánica y reducción de balsámico al oporto.
-            </p>
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=80" alt="La Cantera Especial" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
           </div>
-          <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20La%20Cantera%20Especial" target="_blank" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Ordenar por WhatsApp</span>
-          </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">La Cantera Especial</h3>
+                <span class="text-base font-extrabold text-orange-600">$220</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Jamón serrano español, queso gouda artesanal, higos frescos caramelizados, arúgula orgánica y reducción de balsámico al oporto.
+              </p>
+            </div>
+            <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20La%20Cantera%20Especial" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         <!-- Pizza 2 -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
-          <div class="space-y-3">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="text-lg font-black text-slate-900">Cuatro Quesos & Pera</h3>
-              <span class="text-base font-extrabold text-orange-600"></span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Mezcla de mozzarella fior di latte, queso azul danés, parmesano reggiano de 24 meses, láminas de pera pochada y nuez de castilla.
-            </p>
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1573821663912-569905455b1c?auto=format&fit=crop&w=700&q=80" alt="Cuatro Quesos & Pera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
           </div>
-          <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Cuatro%20Quesos%20y%20Pera" target="_blank" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Ordenar por WhatsApp</span>
-          </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">Cuatro Quesos & Pera</h3>
+                <span class="text-base font-extrabold text-orange-600">$195</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Mezcla de mozzarella fior di latte, queso azul danés, parmesano reggiano de 24 meses, láminas de pera pochada y nuez de castilla.
+              </p>
+            </div>
+            <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Cuatro%20Quesos%20y%20Pera" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         <!-- Pizza 3 -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
-          <div class="space-y-3">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="text-lg font-black text-slate-900">Pepperoni Rústico & Miel Picante</h3>
-              <span class="text-base font-extrabold text-orange-600"></span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Doble pepperoni de maduración natural en cortes gruesos, mozzarella fundida al punto dorado y un toque final de miel de abeja infusionada con habanero.
-            </p>
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=700&q=80" alt="Pepperoni Rústico & Miel Picante" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
           </div>
-          <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Pepperoni%20Rustico" target="_blank" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Ordenar por WhatsApp</span>
-          </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">Pepperoni Rústico & Miel Picante</h3>
+                <span class="text-base font-extrabold text-orange-600">$190</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Doble pepperoni de maduración natural en cortes gruesos, mozzarella fundida al punto dorado y un toque final de miel de abeja infusionada con habanero.
+              </p>
+            </div>
+            <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Pepperoni%20Rustico" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         <!-- Pizza 4 -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
-          <div class="space-y-3">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="text-lg font-black text-slate-900">Margarita Clásica Napolitana</h3>
-              <span class="text-base font-extrabold text-orange-600"></span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Salsa pomodoro San Marzano, mozzarella fresca en rodajas, albahaca genovesa cosechada del huerto y aceite de oliva virgen extra.
-            </p>
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=700&q=80" alt="Margarita Clásica Napolitana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
           </div>
-          <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Margarita%20Clasica" target="_blank" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Ordenar por WhatsApp</span>
-          </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">Margarita Clásica Napolitana</h3>
+                <span class="text-base font-extrabold text-orange-600">$175</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Salsa pomodoro San Marzano, mozzarella fresca en rodajas, albahaca genovesa cosechada del huerto y aceite de oliva virgen extra.
+              </p>
+            </div>
+            <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Margarita%20Clasica" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         <!-- Pizza 5 -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
-          <div class="space-y-3">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="text-lg font-black text-slate-900">Portobello & Aceite de Trufa</h3>
-              <span class="text-base font-extrabold text-orange-600"></span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Hongos portobello y champiñones cremini salteados con tomillo fresco, base blanca de ricotta con parmesano y unas gotas de aceite de trufa blanca.
-            </p>
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=700&q=80" alt="Portobello & Aceite de Trufa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
           </div>
-          <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Portobello%20y%20Trufa" target="_blank" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Ordenar por WhatsApp</span>
-          </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">Portobello & Aceite de Trufa</h3>
+                <span class="text-base font-extrabold text-orange-600">$210</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Hongos portobello y champiñones cremini salteados con tomillo fresco, base blanca de ricotta con parmesano y unas gotas de aceite de trufa blanca.
+              </p>
+            </div>
+            <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20Portobello%20y%20Trufa" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
         </div>
 
         <!-- Pizza 6 -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
-          <div class="space-y-3">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="text-lg font-black text-slate-900">Arrachera & Chiles Toreados</h3>
-              <span class="text-base font-extrabold text-orange-600"></span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Tiras marinadas de arrachera al carbón, cebolla morada caramelizada, chiles toreados en soya y un toque de cilantro criollo fresco.
-            </p>
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-48 w-full overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=700&q=80" alt="Arrachera & Chiles Toreados" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
           </div>
-          <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20de%20Arrachera" target="_blank" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Ordenar por WhatsApp</span>
-          </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-orange-600 transition-colors">Arrachera & Chiles Toreados</h3>
+                <span class="text-base font-extrabold text-orange-600">$225</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Tiras marinadas de arrachera al carbón, cebolla morada caramelizada, chiles toreados en soya y un toque de cilantro criollo fresco.
+              </p>
+            </div>
+            <a href="https://wa.me/523315550105?text=Hola,%20quiero%20ordenar%20una%20pizza%20de%20Arrachera" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
         </div>
 
       </div>
@@ -259,44 +297,31 @@
       <!-- Cotos con entrega -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
-            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+            <i data-lucide="bike" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-base font-black text-slate-900">Entrega en Cotos y Caseta</h3>
-            <p class="text-xs text-slate-500">Reparto en bicicleta y moto eléctrica sin ruido ni emisiones</p>
+            <h3 class="text-base font-black text-slate-900">Entrega a domicilio disponible</h3>
           </div>
         </div>
 
-        <ul class="space-y-2 text-xs text-slate-700 pt-2">
-          <li class="flex items-center gap-2 font-medium">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
-            <span>Natura Bosque Residencial (Coto Ceiba, Coto Encino, Coto Roble, Coto Sauce)</span>
-          </li>
-          <li class="flex items-center gap-2 font-medium">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
-            <span>Los Robles (Acceso directo por Prolongación Mariano Otero)</span>
-          </li>
-          <li class="flex items-center gap-2 font-medium">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
-            <span>Punta de Otero y Luna Bosque Residencial</span>
-          </li>
-          <li class="flex items-center gap-2 font-medium">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
-            <span>Cotos y fraccionamientos vecinos en El Fortín</span>
-          </li>
-        </ul>
+        <div class="space-y-2.5 text-xs text-slate-700 pt-2 font-medium">
+          <p>Natura Bosque Residencial (Coto Ceiba, Coto Encino, Coto Roble, Coto Sauce)</p>
+          <p>Los Robles (Acceso directo por Prolongación Mariano Otero)</p>
+          <p>Punta de Otero y Luna Bosque Residencial</p>
+          <p>Cotos y fraccionamientos vecinos en El Fortín</p>
+        </div>
       </div>
 
       <!-- Datos de contacto y pickup -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-700 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-700 flex items-center justify-center shrink-0">
             <i data-lucide="store" class="w-5 h-5"></i>
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Punto de Venta & Pickup</h3>
-            <p class="text-xs text-slate-500">Pasa por tu orden recién salida del horno</p>
+            <p class="text-xs text-slate-500">Pasa por tu pedido a nuestra ubicación</p>
           </div>
         </div>
 
