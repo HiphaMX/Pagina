@@ -74,21 +74,10 @@
       
       <!-- BADGES SUPERIORES -->
       <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 border border-orange-400/40 text-xs font-bold">
-          <i data-lucide="utensils" class="w-3.5 h-3.5"></i>
-          <span>Pizzería Artesanal a la Leña</span>
-        </span>
-        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Abierto Hoy · 18:30 a 23:30 hrs</span>
-        </span>
-        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/10 text-slate-300 border border-white/20 text-xs font-bold">
-          <i data-lucide="bike" class="w-3.5 h-3.5 text-orange-400"></i>
-          <span>Entrega a domicilio disponible</span>
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 border border-white/20 text-xs font-bold">
-          <i data-lucide="credit-card" class="w-3.5 h-3.5 text-orange-400"></i>
-          <span>Efectivo, Tarjeta y SPEI</span>
+          <span>Abierto Hoy</span>
+          <span class="hidden sm:inline">· 18:30 a 23:30 hrs</span>
         </span>
       </div>
 
@@ -102,15 +91,11 @@
         </p>
       </div>
 
-      <!-- UBICACIÓN Y HORARIOS RÁPIDOS -->
+      <!-- UBICACIÓN RÁPIDA -->
       <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
         <div class="flex items-center gap-2">
           <i data-lucide="map-pin" class="w-4 h-4 text-orange-400 shrink-0"></i>
           <span>Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <i data-lucide="clock" class="w-4 h-4 text-orange-400 shrink-0"></i>
-          <span>Martes a Domingo · 18:30 a 23:30 hrs</span>
         </div>
       </div>
 
@@ -393,7 +378,7 @@
       </div>
     </section>
 
-    <!-- SECCIÓN: COBERTURA Y PICKUP -->
+    <!-- SECCIÓN: COBERTURA, PICKUP, PAGO Y HORARIO -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
       <!-- Entrega a domicilio -->
@@ -418,6 +403,32 @@
           <div>
             <h3 class="text-base font-black text-slate-900">Punto de Venta & Pickup</h3>
             <p class="text-xs text-slate-500">Pasa por tu pedido a nuestra ubicación</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métodos de pago -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+            <i data-lucide="credit-card" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Métodos de pago</h3>
+            <p class="text-xs text-slate-500">Efectivo, transferencia SPEI y tarjeta</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horario de atención -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Horario de atención</h3>
+            <p class="text-xs text-slate-500">Martes a Domingo · 18:30 a 23:30 hrs</p>
           </div>
         </div>
       </div>
