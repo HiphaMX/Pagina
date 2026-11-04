@@ -256,23 +256,6 @@ export default function CulturaNaturaPage() {
 
         {/* SECCIÓN DE CARTELERA CULTURAL */}
         <section id="cartelera-section" className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight flex items-center gap-2">
-                <Palette className="w-6 h-6 text-amber-600" />
-                <span>Clases & Talleres en Casa de la Cultura</span>
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Consulta horarios y costos. Pide informes directos al WhatsApp de Casa de la Cultura (33 3388 3199).
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-                {filteredEvents.length} clases activas
-              </span>
-            </div>
-          </div>
 
           {/* BOTONES DE FILTRO */}
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
