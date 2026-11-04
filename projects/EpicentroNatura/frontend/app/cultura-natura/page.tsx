@@ -4,14 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import {
   Palette,
-  Calendar,
   Clock,
   MapPin,
   Sparkles,
   ArrowLeft,
   Store,
   Megaphone,
-  Tag,
   MessageCircle,
 } from "lucide-react";
 
@@ -201,7 +199,7 @@ export default function CulturaNaturaPage() {
           <div className="relative z-10 max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold tracking-wide">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>ESPACIO CULTURAL COMUNITARIO · PARQUE CENTRAL</span>
+              <span>ESPACIO CULTURAL COMUNITARIO</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white">
@@ -209,30 +207,8 @@ export default function CulturaNaturaPage() {
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-              El punto de encuentro artístico, formativo, deportivo y de bienestar para familias y vecinos de Natura Bosque Residencial, Los Robles y Prolongación Mariano Otero. Conoce los talleres y clases presenciales en la Casa de la Cultura.
+              Las sedes que son un punto de encuentro artístico, formativo, deportivo y de bienestar para familias y vecinos de Epicentro Natura.
             </p>
-
-            <div className="pt-2 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => {
-                  const el = document.getElementById("cartelera-section");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all active:scale-95"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>Ver Clases y Talleres</span>
-              </button>
-              <a
-                href="https://wa.me/523333883199?text=Hola,%20me%20gustar%C3%ADa%20pedir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20las%20clases%20y%20talleres%20en%20Casa%20de%20la%20Cultura"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 backdrop-blur-md transition-all active:scale-95"
-              >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>Pedir Información por WhatsApp</span>
-              </a>
-            </div>
           </div>
         </div>
 
@@ -300,9 +276,6 @@ export default function CulturaNaturaPage() {
                       <span className={`text-[11px] font-extrabold px-3 py-1 rounded-full border ${ev.badgeColor}`}>
                         {ev.category}
                       </span>
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                        {ev.cost.includes("$") ? ev.cost.split("/")[0].trim() : "Informes WhatsApp"}
-                      </span>
                     </div>
 
                     <h3 className="text-lg font-black text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
@@ -320,10 +293,6 @@ export default function CulturaNaturaPage() {
                         <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                         <span className="font-semibold text-slate-700">Casa de la Cultura</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Tag className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                        <span className="font-bold text-emerald-700">{ev.cost}</span>
-                      </div>
                     </div>
                   </div>
 
@@ -332,10 +301,10 @@ export default function CulturaNaturaPage() {
                       href={whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2"
+                      className="w-full py-3.5 rounded-xl bg-slate-950 hover:bg-amber-500 text-white hover:text-slate-950 font-black text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 group/btn"
                     >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>Pedir más información por WhatsApp</span>
+                      <MessageCircle className="w-4 h-4 text-emerald-400 group-hover/btn:text-slate-950 transition-colors" />
+                      <span>Pedir más información</span>
                     </a>
                   </div>
                 </div>

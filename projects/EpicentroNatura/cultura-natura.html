@@ -200,7 +200,7 @@
       <div class="relative z-10 max-w-3xl space-y-4">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold tracking-wide">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
-          <span>ESPACIO CULTURAL COMUNITARIO · PARQUE CENTRAL</span>
+          <span>ESPACIO CULTURAL COMUNITARIO</span>
         </div>
 
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white">
@@ -208,19 +208,8 @@
         </h1>
 
         <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-          El punto de encuentro artístico, formativo, deportivo y de bienestar para familias y vecinos de Natura Bosque Residencial, Los Robles y Prolongación Mariano Otero. Conoce los talleres y clases presenciales en la Casa de la Cultura.
+          Las sedes que son un punto de encuentro artístico, formativo, deportivo y de bienestar para familias y vecinos de Epicentro Natura.
         </p>
-
-        <div class="pt-2 flex flex-wrap items-center gap-3">
-          <button onclick="document.getElementById('cartelera-section').scrollIntoView({behavior: 'smooth'})" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all active:scale-95">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            <span>Ver Clases y Talleres</span>
-          </button>
-          <a href="https://wa.me/523333883199?text=Hola,%20me%20gustar%C3%ADa%20pedir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20las%20clases%20y%20talleres%20en%20Casa%20de%20la%20Cultura" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 backdrop-blur-md transition-all active:scale-95">
-            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
-            <span>Pedir Información por WhatsApp</span>
-          </a>
-        </div>
       </div>
     </div>
 
@@ -460,9 +449,6 @@
                 <span class="text-[11px] font-extrabold px-3 py-1 rounded-full border ${ev.badgeColor}">
                   ${ev.category}
                 </span>
-                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  ${ev.cost.includes('$') ? ev.cost.split('/')[0].trim() : 'Informes WhatsApp'}
-                </span>
               </div>
 
               <h3 class="text-lg font-black text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
@@ -482,17 +468,13 @@
                   <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
                   <span class="font-semibold text-slate-700">Casa de la Cultura</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <i data-lucide="tag" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
-                  <span class="font-bold text-emerald-700">${ev.cost}</span>
-                </div>
               </div>
             </div>
 
             <div class="pt-5 mt-4 border-t border-snow-300">
-              <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                <span>Pedir más información por WhatsApp</span>
+              <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-slate-950 hover:bg-amber-500 text-white hover:text-slate-950 font-black text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 group/btn">
+                <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400 group-hover/btn:text-slate-950 transition-colors"></i>
+                <span>Pedir más información</span>
               </a>
             </div>
           </div>
