@@ -521,10 +521,12 @@ export default function CulturaNaturaPage() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="text-base font-black text-white">Epicentro</span>
-            <span className="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800">
+            <span className="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">
               natura
             </span>
-            <span className="text-slate-400 text-xs ml-2">© 2026 Plataforma Hiperlocal Comunitaria</span>
+            <span className="text-slate-600 hidden sm:inline">|</span>
+            <span className="text-slate-400 text-xs hidden sm:inline">Natura Bosque Residencial, Zapopan, Jalisco.</span>
+            <span className="text-slate-500 text-xs ml-2">© 2026 Plataforma Hiperlocal Comunitaria</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 text-xs">
             <Link href="/" className="hover:text-white transition-colors">Inicio</Link>

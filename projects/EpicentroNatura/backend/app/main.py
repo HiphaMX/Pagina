@@ -56,6 +56,6 @@ def health_check():
     return {
         "status": "online",
         "service": "Epicentro Natura API",
-        "zone": "Prolongación Mariano Otero, Zapopan, Jal.",
+        "zone": "Natura Bosque Residencial, Zapopan, Jalisco.",
         "version": "1.0.0"
     }

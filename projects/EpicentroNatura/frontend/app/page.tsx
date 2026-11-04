@@ -1261,7 +1261,7 @@ export default function EpicentroNaturaCleanLight() {
             </div>
             <strong className="text-slate-900 font-bold">Epicentro Natura</strong>
             <span>·</span>
-            <span>Prolongación Mariano Otero, Zapopan, Jalisco</span>
+            <span>Natura Bosque Residencial, Zapopan, Jalisco.</span>
           </div>
           <p>© 2026 Plataforma Hiperlocal Comunitaria. Ecosistema digital Hipha.</p>
         </div>
