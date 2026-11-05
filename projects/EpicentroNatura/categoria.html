@@ -855,43 +855,7 @@
     ];
 
     // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO EN APERTURA)
-    const ALL_BUSINESSES = [
-      {
-        id: "reg-botica-silvestre",
-        name: "Botica Silvestre",
-        category_slug: "productos-artesanales",
-        category_label: "Productos Artesanales",
-        subcategory_slug: "herbolaria-natural",
-        subcategory_label: "Herbolaria & Adaptógenos",
-        type: "emprendimiento",
-        type_slug: "emprendimiento",
-        type_label: "Punto de venta & A domicilio",
-        space_label: "Punto de venta & A domicilio",
-        community_slug: "natura-bosque-residencial",
-        community_name: "Natura Bosque Residencial",
-        has_delivery: true,
-        has_pickup: true,
-        delivery_available: true,
-        pickup_available: true,
-        delivery_badge: "Envíos a Cotos Natura",
-        pickup_badge: "Entrega en Mariano Otero",
-        coto: "Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial)",
-        address: "Prol. Mariano Otero, Cotos Natura & Los Robles, Zapopan",
-        description: "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
-        phone: "3336762545",
-        whatsapp: "3336762545",
-        website: "botica-silvestre.html",
-        website_url: "botica-silvestre.html",
-        hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
-        schedule: "Lunes a Sábado · 09:00 a 19:00 hrs",
-        payment_methods: ["Efectivo", "SPEI", "Tarjeta", "Mercado Pago"],
-        has_badge: true,
-        badge_text: "Vecino Verificado",
-        rating: 5.0,
-        reviews: 24,
-        has_photos: true
-      }
-    ];
+    const ALL_BUSINESSES = [];
 
     // COORDENADAS GPS DE LAS 10 ZONAS GEOGRÁFICAS
     const ZONE_COORDINATES = {
@@ -1082,40 +1046,58 @@
       renderCategoryView();
       populateRegisterCategoryOptions();
 
-      // Cargar dinámicamente comercios aprobados y activos desde el backend
+            // Cargar dinámicamente comercios aprobados y activos desde el backend
       fetch("/api/epicentro/businesses/active")
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
             activeBizList.forEach(biz => {
-              if (!ALL_BUSINESSES.some(b => b.id === biz.id)) {
-                ALL_BUSINESSES.unshift({
-                  id: biz.id,
-                  name: biz.business_name,
-                  category_slug: biz.category_slug,
-                  category_label: biz.category_label || biz.category_slug.toUpperCase(),
-                  subcategory_slug: biz.subcategory_slug || "",
-                  subcategory_label: biz.subcategory_label || "",
-                  type: biz.business_type || "local-establecido",
-                  space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio / Cita"),
-                  delivery_available: biz.delivery_available || false,
-                  pickup_available: true,
-                  delivery_badge: biz.delivery_available ? "Servicio a domicilio" : null,
-                  pickup_badge: "Recoger en punto de venta",
-                  coto: biz.coto_address,
-                  address: biz.coto_address,
-                  description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
-                  phone: biz.phone,
-                  whatsapp: biz.whatsapp,
-                  website_url: biz.website || null,
-                  schedule: "Lunes a Sábado",
-                  payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
-                  has_badge: true,
-                  badge_text: "Vecino Verificado",
-                  rating: 5.0,
-                  reviews: 1,
-                  has_photos: false
-                });
+              const normName = (biz.business_name || "").trim().toLowerCase();
+              const existingIdx = ALL_BUSINESSES.findIndex(b =>
+                b.id === biz.id ||
+                (b.name && b.name.trim().toLowerCase() === normName)
+              );
+
+              const bizObj = {
+                id: biz.id,
+                name: biz.business_name,
+                category_slug: biz.category_slug,
+                category_label: biz.category_label || (biz.category_slug ? biz.category_slug.toUpperCase() : "COMERCIO"),
+                subcategory_slug: biz.subcategory_slug || "",
+                subcategory_label: biz.subcategory_label || "",
+                type: biz.business_type || "local-establecido",
+                type_slug: biz.business_type || "local-establecido",
+                space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio / Cita"),
+                community_slug: "natura-bosque-residencial",
+                community_name: "Natura Bosque Residencial",
+                delivery_available: !!biz.delivery_available,
+                pickup_available: true,
+                has_delivery: !!biz.delivery_available,
+                has_pickup: true,
+                delivery_badge: biz.delivery_available ? "Servicio a domicilio" : null,
+                pickup_badge: "Recoger en local",
+                coto: biz.coto_address,
+                address: biz.coto_address,
+                description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
+                phone: biz.phone,
+                whatsapp: biz.whatsapp,
+                website: biz.website || null,
+                website_url: biz.website || null,
+                schedule: "Lunes a Sábado",
+                hours: "Lunes a Sábado",
+                is_open_now: true,
+                payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
+                has_badge: true,
+                badge_text: "Vecino Verificado",
+                rating: 5.0,
+                reviews: 1,
+                has_photos: false
+              };
+
+              if (existingIdx >= 0) {
+                ALL_BUSINESSES[existingIdx] = { ...ALL_BUSINESSES[existingIdx], ...bizObj };
+              } else {
+                ALL_BUSINESSES.unshift(bizObj);
               }
             });
             renderCategoryView();
@@ -1235,138 +1217,52 @@
         applyAllFilters();
       }
     }
-
-    // CONSTRUCTOR HOMOLOGADO DE BOTONES DE ACCIÓN (WhatsApp, Llamar, Ver Ubicación, Ver más)
+    // CONSTRUCTOR HOMOLOGADO DE BOTONES DE ACCIÓN (Ver más y WhatsApp)
     function buildBusinessActionButtons(b, theme) {
       const btnClass = (theme && theme.btnPrimary) ? theme.btnPrimary : "bg-emerald-600 hover:bg-emerald-700 text-white";
-      const buttons = [];
-
-      // Detectar si estamos en un subdirectorio como /categorias/
       const isSubfolder = window.location.pathname.includes('/categorias/') || window.location.href.includes('/categorias/');
 
-      // 1. Llamar (phone)
-      if (b.phone && String(b.phone).trim() !== "") {
-        const cleanPhone = String(b.phone).replace(/\s/g, '');
-        buttons.push({
-          type: "call",
-          html: `
-            <a href="tel:${cleanPhone}" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 transition-colors w-full">
-              <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-600"></i>
-              <span>Llamar</span>
-            </a>
-          `
-        });
-      }
-
-      // 2. Ver Ubicación (location_url)
-      if (b.location_url && String(b.location_url).trim() !== "") {
-        buttons.push({
-          type: "location",
-          html: `
-            <a href="${b.location_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 transition-colors w-full">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-600"></i>
-              <span>Ver Ubicación</span>
-            </a>
-          `
-        });
-      }
-
-      // 3. Sitio Web Propio o Enlace Web / Micrositio (website / website_url / microsite_url)
+      // 1. Resolver enlace de "Ver más"
       const rawWebUrl = b.website || b.website_url || b.microsite_url;
-      if (rawWebUrl && String(rawWebUrl).trim() !== "") {
-        let cleanWebUrl = String(rawWebUrl).trim();
-        const isHtmlPage = cleanWebUrl.endsWith(".html") || cleanWebUrl.includes(".html#") || cleanWebUrl.includes(".html?");
-        const isLocalRelative = isHtmlPage || cleanWebUrl.startsWith("/") || cleanWebUrl.startsWith("./") || cleanWebUrl.startsWith("../");
-        let isExternal = false;
+      let cleanWebUrl = rawWebUrl ? String(rawWebUrl).trim() : "";
+      let isExternal = false;
+      let resolvedWebUrl = "";
 
-        if (!isLocalRelative) {
-          if (cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://")) {
-            isExternal = true;
-          } else if (cleanWebUrl.includes(".") && !isHtmlPage) {
-            cleanWebUrl = "https://" + cleanWebUrl;
-            isExternal = true;
-          }
-        }
-
-        const resolvedWebUrl = (!isExternal && !cleanWebUrl.startsWith('/') && isSubfolder) ? '../' + cleanWebUrl : cleanWebUrl;
-        const btnText = (isHtmlPage || b.microsite_url) ? "Ver Catálogo" : ((b.website || b.website_url) ? "Sitio Web" : "Ver más");
-        const btnIcon = (isHtmlPage || b.microsite_url) ? "store" : ((b.website || b.website_url) ? "globe" : "external-link");
-        buttons.push({
-          type: "website",
-          html: `
-            <a href="${resolvedWebUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web">
-              <i data-lucide="${btnIcon}" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:text-emerald-300 transition-colors"></i>
-              <span>${btnText}</span>
-            </a>
-          `
-        });
-      }
-
-      // 4. Enviar WhatsApp (whatsapp)
-      if (b.whatsapp && String(b.whatsapp).trim() !== "") {
-        let waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría solicitar información.`;
-        if (b.cta_type === "service_whatsapp") {
-          waText = `Hola ${b.name}, necesito una cotización / servicio en mi coto en Mariano Otero.`;
-        } else if (b.cta_type === "whatsapp_order") {
-          waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría hacer un pedido / solicitar información.`;
-        }
-        const cleanWa = String(b.whatsapp).replace(/\D/g, '');
-        const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
-        buttons.push({
-          type: "whatsapp",
-          html: `
-            <a href="${waUrl}" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
-              <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-              <span>Enviar WhatsApp</span>
-            </a>
-          `
-        });
-      }
-
-      if (buttons.length === 0) return "";
-
-      if (buttons.length === 1) {
-        return `<div class="pt-3 border-t border-snow-300 w-full">${buttons[0].html}</div>`;
-      }
-
-      if (buttons.length === 2) {
-        return `<div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">${buttons[0].html}${buttons[1].html}</div>`;
-      }
-
-      if (buttons.length === 3) {
-        const waBtn = buttons.find(item => item.type === "whatsapp");
-        const otherBtns = buttons.filter(item => item.type !== "whatsapp");
-        if (waBtn) {
-          return `
-            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
-              ${otherBtns[0].html}
-              ${otherBtns[1].html}
-              <div class="col-span-2">${waBtn.html}</div>
-            </div>
-          `;
+      if (cleanWebUrl && (cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://"))) {
+        isExternal = true;
+        resolvedWebUrl = cleanWebUrl;
+      } else if (cleanWebUrl && cleanWebUrl.includes(".") && !cleanWebUrl.endsWith(".html")) {
+        isExternal = true;
+        resolvedWebUrl = "https://" + cleanWebUrl;
+      } else {
+        let pageSlug = cleanWebUrl ? cleanWebUrl.replace(/\.html$/, '') : "negocio";
+        if (window.location.protocol === "file:") {
+          resolvedWebUrl = (isSubfolder ? "../" : "") + pageSlug + ".html";
         } else {
-          return `
-            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
-              ${buttons[0].html}
-              ${buttons[1].html}
-              <div class="col-span-2">${buttons[2].html}</div>
-            </div>
-          `;
+          resolvedWebUrl = "/epicentro/natura/" + pageSlug;
         }
       }
 
-      // 4 botones: Cuadrícula simétrica 2x2
-      const callBtn = buttons.find(item => item.type === "call");
-      const locBtn = buttons.find(item => item.type === "location");
-      const webBtn = buttons.find(item => item.type === "website");
-      const waBtn = buttons.find(item => item.type === "whatsapp");
+      // 2. Resolver enlace de WhatsApp
+      const cleanWa = b.whatsapp ? String(b.whatsapp).replace(/\D/g, '') : "3336762545";
+      let waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría solicitar información.`;
+      if (b.cta_type === "service_whatsapp") {
+        waText = `Hola ${b.name}, necesito una cotización / servicio en mi coto en Mariano Otero.`;
+      } else if (b.cta_type === "whatsapp_order" || b.category_slug === "productos-artesanales" || b.category_slug === "comida-delivery") {
+        waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría hacer un pedido / solicitar información.`;
+      }
+      const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
       return `
-        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300">
-          ${callBtn ? callBtn.html : buttons[0].html}
-          ${locBtn ? locBtn.html : buttons[1].html}
-          ${webBtn ? webBtn.html : buttons[2].html}
-          ${waBtn ? waBtn.html : buttons[3].html}
+        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
+          <a href="${resolvedWebUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web">
+            <span>Ver más</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:translate-x-0.5 transition-transform"></i>
+          </a>
+          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>WhatsApp</span>
+          </a>
         </div>
       `;
     }

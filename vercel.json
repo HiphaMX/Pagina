@@ -777,14 +777,6 @@
       "headers": { "Location": "https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" }
     },
     {
-      "src": "/epicentro/natura/botica-silvestre",
-      "dest": "/projects/EpicentroNatura/botica-silvestre.html"
-    },
-    {
-      "src": "/epicentro/natura/negocio",
-      "dest": "/projects/EpicentroNatura/negocio.html"
-    },
-    {
       "src": "/epicentro/natura/(.*)",
       "dest": "/projects/EpicentroNatura/$1"
     },

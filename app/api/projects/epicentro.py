@@ -639,12 +639,12 @@ def purge_test_registrations(
 def seed_botica_silvestre_if_missing(db: Session):
     """Garantiza que Botica Silvestre exista como comercio verificado y activo con su micrositio oficial."""
     try:
-        botica = db.query(EpicentroRegistration).filter(
+        all_boticas = db.query(EpicentroRegistration).filter(
             (EpicentroRegistration.business_name.ilike("%Botica Silvestre%")) |
             (EpicentroRegistration.id == "reg-botica-silvestre")
-        ).first()
+        ).order_by(EpicentroRegistration.created_at.asc()).all()
 
-        if not botica:
+        if not all_boticas:
             botica = EpicentroRegistration(
                 id="reg-botica-silvestre",
                 business_name="Botica Silvestre",
@@ -660,7 +660,7 @@ def seed_botica_silvestre_if_missing(db: Session):
                 phone="3336762545",
                 whatsapp="3336762545",
                 delivery_available=True,
-                website="botica-silvestre.html",
+                website="botica-silvestre",
                 description="Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
                 email_verified=True,
                 whatsapp_verified=True,
@@ -674,9 +674,18 @@ def seed_botica_silvestre_if_missing(db: Session):
             db.commit()
             db.refresh(botica)
         else:
+            botica = all_boticas[0]
+            # Si existen registros duplicados en DB, purgarlos
+            if len(all_boticas) > 1:
+                for dup in all_boticas[1:]:
+                    db.delete(dup)
+
             updated = False
-            if botica.website != "botica-silvestre.html":
-                botica.website = "botica-silvestre.html"
+            if botica.website != "botica-silvestre":
+                botica.website = "botica-silvestre"
+                updated = True
+            if not botica.description:
+                botica.description = "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos."
                 updated = True
             if botica.status != "active":
                 botica.status = "active"
@@ -684,7 +693,7 @@ def seed_botica_silvestre_if_missing(db: Session):
             if not botica.is_verified_badge:
                 botica.is_verified_badge = True
                 updated = True
-            if updated:
+            if updated or len(all_boticas) > 1:
                 db.commit()
     except Exception as e:
         logger.warning(f"Error seeding Botica Silvestre: {e}")
