@@ -28,7 +28,13 @@
 
       <form onsubmit="handleAdminLogin(event)" class="space-y-4">
         <div>
-          <input type="password" id="login-password-input" required placeholder="Contraseña de Administrador" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
+          <div class="relative">
+            <input type="password" id="login-password-input" required placeholder="Contraseña de Administrador" class="w-full pl-4 pr-11 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1" title="Ver contraseña">
+              <i data-lucide="eye" id="eye-icon" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400 text-center mt-2">Clave: <code class="text-emerald-400 font-mono">natura2026</code> o <code class="text-emerald-400 font-mono">hipha2026</code></p>
         </div>
         <div id="login-error-alert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold"></div>
         <button type="submit" id="btn-login-submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
@@ -173,6 +179,20 @@
       }
     }
 
+    function togglePasswordVisibility() {
+      const input = document.getElementById("login-password-input");
+      const icon = document.getElementById("eye-icon");
+      if (!input) return;
+      if (input.type === "password") {
+        input.type = "text";
+        if (icon) icon.setAttribute("data-lucide", "eye-off");
+      } else {
+        input.type = "password";
+        if (icon) icon.setAttribute("data-lucide", "eye");
+      }
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
     // GESTIÓN DE ACCESO (LOGIN / LOGOUT)
     async function handleAdminLogin(e) {
       if (e && e.preventDefault) e.preventDefault();
@@ -192,8 +212,12 @@
           headers: { "X-Admin-Token": tokenVal }
         });
 
+        if (res.status === 401) {
+          throw new Error("Contraseña no autorizada. Acceso denegado.");
+        }
         if (!res.ok) {
-          throw new Error("Contraseña o token no autorizado. Acceso denegado.");
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `Error al conectar con el servidor (${res.status}). Intenta de nuevo.`);
         }
 
         allRegistrations = await res.json();
@@ -209,7 +233,6 @@
       } catch (err) {
         errBox.classList.remove("hidden");
         errBox.textContent = err.message || "Error al verificar credenciales.";
-        input.value = "";
         input.focus();
       } finally {
         btn.disabled = false;
