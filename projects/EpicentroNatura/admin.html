@@ -12,133 +12,231 @@
     .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col antialiased">
+<body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased">
 
-  <!-- Header -->
-  <header class="bg-slate-950/80 border-b border-slate-800 backdrop-blur-md sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-lg">
-          EN
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-lg font-black text-white">Epicentro Natura</h1>
-            <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              Admin & Moderación
-            </span>
-          </div>
-          <p class="text-xs text-slate-400">Bandeja de verificación de altas comerciales y comunitarias</p>
-        </div>
+  <!-- PANTALLA DE ACCESO RESTRINGIDO (LOGIN GATE) -->
+  <div id="auth-lock-screen" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6">
+      <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto">
+        <i data-lucide="shield-lock" class="w-8 h-8"></i>
+      </div>
+      <div>
+        <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">Acceso Restringido</span>
+        <h2 class="text-2xl font-black text-white mt-1">Moderación Epicentro Natura</h2>
+        <p class="text-xs text-slate-400 mt-2">Bandeja administrativa protegida. Ingresa tu contraseña o token de moderador para continuar.</p>
       </div>
 
-      <div class="flex items-center gap-3 w-full sm:w-auto">
-        <div class="relative flex-1 sm:w-64">
-          <input type="password" id="admin-token-input" placeholder="Token Admin Secret" class="w-full px-3 py-1.5 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-emerald-500 focus:outline-hidden">
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <input type="password" id="login-password-input" required placeholder="Contraseña de Administrador" class="w-full px-4 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
         </div>
-        <button onclick="saveTokenAndReload()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shrink-0 transition-colors">
-          Cargar
+        <div id="login-error-alert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold"></div>
+        <button type="submit" id="btn-login-submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+          <span>Ingresar al Panel</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
-        <a href="/epicentro/natura/" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs shrink-0 flex items-center gap-1.5 transition-colors">
-          <span>Ver Directorio</span>
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+      </form>
+
+      <div class="pt-4 border-t border-slate-800">
+        <a href="/epicentro/natura/" class="text-xs text-slate-400 hover:text-emerald-400 flex items-center justify-center gap-1.5 transition-colors">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span>Volver al Directorio Público</span>
         </a>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+  <!-- PANEL ADMINISTRATIVO PRINCIPAL (PROTEGIDO) -->
+  <div id="admin-dashboard-view" class="hidden flex-1 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-slate-950/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-lg">
+            EN
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg font-black text-white">Epicentro Natura</h1>
+              <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Moderador Activo
+              </span>
+            </div>
+            <p class="text-xs text-slate-400">Bandeja de verificación de altas comerciales y comunitarias</p>
+          </div>
+        </div>
 
-    <!-- KPI Cards -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Solicitudes</span>
-        <span id="stat-total" class="text-2xl font-black text-white font-mono mt-1 block">0</span>
+        <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+          <button onclick="handlePurgeTests()" title="Elimina registros de prueba de la base de datos" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span class="hidden md:inline">Limpiar Pruebas</span>
+          </button>
+          <a href="/epicentro/natura/" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs shrink-0 flex items-center gap-1.5 transition-colors">
+            <span>Ver Directorio</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <button onclick="handleAdminLogout()" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
       </div>
-      <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block">Pendientes Aprobación</span>
-        <span id="stat-pending" class="text-2xl font-black text-amber-400 font-mono mt-1 block">0</span>
-      </div>
-      <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Pagados Mercado Pago</span>
-        <span id="stat-paid" class="text-2xl font-black text-emerald-400 font-mono mt-1 block">0</span>
-      </div>
-      <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">Activos en Directorio</span>
-        <span id="stat-active" class="text-2xl font-black text-blue-400 font-mono mt-1 block">0</span>
-      </div>
-    </div>
+    </header>
 
-    <!-- Filters Bar -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-950/40 p-3 rounded-2xl border border-slate-800">
-      <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
-        <button onclick="setFilter('all')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white" data-filter="all">Todas</button>
-        <button onclick="setFilter('pending_approval')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="pending_approval">Listas para Aprobar</button>
-        <button onclick="setFilter('pending_verification')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="pending_verification">En Verificación</button>
-        <button onclick="setFilter('active')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="active">Activas</button>
-        <button onclick="setFilter('rejected')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="rejected">Rechazadas</button>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Solicitudes</span>
+          <span id="stat-total" class="text-2xl font-black text-white font-mono mt-1 block">0</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block">Pendientes Aprobación</span>
+          <span id="stat-pending" class="text-2xl font-black text-amber-400 font-mono mt-1 block">0</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Pagados / Exentos</span>
+          <span id="stat-paid" class="text-2xl font-black text-emerald-400 font-mono mt-1 block">0</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">Activos en Directorio</span>
+          <span id="stat-active" class="text-2xl font-black text-blue-400 font-mono mt-1 block">0</span>
+        </div>
       </div>
 
-      <div class="w-full sm:w-auto flex items-center gap-2">
-        <button onclick="loadRegistrations()" class="w-full sm:w-auto px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          <span>Actualizar</span>
-        </button>
-      </div>
-    </div>
+      <!-- Filters Bar -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+          <button onclick="setFilter('all')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white" data-filter="all">Todas</button>
+          <button onclick="setFilter('active')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="active">Activas</button>
+          <button onclick="setFilter('pending_verification')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="pending_verification">En Verificación</button>
+          <button onclick="setFilter('rejected')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="rejected">Rechazadas</button>
+        </div>
 
-    <!-- Table / List -->
-    <div class="bg-slate-950/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-900/90 text-slate-400 uppercase tracking-wider text-[10px] border-b border-slate-800">
-            <tr>
-              <th class="py-3 px-4">Comercio / Giro</th>
-              <th class="py-3 px-4">Responsable / Coto</th>
-              <th class="py-3 px-4">Validación Correo</th>
-              <th class="py-3 px-4">Validación WhatsApp</th>
-              <th class="py-3 px-4">Pago Mercado Pago</th>
-              <th class="py-3 px-4">Estatus</th>
-              <th class="py-3 px-4 text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="registrations-tbody" class="divide-y divide-slate-800/80 text-slate-200">
-            <tr>
-              <td colspan="7" class="py-12 text-center text-slate-500">
-                <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500"></i>
-                Cargando solicitudes...
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="w-full sm:w-auto flex items-center gap-2">
+          <button onclick="loadRegistrations()" class="w-full sm:w-auto px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Actualizar</span>
+          </button>
+        </div>
       </div>
-    </div>
 
-  </main>
+      <!-- Table / List -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-950/90 text-slate-400 uppercase tracking-wider text-[10px] border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Comercio / Giro</th>
+                <th class="py-3 px-4">Responsable / Coto</th>
+                <th class="py-3 px-4">Correo</th>
+                <th class="py-3 px-4">WhatsApp</th>
+                <th class="py-3 px-4">Pago / Cupón</th>
+                <th class="py-3 px-4">Estatus</th>
+                <th class="py-3 px-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="registrations-tbody" class="divide-y divide-slate-800/60 font-medium">
+              <tr>
+                <td colspan="7" class="py-12 text-center text-slate-500">
+                  <div class="inline-flex items-center gap-2">
+                    <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i>
+                    <span>Cargando solicitudes de la base de datos...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
 
   <script>
-    let currentFilter = "all";
     let allRegistrations = [];
+    let currentFilter = "all";
 
     function getToken() {
-      const saved = localStorage.getItem("epicentro_admin_token");
-      if (saved) return saved;
-      return "natura_admin_secret_2026";
+      return sessionStorage.getItem("epicentro_admin_token") || localStorage.getItem("epicentro_admin_token") || "";
     }
 
-    function saveTokenAndReload() {
-      const val = document.getElementById("admin-token-input").value.trim();
-      if (val) {
-        localStorage.setItem("epicentro_admin_token", val);
+    function setToken(tok) {
+      if (tok) {
+        sessionStorage.setItem("epicentro_admin_token", tok.trim());
+      } else {
+        sessionStorage.removeItem("epicentro_admin_token");
+        localStorage.removeItem("epicentro_admin_token");
       }
-      loadRegistrations();
+    }
+
+    // GESTIÓN DE ACCESO (LOGIN / LOGOUT)
+    async function handleAdminLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const input = document.getElementById("login-password-input");
+      const btn = document.getElementById("btn-login-submit");
+      const errBox = document.getElementById("login-error-alert");
+      const tokenVal = input ? input.value.trim() : "";
+
+      if (!tokenVal) return;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Verificando...</span>`;
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/epicentro/admin/registrations", {
+          headers: { "X-Admin-Token": tokenVal }
+        });
+
+        if (!res.ok) {
+          throw new Error("Contraseña o token no autorizado. Acceso denegado.");
+        }
+
+        allRegistrations = await res.json();
+        setToken(tokenVal);
+
+        // Desbloquear pantalla
+        document.getElementById("auth-lock-screen").classList.add("hidden");
+        document.getElementById("admin-dashboard-view").classList.remove("hidden");
+
+        updateStats();
+        renderTable();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      } catch (err) {
+        errBox.classList.remove("hidden");
+        errBox.textContent = err.message || "Error al verificar credenciales.";
+        input.value = "";
+        input.focus();
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Ingresar al Panel</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
+    }
+
+    function handleAdminLogout() {
+      setToken("");
+      allRegistrations = [];
+      document.getElementById("admin-dashboard-view").classList.add("hidden");
+      document.getElementById("auth-lock-screen").classList.remove("hidden");
+      const errBox = document.getElementById("login-error-alert");
+      if (errBox) errBox.classList.add("hidden");
+      const input = document.getElementById("login-password-input");
+      if (input) {
+        input.value = "";
+        input.focus();
+      }
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function setFilter(f) {
       currentFilter = f;
       document.querySelectorAll(".filter-tab").forEach(tab => {
-        if (tab.getAttribute("data-filter") === f) {
+        if (tab.dataset.filter === f) {
           tab.className = "filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white";
         } else {
           tab.className = "filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300";
@@ -147,85 +245,49 @@
       renderTable();
     }
 
+    // CARGA DE REGISTROS REALES DESDE EL BACKEND
     async function loadRegistrations() {
       const token = getToken();
-      document.getElementById("admin-token-input").value = token;
-
-      const tbody = document.getElementById("registrations-tbody");
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" class="py-12 text-center text-slate-500">
-            <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500"></i>
-            Conectando con base de datos...
-          </td>
-        </tr>
-      `;
-      lucide.createIcons();
+      if (!token) {
+        document.getElementById("auth-lock-screen").classList.remove("hidden");
+        document.getElementById("admin-dashboard-view").classList.add("hidden");
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+        return;
+      }
 
       try {
         const res = await fetch("/api/epicentro/admin/registrations", {
-          headers: {
-            "X-Admin-Token": token
-          }
+          headers: { "X-Admin-Token": token }
         });
 
         if (!res.ok) {
-          throw new Error("Token no autorizado o error del servidor.");
+          // Token inválido o expirado
+          setToken("");
+          document.getElementById("auth-lock-screen").classList.remove("hidden");
+          document.getElementById("admin-dashboard-view").classList.add("hidden");
+          const errBox = document.getElementById("login-error-alert");
+          if (errBox) {
+            errBox.classList.remove("hidden");
+            errBox.textContent = "Tu sesión ha expirado. Por favor ingresa la contraseña nuevamente.";
+          }
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+          return;
         }
 
         allRegistrations = await res.json();
+        document.getElementById("auth-lock-screen").classList.add("hidden");
+        document.getElementById("admin-dashboard-view").classList.remove("hidden");
         updateStats();
         renderTable();
       } catch (err) {
-        console.warn("Error cargando solicitudes:", err);
-        // Si estamos probando en local sin backend corriendo, mostrar mockup visual funcional
-        allRegistrations = [
-          {
-            id: "reg-demo-1",
-            business_name: "Pizzería Di Vico",
-            category_slug: "comida-delivery",
-            category_label: "Comida y Delivery",
-            subcategory_label: "Pizzas y Pastas",
-            owner_name: "Marco Di Vico",
-            coto_address: "Plaza Natura Local 3",
-            email: "divico@pizzeria.mx",
-            email_verified: true,
-            whatsapp: "3312345678",
-            whatsapp_code: "NATURA-4821",
-            whatsapp_verified: true,
-            payment_status: "approved",
-            payment_amount: 99.0,
-            status: "pending_approval",
-            created_at: new Date().toISOString()
-          },
-          {
-            id: "reg-demo-2",
-            business_name: "Plomería & Gas Los Robles",
-            category_slug: "servicios-hogar",
-            category_label: "Servicios Hogar",
-            subcategory_label: "Fontanería y Gas",
-            owner_name: "Jorge Ramos",
-            coto_address: "Coto Roble Casa 18",
-            email: "jorge.plomeria@gmail.com",
-            email_verified: true,
-            whatsapp: "3398765432",
-            whatsapp_code: "NATURA-9920",
-            whatsapp_verified: true,
-            payment_status: "pending",
-            payment_amount: 99.0,
-            status: "pending_verification",
-            created_at: new Date(Date.now() - 3600000).toISOString()
-          }
-        ];
-        updateStats();
-        renderTable();
+        console.error("Error al cargar registros:", err);
       }
     }
 
     function updateStats() {
       document.getElementById("stat-total").textContent = allRegistrations.length;
-      document.getElementById("stat-pending").textContent = allRegistrations.filter(r => r.status === "pending_approval").length;
-      document.getElementById("stat-paid").textContent = allRegistrations.filter(r => r.payment_status === "approved").length;
+      document.getElementById("stat-pending").textContent = allRegistrations.filter(r => r.status === "pending_verification" || r.status === "pending_approval").length;
+      document.getElementById("stat-paid").textContent = allRegistrations.filter(r => r.payment_status === "approved" || r.payment_status === "waived").length;
       document.getElementById("stat-active").textContent = allRegistrations.filter(r => r.status === "active").length;
     }
 
@@ -240,7 +302,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="7" class="py-12 text-center text-slate-500">
-              No hay solicitudes con el filtro '${currentFilter}'.
+              No hay solicitudes registradas con el filtro '${currentFilter}'.
             </td>
           </tr>
         `;
@@ -248,22 +310,20 @@
       }
 
       tbody.innerHTML = list.map(r => {
-        const isEmailOk = r.email_verified;
         const isWaOk = r.whatsapp_verified;
-        const isPaid = r.payment_status === "approved";
+        const isPaid = r.payment_status === "approved" || r.payment_status === "waived";
 
         let statusBadge = "";
         if (r.status === "active") {
           statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ACTIVO</span>`;
         } else if (r.status === "rejected") {
           statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-500/20 text-rose-400 border border-rose-500/30">RECHAZADO</span>`;
-        } else if (r.status === "pending_approval") {
-          statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30">LISTO APROBACIÓN</span>`;
         } else {
-          statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-700 text-slate-300">EN PROCESO</span>`;
+          statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30">EN PROCESO</span>`;
         }
 
-        const waLink = `https://wa.me/52${r.whatsapp.replace(/\D/g, "")}?text=Hola%20${encodeURIComponent(r.owner_name)},%20te%20contacto%20de%20Epicentro%20Natura%20respecto%20a%20tu%20comercio%20${encodeURIComponent(r.business_name)}.`;
+        const waNum = (r.whatsapp || "").replace(/\D/g, "");
+        const waLink = `https://wa.me/52${waNum}?text=Hola%20${encodeURIComponent(r.owner_name)},%20te%20contacto%20de%20Epicentro%20Natura%20respecto%20a%20tu%20comercio%20${encodeURIComponent(r.business_name)}.`;
 
         return `
           <tr class="hover:bg-slate-900/50 transition-colors">
@@ -279,9 +339,7 @@
               <div class="text-[11px] text-slate-400 font-mono">${r.coto_address}</div>
             </td>
             <td class="py-3.5 px-4">
-              ${isEmailOk 
-                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check" class="w-3.5 h-3.5"></i> Validado</span>`
-                : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Pendiente</span>`}
+              <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check" class="w-3.5 h-3.5"></i> Registrado</span>
               <div class="text-[10px] text-slate-500">${r.email}</div>
             </td>
             <td class="py-3.5 px-4">
@@ -291,7 +349,9 @@
               <div class="text-[10px] text-slate-500 font-mono">${r.whatsapp} (${r.whatsapp_code || ''})</div>
             </td>
             <td class="py-3.5 px-4">
-              ${isPaid
+              ${r.payment_status === "waived"
+                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-purple-400"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Cupón Aplicado ($0)</span>`
+                : isPaid
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> $${r.payment_amount || 99} MXN Pagado</span>`
                 : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400"><i data-lucide="circle-slash" class="w-3.5 h-3.5"></i> Pendiente</span>`}
             </td>
@@ -304,16 +364,19 @@
                   <i data-lucide="message-circle" class="w-4 h-4"></i>
                 </a>
                 ${r.status !== "active" ? `
-                  <button onclick="approveRegistration('${r.id}', '${r.business_name}')" title="Aprobar y Publicar" class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 font-bold text-xs flex items-center gap-1 transition-colors">
+                  <button onclick="approveRegistration('${r.id}', '${r.business_name}')" title="Aprobar y Publicar en Directorio" class="p-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 font-bold text-xs flex items-center gap-1 transition-colors">
                     <i data-lucide="check" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Aprobar</span>
                   </button>
                 ` : ''}
                 ${r.status !== "rejected" ? `
-                  <button onclick="rejectRegistration('${r.id}', '${r.business_name}')" title="Rechazar" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors">
+                  <button onclick="rejectRegistration('${r.id}', '${r.business_name}')" title="Rechazar" class="p-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 transition-colors">
                     <i data-lucide="x" class="w-4 h-4"></i>
                   </button>
                 ` : ''}
+                <button onclick="handleDeleteRegistration('${r.id}', '${r.business_name}')" title="Eliminar permanentemente de la base de datos" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition-colors">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
               </div>
             </td>
           </tr>
@@ -324,7 +387,7 @@
     }
 
     async function approveRegistration(id, name) {
-      if (!confirm(`¿Confirmas la aprobación y publicación de '${name}' en el directorio de Epicentro Natura?`)) return;
+      if (!confirm(`¿Confirmas la aprobación y activación oficial de '${name}' en el directorio de Epicentro Natura?`)) return;
 
       const token = getToken();
       try {
@@ -336,20 +399,16 @@
           }
         });
         if (!res.ok) throw new Error("Error en la petición de aprobación");
-        alert(`¡Comercio '${name}' aprobado y publicado con éxito!`);
+        alert(`¡Comercio '${name}' aprobado y activado con éxito!`);
       } catch (err) {
-        alert(`Comercio '${name}' marcado como aprobado (modo simulación).`);
+        alert(err.message || "Error al aprobar comercio.");
       }
 
-      // Actualizar estado localmente
-      const item = allRegistrations.find(r => r.id === id);
-      if (item) item.status = "active";
-      updateStats();
-      renderTable();
+      loadRegistrations();
     }
 
     async function rejectRegistration(id, name) {
-      if (!confirm(`¿Deseas rechazar la solicitud de '${name}'?`)) return;
+      if (!confirm(`¿Deseas suspender o rechazar la solicitud de '${name}'?`)) return;
 
       const token = getToken();
       try {
@@ -362,17 +421,60 @@
         });
         if (!res.ok) throw new Error("Error al rechazar");
       } catch (err) {
-        // simulation
+        alert(err.message || "Error al rechazar solicitud.");
       }
 
-      const item = allRegistrations.find(r => r.id === id);
-      if (item) item.status = "rejected";
-      updateStats();
-      renderTable();
+      loadRegistrations();
+    }
+
+    async function handleDeleteRegistration(id, name) {
+      if (!confirm(`⚠️ ATENCIÓN:
+
+¿Estás seguro de eliminar PERMANENTEMENTE el registro de '${name}' de la base de datos?
+Esta acción no se puede deshacer.`)) return;
+
+      const token = getToken();
+      try {
+        const res = await fetch(`/api/epicentro/admin/registrations/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Token": token
+          }
+        });
+        if (!res.ok) throw new Error("Error al eliminar el registro.");
+        alert(`Registro '${name}' eliminado permanentemente de la base de datos.`);
+      } catch (err) {
+        alert(err.message || "Error al eliminar.");
+      }
+
+      loadRegistrations();
+    }
+
+    async function handlePurgeTests() {
+      if (!confirm("⚠️ ¿Deseas eliminar automáticamente todos los registros de prueba (ej. Pizzería Di Vico, registros con 'test', 'prueba', etc.) de la base de datos?")) return;
+
+      const token = getToken();
+      try {
+        const res = await fetch("/api/epicentro/admin/registrations/purge-tests", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Token": token
+          }
+        });
+        const data = await res.json();
+        alert(data.message || "Registros de prueba eliminados.");
+      } catch (err) {
+        alert(err.message || "Error al purgar registros de prueba.");
+      }
+
+      loadRegistrations();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       loadRegistrations();
+      lucide.createIcons();
     });
   </script>
 </body>
