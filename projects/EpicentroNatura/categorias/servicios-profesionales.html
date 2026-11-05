@@ -70,6 +70,23 @@
   </script>
 
   <style>
+        .subcat-pill.is-active {
+      background-color: #050810;
+      color: #ffffff;
+      border-color: #050810;
+      box-shadow: 0 4px 12px -2px rgba(5, 8, 16, 0.18);
+    }
+    .subcat-pill:not(.is-active) {
+      background-color: #ffffff;
+      color: #334155;
+      border-color: #e2e8f0;
+    }
+    .subcat-pill:not(.is-active):hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+
     .type-pill.is-active, .modality-pill.is-active {
       background-color: #050810 !important;
       color: #ffffff !important;
@@ -244,28 +261,16 @@
       </div>
     </div>
 
-<!-- BARRA DE FILTROS: POR TIPO DE NEGOCIO -->
-    <div class="p-4 rounded-2xl bg-white border border-snow-400 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-      <!-- Pestañas de Tipo de Negocio -->
-      <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
-        <button onclick="setTypeFilter('all')" id="type-btn-all" class="type-pill is-active px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
-          Ver todo
-        </button>
-        <button onclick="setTypeFilter('local-establecido')" id="type-btn-local-establecido" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
-          Punto de venta fijo
-        </button>
-        <button onclick="setTypeFilter('sin-punto-venta')" id="type-btn-sin-punto-venta" class="type-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
-          Sin punto de venta
-        </button>
+<!-- BARRA DE FILTROS INTELIGENTES: SUBCATEGORÍAS Y MODALIDADES CONTEXTUALES -->
+    <div class="p-4 sm:p-5 rounded-2xl bg-white border border-snow-400 shadow-xs space-y-3">
+      <!-- Fila 1: Píldoras de Subcategorías (Chips) -->
+      <div id="subcategories-filter-bar" class="w-full">
+        <!-- Renderizado dinámico vía JavaScript según la categoría activa -->
+      </div>
 
-        <div class="h-5 w-px bg-snow-400 shrink-0 mx-1"></div>
-
-        <button onclick="toggleDeliveryFilter()" id="filter-btn-delivery" class="modality-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
-          Servicio a domicilio
-        </button>
-        <button onclick="togglePickupFilter()" id="filter-btn-pickup" class="modality-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0">
-          Recoger en punto de venta
-        </button>
+      <!-- Fila 2: Modalidad Operativa Contextual -->
+      <div id="modality-filter-bar" class="w-full pt-2.5 border-t border-snow-300">
+        <!-- Renderizado dinámico vía JavaScript según la categoría activa -->
       </div>
     </div>
 
@@ -315,7 +320,7 @@
           </a>
 
           <!-- 3. Escuelas -->
-          <a href="escuelas.html" class="cat-card p-4 rounded-2xl bg-white border border-snow-400 hover:border-blue-500 hover:shadow-rappi-hover transition-all text-center flex flex-col items-center justify-between group min-h-[128px]">
+          <a href="educacion.html" class="cat-card p-4 rounded-2xl bg-white border border-snow-400 hover:border-blue-500 hover:shadow-rappi-hover transition-all text-center flex flex-col items-center justify-between group min-h-[128px]">
             <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-blue-50 via-blue-50/70 to-blue-100/60 border border-blue-200/70 text-blue-600 shadow-blue-500/10 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:shadow-md transition-all shadow-xs">
               <svg viewBox="0 0 48 48" fill="none" class="w-7 h-7 transition-transform group-hover:scale-110 duration-200" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M24 13l16 8-16 8-16-8z" stroke="currentColor" stroke-width="2.8" />
@@ -324,7 +329,7 @@
                 <circle cx="38" cy="33" r="1.8" fill="currentColor" />
               </svg>
             </div>
-            <span class="text-xs font-bold text-slate-800 group-hover:text-blue-600 leading-tight">Escuelas</span>
+            <span class="text-xs font-bold text-slate-800 group-hover:text-blue-600 leading-tight">Educación</span>
             <span class="text-[10px] text-slate-400 font-semibold mt-1">Ver directorio →</span>
           </a>
 
@@ -650,6 +655,22 @@
     };
 
     const CATEGORY_THEMES = {
+      "educacion": {
+        btnPrimary: "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20",
+        heroCard: "p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden shadow-lg",
+        glow1: "absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none",
+        glow2: "absolute left-1/2 -top-10 w-48 h-48 bg-blue-400/20 rounded-full blur-xl pointer-events-none",
+        iconBox: "w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/15 border border-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner shrink-0",
+        badge: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-md border border-white/25 w-fit"
+      },
+      "escuelas": {
+        btnPrimary: "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20",
+        heroCard: "p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white relative overflow-hidden shadow-lg",
+        glow1: "absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none",
+        glow2: "absolute left-1/2 -top-10 w-48 h-48 bg-blue-400/20 rounded-full blur-xl pointer-events-none",
+        iconBox: "w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/15 border border-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner shrink-0",
+        badge: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-md border border-white/25 w-fit"
+      },
       "all": {
         heroCard: "relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 p-6 sm:p-10 text-white shadow-xl flex items-center justify-between gap-6",
         glow1: "absolute -right-16 -top-16 w-64 h-64 rounded-full bg-blue-500/20 blur-3xl pointer-events-none",
@@ -740,7 +761,7 @@
       }
     };
 
-    const ALL_CATEGORIES = [
+        const ALL_CATEGORIES = [
       {
         slug: "atencion-medica",
         name: "Atención médica",
@@ -760,12 +781,12 @@
         seo: "Encuentra la mejor oferta gastronómica local en Prolongación Mariano Otero. Pide directo por WhatsApp a taquerías, pizzerías y cocinas locales sin comisiones excesivas."
       },
       {
-        slug: "escuelas",
-        name: "Escuelas",
+        slug: "educacion",
+        name: "Educación",
         icon: "graduation-cap",
         bg: "bg-blue-100 text-blue-700",
-        h1: "Escuelas y Clases",
-        desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
+        h1: "Educación",
+        desc: "Colegios, clases particulares, academias y formación vecinal dentro del epicentro.",
         seo: "Encuentra colegios, educación bilingüe, regularización académica, idiomas y clases formativas cerca de tu hogar sobre Prolongación Mariano Otero."
       },
       {
@@ -811,7 +832,7 @@
         bg: "bg-purple-100 text-purple-600",
         h1: "Productos artesanales",
         desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
-        seo: "Consume local con productos hechos a mano en las faldas del Bosque La Primavera. Cosmética limpia, jabones orgánicos y conservas artesanales."
+        seo: "Consume local con productos hechos a mano en las faldas del Bosque La Primavera. Herbolaria, cosmética limpia, jabones orgánicos y conservas artesanales."
       },
       {
         slug: "servicios-hogar",
@@ -841,67 +862,82 @@
         name: "El Güero Taquero",
         category_slug: "comida-delivery",
         category_label: "Comida y Delivery",
+        subcategory_slug: "tacos-carnes",
+        subcategory_label: "Tacos y Carnes",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
-        address: "Av. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)",
+        space_label: "Local Comercial",
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: "Recoger en local",
+        address: "Prol. Mariano Otero #4100 (Frente a Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
-        lat: 20.6276,
-        lng: -103.4678,
-        phone: "33 1555 0202",
-        whatsapp: "+523315550202",
-        location_url: "https://maps.google.com/?q=Av.+Mariano+Otero+4290+Zapopan",
+        lat: 20.6270,
+        lng: -103.4690,
+        phone: "33 1555 0101",
+        whatsapp: "+523315550101",
+        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4100+Zapopan",
         website_url: null,
-        hours: "Abierto hoy · 18:00 a 01:30 hrs",
+        hours: "Martes a Domingo · 18:30 a 23:30 hrs",
         is_open_now: true,
-        has_km0_badge: false,
-        km0_reason: null,
+        has_km0_badge: true,
+        km0_reason: "Comercio sobre el corredor principal de cotos",
         cta_type: "whatsapp_order",
         has_delivery: true,
         has_pickup: true,
-        description: "Tacos y costras de suadero, pastor con piña asada al carbón, carnaza, arrachera, pancita y tripita dorada con salsas caseras."
+        description: "Tacos de suadero, pastor con piña asada al carbón, carnaza y cortes sobre pedido. Tortillas recién hechas al comal directo a caseta."
       },
       {
         id: "b2",
         name: "Pizzas a la Leña La Cantera",
         category_slug: "comida-delivery",
         category_label: "Comida y Delivery",
+        subcategory_slug: "pizzas-pastas",
+        subcategory_label: "Pizzas y Pastas",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
-        address: "Prol. Mariano Otero esq. Las Rosas (Ingreso Los Robles)",
-        community_slug: "los-robles",
-        community_name: "Los Robles",
-        lat: 20.6192,
-        lng: -103.4729,
-        phone: "33 1555 0105",
-        whatsapp: "+523315550105",
-        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+esq.+Las+Rosas+Zapopan",
-        website_url: "negocio.html",
-        hours: "Martes a Domingo · 18:30 a 23:30 hrs",
+        space_label: "Local Comercial",
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: "Pasa por tu orden",
+        address: "Av. Prolongación Mariano Otero #4250 (Plaza Cantera Local 4)",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        lat: 20.6268,
+        lng: -103.4682,
+        phone: "33 1555 0102",
+        whatsapp: "+523315550102",
+        location_url: "https://maps.google.com/?q=Plaza+Cantera+Prol.+Mariano+Otero+Zapopan",
+        website_url: null,
+        hours: "Miércoles a Domingo · 14:00 a 22:30 hrs",
         is_open_now: true,
         has_km0_badge: true,
-        km0_reason: "Entrega limpia en bici y moto eléctrica a cotos",
+        km0_reason: "Horno artesanal a menos de 500m de los cotos",
         cta_type: "whatsapp_order",
         has_delivery: true,
         has_pickup: true,
-        description: "Pizzas rústicas horneadas al momento en horno de piedra con masa madre fermentada 48 horas, salsa San Marzano y quesos finos."
+        description: "Masa madre madurada 48 hrs y horneada en leña de roble. Especialidades margarita, serrano y 4 quesos con entrega en bicicleta eléctrica."
       },
 
-      // 2. Mascotas (Absorbió Veterinarias)
+      // 2. Mascotas
       {
         id: "b4",
         name: "Pet Shop & Estética Canina Natura",
         category_slug: "mascotas",
         category_label: "Mascotas",
+        subcategory_slug: "estetica-spa",
+        subcategory_label: "Estética Canina y Spa",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
+        space_label: "Local en Plaza Natura",
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: "Pasa a tienda",
         address: "Plaza Natura Local 3 (Prol. Mariano Otero #4250)",
-        community_slug: "los-robles",
-        community_name: "Los Robles",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
         lat: 20.6272,
         lng: -103.4685,
-        phone: "33 1555 0206",
-        whatsapp: "+523315550206",
+        phone: "33 1555 0105",
+        whatsapp: "+523315550105",
         location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
         website_url: null,
         hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
@@ -918,8 +954,13 @@
         name: "Veterinaria Huellitas Natura",
         category_slug: "mascotas",
         category_label: "Mascotas",
+        subcategory_slug: "veterinaria-vacunas",
+        subcategory_label: "Veterinaria y Vacunas",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
+        space_label: "Clínica Veterinaria",
+        delivery_badge: "Visitas a domicilio",
+        pickup_badge: "Atención en clínica",
         address: "Prol. Mariano Otero #4280 (Plaza Olivo)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -932,8 +973,8 @@
         hours: "Abierto hoy · 09:00 a 20:00 hrs",
         is_open_now: true,
         has_km0_badge: true,
-        km0_reason: "Atención de urgencia a pie y bici a cotos cercanos",
-        cta_type: "call_and_whatsapp",
+        km0_reason: "Atención médica para mascotas a corta distancia",
+        cta_type: "whatsapp_order",
         has_delivery: true,
         has_pickup: true,
         description: "Consultas médicas veterinarias, cuadro completo de vacunas, desparasitaciones, cirugías menores y estética canina profesional."
@@ -945,52 +986,62 @@
         name: "Repostería Artesanal Dulce Bosque",
         category_slug: "postres-cafe",
         category_label: "Postres y café",
+        subcategory_slug: "pasteleria-reposteria",
+        subcategory_label: "Pastelería y Repostería",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
-        address: "Luna Bosque Residencial · Casa 42",
-        community_slug: "luna-bosque",
-        community_name: "Luna Bosque",
-        lat: 20.6320,
-        lng: -103.4655,
-        phone: null,
-        whatsapp: "+523315550101",
+        space_label: "Taller de Repostería",
+        delivery_badge: "Entrega a domicilio",
+        pickup_badge: null,
+        address: "Coto Ceiba Casa 42 (Entrega en caseta)",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        lat: 20.6272,
+        lng: -103.4685,
+        phone: "33 1555 0106",
+        whatsapp: "+523315550106",
         location_url: null,
         website_url: null,
-        hours: "Pedidos con 24h · Lunes a Domingo",
-        is_open_now: true,
+        hours: "Viernes a Domingo · 11:00 a 19:00 hrs",
+        is_open_now: false,
         has_km0_badge: true,
-        km0_reason: "Horneado casero y entrega a pie a tu puerta",
-        cta_type: "whatsapp_order",
+        km0_reason: "Elaborado por vecina de Coto Ceiba sin transporte motorizado",
+        cta_type: "service_whatsapp",
         has_delivery: true,
         has_pickup: false,
-        description: "Pasteles de zanahoria con betún de queso crema, pays de frutos rojos, galletas chispas de chocolate y brownies artesanales."
+        description: "Pasteles de zanahoria, brownies con nuez de castilla, tartas de frutos rojos y galletas de mantequilla recién salidas del horno."
       },
 
-      // 4. Productos artesanales
+      // 4. Productos artesanales (con Herbolaria y Cuidado Natural)
       {
         id: "b6",
         name: "Miel & Jabones Artesanales del Bosque",
         category_slug: "productos-artesanales",
         category_label: "Productos artesanales",
+        subcategory_slug: "herbolaria-cuidado-natural",
+        subcategory_label: "Herbolaria y Cuidado Natural",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
-        address: "Natura Bosque Residencial (Coto Ceiba casa 14)",
+        space_label: "Taller Artesanal",
+        delivery_badge: "Entrega en cotos",
+        pickup_badge: null,
+        address: "Natura Bosque Residencial (Coto Olivo)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
         lat: 20.6272,
         lng: -103.4685,
-        phone: null,
-        whatsapp: "+523315550102",
+        phone: "33 1555 0107",
+        whatsapp: "+523315550107",
         location_url: null,
-        website_url: "https://instagram.com/mieldelbosque_natura",
-        hours: "Atención Lunes a Sábado · 10:00 a 18:00 hrs",
+        website_url: null,
+        hours: "Lunes a Viernes · 10:00 a 18:00 hrs",
         is_open_now: true,
         has_km0_badge: true,
-        km0_reason: "Cosecha local y entrega peatonal entre cotos",
-        cta_type: "whatsapp_order",
+        km0_reason: "Apicultura y botánica local en las faldas de La Primavera",
+        cta_type: "service_whatsapp",
         has_delivery: true,
         has_pickup: false,
-        description: "Miel pura 100% de abeja de la Primavera, propóleo, jabones saponificados en frío con avena, romero y lavanda."
+        description: "Miel multifloral pura cosechada de forma sustentable, jabones saponificados en frío con extractos botánicos y herbolaria local."
       },
 
       // 5. Servicios hogar
@@ -999,75 +1050,90 @@
         name: "Planchaduría y Tintorería Doña Mary",
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
-        type_slug: "local-establecido",
-        type_label: "Punto de venta fijo",
-        address: "Prol. Mariano Otero #4300 (Plaza Ceiba)",
+        subcategory_slug: "tintoreria-planchaduria",
+        subcategory_label: "Tintorería y Planchaduría",
+        type_slug: "sin-punto-venta",
+        type_label: "Sin punto de venta",
+        space_label: "Servicio Residencial",
+        delivery_badge: "Recolección y entrega a domicilio",
+        pickup_badge: null,
+        address: "Natura Bosque Residencial (Coto Fresno)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
-        lat: 20.6270,
-        lng: -103.4688,
-        phone: "33 1555 0203",
-        whatsapp: "+523315550203",
-        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4300+Zapopan",
+        lat: 20.6272,
+        lng: -103.4685,
+        phone: "33 1555 0108",
+        whatsapp: "+523315550108",
+        location_url: null,
         website_url: null,
-        hours: "Lunes a Viernes · 08:30 a 19:30 hrs",
+        hours: "Lunes a Sábado · 08:00 a 18:00 hrs",
         is_open_now: true,
-        has_km0_badge: false,
-        km0_reason: null,
-        cta_type: "whatsapp_order",
+        has_km0_badge: true,
+        km0_reason: "Vecina de Coto Fresno con recolección a pie en caseta",
+        cta_type: "service_whatsapp",
         has_delivery: true,
-        has_pickup: true,
-        description: "Servicio de planchaduría profesional por docena, tintorería, almidonado de camisas y desmanchado de prendas delicadas."
+        has_pickup: false,
+        description: "Servicio de planchado por docena con entrega en gancho y cubrepolvo ecológico. Almidonado fino para camisas de vestir."
       },
       {
         id: "b8",
         name: "AquaWash Carwash Ecológico a Domicilio",
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
+        subcategory_slug: "carwash-ecologico",
+        subcategory_label: "Carwash Ecológico",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
-        address: "Atención directa en la cochera de tu coto",
-        community_slug: "bosque-primavera",
-        community_name: "Bosque de la primavera",
-        lat: 20.6315,
-        lng: -103.4810,
-        phone: "33 1555 0103",
-        whatsapp: "+523315550103",
+        space_label: "Servicio Móvil",
+        delivery_badge: "Atención a domicilio en coto",
+        pickup_badge: null,
+        address: "Atención a domicilio en todos los cotos de Mariano Otero",
+        community_slug: "los-robles",
+        community_name: "Los Robles",
+        lat: 20.6241,
+        lng: -103.4732,
+        phone: "33 1555 0109",
+        whatsapp: "+523315550109",
         location_url: null,
         website_url: null,
-        hours: "Lunes a Domingo con cita previa",
+        hours: "Lunes a Domingo · 08:00 a 17:00 hrs",
         is_open_now: true,
         has_km0_badge: true,
-        km0_reason: "Lavado en seco sin uso de mangueras ni emisiones",
+        km0_reason: "Lavado en seco sin consumo de agua de la red vecinal",
         cta_type: "service_whatsapp",
         has_delivery: true,
         has_pickup: false,
-        description: "Lavado de autos en seco en tu propia cochera con polímeros biodegradables que no rayan la pintura y ahorran 150 litros de agua."
+        description: "Lavado y encerado en seco con polímeros biodegradables directo en la cochera de tu casa. Ahorra 150 litros de agua por vehículo."
       },
       {
         id: "b10",
         name: "Electricista y Mantenimiento Residencial Morales",
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
+        subcategory_slug: "electricidad-iluminacion",
+        subcategory_label: "Electricidad e Iluminación",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
-        address: "Servicio a domicilio en todos los cotos de Mariano Otero",
-        community_slug: "el-fortin",
-        community_name: "El Fortín",
-        lat: 20.6385,
-        lng: -103.4612,
-        phone: "33 1555 0208",
-        whatsapp: "+523315550208",
+        space_label: "Técnico Especialista",
+        delivery_badge: "Servicio a domicilio en coto",
+        pickup_badge: null,
+        address: "Prolongación Mariano Otero (Atención en cotos)",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        lat: 20.6272,
+        lng: -103.4685,
+        phone: "33 1555 0206",
+        whatsapp: "+523315550206",
         location_url: null,
         website_url: null,
-        hours: "Lunes a Sábado · Urgencias 24h",
+        hours: "Lunes a Sábado · 08:00 a 19:00 hrs (Urgencias 24/7)",
         is_open_now: true,
-        has_km0_badge: false,
-        km0_reason: null,
-        cta_type: "service_whatsapp",
+        has_km0_badge: true,
+        km0_reason: "Técnico residente sobre Mariano Otero; respuesta en <20 min",
+        cta_type: "call_and_whatsapp",
         has_delivery: true,
         has_pickup: false,
-        description: "Instalaciones eléctricas 110V/220V, balanceo de cargas, bombas presurizadoras, ventiladores de techo y cortos circuitos."
+        description: "Instalación de ventiladores de techo, luminarias LED, reparación de centros de carga, bombas de agua y cortos circuitos."
       },
 
       // 6. Atención médica
@@ -1076,25 +1142,30 @@
         name: "Consultorio Médico y Odontológico Dra. Carmen",
         category_slug: "atencion-medica",
         category_label: "Atención médica",
+        subcategory_slug: "medicina-odontologia",
+        subcategory_label: "Medicina y Odontología",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
-        address: "Plaza Coto Encino Local 2 (Prol. Mariano Otero #4480)",
-        community_slug: "punta-de-otero",
-        community_name: "Punta de Otero",
-        lat: 20.6350,
-        lng: -103.4580,
-        phone: "33 1555 0204",
-        whatsapp: "+523315550204",
-        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4480+Zapopan",
+        space_label: "Consultorio Médico",
+        delivery_badge: null,
+        pickup_badge: "Previa Cita",
+        address: "Plaza Natura Local 6 (Prol. Mariano Otero #4250)",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        lat: 20.6272,
+        lng: -103.4685,
+        phone: "33 1555 0201",
+        whatsapp: "+523315550201",
+        location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
         website_url: null,
-        hours: "Lunes a Sábado · 09:00 a 20:00 hrs",
+        hours: "Lunes a Viernes · 09:00 a 19:00 hrs | Sáb 09:00 a 14:00",
         is_open_now: true,
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "call_and_whatsapp",
         has_delivery: false,
         has_pickup: true,
-        description: "Medicina general, control de diabetes e hipertensión, odontología preventiva, resinas, limpiezas con ultrasonido y blanqueamiento."
+        description: "Medicina general familiar, control de glucosa y presión arterial, limpiezas dentales con ultrasonido, resinas estéticas y valoraciones."
       },
 
       // 7. Fitness
@@ -1103,8 +1174,13 @@
         name: "VitalFit Studio Natura",
         category_slug: "fitness",
         category_label: "Fitness",
+        subcategory_slug: "gimnasios-studios",
+        subcategory_label: "Gimnasios y Studios",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
+        space_label: "Studio Fitness",
+        delivery_badge: null,
+        pickup_badge: "Clases en Studio",
         address: "Av. Prolongación Mariano Otero #4350 (Plaza Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -1114,23 +1190,28 @@
         whatsapp: "+523315550310",
         location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4350+Zapopan",
         website_url: null,
-        hours: "Lunes a Viernes · 06:00 a 22:00 hrs",
+        hours: "Lunes a Viernes · 06:00 a 22:00 hrs | Sáb 07:00 a 14:00",
         is_open_now: true,
         has_km0_badge: false,
         km0_reason: null,
         cta_type: "call_and_whatsapp",
         has_delivery: false,
         has_pickup: true,
-        description: "Gimnasio boutique, entrenamiento funcional HIIT, pilates reformer y asesoría deportiva con instructores certificados."
+        description: "Gimnasio boutique, entrenamiento funcional HIIT, pilates reformer y asesoría deportiva personalizada con instructores certificados."
       },
       {
         id: "b15",
         name: "Coach David - Entrenamiento Cero Emisiones",
         category_slug: "fitness",
         category_label: "Fitness",
+        subcategory_slug: "entrenador-personal",
+        subcategory_label: "Entrenador Personal",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
-        address: "Atención a domicilio en áreas verdes de cotos",
+        space_label: "Entrenador Móvil",
+        delivery_badge: "A domicilio en cotos",
+        pickup_badge: null,
+        address: "Atención a domicilio en cotos de Mariano Otero",
         community_slug: "los-robles",
         community_name: "Los Robles",
         lat: 20.6241,
@@ -1139,24 +1220,29 @@
         whatsapp: "+523315550311",
         location_url: null,
         website_url: null,
-        hours: "Lunes a Sábado · 06:30 a 19:30 hrs",
+        hours: "Lunes a Viernes · 06:30 a 19:30 hrs",
         is_open_now: true,
         has_km0_badge: true,
         km0_reason: "Desplazamiento 100% en bicicleta entre cotos",
         cta_type: "service_whatsapp",
         has_delivery: true,
         has_pickup: false,
-        description: "Entrenador personal a domicilio en cotos Natura, Los Robles y El Fortín. Calistenia, acondicionamiento y planes metabólicos."
+        description: "Entrenador personal a domicilio en cotos Natura, Los Robles y El Fortín. Calistenia, acondicionamiento físico y planes metabólicos."
       },
 
-      // 8. Escuelas (Absorbió Clases Particulares)
+      // 8. Educación (Antes Escuelas)
       {
         id: "b12",
         name: "Profesor de Matemáticas e Inglés Coto Ceiba",
-        category_slug: "escuelas",
-        category_label: "Clases Particulares",
+        category_slug: "educacion",
+        category_label: "Educación",
+        subcategory_slug: "clases-particulares",
+        subcategory_label: "Clases Particulares",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
+        space_label: "A Domicilio en Coto",
+        delivery_badge: "Clases a domicilio",
+        pickup_badge: null,
         address: "Natura Bosque Residencial (Coto Ceiba)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -1178,10 +1264,15 @@
       {
         id: "b13",
         name: "Sesiones de Yoga & Mindfulness en Terraza",
-        category_slug: "escuelas",
-        category_label: "Clases Particulares",
+        category_slug: "educacion",
+        category_label: "Educación",
+        subcategory_slug: "bienestar-formacion",
+        subcategory_label: "Bienestar y Formación",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
+        space_label: "En Terraza / Casa Club",
+        delivery_badge: "Grupos reducidos",
+        pickup_badge: null,
         address: "Natura Bosque Residencial (Coto Encino casa 7)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -1203,10 +1294,15 @@
       {
         id: "b16",
         name: "Instituto Tepeyac Campus Mariano Otero",
-        category_slug: "escuelas",
-        category_label: "Escuelas",
+        category_slug: "educacion",
+        category_label: "Educación",
+        subcategory_slug: "colegios-institutos",
+        subcategory_label: "Colegios e Institutos",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
+        space_label: "Campus Escolar",
+        delivery_badge: null,
+        pickup_badge: "Transporte Escolar",
         address: "Prolongación Mariano Otero #4200 (Frente al corredor residencial)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -1228,10 +1324,15 @@
       {
         id: "b17",
         name: "Colegio Finlandés - Campus Bosque",
-        category_slug: "escuelas",
-        category_label: "Escuelas",
+        category_slug: "educacion",
+        category_label: "Educación",
+        subcategory_slug: "colegios-institutos",
+        subcategory_label: "Colegios e Institutos",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
+        space_label: "Campus Escolar",
+        delivery_badge: null,
+        pickup_badge: "Metodología Activa",
         address: "Av. Los Robles #310 (Ingreso fraccionamiento)",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -1241,14 +1342,14 @@
         whatsapp: "+523315550321",
         location_url: "https://maps.google.com/?q=Av.+Los+Robles+310+Zapopan",
         website_url: null,
-        hours: "Lunes a Viernes · 07:30 a 16:00 hrs",
+        hours: "Lunes a Viernes · 07:30 a 16:30 hrs",
         is_open_now: true,
-        has_km0_badge: true,
-        km0_reason: "Rutas seguras peatonales y ciclistas para alumnos de coto",
+        has_km0_badge: false,
+        km0_reason: null,
         cta_type: "call_and_whatsapp",
         has_delivery: false,
         has_pickup: true,
-        description: "Metodología activa nórdica centrada en el bienestar infantil, bilingüe, aulas al aire libre frente al bosque, Preescolar y Primaria."
+        description: "Modelo pedagógico nórdico por proyectos y aprendizaje experiencial. Preescolar y Primaria en entorno arbolado junto al bosque."
       },
 
       // 9. Hogar
@@ -1257,60 +1358,75 @@
         name: "Persianas, Toldos & Cancelería Natura",
         category_slug: "hogar",
         category_label: "Hogar",
+        subcategory_slug: "cortinas-persianas",
+        subcategory_label: "Cortinas y Persianas",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
-        address: "Plaza Natura Local 5 (Prolongación Mariano Otero)",
+        space_label: "Showroom / Taller",
+        delivery_badge: "Toma de medidas e instalación",
+        pickup_badge: null,
+        address: "Prol. Mariano Otero #4310 (Plaza Olivo Local 2)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
-        lat: 20.6272,
-        lng: -103.4685,
+        lat: 20.6275,
+        lng: -103.4680,
         phone: "33 1555 0330",
         whatsapp: "+523315550330",
-        location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+Zapopan",
+        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4310+Zapopan",
         website_url: null,
-        hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        hours: "Lunes a Viernes · 09:00 a 18:30 hrs | Sáb 09:00 a 14:00",
         is_open_now: true,
         has_km0_badge: false,
         km0_reason: null,
-        cta_type: "service_whatsapp",
+        cta_type: "call_and_whatsapp",
         has_delivery: true,
         has_pickup: true,
-        description: "Fabricación e instalación de persianas sheer elegance, blackout, toldos retráctiles, mosquiteros y canceles de baño en cristal templado para casas de coto."
+        description: "Persianas sheer elegance, blackout, toldos retráctiles para terrazas y canceles de baño en cristal templado. Cotización sin costo a domicilio en cotos."
       },
       {
         id: "b19",
         name: "Vivero & Jardines Paisajismo Bosque Vivo",
         category_slug: "hogar",
         category_label: "Hogar",
-        type_slug: "sin-punto-venta",
-        type_label: "Sin punto de venta",
-        address: "Luna Bosque Coto 2 casa 18 (Vivero demostrativo)",
-        community_slug: "luna-bosque",
-        community_name: "Luna Bosque",
-        lat: 20.6320,
-        lng: -103.4655,
+        subcategory_slug: "plantas-paisajismo",
+        subcategory_label: "Plantas y Paisajismo",
+        type_slug: "local-establecido",
+        type_label: "Punto de venta fijo",
+        space_label: "Vivero Establecido",
+        delivery_badge: "Entrega a domicilio",
+        pickup_badge: "Visitas a vivero",
+        address: "Prol. Mariano Otero km 5.5 (Entronque La Primavera)",
+        community_slug: "bosque-primavera",
+        community_name: "Bosque Primavera",
+        lat: 20.6210,
+        lng: -103.4790,
         phone: "33 1555 0331",
         whatsapp: "+523315550331",
-        location_url: null,
+        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+km+5.5+Zapopan",
         website_url: null,
-        hours: "Lunes a Domingo · 09:00 a 18:30 hrs",
+        hours: "Lunes a Sábado · 09:00 a 18:30 hrs | Dom 10:00 a 14:00",
         is_open_now: true,
         has_km0_badge: true,
-        km0_reason: "Traslado ecológico en bici de carga sin emisiones",
+        km0_reason: "Especies nativas cultivadas localmente con bajo consumo de agua",
         cta_type: "whatsapp_order",
         has_delivery: true,
         has_pickup: true,
-        description: "Plantas de ornato, pasto en rollo, suculentas, macetas de autor y mantenimiento de jardinería para cocheras y terrazas en cotos privados."
+        description: "Plantas de ornato para sombra y sol, árboles nativos, macetas artesanales de barro y fibra, tierra de hoja y diseño de jardinería para cotos."
       },
 
-      // 10. Servicios Profesionales (NUEVA)
+      // 10. Servicios Profesionales
       {
         id: "b20",
         name: "Despacho Contable & Fiscal Natura",
         category_slug: "servicios-profesionales",
         category_label: "Servicios Profesionales",
+        subcategory_slug: "contabilidad-fiscal",
+        subcategory_label: "Contabilidad & Fiscal",
         type_slug: "local-establecido",
         type_label: "Punto de venta fijo",
+        space_label: "Despacho en Plaza Natura",
+        delivery_badge: "Asesoría presencial o virtual",
+        pickup_badge: null,
         address: "Plaza Natura Local 8 (Prol. Mariano Otero #4250)",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
@@ -1334,8 +1450,13 @@
         name: "Consultoría Legal e Inmobiliaria Otero & Asociados",
         category_slug: "servicios-profesionales",
         category_label: "Servicios Profesionales",
+        subcategory_slug: "abogados-legal",
+        subcategory_label: "Abogados & Legal",
         type_slug: "sin-punto-venta",
         type_label: "Sin punto de venta",
+        space_label: "Con Previa Cita o Virtual",
+        delivery_badge: "Atención en casa club o virtual",
+        pickup_badge: null,
         address: "Atención con previa cita en casa club o virtual",
         community_slug: "los-robles",
         community_name: "Los Robles",
@@ -1349,7 +1470,7 @@
         is_open_now: true,
         has_km0_badge: true,
         km0_reason: "Atención presencial a domicilio en cotos de la zona",
-        cta_type: "service_whatsapp",
+        cta_type: "call_and_whatsapp",
         has_delivery: true,
         has_pickup: false,
         description: "Asesoría en contratos de arrendamiento y compraventa residencial, regularización de escrituras, testamentos y mediación vecinal en cotos privados."
@@ -1370,11 +1491,133 @@
       "mision-la-floresta": { lat: 20.6430, lon: -103.4510, name: "Misión la Floresta" }
     };
 
-    // ESTADO DE FILTROS EN ESTA PÁGINA
+        // ESTADO DE FILTROS EN ESTA PÁGINA
     let currentCategorySlug = "servicios-profesionales";
+    let currentSubcategoryFilter = "all";
     let currentTypeFilter = "all";
     let filterDelivery = false;
     let filterPickup = false;
+
+    // SUBCATEGORÍAS DINÁMICAS POR CATEGORÍA
+    function renderSubcategoriesFilterBar() {
+      const container = document.getElementById("subcategories-filter-bar");
+      if (!container) return;
+
+      const catBusinesses = (currentCategorySlug === "all")
+        ? ALL_BUSINESSES
+        : ALL_BUSINESSES.filter(b => b.category_slug === currentCategorySlug || (currentCategorySlug === "educacion" && b.category_slug === "escuelas") || (currentCategorySlug === "escuelas" && b.category_slug === "educacion"));
+
+      const subcatsMap = {};
+      catBusinesses.forEach(b => {
+        if (b.subcategory_slug && b.subcategory_label) {
+          if (!subcatsMap[b.subcategory_slug]) {
+            subcatsMap[b.subcategory_slug] = { label: b.subcategory_label, count: 0 };
+          }
+          subcatsMap[b.subcategory_slug].count++;
+        }
+      });
+
+      const subcatKeys = Object.keys(subcatsMap);
+      if (subcatKeys.length === 0) {
+        container.innerHTML = "";
+        return;
+      }
+
+      let html = `
+        <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 w-full">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1 hidden sm:inline">Especialidad:</span>
+          <button onclick="setSubcategoryFilter('all')" class="subcat-pill ${currentSubcategoryFilter === 'all' ? 'is-active' : ''} px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0 transition-all">
+            Todas (${catBusinesses.length})
+          </button>
+      `;
+
+      subcatKeys.forEach(slug => {
+        const item = subcatsMap[slug];
+        const isActive = (currentSubcategoryFilter === slug);
+        html += `
+          <button onclick="setSubcategoryFilter('${slug}')" class="subcat-pill ${isActive ? 'is-active' : ''} px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0 transition-all">
+            ${item.label} (${item.count})
+          </button>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function setSubcategoryFilter(slug) {
+      currentSubcategoryFilter = slug;
+      renderSubcategoriesFilterBar();
+      applyAllFilters();
+    }
+
+    // MODALIDADES OPERATIVAS CONTEXTUALES SEGÚN CATEGORÍA
+    function renderModalityFilterBar() {
+      const container = document.getElementById("modality-filter-bar");
+      if (!container) return;
+
+      if (currentCategorySlug === "servicios-profesionales") {
+        container.innerHTML = `
+          <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1 hidden sm:inline">Espacio:</span>
+            <button onclick="setTypeFilter('all')" class="type-pill ${currentTypeFilter === 'all' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Todas
+            </button>
+            <button onclick="setTypeFilter('local-establecido')" class="type-pill ${currentTypeFilter === 'local-establecido' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Oficina o Despacho físico
+            </button>
+            <button onclick="setTypeFilter('sin-punto-venta')" class="type-pill ${currentTypeFilter === 'sin-punto-venta' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Con previa cita / Virtual
+            </button>
+          </div>
+        `;
+      } else if (currentCategorySlug === "educacion" || currentCategorySlug === "escuelas") {
+        container.innerHTML = `
+          <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1 hidden sm:inline">Modalidad:</span>
+            <button onclick="setTypeFilter('all')" class="type-pill ${currentTypeFilter === 'all' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Todas
+            </button>
+            <button onclick="setTypeFilter('local-establecido')" class="type-pill ${currentTypeFilter === 'local-establecido' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Plantel / Campus físico
+            </button>
+            <button onclick="setTypeFilter('sin-punto-venta')" class="type-pill ${currentTypeFilter === 'sin-punto-venta' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              A domicilio en coto
+            </button>
+          </div>
+        `;
+      } else if (currentCategorySlug === "servicios-hogar") {
+        container.innerHTML = `
+          <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1 hidden sm:inline">Atención:</span>
+            <button onclick="toggleDeliveryFilter()" class="modality-pill ${filterDelivery ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Servicio a domicilio en coto
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+            <button onclick="setTypeFilter('all')" class="type-pill ${currentTypeFilter === 'all' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Ver todo
+            </button>
+            <button onclick="setTypeFilter('local-establecido')" class="type-pill ${currentTypeFilter === 'local-establecido' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Punto de venta fijo
+            </button>
+            <button onclick="setTypeFilter('sin-punto-venta')" class="type-pill ${currentTypeFilter === 'sin-punto-venta' ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Sin punto de venta
+            </button>
+            <div class="h-4 w-px bg-snow-400 shrink-0 mx-1"></div>
+            <button onclick="toggleDeliveryFilter()" class="modality-pill ${filterDelivery ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Servicio a domicilio
+            </button>
+            <button onclick="togglePickupFilter()" class="modality-pill ${filterPickup ? 'is-active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+              Recoger en punto de venta
+            </button>
+          </div>
+        `;
+      }
+    }
 
     // INICIALIZACIÓN
     window.addEventListener("DOMContentLoaded", () => {
@@ -1384,6 +1627,7 @@
       const qParam = urlParams.get("q");
       const cotoParam = urlParams.get("coto");
 
+      if (catParam === "escuelas") catParam = "educacion";
       if (catParam && ALL_CATEGORIES.some(c => c.slug === catParam)) {
         currentCategorySlug = catParam;
       } else if (catParam === "all") {
@@ -1473,6 +1717,8 @@
 
       // Renderizar Switcher de Categorías
       renderCategorySwitcher();
+      renderSubcategoriesFilterBar();
+      renderModalityFilterBar();
 
       // Renderizar Negocios con los Filtros Actuales
       applyAllFilters();
@@ -1648,12 +1894,14 @@
       const coto = cotoSelect ? cotoSelect.value : "all";
 
       const filtered = ALL_BUSINESSES.filter(b => {
-        const matchCat = (currentCategorySlug === "all") || (b.category_slug === currentCategorySlug);
+        const matchCat = (currentCategorySlug === "all") || (b.category_slug === currentCategorySlug) || (currentCategorySlug === "educacion" && b.category_slug === "escuelas") || (currentCategorySlug === "escuelas" && b.category_slug === "educacion");
+        const matchSubcat = (currentSubcategoryFilter === "all") || (b.subcategory_slug === currentSubcategoryFilter);
         const matchText = !q ||
           b.name.toLowerCase().includes(q) ||
           b.description.toLowerCase().includes(q) ||
           b.address.toLowerCase().includes(q) ||
           (b.category_label && b.category_label.toLowerCase().includes(q)) ||
+          (b.subcategory_label && b.subcategory_label.toLowerCase().includes(q)) ||
           (b.community_name && b.community_name.toLowerCase().includes(q));
         const matchCoto = (coto === "all") || (b.community_slug === coto);
         const matchType = (currentTypeFilter === "all") ||
@@ -1662,7 +1910,7 @@
         const matchDelivery = !filterDelivery || (b.has_delivery === true);
         const matchPickup = !filterPickup || (b.has_pickup === true);
 
-        return matchCat && matchText && matchCoto && matchType && matchDelivery && matchPickup;
+        return matchCat && matchSubcat && matchText && matchCoto && matchType && matchDelivery && matchPickup;
       });
 
       // Sincronizar URL suavemente
@@ -1712,7 +1960,7 @@
               <div class="flex items-start justify-between gap-2">
                 <div class="space-y-1">
                   <span class="text-[11px] font-extrabold uppercase tracking-wide text-brand-emerald">
-                    ${b.category_label}
+                    ${b.subcategory_label || b.category_label}
                   </span>
                   <h3 class="text-lg font-black text-slate-950 group-hover:text-brand-emerald transition-colors leading-tight">
                     ${b.name}
@@ -1722,10 +1970,10 @@
 
               <div class="flex flex-wrap items-center gap-1.5">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-snow-300 text-slate-700">
-                  ${b.type_label}
+                  ${b.space_label || b.type_label}
                 </span>
-                ${b.has_delivery ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">Servicio a domicilio</span>` : ''}
-                ${b.has_pickup ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">Recoger en punto de venta</span>` : ''}
+                ${b.has_delivery && b.delivery_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">${b.delivery_badge}</span>` : ''}
+                ${b.has_pickup && b.pickup_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">${b.pickup_badge}</span>` : ''}
               </div>
 
               <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">
@@ -1794,31 +2042,20 @@
       if (type === "all") {
         filterDelivery = false;
         filterPickup = false;
-        document.querySelectorAll(".modality-pill").forEach(btn => btn.classList.remove("is-active"));
       }
-      document.querySelectorAll(".type-pill").forEach(btn => btn.classList.remove("is-active"));
-      const activeBtn = document.getElementById(`type-btn-${type}`);
-      if (activeBtn) activeBtn.classList.add("is-active");
+      renderModalityFilterBar();
       applyAllFilters();
     }
 
     function toggleDeliveryFilter() {
       filterDelivery = !filterDelivery;
-      const btn = document.getElementById("filter-btn-delivery");
-      if (btn) {
-        if (filterDelivery) btn.classList.add("is-active");
-        else btn.classList.remove("is-active");
-      }
+      renderModalityFilterBar();
       applyAllFilters();
     }
 
     function togglePickupFilter() {
       filterPickup = !filterPickup;
-      const btn = document.getElementById("filter-btn-pickup");
-      if (btn) {
-        if (filterPickup) btn.classList.add("is-active");
-        else btn.classList.remove("is-active");
-      }
+      renderModalityFilterBar();
       applyAllFilters();
     }
 
@@ -1828,15 +2065,12 @@
     function resetFilters() {
       const searchInput = document.getElementById("search-input"); if (searchInput) searchInput.value = "";
       const cotoSelect = document.getElementById("coto-select"); if (cotoSelect) cotoSelect.value = "all";
+      currentSubcategoryFilter = "all";
       currentTypeFilter = "all";
-      currentKm0Filter = false;
-      document.querySelectorAll(".type-pill").forEach(btn => btn.classList.remove("is-active"));
-      document.getElementById("type-btn-all").classList.add("is-active");
-      const km0Btn = document.getElementById("km0-btn");
-      if (km0Btn) {
-        km0Btn.classList.add("bg-white", "text-slate-700", "border-snow-400");
-        km0Btn.classList.remove("bg-indigo-600", "text-white", "border-indigo-600", "shadow-sm");
-      }
+      filterDelivery = false;
+      filterPickup = false;
+      renderSubcategoriesFilterBar();
+      renderModalityFilterBar();
       applyAllFilters();
     }
 

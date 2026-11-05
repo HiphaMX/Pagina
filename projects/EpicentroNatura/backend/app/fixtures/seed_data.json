@@ -112,8 +112,8 @@
     },
     {
       "id": 8,
-      "name": "Escuelas",
-      "slug": "escuelas",
+      "name": "Educación",
+      "slug": "educacion",
       "icon_name": "GraduationCap"
     },
     {
@@ -538,7 +538,7 @@
     {
       "name": "Clases de Matemáticas & Física Ing. Alejandro Ruiz",
       "slug": "clases-matematicas-fisica-alejandro-ruiz",
-      "category_slug": "escuelas",
+      "category_slug": "educacion",
       "community_slug": "bosque-primavera",
       "description": "Regularización y preparación para exámenes de secundaria, preparatoria y universidad. 10 años de experiencia.",
       "business_type": "servicios_profesionales",
@@ -582,7 +582,7 @@
     {
       "name": "Sesiones de Yoga & Mindfulness en Terraza",
       "slug": "sesiones-yoga-mindfulness-terraza",
-      "category_slug": "escuelas",
+      "category_slug": "educacion",
       "community_slug": "natura-bosque-residencial",
       "description": "Hatha Yoga y respiración consciente en grupos reducidos de 6 vecinas con vista panorámica al bosque.",
       "business_type": "emprendimiento",
@@ -714,7 +714,7 @@
     {
       "name": "Instituto Tepeyac Campus Mariano Otero",
       "slug": "instituto-tepeyac-mariano-otero",
-      "category_slug": "escuelas",
+      "category_slug": "educacion",
       "community_slug": "natura-bosque-residencial",
       "description": "Educación bilingüe desde Maternal hasta Preparatoria. Vanguardia pedagógica, canchas deportivas, laboratorios y transporte escolar en cotos.",
       "business_type": "local_establecido",
@@ -755,7 +755,7 @@
     {
       "name": "Colegio Finlandés - Campus Bosque",
       "slug": "colegio-finlandes-campus-bosque",
-      "category_slug": "escuelas",
+      "category_slug": "educacion",
       "community_slug": "los-robles",
       "description": "Metodología activa nórdica centrada en el bienestar infantil, bilingüe, aulas al aire libre frente al bosque, Preescolar y Primaria.",
       "business_type": "local_establecido",
@@ -900,11 +900,26 @@
       "has_km0_badge": false,
       "km0_reason": null,
       "opening_hours": {
-        "mon": { "open": "09:00", "close": "18:00" },
-        "tue": { "open": "09:00", "close": "18:00" },
-        "wed": { "open": "09:00", "close": "18:00" },
-        "thu": { "open": "09:00", "close": "18:00" },
-        "fri": { "open": "09:00", "close": "18:00" },
+        "mon": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "tue": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "wed": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "thu": {
+          "open": "09:00",
+          "close": "18:00"
+        },
+        "fri": {
+          "open": "09:00",
+          "close": "18:00"
+        },
         "sat": null,
         "sun": null
       },
@@ -926,11 +941,26 @@
       "has_km0_badge": true,
       "km0_reason": "Atención presencial a domicilio en cotos de la zona",
       "opening_hours": {
-        "mon": { "open": "10:00", "close": "19:00" },
-        "tue": { "open": "10:00", "close": "19:00" },
-        "wed": { "open": "10:00", "close": "19:00" },
-        "thu": { "open": "10:00", "close": "19:00" },
-        "fri": { "open": "10:00", "close": "19:00" },
+        "mon": {
+          "open": "10:00",
+          "close": "19:00"
+        },
+        "tue": {
+          "open": "10:00",
+          "close": "19:00"
+        },
+        "wed": {
+          "open": "10:00",
+          "close": "19:00"
+        },
+        "thu": {
+          "open": "10:00",
+          "close": "19:00"
+        },
+        "fri": {
+          "open": "10:00",
+          "close": "19:00"
+        },
         "sat": null,
         "sun": null
       },
