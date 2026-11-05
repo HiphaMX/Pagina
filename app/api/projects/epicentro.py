@@ -635,10 +635,70 @@ def purge_test_registrations(
     }
 
 
+
+def seed_botica_silvestre_if_missing(db: Session):
+    """Garantiza que Botica Silvestre exista como comercio verificado y activo con su micrositio oficial."""
+    try:
+        botica = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.business_name.ilike("%Botica Silvestre%")) |
+            (EpicentroRegistration.id == "reg-botica-silvestre")
+        ).first()
+
+        if not botica:
+            botica = EpicentroRegistration(
+                id="reg-botica-silvestre",
+                business_name="Botica Silvestre",
+                category_slug="productos-artesanales",
+                category_label="Productos Artesanales",
+                subcategory_slug="herbolaria-natural",
+                subcategory_label="Herbolaria & Adaptógenos",
+                coto_address="Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial)",
+                business_type="emprendimiento",
+                space_label="Punto de venta & A domicilio",
+                owner_name="Botica Silvestre",
+                email="hola@boticasilvestre.com.mx",
+                phone="3336762545",
+                whatsapp="3336762545",
+                delivery_available=True,
+                website="botica-silvestre.html",
+                description="Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
+                email_verified=True,
+                whatsapp_verified=True,
+                payment_status="approved",
+                payment_amount=100.0,
+                is_verified_badge=True,
+                status="active",
+                moderation_notes="Comercio fundador oficial con micrositio activo."
+            )
+            db.add(botica)
+            db.commit()
+            db.refresh(botica)
+        else:
+            updated = False
+            if botica.website != "botica-silvestre.html":
+                botica.website = "botica-silvestre.html"
+                updated = True
+            if botica.status != "active":
+                botica.status = "active"
+                updated = True
+            if not botica.is_verified_badge:
+                botica.is_verified_badge = True
+                updated = True
+            if updated:
+                db.commit()
+    except Exception as e:
+        logger.warning(f"Error seeding Botica Silvestre: {e}")
+        try:
+            db.rollback()
+        except Exception:
+            pass
+
+
 @router.get("/businesses/active")
 def list_active_verified_businesses(db: Session = Depends(get_db)):
     """Retorna los comercios reales que ya están activos y verificados para el directorio público."""
     ensure_epicentro_schema(db)
+    seed_botica_silvestre_if_missing(db)
     results = (
         db.query(EpicentroRegistration)
         .filter(EpicentroRegistration.status == "active")
@@ -646,3 +706,4 @@ def list_active_verified_businesses(db: Session = Depends(get_db)):
         .all()
     )
     return results
+

@@ -855,7 +855,43 @@
     ];
 
     // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO EN APERTURA)
-    const ALL_BUSINESSES = [];
+    const ALL_BUSINESSES = [
+      {
+        id: "reg-botica-silvestre",
+        name: "Botica Silvestre",
+        category_slug: "productos-artesanales",
+        category_label: "Productos Artesanales",
+        subcategory_slug: "herbolaria-natural",
+        subcategory_label: "Herbolaria & Adaptógenos",
+        type: "emprendimiento",
+        type_slug: "emprendimiento",
+        type_label: "Punto de venta & A domicilio",
+        space_label: "Punto de venta & A domicilio",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        has_delivery: true,
+        has_pickup: true,
+        delivery_available: true,
+        pickup_available: true,
+        delivery_badge: "Envíos a Cotos Natura",
+        pickup_badge: "Entrega en Mariano Otero",
+        coto: "Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial)",
+        address: "Prol. Mariano Otero, Cotos Natura & Los Robles, Zapopan",
+        description: "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
+        phone: "3336762545",
+        whatsapp: "3336762545",
+        website: "botica-silvestre.html",
+        website_url: "botica-silvestre.html",
+        hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        schedule: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        payment_methods: ["Efectivo", "SPEI", "Tarjeta", "Mercado Pago"],
+        has_badge: true,
+        badge_text: "Vecino Verificado",
+        rating: 5.0,
+        reviews: 24,
+        has_photos: true
+      }
+    ];
 
     // COORDENADAS GPS DE LAS 10 ZONAS GEOGRÁFICAS
     const ZONE_COORDINATES = {
@@ -1235,17 +1271,26 @@
         });
       }
 
-      // 3. Sitio Web Propio o Enlace Web (website / website_url / microsite_url)
+      // 3. Sitio Web Propio o Enlace Web / Micrositio (website / website_url / microsite_url)
       const rawWebUrl = b.website || b.website_url || b.microsite_url;
       if (rawWebUrl && String(rawWebUrl).trim() !== "") {
         let cleanWebUrl = String(rawWebUrl).trim();
-        const isExternal = cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://") || (!cleanWebUrl.startsWith("/") && !cleanWebUrl.startsWith("."));
-        if (isExternal && !cleanWebUrl.startsWith("http://") && !cleanWebUrl.startsWith("https://")) {
-          cleanWebUrl = "https://" + cleanWebUrl;
+        const isHtmlPage = cleanWebUrl.endsWith(".html") || cleanWebUrl.includes(".html#") || cleanWebUrl.includes(".html?");
+        const isLocalRelative = isHtmlPage || cleanWebUrl.startsWith("/") || cleanWebUrl.startsWith("./") || cleanWebUrl.startsWith("../");
+        let isExternal = false;
+
+        if (!isLocalRelative) {
+          if (cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://")) {
+            isExternal = true;
+          } else if (cleanWebUrl.includes(".") && !isHtmlPage) {
+            cleanWebUrl = "https://" + cleanWebUrl;
+            isExternal = true;
+          }
         }
+
         const resolvedWebUrl = (!isExternal && !cleanWebUrl.startsWith('/') && isSubfolder) ? '../' + cleanWebUrl : cleanWebUrl;
-        const btnText = (b.website || b.website_url) ? "Sitio Web" : "Ver más";
-        const btnIcon = (b.website || b.website_url) ? "globe" : "external-link";
+        const btnText = (isHtmlPage || b.microsite_url) ? "Ver Catálogo" : ((b.website || b.website_url) ? "Sitio Web" : "Ver más");
+        const btnIcon = (isHtmlPage || b.microsite_url) ? "store" : ((b.website || b.website_url) ? "globe" : "external-link");
         buttons.push({
           type: "website",
           html: `
@@ -1456,7 +1501,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                   <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
-                  <span class="text-emerald-700 font-semibold">${b.hours}</span>
+                  <span class="text-emerald-700 font-semibold">${b.hours || b.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs"}</span>
                 </div>
               </div>
             </div>
