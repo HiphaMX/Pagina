@@ -2884,6 +2884,14 @@
       // Apertura de modal de registro por parámetro URL
       if (urlParams.get("open_register") === "1") {
         openRegisterModal();
+        if (urlParams.get("test_submit") === "1") {
+          document.getElementById("reg-name").value = "Pizzería Di Vico";
+          document.getElementById("reg-address").value = "Coto Ceiba 12";
+          document.getElementById("reg-owner").value = "Carlos Méndez";
+          document.getElementById("reg-email").value = "carlos@test.com";
+          document.getElementById("reg-wa").value = "3312345678";
+          submitStep1();
+        }
         const step = parseInt(urlParams.get("step") || "1");
         if (step > 1) {
           currentRegId = "mock-12345";
