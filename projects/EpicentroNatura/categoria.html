@@ -1665,6 +1665,47 @@
 
       renderCategoryView();
       populateRegisterCategoryOptions();
+
+      // Cargar dinámicamente comercios aprobados y activos desde el backend
+      fetch("/api/epicentro/businesses/active")
+        .then(r => r.ok ? r.json() : [])
+        .then(activeBizList => {
+          if (Array.isArray(activeBizList) && activeBizList.length > 0) {
+            activeBizList.forEach(biz => {
+              if (!ALL_BUSINESSES.some(b => b.id === biz.id)) {
+                ALL_BUSINESSES.unshift({
+                  id: biz.id,
+                  name: biz.business_name,
+                  category_slug: biz.category_slug,
+                  category_label: biz.category_label || biz.category_slug.toUpperCase(),
+                  subcategory_slug: biz.subcategory_slug || "",
+                  subcategory_label: biz.subcategory_label || "",
+                  type: biz.business_type || "local-establecido",
+                  space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio / Cita"),
+                  delivery_available: biz.delivery_available || false,
+                  pickup_available: true,
+                  delivery_badge: biz.delivery_available ? "Servicio a domicilio" : null,
+                  pickup_badge: "Recoger en punto de venta",
+                  coto: biz.coto_address,
+                  address: biz.coto_address,
+                  description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
+                  phone: biz.phone,
+                  whatsapp: biz.whatsapp,
+                  website_url: biz.website || null,
+                  schedule: "Lunes a Sábado",
+                  payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
+                  has_badge: true,
+                  badge_text: "Vecino Verificado",
+                  rating: 5.0,
+                  reviews: 1,
+                  has_photos: false
+                });
+              }
+            });
+            renderCategoryView();
+          }
+        })
+        .catch(() => {});
     });
 
     // POBLAR SELECTOR DEL MODAL DE REGISTRO

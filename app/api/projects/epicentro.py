@@ -87,6 +87,11 @@ class CreatePaymentRequest(BaseModel):
     registration_id: str
 
 
+class ApplyCouponRequest(BaseModel):
+    registration_id: str
+    coupon_code: str
+
+
 class ModerationActionRequest(BaseModel):
     notes: Optional[str] = None
 
@@ -428,6 +433,54 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
     except Exception as mp_err:
         logger.error(f"Error creando preferencia de Mercado Pago: {mp_err}")
         raise HTTPException(status_code=500, detail=f"Error en Mercado Pago: {str(mp_err)}")
+
+
+# --- CÓDIGOS DE CORTESÍA / EXENCIÓN DE CUOTA ($99 -> $0) ---
+
+VALID_COUPON_CODES = {
+    "NATURA100": "Cortesía Fundador 100% Exenta",
+    "FUNDADOR": "Cortesía de Lanzamiento Fundadores Natura",
+    "EPICENTRO2026": "Pase Especial Epicentro Hipha 2026",
+    "HIPHA": "Cortesía Especial Agencia Hipha",
+}
+
+@router.post("/register/apply-coupon")
+def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends(get_db)):
+    """
+    Aplica un código de cortesía o invitación para exonerar la cuota de $99 MXN
+    y dejar el negocio verificado y activo en el directorio comunitario.
+    """
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
+    if not reg:
+        raise HTTPException(status_code=404, detail="Registro no encontrado")
+
+    code = payload.coupon_code.strip().upper()
+    env_codes = [c.strip().upper() for c in os.getenv("EPICENTRO_COUPONS", "").split(",") if c.strip()]
+
+    if code not in VALID_COUPON_CODES and code not in env_codes:
+        raise HTTPException(status_code=400, detail="Código de cortesía inválido o no reconocido.")
+
+    now = datetime.now(timezone.utc)
+    reg.payment_status = "waived"
+    reg.payment_amount = 0.0
+    reg.is_verified_badge = True
+    reg.status = "active"
+    code_desc = VALID_COUPON_CODES.get(code, "Cupón de Cortesía Válido")
+    reg.moderation_notes = f"Verificación con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC"
+    db.commit()
+    db.refresh(reg)
+
+    folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
+    folio = f"NATURA-VERIFIED-{folio_suffix}"
+
+    return {
+        "success": True,
+        "message": f"¡Código {code} aplicado con éxito! Tu comercio cuenta con Sello Oficial Vecino Verificado.",
+        "folio": folio,
+        "business_name": reg.business_name,
+        "is_verified_badge": True,
+        "status": "active"
+    }
 
 
 # --- ENDPOINTS ADMINISTRATIVOS (MODERACIÓN) ---
