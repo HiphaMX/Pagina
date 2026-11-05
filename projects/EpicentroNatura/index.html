@@ -892,6 +892,17 @@
             </div>
           </div>
 
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center justify-between">
+              <span>Sitio Web Oficial del Negocio</span>
+              <span class="text-[11px] font-normal text-slate-400">Opcional (para jalar tráfico a tu página)</span>
+            </label>
+            <div class="relative">
+              <i data-lucide="globe" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="url" id="reg-website" placeholder="https://www.tunegocio.com.mx" class="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white focus:ring-2 focus:ring-brand-emerald">
+            </div>
+          </div>
+
           <div class="flex items-center gap-2 pt-1">
             <input type="checkbox" id="reg-delivery" class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
             <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
@@ -1189,7 +1200,7 @@
         phone: "33 1555 0102",
         whatsapp: "+523315550102",
         location_url: "https://maps.google.com/?q=Plaza+Cantera+Prol.+Mariano+Otero+Zapopan",
-        website_url: null,
+        website_url: "https://pizzascantera.com.mx",
         hours: "Miércoles a Domingo · 14:00 a 22:30 hrs",
         is_open_now: true,
         has_km0_badge: true,
@@ -1221,7 +1232,7 @@
         phone: "33 1555 0105",
         whatsapp: "+523315550105",
         location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
-        website_url: null,
+        website_url: "https://petshopnatura.com",
         hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
         is_open_now: true,
         has_km0_badge: true,
@@ -1439,7 +1450,7 @@
         phone: "33 1555 0201",
         whatsapp: "+523315550201",
         location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
-        website_url: null,
+        website_url: "https://dracarmennatura.mx",
         hours: "Lunes a Viernes · 09:00 a 19:00 hrs | Sáb 09:00 a 14:00",
         is_open_now: true,
         has_km0_badge: false,
@@ -1593,7 +1604,7 @@
         phone: "33 1555 0320",
         whatsapp: "+523315550320",
         location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4200+Zapopan",
-        website_url: null,
+        website_url: "https://tepeyac.edu.mx",
         hours: "Lunes a Viernes · 07:00 a 17:00 hrs",
         is_open_now: true,
         has_km0_badge: false,
@@ -1717,7 +1728,7 @@
         phone: "33 1555 0410",
         whatsapp: "+523315550410",
         location_url: "https://maps.google.com/?q=Plaza+Natura+Prol.+Mariano+Otero+4250+Zapopan",
-        website_url: null,
+        website_url: "https://contadoresnatura.mx",
         hours: "Lunes a Viernes · 09:00 a 18:00 hrs",
         is_open_now: true,
         has_km0_badge: false,
@@ -1878,16 +1889,22 @@
         });
       }
 
-      // 3. Ver más (website_url o microsite_url)
-      const rawWebUrl = b.website_url || b.microsite_url;
+      // 3. Sitio Web Propio o Enlace Web (website / website_url / microsite_url)
+      const rawWebUrl = b.website || b.website_url || b.microsite_url;
       if (rawWebUrl && String(rawWebUrl).trim() !== "") {
-        const isExternal = String(rawWebUrl).startsWith("http");
+        let cleanWebUrl = String(rawWebUrl).trim();
+        const isExternal = cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://") || (!cleanWebUrl.startsWith("/") && !cleanWebUrl.startsWith("."));
+        if (isExternal && !cleanWebUrl.startsWith("http://") && !cleanWebUrl.startsWith("https://")) {
+          cleanWebUrl = "https://" + cleanWebUrl;
+        }
+        const btnText = (b.website || b.website_url) ? "Sitio Web" : "Ver más";
+        const btnIcon = (b.website || b.website_url) ? "globe" : "external-link";
         buttons.push({
           type: "website",
           html: `
-            <a href="${rawWebUrl}" ${isExternal ? 'target="_blank" rel="noopener"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
-              <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-300"></i>
-              <span>Ver más</span>
+            <a href="${cleanWebUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web">
+              <i data-lucide="${btnIcon}" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:text-emerald-300 transition-colors"></i>
+              <span>${btnText}</span>
             </a>
           `
         });
@@ -2543,6 +2560,7 @@
         const email = document.getElementById("reg-email") ? document.getElementById("reg-email").value.trim() : "";
         const phone = document.getElementById("reg-phone") ? document.getElementById("reg-phone").value.trim() : "";
         const wa = document.getElementById("reg-wa") ? document.getElementById("reg-wa").value.trim() : "";
+        const website = document.getElementById("reg-website") ? document.getElementById("reg-website").value.trim() : "";
         const delivery = document.getElementById("reg-delivery") ? document.getElementById("reg-delivery").checked : false;
 
         const payload = {
@@ -2558,6 +2576,7 @@
           email: email,
           phone: phone,
           whatsapp: wa,
+          website: website,
           delivery_available: delivery,
           honeypot: hp
         };
@@ -2866,6 +2885,7 @@
                   description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
                   phone: biz.phone,
                   whatsapp: biz.whatsapp,
+                  website_url: biz.website || null,
                   schedule: "Lunes a Sábado",
                   payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
                   has_badge: true,

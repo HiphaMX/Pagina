@@ -68,6 +68,7 @@ class RegisterInitiateRequest(BaseModel):
     phone: str
     whatsapp: str
     delivery_available: bool = False
+    website: Optional[str] = None
     description: Optional[str] = None
     honeypot: Optional[str] = None  # Trampa anti-bot
 
@@ -257,6 +258,7 @@ async def initiate_registration(
         phone=payload.phone.strip(),
         whatsapp=payload.whatsapp.strip(),
         delivery_available=payload.delivery_available,
+        website=payload.website.strip() if payload.website else None,
         description=payload.description,
         email_otp=otp,
         email_otp_expires_at=expires_at,

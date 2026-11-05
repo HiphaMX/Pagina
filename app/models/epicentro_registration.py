@@ -21,6 +21,7 @@ class EpicentroRegistration(Base):
     phone = Column(String(30), nullable=False)
     whatsapp = Column(String(30), nullable=False)
     delivery_available = Column(Boolean, default=False)
+    website = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
 
     # Paso 1 de Validación: Correo Electrónico

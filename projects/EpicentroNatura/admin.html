@@ -268,7 +268,10 @@
         return `
           <tr class="hover:bg-slate-900/50 transition-colors">
             <td class="py-3.5 px-4">
-              <div class="font-bold text-white text-sm">${r.business_name}</div>
+              <div class="font-bold text-white text-sm flex items-center gap-1.5">
+                <span>${r.business_name}</span>
+                ${r.website ? `<a href="${r.website.startsWith('http') ? r.website : 'https://' + r.website}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 text-[11px] font-normal" title="Visitar sitio web oficial"><i data-lucide="globe" class="w-3.5 h-3.5"></i></a>` : ''}
+              </div>
               <div class="text-[11px] text-slate-400">${r.category_label || r.category_slug} · <span class="text-emerald-400">${r.subcategory_label || ''}</span></div>
             </td>
             <td class="py-3.5 px-4">

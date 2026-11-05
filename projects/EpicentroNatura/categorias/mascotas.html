@@ -1801,17 +1801,23 @@
         });
       }
 
-      // 3. Ver más (website_url o microsite_url)
-      const rawWebUrl = b.website_url || b.microsite_url;
+      // 3. Sitio Web Propio o Enlace Web (website / website_url / microsite_url)
+      const rawWebUrl = b.website || b.website_url || b.microsite_url;
       if (rawWebUrl && String(rawWebUrl).trim() !== "") {
-        const isExternal = String(rawWebUrl).startsWith("http");
-        const resolvedWebUrl = (!isExternal && !rawWebUrl.startsWith('/') && isSubfolder) ? '../' + rawWebUrl : rawWebUrl;
+        let cleanWebUrl = String(rawWebUrl).trim();
+        const isExternal = cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://") || (!cleanWebUrl.startsWith("/") && !cleanWebUrl.startsWith("."));
+        if (isExternal && !cleanWebUrl.startsWith("http://") && !cleanWebUrl.startsWith("https://")) {
+          cleanWebUrl = "https://" + cleanWebUrl;
+        }
+        const resolvedWebUrl = (!isExternal && !cleanWebUrl.startsWith('/') && isSubfolder) ? '../' + cleanWebUrl : cleanWebUrl;
+        const btnText = (b.website || b.website_url) ? "Sitio Web" : "Ver más";
+        const btnIcon = (b.website || b.website_url) ? "globe" : "external-link";
         buttons.push({
           type: "website",
           html: `
-            <a href="${resolvedWebUrl}" ${isExternal ? 'target="_blank" rel="noopener"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
-              <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-300"></i>
-              <span>Ver más</span>
+            <a href="${resolvedWebUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web">
+              <i data-lucide="${btnIcon}" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:text-emerald-300 transition-colors"></i>
+              <span>${btnText}</span>
             </a>
           `
         });
