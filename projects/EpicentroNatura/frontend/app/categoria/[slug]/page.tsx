@@ -530,7 +530,7 @@ const ALL_BUSINESSES: CommercialBusiness[] = [
   {
     id: "b12",
     name: "Profesor de Matemáticas e Inglés Coto Ceiba",
-    category_slug: "clases-particulares",
+    category_slug: "escuelas",
     category_label: "Clases particulares",
     type_slug: "servicios_profesionales",
     type_label: "Servicios profesionales",
