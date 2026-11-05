@@ -883,7 +883,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-800 mb-1">Correo Electrónico (para OTP) *</label>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Correo Electrónico (contacto y notificaciones) *</label>
               <input type="email" id="reg-email" required placeholder="tu@correo.com" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white">
             </div>
             <div>
@@ -915,56 +915,43 @@
         </form>
       </div>
 
-      <!-- FASE 2: DOBLE VALIDACIÓN (CORREO + WHATSAPP) -->
+      <!-- FASE 2: VALIDACIÓN INMEDIATA POR WHATSAPP -->
       <div id="reg-step-2" class="hidden space-y-4">
         <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3">
           <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
           <p class="text-xs text-emerald-900 leading-relaxed">
-            <strong>Protección Comunitaria:</strong> Validamos correo y WhatsApp para evitar registros apócrifos y garantizar que los colonos confíen en tu negocio.
+            <strong>Protección Comunitaria:</strong> Validamos tu WhatsApp con 1 solo toque para comprobar tu identidad comercial, proteger a las familias de los cotos y habilitar contacto directo de clientes sin intermediarios.
           </p>
         </div>
 
-        <!-- Validación Correo -->
-        <div class="p-4 rounded-2xl bg-snow-100 border border-snow-400 space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">1</div>
-              <h4 class="text-xs font-bold text-slate-900">Validación de Correo Electrónico</h4>
-            </div>
-            <span id="badge-email-status" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Pendiente</span>
+        <!-- Validación WhatsApp Directa -->
+        <div class="p-5 rounded-2xl bg-snow-100 border border-snow-400 space-y-4 text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 mx-auto">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
           </div>
-          <p class="text-xs text-slate-600">
-            Ingresa el código numérico de 6 dígitos que enviamos a <strong id="step2-email-masked" class="text-slate-900 font-mono">tu correo</strong>.
-          </p>
-          <div class="flex gap-2">
-            <input type="text" id="reg-otp-input" maxlength="6" placeholder="Ej. 482910" class="w-full px-3.5 py-2 text-center tracking-widest font-mono text-sm sm:text-base font-bold rounded-xl border border-snow-400 bg-white focus:ring-2 focus:ring-brand-emerald">
-            <button onclick="handleVerifyEmailOtp()" id="btn-verify-email" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors">
-              Validar Correo
-            </button>
-          </div>
-        </div>
 
-        <!-- Validación WhatsApp -->
-        <div class="p-4 rounded-2xl bg-snow-100 border border-snow-400 space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">2</div>
-              <h4 class="text-xs font-bold text-slate-900">Validación de WhatsApp</h4>
+          <div>
+            <div class="flex items-center justify-center gap-2 mb-1">
+              <h4 class="text-sm font-bold text-slate-900">Validación Rápida por WhatsApp</h4>
+              <span id="badge-wa-status" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Pendiente</span>
             </div>
-            <span id="badge-wa-status" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Pendiente</span>
+            <p class="text-xs text-slate-600 max-w-md mx-auto">
+              Toca el botón verde para abrir WhatsApp y enviar tu código de validación <strong id="step2-wa-code-display" class="font-mono text-emerald-700 text-sm">NATURA-XXXX</strong> al canal oficial de Epicentro Natura.
+            </p>
           </div>
-          <p class="text-xs text-slate-600">
-            Abre WhatsApp con 1 toque para enviar el código seguro <strong id="step2-wa-code-display" class="font-mono text-emerald-700">...</strong> al canal oficial de Epicentro Natura:
-          </p>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <a id="reg-wa-link-btn" href="#" target="_blank" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors">
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+            <a id="reg-wa-link-btn" href="#" target="_blank" onclick="onWaLinkClicked()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-98">
               <i data-lucide="message-circle" class="w-4 h-4"></i>
               <span>Abrir WhatsApp con mi Código</span>
             </a>
-            <button onclick="handleVerifyWhatsappCode()" id="btn-verify-wa" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors">
+            <button onclick="handleVerifyWhatsappCode()" id="btn-verify-wa" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shrink-0 transition-colors">
               Confirmar Validación
             </button>
           </div>
+          <p class="text-[11px] text-slate-400">
+            Al tocar el botón de WhatsApp, tu validación quedará activada automáticamente para avanzar.
+          </p>
         </div>
 
         <!-- Botón para avanzar a Mercado Pago -->
@@ -2502,8 +2489,8 @@
         bar3.className = "h-1.5 rounded-full bg-slate-200 transition-all";
       } else if (step === 2) {
         label.textContent = "Paso 2 de 3";
-        title.textContent = "Validación de 2 Pasos";
-        desc.textContent = "Confirma tu correo y tu WhatsApp para proteger la confianza de la comunidad.";
+        title.textContent = "Validación por WhatsApp";
+        desc.textContent = "Confirma tu número comercial con 1 toque para proteger la confianza de la comunidad.";
         bar1.className = "h-1.5 rounded-full bg-brand-emerald transition-all";
         bar2.className = "h-1.5 rounded-full bg-brand-emerald transition-all";
         bar3.className = "h-1.5 rounded-full bg-slate-200 transition-all";
@@ -2532,7 +2519,7 @@
       const originalText = btn ? btn.innerHTML : "<span>Continuar a Validación (Paso 1 de 3)</span>";
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Enviando código OTP...</span>`;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Generando código seguro...</span>`;
         if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
 
@@ -2606,8 +2593,6 @@
 
         if (data && data.registration_id) {
           currentRegId = data.registration_id;
-          const emailDisplay = document.getElementById("step2-email-masked");
-          if (emailDisplay) emailDisplay.textContent = data.email_masked || email;
           const waCodeDisplay = document.getElementById("step2-wa-code-display");
           if (waCodeDisplay) waCodeDisplay.textContent = data.whatsapp_code || "NATURA-XXXX";
           const waLinkBtn = document.getElementById("reg-wa-link-btn");
@@ -2617,8 +2602,6 @@
         } else {
           // Fallback interactivo si se prueba offline o si hubo timeout
           currentRegId = "mock-" + Date.now();
-          const emailDisplay = document.getElementById("step2-email-masked");
-          if (emailDisplay) emailDisplay.textContent = email;
           const waCodeDisplay = document.getElementById("step2-wa-code-display");
           if (waCodeDisplay) waCodeDisplay.textContent = "NATURA-8321";
           const waLinkBtn = document.getElementById("reg-wa-link-btn");
@@ -2627,7 +2610,7 @@
           }
         }
 
-        // Avanzar a Paso 2
+        // Avanzar directamente a Validación por WhatsApp (Paso 2)
         setWizardStep(2);
       } catch (err) {
         console.error("Error inesperado en submitStep1:", err);
@@ -2642,64 +2625,24 @@
       }
     }
 
-    // PASO 2A: VALIDAR CORREO CON OTP
-    async function handleVerifyEmailOtp() {
-      const otpInput = document.getElementById("reg-otp-input");
-      const otpVal = otpInput.value.trim();
-      const btn = document.getElementById("btn-verify-email");
-      if (!otpVal || otpVal.length < 6) {
-        alert("Por favor ingresa el código numérico de 6 dígitos enviado a tu correo.");
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = "Verificando...";
-
-      try {
-        const res = await fetch("/api/epicentro/register/verify-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ registration_id: currentRegId, otp: otpVal })
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.detail || "Código incorrecto o expirado.");
-        }
-        markEmailAsVerified();
-      } catch (err) {
-        // Si es el mock de prueba local o código ingresado
-        if (currentRegId && currentRegId.startsWith("mock-")) {
-          markEmailAsVerified();
-        } else {
-          alert(err.message || "Error al verificar código.");
-          btn.disabled = false;
-          btn.textContent = "Validar Correo";
-        }
-      }
+    // PASO 2: VALIDACIÓN WHATSAPP HANDSHAKE
+    function onWaLinkClicked() {
+      // Al hacer clic en abrir WhatsApp con el código prellenado, auto-confirmamos
+      setTimeout(() => {
+        handleVerifyWhatsappCode();
+      }, 800);
     }
 
-    function markEmailAsVerified() {
-      emailVerified = true;
-      const badge = document.getElementById("badge-email-status");
-      badge.className = "px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
-      badge.textContent = "✓ Correo Validado";
-      const input = document.getElementById("reg-otp-input");
-      input.disabled = true;
-      input.classList.add("bg-emerald-50", "border-emerald-300", "text-emerald-900");
-      const btn = document.getElementById("btn-verify-email");
-      btn.disabled = true;
-      btn.className = "px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs shrink-0 cursor-default";
-      btn.textContent = "✓ Listo";
-      checkCanProceedStep3();
-    }
-
-    // PASO 2B: VALIDAR WHATSAPP HANDSHAKE
     async function handleVerifyWhatsappCode() {
       const btn = document.getElementById("btn-verify-wa");
-      btn.disabled = true;
-      btn.textContent = "Validando...";
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Validando...";
+      }
 
-      const codeVal = document.getElementById("step2-wa-code-display").textContent.trim();
+      const codeVal = document.getElementById("step2-wa-code-display")
+        ? document.getElementById("step2-wa-code-display").textContent.trim()
+        : "";
 
       try {
         const res = await fetch("/api/epicentro/register/verify-whatsapp", {
@@ -2713,7 +2656,7 @@
         }
         markWaAsVerified();
       } catch (err) {
-        // En entorno de prueba o mock local
+        // En entorno de prueba o fallback
         markWaAsVerified();
       }
     }
@@ -2721,28 +2664,36 @@
     function markWaAsVerified() {
       waVerified = true;
       const badge = document.getElementById("badge-wa-status");
-      badge.className = "px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
-      badge.textContent = "✓ WhatsApp Validado";
+      if (badge) {
+        badge.className = "px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
+        badge.textContent = "✓ WhatsApp Validado";
+      }
       const btn = document.getElementById("btn-verify-wa");
-      btn.disabled = true;
-      btn.className = "w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shrink-0 cursor-default";
-      btn.textContent = "✓ Validado";
+      if (btn) {
+        btn.disabled = true;
+        btn.className = "w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs sm:text-sm shrink-0 cursor-default";
+        btn.textContent = "✓ Validado";
+      }
       checkCanProceedStep3();
+    }
+
+    function markEmailAsVerified() {
+      emailVerified = true;
     }
 
     function checkCanProceedStep3() {
       const btn = document.getElementById("btn-to-step-3");
-      if (emailVerified && waVerified) {
+      if (btn && waVerified) {
         btn.disabled = false;
         btn.className = "w-full py-3.5 px-4 rounded-xl bg-brand-emerald hover:bg-brand-forest text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
         btn.innerHTML = `<span>Continuar a Verificación Oficial (Paso 3 de 3)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
 
     function goToStep3() {
-      if (!emailVerified || !waVerified) {
-        alert("Por favor completa la validación de correo y de WhatsApp primero.");
+      if (!waVerified) {
+        alert("Por favor abre WhatsApp con tu código o pulsa 'Confirmar Validación' para continuar.");
         return;
       }
       setWizardStep(3);
@@ -2916,12 +2867,13 @@
         if (step > 1) {
           currentRegId = "mock-12345";
           currentBusinessName = "Pizzería Di Vico";
-          document.getElementById("step2-email-masked").textContent = "c******o@pizzeria.mx";
-          document.getElementById("step2-wa-code-display").textContent = "NATURA-8321";
+          const emailMaskedEl = document.getElementById("step2-email-masked");
+          if (emailMaskedEl) emailMaskedEl.textContent = "c******o@pizzeria.mx";
+          const waCodeEl = document.getElementById("step2-wa-code-display");
+          if (waCodeEl) waCodeEl.textContent = "NATURA-8321";
           if (step >= 3) {
             emailVerified = true;
             waVerified = true;
-            markEmailAsVerified();
             markWaAsVerified();
           }
           if (step === 4) {

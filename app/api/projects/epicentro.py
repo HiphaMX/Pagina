@@ -235,15 +235,10 @@ async def initiate_registration(
             "message": "Solicitud procesada correctamente"
         }
 
-    # Generar OTP numérico de 6 dígitos
-    otp = f"{random.randint(100000, 999999)}"
-    now = datetime.now(timezone.utc)
-    expires_at = now + timedelta(minutes=15)
-
     # Generar código de WhatsApp (ej. NATURA-5819)
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
 
-    # Crear o actualizar registro
+    # Crear o actualizar registro (email sin bloqueo de OTP para eliminar fricción a prospectos)
     new_reg = EpicentroRegistration(
         business_name=payload.business_name.strip(),
         category_slug=payload.category_slug.strip(),
@@ -260,9 +255,9 @@ async def initiate_registration(
         delivery_available=payload.delivery_available,
         website=payload.website.strip() if payload.website else None,
         description=payload.description,
-        email_otp=otp,
-        email_otp_expires_at=expires_at,
-        email_verified=False,
+        email_otp=None,
+        email_otp_expires_at=None,
+        email_verified=True,
         whatsapp_code=wa_code,
         whatsapp_verified=False,
         payment_status="pending",
@@ -273,14 +268,6 @@ async def initiate_registration(
     db.add(new_reg)
     db.commit()
     db.refresh(new_reg)
-
-    # Enviar correo en segundo plano para respuesta instantánea al usuario
-    if background_tasks:
-        background_tasks.add_task(send_otp_email_task, new_reg.business_name, new_reg.owner_name, new_reg.email, otp)
-    else:
-        # Fallback si no hay background_tasks inyectado (ej. scripts directos)
-        import asyncio
-        asyncio.create_task(send_otp_email_task(new_reg.business_name, new_reg.owner_name, new_reg.email, otp))
 
     # Construir deep link para WhatsApp oficial de Hipha/Epicentro
     agency_phone = "523336762545"
@@ -294,46 +281,26 @@ async def initiate_registration(
         "email_masked": mask_email(new_reg.email),
         "whatsapp_code": wa_code,
         "whatsapp_link": wa_url,
-        "expires_in_minutes": 15
+        "expires_in_minutes": 60
     }
 
 
 @router.post("/register/verify-email")
 def verify_email_otp(payload: VerifyEmailRequest, db: Session = Depends(get_db)):
-    """Valida el código de 6 dígitos recibido por correo electrónico."""
+    """Endpoint de compatibilidad: confirma correo sin requerir código OTP."""
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
     if not reg:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
 
-    if reg.email_verified:
-        return {
-            "success": True,
-            "email_verified": True,
-            "whatsapp_verified": reg.whatsapp_verified,
-            "can_proceed_to_payment": (reg.email_verified and reg.whatsapp_verified)
-        }
-
-    now = datetime.now(timezone.utc)
-    if reg.email_otp_expires_at:
-        exp = reg.email_otp_expires_at
-        if exp.tzinfo is None:
-            exp = exp.replace(tzinfo=timezone.utc)
-        if exp < now:
-            raise HTTPException(status_code=400, detail="El código de verificación ha expirado. Solicita uno nuevo.")
-
-    if not reg.email_otp or reg.email_otp.strip() != payload.otp.strip():
-        raise HTTPException(status_code=400, detail="El código de verificación es incorrecto.")
-
     reg.email_verified = True
-    reg.email_verified_at = now
     db.commit()
 
     return {
         "success": True,
-        "message": "Correo electrónico validado con éxito.",
+        "message": "Correo electrónico registrado con éxito.",
         "email_verified": True,
         "whatsapp_verified": reg.whatsapp_verified,
-        "can_proceed_to_payment": (reg.email_verified and reg.whatsapp_verified)
+        "can_proceed_to_payment": reg.whatsapp_verified
     }
 
 
@@ -347,9 +314,9 @@ def verify_whatsapp_handshake(payload: VerifyWhatsappRequest, db: Session = Depe
     if reg.whatsapp_verified:
         return {
             "success": True,
-            "email_verified": reg.email_verified,
+            "email_verified": True,
             "whatsapp_verified": True,
-            "can_proceed_to_payment": (reg.email_verified and reg.whatsapp_verified)
+            "can_proceed_to_payment": True
         }
 
     input_code = payload.whatsapp_code.strip().upper()
@@ -366,9 +333,9 @@ def verify_whatsapp_handshake(payload: VerifyWhatsappRequest, db: Session = Depe
     return {
         "success": True,
         "message": "WhatsApp validado con éxito.",
-        "email_verified": reg.email_verified,
+        "email_verified": True,
         "whatsapp_verified": True,
-        "can_proceed_to_payment": (reg.email_verified and reg.whatsapp_verified)
+        "can_proceed_to_payment": True
     }
 
 
@@ -376,16 +343,16 @@ def verify_whatsapp_handshake(payload: VerifyWhatsappRequest, db: Session = Depe
 def create_verification_payment(payload: CreatePaymentRequest, db: Session = Depends(get_db)):
     """
     Crea la preferencia en Mercado Pago (reutilizando las credenciales de Botica Silvestre)
-    solo si el registro ya validó tanto Correo como WhatsApp.
+    solo si el registro ya validó WhatsApp.
     """
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
     if not reg:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
 
-    if not reg.email_verified or not reg.whatsapp_verified:
+    if not reg.whatsapp_verified:
         raise HTTPException(
             status_code=400,
-            detail="Debes completar la validación de 2 pasos (correo y WhatsApp) antes de realizar el pago."
+            detail="Debes completar la validación de WhatsApp antes de realizar el pago."
         )
 
     # Reutilizar SDK de Mercado Pago de Botica Silvestre
