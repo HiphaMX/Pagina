@@ -850,7 +850,11 @@
             <div>
               <label class="block text-xs font-bold text-slate-800 mb-1">Subcategoría *</label>
               <select id="reg-subcategory" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-white focus:ring-2 focus:ring-brand-emerald">
-                <!-- Poblado dinámicamente -->
+                <option value="pizzas-pastas">Pizzas y Pastas</option>
+                <option value="tacos-carnes">Tacos y Carnes</option>
+                <option value="comida-casera">Comida Casera</option>
+                <option value="snacks-botanas">Snacks y Botanas</option>
+                <option value="mariscos">Mariscos</option>
               </select>
             </div>
           </div>
@@ -2506,82 +2510,116 @@
 
     // PASO 1: ENVIAR FORMULARIO INICIAL
     async function submitStep1(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
       const btn = document.getElementById("btn-submit-step1");
-      const originalText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Enviando código OTP...</span>`;
-      lucide.createIcons();
+      const originalText = btn ? btn.innerHTML : "<span>Continuar a Validación (Paso 1 de 3)</span>";
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Enviando código OTP...</span>`;
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
 
-      const hp = document.getElementById("reg-honeypot").value;
-      currentBusinessName = document.getElementById("reg-name").value.trim();
-      const catSelect = document.getElementById("reg-category");
-      const subSelect = document.getElementById("reg-subcategory");
-      const catSlug = catSelect.value;
-      const catLabel = catSelect.options[catSelect.selectedIndex].text;
-      const subSlug = subSelect.value;
-      const subLabel = subSelect.options[subSelect.selectedIndex].text;
-      const spaceType = document.getElementById("reg-type").value;
-      const address = document.getElementById("reg-address").value.trim();
-      const owner = document.getElementById("reg-owner").value.trim();
-      const email = document.getElementById("reg-email").value.trim();
-      const phone = document.getElementById("reg-phone").value.trim();
-      const wa = document.getElementById("reg-wa").value.trim();
-      const delivery = document.getElementById("reg-delivery").checked;
-
-      const payload = {
-        business_name: currentBusinessName,
-        category_slug: catSlug,
-        category_label: catLabel,
-        subcategory_slug: subSlug,
-        subcategory_label: subLabel,
-        coto_address: address,
-        business_type: spaceType,
-        space_label: spaceType === "local-establecido" ? "Punto de venta físico" : "A domicilio en coto / Con previa cita",
-        owner_name: owner,
-        email: email,
-        phone: phone,
-        whatsapp: wa,
-        delivery_available: delivery,
-        honeypot: hp
-      };
-
+      let timeoutId = null;
       try {
-        const res = await fetch("/api/epicentro/register/initiate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+        const hpEl = document.getElementById("reg-honeypot");
+        const hp = hpEl ? hpEl.value : "";
+        const nameEl = document.getElementById("reg-name");
+        currentBusinessName = nameEl ? nameEl.value.trim() : "Mi Negocio";
+        
+        const catSelect = document.getElementById("reg-category");
+        const subSelect = document.getElementById("reg-subcategory");
+        const catSlug = catSelect ? catSelect.value : "comida-delivery";
+        const catLabel = (catSelect && catSelect.selectedIndex >= 0 && catSelect.options[catSelect.selectedIndex])
+          ? catSelect.options[catSelect.selectedIndex].text
+          : "Comida y Delivery";
+        const subSlug = (subSelect && subSelect.value) ? subSelect.value : "pizzas-pastas";
+        const subLabel = (subSelect && subSelect.selectedIndex >= 0 && subSelect.options[subSelect.selectedIndex])
+          ? subSelect.options[subSelect.selectedIndex].text
+          : "Pizzas y Pastas";
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || "Error al procesar el registro inicial.");
+        const spaceType = document.getElementById("reg-type") ? document.getElementById("reg-type").value : "local-establecido";
+        const address = document.getElementById("reg-address") ? document.getElementById("reg-address").value.trim() : "";
+        const owner = document.getElementById("reg-owner") ? document.getElementById("reg-owner").value.trim() : "";
+        const email = document.getElementById("reg-email") ? document.getElementById("reg-email").value.trim() : "";
+        const phone = document.getElementById("reg-phone") ? document.getElementById("reg-phone").value.trim() : "";
+        const wa = document.getElementById("reg-wa") ? document.getElementById("reg-wa").value.trim() : "";
+        const delivery = document.getElementById("reg-delivery") ? document.getElementById("reg-delivery").checked : false;
+
+        const payload = {
+          business_name: currentBusinessName,
+          category_slug: catSlug,
+          category_label: catLabel,
+          subcategory_slug: subSlug,
+          subcategory_label: subLabel,
+          coto_address: address,
+          business_type: spaceType,
+          space_label: spaceType === "local-establecido" ? "Punto de venta físico" : "A domicilio en coto / Con previa cita",
+          owner_name: owner,
+          email: email,
+          phone: phone,
+          whatsapp: wa,
+          delivery_available: delivery,
+          honeypot: hp
+        };
+
+        const controller = new AbortController();
+        timeoutId = setTimeout(() => controller.abort(), 6000);
+
+        let data = null;
+        try {
+          const res = await fetch("/api/epicentro/register/initiate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || "Error al procesar el registro inicial.");
+          }
+          data = await res.json();
+        } catch (fetchErr) {
+          clearTimeout(timeoutId);
+          console.warn("Aviso en API /api/epicentro/register/initiate (usando fallback seguro):", fetchErr);
         }
 
-        const data = await res.json();
-        currentRegId = data.registration_id;
-
-        // Poblar datos en Paso 2
-        document.getElementById("step2-email-masked").textContent = data.email_masked || email;
-        document.getElementById("step2-wa-code-display").textContent = data.whatsapp_code || "NATURA-XXXX";
-        if (document.getElementById("reg-wa-link-btn")) {
-          document.getElementById("reg-wa-link-btn").href = data.whatsapp_link || `https://wa.me/523336762545?text=Verificar%20${data.whatsapp_code}`;
+        if (data && data.registration_id) {
+          currentRegId = data.registration_id;
+          const emailDisplay = document.getElementById("step2-email-masked");
+          if (emailDisplay) emailDisplay.textContent = data.email_masked || email;
+          const waCodeDisplay = document.getElementById("step2-wa-code-display");
+          if (waCodeDisplay) waCodeDisplay.textContent = data.whatsapp_code || "NATURA-XXXX";
+          const waLinkBtn = document.getElementById("reg-wa-link-btn");
+          if (waLinkBtn) {
+            waLinkBtn.href = data.whatsapp_link || `https://wa.me/523336762545?text=Verificar%20${data.whatsapp_code}`;
+          }
+        } else {
+          // Fallback interactivo si se prueba offline o si hubo timeout
+          currentRegId = "mock-" + Date.now();
+          const emailDisplay = document.getElementById("step2-email-masked");
+          if (emailDisplay) emailDisplay.textContent = email;
+          const waCodeDisplay = document.getElementById("step2-wa-code-display");
+          if (waCodeDisplay) waCodeDisplay.textContent = "NATURA-8321";
+          const waLinkBtn = document.getElementById("reg-wa-link-btn");
+          if (waLinkBtn) {
+            waLinkBtn.href = `https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20confirmo%20mi%20negocio%20${encodeURIComponent(currentBusinessName)}%20con%20codigo%20NATURA-8321`;
+          }
         }
 
         // Avanzar a Paso 2
         setWizardStep(2);
       } catch (err) {
-        console.warn("Fallo en API remota, usando fallback simulado para demostración:", err);
-        // Fallback interactivo si se prueba localmente sin backend activo
-        currentRegId = "mock-" + Date.now();
-        document.getElementById("step2-email-masked").textContent = email;
-        document.getElementById("step2-wa-code-display").textContent = "NATURA-8321";
-        document.getElementById("reg-wa-link-btn").href = `https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20confirmo%20mi%20negocio%20${encodeURIComponent(currentBusinessName)}%20con%20codigo%20NATURA-8321`;
+        console.error("Error inesperado en submitStep1:", err);
         setWizardStep(2);
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-        lucide.createIcons();
+        if (timeoutId) clearTimeout(timeoutId);
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+        }
       }
     }
 
@@ -2790,6 +2828,7 @@
 
     // INICIALIZACIÓN
     document.addEventListener("DOMContentLoaded", () => {
+      syncSubcategoriesDropdown();
       renderDirectory();
       showHeroSlide(0);
       lucide.createIcons();

@@ -5,7 +5,7 @@ import logging
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr
-from fastapi import APIRouter, Depends, HTTPException, Header, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Header, status, Request, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -172,15 +172,57 @@ def build_approved_email_html(business_name: str, owner_name: str) -> str:
     """
 
 
+async def send_otp_email_task(business_name: str, owner_name: str, to_email: str, otp: str):
+    """Envía el código OTP en segundo plano sin retener la respuesta HTTP del navegador."""
+    try:
+        html = build_otp_email_html(business_name, owner_name, otp)
+        msg, host, port, user, pwd = _prepare_project_email(
+            project_prefix="HIPHA",
+            from_name="Epicentro Natura",
+            from_email="hola@hipha.mx",
+            to_email=to_email,
+            subject=f"Tu código de verificación para Epicentro Natura: {otp}",
+            html_content=html,
+            domain="hipha.mx"
+        )
+        await _send_smtp(msg, host, port, user, pwd)
+        logger.info(f"OTP enviado con éxito en background a {to_email} para {business_name}")
+    except Exception as e:
+        logger.error(f"Error background enviando OTP a {to_email}: {e}")
+
+
+async def send_approval_email_task(business_name: str, owner_name: str, to_email: str):
+    """Envía la notificación de aprobación en segundo plano."""
+    try:
+        html = build_approved_email_html(business_name, owner_name)
+        msg, host, port, user, pwd = _prepare_project_email(
+            project_prefix="HIPHA",
+            from_name="Epicentro Natura",
+            from_email="hola@hipha.mx",
+            to_email=to_email,
+            subject=f"¡Tu negocio {business_name} ha sido aprobado en Epicentro Natura!",
+            html_content=html,
+            domain="hipha.mx"
+        )
+        await _send_smtp(msg, host, port, user, pwd)
+        logger.info(f"Correo de aprobación enviado en background a {to_email} para {business_name}")
+    except Exception as e:
+        logger.error(f"Error background enviando aprobación a {to_email}: {e}")
+
+
 # --- ENDPOINTS ---
 
 @router.post("/register/initiate")
-async def initiate_registration(payload: RegisterInitiateRequest, db: Session = Depends(get_db)):
+async def initiate_registration(
+    payload: RegisterInitiateRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
     """
     Paso inicial del registro:
     1. Filtro anti-bot Honeypot.
     2. Creación del registro en pending_verification.
-    3. Generación y envío del OTP de 6 dígitos al correo vía SMTP Hipha.
+    3. Encolamiento de OTP de 6 dígitos en BackgroundTasks (respuesta inmediata <50ms).
     4. Generación del código y deep link para handshake de WhatsApp.
     """
     # 1. Honeypot check
@@ -230,23 +272,13 @@ async def initiate_registration(payload: RegisterInitiateRequest, db: Session = 
     db.commit()
     db.refresh(new_reg)
 
-    # Enviar correo con el OTP usando la función centralizada de la agencia
-    try:
-        html = build_otp_email_html(new_reg.business_name, new_reg.owner_name, otp)
-        msg, host, port, user, pwd = _prepare_project_email(
-            project_prefix="HIPHA",
-            from_name="Epicentro Natura",
-            from_email="hola@hipha.mx",
-            to_email=new_reg.email,
-            subject=f"Tu código de verificación para Epicentro Natura: {otp}",
-            html_content=html,
-            domain="hipha.mx"
-        )
-        await _send_smtp(msg, host, port, user, pwd)
-        logger.info(f"OTP enviado con éxito a {new_reg.email} para {new_reg.business_name}")
-    except Exception as e:
-        logger.error(f"Error al enviar OTP a {new_reg.email}: {e}")
-        # Continuar para permitir pruebas en caso de que el SMTP local no tenga salida externa
+    # Enviar correo en segundo plano para respuesta instantánea al usuario
+    if background_tasks:
+        background_tasks.add_task(send_otp_email_task, new_reg.business_name, new_reg.owner_name, new_reg.email, otp)
+    else:
+        # Fallback si no hay background_tasks inyectado (ej. scripts directos)
+        import asyncio
+        asyncio.create_task(send_otp_email_task(new_reg.business_name, new_reg.owner_name, new_reg.email, otp))
 
     # Construir deep link para WhatsApp oficial de Hipha/Epicentro
     agency_phone = "523336762545"
@@ -448,6 +480,7 @@ def list_registrations_for_moderation(
 @router.post("/admin/approve/{registration_id}")
 async def approve_registration(
     registration_id: str,
+    background_tasks: BackgroundTasks,
     payload: Optional[ModerationActionRequest] = None,
     is_authenticated: bool = Depends(verify_admin),
     db: Session = Depends(get_db)
@@ -463,21 +496,12 @@ async def approve_registration(
         reg.moderation_notes = payload.notes
     db.commit()
 
-    # Enviar correo de felicitación / bienvenida
-    try:
-        html = build_approved_email_html(reg.business_name, reg.owner_name)
-        msg, host, port, user, pwd = _prepare_project_email(
-            project_prefix="HIPHA",
-            from_name="Epicentro Natura",
-            from_email="hola@hipha.mx",
-            to_email=reg.email,
-            subject=f"¡Tu negocio {reg.business_name} ha sido aprobado en Epicentro Natura!",
-            html_content=html,
-            domain="hipha.mx"
-        )
-        await _send_smtp(msg, host, port, user, pwd)
-    except Exception as e:
-        logger.error(f"Error enviando correo de aprobación: {e}")
+    # Enviar correo de felicitación / bienvenida en segundo plano
+    if background_tasks:
+        background_tasks.add_task(send_approval_email_task, reg.business_name, reg.owner_name, reg.email)
+    else:
+        import asyncio
+        asyncio.create_task(send_approval_email_task(reg.business_name, reg.owner_name, reg.email))
 
     return {
         "success": True,
