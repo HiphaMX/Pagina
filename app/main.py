@@ -8,6 +8,7 @@ from app.api import contact, mercadopago, auth, sat, qa, visual_generator, socia
 from app.api.projects import botica as botica_project
 from app.api.projects import oncologia_robotica as oncologia_robotica_project
 from app.api.projects import jairo_dominguez as jairo_dominguez_project
+from app.api.projects import epicentro as epicentro_project
 from app.api.dashboard import routes as dashboard_routes
 from app.api.dashboard import reconciliation_routes
 from app.api.dashboard import web_health_routes
@@ -238,6 +239,7 @@ app.include_router(botica_project.router, prefix="/api/botica", tags=["botica"])
 app.include_router(oncologia_robotica_project.router, prefix="/api/oncologia-robotica", tags=["oncologia-robotica"])
 app.include_router(jairo_dominguez_project.router, prefix="/api/jairo-dominguez", tags=["jairo-dominguez"])
 app.include_router(jairo_dominguez_project.router, prefix="/api/projects/jairo-dominguez", tags=["jairo-dominguez"])
+app.include_router(epicentro_project.router, prefix="/api/epicentro", tags=["epicentro"])
 
 
 
