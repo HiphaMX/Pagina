@@ -416,31 +416,31 @@
             moderation_notes: "Comercio fundador oficial con micrositio web interactivo y catálogo de fotos activo."
           },
           {
-            id: "reg-chile-chillon",
-            business_name: "Chile Chillón",
+            id: "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97",
+            business_name: "El Chile Chillón",
             category_slug: "comida-delivery",
             category_label: "Comida y Delivery",
             subcategory_slug: "salsas-artesanales",
             subcategory_label: "Salsas Picantes 100% Naturales",
-            business_type: "emprendimiento",
-            space_label: "Punto de venta & A domicilio",
-            coto_address: "Zona Mariano Otero (Envíos directos a caseta en cotos Natura)",
-            owner_name: "Chile Chillón",
-            email: "contacto@elchilechillon.mx",
-            phone: "39 2109 7809",
-            whatsapp: "39 2109 7809",
+            business_type: "sin-punto-venta",
+            space_label: "A domicilio en coto / Con previa cita",
+            coto_address: "Natura Bosque Residencial",
+            owner_name: "Francisco Delgadillo",
+            email: "efe.creativo@gmail.com",
+            phone: "3921097809",
+            whatsapp: "3921097809",
             website: "https://elchilechillon.mx",
-            schedule: "Lunes a Domingo · 10:00 a 20:00 hrs",
+            schedule: "Lunes a viernes · 09:00 a 17:00 hrs",
             status: "active",
             payment_status: "waived",
             payment_amount: 399.0,
-            kam_name: "Cortesía Hipha",
-            payment_method: "courtesy_hipha",
+            kam_name: "Chizko",
+            payment_method: "mercadopago",
             is_verified_badge: true,
             delivery_available: true,
-            preferred_contact_methods: "whatsapp,delivery,llamada",
-            description: "Salsas picantes gourmet 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos.",
-            cover_photo: "Assets/chillon/Hero chile chillon.png",
+            preferred_contact_methods: "whatsapp",
+            description: "Disfruta de nuestras salsas picantes en tu mesa. Salsas 100% originales y naturales",
+            cover_photo: "Assets/chillon/placa_fondo_restaurante_gourmet.jpg",
             microsite_data: JSON.stringify({
               cover_photo: "Assets/chillon/Hero chile chillon.png",
               website_url: "https://elchilechillon.mx",
@@ -1159,7 +1159,7 @@ Esta acción no se puede deshacer.`)) return;
         heroWebsite = mdata.website_url;
       } else if (reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || reg.website.includes("."))) {
         heroWebsite = reg.website;
-      } else if (reg.id === "reg-chile-chillon" || (reg.business_name && reg.business_name.toLowerCase().includes("chillon"))) {
+      } else if (reg.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || reg.id === "reg-chile-chillon" || (reg.business_name && (reg.business_name.toLowerCase().includes("chillon") || reg.business_name.toLowerCase().includes("chillón") || reg.business_name.toLowerCase().includes("chill")))) {
         heroWebsite = "https://elchilechillon.mx";
       } else if (reg.id === "reg-botica-silvestre" || (reg.business_name && reg.business_name.toLowerCase().includes("botica"))) {
         heroWebsite = "https://boticasilvestre.com.mx";

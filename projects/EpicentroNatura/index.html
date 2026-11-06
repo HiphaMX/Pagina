@@ -908,32 +908,32 @@
     // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO OFICIAL)
     const ALL_BUSINESSES = [
       {
-        id: "reg-chile-chillon",
-        name: "Chile Chillón",
+        id: "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97",
+        name: "El Chile Chillón",
         category_slug: "comida-delivery",
         category_label: "Comida y Delivery",
         subcategory_slug: "salsas-artesanales",
         subcategory_label: "Salsas Picantes 100% Naturales",
-        type: "emprendimiento",
-        type_slug: "emprendimiento",
-        type_label: "Emprendimiento Artesanal",
-        space_label: "Punto de venta & A domicilio",
+        type: "sin-punto-venta",
+        type_slug: "sin-punto-venta",
+        type_label: "A domicilio en coto / Con previa cita",
+        space_label: "A domicilio en coto / Con previa cita",
         community_slug: "natura-bosque-residencial",
         community_name: "Natura Bosque Residencial",
         delivery_available: true,
         pickup_available: true,
         has_delivery: true,
         has_pickup: true,
-        delivery_badge: "Envíos directos a caseta",
-        pickup_badge: "Recoger en coto",
-        coto: "Zona Mariano Otero",
-        address: "Zona Mariano Otero · Envíos a caseta en cotos Natura",
-        description: "Salsas picantes gourmet 100% artesanales y naturales para maximizar tu sazón. Árbol, Habanero, Tatemado, Negra, Serrano y Semillas Enchiladas. Sin conservadores ni colorantes artificiales.",
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: "Recoger en local",
+        coto: "Natura Bosque Residencial",
+        address: "Natura Bosque Residencial",
+        description: "Disfruta de nuestras salsas picantes en tu mesa. Salsas 100% originales y naturales",
         phone: "3921097809",
         whatsapp: "3921097809",
-        website: "chile-chillon",
-        schedule: "Lunes a Domingo · 10:00 a 20:00 hrs",
-        hours: "Lunes a Domingo · 10:00 a 20:00 hrs",
+        website: "https://elchilechillon.mx",
+        schedule: "Lunes a viernes · 09:00 a 17:00 hrs",
+        hours: "Lunes a viernes · 09:00 a 17:00 hrs",
         is_open_now: true,
         payment_methods: ["Efectivo", "Transferencia", "Mercado Pago"],
         has_badge: true,
@@ -945,7 +945,9 @@
         photos: [
           "Assets/chillon/Salsas/de_arbol.jpg",
           "Assets/chillon/Salsas/habanero.jpg",
-          "Assets/chillon/Salsas/tatemado.jpg"
+          "Assets/chillon/Salsas/tatemado.jpg",
+          "Assets/chillon/Salsas/negra.jpg",
+          "Assets/chillon/Salsas/semillas_enchiladas.jpg"
         ]
       },
       {
@@ -1677,10 +1679,19 @@
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
             activeBizList.forEach(biz => {
               const normName = (biz.business_name || "").trim().toLowerCase();
-              const existingIdx = ALL_BUSINESSES.findIndex(b =>
-                b.id === biz.id ||
-                (b.name && b.name.trim().toLowerCase() === normName)
-              );
+              const cleanNorm = normName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/^el\s+/, "");
+              const existingIdx = ALL_BUSINESSES.findIndex(b => {
+                if (b.id === biz.id) return true;
+                const bNorm = (b.name || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/^el\s+/, "");
+                if (bNorm === cleanNorm) return true;
+                if ((cleanNorm.includes("chile chillon") || cleanNorm.includes("chillon")) && 
+                    (bNorm.includes("chile chillon") || bNorm.includes("chillon") || b.id === "reg-chile-chillon" || b.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97")) return true;
+                if (cleanNorm.includes("botica") && (bNorm.includes("botica") || b.id === "reg-botica-silvestre" || b.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e")) return true;
+                return false;
+              });
+
+              const isChillon = normName.includes("chill") || biz.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || biz.id === "reg-chile-chillon";
+              const isBotica = normName.includes("botica") || biz.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || biz.id === "reg-botica-silvestre";
 
               const bizObj = {
                 id: biz.id,
@@ -1691,7 +1702,7 @@
                 subcategory_label: biz.subcategory_label || "",
                 type: biz.business_type || "local-establecido",
                 type_slug: biz.business_type || "local-establecido",
-                space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio / Cita"),
+                space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio en coto / Con previa cita"),
                 community_slug: "natura-bosque-residencial",
                 community_name: "Natura Bosque Residencial",
                 delivery_available: !!biz.delivery_available,
@@ -1705,15 +1716,15 @@
                 description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
                 phone: biz.phone,
                 whatsapp: biz.whatsapp,
-                website: biz.website || null,
+                website: isChillon ? "https://elchilechillon.mx" : (isBotica ? "botica-silvestre" : (biz.website || null)),
                 schedule: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 hours: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 is_open_now: true,
                 payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
                 has_badge: true,
-                badge_text: "Vecino Verificado",
+                badge_text: (isChillon || isBotica || (biz.kam_name && biz.kam_name.toLowerCase().includes("fundador")) || (biz.moderation_notes && biz.moderation_notes.includes("Fundador"))) ? "Comercio Fundador" : "Vecino Verificado",
                 rating: 5.0,
-                reviews: 1,
+                reviews: 28,
                 has_photos: !!(biz.photos && biz.photos.length > 5),
                 photos: (typeof biz.photos === 'string' && biz.photos.startsWith('[')) ? JSON.parse(biz.photos) : (biz.photos || [])
               };
@@ -1724,6 +1735,15 @@
                 ALL_BUSINESSES.unshift(bizObj);
               }
             });
+
+            // Garantizar que no exista duplicado de Chile Chillón bajo ningún ID o nombre residual
+            for (let i = ALL_BUSINESSES.length - 1; i >= 0; i--) {
+              const item = ALL_BUSINESSES[i];
+              if (item.id === "reg-chile-chillon" && ALL_BUSINESSES.some(b => b.id !== "reg-chile-chillon" && (b.name || "").toLowerCase().includes("chill"))) {
+                ALL_BUSINESSES.splice(i, 1);
+              }
+            }
+
             renderDirectory();
           }
         })

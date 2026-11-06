@@ -967,12 +967,26 @@ def seed_official_showcases(db: Session):
             if updated or len(all_boticas) > 1:
                 db.commit()
 
-        # 2. CHILE CHILLÓN (Cortesía Oficial Hipha con Micrositio Profesional & Catálogo de Salsas)
-        all_chillon = db.query(EpicentroRegistration).filter(
-            (EpicentroRegistration.business_name.ilike("%Chile Chillón%")) |
-            (EpicentroRegistration.business_name.ilike("%Chile Chillon%")) |
-            (EpicentroRegistration.id == "reg-chile-chillon")
-        ).order_by(EpicentroRegistration.created_at.asc()).all()
+        # 2. CHILE CHILLÓN (Registro Oficial Único)
+        # Priorizar siempre el registro creado por el usuario y purgar cualquier registro dummy previo
+        user_chillon = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.business_name.ilike("%chill%")) &
+            (EpicentroRegistration.id != "reg-chile-chillon")
+        ).order_by(EpicentroRegistration.created_at.asc()).first()
+
+        if user_chillon:
+            dummies = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == "reg-chile-chillon").all()
+            if dummies:
+                for d in dummies:
+                    db.delete(d)
+                db.commit()
+            all_chillon = [user_chillon]
+        else:
+            all_chillon = db.query(EpicentroRegistration).filter(
+                (EpicentroRegistration.business_name.ilike("%Chile Chillón%")) |
+                (EpicentroRegistration.business_name.ilike("%Chile Chillon%")) |
+                (EpicentroRegistration.id == "reg-chile-chillon")
+            ).order_by(EpicentroRegistration.created_at.asc()).all()
 
         if not all_chillon:
             chillon = EpicentroRegistration(
