@@ -806,6 +806,7 @@ def seed_official_showcases(db: Session):
     try:
         BOTICA_DATA = {
             "cover_photo": "Assets/botica/ethereal_botanical_hero.webp",
+            "website_url": "https://boticasilvestre.com.mx",
             "featured_section": {
                 "title": "Extractos Botánicos & Fórmulas Maestras",
                 "subtitle": "LÍNEA SOUL SHINE · SÚPER ADAPTÓGENOS",
@@ -851,6 +852,7 @@ def seed_official_showcases(db: Session):
 
         CHILLON_DATA = {
             "cover_photo": "Assets/chillon/placa_fondo_restaurante_gourmet.jpg",
+            "website_url": "https://elchilechillon.mx",
             "featured_section": {
                 "title": "Catálogo de Salsas & Sazón de la Casa",
                 "subtitle": "SALSAS PICANTES 100% NATURALES · SELECCIÓN ARTESANAL",
@@ -914,7 +916,7 @@ def seed_official_showcases(db: Session):
                 delivery_available=True,
                 preferred_contact_methods="whatsapp,delivery,punto-venta",
                 schedule="Lunes a Sábado · 09:00 a 19:00 hrs",
-                website="botica-silvestre",
+                website="https://boticasilvestre.com.mx",
                 description="Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
                 cover_photo=BOTICA_DATA["cover_photo"],
                 microsite_data=json.dumps(BOTICA_DATA),
@@ -948,8 +950,8 @@ def seed_official_showcases(db: Session):
             if not botica.schedule:
                 botica.schedule = "Lunes a Sábado · 09:00 a 19:00 hrs"
                 updated = True
-            if botica.website != "botica-silvestre":
-                botica.website = "botica-silvestre"
+            if not botica.website or botica.website == "botica-silvestre":
+                botica.website = "https://boticasilvestre.com.mx"
                 updated = True
             if not botica.description:
                 botica.description = "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos."
@@ -988,7 +990,7 @@ def seed_official_showcases(db: Session):
                 delivery_available=True,
                 preferred_contact_methods="whatsapp,delivery,llamada",
                 schedule="Lunes a Domingo · 10:00 a 20:00 hrs",
-                website="chile-chillon",
+                website="https://elchilechillon.mx",
                 description="Salsas picantes artesanales 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos.",
                 cover_photo=CHILLON_DATA["cover_photo"],
                 microsite_data=json.dumps(CHILLON_DATA),
@@ -1012,14 +1014,14 @@ def seed_official_showcases(db: Session):
                     db.delete(dup)
 
             updated = False
-            if not chillon.cover_photo or chillon.cover_photo != CHILLON_DATA["cover_photo"]:
+            if not chillon.cover_photo:
                 chillon.cover_photo = CHILLON_DATA["cover_photo"]
                 updated = True
             if not chillon.microsite_data:
                 chillon.microsite_data = json.dumps(CHILLON_DATA)
                 updated = True
-            if chillon.website != "chile-chillon":
-                chillon.website = "chile-chillon"
+            if not chillon.website or chillon.website == "chile-chillon":
+                chillon.website = "https://elchilechillon.mx"
                 updated = True
             if chillon.status != "active":
                 chillon.status = "active"
@@ -1074,4 +1076,29 @@ def list_active_verified_businesses(db: Session = Depends(get_db)):
         .all()
     )
     return results
+
+
+@router.get("/businesses/{slug_or_id}")
+def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
+    """Retorna los datos de un comercio o micrositio por ID o slug para sincronización en vivo."""
+    ensure_epicentro_schema(db)
+    seed_official_showcases(db)
+    slug_clean = slug_or_id.strip().lower()
+
+    # 1. Búsqueda por ID exacto
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == slug_or_id).first()
+    if not reg:
+        # 2. Búsqueda por ID con prefijo 'reg-'
+        reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == f"reg-{slug_clean}").first()
+    if not reg:
+        # 3. Búsqueda por coincidencia en website o nombre
+        reg = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.website.ilike(f"%{slug_clean}%")) |
+            (EpicentroRegistration.business_name.ilike(f"%{slug_clean.replace('-', ' ')}%"))
+        ).first()
+
+    if not reg:
+        raise HTTPException(status_code=404, detail="Comercio no encontrado")
+    return reg
+
 

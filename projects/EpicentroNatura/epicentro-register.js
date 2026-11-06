@@ -1258,6 +1258,7 @@
 
       const micrositeData = {
         cover_photo: registerCoverPhoto || null,
+        website_url: website || null,
         featured_section: {
           title: featuredTitle || "Nuestra Selección Destacada",
           subtitle: featuredSubtitle,

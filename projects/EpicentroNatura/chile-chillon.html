@@ -76,7 +76,7 @@
 
   <!-- HEADER / HERO DEL COMERCIO -->
   <header class="relative bg-slate-950 text-white overflow-hidden pb-12 pt-8 sm:pt-12 border-b border-slate-800">
-    <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('Assets/chillon/placa_fondo_restaurante_gourmet.jpg');"></div>
+    <div id="hero-cover-bg" class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('Assets/chillon/placa_fondo_restaurante_gourmet.jpg');"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/40"></div>
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
@@ -127,11 +127,11 @@
 
       <!-- BARRA DE ACCIÓN DIRECTA -->
       <div class="flex flex-wrap items-center gap-3 pt-4">
-        <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20vi%20su%20micrositio%20en%20Epicentro%20Natura%20y%20quiero%20hacer%20un%20pedido%20a%20mi%20coto" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
+        <a id="hero-whatsapp-btn" href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20vi%20su%20micrositio%20en%20Epicentro%20Natura%20y%20quiero%20hacer%20un%20pedido%20a%20mi%20coto" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
           <i data-lucide="message-circle" class="w-4 h-4"></i>
           <span>Enviar WhatsApp</span>
         </a>
-        <a href="tel:3921097809" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
+        <a id="hero-phone-btn" href="tel:3921097809" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
           <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
           <span>Llamar</span>
         </a>
@@ -139,7 +139,7 @@
           <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
           <span>Zona de cobertura</span>
         </a>
-        <a href="https://elchilechillon.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-sm border border-emerald-500/30 transition-all active:scale-95">
+        <a id="hero-website-btn" href="https://elchilechillon.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-sm border border-emerald-500/30 transition-all active:scale-95">
           <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
           <span>Sitio web</span>
         </a>
@@ -549,6 +549,77 @@
         if (el) el.scrollIntoView();
       }, 50);
     }
+
+    // Sincronización en vivo de configuración del micrositio (sitio web hero, portada, etc.)
+    async function syncChileChillonMicrosite() {
+      let reg = null;
+      try {
+        const res = await fetch("/api/epicentro/businesses/chile-chillon");
+        if (res.ok) reg = await res.json();
+      } catch (e) {}
+
+      if (!reg) {
+        try {
+          const localSaved = localStorage.getItem("epicentro_admin_registrations");
+          if (localSaved) {
+            const list = JSON.parse(localSaved);
+            reg = list.find(r => r.id === "reg-chile-chillon" || (r.business_name && r.business_name.toLowerCase().includes("chillon")));
+          }
+        } catch (e) {}
+      }
+
+      if (!reg) return;
+
+      // 1. Actualizar Sitio Web Oficial (Botón Hero1)
+      let siteUrl = "";
+      if (reg.microsite_data) {
+        try {
+          const md = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
+          if (md && md.website_url !== undefined && md.website_url !== null) {
+            siteUrl = String(md.website_url).trim();
+          }
+        } catch (e) {}
+      }
+      if (!siteUrl && reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
+        siteUrl = String(reg.website).trim();
+      }
+
+      const webBtn = document.getElementById("hero-website-btn");
+      if (webBtn) {
+        if (siteUrl) {
+          const finalUrl = siteUrl.startsWith("http") ? siteUrl : "https://" + siteUrl;
+          webBtn.href = finalUrl;
+          webBtn.classList.remove("hidden");
+          webBtn.classList.add("inline-flex");
+        } else if (reg.microsite_data && (reg.microsite_data.includes('"website_url": null') || reg.microsite_data.includes('"website_url": ""'))) {
+          // Si el moderador lo eliminó o dejó en blanco explícitamente, ocultar
+          webBtn.classList.add("hidden");
+          webBtn.classList.remove("inline-flex");
+        }
+      }
+
+      // 2. Actualizar Portada si fue modificada por el moderador
+      if (reg.cover_photo) {
+        const coverEl = document.getElementById("hero-cover-bg");
+        if (coverEl) coverEl.style.backgroundImage = `url('${reg.cover_photo}')`;
+      }
+
+      // 3. Actualizar WhatsApp o Teléfono si fueron modificados
+      if (reg.whatsapp) {
+        const waBtn = document.getElementById("hero-whatsapp-btn");
+        if (waBtn) {
+          const cleanWa = reg.whatsapp.replace(/\D/g, "");
+          waBtn.href = `https://wa.me/52${cleanWa}?text=${encodeURIComponent("Hola Chile Chillón, vi su micrositio en Epicentro Natura y quiero hacer un pedido a mi coto")}`;
+        }
+      }
+      if (reg.phone) {
+        const phoneBtn = document.getElementById("hero-phone-btn");
+        if (phoneBtn) {
+          phoneBtn.href = `tel:${reg.phone.replace(/\D/g, "")}`;
+        }
+      }
+    }
+    syncChileChillonMicrosite();
   </script>
 </body>
 </html>
