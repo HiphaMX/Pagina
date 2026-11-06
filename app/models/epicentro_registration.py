@@ -21,9 +21,13 @@ class EpicentroRegistration(Base):
     phone = Column(String(30), nullable=False)
     whatsapp = Column(String(30), nullable=False)
     preferred_contact_methods = Column(String(255), nullable=True)
+    schedule = Column(String(150), nullable=True)
     delivery_available = Column(Boolean, default=False)
     website = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
+    photos = Column(Text, nullable=True)  # JSON array de hasta 10 fotos para micrositios
+    kam_name = Column(String(100), nullable=True)
+    payment_method = Column(String(50), nullable=True)
 
     # Paso 1 de Validación: Correo Electrónico
     email_otp = Column(String(10), nullable=True)

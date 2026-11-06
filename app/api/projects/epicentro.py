@@ -40,16 +40,25 @@ def ensure_epicentro_schema(db: Session):
         if "postgres" in engine_str:
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS website VARCHAR(255)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS preferred_contact_methods VARCHAR(255)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS schedule VARCHAR(150)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS photos TEXT"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS kam_name VARCHAR(100)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50)"))
             db.commit()
         else:
-            try:
-                db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN website VARCHAR(255)"))
-            except Exception:
-                pass
-            try:
-                db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN preferred_contact_methods VARCHAR(255)"))
-            except Exception:
-                pass
+            for col, col_type in [
+                ("website", "VARCHAR(255)"),
+                ("preferred_contact_methods", "VARCHAR(255)"),
+                ("schedule", "VARCHAR(150)"),
+                ("photos", "TEXT"),
+                ("kam_name", "VARCHAR(100)"),
+                ("payment_method", "VARCHAR(50)")
+            ]:
+                try:
+                    db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
+                    db.commit()
+                except Exception:
+                    pass
             db.commit()
     except Exception as e:
         logger.warning(f"Nota en verificación de esquema epicentro: {e}")
@@ -108,10 +117,50 @@ class RegisterInitiateRequest(BaseModel):
     phone: str
     whatsapp: str
     preferred_contact_methods: Optional[str] = None
+    schedule: Optional[str] = None
+    photos: Optional[str] = None
+    kam_name: Optional[str] = None
+    payment_method: Optional[str] = None
     delivery_available: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
     honeypot: Optional[str] = None  # Trampa anti-bot
+
+
+class UpdateRegistrationAdminRequest(BaseModel):
+    business_name: Optional[str] = None
+    category_slug: Optional[str] = None
+    category_label: Optional[str] = None
+    subcategory_slug: Optional[str] = None
+    subcategory_label: Optional[str] = None
+    coto_address: Optional[str] = None
+    business_type: Optional[str] = None
+    space_label: Optional[str] = None
+    owner_name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    whatsapp: Optional[str] = None
+    preferred_contact_methods: Optional[str] = None
+    schedule: Optional[str] = None
+    delivery_available: Optional[bool] = None
+    website: Optional[str] = None
+    description: Optional[str] = None
+    photos: Optional[str] = None
+    kam_name: Optional[str] = None
+    payment_method: Optional[str] = None
+    payment_status: Optional[str] = None
+    payment_amount: Optional[float] = None
+    is_verified_badge: Optional[bool] = None
+    status: Optional[str] = None
+    moderation_notes: Optional[str] = None
+
+
+class KamPaymentReportRequest(BaseModel):
+    registration_id: str
+    kam_name: str
+    payment_method: Optional[str] = "kam_direct"
+    amount: Optional[float] = 99.0
+    notes: Optional[str] = None
 
 
 class VerifyEmailRequest(BaseModel):
@@ -299,6 +348,10 @@ async def initiate_registration(
         phone=payload.phone.strip(),
         whatsapp=payload.whatsapp.strip(),
         preferred_contact_methods=payload.preferred_contact_methods.strip() if payload.preferred_contact_methods else None,
+        schedule=payload.schedule.strip() if payload.schedule else None,
+        photos=payload.photos.strip() if payload.photos else None,
+        kam_name=payload.kam_name.strip() if payload.kam_name else None,
+        payment_method=payload.payment_method.strip() if payload.payment_method else None,
         delivery_available=payload.delivery_available,
         website=payload.website.strip() if payload.website else None,
         description=payload.description,
@@ -307,7 +360,7 @@ async def initiate_registration(
         email_verified=True,
         whatsapp_code=wa_code,
         whatsapp_verified=False,
-        payment_status="pending",
+        payment_status="pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}",
         payment_amount=99.0,
         status="pending_verification"
     )
@@ -616,6 +669,72 @@ def delete_registration(
     return {"success": True, "message": f"Registro '{bname}' eliminado permanentemente."}
 
 
+@router.put("/admin/registrations/{registration_id}")
+def update_registration_details(
+    registration_id: str,
+    payload: UpdateRegistrationAdminRequest,
+    is_authenticated: bool = Depends(verify_admin),
+    db: Session = Depends(get_db)
+):
+    """Permite al moderador/KAM editar cualquier dato de una ficha de registro comercial."""
+    ensure_epicentro_schema(db)
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == registration_id).first()
+    if not reg:
+        raise HTTPException(status_code=404, detail="Registro no encontrado")
+
+    update_dict = payload.dict(exclude_unset=True)
+    for key, value in update_dict.items():
+        if hasattr(reg, key):
+            setattr(reg, key, value)
+
+    # Si se activa manualmente el estatus a active y no tenía badge, activarlo
+    if payload.status == "active" and not reg.is_verified_badge:
+        reg.is_verified_badge = True
+
+    db.commit()
+    db.refresh(reg)
+    return {
+        "success": True,
+        "message": f"Ficha '{reg.business_name}' actualizada correctamente.",
+        "registration": reg
+    }
+
+
+@router.post("/register/report-kam-payment")
+def report_kam_payment(
+    payload: KamPaymentReportRequest,
+    db: Session = Depends(get_db)
+):
+    """Registra solicitud de pago o alta acordada con un Asesor KAM / Transferencia."""
+    ensure_epicentro_schema(db)
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
+    if not reg:
+        raise HTTPException(status_code=404, detail="Registro no encontrado")
+
+    kam = payload.kam_name.strip()
+    reg.kam_name = kam
+    reg.payment_method = payload.payment_method or "kam_direct"
+    reg.payment_status = "pending_kam_verification"
+    now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+    note_line = f"Pago acordado con asesor KAM '{kam}' ({now_str} UTC)"
+    if payload.notes:
+        note_line += f": {payload.notes}"
+    reg.moderation_notes = (reg.moderation_notes + "\n" if reg.moderation_notes else "") + note_line
+
+    db.commit()
+    db.refresh(reg)
+
+    folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
+    folio = f"NATURA-KAM-{folio_suffix}"
+
+    return {
+        "success": True,
+        "message": f"Pago registrado con el asesor KAM {kam}. Pendiente de confirmación.",
+        "folio": folio,
+        "registration_id": reg.id
+    }
+
+
 @router.post("/admin/registrations/purge-tests")
 def purge_test_registrations(
     is_authenticated: bool = Depends(verify_admin),
@@ -668,6 +787,7 @@ def seed_botica_silvestre_if_missing(db: Session):
                 whatsapp="3336762545",
                 delivery_available=True,
                 preferred_contact_methods="whatsapp,delivery,punto-venta",
+                schedule="Lunes a Sábado · 09:00 a 19:00 hrs",
                 website="botica-silvestre",
                 description="Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
                 email_verified=True,
@@ -691,6 +811,9 @@ def seed_botica_silvestre_if_missing(db: Session):
             updated = False
             if not botica.preferred_contact_methods:
                 botica.preferred_contact_methods = "whatsapp,delivery,punto-venta"
+                updated = True
+            if not botica.schedule:
+                botica.schedule = "Lunes a Sábado · 09:00 a 19:00 hrs"
                 updated = True
             if botica.website != "botica-silvestre":
                 botica.website = "botica-silvestre"

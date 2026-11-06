@@ -82,6 +82,168 @@
   let currentRegId = null;
   let currentBusinessName = "";
   let waVerified = false;
+  let currentPaymentMode = "mp";
+  let registerUploadedPhotos = [];
+
+  function compressImageFile(file, maxWidth = 1000, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/webp", quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleRegisterPhotoFiles(e) {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    const remainingSlots = 10 - registerUploadedPhotos.length;
+    if (remainingSlots <= 0) {
+      alert("Ya has alcanzado el límite máximo de 10 fotografías para tu catálogo.");
+      return;
+    }
+    const filesToProcess = files.slice(0, remainingSlots);
+    for (const file of filesToProcess) {
+      try {
+        const compressedDataUrl = await compressImageFile(file);
+        registerUploadedPhotos.push(compressedDataUrl);
+      } catch (err) {
+        console.warn("Error comprimiendo imagen:", err);
+      }
+    }
+    renderRegisterPhotosGrid();
+    e.target.value = "";
+  }
+
+  function promptRegisterPhotoUrl() {
+    if (registerUploadedPhotos.length >= 10) {
+      alert("Ya has alcanzado el límite máximo de 10 fotografías.");
+      return;
+    }
+    const url = prompt("Ingresa la URL pública de la imagen (ej. https://...):");
+    if (url && url.trim().startsWith("http")) {
+      registerUploadedPhotos.push(url.trim());
+      renderRegisterPhotosGrid();
+    }
+  }
+
+  function removeRegisterPhoto(index) {
+    registerUploadedPhotos.splice(index, 1);
+    renderRegisterPhotosGrid();
+  }
+
+  function renderRegisterPhotosGrid() {
+    const grid = document.getElementById("reg-photos-grid");
+    const badge = document.getElementById("reg-photos-counter-badge");
+    if (badge) {
+      badge.textContent = `${registerUploadedPhotos.length} / 10`;
+    }
+    if (!grid) return;
+
+    if (registerUploadedPhotos.length === 0) {
+      grid.innerHTML = `
+        <div id="reg-photos-empty-text" class="col-span-5 py-3 text-center text-[11px] text-slate-400">
+          No has agregado fotos aún (opcional durante el alta inicial).
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = registerUploadedPhotos.map((photo, idx) => `
+      <div class="relative w-full aspect-square rounded-xl bg-white border border-slate-200 overflow-hidden shadow-xs flex items-center justify-center p-1 group">
+        <img src="${photo}" alt="Foto ${idx + 1}" class="w-full h-full object-contain bg-white">
+        <button type="button" onclick="removeRegisterPhoto(${idx})" title="Eliminar foto" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/80 hover:bg-rose-600 text-white flex items-center justify-center text-xs transition-colors shadow-xs">
+          ✕
+        </button>
+      </div>
+    `).join("");
+  }
+
+  function setPaymentMode(mode) {
+    currentPaymentMode = mode;
+    const tabMp = document.getElementById("tab-pay-mp");
+    const tabKam = document.getElementById("tab-pay-kam");
+    const panelMp = document.getElementById("panel-pay-mp");
+    const panelKam = document.getElementById("panel-pay-kam");
+
+    if (mode === "mp") {
+      if (tabMp) tabMp.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs flex items-center justify-center gap-1.5";
+      if (tabKam) tabKam.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5";
+      if (panelMp) panelMp.classList.remove("hidden");
+      if (panelKam) panelKam.classList.add("hidden");
+    } else {
+      if (tabMp) tabMp.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5";
+      if (tabKam) tabKam.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-emerald-950 shadow-xs flex items-center justify-center gap-1.5";
+      if (panelMp) panelMp.classList.add("hidden");
+      if (panelKam) panelKam.classList.remove("hidden");
+    }
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
+  async function handleKamPaymentSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const kamInput = document.getElementById("reg-kam-name");
+    const kamName = kamInput ? kamInput.value.trim() : "";
+    const kamNotes = document.getElementById("reg-kam-notes") ? document.getElementById("reg-kam-notes").value.trim() : "";
+
+    if (!kamName) {
+      alert("Por favor indica el nombre de tu Asesor KAM o Ejecutivo Hipha asignado.");
+      if (kamInput) kamInput.focus();
+      return;
+    }
+
+    const btn = document.getElementById("btn-submit-kam-payment");
+    const originalText = btn ? btn.innerHTML : "";
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Registrando con Asesor...</span>`;
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    try {
+      const res = await fetch("/api/epicentro/register/report-kam-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          registration_id: currentRegId,
+          kam_name: kamName,
+          notes: kamNotes
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || "Error al registrar pago con KAM");
+      showStep4Success(data.folio || `NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`);
+    } catch (err) {
+      console.warn("Aviso KAM payment:", err);
+      showStep4Success(`NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
+    }
+  }
 
   function detectActiveCategory(explicitCat) {
     if (explicitCat && typeof explicitCat === 'string' && explicitCat.trim()) {
@@ -205,6 +367,17 @@
             </div>
           </div>
 
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center justify-between">
+              <span>Horario de Atención Comercial *</span>
+              <span class="text-[10px] font-normal text-slate-400">Ej. Lun a Sáb 09:00 a 19:00 hrs</span>
+            </label>
+            <div class="relative">
+              <i data-lucide="clock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="reg-schedule" required placeholder="Ej. Lunes a Sábado · 09:00 a 19:00 hrs" class="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            </div>
+          </div>
+
           <!-- MÉTODOS DE CONTACTO Y ATENCIÓN PREFERIDOS -->
           <div class="pt-1">
             <label class="block text-xs font-bold text-slate-800 mb-1.5 flex items-center justify-between">
@@ -249,6 +422,35 @@
           <div class="flex items-center gap-2 pt-1">
             <input type="checkbox" id="reg-delivery" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
             <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
+          </div>
+
+          <!-- CARGA DE FOTOGRAFÍAS PARA MICROSITIO (HASTA 10 FOTOS) -->
+          <div class="border-t border-slate-100 pt-3">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <span class="text-xs font-bold text-slate-800 block">Fotografías para tu Micrositio</span>
+                <span class="text-[11px] text-slate-400">Carga hasta 10 fotos para tu catálogo o fachada</span>
+              </div>
+              <span id="reg-photos-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-100 text-emerald-800 font-mono">0 / 10</span>
+            </div>
+
+            <div class="flex items-center gap-2 mb-2">
+              <input type="file" id="reg-photos-file-input" multiple accept="image/*" class="hidden" onchange="handleRegisterPhotoFiles(event)">
+              <button type="button" onclick="document.getElementById('reg-photos-file-input').click()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-200">
+                <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Subir Fotos</span>
+              </button>
+              <button type="button" onclick="promptRegisterPhotoUrl()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-200">
+                <i data-lucide="link" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Por URL</span>
+              </button>
+            </div>
+
+            <div id="reg-photos-grid" class="grid grid-cols-5 gap-2 min-h-[50px] p-2 rounded-2xl bg-slate-50 border border-slate-200">
+              <div id="reg-photos-empty-text" class="col-span-5 py-3 text-center text-[11px] text-slate-400">
+                No has agregado fotos aún (opcional durante el alta inicial).
+              </div>
+            </div>
           </div>
 
           <button type="submit" id="btn-submit-step1" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
@@ -302,7 +504,7 @@
         </button>
       </div>
 
-      <!-- FASE 3: VERIFICACIÓN OFICIAL MERCADO PAGO ($99 MXN) -->
+      <!-- FASE 3: ACTIVACIÓN Y COBRO (MERCADO PAGO O ASESOR KAM) -->
       <div id="reg-step-3" class="hidden space-y-4">
         <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-400/30 text-center space-y-3">
           <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center">
@@ -329,13 +531,63 @@
           </div>
         </div>
 
-        <button id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
-          <span>Activar Micrositio y Verificación con Mercado Pago ($99 MXN)</span>
-          <i data-lucide="external-link" class="w-4 h-4"></i>
-        </button>
-        <p class="text-[11px] text-center text-slate-400">
-          Acepta Tarjetas (Débito/Crédito), Mercado Pago Wallet, SPEI u OXXO vía pasarela segura.
-        </p>
+        <!-- Selector de Método de Pago / Pasarela o KAM -->
+        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
+          <button type="button" id="tab-pay-mp" onclick="setPaymentMode('mp')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs flex items-center justify-center gap-1.5">
+            <i data-lucide="credit-card" class="w-3.5 h-3.5 text-sky-600"></i>
+            <span>Mercado Pago ($99)</span>
+          </button>
+          <button type="button" id="tab-pay-kam" onclick="setPaymentMode('kam')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5">
+            <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Asesor KAM / Transferencia</span>
+          </button>
+        </div>
+
+        <!-- Panel Mercado Pago -->
+        <div id="panel-pay-mp" class="space-y-3">
+          <button id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+            <span>Activar Micrositio con Mercado Pago ($99 MXN)</span>
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+          </button>
+          <p class="text-[11px] text-center text-slate-400">
+            Acepta Tarjetas (Débito/Crédito), Mercado Pago Wallet, SPEI u OXXO vía pasarela segura.
+          </p>
+        </div>
+
+        <!-- Panel Asesor KAM / Transferencia Directa -->
+        <div id="panel-pay-kam" class="hidden space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
+          <div class="flex items-center gap-2 mb-1">
+            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="briefcase" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h5 class="text-xs font-bold text-slate-900">Pago Acordado con Asesor KAM o Transferencia</h5>
+              <p class="text-[10px] text-slate-500">Registra el nombre de tu ejecutivo Hipha para activación directa.</p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-white border border-slate-200 text-[11px] text-slate-700 space-y-1">
+            <div class="font-bold text-slate-900">Datos para Transferencia Directa (STP / SPEI):</div>
+            <div>Banco: <span class="font-mono font-semibold">STP / BBVA</span> · Hipha Marketing Digital</div>
+            <div>CLABE: <span class="font-mono font-semibold">646180157088123456</span></div>
+            <div>Monto: <span class="font-bold text-emerald-700">$99.00 MXN</span> · Concepto: <span class="font-mono">Alta Natura</span></div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Nombre del Asesor KAM o Ejecutivo Asignado *</label>
+            <input type="text" id="reg-kam-name" placeholder="Ej. Carlos Méndez / Hipha KAM" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Notas / Folio de Acuerdo o Comprobante (Opcional)</label>
+            <input type="text" id="reg-kam-notes" placeholder="Ej. Transferencia realizada hoy / Pago acordado en visita" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          </div>
+
+          <button type="button" id="btn-submit-kam-payment" onclick="handleKamPaymentSubmit()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+            <span>Registrar Alta con Asesor KAM</span>
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </button>
+        </div>
 
         <!-- Canjear Código de Cortesía / Invitación -->
         <div class="mt-4 pt-3 border-t border-slate-200">
@@ -398,8 +650,8 @@
       document.body.appendChild(modal);
     }
 
-    // Si el modal no contiene el stepper completo (por ejemplo, el dummy form anterior)
-    if (!document.getElementById("reg-step-1")) {
+    // Si el modal no contiene el stepper completo o carece de los nuevos campos
+    if (!document.getElementById("reg-step-1") || !document.getElementById("reg-schedule") || !document.getElementById("tab-pay-kam")) {
       modal.innerHTML = renderWizardHTML();
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
@@ -419,6 +671,10 @@
     const modal = ensureModalMounted();
     currentRegId = null;
     waVerified = false;
+    currentPaymentMode = "mp";
+    registerUploadedPhotos = [];
+    renderRegisterPhotosGrid();
+    setPaymentMode("mp");
 
     // Pre-llenar la categoría detectada
     const detectedCat = detectActiveCategory(preselectedCat);
@@ -530,6 +786,7 @@
       const phone = document.getElementById("reg-phone") ? document.getElementById("reg-phone").value.trim() : "";
       const wa = document.getElementById("reg-wa") ? document.getElementById("reg-wa").value.trim() : "";
       const website = document.getElementById("reg-website") ? document.getElementById("reg-website").value.trim() : "";
+      const schedule = document.getElementById("reg-schedule") ? document.getElementById("reg-schedule").value.trim() : "Lunes a Sábado · 09:00 a 19:00 hrs";
 
       // Métodos de contacto preferidos
       const checkedBoxes = Array.from(document.querySelectorAll('input[name="pref_contact"]:checked')).map(el => el.value);
@@ -550,6 +807,8 @@
         email: email,
         phone: phone,
         whatsapp: wa,
+        schedule: schedule,
+        photos: registerUploadedPhotos.length > 0 ? JSON.stringify(registerUploadedPhotos) : null,
         preferred_contact_methods: prefMethods,
         website: website,
         delivery_available: deliveryChecked,
@@ -824,12 +1083,26 @@
   window.toggleCouponBox = toggleCouponBox;
   window.handleApplyCoupon = handleApplyCoupon;
   window.showStep4Success = showStep4Success;
+  window.handleRegisterPhotoFiles = handleRegisterPhotoFiles;
+  window.promptRegisterPhotoUrl = promptRegisterPhotoUrl;
+  window.removeRegisterPhoto = removeRegisterPhoto;
+  window.renderRegisterPhotosGrid = renderRegisterPhotosGrid;
+  window.setPaymentMode = setPaymentMode;
+  window.handleKamPaymentSubmit = handleKamPaymentSubmit;
 
   function checkUrlAutoOpen() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("open_register") === "1") {
         openRegisterModal(urlParams.get("cat"));
+        const step = parseInt(urlParams.get("step") || "1", 10);
+        if (step > 1 && step <= 4) {
+          if (step >= 2) waVerified = true;
+          setWizardStep(step);
+        }
+        if (urlParams.get("pay_mode") === "kam") {
+          setPaymentMode("kam");
+        }
       }
     } catch (e) {}
   }

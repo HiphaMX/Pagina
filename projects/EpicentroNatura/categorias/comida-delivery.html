@@ -1297,16 +1297,16 @@
                 phone: biz.phone,
                 whatsapp: biz.whatsapp,
                 website: biz.website || null,
-                website_url: biz.website || null,
-                schedule: "Lunes a Sábado",
-                hours: "Lunes a Sábado",
+                schedule: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
+                hours: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 is_open_now: true,
                 payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
                 has_badge: true,
                 badge_text: "Vecino Verificado",
                 rating: 5.0,
                 reviews: 1,
-                has_photos: false
+                has_photos: !!(biz.photos && biz.photos.length > 5),
+                photos: (typeof biz.photos === 'string' && biz.photos.startsWith('[')) ? JSON.parse(biz.photos) : (biz.photos || [])
               };
 
               if (existingIdx >= 0) {
