@@ -108,7 +108,7 @@
             Chile Chillón
           </h1>
         </div>
-        <p class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+        <p id="hero-business-description" class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
           Salsas picantes artesanales 100% naturales, elaboradas con receta tradicional y aceite vegetal comestible de primera calidad. Sin conservadores ni colorantes artificiales. Más de 10 años de trayectoria gastronómica maximizando el sazón de tus carnes, botanas, asados, mariscos y platillos diarios.
         </p>
       </div>
@@ -159,18 +159,18 @@
     <section class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-          <span class="text-xs font-black uppercase tracking-widest text-emerald-700">SALSAS PICANTES 100% NATURALES · SELECCIÓN ARTESANAL</span>
-          <h2 class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Catálogo de Salsas & Sazón de la Casa</h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1">Frascos de 250 ml elaborados con aceite vegetal comestible y chiles seleccionados sin conservadores.</p>
+          <span id="featured-section-subtitle" class="text-xs font-black uppercase tracking-widest text-emerald-700">SALSAS PICANTES 100% NATURALES · SELECCIÓN ARTESANAL</span>
+          <h2 id="featured-section-title" class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Catálogo de Salsas & Sazón de la Casa</h2>
+          <p id="featured-section-desc" class="text-xs sm:text-sm text-slate-500 mt-1">Frascos de 250 ml elaborados con aceite vegetal comestible y chiles seleccionados sin conservadores.</p>
         </div>
         <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
-          <span>6 Variedades Activas</span>
+          <span id="featured-variety-count">6 Variedades Activas</span>
         </span>
       </div>
 
       <!-- GRID DE PRODUCTOS (Fondo Blanco Puro y Contenedor Neutro) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="featured-products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- Producto 1: Salsa Chile de Árbol -->
         <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
@@ -326,14 +326,14 @@
     </section>
 
     <!-- SECCIÓN 2: LISTA DE MENÚ & ESPECIALIDADES (ESTILO MENÚ / DIVIDED ROWS - SIN FOTO) -->
-    <section class="space-y-6">
+    <section id="other-products-sections-wrapper" class="space-y-6">
       <div class="border-b border-slate-200 pb-4">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-700">LISTA DE MENÚ · ESTILO CARTA</span>
         <h2 class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Presentaciones & Especialidades</h2>
         <p class="text-xs sm:text-sm text-slate-500 mt-1">Consulta los tamaños por volumen para eventos familiares, parrilladas y complementos de sazón sin foto.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div id="other-products-sections-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- Tarjeta 1: Presentaciones Familiares & Taquizas -->
         <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
@@ -567,24 +567,34 @@
           const localSaved = localStorage.getItem("epicentro_admin_registrations");
           if (localSaved) {
             const list = JSON.parse(localSaved);
-            reg = list.find(r => r.id === "reg-chile-chillon" || (r.business_name && r.business_name.toLowerCase().includes("chillon")));
+            reg = list.find(r => {
+              const nameNorm = (r.business_name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+              return r.id === "reg-chile-chillon" || r.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || nameNorm.includes("chillon") || nameNorm.includes("chill");
+            });
           }
         } catch (e) {}
       }
 
       if (!reg) return;
 
-      // 1. Actualizar Sitio Web Oficial (Botón Hero1)
-      let siteUrl = "";
+      let mdata = null;
       if (reg.microsite_data) {
         try {
-          const md = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
-          if (md && md.website_url !== undefined && md.website_url !== null) {
-            siteUrl = String(md.website_url).trim();
-          }
+          mdata = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
         } catch (e) {}
       }
-      if (!siteUrl && reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
+
+      // 0. Actualizar Descripción en Hero
+      if (reg.description) {
+        const descEl = document.getElementById("hero-business-description");
+        if (descEl) descEl.textContent = reg.description;
+      }
+
+      // 1. Actualizar Sitio Web Oficial (Botón Hero1)
+      let siteUrl = "";
+      if (mdata && mdata.website_url !== undefined && mdata.website_url !== null) {
+        siteUrl = String(mdata.website_url).trim();
+      } else if (reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
         siteUrl = String(reg.website).trim();
       }
 
@@ -609,10 +619,10 @@
       }
 
       // 3. Actualizar WhatsApp o Teléfono si fueron modificados
+      const cleanWa = (reg.whatsapp || "3921097809").replace(/\D/g, "");
       if (reg.whatsapp) {
         const waBtn = document.getElementById("hero-whatsapp-btn");
         if (waBtn) {
-          const cleanWa = reg.whatsapp.replace(/\D/g, "");
           waBtn.href = `https://wa.me/52${cleanWa}?text=${encodeURIComponent("Hola Chile Chillón, vi su micrositio en Epicentro Natura y quiero hacer un pedido a mi coto")}`;
         }
       }
@@ -627,11 +637,8 @@
       let rawSchedule = "";
       if (reg.schedule) {
         rawSchedule = String(reg.schedule).trim();
-      } else if (reg.microsite_data) {
-        try {
-          const md = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
-          if (md && md.schedule) rawSchedule = String(md.schedule).trim();
-        } catch(e) {}
+      } else if (mdata && mdata.schedule) {
+        rawSchedule = String(mdata.schedule).trim();
       }
 
       if (rawSchedule) {
@@ -703,6 +710,92 @@
         const locEl = document.getElementById("hero-location-text");
         if (locEl) locEl.textContent = reg.coto_address;
       }
+
+      // 6. Actualizar Catálogo Destacado (Productos con Fotos)
+      if (mdata && mdata.featured_section) {
+        const feat = mdata.featured_section;
+        const featTitleEl = document.getElementById("featured-section-title");
+        const featSubEl = document.getElementById("featured-section-subtitle");
+        const featDescEl = document.getElementById("featured-section-desc");
+        const featGrid = document.getElementById("featured-products-grid");
+        const varietyCountEl = document.getElementById("featured-variety-count");
+
+        if (feat.title && featTitleEl) featTitleEl.textContent = feat.title;
+        if (feat.subtitle && featSubEl) featSubEl.textContent = feat.subtitle;
+        if (feat.description && featDescEl) featDescEl.textContent = feat.description;
+
+        if (Array.isArray(feat.products) && feat.products.length > 0 && featGrid) {
+          if (varietyCountEl) varietyCountEl.textContent = `${feat.products.length} Variedades Activas`;
+          featGrid.innerHTML = feat.products.map(prod => `
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+              <div class="relative h-56 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+                <img src="${prod.photo || 'Assets/chillon/placa_fondo_restaurante_gourmet.jpg'}" alt="${prod.name}" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+                  Salsa Artesanal
+                </span>
+              </div>
+              <div class="p-6 flex-1 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">${prod.name}</h3>
+                    <span class="text-base font-extrabold text-emerald-700">$${prod.price || 0}</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    ${prod.description || ''}
+                  </p>
+                </div>
+                <a href="https://wa.me/52${cleanWa}?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20${encodeURIComponent(prod.name)}%20($${prod.price || 0})%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Pedir por WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          `).join("");
+        }
+      }
+
+      // 7. Actualizar Otras Secciones de Menú / Especialidades
+      const otherSecWrapper = document.getElementById("other-products-sections-wrapper");
+      const otherSecGrid = document.getElementById("other-products-sections-grid");
+      if (mdata && Array.isArray(mdata.other_products_sections)) {
+        if (mdata.other_products_sections.length === 0) {
+          if (otherSecWrapper) otherSecWrapper.classList.add("hidden");
+        } else if (otherSecGrid) {
+          if (otherSecWrapper) otherSecWrapper.classList.remove("hidden");
+          otherSecGrid.innerHTML = mdata.other_products_sections.map(sec => `
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                    <i data-lucide="utensils" class="w-4 h-4"></i>
+                  </div>
+                  <h3 class="text-base font-black text-slate-900">${sec.title}</h3>
+                </div>
+                ${sec.subtitle ? `<span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">${sec.subtitle}</span>` : ''}
+              </div>
+
+              <div class="divide-y divide-slate-100">
+                ${(sec.items || []).map(item => `
+                  <div class="py-3 flex items-center justify-between gap-4">
+                    <div>
+                      <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
+                      ${item.description ? `<p class="text-xs text-slate-500">${item.description}</p>` : ''}
+                    </div>
+                    <span class="text-sm font-black text-emerald-700 shrink-0">$${item.price || 0}</span>
+                  </div>
+                `).join("")}
+              </div>
+              
+              <a href="https://wa.me/52${cleanWa}?text=Hola%20Chile%20Chill%C3%B3n,%20me%20interesa%20cotizar%20${encodeURIComponent(sec.title)}" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>Cotizar por WhatsApp</span>
+              </a>
+            </div>
+          `).join("");
+        }
+      }
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     syncChileChillonMicrosite();
   </script>

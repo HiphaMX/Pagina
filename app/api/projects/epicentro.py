@@ -1083,6 +1083,7 @@ def list_active_verified_businesses(db: Session = Depends(get_db)):
 @router.get("/businesses/{slug_or_id}")
 def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
     """Retorna los datos de un comercio o micrositio por ID o slug para sincronización en vivo."""
+    import unicodedata
     ensure_epicentro_schema(db)
     seed_official_showcases(db)
     slug_clean = slug_or_id.strip().lower()
@@ -1092,12 +1093,55 @@ def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
     if not reg:
         # 2. Búsqueda por ID con prefijo 'reg-'
         reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == f"reg-{slug_clean}").first()
+
+    # 3. Aliases directos para comercios fundadores y micrositios oficiales
     if not reg:
-        # 3. Búsqueda por coincidencia en website o nombre
+        if slug_clean in ("chile-chillon", "chillon", "el-chile-chillon", "chilechillon", "elchilechillon"):
+            reg = db.query(EpicentroRegistration).filter(
+                (EpicentroRegistration.business_name.ilike("%chill%")) |
+                (EpicentroRegistration.website.ilike("%chillon%")) |
+                (EpicentroRegistration.id == "reg-chile-chillon")
+            ).first()
+        elif slug_clean in ("botica-silvestre", "botica", "boticasilvestre"):
+            reg = db.query(EpicentroRegistration).filter(
+                (EpicentroRegistration.business_name.ilike("%botica%")) |
+                (EpicentroRegistration.website.ilike("%botica%")) |
+                (EpicentroRegistration.id == "reg-botica-silvestre")
+            ).first()
+
+    # 4. Búsqueda por coincidencia en website o nombre
+    if not reg:
+        slug_no_dash = slug_clean.replace("-", "")
+        slug_spaces = slug_clean.replace("-", " ")
         reg = db.query(EpicentroRegistration).filter(
             (EpicentroRegistration.website.ilike(f"%{slug_clean}%")) |
-            (EpicentroRegistration.business_name.ilike(f"%{slug_clean.replace('-', ' ')}%"))
+            (EpicentroRegistration.website.ilike(f"%{slug_no_dash}%")) |
+            (EpicentroRegistration.business_name.ilike(f"%{slug_spaces}%")) |
+            (EpicentroRegistration.business_name.ilike(f"%{slug_clean}%"))
         ).first()
+
+    # 5. Búsqueda en memoria con normalización Unicode (insensible a acentos, tildes y guiones)
+    if not reg:
+        def norm(s: str) -> str:
+            if not s:
+                return ""
+            nfkd = unicodedata.normalize('NFKD', str(s))
+            return "".join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
+
+        target_norm = norm(slug_clean).replace("-", " ")
+        target_compact = target_norm.replace(" ", "")
+        all_active = db.query(EpicentroRegistration).all()
+        for candidate in all_active:
+            cand_name = norm(candidate.business_name or "")
+            cand_web = norm(candidate.website or "")
+            cand_compact = cand_name.replace(" ", "")
+            cand_web_compact = cand_web.replace(" ", "")
+            if (target_norm in cand_name or 
+                target_compact in cand_compact or 
+                target_compact in cand_web_compact or
+                cand_compact in target_compact):
+                reg = candidate
+                break
 
     if not reg:
         raise HTTPException(status_code=404, detail="Comercio no encontrado")
