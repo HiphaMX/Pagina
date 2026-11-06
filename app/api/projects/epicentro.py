@@ -39,13 +39,18 @@ def ensure_epicentro_schema(db: Session):
         engine_str = str(db.bind.url).lower() if (db and db.bind) else ""
         if "postgres" in engine_str:
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS website VARCHAR(255)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS preferred_contact_methods VARCHAR(255)"))
             db.commit()
         else:
             try:
                 db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN website VARCHAR(255)"))
-                db.commit()
             except Exception:
-                db.rollback()
+                pass
+            try:
+                db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN preferred_contact_methods VARCHAR(255)"))
+            except Exception:
+                pass
+            db.commit()
     except Exception as e:
         logger.warning(f"Nota en verificación de esquema epicentro: {e}")
         try:
@@ -102,6 +107,7 @@ class RegisterInitiateRequest(BaseModel):
     email: EmailStr
     phone: str
     whatsapp: str
+    preferred_contact_methods: Optional[str] = None
     delivery_available: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
@@ -292,6 +298,7 @@ async def initiate_registration(
         email=payload.email.lower().strip(),
         phone=payload.phone.strip(),
         whatsapp=payload.whatsapp.strip(),
+        preferred_contact_methods=payload.preferred_contact_methods.strip() if payload.preferred_contact_methods else None,
         delivery_available=payload.delivery_available,
         website=payload.website.strip() if payload.website else None,
         description=payload.description,
@@ -660,6 +667,7 @@ def seed_botica_silvestre_if_missing(db: Session):
                 phone="3336762545",
                 whatsapp="3336762545",
                 delivery_available=True,
+                preferred_contact_methods="whatsapp,delivery,punto-venta",
                 website="botica-silvestre",
                 description="Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
                 email_verified=True,
@@ -681,6 +689,9 @@ def seed_botica_silvestre_if_missing(db: Session):
                     db.delete(dup)
 
             updated = False
+            if not botica.preferred_contact_methods:
+                botica.preferred_contact_methods = "whatsapp,delivery,punto-venta"
+                updated = True
             if botica.website != "botica-silvestre":
                 botica.website = "botica-silvestre"
                 updated = True

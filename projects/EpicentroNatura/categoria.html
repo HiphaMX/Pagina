@@ -472,67 +472,282 @@
     </div>
   </div>
 
-  <!-- MODAL DE REGISTRO RÁPIDO DE COMERCIO -->
-  <div id="register-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-snow-400 shadow-2xl relative">
-      <button onclick="closeRegisterModal()" class="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-snow-300 transition-colors">
+    <!-- MODAL: REGISTRAR Y VERIFICAR COMERCIO O SERVICIO -->
+  <div id="register-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs">
+    <div class="relative w-full max-w-xl rounded-3xl bg-white p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeRegisterModal()" class="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-snow-300 transition-colors">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-12 h-12 rounded-2xl bg-brand-softMint text-brand-forest flex items-center justify-center">
-          <i data-lucide="store" class="w-6 h-6 stroke-[2.2]"></i>
+      <!-- Stepper Header -->
+      <div class="mb-6 pr-10">
+        <div class="flex items-center justify-between gap-1 mb-2">
+          <span class="text-[10px] font-black uppercase tracking-wider text-brand-emerald">ALTA OFICIAL Y VERIFICACIÓN</span>
+          <span id="wizard-step-label" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Paso 1 de 3</span>
         </div>
-        <div>
-          <h3 class="text-lg font-black text-slate-950">Registrar Comercio Local</h3>
-          <span class="text-xs font-bold text-brand-emerald">Guía Comunitaria Epicentro Natura</span>
+        <h3 id="wizard-title" class="text-xl sm:text-2xl font-black text-slate-950">Registrar Comercio o Servicio</h3>
+        <p id="wizard-desc" class="text-xs text-slate-500 mt-1">Conéctate directamente con las familias de cotos Natura con sello de confianza.</p>
+
+        <!-- Progress Pills -->
+        <div class="grid grid-cols-3 gap-2 mt-4">
+          <div id="step-bar-1" class="h-1.5 rounded-full bg-brand-emerald transition-all"></div>
+          <div id="step-bar-2" class="h-1.5 rounded-full bg-slate-200 transition-all"></div>
+          <div id="step-bar-3" class="h-1.5 rounded-full bg-slate-200 transition-all"></div>
         </div>
       </div>
 
-      <form onsubmit="handleRegisterSubmit(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Nombre del Negocio o Servicio</label>
-          <input type="text" required placeholder="Ej. Abarrotes Express / Entrenador Personal" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
-        </div>
+      <!-- FASE 1: DATOS DEL COMERCIO Y CONTACTO -->
+      <div id="reg-step-1">
+        <form onsubmit="submitStep1(event)" class="space-y-4">
+          <!-- Campo Trampa Honeypot Anti-Bot -->
+          <input type="text" id="reg-honeypot" name="hp_field" style="display:none!important;" tabindex="-1" autocomplete="off">
 
-        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Categoría</label>
-            <select id="reg-cat-select" class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
-              <!-- Opciones dinámicas -->
-            </select>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Nombre Comercial *</label>
+            <input type="text" id="reg-name" required placeholder="Ej. Pizzería Di Vico / Plomería Los Robles" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white focus:ring-2 focus:ring-brand-emerald focus:outline-hidden">
           </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Giro de la Oferta *</label>
+              <select id="reg-category" onchange="syncSubcategoriesDropdown()" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-white focus:ring-2 focus:ring-brand-emerald">
+                <option value="comida-delivery">Comida y Delivery</option>
+                <option value="postres-cafe">Postres y café</option>
+                <option value="productos-artesanales">Productos artesanales</option>
+                <option value="educacion">Educación</option>
+                <option value="servicios-profesionales">Servicios Profesionales</option>
+                <option value="servicios-hogar">Servicios hogar</option>
+                <option value="hogar">Hogar y Decoración</option>
+                <option value="mascotas">Mascotas</option>
+                <option value="atencion-medica">Atención médica</option>
+                <option value="fitness">Fitness</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Subcategoría *</label>
+              <select id="reg-subcategory" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-white focus:ring-2 focus:ring-brand-emerald">
+                <option value="pizzas-pastas">Pizzas y Pastas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Tipo de Espacio / Atención *</label>
+              <select id="reg-type" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-white">
+                <option value="local-establecido">Punto de venta / Local fijo</option>
+                <option value="sin-punto-venta">A domicilio en coto / Con previa cita</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Ubicación / Coto / Local *</label>
+              <input type="text" id="reg-address" required placeholder="Ej. Coto Ceiba Casa 45 / Plaza Natura" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white">
+            </div>
+          </div>
+
+          <div class="border-t border-snow-300 pt-3">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">Datos del Titular (para validación)</span>
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Nombre Completo del Responsable *</label>
+              <input type="text" id="reg-owner" required placeholder="Ej. Lic. Carlos Méndez" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Correo Electrónico (contacto y notificaciones) *</label>
+              <input type="email" id="reg-email" required placeholder="tu@correo.com" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">WhatsApp de Pedidos / Atención *</label>
+              <input type="tel" id="reg-wa" required placeholder="33 1234 5678" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white">
+            </div>
+          </div>
+
+          <!-- MÉTODOS DE ATENCIÓN Y CONTACTO PREFERIDOS -->
+          <div class="pt-1">
+            <label class="block text-xs font-bold text-slate-800 mb-1.5 flex items-center justify-between">
+              <span>Métodos de Contacto / Atención Preferidos *</span>
+              <span class="text-[10px] font-normal text-slate-400">Selecciona los que utilices</span>
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <label class="flex items-center gap-2 p-2.5 rounded-xl border border-snow-400 bg-snow-100 hover:bg-white cursor-pointer transition-all has-[:checked]:border-brand-emerald has-[:checked]:bg-emerald-50/60 has-[:checked]:text-emerald-950">
+                <input type="checkbox" name="pref_contact" value="whatsapp" checked class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-1">💬 WhatsApp</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl border border-snow-400 bg-snow-100 hover:bg-white cursor-pointer transition-all has-[:checked]:border-brand-emerald has-[:checked]:bg-emerald-50/60 has-[:checked]:text-emerald-950">
+                <input type="checkbox" name="pref_contact" value="llamada" checked class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-1">📞 Llamada</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl border border-snow-400 bg-snow-100 hover:bg-white cursor-pointer transition-all has-[:checked]:border-brand-emerald has-[:checked]:bg-emerald-50/60 has-[:checked]:text-emerald-950">
+                <input type="checkbox" name="pref_contact" value="punto-venta" class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-1">🏪 Punto de Venta</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl border border-snow-400 bg-snow-100 hover:bg-white cursor-pointer transition-all has-[:checked]:border-brand-emerald has-[:checked]:bg-emerald-50/60 has-[:checked]:text-emerald-950">
+                <input type="checkbox" name="pref_contact" value="delivery" class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-1">🛵 A Domicilio</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl border border-snow-400 bg-snow-100 hover:bg-white cursor-pointer transition-all has-[:checked]:border-brand-emerald has-[:checked]:bg-emerald-50/60 has-[:checked]:text-emerald-950 col-span-2 sm:col-span-1">
+                <input type="checkbox" name="pref_contact" value="cita-previa" class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-1">📅 Previa Cita</span>
+              </label>
+            </div>
+          </div>
+
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Negocio</label>
-            <select class="w-full px-3 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
-              <option value="local-establecido">Punto de venta fijo</option>
-              <option value="sin-punto-venta">Sin punto de venta</option>
-            </select>
+            <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center justify-between">
+              <span>Sitio Web Oficial del Negocio</span>
+              <span class="text-[11px] font-normal text-slate-400">Opcional (para jalar tráfico a tu página)</span>
+            </label>
+            <div class="relative">
+              <i data-lucide="globe" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="url" id="reg-website" placeholder="https://www.tunegocio.com.mx" class="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-snow-400 bg-snow-100 focus:bg-white focus:ring-2 focus:ring-brand-emerald">
+            </div>
           </div>
+
+          <div class="flex items-center gap-2 pt-1">
+            <input type="checkbox" id="reg-delivery" class="w-4 h-4 text-brand-emerald rounded border-snow-400 focus:ring-brand-emerald">
+            <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
+          </div>
+
+          <button type="submit" id="btn-submit-step1" class="w-full py-3.5 px-4 rounded-xl bg-brand-emerald hover:bg-brand-forest text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+            <span>Continuar a Validación (Paso 1 de 3)</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- FASE 2: VALIDACIÓN INMEDIATA POR WHATSAPP -->
+      <div id="reg-step-2" class="hidden space-y-4">
+        <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3">
+          <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
+          <p class="text-xs text-emerald-900 leading-relaxed">
+            <strong>Protección Comunitaria:</strong> Validamos tu WhatsApp con 1 solo toque para comprobar tu identidad comercial, proteger a las familias de los cotos y habilitar contacto directo de clientes sin intermediarios.
+          </p>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Teléfono WhatsApp de Contacto</label>
-          <input type="tel" required placeholder="33 1234 5678" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
+        <div class="p-5 rounded-2xl bg-snow-100 border border-snow-400 space-y-4 text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 mx-auto">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-center gap-2 mb-1">
+              <h4 class="text-sm font-bold text-slate-900">Validación Rápida por WhatsApp</h4>
+              <span id="badge-wa-status" class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Pendiente</span>
+            </div>
+            <p class="text-xs text-slate-600 max-w-md mx-auto">
+              Toca el botón verde para abrir WhatsApp y enviar tu código de validación <strong id="step2-wa-code-display" class="font-mono text-emerald-700 text-sm">NATURA-XXXX</strong> al canal oficial de Epicentro Natura.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+            <a id="reg-wa-link-btn" href="#" target="_blank" onclick="onWaLinkClicked()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-98">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Abrir WhatsApp con mi Código</span>
+            </a>
+            <button onclick="handleVerifyWhatsappCode()" id="btn-verify-wa" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shrink-0 transition-colors">
+              Confirmar Validación
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400">
+            Al tocar el botón de WhatsApp, tu validación quedará activada automáticamente para avanzar.
+          </p>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Ubicación o Coto</label>
-          <input type="text" required placeholder="Ej. Natura Bosque Residencial / Coto Roble" class="w-full px-3.5 py-2.5 rounded-xl border border-snow-400 text-xs focus:outline-none focus:border-brand-emerald">
-        </div>
-
-        <div class="p-3 rounded-xl bg-brand-softMint border border-brand-mint/40 text-xs text-brand-forest font-medium">
-          🌿 La inclusión inicial en el directorio comunitario es gratuita para residentes y locales de Prolongación Mariano Otero.
-        </div>
-
-        <button type="submit" class="w-full py-3.5 rounded-xl bg-brand-emerald hover:bg-brand-forest text-white font-extrabold text-xs shadow-md transition-all">
-          Enviar Solicitud de Registro
+        <button id="btn-to-step-3" disabled onclick="goToStep3()" class="w-full py-3.5 px-4 rounded-xl bg-slate-200 text-slate-400 font-bold text-sm cursor-not-allowed transition-all flex items-center justify-center gap-2">
+          <span>Continuar a Verificación Oficial (Paso 3 de 3)</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
-      </form>
+      </div>
+
+      <!-- FASE 3: VERIFICACIÓN OFICIAL MERCADO PAGO ($99 MXN) -->
+      <div id="reg-step-3" class="hidden space-y-4">
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-400/30 text-center space-y-3">
+          <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center">
+            <i data-lucide="award" class="w-6 h-6"></i>
+          </div>
+          <span class="inline-block px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+            Sello Oficial Vecino Verificado + Tu Propio Micrositio
+          </span>
+          <h4 class="text-lg font-black text-slate-950">Insignia Oficial y Micrositio con Catálogo</h4>
+          <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+            Obtén tu <strong>micrositio web interactivo</strong> (con fotos de productos, precios, menú de complementos y pedidos por WhatsApp) más el distintivo verificado para casetas de cotos.
+          </p>
+
+          <div class="py-2">
+            <span class="text-3xl font-black text-slate-950 font-mono">$99.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Cuota Única de Alta</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-snow-400">
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu Micrositio Web Propio</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Catálogo con Fotos & Precios</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Pedidos Directos a WhatsApp</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Sello Verificado Oficial</div>
+          </div>
+        </div>
+
+        <button id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+          <span>Activar Micrositio y Verificación con Mercado Pago ($99 MXN)</span>
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+        </button>
+        <p class="text-[11px] text-center text-slate-400">
+          Acepta Tarjetas (Débito/Crédito), Mercado Pago Wallet, SPEI u OXXO vía pasarela segura.
+        </p>
+
+        <!-- Canjear Código de Cortesía / Invitación -->
+        <div class="mt-4 pt-3 border-t border-snow-400">
+          <div class="text-left">
+            <button type="button" onclick="toggleCouponBox()" class="text-xs font-bold text-slate-600 hover:text-emerald-700 flex items-center justify-between w-full p-2 rounded-xl hover:bg-snow-200 transition-colors">
+              <span class="flex items-center gap-1.5"><i data-lucide="tag" class="w-3.5 h-3.5 text-brand-emerald"></i> ¿Tienes código de cortesía o invitación?</span>
+              <i id="coupon-chevron" data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="coupon-container" class="hidden mt-2 p-3 rounded-2xl bg-snow-100 border border-snow-400 space-y-2">
+              <label class="block text-[11px] font-bold text-slate-700">Ingresa tu código de cortesía o pase fundador:</label>
+              <div class="flex gap-2">
+                <input type="text" id="reg-coupon-code" placeholder="Ej. NATURA100" class="w-full px-3 py-2 text-xs uppercase font-mono tracking-wider font-bold rounded-xl border border-snow-400 bg-white focus:ring-2 focus:ring-brand-emerald">
+                <button type="button" onclick="handleApplyCoupon()" id="btn-apply-coupon" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors">
+                  Aplicar
+                </button>
+              </div>
+              <p id="coupon-feedback" class="text-[11px] font-bold hidden"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center pt-2">
+          <button onclick="skipVerificationPayment()" class="text-xs text-slate-400 hover:text-slate-600 underline">
+            Omitir pago por ahora (solicitar alta básica en revisión sin Sello Verificado)
+          </button>
+        </div>
+      </div>
+
+      <!-- FASE 4: CONFIRMACIÓN Y FOLIO -->
+      <div id="reg-step-4" class="hidden text-center space-y-4 py-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+          <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+        </div>
+        <h4 id="step4-title" class="text-xl font-black text-slate-950">¡Comercio Verificado con Éxito!</h4>
+        <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
+          Tu comercio <strong id="step4-business-name" class="text-slate-900">...</strong> cuenta con Sello Oficial Vecino Verificado.
+        </p>
+        <div class="p-3.5 rounded-xl bg-snow-100 border border-snow-400 max-w-xs mx-auto">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Verificación</span>
+          <span id="step4-folio" class="text-base font-mono font-black text-brand-emerald">NATURA-...</span>
+        </div>
+        <p id="step4-desc" class="text-xs text-slate-500 max-w-xs mx-auto">
+          Tu negocio ya se encuentra registrado y activo en el directorio comunitario.
+        </p>
+        <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
+          Entendido, Ver en el Directorio
+        </button>
+      </div>
+
     </div>
   </div>
 
-  <!-- MICRO-TOAST DE NOTIFICACIÓN GEO -->
+<!-- MICRO-TOAST DE NOTIFICACIÓN GEO -->
   <div id="geo-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-sm">
     <div class="bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-3">
       <div class="w-8 h-8 rounded-xl bg-brand-emerald text-white flex items-center justify-center shrink-0">
@@ -1596,24 +1811,11 @@
       }
     }
 
-    // MODAL DE REGISTRO
-    function openRegisterModal() {
-      const modal = document.getElementById("register-modal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-
-    function closeRegisterModal() {
-      const modal = document.getElementById("register-modal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
-
-    function handleRegisterSubmit(e) {
-      e.preventDefault();
-      alert("¡Gracias por registrar tu negocio! Nuestro equipo del Comité de Enlace Comercial revisará tu ficha y la activará en breve.");
-      closeRegisterModal();
-    }
+            // REGISTRO Y VERIFICACIÓN UNIFICADA
+  </script>
+  <!-- SCRIPT UNIFICADO DE REGISTRO CON STEPPER Y PRE-LLENADO -->
+  <script src="epicentro-register.js"></script>
+  <script>
   </script>
 </body>
 </html>

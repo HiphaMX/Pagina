@@ -20,6 +20,7 @@ class EpicentroRegistration(Base):
     email = Column(String(150), nullable=False, index=True)
     phone = Column(String(30), nullable=False)
     whatsapp = Column(String(30), nullable=False)
+    preferred_contact_methods = Column(String(255), nullable=True)
     delivery_available = Column(Boolean, default=False)
     website = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
