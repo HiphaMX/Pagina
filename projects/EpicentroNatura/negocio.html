@@ -83,14 +83,14 @@
       
       <!-- BADGES SUPERIORES -->
       <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Abierto Hoy</span>
-          <span class="hidden sm:inline">· 09:00 a 19:00 hrs</span>
+        <span id="hero-schedule-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+          <span id="hero-schedule-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="hero-schedule-status">Abierto Hoy</span>
+          <span id="hero-schedule-hours">· 09:00 a 19:00 hrs</span>
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
           <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
-          <span>Vecino Verificado Oficial · Micrositio $100</span>
+          <span>Comercio Fundador</span>
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
           <i data-lucide="truck" class="w-3.5 h-3.5"></i>
@@ -117,7 +117,11 @@
       <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
         <div class="flex items-center gap-2">
           <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-          <span>Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial & Los Robles, Zapopan)</span>
+          <span id="hero-location-text">Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial & Los Robles, Zapopan)</span>
+        </div>
+        <div id="hero-schedule-info-row" class="flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span id="hero-schedule-info">Horario: Lunes a Sábado · 09:00 a 19:00 hrs</span>
         </div>
         <div class="flex items-center gap-2">
           <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
@@ -564,25 +568,25 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Horario de Atención</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Lunes a Sábado · 09:00 a 19:00 hrs (Pedidos por WhatsApp activos 24/7).</p>
+            <p id="section-schedule-desc" class="text-xs text-slate-500 mt-0.5">Lunes a Sábado · 09:00 a 19:00 hrs (Pedidos por WhatsApp activos 24/7).</p>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- BANNER COMERCIAL: ¿QUIERES TU PROPIO MICROSITIO POR $100? -->
+    <!-- BANNER COMERCIAL: ¿QUIERES TU PROPIO MICROSITIO POR $399 MXN? -->
     <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="space-y-2 text-center md:text-left">
         <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">BENEFICIO EXCLUSIVO EPICENTRO NATURA</span>
         <h3 class="text-xl sm:text-2xl font-black text-white">¿Tienes un negocio o servicio en la zona?</h3>
         <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
-          Al registrarte por solo $99 MXN obtienes el Sello Oficial de Vecino Verificado y tu propio micrositio interactivo como este, con catálogo con fotos, precios y pedidos directos a tu WhatsApp.
+          Con la suscripción anual de solo $399 MXN obtienes el Sello Oficial de Vecino Verificado y tu propio micrositio interactivo como este, con catálogo con fotos, precios y pedidos directos a tu WhatsApp.
         </p>
       </div>
       <a href="index.html?open_register=1" class="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
         <i data-lucide="sparkles" class="w-4 h-4"></i>
-        <span>Obtener mi Micrositio por $99 MXN</span>
+        <span>Obtener mi Micrositio por $399 MXN / año</span>
       </a>
     </div>
 

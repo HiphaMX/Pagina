@@ -83,10 +83,10 @@
       
       <!-- BADGES SUPERIORES -->
       <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Abierto Hoy</span>
-          <span class="hidden sm:inline">· 10:00 a 20:00 hrs</span>
+        <span id="hero-schedule-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+          <span id="hero-schedule-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="hero-schedule-status">Abierto Hoy</span>
+          <span id="hero-schedule-hours">· 10:00 a 20:00 hrs</span>
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
           <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
@@ -117,7 +117,11 @@
       <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
         <div class="flex items-center gap-2">
           <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-          <span>Zona Mariano Otero (Envíos directos a caseta en cotos Natura Bosque Residencial y Los Robles, Zapopan)</span>
+          <span id="hero-location-text">Zona Mariano Otero (Envíos directos a caseta en cotos Natura Bosque Residencial y Los Robles, Zapopan)</span>
+        </div>
+        <div id="hero-schedule-info-row" class="flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span id="hero-schedule-info">Horario: Lunes a Domingo · 10:00 a 20:00 hrs</span>
         </div>
         <div class="flex items-center gap-2">
           <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
@@ -496,7 +500,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Horario de Atención</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Lunes a Domingo · 10:00 a 20:00 hrs (Pedidos por WhatsApp activos todo el día).</p>
+            <p id="section-schedule-desc" class="text-xs text-slate-500 mt-0.5">Lunes a Domingo · 10:00 a 20:00 hrs (Pedidos por WhatsApp activos todo el día).</p>
           </div>
         </div>
       </div>
@@ -617,6 +621,87 @@
         if (phoneBtn) {
           phoneBtn.href = `tel:${reg.phone.replace(/\D/g, "")}`;
         }
+      }
+
+      // 4. Actualizar Horario en Hero1 (Badge superior, barra rápida) y en la sección inferior
+      let rawSchedule = "";
+      if (reg.schedule) {
+        rawSchedule = String(reg.schedule).trim();
+      } else if (reg.microsite_data) {
+        try {
+          const md = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
+          if (md && md.schedule) rawSchedule = String(md.schedule).trim();
+        } catch(e) {}
+      }
+
+      if (rawSchedule) {
+        const badgeEl = document.getElementById("hero-schedule-badge");
+        const statusEl = document.getElementById("hero-schedule-status");
+        const hoursEl = document.getElementById("hero-schedule-hours");
+        const dotEl = document.getElementById("hero-schedule-dot");
+        const infoRowEl = document.getElementById("hero-schedule-info-row");
+        const infoTextEl = document.getElementById("hero-schedule-info");
+        const sectionDescEl = document.getElementById("section-schedule-desc");
+
+        const isClosed = /cerrad/i.test(rawSchedule);
+        let hoursPart = "";
+        let statusText = isClosed ? "Cerrado" : "Abierto Hoy";
+
+        if (isClosed) {
+          hoursPart = rawSchedule;
+          if (badgeEl) {
+            badgeEl.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold";
+          }
+          if (dotEl) {
+            dotEl.className = "w-2 h-2 rounded-full bg-amber-400";
+          }
+        } else if (rawSchedule.includes("·")) {
+          const parts = rawSchedule.split("·");
+          hoursPart = parts.slice(1).join("·").trim();
+          if (badgeEl) {
+            badgeEl.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold";
+          }
+          if (dotEl) {
+            dotEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+          }
+        } else {
+          const m = rawSchedule.match(/(?:\d{1,2}(?::\d{2})?\s*(?:am|pm|hrs)?\s*(?:a|-|hasta)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|hrs)?)/i);
+          if (m) {
+            hoursPart = m[0].trim();
+            if (!hoursPart.toLowerCase().includes("hrs") && !hoursPart.toLowerCase().includes("am") && !hoursPart.toLowerCase().includes("pm")) {
+              hoursPart += " hrs";
+            }
+          } else {
+            hoursPart = rawSchedule;
+          }
+          if (badgeEl) {
+            badgeEl.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold";
+          }
+          if (dotEl) {
+            dotEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+          }
+        }
+
+        if (statusEl) statusEl.textContent = statusText;
+        if (hoursEl) {
+          hoursEl.textContent = hoursPart ? ` · ${hoursPart}` : "";
+          hoursEl.classList.remove("hidden");
+        }
+        if (infoTextEl) {
+          infoTextEl.textContent = `Horario: ${rawSchedule}`;
+        }
+        if (infoRowEl) {
+          infoRowEl.classList.remove("hidden");
+        }
+        if (sectionDescEl) {
+          sectionDescEl.textContent = `${rawSchedule} (Pedidos por WhatsApp activos todo el día).`;
+        }
+      }
+
+      // 5. Actualizar Ubicación si fue modificada por el moderador
+      if (reg.coto_address) {
+        const locEl = document.getElementById("hero-location-text");
+        if (locEl) locEl.textContent = reg.coto_address;
       }
     }
     syncChileChillonMicrosite();

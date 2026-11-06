@@ -807,6 +807,7 @@ def seed_official_showcases(db: Session):
         BOTICA_DATA = {
             "cover_photo": "Assets/botica/ethereal_botanical_hero.webp",
             "website_url": "https://boticasilvestre.com.mx",
+            "schedule": "Lunes a Sábado · 09:00 a 19:00 hrs",
             "featured_section": {
                 "title": "Extractos Botánicos & Fórmulas Maestras",
                 "subtitle": "LÍNEA SOUL SHINE · SÚPER ADAPTÓGENOS",
@@ -853,6 +854,7 @@ def seed_official_showcases(db: Session):
         CHILLON_DATA = {
             "cover_photo": "Assets/chillon/placa_fondo_restaurante_gourmet.jpg",
             "website_url": "https://elchilechillon.mx",
+            "schedule": "Lunes a Domingo · 10:00 a 20:00 hrs",
             "featured_section": {
                 "title": "Catálogo de Salsas & Sazón de la Casa",
                 "subtitle": "SALSAS PICANTES 100% NATURALES · SELECCIÓN ARTESANAL",
