@@ -331,6 +331,7 @@ def _parse_tabular_statement(
     Parsea estados de cuenta mensuales estructurados en tablas de movimientos continuos.
     """
     transacciones: List[Dict[str, Any]] = []
+    same_day_counter: Dict[Any, int] = {}
 
     for page_idx, page_str in enumerate(pages_text):
         lines = page_str.split("\n")
@@ -378,7 +379,12 @@ def _parse_tabular_statement(
             area_proyecto = _detect_area_project(concepto)
 
             date_str = fecha_obj.strftime("%Y-%m-%d")
-            hash_seed = f"{account_rfc}|PDF_STMT|{date_str}|{concepto.upper()}|{monto_val:.2f}|{tipo}|{page_idx}-{line_idx}"
+            clean_c = re.sub(r'[^A-Z0-9]', '', concepto.upper())
+            day_key = (account_rfc, date_str, round(monto_val, 2), tipo, clean_c)
+            same_day_counter[day_key] = same_day_counter.get(day_key, 0) + 1
+            occ = same_day_counter[day_key]
+            saldo_token = f"{saldo_val:.2f}" if saldo_val is not None else f"occ-{occ}"
+            hash_seed = f"{account_rfc}|PDF_STMT|{date_str}|{concepto.upper()}|{monto_val:.2f}|{tipo}|{saldo_token}"
             id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
 
             transacciones.append({
@@ -483,6 +489,7 @@ def _parse_bbva_pyme_statement(
     # 4. Clasificación aritmética de saldos (INGRESO vs EGRESO) y auto-etiquetado
     curr_saldo = initial_balance
     result: List[Dict[str, Any]] = []
+    same_day_counter: Dict[Any, int] = {}
 
     for idx, r in enumerate(raw_rows):
         nums = r['nums']
@@ -529,7 +536,13 @@ def _parse_bbva_pyme_statement(
         periodo_mes = r['periodo_mes']
         fecha_obj = r['fecha']
         date_str = fecha_obj.strftime("%Y-%m-%d")
-        saldo_token = f"{saldo_registrado:.2f}" if saldo_registrado is not None else f"row-{idx}"
+        if saldo_registrado is not None:
+            saldo_token = f"{saldo_registrado:.2f}"
+        else:
+            clean_c = re.sub(r'[^A-Z0-9]', '', concepto_final.upper())
+            day_key = (effective_rfc, date_str, monto, tipo, clean_c)
+            same_day_counter[day_key] = same_day_counter.get(day_key, 0) + 1
+            saldo_token = f"occ-{same_day_counter[day_key]}"
         hash_seed = f"{effective_rfc}|BBVA|{date_str}|{concepto_final.upper()}|{monto:.2f}|{tipo}|{saldo_token}"
         id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
 
@@ -798,6 +811,7 @@ def _parse_invex_statement(
 
     # 4. Formatear y construir transacciones
     result: List[Dict[str, Any]] = []
+    same_day_counter: Dict[Any, int] = {}
     for idx, e in enumerate(raw_entries):
         m_amt = amount_re.search(e["text"])
         if not m_amt:
@@ -824,7 +838,11 @@ def _parse_invex_statement(
 
         periodo_mes = periodo_mes_default
 
-        hash_seed = f"{effective_rfc}|TC_INVEX|{date_str}|{concepto_final.upper()}|{monto_val:.2f}|{tipo_val}|{idx}"
+        clean_c = re.sub(r'[^A-Z0-9]', '', concepto_final.upper())
+        day_key = (effective_rfc, date_str, round(monto_val, 2), tipo_val, clean_c)
+        same_day_counter[day_key] = same_day_counter.get(day_key, 0) + 1
+        occ = same_day_counter[day_key]
+        hash_seed = f"{effective_rfc}|TC_INVEX|{date_str}|{concepto_final.upper()}|{monto_val:.2f}|{tipo_val}|occ-{occ}"
         id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
 
         is_payment = ("SU PAGO" in concepto_final.upper() or "PAGO POR SPEI" in concepto_final.upper())

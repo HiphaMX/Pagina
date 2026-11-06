@@ -995,7 +995,11 @@ async def upload_reconciliation_files(
     entity_name = entity_cfg["name"]
 
     processed_xmls = 0
+    new_xmls = 0
+    skipped_xmls = 0
     processed_statements = 0
+    new_statements = 0
+    skipped_statements = 0
     errors = []
     detected_months = set()
 
@@ -1046,7 +1050,9 @@ async def upload_reconciliation_files(
                                     )
                                     db.add(inv)
                                     processed_xmls += 1
+                                    new_xmls += 1
                                 else:
+                                    skipped_xmls += 1
                                     if is_cash_egr_zip and (not existing.conciliado or not existing.comprobado or existing.motivo_comprobacion != "Pago efectivo"):
                                         existing.conciliado = True
                                         existing.comprobado = True
@@ -1110,7 +1116,9 @@ async def upload_reconciliation_files(
                     )
                     db.add(inv)
                     processed_xmls += 1
+                    new_xmls += 1
                 else:
+                    skipped_xmls += 1
                     if is_cash_egr_ind and (not existing.conciliado or not existing.comprobado or existing.motivo_comprobacion != "Pago efectivo"):
                         existing.conciliado = True
                         existing.comprobado = True
@@ -1186,7 +1194,9 @@ async def upload_reconciliation_files(
                             )
                             db.add(new_tx)
                             processed_statements += 1
+                            new_statements += 1
                         else:
+                            skipped_statements += 1
                             if is_own and existing_tx.status_conciliacion in ("SIN_CFDI", "POR_REVISAR"):
                                 existing_tx.status_conciliacion = "NO_APLICA"
                                 existing_tx.nota_revision = "Traspaso entre Cuentas Propias"
@@ -1233,7 +1243,9 @@ async def upload_reconciliation_files(
                         )
                         db.add(new_tx)
                         processed_statements += 1
+                        new_statements += 1
                     else:
+                        skipped_statements += 1
                         if is_own and existing_tx.status_conciliacion in ("SIN_CFDI", "POR_REVISAR"):
                             existing_tx.status_conciliacion = "NO_APLICA"
                             existing_tx.nota_revision = "Traspaso entre Cuentas Propias"
@@ -1267,7 +1279,11 @@ async def upload_reconciliation_files(
         "success": True,
         "entity": {"rfc": effective_rfc, "name": entity_name},
         "processed_xmls": processed_xmls,
+        "new_xmls": new_xmls,
+        "skipped_xmls": skipped_xmls,
         "processed_statements": processed_statements,
+        "new_statements": new_statements,
+        "skipped_statements": skipped_statements,
         "matches_creados": matches_creados,
         "detected_months": sorted(list(detected_months), reverse=True),
         "errors": errors

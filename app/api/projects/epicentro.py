@@ -159,7 +159,7 @@ class KamPaymentReportRequest(BaseModel):
     registration_id: str
     kam_name: str
     payment_method: Optional[str] = "kam_direct"
-    amount: Optional[float] = 99.0
+    amount: Optional[float] = 399.0
     notes: Optional[str] = None
 
 
@@ -361,7 +361,7 @@ async def initiate_registration(
         whatsapp_code=wa_code,
         whatsapp_verified=False,
         payment_status="pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}",
-        payment_amount=99.0,
+        payment_amount=399.0,
         status="pending_verification"
     )
 
@@ -464,16 +464,16 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
 
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
     site_domain = os.getenv("FRONTEND_URL", "https://www.hipha.mx")
-    amount = float(reg.payment_amount or 99.0)
+    amount = float(reg.payment_amount or 399.0)
 
     preference_data = {
         "items": [
             {
-                "title": f"Verificación Oficial: {reg.business_name} (Epicentro Natura)",
+                "title": f"Suscripción Anual: {reg.business_name} (Epicentro Natura)",
                 "quantity": 1,
                 "currency_id": "MXN",
                 "unit_price": amount,
-                "description": "Insignia Sello Verificado, alta comunitaria en Directorio Epicentro Natura"
+                "description": "Suscripción anual $399 MXN: Sello Vecino Verificado + Micrositio interactivo con catálogo"
             }
         ],
         "payer": {
@@ -715,6 +715,10 @@ def report_kam_payment(
     reg.kam_name = kam
     reg.payment_method = payload.payment_method or "kam_direct"
     reg.payment_status = "pending_kam_verification"
+    if payload.amount is not None:
+        reg.payment_amount = payload.amount
+    else:
+        reg.payment_amount = 399.0
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     note_line = f"Pago acordado con asesor KAM '{kam}' ({now_str} UTC)"
     if payload.notes:

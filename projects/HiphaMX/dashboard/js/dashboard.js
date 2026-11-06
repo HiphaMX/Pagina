@@ -7046,7 +7046,30 @@ function initReconUploadModal() {
 
                 const data = await res.json();
                 if (data.success) {
-                    let alertMsg = `¡Proceso completado con éxito!\n• ${data.processed_xmls} facturas XML registradas\n• ${data.processed_statements} transacciones bancarias cargadas\n• ${data.matches_creados} coincidencias automáticas vinculadas`;
+                    let summaryParts = ['¡Proceso completado con éxito!'];
+                    if (data.new_xmls !== undefined) {
+                        summaryParts.push(`• ${data.new_xmls} facturas XML nuevas registradas`);
+                        if (data.skipped_xmls > 0) {
+                            summaryParts.push(`• ${data.skipped_xmls} facturas XML ya existentes omitidas (sin duplicar)`);
+                        }
+                    } else if (data.processed_xmls > 0) {
+                        summaryParts.push(`• ${data.processed_xmls} facturas XML registradas`);
+                    }
+
+                    if (data.new_statements !== undefined) {
+                        summaryParts.push(`• ${data.new_statements} nuevas transacciones bancarias cargadas`);
+                        if (data.skipped_statements > 0) {
+                            summaryParts.push(`• ${data.skipped_statements} transacciones ya existentes omitidas (sin duplicar)`);
+                        }
+                    } else if (data.processed_statements > 0) {
+                        summaryParts.push(`• ${data.processed_statements} transacciones bancarias cargadas`);
+                    }
+
+                    if (data.matches_creados > 0) {
+                        summaryParts.push(`• ${data.matches_creados} coincidencias automáticas vinculadas`);
+                    }
+
+                    let alertMsg = summaryParts.join('\n');
                     if (data.errors && data.errors.length > 0) {
                         alertMsg += `\n\n⚠️ Errores / Avisos en archivos:\n${data.errors.join('\n')}`;
                     }

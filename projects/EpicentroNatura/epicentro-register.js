@@ -227,6 +227,7 @@
         body: JSON.stringify({
           registration_id: currentRegId,
           kam_name: kamName,
+          amount: 399.0,
           notes: kamNotes
         })
       });
@@ -428,8 +429,11 @@
           <div class="border-t border-slate-100 pt-3">
             <div class="flex items-center justify-between mb-2">
               <div>
-                <span class="text-xs font-bold text-slate-800 block">Fotografías para tu Micrositio</span>
-                <span class="text-[11px] text-slate-400">Carga hasta 10 fotos para tu catálogo o fachada</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-slate-800">Fotografías para tu Catálogo y Micrositio</span>
+                  <span class="px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-md bg-amber-100 text-amber-800 border border-amber-300">Suscripción Anual $399</span>
+                </div>
+                <span class="text-[11px] text-slate-500">Carga hasta 10 fotos para tu catálogo o fachada. (El registro gratuito solo incluye datos de contacto y horarios).</span>
               </div>
               <span id="reg-photos-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-100 text-emerald-800 font-mono">0 / 10</span>
             </div>
@@ -511,22 +515,22 @@
             <i data-lucide="award" class="w-6 h-6"></i>
           </div>
           <span class="inline-block px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-            Sello Oficial Vecino Verificado + Tu Propio Micrositio
+            Suscripción Anual $399 MXN · Sello Oficial + Tu Propio Micrositio
           </span>
-          <h4 class="text-lg font-black text-slate-950">Insignia Oficial y Micrositio con Catálogo</h4>
+          <h4 class="text-lg font-black text-slate-950">Insignia Vecino Verificado y Micrositio con Catálogo</h4>
           <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-            Obtén tu <strong>micrositio web interactivo</strong> (con fotos de productos, precios, menú de complementos y pedidos por WhatsApp) más el distintivo verificado para casetas de cotos.
+            Obtén tu <strong>micrositio web interactivo exclusivo</strong> (con fotos de productos, precios, menú de pedidos directos por WhatsApp y distintivo verificado ante casetas de cotos).
           </p>
 
           <div class="py-2">
-            <span class="text-3xl font-black text-slate-950 font-mono">$99.00</span>
-            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Cuota Única de Alta</span>
+            <span class="text-3xl font-black text-slate-950 font-mono">$399.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual</span>
           </div>
 
           <div class="grid grid-cols-2 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
             <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu Micrositio Web Propio</div>
-            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Catálogo con Fotos & Precios</div>
-            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Pedidos Directos a WhatsApp</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Catálogo hasta 10 Fotos & Precios</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Pedidos Directos a tu WhatsApp</div>
             <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Sello Verificado Oficial</div>
           </div>
         </div>
@@ -535,7 +539,7 @@
         <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
           <button type="button" id="tab-pay-mp" onclick="setPaymentMode('mp')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs flex items-center justify-center gap-1.5">
             <i data-lucide="credit-card" class="w-3.5 h-3.5 text-sky-600"></i>
-            <span>Mercado Pago ($99)</span>
+            <span>Mercado Pago ($399 / año)</span>
           </button>
           <button type="button" id="tab-pay-kam" onclick="setPaymentMode('kam')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5">
             <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-600"></i>
@@ -546,11 +550,11 @@
         <!-- Panel Mercado Pago -->
         <div id="panel-pay-mp" class="space-y-3">
           <button id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
-            <span>Activar Micrositio con Mercado Pago ($99 MXN)</span>
+            <span>Activar Suscripción Anual con Mercado Pago ($399 MXN / año)</span>
             <i data-lucide="external-link" class="w-4 h-4"></i>
           </button>
           <p class="text-[11px] text-center text-slate-400">
-            Acepta Tarjetas (Débito/Crédito), Mercado Pago Wallet, SPEI u OXXO vía pasarela segura.
+            Suscripción anual segura vía Mercado Pago. Acepta Tarjetas de Débito/Crédito y saldo en cuenta. Activación automática.
           </p>
         </div>
 
@@ -570,7 +574,7 @@
             <div class="font-bold text-slate-900">Datos para Transferencia Directa (STP / SPEI):</div>
             <div>Banco: <span class="font-mono font-semibold">STP / BBVA</span> · Hipha Marketing Digital</div>
             <div>CLABE: <span class="font-mono font-semibold">646180157088123456</span></div>
-            <div>Monto: <span class="font-bold text-emerald-700">$99.00 MXN</span> · Concepto: <span class="font-mono">Alta Natura</span></div>
+            <div>Monto: <span class="font-bold text-emerald-700">$399.00 MXN / año</span> · Concepto: <span class="font-mono">Suscripcion Natura</span></div>
           </div>
 
           <div>
@@ -580,7 +584,7 @@
 
           <div>
             <label class="block text-xs font-bold text-slate-800 mb-1">Notas / Folio de Acuerdo o Comprobante (Opcional)</label>
-            <input type="text" id="reg-kam-notes" placeholder="Ej. Transferencia realizada hoy / Pago acordado en visita" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <input type="text" id="reg-kam-notes" placeholder="Ej. Transferencia anual realizada hoy / Pago acordado en visita" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
           </div>
 
           <button type="button" id="btn-submit-kam-payment" onclick="handleKamPaymentSubmit()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
@@ -609,10 +613,24 @@
           </div>
         </div>
 
-        <div class="text-center pt-2">
-          <button onclick="skipVerificationPayment()" class="text-xs text-slate-400 hover:text-slate-600 underline">
-            Omitir pago por ahora (solicitar alta básica en revisión sin Sello Verificado)
-          </button>
+        <!-- DIFERENCIACIÓN DEL REGISTRO GRATUITO BÁSICO -->
+        <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
+          <div class="flex items-start gap-3">
+            <div class="w-7 h-7 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="info" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo registro básico sin costo?</h5>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                El <strong>registro gratuito</strong> incluye únicamente tus datos generales de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>No incluye micrositio web interactivo, catálogo de fotos ni insignia de vecino verificado.</em>
+              </p>
+              <div class="pt-2">
+                <button type="button" onclick="skipVerificationPayment()" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors">
+                  Continuar con Registro Básico Gratuito ($0) &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -646,13 +664,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
+      modal.dataset.version = "v399";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
-    // Si el modal no contiene el stepper completo o carece de los nuevos campos
-    if (!document.getElementById("reg-step-1") || !document.getElementById("reg-schedule") || !document.getElementById("tab-pay-kam")) {
+    // Si el modal no contiene el stepper completo o carece de los nuevos campos o es versión antigua
+    if (!document.getElementById("reg-step-1") || !document.getElementById("reg-schedule") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v399") {
       modal.innerHTML = renderWizardHTML();
+      modal.dataset.version = "v399";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
@@ -937,51 +957,86 @@
     setWizardStep(3);
   }
 
+  const MP_ANNUAL_SUBSCRIPTION_URL = "https://mpago.la/2jXGN6C";
+
   async function triggerMercadoPagoPayment() {
     const btn = document.getElementById("btn-pay-mp");
     const origText = btn ? btn.innerHTML : "";
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Conectando con Mercado Pago...</span>`;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Abriendo Mercado Pago...</span>`;
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     try {
-      const res = await fetch("/api/epicentro/register/create-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ registration_id: currentRegId })
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || "Error al generar preferencia en Mercado Pago.");
+      // Registrar en backend la intención de suscripción con monto de $399
+      if (currentRegId && !currentRegId.startsWith("mock-")) {
+        await fetch("/api/epicentro/register/report-kam-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            registration_id: currentRegId,
+            kam_name: "Mercado Pago Suscripción Anual (Link Directo)",
+            amount: 399.0,
+            payment_method: "mercadopago_subscription",
+            notes: `Inició suscripción anual en ${MP_ANNUAL_SUBSCRIPTION_URL}`
+          })
+        }).catch(e => console.warn("Aviso reporte MP:", e));
       }
-      const data = await res.json();
-      if (data.init_point) {
-        window.location.href = data.init_point;
+
+      // Abrir enlace oficial de suscripción anual en Mercado Pago
+      const opened = window.open(MP_ANNUAL_SUBSCRIPTION_URL, "_blank");
+      if (!opened) {
+        window.location.href = MP_ANNUAL_SUBSCRIPTION_URL;
         return;
       }
-      throw new Error("No se recibió URL de pago.");
+
+      showStep4Success("NATURA-SUB-" + Math.floor(1000 + Math.random() * 9000), {
+        title: "¡Suscripción Anual Iniciada!",
+        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago para activar tu micrositio y catálogo de fotos."
+      });
     } catch (err) {
       console.warn("Aviso Mercado Pago:", err);
-      const ok = confirm(`Conexión con Mercado Pago (Botica Silvestre):\n\n¿Deseas simular pago exitoso de $99.00 MXN para verificar '${currentBusinessName}'?`);
-      if (ok) {
-        showStep4Success("NATURA-VERIFIED-" + Math.floor(1000 + Math.random() * 9000));
-      } else {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = origText;
-          if (window.lucide && lucide.createIcons) lucide.createIcons();
-        }
+      window.open(MP_ANNUAL_SUBSCRIPTION_URL, "_blank");
+      showStep4Success("NATURA-SUB-" + Math.floor(1000 + Math.random() * 9000), {
+        title: "¡Suscripción Anual Iniciada!",
+        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago para activar tu micrositio y catálogo de fotos."
+      });
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
   }
 
-  function skipVerificationPayment() {
-    const ok = confirm("¿Deseas enviar tu registro para revisión básica sin la insignia de Vecino Verificado ni menú con fotos?");
-    if (ok) {
-      showStep4Success("NATURA-BASIC-" + Math.floor(1000 + Math.random() * 9000));
+  async function skipVerificationPayment() {
+    const ok = confirm("¿Confirmas tu registro básico gratuito?\n\nImportante: Tu negocio aparecerá en el directorio comunitario con tus datos generales (teléfono, WhatsApp, ubicación y horarios), pero NO incluirá micrositio web interactivo, fotos de catálogo ni insignia de Vecino Verificado.");
+    if (!ok) return;
+
+    try {
+      if (currentRegId && !currentRegId.startsWith("mock-")) {
+        await fetch("/api/epicentro/register/report-kam-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            registration_id: currentRegId,
+            kam_name: "Registro Básico Gratuito",
+            amount: 0.0,
+            payment_method: "free_basic",
+            notes: "Alta básica sin costo (solo teléfono, whatsapp, ubicación y horarios; sin fotos/micrositio)"
+          })
+        }).catch(e => console.warn("Aviso reporte gratis:", e));
+      }
+    } catch (e) {
+      console.warn(e);
     }
+
+    showStep4Success("NATURA-GRATIS-" + Math.floor(1000 + Math.random() * 9000), {
+      title: "¡Registro Básico Gratuito Enviado!",
+      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu micrositio y fotos con la suscripción anual en cualquier momento."
+    });
   }
 
   function toggleCouponBox() {
@@ -1060,11 +1115,16 @@
     }
   }
 
-  function showStep4Success(folio) {
+  function showStep4Success(folio, customTexts) {
     const bNameEl = document.getElementById("step4-business-name");
     const folioEl = document.getElementById("step4-folio");
+    const titleEl = document.getElementById("step4-title");
+    const descEl = document.getElementById("step4-desc");
+
     if (bNameEl) bNameEl.textContent = currentBusinessName || "tu negocio";
     if (folioEl) folioEl.textContent = folio;
+    if (customTexts && customTexts.title && titleEl) titleEl.textContent = customTexts.title;
+    if (customTexts && customTexts.desc && descEl) descEl.textContent = customTexts.desc;
     setWizardStep(4);
   }
 

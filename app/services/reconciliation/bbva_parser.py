@@ -253,6 +253,7 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
         )
 
     transacciones: List[Dict[str, Any]] = []
+    same_day_counter: Dict[Any, int] = {}
 
     for idx, row in enumerate(rows[header_row_idx + 1:], start=header_row_idx + 1):
         if col_fecha_idx >= len(row) or col_concepto_idx >= len(row):
@@ -313,7 +314,14 @@ def parse_bbva_statement(file_content: bytes, filename: str, account_rfc: str = 
         else:
             continue
 
-        saldo_token = f"{saldo:.2f}" if saldo is not None else f"row-{idx}"
+        if saldo is not None:
+            saldo_token = f"{saldo:.2f}"
+        else:
+            clean_c = re.sub(r'[^A-Z0-9]', '', concepto.upper())
+            day_key = (account_rfc, fecha_obj.strftime('%Y-%m-%d'), monto, tipo, clean_c)
+            same_day_counter[day_key] = same_day_counter.get(day_key, 0) + 1
+            saldo_token = f"occ-{same_day_counter[day_key]}"
+
         hash_seed = f"{account_rfc}|BBVA|{fecha_obj.strftime('%Y-%m-%d')}|{concepto.upper()}|{monto:.2f}|{tipo}|{saldo_token}"
         id_transaccion = hashlib.sha256(hash_seed.encode("utf-8")).hexdigest()
 
