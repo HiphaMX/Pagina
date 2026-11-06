@@ -13,9 +13,7 @@
       { slug: "tacos-carnes", label: "Tacos y Carnes" },
       { slug: "comida-casera", label: "Comida Casera" },
       { slug: "snacks-botanas", label: "Snacks y Botanas" },
-      { slug: "mariscos", label: "Mariscos" }
-    ],
-    "postres-cafe": [
+      { slug: "mariscos", label: "Mariscos" },
       { slug: "pasteleria-reposteria", label: "Pastelería y Repostería" },
       { slug: "cafeterias-barras", label: "Cafeterías y Barras" },
       { slug: "helados-nieve", label: "Helados y Nieve" },
@@ -62,13 +60,6 @@
       { slug: "veterinaria-vacunas", label: "Veterinaria y Vacunas" },
       { slug: "alimentos-accesorios", label: "Alimentos y Accesorios" },
       { slug: "paseadores-cuidado", label: "Paseadores y Cuidado" }
-    ],
-    "atencion-medica": [
-      { slug: "medicina-odontologia", label: "Medicina General y Odontología" },
-      { slug: "pediatria", label: "Pediatría" },
-      { slug: "nutricion-psicologia", label: "Nutrición y Psicología" },
-      { slug: "terapia-fisica", label: "Terapia Física" },
-      { slug: "farmacia-botiquin", label: "Farmacia y Botiquín" }
     ],
     "fitness": [
       { slug: "gimnasios-studios", label: "Gimnasios y Studios" },
@@ -651,15 +642,13 @@
             <div>
               <label class="block text-xs font-bold text-slate-800 mb-1">Giro de la Oferta *</label>
               <select id="reg-category" onchange="syncSubcategoriesDropdown()" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                <option value="comida-delivery">Comida y Delivery</option>
-                <option value="postres-cafe">Postres y café</option>
+                <option value="comida-delivery">Comida & Delivery (incluye Postres y Café)</option>
                 <option value="productos-artesanales">Productos artesanales</option>
                 <option value="educacion">Educación</option>
                 <option value="servicios-profesionales">Servicios Profesionales</option>
                 <option value="servicios-hogar">Servicios hogar</option>
                 <option value="hogar">Hogar y Decoración</option>
                 <option value="mascotas">Mascotas</option>
-                <option value="atencion-medica">Atención médica</option>
                 <option value="fitness">Fitness</option>
               </select>
             </div>
