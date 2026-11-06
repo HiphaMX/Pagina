@@ -44,4 +44,9 @@
     2. **Vía Integración Nativa (Código del Proyecto)**:
        Implementar la lógica directamente en el `app.js` y `style.css` del proyecto, siguiendo el patrón de referencia implementado en `projects/Centro Escolar El Paraiso/web/`.
 
+- **Estándar Visual de Fotografía de Producto en Micrositios y Catálogos**:
+  - Al renderizar fotos de producto de cualquier cliente o comercio (en micrositios, catálogos, menús o galerías de e-commerce), el contenedor de la fotografía DEBE tener fondo blanco puro (`bg-white` / `#ffffff`) y la imagen debe configurarse con fondo blanco o `object-contain bg-white`.
+  - Queda estrictamente prohibido utilizar fondos tintados o grisáceos (como `bg-emerald-950/5`, `bg-slate-100`, etc.) detrás de fotografías de producto con fondo blanco, para evitar que se marquen los recuadros o bordes cuadrados ("los cuadros") de las imágenes de los clientes y asegurar una integración visual limpia y profesional.
+
+
 
