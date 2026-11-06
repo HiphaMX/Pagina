@@ -83,7 +83,47 @@
   let currentBusinessName = "";
   let waVerified = false;
   let currentPaymentMode = "mp";
+  let currentSelectedPlan = "microsite"; // "microsite" ($399/año) o "free_basic" ($0)
   let registerUploadedPhotos = [];
+
+  function selectRegistrationPlan(plan) {
+    currentSelectedPlan = plan;
+    const btnMicro = document.getElementById("plan-btn-microsite");
+    const btnFree = document.getElementById("plan-btn-free");
+    const photosSec = document.getElementById("reg-photos-section");
+    const freeNotice = document.getElementById("reg-free-notice");
+    const stepLabel = document.getElementById("wizard-step-label");
+    const btnSubmit1 = document.getElementById("btn-submit-step1");
+
+    if (plan === "microsite") {
+      if (btnMicro) {
+        btnMicro.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex flex-col justify-between cursor-pointer";
+      }
+      if (btnFree) {
+        btnFree.className = "p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex flex-col justify-between opacity-80 hover:opacity-100 cursor-pointer";
+      }
+      if (photosSec) photosSec.classList.remove("hidden");
+      if (freeNotice) freeNotice.classList.add("hidden");
+      if (stepLabel) stepLabel.textContent = "Paso 1 de 3";
+      if (btnSubmit1) {
+        btnSubmit1.innerHTML = `<span>Continuar a Validación (Paso 1 de 3)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      }
+    } else {
+      if (btnMicro) {
+        btnMicro.className = "p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex flex-col justify-between opacity-80 hover:opacity-100 cursor-pointer";
+      }
+      if (btnFree) {
+        btnFree.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-slate-900 flex flex-col justify-between cursor-pointer";
+      }
+      if (photosSec) photosSec.classList.add("hidden");
+      if (freeNotice) freeNotice.classList.remove("hidden");
+      if (stepLabel) stepLabel.textContent = "Paso 1 de 2";
+      if (btnSubmit1) {
+        btnSubmit1.innerHTML = `<span>Continuar con Registro Gratuito (Paso 1 de 2)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      }
+    }
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
 
   function compressImageFile(file, maxWidth = 1000, quality = 0.82) {
     return new Promise((resolve, reject) => {
@@ -302,6 +342,36 @@
 
       <!-- FASE 1: DATOS DEL COMERCIO Y CONTACTO -->
       <div id="reg-step-1">
+        <!-- SELECTOR DE PLAN: MICROSITIO ($399/AÑO) VS REGISTRO GRATUITO ($0) -->
+        <div class="mb-4 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button type="button" id="plan-btn-microsite" onclick="selectRegistrationPlan('microsite')" class="p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex flex-col justify-between cursor-pointer">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> Plan con Micrositio
+              </span>
+              <span class="px-2 py-0.5 text-[10px] font-black uppercase rounded-md bg-emerald-100 text-emerald-800 font-mono">$399 / año</span>
+            </div>
+            <p class="text-[11px] text-slate-500 leading-snug">Micrositio interactivo propio, catálogo hasta 10 fotos, pedidos WhatsApp y Sello Vecino Verificado.</p>
+          </button>
+
+          <button type="button" id="plan-btn-free" onclick="selectRegistrationPlan('free_basic')" class="p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex flex-col justify-between opacity-80 hover:opacity-100 cursor-pointer">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400"></i> Registro Gratuito
+              </span>
+              <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-200 text-slate-700 font-mono">$0 Gratis</span>
+            </div>
+            <p class="text-[11px] text-slate-500 leading-snug">Presencia en el directorio con datos generales: teléfono, WhatsApp, ubicación y horarios. Solo textos e hipervínculos.</p>
+          </button>
+        </div>
+
+        <div id="reg-free-notice" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-2.5 text-left">
+          <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+          <p class="text-[11px] text-amber-900 leading-relaxed">
+            <strong>Ficha Básica Gratuita ($0):</strong> Tu comercio se publicará con textos de contacto e hipervínculos funcionales directos (llamada y WhatsApp). <em>No incluye carga de fotos ni micrositio web interactivo.</em>
+          </p>
+        </div>
+
         <form onsubmit="submitStep1(event)" class="space-y-4">
           <!-- Campo Trampa Honeypot Anti-Bot -->
           <input type="text" id="reg-honeypot" name="hp_field" style="display:none!important;" tabindex="-1" autocomplete="off">
@@ -426,7 +496,7 @@
           </div>
 
           <!-- CARGA DE FOTOGRAFÍAS PARA MICROSITIO (HASTA 10 FOTOS) -->
-          <div class="border-t border-slate-100 pt-3">
+          <div id="reg-photos-section" class="border-t border-slate-100 pt-3">
             <div class="flex items-center justify-between mb-2">
               <div>
                 <div class="flex items-center gap-1.5">
@@ -695,6 +765,7 @@
     registerUploadedPhotos = [];
     renderRegisterPhotosGrid();
     setPaymentMode("mp");
+    selectRegistrationPlan("microsite");
 
     // Pre-llenar la categoría detectada
     const detectedCat = detectActiveCategory(preselectedCat);
@@ -738,32 +809,33 @@
     const bar1 = document.getElementById("step-bar-1");
     const bar2 = document.getElementById("step-bar-2");
     const bar3 = document.getElementById("step-bar-3");
+    const isFree = (currentSelectedPlan === "free_basic");
 
     if (step === 1) {
-      if (label) label.textContent = "Paso 1 de 3";
-      if (title) title.textContent = "Registrar Comercio o Servicio";
-      if (desc) desc.textContent = "Conéctate directamente con las familias de cotos Natura con sello de confianza.";
+      if (label) label.textContent = isFree ? "Paso 1 de 2" : "Paso 1 de 3";
+      if (title) title.textContent = isFree ? "Alta Básica Comunitaria (Gratis)" : "Registrar Comercio o Servicio";
+      if (desc) desc.textContent = isFree ? "Publicación en el directorio con datos de contacto e hipervínculos funcionales." : "Conéctate directamente con las familias de cotos Natura con micrositio y catálogo.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-slate-200 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-slate-200 transition-all";
     } else if (step === 2) {
-      if (label) label.textContent = "Paso 2 de 3";
+      if (label) label.textContent = isFree ? "Paso 2 de 2" : "Paso 2 de 3";
       if (title) title.textContent = "Validación por WhatsApp";
       if (desc) desc.textContent = "Confirma tu número comercial con 1 toque para proteger la confianza de la comunidad.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
-      if (bar3) bar3.className = "h-1.5 rounded-full bg-slate-200 transition-all";
+      if (bar3) bar3.className = isFree ? "h-1.5 rounded-full bg-emerald-600 transition-all" : "h-1.5 rounded-full bg-slate-200 transition-all";
     } else if (step === 3) {
       if (label) label.textContent = "Paso 3 de 3";
-      if (title) title.textContent = "Verificación Oficial Mercado Pago";
-      if (desc) desc.textContent = "Activa tu Sello Oficial Vecino Verificado con cuota de alta comunitaria.";
+      if (title) title.textContent = "Suscripción Anual ($399 MXN) y Micrositio";
+      if (desc) desc.textContent = "Activa tu Micrositio web interactivo con catálogo de fotos y Sello Vecino Verificado.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
     } else if (step === 4) {
       if (label) label.textContent = "Completado";
-      if (title) title.textContent = "¡Solicitud Registrada!";
-      if (desc) desc.textContent = "Tu negocio ha sido verificado y está listo para ser publicado.";
+      if (title) title.textContent = isFree ? "¡Registro Básico Gratuito Enviado!" : "¡Suscripción y Micrositio Registrados!";
+      if (desc) desc.textContent = isFree ? "Tu negocio ha sido registrado con datos generales e hipervínculos de contacto." : "Tu solicitud ha sido registrada y está lista para su activación con catálogo.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
@@ -828,7 +900,8 @@
         phone: phone,
         whatsapp: wa,
         schedule: schedule,
-        photos: registerUploadedPhotos.length > 0 ? JSON.stringify(registerUploadedPhotos) : null,
+        photos: (currentSelectedPlan === "microsite" && registerUploadedPhotos.length > 0) ? JSON.stringify(registerUploadedPhotos) : null,
+        plan_type: currentSelectedPlan,
         preferred_contact_methods: prefMethods,
         website: website,
         delivery_available: deliveryChecked,
@@ -941,12 +1014,52 @@
 
   function checkCanProceedStep3() {
     const btn = document.getElementById("btn-to-step-3");
-    if (btn && waVerified) {
-      btn.disabled = false;
+    if (!btn || !waVerified) return;
+
+    btn.disabled = false;
+    if (currentSelectedPlan === "free_basic") {
+      btn.className = "w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
+      btn.innerHTML = `<span>Finalizar Registro Básico Gratuito ($0)</span> <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>`;
+      btn.onclick = finishFreeRegistration;
+    } else {
       btn.className = "w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
       btn.innerHTML = `<span>Continuar a Verificación Oficial (Paso 3 de 3)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      btn.onclick = goToStep3;
+    }
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
+  async function finishFreeRegistration() {
+    const btn = document.getElementById("btn-to-step-3");
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Guardando registro gratuito...</span>`;
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
+
+    try {
+      if (currentRegId && !currentRegId.startsWith("mock-")) {
+        await fetch("/api/epicentro/register/report-kam-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            registration_id: currentRegId,
+            kam_name: "Registro Básico Gratuito",
+            amount: 0.0,
+            payment_method: "free_basic",
+            notes: "Alta comunitaria básica sin costo (solo textos e hipervínculos: teléfono, WhatsApp, ubicación y horarios)"
+          })
+        }).catch(e => console.warn("Aviso reporte gratis:", e));
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+
+    const folioSuffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
+    showStep4Success(`NATURA-GRATIS-${folioSuffix}`, {
+      title: "¡Registro Básico Gratuito Enviado!",
+      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu micrositio interactivo y catálogo de fotos con la suscripción anual en cualquier momento."
+    });
   }
 
   function goToStep3() {
@@ -1149,6 +1262,8 @@
   window.renderRegisterPhotosGrid = renderRegisterPhotosGrid;
   window.setPaymentMode = setPaymentMode;
   window.handleKamPaymentSubmit = handleKamPaymentSubmit;
+  window.selectRegistrationPlan = selectRegistrationPlan;
+  window.finishFreeRegistration = finishFreeRegistration;
 
   function checkUrlAutoOpen() {
     try {

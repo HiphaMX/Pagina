@@ -1069,8 +1069,88 @@
       }
     ];
 
-    // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO EN APERTURA)
-    const ALL_BUSINESSES = [];
+    // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO OFICIAL)
+    const ALL_BUSINESSES = [
+      {
+        id: "reg-chile-chillon",
+        name: "Chile Chillón",
+        category_slug: "comida-delivery",
+        category_label: "Comida y Delivery",
+        subcategory_slug: "salsas-artesanales",
+        subcategory_label: "Salsas Picantes 100% Naturales",
+        type: "emprendimiento",
+        type_slug: "emprendimiento",
+        type_label: "Emprendimiento Artesanal",
+        space_label: "Punto de venta & A domicilio",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Envíos directos a caseta",
+        pickup_badge: "Recoger en coto",
+        coto: "Zona Mariano Otero",
+        address: "Zona Mariano Otero · Envíos a caseta en cotos Natura",
+        description: "Salsas picantes gourmet 100% artesanales y naturales para maximizar tu sazón. Árbol, Habanero, Tatemado, Negra, Serrano y Semillas Enchiladas. Sin conservadores ni colorantes artificiales.",
+        phone: "3921097809",
+        whatsapp: "3921097809",
+        website: "chile-chillon",
+        schedule: "Lunes a Domingo · 10:00 a 20:00 hrs",
+        hours: "Lunes a Domingo · 10:00 a 20:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Mercado Pago"],
+        has_badge: true,
+        badge_text: "Vecino Verificado · Cortesía Hipha",
+        rating: 5.0,
+        reviews: 28,
+        has_photos: true,
+        has_microsite: true,
+        photos: [
+          "../Assets/chillon/Salsas/de_arbol.jpg",
+          "../Assets/chillon/Salsas/habanero.jpg",
+          "../Assets/chillon/Salsas/tatemado.jpg"
+        ]
+      },
+      {
+        id: "reg-el-guero-tacos",
+        name: "El Güero Tacos & Cortes",
+        category_slug: "comida-delivery",
+        category_label: "Comida y Delivery",
+        subcategory_slug: "tacos-carnes",
+        subcategory_label: "Tacos y Carnes al Carbón",
+        type: "local-establecido",
+        type_slug: "local-establecido",
+        type_label: "Local Fijo",
+        space_label: "Punto de venta & A domicilio",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: "Para llevar",
+        coto: "Plaza Natura Local 4",
+        address: "Plaza Natura Local 4 · Frente a Coto Bambú",
+        description: "Tacos de suadero, costras de arrachera al carbón, volcanes y cebollitas cambray con entrega a domicilio en cotos.",
+        phone: "3398765432",
+        whatsapp: "3398765432",
+        website: "",
+        schedule: "Martes a Domingo · 14:00 a 23:00 hrs",
+        hours: "Martes a Domingo · 14:00 a 23:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia"],
+        has_badge: false,
+        badge_text: "Ficha Básica",
+        rating: 4.8,
+        reviews: 14,
+        has_photos: false,
+        has_microsite: false,
+        payment_status: "free_basic",
+        photos: []
+      }
+    ];
 
     // COORDENADAS GPS DE LAS 10 ZONAS GEOGRÁFICAS
     const ZONE_COORDINATES = {
@@ -1419,33 +1499,12 @@
         applyAllFilters();
       }
     }
-    // CONSTRUCTOR HOMOLOGADO DE BOTONES DE ACCIÓN (Ver más y WhatsApp)
+    // CONSTRUCTOR HOMOLOGADO DE BOTONES DE ACCIÓN (Diferenciación Micrositio vs Gratuito)
     function buildBusinessActionButtons(b, theme) {
       const btnClass = (theme && theme.btnPrimary) ? theme.btnPrimary : "bg-emerald-600 hover:bg-emerald-700 text-white";
       const isSubfolder = window.location.pathname.includes('/categorias/') || window.location.href.includes('/categorias/');
 
-      // 1. Resolver enlace de "Ver más"
-      const rawWebUrl = b.website || b.website_url || b.microsite_url;
-      let cleanWebUrl = rawWebUrl ? String(rawWebUrl).trim() : "";
-      let isExternal = false;
-      let resolvedWebUrl = "";
-
-      if (cleanWebUrl && (cleanWebUrl.startsWith("http://") || cleanWebUrl.startsWith("https://"))) {
-        isExternal = true;
-        resolvedWebUrl = cleanWebUrl;
-      } else if (cleanWebUrl && cleanWebUrl.includes(".") && !cleanWebUrl.endsWith(".html")) {
-        isExternal = true;
-        resolvedWebUrl = "https://" + cleanWebUrl;
-      } else {
-        let pageSlug = cleanWebUrl ? cleanWebUrl.replace(/\.html$/, '') : "negocio";
-        if (window.location.protocol === "file:") {
-          resolvedWebUrl = (isSubfolder ? "../" : "") + pageSlug + ".html";
-        } else {
-          resolvedWebUrl = "/epicentro/natura/" + pageSlug;
-        }
-      }
-
-      // 2. Resolver enlace de WhatsApp
+      // 1. Resolver WhatsApp
       const cleanWa = b.whatsapp ? String(b.whatsapp).replace(/\D/g, '') : "3336762545";
       let waText = `Hola ${b.name}, vi su ficha en Epicentro Natura y me gustaría solicitar información.`;
       if (b.cta_type === "service_whatsapp") {
@@ -1455,14 +1514,63 @@
       }
       const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
+      // 2. Identificar si cuenta con Micrositio Propio ($399 anual o Cortesía Oficial Hipha)
+      const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
+      const normName = String(b.name || "").toLowerCase();
+      const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
+      const isChillon = rawWeb === "chile-chillon" || b.id === "reg-chile-chillon" || normName.includes("chile chillón") || normName.includes("chile chillon");
+      const hasDedicatedMicrosite = isBotica || isChillon || b.has_microsite === true;
+
+      if (hasDedicatedMicrosite) {
+        const slug = isChillon ? "chile-chillon" : "botica-silvestre";
+        let micrositeUrl = "";
+        if (window.location.protocol === "file:") {
+          micrositeUrl = (isSubfolder ? "../" : "") + slug + ".html";
+        } else {
+          micrositeUrl = "/epicentro/natura/" + slug;
+        }
+        return `
+          <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
+            <a href="${micrositeUrl}" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web text-center">
+              <span>Ver Catálogo & Micrositio</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:translate-x-0.5 transition-transform shrink-0"></i>
+            </a>
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full text-center">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+        `;
+      }
+
+      // 3. Si cuenta con enlace web externo propio (ej. https://..., no micrositio Hipha)
+      if (rawWeb && (rawWeb.startsWith("http://") || rawWeb.startsWith("https://") || (rawWeb.includes(".") && !rawWeb.endsWith(".html")))) {
+        const extUrl = rawWeb.startsWith("http") ? rawWeb : "https://" + rawWeb;
+        return `
+          <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
+            <a href="${extUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all active:scale-95 w-full text-center">
+              <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i>
+              <span>Sitio Web ↗</span>
+            </a>
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full text-center">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+        `;
+      }
+
+      // 4. Registro Básico Gratuito ($0): SOLO TEXTOS E HIPERVÍNCULOS FUNCIONALES (Llamada + WhatsApp)
+      // Sin enlaces a páginas falsas o rotas como /negocio
+      const cleanPhone = (b.phone || b.whatsapp || "3336762545").replace(/\D/g, "");
       return `
         <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
-          <a href="${resolvedWebUrl}" ${isExternal ? 'target="_blank" rel="noopener noreferrer"' : ''} class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web">
-            <span>Ver más</span>
-            <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:translate-x-0.5 transition-transform"></i>
+          <a href="tel:${cleanPhone}" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all active:scale-95 w-full text-center">
+            <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+            <span>Llamar</span>
           </a>
-          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full">
-            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl ${btnClass} font-bold text-xs shadow-xs transition-all active:scale-95 w-full text-center">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5 shrink-0"></i>
             <span>WhatsApp</span>
           </a>
         </div>

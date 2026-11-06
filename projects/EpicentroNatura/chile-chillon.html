@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chile Chillón · Catálogo de Salsas Artesanales & Pedidos | Epicentro Natura</title>
+  <meta name="description" content="Salsas picantes 100% artesanales y naturales para maximizar tu sazón. Árbol, Habanero, Tatemado, Negra, Serrano y Semillas Enchiladas. Envíos directos a caseta de cotos en Natura Bosque Residencial y Mariano Otero por WhatsApp.">
+
+  <!-- Favicon y Fuentes -->
+  <link rel="icon" type="image/svg+xml" href="Assets/chillon/chilito2.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            rubik: ['Rubik', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              black: "#0b0c10",
+              chili: "#D30611",
+              chiliHover: "#b0050e",
+              amber: "#FF5A00",
+              cream: "#FFEED3",
+              slate: "#0f172a"
+            },
+            snow: {
+              100: "#ffffff",
+              200: "#fbfcfd",
+              300: "#f1f3f7",
+              400: "#e2e6ed",
+              500: "#c7cdd8"
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .font-chillon {
+      font-family: 'Rubik', sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-[#D30611] selection:text-white antialiased">
+
+  <!-- TOP BAR NAVEGACIÓN -->
+  <aside class="bg-slate-950 text-white text-xs py-2.5 px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="categoria.html?cat=comida-delivery" class="inline-flex items-center gap-1.5 text-slate-300 hover:text-amber-400 transition-colors text-xs font-semibold">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Volver a Comida y Delivery</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Comercio Fundador Verificado · Cortesía Hipha</span>
+        <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-400/30">
+          natura
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HEADER / HERO DEL COMERCIO -->
+  <header class="relative bg-slate-950 text-white overflow-hidden pb-12 pt-8 sm:pt-12 border-b border-slate-800">
+    <div class="absolute inset-0 opacity-20 bg-cover bg-center" style="background-image: url('Assets/chillon/tostada_pulpo.jpg');"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-slate-950/60"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- BADGES SUPERIORES -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Abierto Hoy</span>
+          <span class="hidden sm:inline">· 10:00 a 20:00 hrs</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
+          <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+          <span>Vecino Verificado Oficial · Cortesía Hipha</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-400/30 text-xs font-bold">
+          <i data-lucide="flame" class="w-3.5 h-3.5 text-red-400"></i>
+          <span>100% Natural · 10 Años de Trayectoria</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
+          <i data-lucide="truck" class="w-3.5 h-3.5"></i>
+          <span>Envíos a Domicilio en Cotos</span>
+        </span>
+      </div>
+
+      <!-- TÍTULO Y DESCRIPCIÓN -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-14 h-14 rounded-2xl bg-[#D30611] p-2 flex items-center justify-center shrink-0 shadow-lg shadow-red-950/50">
+            <img src="Assets/chillon/chilito2.svg" alt="Chile Chillón Logo" class="h-full w-auto object-contain">
+          </div>
+          <div>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight font-chillon">
+              Chile Chillón
+            </h1>
+            <span class="text-xs sm:text-sm font-extrabold text-[#FFEED3] tracking-wider uppercase block">
+              Maximiza tu Sazón · Salsas Picantes 100% Naturales
+            </span>
+          </div>
+        </div>
+        <p class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+          No elaboramos solo salsas, creamos el aliado de sabor definitivo en tu cocina. Con más de 10 años de receta tradicional, cada salsa es un amplificador de sabor diseñado para celebrar tus comidas, botanas, asados y mariscos, sin conservadores artificiales y con entrega rápida en la pluma de tu coto.
+        </p>
+      </div>
+
+      <!-- UBICACIÓN RÁPIDA -->
+      <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
+        <div class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-4 h-4 text-red-400 shrink-0"></i>
+          <span>Zona Mariano Otero · Envíos directos a Natura Bosque Residencial, Los Robles y cotos aledaños</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span>Garantía de Sabor e Ingredientes 100% Puros y Seleccionados</span>
+        </div>
+      </div>
+
+      <!-- BARRA DE ACCIÓN DIRECTA -->
+      <div class="flex flex-wrap items-center gap-3 pt-4">
+        <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20vi%20su%20micrositio%20en%20Epicentro%20Natura%20y%20quiero%20hacer%20un%20pedido%20a%20mi%20coto" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#D30611] hover:bg-[#b0050e] text-white font-extrabold text-sm shadow-lg shadow-red-600/30 transition-all active:scale-95">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Pedir por WhatsApp (39 2109 7809)</span>
+        </a>
+        <a href="tel:3921097809" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
+          <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
+          <span>Llamar</span>
+        </a>
+        <a href="https://maps.google.com/?q=Prol.+Mariano+Otero+Zapopan+Jalisco" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
+          <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
+          <span>Ver Zona de Cobertura</span>
+        </a>
+        <a href="https://elchilechillon.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-[#FFEED3] font-bold text-sm border border-red-500/30 transition-all active:scale-95">
+          <i data-lucide="globe" class="w-4 h-4 text-red-400"></i>
+          <span>Sitio Web Oficial</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL: CATÁLOGO Y MENÚ DE PRODUCTOS -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    
+    <!-- SECCIÓN 1: COLECCIÓN DE SALSAS INDIVIDUALES ($40 MXN) -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <span class="text-xs font-black uppercase tracking-widest text-[#D30611]">LÍNEA CLÁSICA & ARTESANAL · 150 ML</span>
+          <h2 class="text-2xl font-black text-slate-950 mt-1 font-chillon">Salsas 100% Originales y Naturales</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Elaboradas con chiles selectos para amplificar el sabor de tus alimentos diarios. $40.00 MXN la pieza.</p>
+        </div>
+        <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-red-50 text-red-900 border border-red-200 self-start sm:self-auto flex items-center gap-1.5">
+          <i data-lucide="flame" class="w-3.5 h-3.5 text-red-600"></i>
+          <span>6 Variedades Picantes</span>
+        </span>
+      </div>
+
+      <!-- GRID DE PRODUCTOS: CUMPLIENDO LA REGLA DE FONDO BLANCO PURO (bg-white y object-contain bg-white) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Producto 1: De Árbol -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="Assets/chillon/Salsas/de_arbol.jpg" alt="Chile Chillón de Árbol" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs flex items-center gap-1">
+              <span>🌶️🌶️🌶️🌶️</span>
+              <span>Picor Alto</span>
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-[#D30611] transition-colors font-chillon">Chile Chillón de Árbol</h3>
+                <span class="text-lg font-black text-[#D30611] font-chillon">$40 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Chiles de árbol selectos y receta tradicional de la casa con más de 10 años de sazón. Picor vibrante, limpio y equilibrado para sopas, caldos, tacos y guisados.
+              </p>
+            </div>
+            <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20la%20Salsa%20de%20%C3%81rbol%20($40%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Producto 2: Habanero -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="Assets/chillon/Salsas/habanero.jpg" alt="Chile Chillón Habanero" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs flex items-center gap-1">
+              <span>🌶️🌶️🌶️🌶️</span>
+              <span>Picor Progresivo</span>
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-[#D30611] transition-colors font-chillon">Chile Chillón Habanero</h3>
+                <span class="text-lg font-black text-[#D30611] font-chillon">$40 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                La reina del picor con fragancia tropical única. Chiles habaneros frescos con un picor vivo que se desata progresivamente en tu paladar.
+              </p>
+            </div>
+            <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20la%20Salsa%20de%20Habanero%20($40%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Producto 3: Habanero Tatemado -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="Assets/chillon/Salsas/tatemado.jpg" alt="Chile Chillón Habanero Tatemado" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs flex items-center gap-1">
+              <span>🌶️🌶️🌶️🌶️</span>
+              <span>Ahumado Profundo</span>
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-[#D30611] transition-colors font-chillon">Habanero Tatemado</h3>
+                <span class="text-lg font-black text-[#D30611] font-chillon">$40 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Habaneros asados al comal con cebolla y ajo caramelizados. Perfume ahumado y cuerpo denso ideal para elevar cortes de carne, hamburguesas y mariscos al carbón.
+              </p>
+            </div>
+            <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20Habanero%20Tatemado%20($40%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Producto 4: Salsa Negra -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="Assets/chillon/Salsas/negra.jpg" alt="Chile Chillón Salsa Negra" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs flex items-center gap-1">
+              <span>🌶️🌶️🌶️</span>
+              <span>Umami & Cítricos</span>
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-[#D30611] transition-colors font-chillon">Chile Chillón Negra</h3>
+                <span class="text-lg font-black text-[#D30611] font-chillon">$40 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Potencia de chiles tostados con matices umami, ajo y notas cítricas. El toque definitivo para mariscos, tostadas de ceviche, aguachiles y micheladas preparadas.
+              </p>
+            </div>
+            <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20Salsa%20Negra%20($40%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Producto 5: Semillas Enchiladas -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="Assets/chillon/Salsas/semillas_enchiladas.jpg" alt="Chile Chillón Semillas Enchiladas" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs flex items-center gap-1">
+              <span>🌶️🌶️🌶️</span>
+              <span>Textura Crujiente</span>
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-[#D30611] transition-colors font-chillon">Semillas Enchiladas</h3>
+                <span class="text-lg font-black text-[#D30611] font-chillon">$40 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Selección de semillas tostadas con sazón picante artesanal. Aporta textura crunchie y picor balanceado a ensaladas, quesos, botanas y cortes.
+              </p>
+            </div>
+            <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20Semillas%20Enchiladas%20($40%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Producto 6: Serrano -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="Assets/chillon/Salsas/serrano.jpg" alt="Chile Chillón Serrano" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-950/80 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs flex items-center gap-1">
+              <span>🌶️🌶️</span>
+              <span>Frescura Verde</span>
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-[#D30611] transition-colors font-chillon">Chile Chillón Serrano</h3>
+                <span class="text-lg font-black text-[#D30611] font-chillon">$40 <span class="text-xs font-bold text-slate-400">MXN</span></span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Picor verde brillante con hierbas frescas. Perfecta para el desayuno de fin de semana, chilaquiles, huevos al gusto y antojitos mexicanos.
+              </p>
+            </div>
+            <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20Salsa%20Serrano%20($40%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-5 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Ordenar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: PAQUETES Y COMBOS PARA FAMILIAS & COTEROS -->
+    <section class="space-y-6 pt-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <span class="text-xs font-black uppercase tracking-widest text-amber-600">PAQUETES ESPECIALES & REUNIONES</span>
+          <h2 class="text-2xl font-black text-slate-950 mt-1 font-chillon">Combos Chillones con Ahorro</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Lleva variedad para tus carnes asadas y comidas familiares en el coto.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Combo 1: Tripack -->
+        <div class="bg-gradient-to-br from-amber-500/10 via-white to-white rounded-3xl border border-amber-300/40 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                El Más Popular
+              </span>
+              <span class="text-2xl font-black text-[#D30611] font-chillon">$115 <span class="text-xs font-bold text-slate-500">MXN</span></span>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-slate-950 font-chillon">Tripack Chillón (3 Salsas a Elección)</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                Elige tus 3 variedades favoritas (Árbol, Habanero, Tatemado, Negra, Serrano o Semillas) con precio especial. Perfecto para regalo o para tener el kit básico en casa.
+              </p>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-1.5 pt-2 border-t border-amber-200/50">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> 3 botellas de 150ml a tu gusto</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Envasadas al vacío en vidrio</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Entrega a caseta de tu coto</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20el%20Tripack%20Chill%C3%B3n%20($115%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-6 w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#D30611] hover:bg-[#b0050e] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-95">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span>Pedir Tripack por WhatsApp ($115 MXN)</span>
+          </a>
+        </div>
+
+        <!-- Combo 2: Colección Completa 6 piezas -->
+        <div class="bg-gradient-to-br from-red-600/10 via-white to-white rounded-3xl border border-red-300/40 p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full bg-red-600/20 text-red-900 text-xs font-bold uppercase tracking-wider">
+                Colección Máxima Sazón
+              </span>
+              <span class="text-2xl font-black text-[#D30611] font-chillon">$220 <span class="text-xs font-bold text-slate-500">MXN</span></span>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-slate-950 font-chillon">Caja Completa Máxima Sazón (6 Variedades)</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                La experiencia completa de sabor para tu mesa: Árbol, Habanero clásico, Habanero tatemado, Salsa Negra, Semillas crujientes y Serrano. ¡Que no falte el toque en ninguna comida!
+              </p>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-1.5 pt-2 border-t border-red-200/50">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Las 6 salsas de la casa incluidas</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Ahorro directo sobre precio individual</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600"></i> Envío prioritario en cotos Natura</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/523921097809?text=Hola%20Chile%20Chill%C3%B3n,%20quiero%20ordenar%20la%20Caja%20Completa%20M%C3%A1xima%20Saz%C3%B3n%20($220%20MXN)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-6 w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-950 hover:bg-[#D30611] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-95">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span>Pedir Colección Completa ($220 MXN)</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: INFORMACIÓN DE ENTREGAS Y PAGOS -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+      <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-3">
+        <div class="w-10 h-10 rounded-2xl bg-red-100 text-[#D30611] flex items-center justify-center">
+          <i data-lucide="truck" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-black text-slate-950 font-chillon">Envíos Directos a Cotos</h4>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Entregamos en caseta o pluma de acceso en Natura Bosque Residencial, Los Robles, El Fortín, Luna Bosque, La Granja y cotos aledaños en Mariano Otero.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-3">
+        <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-black text-slate-950 font-chillon">Formas de Pago Fáciles</h4>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Aceptamos efectivo a la entrega en tu caseta, transferencia bancaria instantánea (SPEI / BBVA) o link de pago seguro de Mercado Pago.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-3xl bg-white border border-slate-200 space-y-3">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-base font-black text-slate-950 font-chillon">Comercio Fundador</h4>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Comercio activo y verificado en la red Epicentro Natura con atención personalizada directa por WhatsApp sin intermediarios ni comisiones de apps.
+        </p>
+      </div>
+    </section>
+
+    <!-- BANNER COMERCIAL: BENEFICIO EPICENTRO NATURA -->
+    <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-red-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center md:text-left">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-red-400">BENEFICIO EXCLUSIVO EPICENTRO NATURA</span>
+        <h3 class="text-xl sm:text-2xl font-black text-white font-chillon">¿Tienes un negocio o servicio en la zona?</h3>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
+          Con la suscripción anual de solo $399 MXN obtienes el Sello Oficial de Vecino Verificado y tu propio micrositio interactivo como este, con catálogo hasta 10 fotos, precios y pedidos directos a tu WhatsApp. El registro básico de texto es gratuito.
+        </p>
+      </div>
+      <a href="index.html?open_register=1" class="px-6 py-3.5 rounded-2xl bg-[#D30611] hover:bg-[#b0050e] text-white font-black text-xs shadow-lg shadow-red-600/30 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>Obtener mi Micrositio por $399 MXN / año</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER EPICENTRO NATURA -->
+  <footer class="bg-slate-950 text-white text-xs py-8 px-4 border-t border-slate-800 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 group">
+          <img src="Assets/Epicentro.svg" alt="Epicentro" class="h-6 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-400/30">
+            natura
+          </span>
+        </a>
+        <span class="text-slate-500">|</span>
+        <span class="text-slate-400 text-[11px]">Micrositio Oficial de Chile Chillón</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400 text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">Directorio Natura</a>
+        <a href="categoria.html?cat=comida-delivery" class="hover:text-white transition-colors">Comida y Delivery</a>
+        <a href="admin.html" class="hover:text-white transition-colors">Acceso KAM / Admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    if (window.lucide && lucide.createIcons) {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

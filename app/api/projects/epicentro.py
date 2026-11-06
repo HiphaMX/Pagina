@@ -1,9 +1,10 @@
 import os
 import random
 import uuid
+import json
 import logging
 from datetime import datetime, timezone, timedelta
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic import BaseModel, EmailStr
 from fastapi import APIRouter, Depends, HTTPException, Header, Query, status, Request, BackgroundTasks
 from sqlalchemy.orm import Session
@@ -118,12 +119,13 @@ class RegisterInitiateRequest(BaseModel):
     whatsapp: str
     preferred_contact_methods: Optional[str] = None
     schedule: Optional[str] = None
-    photos: Optional[str] = None
+    photos: Optional[Union[List[str], str]] = None
     kam_name: Optional[str] = None
     payment_method: Optional[str] = None
     delivery_available: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
+    plan_type: Optional[str] = "microsite"  # "microsite" ($399/año) o "free_basic" ($0)
     honeypot: Optional[str] = None  # Trampa anti-bot
 
 
@@ -333,6 +335,18 @@ async def initiate_registration(
     # Generar código de WhatsApp (ej. NATURA-5819)
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
 
+    # Determinar si es Plan con Micrositio ($399) o Registro Básico Gratuito ($0)
+    is_free = (payload.plan_type == "free_basic")
+    initial_payment_amount = 0.0 if is_free else 399.0
+    initial_payment_status = "free_basic" if is_free else (
+        "pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}"
+    )
+    initial_moderation_notes = (
+        "Alta en Registro Básico Gratuito ($0 MXN: solo textos e hipervínculos funcionales)."
+        if is_free else
+        "Solicitud Plan Anual con Micrositio ($399 MXN / año: catálogo interactivo y sello verificado)."
+    )
+
     # Crear o actualizar registro (email sin bloqueo de OTP para eliminar fricción a prospectos)
     new_reg = EpicentroRegistration(
         business_name=payload.business_name.strip(),
@@ -349,9 +363,12 @@ async def initiate_registration(
         whatsapp=payload.whatsapp.strip(),
         preferred_contact_methods=payload.preferred_contact_methods.strip() if payload.preferred_contact_methods else None,
         schedule=payload.schedule.strip() if payload.schedule else None,
-        photos=payload.photos.strip() if payload.photos else None,
+        photos=None if is_free else (
+            json.dumps(payload.photos) if isinstance(payload.photos, list)
+            else (payload.photos.strip() if payload.photos else None)
+        ),
         kam_name=payload.kam_name.strip() if payload.kam_name else None,
-        payment_method=payload.payment_method.strip() if payload.payment_method else None,
+        payment_method="free_basic" if is_free else (payload.payment_method.strip() if payload.payment_method else None),
         delivery_available=payload.delivery_available,
         website=payload.website.strip() if payload.website else None,
         description=payload.description,
@@ -360,9 +377,10 @@ async def initiate_registration(
         email_verified=True,
         whatsapp_code=wa_code,
         whatsapp_verified=False,
-        payment_status="pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}",
-        payment_amount=399.0,
-        status="pending_verification"
+        payment_status=initial_payment_status,
+        payment_amount=initial_payment_amount,
+        status="pending_verification",
+        moderation_notes=initial_moderation_notes
     )
 
     db.add(new_reg)
@@ -766,9 +784,10 @@ def purge_test_registrations(
 
 
 
-def seed_botica_silvestre_if_missing(db: Session):
-    """Garantiza que Botica Silvestre exista como comercio verificado y activo con su micrositio oficial."""
+def seed_official_showcases(db: Session):
+    """Garantiza que Botica Silvestre y Chile Chillón existan como comercios verificados y activos con sus micrositios oficiales."""
     try:
+        # 1. BOTICA SILVESTRE (Cortesía / Comercio Fundador Oficial con Micrositio)
         all_boticas = db.query(EpicentroRegistration).filter(
             (EpicentroRegistration.business_name.ilike("%Botica Silvestre%")) |
             (EpicentroRegistration.id == "reg-botica-silvestre")
@@ -797,7 +816,7 @@ def seed_botica_silvestre_if_missing(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="approved",
-                payment_amount=100.0,
+                payment_amount=399.0,
                 is_verified_badge=True,
                 status="active",
                 moderation_notes="Comercio fundador oficial con micrositio activo."
@@ -807,7 +826,6 @@ def seed_botica_silvestre_if_missing(db: Session):
             db.refresh(botica)
         else:
             botica = all_boticas[0]
-            # Si existen registros duplicados en DB, purgarlos
             if len(all_boticas) > 1:
                 for dup in all_boticas[1:]:
                     db.delete(dup)
@@ -833,19 +851,103 @@ def seed_botica_silvestre_if_missing(db: Session):
                 updated = True
             if updated or len(all_boticas) > 1:
                 db.commit()
+
+        # 2. CHILE CHILLÓN (Cortesía Oficial Hipha con Micrositio Profesional & Catálogo de Salsas)
+        all_chillon = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.business_name.ilike("%Chile Chillón%")) |
+            (EpicentroRegistration.business_name.ilike("%Chile Chillon%")) |
+            (EpicentroRegistration.id == "reg-chile-chillon")
+        ).order_by(EpicentroRegistration.created_at.asc()).all()
+
+        if not all_chillon:
+            chillon = EpicentroRegistration(
+                id="reg-chile-chillon",
+                business_name="Chile Chillón",
+                category_slug="comida-delivery",
+                category_label="Comida y Delivery",
+                subcategory_slug="salsas-artesanales",
+                subcategory_label="Salsas Picantes 100% Naturales",
+                coto_address="Zona Mariano Otero (Envíos directos a caseta en cotos Natura)",
+                business_type="emprendimiento",
+                space_label="Punto de venta & A domicilio",
+                owner_name="Chile Chillón",
+                email="contacto@elchilechillon.mx",
+                phone="3921097809",
+                whatsapp="3921097809",
+                delivery_available=True,
+                preferred_contact_methods="whatsapp,delivery,llamada",
+                schedule="Lunes a Domingo · 10:00 a 20:00 hrs",
+                website="chile-chillon",
+                description="Salsas picantes artesanales 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos.",
+                email_verified=True,
+                whatsapp_verified=True,
+                payment_status="waived",
+                payment_amount=399.0,
+                kam_name="Cortesía Hipha",
+                payment_method="courtesy_hipha",
+                is_verified_badge=True,
+                status="active",
+                moderation_notes="Cortesía oficial Hipha: micrositio profesional y catálogo interactivo activo."
+            )
+            db.add(chillon)
+            db.commit()
+            db.refresh(chillon)
+        else:
+            chillon = all_chillon[0]
+            if len(all_chillon) > 1:
+                for dup in all_chillon[1:]:
+                    db.delete(dup)
+
+            updated = False
+            if chillon.website != "chile-chillon":
+                chillon.website = "chile-chillon"
+                updated = True
+            if chillon.status != "active":
+                chillon.status = "active"
+                updated = True
+            if not chillon.is_verified_badge:
+                chillon.is_verified_badge = True
+                updated = True
+            if chillon.category_slug != "comida-delivery":
+                chillon.category_slug = "comida-delivery"
+                updated = True
+            if chillon.subcategory_slug != "salsas-artesanales":
+                chillon.subcategory_slug = "salsas-artesanales"
+                updated = True
+            if chillon.subcategory_label != "Salsas Picantes 100% Naturales":
+                chillon.subcategory_label = "Salsas Picantes 100% Naturales"
+                updated = True
+            if not chillon.schedule:
+                chillon.schedule = "Lunes a Domingo · 10:00 a 20:00 hrs"
+                updated = True
+            if not chillon.phone or chillon.phone != "3921097809":
+                chillon.phone = "3921097809"
+                updated = True
+            if not chillon.whatsapp or chillon.whatsapp != "3921097809":
+                chillon.whatsapp = "3921097809"
+                updated = True
+            if chillon.payment_status not in ("waived", "approved"):
+                chillon.payment_status = "waived"
+                chillon.kam_name = "Cortesía Hipha"
+                updated = True
+            if updated or len(all_chillon) > 1:
+                db.commit()
+
     except Exception as e:
-        logger.warning(f"Error seeding Botica Silvestre: {e}")
+        logger.warning(f"Error seeding official showcases: {e}")
         try:
             db.rollback()
         except Exception:
             pass
+
+seed_botica_silvestre_if_missing = seed_official_showcases
 
 
 @router.get("/businesses/active")
 def list_active_verified_businesses(db: Session = Depends(get_db)):
     """Retorna los comercios reales que ya están activos y verificados para el directorio público."""
     ensure_epicentro_schema(db)
-    seed_botica_silvestre_if_missing(db)
+    seed_official_showcases(db)
     results = (
         db.query(EpicentroRegistration)
         .filter(EpicentroRegistration.status == "active")
