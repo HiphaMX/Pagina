@@ -92,6 +92,10 @@
     .leaflet-tile {
       filter: saturate(0.85) contrast(1.02);
     }
+    .leaflet-div-icon {
+      background: transparent !important;
+      border: none !important;
+    }
   </style>
 </head>
 <body class="bg-[#FAF9F6] text-slate-800 min-h-screen relative antialiased overflow-x-hidden selection:bg-[#D30611] selection:text-white">
@@ -188,26 +192,38 @@
           
           <!-- Filtro Ciudad -->
           <div class="md:col-span-3">
-            <select id="filter-ciudad" class="w-full px-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:border-[#D30611] text-sm bg-slate-50/50 transition-all">
-              <option value="all">Ciudad</option>
-              <option value="Guadalajara">Guadalajara</option>
-              <option value="Zapopan">Zapopan</option>
-              <option value="Ocotlán">Ocotlán</option>
-              <option value="Jamay">Jamay</option>
+            <select id="filter-ciudad" class="w-full px-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:border-[#D30611] text-sm bg-slate-50/50 transition-all font-medium text-slate-700">
+              <option value="all">Todas las Ciudades (360)</option>
+              <option value="Zapopan">Zapopan (126)</option>
+              <option value="Ocotlán">Ocotlán (83)</option>
+              <option value="Guadalajara">Guadalajara (35)</option>
+              <option value="Arandas">Arandas (25)</option>
+              <option value="La Barca">La Barca (20)</option>
+              <option value="Tepatitlán">Tepatitlán (16)</option>
+              <option value="Jamay">Jamay (15)</option>
+              <option value="Chapala / Ribera">Chapala / Ribera (12)</option>
+              <option value="Atotonilco el Alto">Atotonilco el Alto (11)</option>
+              <option value="Poncitlán">Poncitlán (11)</option>
+              <option value="Tototlán">Tototlán (4)</option>
+              <option value="Tlaquepaque">Tlaquepaque (1)</option>
+              <option value="Zapotlán del Rey">Zapotlán del Rey (1)</option>
             </select>
           </div>
           
           <!-- Filtro Giro -->
           <div class="md:col-span-3">
-            <select id="filter-giro" class="w-full px-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:border-[#D30611] text-sm bg-slate-50/50 transition-all">
-              <option value="all">Giro</option>
-              <option value="Restaurantes">Restaurantes</option>
-              <option value="Carnicería">Carnicería</option>
-              <option value="Tienda de abarrotes">Tienda de abarrotes</option>
-              <option value="Botanas">Botanas</option>
-              <option value="Tienda Gourmet">Tienda Gourmet</option>
-              <option value="Pescadería">Pescadería</option>
-              <option value="Vinatería">Vinatería</option>
+            <select id="filter-giro" class="w-full px-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:border-[#D30611] text-sm bg-slate-50/50 transition-all font-medium text-slate-700">
+              <option value="all">Todos los Giros</option>
+              <option value="Tienda de abarrotes">Tiendas de Abarrotes y Minisúpers</option>
+              <option value="Restaurantes">Restaurantes, Mariscos y Taquerías</option>
+              <option value="Cremería">Cremerías y Lácteos</option>
+              <option value="Pescadería">Pescaderías</option>
+              <option value="Carnicería">Carnicerías</option>
+              <option value="Frutería y Verduras">Fruterías y Verduras</option>
+              <option value="Vinatería">Vinaterías y Depósitos</option>
+              <option value="Botanas">Botanas y Snacks</option>
+              <option value="Tienda Gourmet">Tiendas Gourmet</option>
+              <option value="Comercio Local">Otros Comercios Locales</option>
             </select>
           </div>
           
@@ -225,7 +241,14 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         
         <!-- Listado Izquierda -->
-        <div id="list-container" class="lg:col-span-5 flex flex-col gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+        <div class="lg:col-span-5 flex flex-col gap-2">
+          <!-- Contador y Estado -->
+          <div class="flex justify-between items-center px-2 py-1 text-xs text-slate-500 font-medium">
+            <span>Mostrando <strong id="results-count" class="text-slate-900 font-bold">360</strong> puntos de venta</span>
+            <span id="geo-active-label" class="hidden text-emerald-600 font-bold items-center gap-1"><i class="ph-bold ph-navigation-arrow-fill"></i> Ordenado por cercanía</span>
+          </div>
+
+          <div id="list-container" class="flex flex-col gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
           <!-- Las tarjetas de puntos de venta se inyectarán aquí dinámicamente -->
           <!-- Fallback estático en caso de que no cargue JS -->
           <div class="glass-panel p-5 rounded-2xl border border-slate-100 bg-white shadow-sm flex flex-col justify-between">
@@ -242,6 +265,7 @@
               Ver en Google Maps
             </a>
           </div>
+        </div>
         </div>
         
         <!-- Mapa Derecha -->
@@ -527,264 +551,23 @@
     </div>
   </footer>
 
-  <!-- Leaflet JS -->
+<!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
+  <!-- Base de datos de Puntos de Venta Oficiales (360 verificados con coordenadas y Google Maps) -->
+  <script src="js/puntos-de-venta-data.js?v=20261106"></script>
+
   <script>
-    // --- DATOS INICIALES DE LOS PUNTOS DE VENTA ---
-    const puntosDeVenta = [
-      {
-        id: "isla-ancla",
-        name: "Isla ancla restaurante",
-        ciudad: "Guadalajara",
-        giro: "Restaurantes",
-        lat: 20.640355,
-        lng: -103.3871813,
-        mapsUrl: "https://maps.app.goo.gl/Dm3sy83mrzyUDuqV8",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "sirenita",
-        name: "La sirenita restaurante",
-        ciudad: "Guadalajara",
-        giro: "Restaurantes",
-        lat: 20.6641163,
-        lng: -103.4134817,
-        mapsUrl: "https://maps.app.goo.gl/tk2EByNFNX62bZTt7",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "balbuena",
-        name: "Botanas balbuena",
-        ciudad: "Guadalajara",
-        giro: "Botanas",
-        lat: 20.6820907,
-        lng: -103.3725037,
-        mapsUrl: "https://maps.app.goo.gl/5FxhzjTCDbr2cUwS7",
-        giroColor: "bg-amber-100 text-amber-700 border-amber-200"
-      },
-      {
-        id: "slovensko",
-        name: "Slovensko Delicatessen",
-        ciudad: "Guadalajara",
-        giro: "Tienda Gourmet",
-        lat: 20.6512476,
-        lng: -103.3991537,
-        mapsUrl: "https://maps.app.goo.gl/M2JSWsQczox7QSYH6",
-        giroColor: "bg-emerald-100 text-emerald-700 border-emerald-200"
-      },
-      {
-        id: "gretta",
-        name: "La Gretta Supercito y Carnicería",
-        ciudad: "Guadalajara",
-        giro: "Tienda Gourmet",
-        lat: 20.7031727,
-        lng: -103.4216025,
-        mapsUrl: "https://maps.app.goo.gl/KQMz5dk4MmdRMH9w6",
-        giroColor: "bg-emerald-100 text-emerald-700 border-emerald-200"
-      },
-      {
-        id: "senador",
-        name: "El senador",
-        ciudad: "Jamay",
-        giro: "Restaurantes",
-        lat: 20.2904078,
-        lng: -102.71781,
-        mapsUrl: "https://maps.app.goo.gl/KEzBeNK9XWCbZYUf6",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "jalsin",
-        name: "Jalsin pescaderka",
-        ciudad: "Ocotlán",
-        giro: "Pescadería",
-        lat: 20.3524277,
-        lng: -102.77253,
-        mapsUrl: "https://maps.app.goo.gl/dorkBvB87updTySQA",
-        giroColor: "bg-cyan-100 text-cyan-700 border-cyan-200"
-      },
-      {
-        id: "equipales",
-        name: "Los equipales express",
-        ciudad: "Ocotlán",
-        giro: "Vinatería",
-        lat: 20.3488438,
-        lng: -102.7717455,
-        mapsUrl: "https://maps.app.goo.gl/EdGCNBeGTj3xGUQ48",
-        giroColor: "bg-violet-100 text-violet-700 border-violet-200"
-      },
-      {
-        id: "cucara",
-        name: "Cucara macara",
-        ciudad: "Ocotlán",
-        giro: "Restaurantes",
-        lat: 20.3562762,
-        lng: -102.7549238,
-        mapsUrl: "https://maps.app.goo.gl/RAjE7nH9eddGmXW16",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "el-faro-sonorense-taco-fish",
-        name: "EL FARO SONORENSE - Taco Fish",
-        address: "Av. del Servidor Público 1262-Loc 9, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Restaurantes",
-        lat: 20.7383961,
-        lng: -103.4303393,
-        mapsUrl: "https://maps.google.com/?cid=15633382811920904789",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "mariscos-kilauea",
-        name: "Mariscos Kiláuea",
-        address: "Av. Aviación 6170-L-2, Armonía habitat, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Restaurantes",
-        lat: 20.7458495,
-        lng: -103.4449457,
-        mapsUrl: "https://maps.google.com/?cid=815425066657316068",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "mariscos-carlitos",
-        name: "Mariscos Carlitos",
-        address: "San Francisco 194, Tesistán, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Restaurantes",
-        lat: 20.79924,
-        lng: -103.47396,
-        mapsUrl: "https://maps.google.com/?cid=13072515807496314685",
-        giroColor: "bg-red-100 text-red-700 border-red-200"
-      },
-      {
-        id: "carnes-selectas-la-ternera",
-        name: "Carnes Selectas La Ternera",
-        address: "Antiguo Camino A Tesistán #8050 Local 11, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Carnicería",
-        lat: 20.7840375,
-        lng: -103.476052,
-        mapsUrl: "https://maps.google.com/?cid=15833837203687499045",
-        giroColor: "bg-rose-100 text-rose-700 border-rose-200"
-      },
-      {
-        id: "carniceria-las-palmas",
-        name: "Carnicería Las Palmas",
-        address: "Calle Sta. Mónica 457, Parques Zapopan",
-        ciudad: "Zapopan",
-        giro: "Carnicería",
-        lat: 20.74684,
-        lng: -103.4186436,
-        mapsUrl: "https://maps.google.com/?cid=287167523473092459",
-        giroColor: "bg-rose-100 text-rose-700 border-rose-200"
-      },
-      {
-        id: "carniceria-bistec-real",
-        name: "Carnicería Bistec Real",
-        address: "Calle Cto Real de Tesistán 498, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Carnicería",
-        lat: 20.7843714,
-        lng: -103.4729669,
-        mapsUrl: "https://maps.google.com/?cid=16274712343334620260",
-        giroColor: "bg-rose-100 text-rose-700 border-rose-200"
-      },
-      {
-        id: "carniceria-san-gonzalo",
-        name: "Carnicería San Gonzalo",
-        address: "Calle Sta. Adriana 2549, Col. San Gonzalo, Nuevo México, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Carnicería",
-        lat: 20.7724015,
-        lng: -103.4342416,
-        mapsUrl: "https://maps.google.com/?cid=17921037812722370625",
-        giroColor: "bg-rose-100 text-rose-700 border-rose-200"
-      },
-      {
-        id: "tienda-six-soto-park",
-        name: "Tienda SIX (Soto Park)",
-        address: "Camino Antiguo Tesistán Soto Park 8000, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Vinatería",
-        lat: 20.7844412,
-        lng: -103.4766649,
-        mapsUrl: "https://maps.google.com/?cid=17566142128056309486",
-        giroColor: "bg-violet-100 text-violet-700 border-violet-200"
-      },
-      {
-        id: "tienda-six-las-torres",
-        name: "Tienda SIX (Las Torres)",
-        address: "San Miguel Naranjo Las Torres 1803, Marcelino García Barragán, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Vinatería",
-        lat: 20.7719693,
-        lng: -103.4449361,
-        mapsUrl: "https://maps.google.com/?cid=5766739298004724790",
-        giroColor: "bg-violet-100 text-violet-700 border-violet-200"
-      },
-      {
-        id: "abarrotes-six-san-miguel",
-        name: "Abarrotes y Vinos SIX (San Miguel)",
-        address: "Calle San Miguel Ote. 61, Vicente Guerrero, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Vinatería",
-        lat: 20.77219,
-        lng: -103.4369029,
-        mapsUrl: "https://maps.google.com/?cid=11642488946022920006",
-        giroColor: "bg-violet-100 text-violet-700 border-violet-200"
-      },
-      {
-        id: "abarrotes-el-chiquilin",
-        name: "Abarrotes El Chiquilín",
-        address: "C. San Juan Bosco 526, Lomas de San Gonzalo, Nuevo México, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Tienda de abarrotes",
-        lat: 20.7714976,
-        lng: -103.4346944,
-        mapsUrl: "https://maps.google.com/?cid=970602783824638242",
-        giroColor: "bg-emerald-100 text-emerald-700 border-emerald-200"
-      },
-      {
-        id: "abarrotes-macal",
-        name: "Abarrotes Macal",
-        address: "C. Paloma 2005, La Periquera, Nuevo México, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Tienda de abarrotes",
-        lat: 20.769261,
-        lng: -103.4427244,
-        mapsUrl: "https://maps.google.com/?cid=16215360291915938060",
-        giroColor: "bg-emerald-100 text-emerald-700 border-emerald-200"
-      },
-      {
-        id: "abarrotes-los-compadres",
-        name: "Abarrotes Los Compadres",
-        address: "Carretera vieja Tesistán 8006, Valle de la Providencia, Zapopan",
-        ciudad: "Zapopan",
-        giro: "Tienda de abarrotes",
-        lat: 20.7790756,
-        lng: -103.4690243,
-        mapsUrl: "https://maps.google.com/?cid=10100795504100800537",
-        giroColor: "bg-emerald-100 text-emerald-700 border-emerald-200"
-      },
-      {
-        id: "abarrotes-reynoso",
-        name: "Abarrotes Reynoso",
-        address: "Calle Sta. Mónica 1637 esq. Fresno Sur, Arcos de Zapopan",
-        ciudad: "Zapopan",
-        giro: "Tienda de abarrotes",
-        lat: 20.745469,
-        lng: -103.4188935,
-        mapsUrl: "https://maps.google.com/?cid=7592359946662177058",
-        giroColor: "bg-emerald-100 text-emerald-700 border-emerald-200"
-      }
-    ];
+    // --- OBTENER DATOS DE LOS PUNTOS DE VENTA ---
+    const puntosDeVenta = Array.isArray(window.puntosDeVenta) ? window.puntosDeVenta : [];
 
     let map;
     let markersGroup;
     let userLocation = null;
     let activeStores = [...puntosDeVenta];
+    const markersById = new Map();
 
-    // --- FORMULA HAVERSINE (CALCULO DE DISTANCIA) ---
+    // --- FORMULA HAVERSINE (CALCULO DE DISTANCIA EN KM) ---
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371; // Radio de la Tierra en km
       const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -794,18 +577,18 @@
         Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
         Math.sin(dLon/2) * Math.sin(dLon/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c; // Distancia en km
+      return R * c;
     }
 
     // --- INICIALIZAR MAPA ---
     function initMap() {
-      // Centrar inicialmente entre Ocotlán y Guadalajara
-      map = L.map('map', { zoomControl: false }).setView([20.5000, -103.1000], 9);
+      // Centrar cubriendo Jalisco (Guadalajara, Ciénega, Altos y Ribera)
+      map = L.map('map', { zoomControl: false }).setView([20.5200, -103.1000], 9);
       
       // Control de zoom en la esquina superior derecha
       L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // TileLayer de OpenStreetMap (100% libre sin API keys ni marcas de agua)
+      // TileLayer de OpenStreetMap (rápido y sin api keys)
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
@@ -815,9 +598,26 @@
       renderMapMarkers();
     }
 
+    // --- CREAR ICONO DE TIENDA OPTIMIZADO ---
+    function createStorePinIcon() {
+      return L.divIcon({
+        html: `
+          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-[#D30611] text-white shadow-lg border-2 border-white hover:scale-125 transition-transform duration-200 cursor-pointer">
+            <i class="ph-fill ph-map-pin text-base"></i>
+          </div>
+        `,
+        className: 'custom-chile-marker',
+        iconSize: [32, 32],
+        iconAnchor: [16, 30],
+        popupAnchor: [0, -28]
+      });
+    }
+
     // --- RENDERIZAR MARCADORES EN EL MAPA ---
     function renderMapMarkers() {
+      if (!markersGroup) return;
       markersGroup.clearLayers();
+      markersById.clear();
 
       // Marcador de usuario si existe
       if (userLocation) {
@@ -834,130 +634,155 @@
         });
         L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
           .addTo(markersGroup)
-          .bindPopup("<b>Tu Ubicación</b><br>Buscando las salsas más cercanas.");
+          .bindPopup("<b>Tu Ubicación</b><br>Calculando tiendas más cercanas.");
       }
 
       // Pines de tiendas filtradas
+      const pinIcon = createStorePinIcon();
+
       activeStores.forEach(store => {
-        const storeIcon = L.divIcon({
-          html: `
-            <div class="relative flex items-center justify-center w-8 h-8">
-              <span class="absolute w-6 h-6 rounded-full bg-[#D30611]/30 animate-pulse"></span>
-              <i class="ph-fill ph-map-pin text-2xl text-[#D30611] relative z-10"></i>
-            </div>
-          `,
-          className: 'custom-store-marker',
-          iconSize: [32, 32],
-          iconAnchor: [16, 28]
-        });
+        const phoneHtml = store.telefono ? `
+          <p class="text-[11px] text-slate-600 mb-2 flex items-center gap-1.5">
+            <i class="ph-bold ph-phone text-[#D30611]"></i>
+            <a href="tel:${store.telefono}" class="hover:underline font-semibold text-slate-800">${store.telefono}</a>
+          </p>
+        ` : '';
 
         const popupContent = `
-          <div class="p-1">
-            <h4 class="font-bold text-sm text-slate-900 font-rubik leading-tight mb-1">${store.name}</h4>
-            <span class="inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded bg-[#D30611] text-white mb-2">${store.giro}</span>
-            <p class="text-xs text-slate-600 mb-1 flex items-center gap-1"><i class="ph ph-map-pin"></i> ${store.ciudad}, Jal.</p>
-            ${store.address ? `<p class="text-[10px] text-slate-500 mb-2">${store.address}</p>` : ''}
-            ${store.distance ? `<p class="text-[10px] text-[#D30611] font-bold mb-3">📍 A ${store.distance.toFixed(1)} km de ti</p>` : ''}
-            <a href="${store.mapsUrl}" target="_blank" class="block w-full py-1.5 bg-[#D30611] hover:bg-[#0D0B0B] text-center font-bold text-[10px] uppercase !text-white rounded-lg transition-all" style="color: #ffffff !important;">
+          <div class="p-1 min-w-[210px] max-w-[260px] font-sans">
+            <div class="flex items-center justify-between gap-1 mb-1.5">
+              <span class="inline-block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded ${store.giroColor || 'bg-red-100 text-red-700'}">${store.giro}</span>
+              ${store.clave ? `<span class="text-[9px] font-mono text-slate-400">${store.clave}</span>` : ''}
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 font-rubik leading-snug mb-1">${store.name}</h4>
+            <p class="text-xs text-slate-600 mb-1 flex items-center gap-1"><i class="ph-bold ph-map-pin text-[#D30611]"></i> ${store.ciudad}, Jal.</p>
+            ${store.address ? `<p class="text-[11px] text-slate-500 mb-2 leading-tight">${store.address}</p>` : ''}
+            ${phoneHtml}
+            ${store.distance !== undefined ? `<p class="text-[11px] text-[#D30611] font-bold mb-2.5">📍 A ${store.distance.toFixed(1)} km de ti</p>` : ''}
+            <a href="${store.mapsUrl}" target="_blank" rel="noopener" class="block w-full py-2 bg-[#D30611] hover:bg-[#0D0B0B] text-center font-bold text-[10px] uppercase !text-white rounded-xl transition-all shadow-sm" style="color: #ffffff !important;">
               Abrir en Google Maps
             </a>
           </div>
         `;
 
-        const marker = L.marker([store.lat, store.lng], { icon: storeIcon })
+        const marker = L.marker([store.lat, store.lng], { icon: pinIcon })
           .addTo(markersGroup)
           .bindPopup(popupContent);
-          
-        // Vincular clic al pin para scroll suave en la lista
+
+        markersById.set(store.id, marker);
+
+        // Al hacer clic en el pin del mapa, enfocar y resaltar la tarjeta correspondiente
         marker.on('click', () => {
-          const card = document.getElementById(`card-${store.id}`);
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            // Efecto visual de resaltado
-            card.classList.add('border-[#D30611]', 'ring-1', 'ring-[#D30611]');
-            setTimeout(() => {
-              card.classList.remove('border-[#D30611]', 'ring-1', 'ring-[#D30611]');
-            }, 1500);
-          }
+          focusCardFromPin(store.id);
         });
       });
 
-      // Ajustar vista del mapa si hay pines
+      // Ajustar vista del mapa a los marcadores si hay resultados
       if (markersGroup.getLayers().length > 0) {
-        map.fitBounds(markersGroup.getBounds(), { padding: [40, 40] });
+        map.fitBounds(markersGroup.getBounds(), { padding: [40, 40], maxZoom: 15 });
       }
     }
 
-    // --- RENDERIZAR LISTADO DE TARJETAS ---
-    function renderList() {
+    // --- ENFOCAR TARJETA CUANDO SE HACE CLIC EN UN PIN ---
+    function focusCardFromPin(storeId) {
+      const card = document.getElementById(`card-${storeId}`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        card.classList.add('border-[#D30611]', 'ring-2', 'ring-[#D30611]/30');
+        setTimeout(() => {
+          card.classList.remove('border-[#D30611]', 'ring-2', 'ring-[#D30611]/30');
+        }, 1800);
+      }
+    }
+
+    // --- RENDERIZAR LISTADO DE TARJETAS (TODOS LOS PUNTOS PROYECTADOS DIRECTAMENTE) ---
+    function renderList(resetScroll = true) {
       const container = document.getElementById("list-container");
+      const countEl = document.getElementById("results-count");
       if (!container) return;
+
+      if (countEl) {
+        countEl.textContent = activeStores.length;
+      }
 
       if (activeStores.length === 0) {
         container.innerHTML = `
           <div class="glass-panel p-8 rounded-2xl border border-slate-100 bg-white text-center shadow-sm">
             <i class="ph ph-warning-circle text-4xl text-slate-400 mb-2"></i>
-            <h3 class="font-bold text-slate-700 mb-1">No se encontraron tiendas</h3>
-            <p class="text-xs text-slate-500">Prueba con otros términos de búsqueda o filtros.</p>
+            <h3 class="font-bold text-slate-700 mb-1">No se encontraron puntos de venta</h3>
+            <p class="text-xs text-slate-500">Prueba cambiando los filtros de ciudad, giro o el término de búsqueda.</p>
           </div>
         `;
         return;
       }
 
+      // Proyectar todos los puntos activos directamente en el listado
       container.innerHTML = activeStores.map(store => `
-        <div id="card-${store.id}" class="glass-panel p-5 rounded-2xl border border-slate-100 bg-white shadow-sm flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all duration-300 relative group cursor-pointer" onclick="focusStore('${store.id}')">
+        <div id="card-${store.id}" class="glass-panel p-5 rounded-2xl border border-slate-100 bg-white shadow-sm flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 relative group cursor-pointer" onclick="focusStore('${store.id}')">
           <div>
             <div class="flex justify-between items-start gap-2 mb-2">
               <h3 class="font-bold text-slate-900 font-rubik text-base group-hover:text-[#D30611] transition-colors leading-tight">${store.name}</h3>
-              <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full border ${store.giroColor} shrink-0">${store.giro}</span>
+              <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full border ${store.giroColor || 'bg-slate-100 text-slate-700 border-slate-200'} shrink-0">${store.giro}</span>
             </div>
             <p class="text-xs text-slate-500 flex items-center gap-1.5">
-              <i class="ph-bold ph-map-pin"></i> ${store.ciudad}, Jalisco
+              <i class="ph-bold ph-map-pin text-[#D30611]"></i> ${store.ciudad}, Jalisco
             </p>
             ${store.address ? `
               <p class="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-2">${store.address}</p>
             ` : ''}
-            ${store.distance ? `
-              <div class="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+            ${store.telefono ? `
+              <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                <i class="ph-bold ph-phone text-slate-400"></i> ${store.telefono}
+              </p>
+            ` : ''}
+            ${store.distance !== undefined ? `
+              <div class="mt-2.5 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
                 <i class="ph-bold ph-navigation-arrow-fill"></i> A ${store.distance.toFixed(1)} km de ti
               </div>
             ` : ''}
           </div>
           <div class="mt-4 pt-3 border-t border-slate-50 flex gap-2">
-            <a href="${store.mapsUrl}" target="_blank" onclick="event.stopPropagation();" class="flex-1 py-2.5 rounded-full border border-slate-200 text-center font-bold text-xs uppercase text-slate-600 hover:bg-[#D30611] hover:text-white hover:border-[#D30611] transition-all duration-300">
-              Cómo llegar
+            <a href="${store.mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();" class="flex-1 py-2.5 rounded-full border border-slate-200 text-center font-bold text-xs uppercase text-slate-600 hover:bg-[#D30611] hover:text-white hover:border-[#D30611] transition-all duration-300 flex items-center justify-center gap-1.5 shadow-sm">
+              <i class="ph-bold ph-arrow-square-out"></i>
+              <span>Cómo llegar</span>
             </a>
           </div>
         </div>
       `).join('');
+
+      if (resetScroll) {
+        container.scrollTop = 0;
+      }
     }
 
     // --- ENFOCAR TIENDA EN EL MAPA ---
     window.focusStore = function(storeId) {
       const store = puntosDeVenta.find(s => s.id === storeId);
       if (store && map) {
-        map.setView([store.lat, store.lng], 15);
-        // Buscar marcador correspondiente y abrir popup
-        markersGroup.eachLayer(layer => {
-          if (layer instanceof L.Marker && layer.getLatLng().lat === store.lat && layer.getLatLng().lng === store.lng) {
-            layer.openPopup();
-          }
-        });
+        map.setView([store.lat, store.lng], 16, { animate: true });
+        const marker = markersById.get(storeId);
+        if (marker) {
+          marker.openPopup();
+        }
       }
     };
 
     // --- FILTRAR TIENDAS ---
     function filterStores() {
-      const query = document.getElementById("search-input").value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const ciudadVal = document.getElementById("filter-ciudad").value;
-      const giroVal = document.getElementById("filter-giro").value;
+      const query = (document.getElementById("search-input")?.value || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+      const ciudadVal = document.getElementById("filter-ciudad")?.value || "all";
+      const giroVal = document.getElementById("filter-giro")?.value || "all";
+
 
       activeStores = puntosDeVenta.filter(store => {
-        const normalizeName = store.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const addressText = (store.address || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const normalizeName = (store.name || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+        const addressText = (store.address || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+        const claveText = (store.clave || "").toLowerCase();
+        
         const matchesQuery = !query || 
           normalizeName.includes(query) || 
-          addressText.includes(query) ||
+          addressText.includes(query) || 
+          claveText.includes(query) ||
           store.ciudad.toLowerCase().includes(query) || 
           store.giro.toLowerCase().includes(query);
 
@@ -967,7 +792,7 @@
         return matchesQuery && matchesCiudad && matchesGiro;
       });
 
-      // Si hay geolocalización activa, volver a ordenar
+      // Si hay geolocalización activa, reordenar por distancia
       if (userLocation) {
         activeStores.forEach(store => {
           store.distance = calculateDistance(userLocation.lat, userLocation.lng, store.lat, store.lng);
@@ -975,7 +800,7 @@
         activeStores.sort((a, b) => a.distance - b.distance);
       }
 
-      renderList();
+      renderList(true);
       renderMapMarkers();
     }
 
@@ -984,6 +809,7 @@
       const badge = document.getElementById("geo-status-badge");
       const badgeText = document.getElementById("geo-status-text");
       const btn = document.getElementById("geolocate-btn");
+      const geoActiveLabel = document.getElementById("geo-active-label");
 
       if (!navigator.geolocation) {
         alert("La geolocalización no está soportada por tu navegador.");
@@ -991,10 +817,12 @@
       }
 
       // Animaciones y estado cargando
-      badge.classList.remove("scale-0");
-      badge.classList.add("scale-100");
-      badgeText.innerText = "Solicitando permiso...";
-      btn.classList.add("opacity-50", "pointer-events-none");
+      if (badge && badgeText) {
+        badge.classList.remove("scale-0");
+        badge.classList.add("scale-100");
+        badgeText.innerText = "Solicitando permiso...";
+      }
+      if (btn) btn.classList.add("opacity-50", "pointer-events-none");
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -1003,7 +831,8 @@
             lng: position.coords.longitude
           };
 
-          badgeText.innerText = "Ubicación encontrada. Calculando distancias...";
+          if (badgeText) badgeText.innerText = "Ubicación encontrada. Ordenando por cercanía...";
+          if (geoActiveLabel) geoActiveLabel.classList.remove("hidden");
           
           // Calcular distancia Haversine a cada punto de venta
           puntosDeVenta.forEach(store => {
@@ -1016,13 +845,15 @@
           });
           activeStores.sort((a, b) => a.distance - b.distance);
 
-          renderList();
+          renderList(true);
           renderMapMarkers();
 
           setTimeout(() => {
-            badge.classList.remove("scale-100");
-            badge.classList.add("scale-0");
-            btn.classList.remove("opacity-50", "pointer-events-none");
+            if (badge) {
+              badge.classList.remove("scale-100");
+              badge.classList.add("scale-0");
+            }
+            if (btn) btn.classList.remove("opacity-50", "pointer-events-none");
           }, 2000);
         },
         (error) => {
@@ -1031,12 +862,14 @@
           if (error.code === error.PERMISSION_DENIED) {
             errorMsg = "Permiso de geolocalización denegado.";
           }
-          badgeText.innerText = errorMsg;
+          if (badgeText) badgeText.innerText = errorMsg;
           
           setTimeout(() => {
-            badge.classList.remove("scale-100");
-            badge.classList.add("scale-0");
-            btn.classList.remove("opacity-50", "pointer-events-none");
+            if (badge) {
+              badge.classList.remove("scale-100");
+              badge.classList.add("scale-0");
+            }
+            if (btn) btn.classList.remove("opacity-50", "pointer-events-none");
           }, 3000);
         },
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
@@ -1048,10 +881,15 @@
       initMap();
       renderList();
 
-      document.getElementById("search-input").addEventListener("input", filterStores);
-      document.getElementById("filter-ciudad").addEventListener("change", filterStores);
-      document.getElementById("filter-giro").addEventListener("change", filterStores);
-      document.getElementById("geolocate-btn").addEventListener("click", handleGeolocation);
+      const searchInput = document.getElementById("search-input");
+      const filterCiudad = document.getElementById("filter-ciudad");
+      const filterGiro = document.getElementById("filter-giro");
+      const geolocateBtn = document.getElementById("geolocate-btn");
+
+      if (searchInput) searchInput.addEventListener("input", filterStores);
+      if (filterCiudad) filterCiudad.addEventListener("change", filterStores);
+      if (filterGiro) filterGiro.addEventListener("change", filterStores);
+      if (geolocateBtn) geolocateBtn.addEventListener("click", handleGeolocation);
     });
   </script>
   <!-- ==================== BOTÓN FLOTANTE WHATSAPP (PICANTE) ==================== -->
