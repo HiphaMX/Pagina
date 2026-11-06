@@ -66,7 +66,7 @@
         <span>Volver a Productos Artesanales</span>
       </a>
       <div class="flex items-center gap-2">
-        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Comercio Fundador Verificado</span>
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Epicentro</span>
         <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
           natura
         </span>
@@ -90,7 +90,7 @@
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
           <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
-          <span>Comercio Fundador</span>
+          <span>Epicentro</span>
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
           <i data-lucide="truck" class="w-3.5 h-3.5"></i>
@@ -108,7 +108,7 @@
             Botica Silvestre
           </h1>
         </div>
-        <p class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+        <p id="hero-business-description" class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
           Herbolaria sagrada, adaptógenos y alquimia natural. Fórmulas botánicas elaboradas artesanalmente en pequeños lotes para pausar, encontrarte y recuperar tu equilibrio físico, mental y espiritual desde la raíz.
         </p>
       </div>
@@ -122,10 +122,6 @@
         <div id="hero-schedule-info-row" class="flex items-center gap-2">
           <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
           <span id="hero-schedule-info">Horario: Lunes a Sábado · 09:00 a 19:00 hrs</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-          <span>Garantía de Calidad e Ingredientes 100% Puros</span>
         </div>
       </div>
 
@@ -159,18 +155,18 @@
     <section class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-          <span class="text-xs font-black uppercase tracking-widest text-emerald-700">LÍNEA SOUL SHINE · SÚPER ADAPTÓGENOS</span>
-          <h2 class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Extractos Botánicos & Fórmulas Maestras</h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1">Frascos de 50 ml con pipeta dosificadora en base de tintura hidroalcohólica u oleato vegetal puro.</p>
+          <span id="featured-section-subtitle" class="text-xs font-black uppercase tracking-widest text-emerald-700">LÍNEA SOUL SHINE · SÚPER ADAPTÓGENOS</span>
+          <h2 id="featured-section-title" class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Extractos Botánicos & Fórmulas Maestras</h2>
+          <p id="featured-section-desc" class="text-xs sm:text-sm text-slate-500 mt-1">Frascos de 50 ml con pipeta dosificadora en base de tintura hidroalcohólica u oleato vegetal puro.</p>
         </div>
-        <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5">
+        <span id="featured-variety-count" class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
           <span>8 Fórmulas Activas</span>
         </span>
       </div>
 
       <!-- GRID DE PRODUCTOS SOUL SHINE -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="featured-products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         <!-- Producto 1: Balance -->
         <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
@@ -376,14 +372,14 @@
     </section>
 
     <!-- SECCIÓN 2: COMPLEMENTOS Y LÍNEAS EN ESTILO MENÚ (DIVIDED ROWS) -->
-    <section class="space-y-6">
+    <section id="other-products-sections-wrapper" class="space-y-6">
       <div class="border-b border-slate-200 pb-4">
         <span class="text-xs font-black uppercase tracking-widest text-emerald-700">MÁS DE LA BOTICA · ESTILO MENÚ</span>
         <h2 class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Tinturas Sabina & Pomadas Terapéuticas</h2>
         <p class="text-xs sm:text-sm text-slate-500 mt-1">Acompaña tu ritual con tinturas florales de tradición herbolaria y bálsamos de aplicación dérmica.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div id="other-products-sections-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- Tarjeta: Línea Sabina -->
         <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
@@ -622,7 +618,7 @@
       }, 50);
     }
 
-    // Sincronización en vivo de configuración del micrositio (sitio web hero, portada, etc.)
+    // Sincronización en vivo de configuración del micrositio (sitio web hero, portada, catálogo, etc.)
     async function syncBoticaSilvestreMicrosite() {
       let reg = null;
       try {
@@ -635,24 +631,34 @@
           const localSaved = localStorage.getItem("epicentro_admin_registrations");
           if (localSaved) {
             const list = JSON.parse(localSaved);
-            reg = list.find(r => r.id === "reg-botica-silvestre" || (r.business_name && r.business_name.toLowerCase().includes("botica")));
+            reg = list.find(r => {
+              const nameNorm = (r.business_name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+              return r.id === "reg-botica-silvestre" || r.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || nameNorm.includes("botica");
+            });
           }
         } catch (e) {}
       }
 
       if (!reg) return;
 
-      // 1. Actualizar Sitio Web Oficial (Botón Hero1)
-      let siteUrl = "";
+      let mdata = null;
       if (reg.microsite_data) {
         try {
-          const md = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
-          if (md && md.website_url !== undefined && md.website_url !== null) {
-            siteUrl = String(md.website_url).trim();
-          }
+          mdata = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
         } catch (e) {}
       }
-      if (!siteUrl && reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
+
+      // 0. Actualizar Descripción en Hero
+      if (reg.description) {
+        const descEl = document.getElementById("hero-business-description");
+        if (descEl) descEl.textContent = reg.description;
+      }
+
+      // 1. Actualizar Sitio Web Oficial (Botón Hero1)
+      let siteUrl = "";
+      if (mdata && mdata.website_url !== undefined && mdata.website_url !== null) {
+        siteUrl = String(mdata.website_url).trim();
+      } else if (reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
         siteUrl = String(reg.website).trim();
       }
 
@@ -677,10 +683,10 @@
       }
 
       // 3. Actualizar WhatsApp o Teléfono si fueron modificados
+      const cleanWa = (reg.whatsapp || "3314199842").replace(/\D/g, "");
       if (reg.whatsapp) {
         const waBtn = document.getElementById("hero-whatsapp-btn");
         if (waBtn) {
-          const cleanWa = reg.whatsapp.replace(/\D/g, "");
           waBtn.href = `https://wa.me/52${cleanWa}?text=${encodeURIComponent("Hola Botica Silvestre, vi su micrositio en Epicentro Natura y quiero hacer un pedido a mi coto")}`;
         }
       }
@@ -695,11 +701,8 @@
       let rawSchedule = "";
       if (reg.schedule) {
         rawSchedule = String(reg.schedule).trim();
-      } else if (reg.microsite_data) {
-        try {
-          const md = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
-          if (md && md.schedule) rawSchedule = String(md.schedule).trim();
-        } catch(e) {}
+      } else if (mdata && mdata.schedule) {
+        rawSchedule = String(mdata.schedule).trim();
       }
 
       if (rawSchedule) {
@@ -771,6 +774,92 @@
         const locEl = document.getElementById("hero-location-text");
         if (locEl) locEl.textContent = reg.coto_address;
       }
+
+      // 6. Actualizar Catálogo Destacado (Extractos Botánicos & Adaptógenos)
+      if (mdata && mdata.featured_section) {
+        const feat = mdata.featured_section;
+        const featTitleEl = document.getElementById("featured-section-title");
+        const featSubEl = document.getElementById("featured-section-subtitle");
+        const featDescEl = document.getElementById("featured-section-desc");
+        const featGrid = document.getElementById("featured-products-grid");
+        const varietyCountEl = document.getElementById("featured-variety-count");
+
+        if (feat.title && featTitleEl) featTitleEl.textContent = feat.title;
+        if (feat.subtitle && featSubEl) featSubEl.textContent = feat.subtitle;
+        if (feat.description && featDescEl) featDescEl.textContent = feat.description;
+
+        if (Array.isArray(feat.products) && feat.products.length > 0 && featGrid) {
+          if (varietyCountEl) varietyCountEl.textContent = `${feat.products.length} Fórmulas Activas`;
+          featGrid.innerHTML = feat.products.map(prod => `
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+              <div class="relative h-56 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+                <img src="${prod.photo || 'Assets/botica/products/Balance 01.webp'}" alt="${prod.name}" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+                  Tintura / Oleato 30ml
+                </span>
+              </div>
+              <div class="p-6 flex-1 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">${prod.name}</h3>
+                    <span class="text-base font-extrabold text-emerald-700">$${prod.price || 0}</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    ${prod.description || ''}
+                  </p>
+                </div>
+                <a href="https://wa.me/52${cleanWa}?text=Hola%20Botica%20Silvestre,%20quiero%20ordenar%20el%20extracto%20${encodeURIComponent(prod.name)}%20($${prod.price || 0})%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Pedir por WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          `).join("");
+        }
+      }
+
+      // 7. Actualizar Otras Secciones de Menú / Tinturas / Pomadas
+      const otherSecWrapper = document.getElementById("other-products-sections-wrapper");
+      const otherSecGrid = document.getElementById("other-products-sections-grid");
+      if (mdata && Array.isArray(mdata.other_products_sections)) {
+        if (mdata.other_products_sections.length === 0) {
+          if (otherSecWrapper) otherSecWrapper.classList.add("hidden");
+        } else if (otherSecGrid) {
+          if (otherSecWrapper) otherSecWrapper.classList.remove("hidden");
+          otherSecGrid.innerHTML = mdata.other_products_sections.map(sec => `
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                    <i data-lucide="flower-2" class="w-4 h-4"></i>
+                  </div>
+                  <h3 class="text-base font-black text-slate-900">${sec.title}</h3>
+                </div>
+                ${sec.subtitle ? `<span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">${sec.subtitle}</span>` : ''}
+              </div>
+
+              <div class="divide-y divide-slate-100">
+                ${(sec.items || []).map(item => `
+                  <div class="py-3 flex items-center justify-between gap-4">
+                    <div>
+                      <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
+                      ${item.description ? `<p class="text-xs text-slate-500">${item.description}</p>` : ''}
+                    </div>
+                    <span class="text-sm font-black text-emerald-700 shrink-0">$${item.price || 0}</span>
+                  </div>
+                `).join("")}
+              </div>
+              
+              <a href="https://wa.me/52${cleanWa}?text=Hola%20Botica%20Silvestre,%20me%20interesa%20ordenar%20de%20${encodeURIComponent(sec.title)}" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>Pedir por WhatsApp</span>
+              </a>
+            </div>
+          `).join("");
+        }
+      }
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     syncBoticaSilvestreMicrosite();
   </script>
