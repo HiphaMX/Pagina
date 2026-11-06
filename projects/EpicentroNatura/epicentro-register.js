@@ -530,10 +530,16 @@
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.detail || "Error al registrar pago con KAM");
-      showStep4Success(data.folio || `NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`);
+      showStep4Success(data.folio || `NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`, {
+        title: "¡Registro con Asesor KAM en Proceso!",
+        desc: `Tu registro fue canalizado con ${kamName}. Tu suscripción anual y Sello Vecino Verificado se activarán una vez validado tu pago ($399 MXN).`
+      }, "pending_payment");
     } catch (err) {
       console.warn("Aviso KAM payment:", err);
-      showStep4Success(`NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`);
+      showStep4Success(`NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`, {
+        title: "¡Registro con Asesor KAM en Proceso!",
+        desc: "Tu solicitud de suscripción anual fue recibida. Se validará con tu asesor para activar tu Sello Vecino Verificado."
+      }, "pending_payment");
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -1053,25 +1059,11 @@
         </div>
       </div>
 
-      <!-- FASE 4: CONFIRMACIÓN Y FOLIO -->
-      <div id="reg-step-4" class="hidden text-center space-y-4 py-4">
-        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-          <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+      <!-- FASE 4: CONFIRMACIÓN, PAGO Y VALIDACIÓN DINÁMICA -->
+      <div id="reg-step-4" class="hidden text-center py-4">
+        <div id="step4-dynamic-content">
+          <!-- Inyectado dinámicamente según el estado: pending_payment, verified_success, free_basic -->
         </div>
-        <h4 id="step4-title" class="text-xl font-black text-slate-950">¡Comercio Verificado con Éxito!</h4>
-        <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-          Tu comercio <strong id="step4-business-name" class="text-slate-900">...</strong> cuenta con Sello Oficial Vecino Verificado.
-        </p>
-        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Verificación</span>
-          <span id="step4-folio" class="text-base font-mono font-black text-emerald-600">NATURA-...</span>
-        </div>
-        <p id="step4-desc" class="text-xs text-slate-500 max-w-xs mx-auto">
-          Tu negocio ya se encuentra registrado y activo en el directorio comunitario.
-        </p>
-        <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
-          Entendido, Ver en el Directorio
-        </button>
       </div>
 
     </div>
@@ -1083,15 +1075,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
-      modal.dataset.version = "v400";
+      modal.dataset.version = "v401";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
     // Si el modal no contiene el stepper completo o carece de los nuevos campos de portada/destacados o es versión antigua
-    if (!document.getElementById("reg-step-1") || !document.getElementById("reg-cover-preview") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v400") {
+    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v401") {
       modal.innerHTML = renderWizardHTML();
-      modal.dataset.version = "v400";
+      modal.dataset.version = "v401";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
@@ -1189,8 +1181,8 @@
       if (bar3) bar3.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
     } else if (step === 4) {
       if (label) label.textContent = "Completado";
-      if (title) title.textContent = isFree ? "¡Registro Básico Gratuito Enviado!" : "¡Suscripción y Micrositio Registrados!";
-      if (desc) desc.textContent = isFree ? "Tu negocio ha sido registrado con datos generales e hipervínculos de contacto." : "Tu solicitud ha sido registrada y está lista para su activación con catálogo.";
+      if (title) title.textContent = isFree ? "¡Registro Básico Gratuito Enviado!" : "Estatus de Registro y Verificación";
+      if (desc) desc.textContent = isFree ? "Tu negocio ha sido registrado con datos generales e hipervínculos de contacto." : "Consulta el estado de tu activación comunitaria y Sello Vecino Verificado.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
@@ -1434,7 +1426,7 @@
     showStep4Success(`NATURA-GRATIS-${folioSuffix}`, {
       title: "¡Registro Básico Gratuito Enviado!",
       desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu micrositio interactivo y catálogo de fotos con la suscripción anual en cualquier momento."
-    });
+    }, "free_basic");
   }
 
   function goToStep3() {
@@ -1479,17 +1471,19 @@
         return;
       }
 
-      showStep4Success("NATURA-SUB-" + Math.floor(1000 + Math.random() * 9000), {
-        title: "¡Suscripción Anual Iniciada!",
-        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago para activar tu micrositio y catálogo de fotos."
-      });
+      const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
+      showStep4Success(`NATURA-SUB-${suffix}`, {
+        title: "¡Completando Pago en Mercado Pago!",
+        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para validar tu comercio."
+      }, "pending_payment");
     } catch (err) {
       console.warn("Aviso Mercado Pago:", err);
       window.open(MP_ANNUAL_SUBSCRIPTION_URL, "_blank");
-      showStep4Success("NATURA-SUB-" + Math.floor(1000 + Math.random() * 9000), {
-        title: "¡Suscripción Anual Iniciada!",
-        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago para activar tu micrositio y catálogo de fotos."
-      });
+      const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
+      showStep4Success(`NATURA-SUB-${suffix}`, {
+        title: "¡Completando Pago en Mercado Pago!",
+        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para validar tu comercio."
+      }, "pending_payment");
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -1521,10 +1515,11 @@
       console.warn(e);
     }
 
-    showStep4Success("NATURA-GRATIS-" + Math.floor(1000 + Math.random() * 9000), {
+    const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
+    showStep4Success(`NATURA-GRATIS-${suffix}`, {
       title: "¡Registro Básico Gratuito Enviado!",
       desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu micrositio y fotos con la suscripción anual en cualquier momento."
-    });
+    }, "free_basic");
   }
 
   function toggleCouponBox() {
@@ -1579,7 +1574,10 @@
       }
 
       setTimeout(() => {
-        showStep4Success(data.folio || `NATURA-VERIFIED-${codeVal}`);
+        showStep4Success(data.folio || `NATURA-VERIFIED-${codeVal}`, {
+          title: "¡Comercio Verificado con Cortesía!",
+          desc: "Tu código de cortesía ha sido validado exitosamente. Tu comercio cuenta con Sello Oficial Vecino Verificado y Micrositio con catálogo."
+        }, "verified_success");
       }, 700);
     } catch (err) {
       if (currentRegId && currentRegId.startsWith("mock-") && ["NATURA100", "FUNDADOR", "EPICENTRO2026", "HIPHA"].includes(codeVal)) {
@@ -1588,7 +1586,10 @@
           feedback.textContent = "✓ ¡Código válido! Tu negocio ha sido verificado sin costo.";
         }
         setTimeout(() => {
-          showStep4Success(`NATURA-PROMO-${codeVal}`);
+          showStep4Success(`NATURA-PROMO-${codeVal}`, {
+            title: "¡Comercio Verificado con Cortesía!",
+            desc: "Tu código promocional ha sido aceptado. Tu comercio cuenta con Sello Oficial Vecino Verificado."
+          }, "verified_success");
         }, 700);
       } else {
         if (feedback) {
@@ -1603,16 +1604,189 @@
     }
   }
 
-  function showStep4Success(folio, customTexts) {
-    const bNameEl = document.getElementById("step4-business-name");
-    const folioEl = document.getElementById("step4-folio");
-    const titleEl = document.getElementById("step4-title");
-    const descEl = document.getElementById("step4-desc");
+  function renderStep4Content(mode, folio, customTexts) {
+    const bName = currentBusinessName || "tu negocio";
+    const container = document.getElementById("step4-dynamic-content");
+    if (!container) return;
 
-    if (bNameEl) bNameEl.textContent = currentBusinessName || "tu negocio";
-    if (folioEl) folioEl.textContent = folio;
-    if (customTexts && customTexts.title && titleEl) titleEl.textContent = customTexts.title;
-    if (customTexts && customTexts.desc && descEl) descEl.textContent = customTexts.desc;
+    if (mode === "pending_payment") {
+      const waMsg = encodeURIComponent(`Hola Hipha / Epicentro Natura, inicié mi suscripción anual para "${bName}" con folio ${folio}. Adjunto mi comprobante para validar mi Sello Vecino Verificado y activar mi Micrositio con catálogo.`);
+      const waLink = `https://wa.me/523336762545?text=${waMsg}`;
+
+      container.innerHTML = `
+        <div class="space-y-4 max-w-md mx-auto">
+          <div class="w-16 h-16 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shadow-inner">
+            <i data-lucide="clock" class="w-9 h-9 animate-pulse"></i>
+          </div>
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold">
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+            Pendiente de Acreditación · Validación Requerida
+          </div>
+
+          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Completando Pago en Mercado Pago!"}</h4>
+          
+          <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
+            Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>Sello Vecino Verificado</strong> y tu <strong>Micrositio con Catálogo</strong>, se requiere validar tu pago de <strong>$399 MXN</strong>.
+          </p>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto space-y-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Seguimiento</span>
+            <span class="text-base font-mono font-black text-amber-600">${folio}</span>
+          </div>
+
+          <!-- Acciones de Validación -->
+          <div class="space-y-2.5 max-w-sm mx-auto pt-1">
+            <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer no-underline">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Ya realicé mi pago · Validar por WhatsApp</span>
+            </a>
+
+            <button type="button" id="btn-check-status" onclick="checkCurrentRegistrationStatus()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span id="btn-check-status-text">Verificar Estatus de Acreditación</span>
+            </button>
+            <p id="check-status-feedback" class="text-[11px] text-slate-500 hidden text-center px-2 leading-relaxed"></p>
+
+            <div class="pt-1">
+              <a href="https://mpago.la/2jXGN6C" target="_blank" rel="noopener noreferrer" class="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 underline transition-colors">
+                ¿No abrió la ventana? Reabrir enlace de Mercado Pago ($399 MXN) &rarr;
+              </a>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100">
+            <button onclick="closeRegisterModal();" class="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">
+              Cerrar y continuar navegando
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (mode === "free_basic") {
+      container.innerHTML = `
+        <div class="space-y-4 max-w-md mx-auto">
+          <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+            <i data-lucide="clipboard-check" class="w-9 h-9"></i>
+          </div>
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-[11px] font-bold">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            Alta Básica Comunitaria Recibida
+          </div>
+
+          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Registro Básico Gratuito Enviado!"}</h4>
+          
+          <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
+            Tu comercio <strong class="text-slate-900">${bName}</strong> ha sido registrado con sus datos generales (teléfono, WhatsApp, ubicación y horarios).
+          </p>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Registro Básico</span>
+            <span class="text-base font-mono font-black text-blue-600">${folio}</span>
+          </div>
+
+          <p class="text-xs text-slate-500 max-w-xs mx-auto">
+            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu micrositio web interactivo y catálogo fotográfico con la suscripción anual ($399 MXN) en cualquier momento."}
+          </p>
+
+          <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
+            Entendido, Ver en el Directorio
+          </button>
+        </div>
+      `;
+    } else {
+      // verified_success (acreditado, cupón verificado, o validación completada)
+      container.innerHTML = `
+        <div class="space-y-4 max-w-md mx-auto">
+          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+          </div>
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+            Comercio Verificado con Éxito
+          </div>
+
+          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Comercio Verificado con Éxito!"}</h4>
+          
+          <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
+            Tu comercio <strong class="text-slate-900">${bName}</strong> cuenta con Sello Oficial Vecino Verificado y Micrositio interactivo con catálogo.
+          </p>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Verificación</span>
+            <span class="text-base font-mono font-black text-emerald-600">${folio}</span>
+          </div>
+
+          <p class="text-xs text-slate-500 max-w-xs mx-auto">
+            ${(customTexts && customTexts.desc) ? customTexts.desc : "Tu negocio ya se encuentra registrado y activo en el directorio comunitario con fotos y micrositio."}
+          </p>
+
+          <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
+            Entendido, Ver en el Directorio
+          </button>
+        </div>
+      `;
+    }
+
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
+  async function checkCurrentRegistrationStatus() {
+    const btn = document.getElementById("btn-check-status");
+    const textEl = document.getElementById("btn-check-status-text");
+    const feedback = document.getElementById("check-status-feedback");
+
+    if (!currentRegId) {
+      if (feedback) {
+        feedback.className = "text-[11px] text-amber-700 block text-center";
+        feedback.textContent = "No hay un registro activo en esta sesión para consultar.";
+        feedback.classList.remove("hidden");
+      }
+      return;
+    }
+
+    if (btn) btn.disabled = true;
+    if (textEl) textEl.textContent = "Consultando...";
+
+    try {
+      const res = await fetch(`/api/epicentro/register/status/${currentRegId}`);
+      if (!res.ok) throw new Error("Aún no se refleja la acreditación.");
+      const data = await res.json();
+
+      if (data.is_verified_badge || data.status === "active" || data.payment_status === "approved" || data.payment_status === "verified") {
+        if (feedback) {
+          feedback.className = "text-[11px] text-emerald-700 font-bold block text-center";
+          feedback.textContent = "✓ ¡Acreditación confirmada! Mostrando Comercio Verificado...";
+          feedback.classList.remove("hidden");
+        }
+        setTimeout(() => {
+          showStep4Success(data.folio || `NATURA-VERIFIED-${currentRegId.slice(-4).toUpperCase()}`, {
+            title: "¡Comercio Verificado con Éxito!",
+            desc: "Tu pago ha sido acreditado. Tu comercio cuenta con Sello Oficial Vecino Verificado y Micrositio con catálogo activo."
+          }, "verified_success");
+        }, 800);
+      } else {
+        if (feedback) {
+          feedback.className = "text-[11px] text-slate-600 block text-center leading-relaxed";
+          feedback.textContent = "Tu pago sigue en proceso de acreditación. Si ya completaste tu pago en Mercado Pago, pulsa el botón de WhatsApp para adjuntar tu comprobante y agilizar la activación inmediata.";
+          feedback.classList.remove("hidden");
+        }
+      }
+    } catch (err) {
+      if (feedback) {
+        feedback.className = "text-[11px] text-slate-600 block text-center leading-relaxed";
+        feedback.textContent = "Tu pago sigue en proceso de acreditación bancaria. Puedes enviar tu comprobante por WhatsApp para validación inmediata con un moderador.";
+        feedback.classList.remove("hidden");
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+      if (textEl) textEl.textContent = "Verificar Estatus de Acreditación";
+    }
+  }
+
+  function showStep4Success(folio, customTexts, mode = "verified_success") {
+    renderStep4Content(mode, folio, customTexts);
     setWizardStep(4);
   }
 
@@ -1631,6 +1805,8 @@
   window.toggleCouponBox = toggleCouponBox;
   window.handleApplyCoupon = handleApplyCoupon;
   window.showStep4Success = showStep4Success;
+  window.renderStep4Content = renderStep4Content;
+  window.checkCurrentRegistrationStatus = checkCurrentRegistrationStatus;
   window.handleRegisterPhotoFiles = handleRegisterPhotoFiles;
   window.promptRegisterPhotoUrl = promptRegisterPhotoUrl;
   window.removeRegisterPhoto = removeRegisterPhoto;
@@ -1656,6 +1832,20 @@
   function checkUrlAutoOpen() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
+
+      // Detección de retorno de pasarela con pago aprobado
+      const paymentReturn = urlParams.get("payment") || urlParams.get("collection_status") || urlParams.get("status");
+      const regIdParam = urlParams.get("reg_id") || urlParams.get("external_reference");
+      if (paymentReturn === "success" || paymentReturn === "approved") {
+        openRegisterModal();
+        if (regIdParam) currentRegId = regIdParam;
+        showStep4Success(regIdParam ? `NATURA-VERIFIED-${regIdParam.slice(-4).toUpperCase()}` : "NATURA-VERIFIED-OK", {
+          title: "¡Pago Acreditado con Éxito!",
+          desc: "Tu suscripción anual y Sello Vecino Verificado están activos. Tu micrositio y catálogo ya están habilitados en el directorio comunitario."
+        }, "verified_success");
+        return;
+      }
+
       if (urlParams.get("open_register") === "1") {
         openRegisterModal(urlParams.get("cat"));
         const step = parseInt(urlParams.get("step") || "1", 10);

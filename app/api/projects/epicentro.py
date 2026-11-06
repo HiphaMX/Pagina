@@ -748,14 +748,23 @@ def report_kam_payment(
 
     kam = payload.kam_name.strip()
     reg.kam_name = kam
-    reg.payment_method = payload.payment_method or "kam_direct"
-    reg.payment_status = "pending_kam_verification"
+    method = payload.payment_method or "kam_direct"
+    reg.payment_method = method
+    
+    if method == "mercadopago_subscription":
+        reg.payment_status = "pending_mp_payment"
+    elif method == "free_basic":
+        reg.payment_status = "free_basic"
+    else:
+        reg.payment_status = "pending_kam_verification"
+
     if payload.amount is not None:
         reg.payment_amount = payload.amount
     else:
-        reg.payment_amount = 399.0
+        reg.payment_amount = 0.0 if method == "free_basic" else 399.0
+
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
-    note_line = f"Pago acordado con asesor KAM '{kam}' ({now_str} UTC)"
+    note_line = f"Registro de pago '{method}' con '{kam}' ({now_str} UTC)"
     if payload.notes:
         note_line += f": {payload.notes}"
     reg.moderation_notes = (reg.moderation_notes + "\n" if reg.moderation_notes else "") + note_line
@@ -764,13 +773,52 @@ def report_kam_payment(
     db.refresh(reg)
 
     folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
-    folio = f"NATURA-KAM-{folio_suffix}"
+    if method == "mercadopago_subscription":
+        folio = f"NATURA-SUB-{folio_suffix}"
+    elif method == "free_basic":
+        folio = f"NATURA-GRATIS-{folio_suffix}"
+    else:
+        folio = f"NATURA-KAM-{folio_suffix}"
 
     return {
         "success": True,
-        "message": f"Pago registrado con el asesor KAM {kam}. Pendiente de confirmación.",
+        "message": f"Pago registrado con {kam}. Estatus: {reg.payment_status}.",
         "folio": folio,
-        "registration_id": reg.id
+        "registration_id": reg.id,
+        "payment_status": reg.payment_status
+    }
+
+
+@router.get("/register/status/{registration_id}")
+def get_registration_status(registration_id: str, db: Session = Depends(get_db)):
+    """Retorna el estatus en tiempo real de una solicitud de registro para validación y pantalla exitosa."""
+    ensure_epicentro_schema(db)
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == registration_id).first()
+    if not reg:
+        raise HTTPException(status_code=404, detail="Registro no encontrado")
+
+    folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
+    if reg.is_verified_badge and reg.status == "active":
+        folio = f"NATURA-VERIFIED-{folio_suffix}"
+    elif reg.payment_method == "mercadopago_subscription":
+        folio = f"NATURA-SUB-{folio_suffix}"
+    elif reg.payment_method == "free_basic":
+        folio = f"NATURA-GRATIS-{folio_suffix}"
+    else:
+        folio = f"NATURA-REG-{folio_suffix}"
+
+    return {
+        "success": True,
+        "registration_id": reg.id,
+        "business_name": reg.business_name,
+        "status": reg.status,
+        "payment_status": reg.payment_status,
+        "payment_method": reg.payment_method,
+        "payment_amount": reg.payment_amount,
+        "is_verified_badge": bool(reg.is_verified_badge),
+        "whatsapp_verified": bool(reg.whatsapp_verified),
+        "folio": folio,
+        "is_active_in_directory": (reg.status == "active")
     }
 
 
