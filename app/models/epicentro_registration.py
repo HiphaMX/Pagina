@@ -26,6 +26,8 @@ class EpicentroRegistration(Base):
     website = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
     photos = Column(Text, nullable=True)  # JSON array de hasta 10 fotos para micrositios
+    cover_photo = Column(Text, nullable=True)  # URL de foto de portada del hero
+    microsite_data = Column(Text, nullable=True)  # JSON estructurado: productos destacados y hasta 2 secciones de menú
     kam_name = Column(String(100), nullable=True)
     payment_method = Column(String(50), nullable=True)
 

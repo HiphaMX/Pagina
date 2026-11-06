@@ -373,6 +373,30 @@
             delivery_available: true,
             preferred_contact_methods: "whatsapp,delivery,llamada",
             description: "Salsas picantes gourmet 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos.",
+            cover_photo: "Assets/chillon/Hero chile chillon.png",
+            microsite_data: JSON.stringify({
+              cover_photo: "Assets/chillon/Hero chile chillon.png",
+              featured_section: {
+                title: "Catálogo de Salsas & Sazón de la Casa",
+                subtitle: "Selección Artesanal 250ml",
+                description: "Frascos de 250 ml elaborados con aceite vegetal comestible y chiles seleccionados sin conservadores.",
+                products: [
+                  { name: "Salsa Chile de Árbol", price: 40.0, description: "Picor vibrante y sazón equilibrado.", photo: "Assets/chillon/Salsas/de_arbol.jpg" },
+                  { name: "Salsa Habanero", price: 40.0, description: "Intensidad cítrica y picor brillante.", photo: "Assets/chillon/Salsas/habanero.jpg" },
+                  { name: "Habanero Tatemado", price: 40.0, description: "Tostado artesanal al comal.", photo: "Assets/chillon/Salsas/tatemado.jpg" }
+                ]
+              },
+              other_products_sections: [
+                {
+                  title: "Presentaciones por Litro (Eventos)",
+                  subtitle: "Por Volumen",
+                  description: "Para reuniones familiares y taquizas.",
+                  items: [
+                    { name: "Litro de Salsa Chile de Árbol", price: 150.0, description: "Presentación para reuniones" }
+                  ]
+                }
+              ]
+            }),
             photos: JSON.stringify([
               "Assets/chillon/Salsas/de_arbol.jpg",
               "Assets/chillon/Salsas/habanero.jpg",
@@ -612,8 +636,12 @@ Esta acción no se puede deshacer.`)) return;
       loadRegistrations();
     }
 
-    // --- GESTIÓN DE EDICIÓN DE FICHAS (MODERADOR / KAM) ---
-    let adminEditPhotos = [];
+    // --- GESTIÓN DE MICROSITIO EN ADMIN: PORTADA, DESTACADOS Y MENÚ ---
+    let adminCoverPhoto = "";
+    let adminFeaturedProducts = []; // [{ photo, name, price, description }]
+    let adminMenuSections = []; // [{ title, subtitle, description, items: [{ name, price, description }] }]
+    let tempAdminProdPhoto = "";
+    let adminEditPhotos = []; // compatibilidad
 
     function checkAutoOpenEdit() {
       try {
@@ -623,63 +651,6 @@ Esta acción no se puede deshacer.`)) return;
           openEditModal(openEditId);
         }
       } catch (e) {}
-    }
-
-    function openEditModal(id) {
-      const reg = allRegistrations.find(r => r.id === id);
-      if (!reg) return;
-
-      document.getElementById("edit-reg-id").value = reg.id;
-      document.getElementById("edit-business-name").value = reg.business_name || "";
-      document.getElementById("edit-category-slug").value = reg.category_slug || "comida-delivery";
-      document.getElementById("edit-subcategory-label").value = reg.subcategory_label || "";
-      document.getElementById("edit-coto-address").value = reg.coto_address || "";
-      document.getElementById("edit-schedule").value = reg.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs";
-      document.getElementById("edit-owner-name").value = reg.owner_name || "";
-      document.getElementById("edit-phone").value = reg.phone || "";
-      document.getElementById("edit-whatsapp").value = reg.whatsapp || "";
-      document.getElementById("edit-email").value = reg.email || "";
-      document.getElementById("edit-website").value = reg.website || "";
-      document.getElementById("edit-preferred-contact-methods").value = reg.preferred_contact_methods || "whatsapp";
-      document.getElementById("edit-description").value = reg.description || "";
-      document.getElementById("edit-status").value = reg.status || "pending_verification";
-      document.getElementById("edit-payment-status").value = reg.payment_status || "pending";
-      document.getElementById("edit-kam-name").value = reg.kam_name || "";
-      document.getElementById("edit-payment-method").value = reg.payment_method || "mercadopago";
-      document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 399;
-      document.getElementById("edit-is-verified-badge").checked = !!reg.is_verified_badge;
-      document.getElementById("edit-delivery-available").checked = !!reg.delivery_available;
-      document.getElementById("edit-moderation-notes").value = reg.moderation_notes || "";
-
-      // Parsear fotos
-      adminEditPhotos = [];
-      if (reg.photos) {
-        if (typeof reg.photos === "string" && reg.photos.trim().startsWith("[")) {
-          try {
-            adminEditPhotos = JSON.parse(reg.photos);
-          } catch (e) {
-            adminEditPhotos = [reg.photos];
-          }
-        } else if (Array.isArray(reg.photos)) {
-          adminEditPhotos = [...reg.photos];
-        } else if (typeof reg.photos === "string" && reg.photos.trim()) {
-          adminEditPhotos = [reg.photos.trim()];
-        }
-      }
-      renderAdminPhotosGrid();
-
-      const modal = document.getElementById("edit-business-modal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    function closeEditModal() {
-      const modal = document.getElementById("edit-business-modal");
-      if (modal) {
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-      }
     }
 
     function compressImageFile(file, maxWidth = 1000, quality = 0.82) {
@@ -711,66 +682,419 @@ Esta acción no se puede deshacer.`)) return;
       });
     }
 
-    async function handleAdminPhotoFiles(e) {
-      const files = Array.from(e.target.files || []);
-      if (!files.length) return;
-      const remaining = 10 - adminEditPhotos.length;
-      if (remaining <= 0) {
-        alert("Ya alcanzaste el máximo de 10 fotografías permitidas.");
-        return;
+    // --- GESTIÓN DE PORTADA ---
+    async function handleAdminCoverFile(e) {
+      const file = (e.target.files || [])[0];
+      if (!file) return;
+      try {
+        adminCoverPhoto = await compressImageFile(file, 1400, 0.85);
+        renderAdminCoverPreview();
+      } catch (err) {
+        console.warn("Error comprimiendo portada:", err);
       }
-      for (const file of files.slice(0, remaining)) {
-        try {
-          const dataUrl = await compressImageFile(file);
-          adminEditPhotos.push(dataUrl);
-        } catch (err) {
-          console.warn("Error comprimiendo foto:", err);
-        }
-      }
-      renderAdminPhotosGrid();
       e.target.value = "";
     }
 
-    function promptAdminPhotoUrl() {
-      if (adminEditPhotos.length >= 10) {
-        alert("Ya alcanzaste el máximo de 10 fotografías permitidas.");
+    function promptAdminCoverUrl() {
+      const url = prompt("Ingresa la URL pública de la portada:");
+      if (url && url.trim().startsWith("http")) {
+        adminCoverPhoto = url.trim();
+        renderAdminCoverPreview();
+      }
+    }
+
+    function removeAdminCoverPhoto() {
+      adminCoverPhoto = "";
+      renderAdminCoverPreview();
+    }
+
+    function renderAdminCoverPreview() {
+      const preview = document.getElementById("edit-cover-preview");
+      if (!preview) return;
+      if (adminCoverPhoto) {
+        preview.innerHTML = `
+          <div class="relative w-full h-28 rounded-xl bg-slate-950 overflow-hidden shadow-xs border border-slate-700 group">
+            <img src="${adminCoverPhoto}" alt="Portada" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end justify-between p-2.5">
+              <span class="text-[11px] font-bold text-white flex items-center gap-1"><i data-lucide="image" class="w-3.5 h-3.5 text-emerald-400"></i> Portada seleccionada</span>
+              <button type="button" onclick="removeAdminCoverPhoto()" class="px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold shadow-xs transition-colors">
+                ✕ Quitar
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        preview.innerHTML = `
+          <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
+            Sin portada seleccionada (se utilizará la portada por defecto del sitio).
+          </div>
+        `;
+      }
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    // --- GESTIÓN DE PRODUCTOS DESTACADOS ---
+    async function handleAdminNewProdPhotoFile(e) {
+      const file = (e.target.files || [])[0];
+      if (!file) return;
+      try {
+        tempAdminProdPhoto = await compressImageFile(file, 800, 0.85);
+        renderAdminNewProdPhotoPreview();
+      } catch (err) {
+        console.warn("Error comprimiendo foto:", err);
+      }
+      e.target.value = "";
+    }
+
+    function promptAdminNewProdPhotoUrl() {
+      const url = prompt("Ingresa la URL pública de la foto del producto:");
+      if (url && url.trim().startsWith("http")) {
+        tempAdminProdPhoto = url.trim();
+        renderAdminNewProdPhotoPreview();
+      }
+    }
+
+    function removeAdminNewProdPhoto() {
+      tempAdminProdPhoto = "";
+      renderAdminNewProdPhotoPreview();
+    }
+
+    function renderAdminNewProdPhotoPreview() {
+      const box = document.getElementById("edit-new-prod-photo-preview");
+      if (!box) return;
+      if (tempAdminProdPhoto) {
+        box.innerHTML = `
+          <div class="relative w-12 h-12 rounded-xl bg-white border border-slate-700 overflow-hidden shadow-xs flex items-center justify-center p-0.5 group">
+            <img src="${tempAdminProdPhoto}" alt="Miniatura" class="w-full h-full object-contain bg-white">
+            <button type="button" onclick="removeAdminNewProdPhoto()" class="absolute inset-0 bg-slate-900/70 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+          </div>
+        `;
+      } else {
+        box.innerHTML = `
+          <div class="w-12 h-12 rounded-xl bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center text-slate-500">
+            <i data-lucide="image" class="w-5 h-5"></i>
+          </div>
+        `;
+      }
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function addAdminFeaturedProduct() {
+      if (adminFeaturedProducts.length >= 10) {
+        alert("Ya alcanzaste el máximo de 10 productos destacados.");
         return;
       }
-      const url = prompt("Ingresa la URL pública de la imagen:");
-      if (url && url.trim().startsWith("http")) {
-        adminEditPhotos.push(url.trim());
-        renderAdminPhotosGrid();
+      const nameInput = document.getElementById("edit-new-prod-name");
+      const priceInput = document.getElementById("edit-new-prod-price");
+      const descInput = document.getElementById("edit-new-prod-desc");
+
+      const name = nameInput ? nameInput.value.trim() : "";
+      if (!name) {
+        alert("Indica el nombre del producto.");
+        if (nameInput) nameInput.focus();
+        return;
       }
+      const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
+      const desc = descInput ? descInput.value.trim() : "";
+
+      adminFeaturedProducts.push({
+        name: name,
+        price: price,
+        description: desc,
+        photo: tempAdminProdPhoto || ""
+      });
+
+      if (nameInput) nameInput.value = "";
+      if (priceInput) priceInput.value = "";
+      if (descInput) descInput.value = "";
+      tempAdminProdPhoto = "";
+      renderAdminNewProdPhotoPreview();
+      renderAdminFeaturedGrid();
     }
 
-    function removeAdminPhoto(index) {
-      adminEditPhotos.splice(index, 1);
-      renderAdminPhotosGrid();
+    function removeAdminFeaturedProduct(idx) {
+      adminFeaturedProducts.splice(idx, 1);
+      renderAdminFeaturedGrid();
     }
 
-    function renderAdminPhotosGrid() {
-      const grid = document.getElementById("edit-photos-grid");
-      const badge = document.getElementById("edit-photos-badge");
-      if (badge) badge.textContent = `${adminEditPhotos.length} / 10`;
+    function renderAdminFeaturedGrid() {
+      const grid = document.getElementById("edit-featured-grid");
+      const badge = document.getElementById("edit-featured-badge");
+      if (badge) badge.textContent = `${adminFeaturedProducts.length} / 10`;
+
+      // Sync retrocompatibilidad
+      adminEditPhotos = adminFeaturedProducts.map(p => p.photo).filter(Boolean);
+
       if (!grid) return;
-
-      if (adminEditPhotos.length === 0) {
+      if (adminFeaturedProducts.length === 0) {
         grid.innerHTML = `
-          <div id="edit-photos-empty" class="col-span-5 py-3 text-center text-[11px] text-slate-500">
-            No hay fotos cargadas. (Opcional)
+          <div class="py-3 text-center text-[11px] text-slate-500">
+            No hay productos destacados cargados. (Hasta 10 productos con foto, precio y descripción).
           </div>
         `;
         return;
       }
 
-      grid.innerHTML = adminEditPhotos.map((photo, idx) => `
-        <div class="relative w-full aspect-square rounded-xl bg-white border border-slate-700 overflow-hidden shadow-xs flex items-center justify-center p-1 group">
-          <img src="${photo}" alt="Foto ${idx + 1}" class="w-full h-full object-contain bg-white">
-          <button type="button" onclick="removeAdminPhoto(${idx})" title="Eliminar foto" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/80 hover:bg-rose-600 text-white flex items-center justify-center text-xs transition-colors shadow-xs">
+      grid.innerHTML = adminFeaturedProducts.map((p, idx) => `
+        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3 group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-12 h-12 rounded-lg bg-white border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+              ${p.photo
+                ? `<img src="${p.photo}" alt="${p.name}" class="w-full h-full object-contain bg-white">`
+                : `<span class="text-xs font-mono font-bold text-slate-600">#${idx + 1}</span>`}
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white truncate">${p.name}</div>
+              <div class="text-[11px] font-mono font-bold text-emerald-400">$${parseFloat(p.price || 0).toFixed(2)} MXN</div>
+              ${p.description ? `<p class="text-[10px] text-slate-400 truncate max-w-[200px] sm:max-w-xs">${p.description}</p>` : ''}
+            </div>
+          </div>
+          <button type="button" onclick="removeAdminFeaturedProduct(${idx})" title="Eliminar producto" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors shrink-0">
             ✕
           </button>
         </div>
       `).join("");
+    }
+
+    // --- GESTIÓN DE MENÚ / COMPLEMENTOS ---
+    function addAdminMenuSection() {
+      if (adminMenuSections.length >= 2) {
+        alert("Máximo 2 secciones de menú permitidas.");
+        return;
+      }
+      const defaultTitles = [
+        { title: "Presentaciones por Litro", subtitle: "Para familias y eventos", desc: "Precios especiales en presentaciones grandes." },
+        { title: "Botanas y Complementos", subtitle: "Acompañamientos frescos", desc: "El complemento perfecto para compartir." }
+      ];
+      const def = defaultTitles[adminMenuSections.length] || { title: "Otros Productos", subtitle: "Complementos", desc: "" };
+      adminMenuSections.push({
+        title: def.title,
+        subtitle: def.subtitle,
+        description: def.desc,
+        items: []
+      });
+      renderAdminMenuSections();
+    }
+
+    function removeAdminMenuSection(secIdx) {
+      adminMenuSections.splice(secIdx, 1);
+      renderAdminMenuSections();
+    }
+
+    function updateAdminMenuSecMeta(secIdx, field, val) {
+      if (adminMenuSections[secIdx]) {
+        adminMenuSections[secIdx][field] = val;
+      }
+    }
+
+    function addAdminMenuItem(secIdx) {
+      const sec = adminMenuSections[secIdx];
+      if (!sec) return;
+      const nameInput = document.getElementById(`admin-sec-${secIdx}-item-name`);
+      const priceInput = document.getElementById(`admin-sec-${secIdx}-item-price`);
+      const descInput = document.getElementById(`admin-sec-${secIdx}-item-desc`);
+
+      const name = nameInput ? nameInput.value.trim() : "";
+      if (!name) {
+        alert("Indica el nombre del ítem.");
+        if (nameInput) nameInput.focus();
+        return;
+      }
+      const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
+      const desc = descInput ? descInput.value.trim() : "";
+
+      sec.items.push({ name, price, description: desc });
+
+      if (nameInput) nameInput.value = "";
+      if (priceInput) priceInput.value = "";
+      if (descInput) descInput.value = "";
+
+      renderAdminMenuSections();
+    }
+
+    function removeAdminMenuItem(secIdx, itemIdx) {
+      if (adminMenuSections[secIdx] && adminMenuSections[secIdx].items) {
+        adminMenuSections[secIdx].items.splice(itemIdx, 1);
+        renderAdminMenuSections();
+      }
+    }
+
+    function renderAdminMenuSections() {
+      const container = document.getElementById("edit-menu-sections-container");
+      const badge = document.getElementById("edit-menu-sec-badge");
+      const addBtn = document.getElementById("btn-add-admin-menu-sec");
+
+      if (badge) badge.textContent = `${adminMenuSections.length} / 2 secciones`;
+      if (addBtn) addBtn.style.display = adminMenuSections.length >= 2 ? "none" : "inline-flex";
+
+      if (!container) return;
+      if (adminMenuSections.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
+            No hay secciones tipo menú configuradas. (Hasta 2 secciones para complementos o renglones sin foto).
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = adminMenuSections.map((sec, secIdx) => `
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-emerald-400 tracking-wider">Sección Menú #${secIdx + 1}</span>
+            <button type="button" onclick="removeAdminMenuSection(${secIdx})" class="text-[11px] font-bold text-rose-400 hover:text-rose-300 transition-colors">
+              ✕ Eliminar Sección
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Título de Sección *</label>
+              <input type="text" value="${sec.title || ''}" oninput="updateAdminMenuSecMeta(${secIdx}, 'title', this.value)" placeholder="Ej. Presentaciones por Litro" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Subtítulo</label>
+              <input type="text" value="${sec.subtitle || ''}" oninput="updateAdminMenuSecMeta(${secIdx}, 'subtitle', this.value)" placeholder="Ej. Para reuniones o familias" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Descripción de la Sección</label>
+            <input type="text" value="${sec.description || ''}" oninput="updateAdminMenuSecMeta(${secIdx}, 'description', this.value)" placeholder="Ej. Presentaciones especiales en volumen..." class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+          </div>
+
+          <div class="pt-2 border-t border-slate-800">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Renglones de Menú (${sec.items.length})</span>
+            ${sec.items.length === 0 ? `<p class="text-[10px] text-slate-500 italic mb-2">No has agregado renglones a esta sección.</p>` : `
+              <div class="space-y-1 mb-2">
+                ${sec.items.map((item, itemIdx) => `
+                  <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
+                    <div class="min-w-0 pr-2">
+                      <span class="font-bold text-white">${item.name}</span>
+                      <span class="font-mono text-emerald-400 font-bold ml-1.5">$${parseFloat(item.price || 0).toFixed(2)}</span>
+                      ${item.description ? `<p class="text-[10px] text-slate-400 truncate">${item.description}</p>` : ''}
+                    </div>
+                    <button type="button" onclick="removeAdminMenuItem(${secIdx}, ${itemIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5">✕</button>
+                  </div>
+                `).join("")}
+              </div>
+            `}
+
+            <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center">
+              <input type="text" id="admin-sec-${secIdx}-new-item-name" placeholder="Nombre (ej. 1 Litro Salsa Macha)" class="sm:col-span-5 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
+              <input type="number" step="0.5" id="admin-sec-${secIdx}-new-item-price" placeholder="Precio ($)" class="sm:col-span-3 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none font-mono">
+              <input type="text" id="admin-sec-${secIdx}-new-item-desc" placeholder="Desc. breve" class="sm:col-span-4 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
+              <button type="button" onclick="addAdminMenuItem(${secIdx})" class="sm:col-span-12 py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1">
+                <span>+ Añadir Renglón al Menú</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    // Compatibilidad
+    function handleAdminPhotoFiles(e) { handleAdminNewProdPhotoFile(e); }
+    function promptAdminPhotoUrl() { promptAdminNewProdPhotoUrl(); }
+    function removeAdminPhoto(idx) { removeAdminFeaturedProduct(idx); }
+    function renderAdminPhotosGrid() { renderAdminFeaturedGrid(); }
+
+    function openEditModal(id) {
+      const reg = allRegistrations.find(r => r.id === id);
+      if (!reg) return;
+
+      document.getElementById("edit-reg-id").value = reg.id;
+      document.getElementById("edit-business-name").value = reg.business_name || "";
+      document.getElementById("edit-category-slug").value = reg.category_slug || "comida-delivery";
+      document.getElementById("edit-subcategory-label").value = reg.subcategory_label || "";
+      document.getElementById("edit-coto-address").value = reg.coto_address || "";
+      document.getElementById("edit-schedule").value = reg.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs";
+      document.getElementById("edit-owner-name").value = reg.owner_name || "";
+      document.getElementById("edit-phone").value = reg.phone || "";
+      document.getElementById("edit-whatsapp").value = reg.whatsapp || "";
+      document.getElementById("edit-email").value = reg.email || "";
+      document.getElementById("edit-website").value = reg.website || "";
+      document.getElementById("edit-preferred-contact-methods").value = reg.preferred_contact_methods || "whatsapp";
+      document.getElementById("edit-description").value = reg.description || "";
+      document.getElementById("edit-status").value = reg.status || "pending_verification";
+      document.getElementById("edit-payment-status").value = reg.payment_status || "pending";
+      document.getElementById("edit-kam-name").value = reg.kam_name || "";
+      document.getElementById("edit-payment-method").value = reg.payment_method || "mercadopago";
+      document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 399;
+      document.getElementById("edit-is-verified-badge").checked = !!reg.is_verified_badge;
+      document.getElementById("edit-delivery-available").checked = !!reg.delivery_available;
+      document.getElementById("edit-moderation-notes").value = reg.moderation_notes || "";
+
+      // Cargar Portada y Microsite Data
+      adminCoverPhoto = reg.cover_photo || "";
+      adminFeaturedProducts = [];
+      adminMenuSections = [];
+      tempAdminProdPhoto = "";
+
+      let mdata = null;
+      if (reg.microsite_data) {
+        if (typeof reg.microsite_data === "string" && reg.microsite_data.trim().startsWith("{")) {
+          try { mdata = JSON.parse(reg.microsite_data); } catch (e) {}
+        } else if (typeof reg.microsite_data === "object") {
+          mdata = reg.microsite_data;
+        }
+      }
+
+      if (mdata) {
+        if (!adminCoverPhoto && mdata.cover_photo) adminCoverPhoto = mdata.cover_photo;
+        const feat = mdata.featured_section || {};
+        const titleEl = document.getElementById("edit-featured-title");
+        const subEl = document.getElementById("edit-featured-subtitle");
+        const descEl = document.getElementById("edit-featured-desc");
+        if (titleEl) titleEl.value = feat.title || "Nuestra Selección Destacada";
+        if (subEl) subEl.value = feat.subtitle || "";
+        if (descEl) descEl.value = feat.description || "";
+        adminFeaturedProducts = Array.isArray(feat.products) ? [...feat.products] : [];
+        adminMenuSections = Array.isArray(mdata.other_products_sections) ? [...mdata.other_products_sections] : [];
+      } else {
+        const titleEl = document.getElementById("edit-featured-title");
+        const subEl = document.getElementById("edit-featured-subtitle");
+        const descEl = document.getElementById("edit-featured-desc");
+        if (titleEl) titleEl.value = "Nuestra Selección Destacada";
+        if (subEl) subEl.value = "";
+        if (descEl) descEl.value = "";
+
+        // Fallback a photos si existían
+        if (reg.photos) {
+          let pList = [];
+          if (typeof reg.photos === "string" && reg.photos.trim().startsWith("[")) {
+            try { pList = JSON.parse(reg.photos); } catch (e) { pList = [reg.photos]; }
+          } else if (Array.isArray(reg.photos)) {
+            pList = [...reg.photos];
+          } else if (typeof reg.photos === "string" && reg.photos.trim()) {
+            pList = [reg.photos.trim()];
+          }
+          adminFeaturedProducts = pList.map((ph, idx) => ({
+            name: `Producto Destacado ${idx + 1}`,
+            price: 0,
+            description: "",
+            photo: ph
+          }));
+        }
+      }
+
+      renderAdminCoverPreview();
+      renderAdminNewProdPhotoPreview();
+      renderAdminFeaturedGrid();
+      renderAdminMenuSections();
+
+      const modal = document.getElementById("edit-business-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function closeEditModal() {
+      const modal = document.getElementById("edit-business-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
     }
 
     async function handleSaveEdit(e) {
@@ -789,6 +1113,21 @@ Esta acción no se puede deshacer.`)) return;
       const catSelect = document.getElementById("edit-category-slug");
       const catLabel = catSelect.options[catSelect.selectedIndex] ? catSelect.options[catSelect.selectedIndex].text : "";
 
+      const featTitle = document.getElementById("edit-featured-title") ? document.getElementById("edit-featured-title").value.trim() : "Nuestra Selección Destacada";
+      const featSub = document.getElementById("edit-featured-subtitle") ? document.getElementById("edit-featured-subtitle").value.trim() : "";
+      const featDesc = document.getElementById("edit-featured-desc") ? document.getElementById("edit-featured-desc").value.trim() : "";
+
+      const micrositeData = {
+        cover_photo: adminCoverPhoto || null,
+        featured_section: {
+          title: featTitle || "Nuestra Selección Destacada",
+          subtitle: featSub,
+          description: featDesc,
+          products: adminFeaturedProducts
+        },
+        other_products_sections: adminMenuSections
+      };
+
       const payload = {
         business_name: document.getElementById("edit-business-name").value.trim(),
         category_slug: catSelect.value,
@@ -803,7 +1142,9 @@ Esta acción no se puede deshacer.`)) return;
         website: document.getElementById("edit-website").value.trim() || null,
         preferred_contact_methods: document.getElementById("edit-preferred-contact-methods").value.trim() || null,
         description: document.getElementById("edit-description").value.trim() || null,
-        photos: adminEditPhotos.length > 0 ? JSON.stringify(adminEditPhotos) : null,
+        cover_photo: adminCoverPhoto || null,
+        microsite_data: micrositeData,
+        photos: adminFeaturedProducts.length > 0 ? JSON.stringify(adminFeaturedProducts.map(p => p.photo).filter(Boolean)) : null,
         status: document.getElementById("edit-status").value,
         payment_status: document.getElementById("edit-payment-status").value,
         kam_name: document.getElementById("edit-kam-name").value.trim() || null,
@@ -965,31 +1306,128 @@ Esta acción no se puede deshacer.`)) return;
           <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Descripción breve del comercio..."></textarea>
         </div>
 
-        <!-- Galería de Fotos (Hasta 10 fotos) -->
-        <div class="border-t border-slate-800 pt-3">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <span class="text-xs font-bold text-slate-300 block">Galería Fotográfica del Micrositio</span>
-              <span class="text-[11px] text-slate-500">Hasta 10 fotografías de productos / menú</span>
+        <!-- CONFIGURACIÓN DE MICROSITIO ($399/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+        <div class="border-t border-slate-800 pt-3 space-y-4">
+          <!-- 1. PORTADA DEL MICROSITIO -->
+          <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-slate-200 block">1. Portada del Micrositio (Hero Banner)</span>
+                <span class="text-[11px] text-slate-400">Fotografía horizontal para el fondo superior del micrositio.</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <input type="file" id="edit-cover-file-input" accept="image/*" class="hidden" onchange="handleAdminCoverFile(event)">
+                <button type="button" onclick="document.getElementById('edit-cover-file-input').click()" class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] font-bold border border-slate-700 flex items-center gap-1 shadow-xs">
+                  <i data-lucide="camera" class="w-3 h-3 text-emerald-400"></i> Subir
+                </button>
+                <button type="button" onclick="promptAdminCoverUrl()" class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] font-bold border border-slate-700 flex items-center gap-1 shadow-xs">
+                  <i data-lucide="link" class="w-3 h-3 text-emerald-400"></i> URL
+                </button>
+              </div>
             </div>
-            <span id="edit-photos-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-400 font-mono">0 / 10</span>
+            <div id="edit-cover-preview">
+              <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
+                Sin portada seleccionada (se utilizará la portada por defecto del sitio).
+              </div>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2 mb-2">
-            <input type="file" id="edit-photos-file-input" multiple accept="image/*" class="hidden" onchange="handleAdminPhotoFiles(event)">
-            <button type="button" onclick="document.getElementById('edit-photos-file-input').click()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-colors">
-              <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400"></i>
-              <span>Cargar Fotos</span>
-            </button>
-            <button type="button" onclick="promptAdminPhotoUrl()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-colors">
-              <i data-lucide="link" class="w-3.5 h-3.5 text-emerald-400"></i>
-              <span>Agregar por URL</span>
-            </button>
+          <!-- 2. PRODUCTOS DESTACADOS (MÁX. 10) -->
+          <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-slate-200">2. Productos Destacados</span>
+                  <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-500/20 text-emerald-400 font-mono">Máx. 10</span>
+                </div>
+                <span class="text-[11px] text-slate-400">Foto, nombre, precio y descripción con CTA "Pedir por WhatsApp".</span>
+              </div>
+              <span id="edit-featured-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-400 font-mono">0 / 10</span>
+            </div>
+
+            <!-- Encabezados de la sección de destacados -->
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Encabezados de la Sección Destacados</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Título General *</label>
+                  <input type="text" id="edit-featured-title" value="Nuestra Selección Destacada" placeholder="Ej. Nuestra Selección Destacada" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Subtítulo</label>
+                  <input type="text" id="edit-featured-subtitle" value="Hecho a mano en pequeños lotes" placeholder="Ej. Hecho a mano en pequeños lotes" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Descripción General</label>
+                <textarea id="edit-featured-desc" rows="1" placeholder="Descripción general de la línea destacada..." class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">Elaborados artesanalmente con ingredientes seleccionados.</textarea>
+              </div>
+            </div>
+
+            <!-- Mini formulario para añadir un producto destacado -->
+            <div class="p-3 rounded-xl bg-slate-900 border border-emerald-500/30 shadow-xs space-y-2">
+              <span class="text-[11px] font-bold text-emerald-400 block">+ Añadir Producto Destacado</span>
+              <div class="flex items-center gap-2">
+                <div id="edit-new-prod-photo-preview" class="shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center text-slate-500">
+                    <i data-lucide="image" class="w-5 h-5"></i>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <input type="file" id="edit-new-prod-file-input" accept="image/*" class="hidden" onchange="handleAdminNewProdPhotoFile(event)">
+                  <button type="button" onclick="document.getElementById('edit-new-prod-file-input').click()" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold border border-slate-700 flex items-center gap-1">
+                    <i data-lucide="camera" class="w-3 h-3 text-emerald-400"></i> Cargar Foto
+                  </button>
+                  <button type="button" onclick="promptAdminNewProdPhotoUrl()" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold border border-slate-700 flex items-center gap-1">
+                    <i data-lucide="link" class="w-3 h-3 text-emerald-400"></i> URL Foto
+                  </button>
+                </div>
+                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <input type="text" id="edit-new-prod-name" placeholder="Nombre (ej. Salsa Macha Cacahuate)" class="px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+                  <input type="number" step="0.5" id="edit-new-prod-price" placeholder="Precio ($ ej. 95)" class="px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none font-mono">
+                </div>
+              </div>
+              <div>
+                <input type="text" id="edit-new-prod-desc" placeholder="Descripción breve (ej. Chile tostado artesanal con cacahuate y ajo dorado)" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+              </div>
+              <button type="button" onclick="addAdminFeaturedProduct()" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Agregar a Productos Destacados</span>
+              </button>
+            </div>
+
+            <!-- Grid de productos añadidos -->
+            <div id="edit-featured-grid" class="space-y-2">
+              <div class="py-3 text-center text-[11px] text-slate-500">
+                No hay productos destacados cargados. (Hasta 10 con foto, precio y descripción).
+              </div>
+            </div>
           </div>
 
-          <div id="edit-photos-grid" class="grid grid-cols-5 gap-2 min-h-[50px] p-2 rounded-2xl bg-slate-950 border border-slate-800">
-            <div id="edit-photos-empty" class="col-span-5 py-3 text-center text-[11px] text-slate-500">
-              No hay fotos cargadas. (Opcional)
+          <!-- 3. OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 2 SECCIONES) -->
+          <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-slate-200">3. Otros Productos / Menú sin Foto</span>
+                  <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-slate-800 text-slate-300 font-mono">Máx. 2 secciones</span>
+                </div>
+                <span class="text-[11px] text-slate-400">Para complementos, presentaciones por litro, botanas o servicios sin foto.</span>
+              </div>
+              <span id="edit-menu-sec-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-slate-800 text-slate-300 font-mono">0 / 2 secciones</span>
+            </div>
+
+            <div class="flex items-center justify-end">
+              <button type="button" id="btn-add-admin-menu-sec" onclick="addAdminMenuSection()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1 shadow-xs">
+                <i data-lucide="plus" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>+ Añadir Sección de Menú</span>
+              </button>
+            </div>
+
+            <div id="edit-menu-sections-container" class="space-y-3">
+              <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
+                No hay secciones tipo menú configuradas. (Opcional, útil para complementos o presentaciones sin foto).
+              </div>
             </div>
           </div>
         </div>

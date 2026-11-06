@@ -84,7 +84,13 @@
   let waVerified = false;
   let currentPaymentMode = "mp";
   let currentSelectedPlan = "microsite"; // "microsite" ($399/año) o "free_basic" ($0)
-  let registerUploadedPhotos = [];
+
+  // Configuración del Micrositio Oficial ($399/año)
+  let registerCoverPhoto = "";
+  let registerFeaturedProducts = []; // Array of { name, price, description, photo }
+  let registerMenuSections = []; // Array of { title, subtitle, description, items: [{ name, price, description }] }
+  let tempNewProductPhoto = "";
+  let registerUploadedPhotos = []; // compatibilidad retroactiva
 
   function selectRegistrationPlan(plan) {
     currentSelectedPlan = plan;
@@ -154,69 +160,329 @@
     });
   }
 
-  async function handleRegisterPhotoFiles(e) {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    const remainingSlots = 10 - registerUploadedPhotos.length;
-    if (remainingSlots <= 0) {
-      alert("Ya has alcanzado el límite máximo de 10 fotografías para tu catálogo.");
-      return;
+  // --- GESTIÓN DE PORTADA DEL MICROSITIO ---
+  async function handleRegisterCoverFile(e) {
+    const file = (e.target.files || [])[0];
+    if (!file) return;
+    try {
+      registerCoverPhoto = await compressImageFile(file, 1400, 0.85);
+      renderRegisterCoverPreview();
+    } catch (err) {
+      console.warn("Error comprimiendo portada:", err);
     }
-    const filesToProcess = files.slice(0, remainingSlots);
-    for (const file of filesToProcess) {
-      try {
-        const compressedDataUrl = await compressImageFile(file);
-        registerUploadedPhotos.push(compressedDataUrl);
-      } catch (err) {
-        console.warn("Error comprimiendo imagen:", err);
-      }
-    }
-    renderRegisterPhotosGrid();
     e.target.value = "";
   }
 
-  function promptRegisterPhotoUrl() {
-    if (registerUploadedPhotos.length >= 10) {
-      alert("Ya has alcanzado el límite máximo de 10 fotografías.");
+  function promptRegisterCoverUrl() {
+    const url = prompt("Ingresa la URL pública de la portada (ej. https://...):");
+    if (url && url.trim().startsWith("http")) {
+      registerCoverPhoto = url.trim();
+      renderRegisterCoverPreview();
+    }
+  }
+
+  function removeRegisterCoverPhoto() {
+    registerCoverPhoto = "";
+    renderRegisterCoverPreview();
+  }
+
+  function renderRegisterCoverPreview() {
+    const preview = document.getElementById("reg-cover-preview");
+    if (!preview) return;
+    if (registerCoverPhoto) {
+      preview.innerHTML = `
+        <div class="relative w-full h-28 rounded-2xl bg-slate-900 overflow-hidden shadow-xs border border-slate-200 group">
+          <img src="${registerCoverPhoto}" alt="Portada" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end justify-between p-2.5">
+            <span class="text-[11px] font-bold text-white flex items-center gap-1"><i data-lucide="image" class="w-3.5 h-3.5 text-emerald-400"></i> Portada seleccionada</span>
+            <button type="button" onclick="removeRegisterCoverPhoto()" class="px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold shadow-xs transition-colors">
+              ✕ Quitar
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      preview.innerHTML = `
+        <div class="p-3 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center text-[11px] text-slate-400">
+          Sin portada seleccionada (se utilizará la portada oficial de Epicentro Natura).
+        </div>
+      `;
+    }
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
+  // --- GESTIÓN DE PRODUCTOS DESTACADOS (MÁX. 10) ---
+  async function handleNewProdPhotoFile(e) {
+    const file = (e.target.files || [])[0];
+    if (!file) return;
+    try {
+      tempNewProductPhoto = await compressImageFile(file, 800, 0.85);
+      renderNewProdPhotoPreview();
+    } catch (err) {
+      console.warn("Error comprimiendo foto de producto:", err);
+    }
+    e.target.value = "";
+  }
+
+  function promptNewProdPhotoUrl() {
+    const url = prompt("Ingresa la URL pública de la foto del producto:");
+    if (url && url.trim().startsWith("http")) {
+      tempNewProductPhoto = url.trim();
+      renderNewProdPhotoPreview();
+    }
+  }
+
+  function removeNewProdPhoto() {
+    tempNewProductPhoto = "";
+    renderNewProdPhotoPreview();
+  }
+
+  function renderNewProdPhotoPreview() {
+    const box = document.getElementById("reg-new-prod-photo-preview");
+    if (!box) return;
+    if (tempNewProductPhoto) {
+      box.innerHTML = `
+        <div class="relative w-12 h-12 rounded-xl bg-white border border-slate-200 overflow-hidden shadow-xs flex items-center justify-center p-0.5 group">
+          <img src="${tempNewProductPhoto}" alt="Miniatura" class="w-full h-full object-contain bg-white">
+          <button type="button" onclick="removeNewProdPhoto()" title="Quitar foto" class="absolute inset-0 bg-slate-900/60 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+        </div>
+      `;
+    } else {
+      box.innerHTML = `
+        <div class="w-12 h-12 rounded-xl bg-slate-100 border border-dashed border-slate-300 flex items-center justify-center text-slate-400">
+          <i data-lucide="image" class="w-5 h-5"></i>
+        </div>
+      `;
+    }
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
+  function addRegisterFeaturedProduct() {
+    if (registerFeaturedProducts.length >= 10) {
+      alert("Ya has alcanzado el límite máximo de 10 productos destacados.");
       return;
     }
-    const url = prompt("Ingresa la URL pública de la imagen (ej. https://...):");
-    if (url && url.trim().startsWith("http")) {
-      registerUploadedPhotos.push(url.trim());
-      renderRegisterPhotosGrid();
+    const nameInput = document.getElementById("reg-new-prod-name");
+    const priceInput = document.getElementById("reg-new-prod-price");
+    const descInput = document.getElementById("reg-new-prod-desc");
+
+    const name = nameInput ? nameInput.value.trim() : "";
+    if (!name) {
+      alert("Por favor indica el nombre del producto.");
+      if (nameInput) nameInput.focus();
+      return;
     }
+    const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
+    const desc = descInput ? descInput.value.trim() : "";
+
+    registerFeaturedProducts.push({
+      name: name,
+      price: price,
+      description: desc,
+      photo: tempNewProductPhoto || ""
+    });
+
+    if (nameInput) nameInput.value = "";
+    if (priceInput) priceInput.value = "";
+    if (descInput) descInput.value = "";
+    tempNewProductPhoto = "";
+    renderNewProdPhotoPreview();
+    renderRegisterFeaturedGrid();
   }
 
-  function removeRegisterPhoto(index) {
-    registerUploadedPhotos.splice(index, 1);
-    renderRegisterPhotosGrid();
+  function removeRegisterFeaturedProduct(idx) {
+    registerFeaturedProducts.splice(idx, 1);
+    renderRegisterFeaturedGrid();
   }
 
-  function renderRegisterPhotosGrid() {
-    const grid = document.getElementById("reg-photos-grid");
-    const badge = document.getElementById("reg-photos-counter-badge");
-    if (badge) {
-      badge.textContent = `${registerUploadedPhotos.length} / 10`;
-    }
+  function renderRegisterFeaturedGrid() {
+    const grid = document.getElementById("reg-featured-grid");
+    const badge = document.getElementById("reg-featured-counter-badge");
+    if (badge) badge.textContent = `${registerFeaturedProducts.length} / 10`;
+
+    // Sincronizar compatibilidad retroactiva con photos
+    registerUploadedPhotos = registerFeaturedProducts.map(p => p.photo).filter(Boolean);
+
     if (!grid) return;
-
-    if (registerUploadedPhotos.length === 0) {
+    if (registerFeaturedProducts.length === 0) {
       grid.innerHTML = `
-        <div id="reg-photos-empty-text" class="col-span-5 py-3 text-center text-[11px] text-slate-400">
-          No has agregado fotos aún (opcional durante el alta inicial).
+        <div class="py-3 text-center text-[11px] text-slate-400">
+          No has agregado productos destacados aún (puedes añadir hasta 10 con foto, precio y descripción).
         </div>
       `;
       return;
     }
 
-    grid.innerHTML = registerUploadedPhotos.map((photo, idx) => `
-      <div class="relative w-full aspect-square rounded-xl bg-white border border-slate-200 overflow-hidden shadow-xs flex items-center justify-center p-1 group">
-        <img src="${photo}" alt="Foto ${idx + 1}" class="w-full h-full object-contain bg-white">
-        <button type="button" onclick="removeRegisterPhoto(${idx})" title="Eliminar foto" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/80 hover:bg-rose-600 text-white flex items-center justify-center text-xs transition-colors shadow-xs">
+    grid.innerHTML = registerFeaturedProducts.map((p, idx) => `
+      <div class="p-2.5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between gap-3 group">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-12 h-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+            ${p.photo
+              ? `<img src="${p.photo}" alt="${p.name}" class="w-full h-full object-contain bg-white">`
+              : `<span class="text-xs font-mono font-bold text-slate-400">#${idx + 1}</span>`}
+          </div>
+          <div class="min-w-0">
+            <div class="text-xs font-bold text-slate-900 truncate">${p.name}</div>
+            <div class="text-[11px] font-mono font-bold text-emerald-700">$${parseFloat(p.price || 0).toFixed(2)} MXN</div>
+            ${p.description ? `<p class="text-[10px] text-slate-500 truncate max-w-[200px] sm:max-w-xs">${p.description}</p>` : ''}
+          </div>
+        </div>
+        <button type="button" onclick="removeRegisterFeaturedProduct(${idx})" title="Eliminar producto" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-500 flex items-center justify-center text-xs transition-colors shrink-0">
           ✕
         </button>
       </div>
     `).join("");
+  }
+
+  // --- GESTIÓN DE OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 2 SECCIONES) ---
+  function addRegisterMenuSection() {
+    if (registerMenuSections.length >= 2) {
+      alert("Puedes agregar un máximo de 2 secciones tipo menú para complementos.");
+      return;
+    }
+    const defaultTitles = [
+      { title: "Presentaciones por Litro", subtitle: "Para familias y eventos", desc: "Precios especiales en presentaciones grandes." },
+      { title: "Botanas y Complementos", subtitle: "Acompañamientos frescos", desc: "El complemento perfecto para compartir." }
+    ];
+    const def = defaultTitles[registerMenuSections.length] || { title: "Otros Productos", subtitle: "Complementos", desc: "" };
+    registerMenuSections.push({
+      title: def.title,
+      subtitle: def.subtitle,
+      description: def.desc,
+      items: []
+    });
+    renderRegisterMenuSections();
+  }
+
+  function removeRegisterMenuSection(secIdx) {
+    registerMenuSections.splice(secIdx, 1);
+    renderRegisterMenuSections();
+  }
+
+  function updateMenuSecMeta(secIdx, field, val) {
+    if (registerMenuSections[secIdx]) {
+      registerMenuSections[secIdx][field] = val;
+    }
+  }
+
+  function addRegisterMenuItem(secIdx) {
+    const sec = registerMenuSections[secIdx];
+    if (!sec) return;
+    const nameInput = document.getElementById(`sec-${secIdx}-new-item-name`);
+    const priceInput = document.getElementById(`sec-${secIdx}-new-item-price`);
+    const descInput = document.getElementById(`sec-${secIdx}-new-item-desc`);
+
+    const name = nameInput ? nameInput.value.trim() : "";
+    if (!name) {
+      alert("Por favor ingresa el nombre del complemento o producto.");
+      if (nameInput) nameInput.focus();
+      return;
+    }
+    const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
+    const desc = descInput ? descInput.value.trim() : "";
+
+    sec.items.push({ name, price, description: desc });
+
+    if (nameInput) nameInput.value = "";
+    if (priceInput) priceInput.value = "";
+    if (descInput) descInput.value = "";
+
+    renderRegisterMenuSections();
+  }
+
+  function removeRegisterMenuItem(secIdx, itemIdx) {
+    if (registerMenuSections[secIdx] && registerMenuSections[secIdx].items) {
+      registerMenuSections[secIdx].items.splice(itemIdx, 1);
+      renderRegisterMenuSections();
+    }
+  }
+
+  function renderRegisterMenuSections() {
+    const container = document.getElementById("reg-menu-sections-container");
+    const badge = document.getElementById("reg-menu-sec-counter-badge");
+    const addBtn = document.getElementById("btn-add-menu-section");
+
+    if (badge) badge.textContent = `${registerMenuSections.length} / 2 secciones`;
+    if (addBtn) addBtn.style.display = registerMenuSections.length >= 2 ? "none" : "inline-flex";
+
+    if (!container) return;
+    if (registerMenuSections.length === 0) {
+      container.innerHTML = `
+        <div class="p-3 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center text-[11px] text-slate-400">
+          No has añadido secciones tipo menú. (Opcional, útil para complementos o presentaciones sin foto).
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = registerMenuSections.map((sec, secIdx) => `
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase text-emerald-800 tracking-wider">Sección Menú #${secIdx + 1}</span>
+          <button type="button" onclick="removeRegisterMenuSection(${secIdx})" class="text-[11px] font-bold text-rose-600 hover:text-rose-800 transition-colors">
+            ✕ Eliminar Sección
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-700 mb-0.5">Título de Sección *</label>
+            <input type="text" value="${sec.title || ''}" oninput="updateMenuSecMeta(${secIdx}, 'title', this.value)" placeholder="Ej. Presentaciones por Litro" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-700 mb-0.5">Subtítulo</label>
+            <input type="text" value="${sec.subtitle || ''}" oninput="updateMenuSecMeta(${secIdx}, 'subtitle', this.value)" placeholder="Ej. Para reuniones o familias" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-slate-700 mb-0.5">Descripción de la Sección</label>
+          <input type="text" value="${sec.description || ''}" oninput="updateMenuSecMeta(${secIdx}, 'description', this.value)" placeholder="Ej. Presentaciones ideales para surtir al mayoreo..." class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-2 border-t border-slate-200">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Renglones de Menú (${sec.items.length})</span>
+          ${sec.items.length === 0 ? `<p class="text-[10px] text-slate-400 italic mb-2">No has agregado renglones a esta sección.</p>` : `
+            <div class="space-y-1 mb-2">
+              ${sec.items.map((item, itemIdx) => `
+                <div class="p-2 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-xs">
+                  <div class="min-w-0 pr-2">
+                    <span class="font-bold text-slate-900">${item.name}</span>
+                    <span class="font-mono text-emerald-700 font-bold ml-1.5">$${parseFloat(item.price || 0).toFixed(2)}</span>
+                    ${item.description ? `<p class="text-[10px] text-slate-500 truncate">${item.description}</p>` : ''}
+                  </div>
+                  <button type="button" onclick="removeRegisterMenuItem(${secIdx}, ${itemIdx})" class="text-rose-500 hover:text-rose-700 text-xs px-1.5 py-0.5">✕</button>
+                </div>
+              `).join("")}
+            </div>
+          `}
+
+          <div class="p-2 rounded-xl bg-white border border-slate-200 grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center">
+            <input type="text" id="sec-${secIdx}-new-item-name" placeholder="Nombre (ej. 1 Litro Salsa Macha)" class="sm:col-span-5 px-2 py-1 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+            <input type="number" step="0.5" id="sec-${secIdx}-new-item-price" placeholder="Precio ($)" class="sm:col-span-3 px-2 py-1 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none font-mono">
+            <input type="text" id="sec-${secIdx}-new-item-desc" placeholder="Desc. breve" class="sm:col-span-4 px-2 py-1 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+            <button type="button" onclick="addRegisterMenuItem(${secIdx})" class="sm:col-span-12 py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1">
+              <span>+ Añadir Renglón al Menú</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
+  // Compatibilidad con fotos sueltas previas
+  function renderRegisterPhotosGrid() {
+    renderRegisterFeaturedGrid();
+  }
+  function handleRegisterPhotoFiles(e) {
+    handleNewProdPhotoFile(e);
+  }
+  function promptRegisterPhotoUrl() {
+    promptNewProdPhotoUrl();
+  }
+  function removeRegisterPhoto(idx) {
+    removeRegisterFeaturedProduct(idx);
   }
 
   function setPaymentMode(mode) {
@@ -495,34 +761,128 @@
             <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
           </div>
 
-          <!-- CARGA DE FOTOGRAFÍAS PARA MICROSITIO (HASTA 10 FOTOS) -->
-          <div id="reg-photos-section" class="border-t border-slate-100 pt-3">
-            <div class="flex items-center justify-between mb-2">
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-800">Fotografías para tu Catálogo y Micrositio</span>
-                  <span class="px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-md bg-amber-100 text-amber-800 border border-amber-300">Suscripción Anual $399</span>
+          <!-- CONFIGURACIÓN DE MICROSITIO ($399/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+          <div id="reg-photos-section" class="border-t border-slate-100 pt-3 space-y-4">
+            <!-- 1. PORTADA DEL MICROSITIO -->
+            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">1. Portada del Micrositio (Hero Banner)</span>
+                  <span class="text-[11px] text-slate-500">Fotografía horizontal para el fondo superior de tu micrositio.</span>
                 </div>
-                <span class="text-[11px] text-slate-500">Carga hasta 10 fotos para tu catálogo o fachada. (El registro gratuito solo incluye datos de contacto y horarios).</span>
+                <div class="flex items-center gap-1.5">
+                  <input type="file" id="reg-cover-file-input" accept="image/*" class="hidden" onchange="handleRegisterCoverFile(event)">
+                  <button type="button" onclick="document.getElementById('reg-cover-file-input').click()" class="px-2.5 py-1 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-bold border border-slate-200 flex items-center gap-1 shadow-xs">
+                    <i data-lucide="camera" class="w-3 h-3 text-emerald-600"></i> Subir
+                  </button>
+                  <button type="button" onclick="promptRegisterCoverUrl()" class="px-2.5 py-1 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-bold border border-slate-200 flex items-center gap-1 shadow-xs">
+                    <i data-lucide="link" class="w-3 h-3 text-emerald-600"></i> URL
+                  </button>
+                </div>
               </div>
-              <span id="reg-photos-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-100 text-emerald-800 font-mono">0 / 10</span>
+              <div id="reg-cover-preview">
+                <div class="p-3 rounded-xl bg-white border border-dashed border-slate-300 text-center text-[11px] text-slate-400">
+                  Sin portada seleccionada (se utilizará la portada oficial de Epicentro Natura).
+                </div>
+              </div>
             </div>
 
-            <div class="flex items-center gap-2 mb-2">
-              <input type="file" id="reg-photos-file-input" multiple accept="image/*" class="hidden" onchange="handleRegisterPhotoFiles(event)">
-              <button type="button" onclick="document.getElementById('reg-photos-file-input').click()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-200">
-                <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-600"></i>
-                <span>Subir Fotos</span>
-              </button>
-              <button type="button" onclick="promptRegisterPhotoUrl()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors border border-slate-200">
-                <i data-lucide="link" class="w-3.5 h-3.5 text-emerald-600"></i>
-                <span>Por URL</span>
-              </button>
+            <!-- 2. PRODUCTOS DESTACADOS (MÁX. 10) -->
+            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-bold text-slate-900">2. Productos Destacados</span>
+                    <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-100 text-emerald-800 font-mono">Máx. 10</span>
+                  </div>
+                  <span class="text-[11px] text-slate-500">Cada producto incluye foto, nombre, precio y descripción con botón "Pedir por WhatsApp".</span>
+                </div>
+                <span id="reg-featured-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-100 text-emerald-800 font-mono">0 / 10</span>
+              </div>
+
+              <!-- Encabezados de la sección de destacados (proporcionados por el usuario) -->
+              <div class="p-2.5 rounded-xl bg-white border border-slate-200 space-y-2">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Encabezados de la Sección Destacados</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-[10px] font-bold text-slate-700 mb-0.5">Título General *</label>
+                    <input type="text" id="reg-featured-title" value="Nuestra Selección Destacada" placeholder="Ej. Nuestra Selección Destacada" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold text-slate-700 mb-0.5">Subtítulo</label>
+                    <input type="text" id="reg-featured-subtitle" value="Hecho a mano en pequeños lotes" placeholder="Ej. Hecho a mano en pequeños lotes" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-700 mb-0.5">Descripción General</label>
+                  <textarea id="reg-featured-desc" rows="1" placeholder="Ej. Recetas familiares y fórmulas artesanales elaboradas con ingredientes seleccionados." class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">Elaborados con ingredientes seleccionados y recetas tradicionales.</textarea>
+                </div>
+              </div>
+
+              <!-- Mini formulario para añadir un producto destacado -->
+              <div class="p-3 rounded-xl bg-white border border-emerald-200 shadow-xs space-y-2">
+                <span class="text-[11px] font-bold text-emerald-900 block">+ Añadir Producto Destacado</span>
+                <div class="flex items-center gap-2">
+                  <div id="reg-new-prod-photo-preview" class="shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 border border-dashed border-slate-300 flex items-center justify-center text-slate-400">
+                      <i data-lucide="image" class="w-5 h-5"></i>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <input type="file" id="reg-new-prod-file-input" accept="image/*" class="hidden" onchange="handleNewProdPhotoFile(event)">
+                    <button type="button" onclick="document.getElementById('reg-new-prod-file-input').click()" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold border border-slate-200 flex items-center gap-1">
+                      <i data-lucide="camera" class="w-3 h-3 text-emerald-600"></i> Cargar Foto
+                    </button>
+                    <button type="button" onclick="promptNewProdPhotoUrl()" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold border border-slate-200 flex items-center gap-1">
+                      <i data-lucide="link" class="w-3 h-3 text-emerald-600"></i> URL Foto
+                    </button>
+                  </div>
+                  <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    <input type="text" id="reg-new-prod-name" placeholder="Nombre (ej. Salsa Macha Cacahuate)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                    <input type="number" step="0.5" id="reg-new-prod-price" placeholder="Precio ($ ej. 95)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none font-mono">
+                  </div>
+                </div>
+                <div>
+                  <input type="text" id="reg-new-prod-desc" placeholder="Descripción breve (ej. Chile tostado artesanal con cacahuate y ajo dorado)" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                </div>
+                <button type="button" onclick="addRegisterFeaturedProduct()" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Agregar a Productos Destacados</span>
+                </button>
+              </div>
+
+              <!-- Grid de productos añadidos -->
+              <div id="reg-featured-grid" class="space-y-2">
+                <div class="py-3 text-center text-[11px] text-slate-400">
+                  No has agregado productos destacados aún (puedes añadir hasta 10 con foto, precio y descripción).
+                </div>
+              </div>
             </div>
 
-            <div id="reg-photos-grid" class="grid grid-cols-5 gap-2 min-h-[50px] p-2 rounded-2xl bg-slate-50 border border-slate-200">
-              <div id="reg-photos-empty-text" class="col-span-5 py-3 text-center text-[11px] text-slate-400">
-                No has agregado fotos aún (opcional durante el alta inicial).
+            <!-- 3. OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 2 SECCIONES) -->
+            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-bold text-slate-900">3. Otros Productos / Menú sin Foto</span>
+                    <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-slate-200 text-slate-700 font-mono">Máx. 2 secciones</span>
+                  </div>
+                  <span class="text-[11px] text-slate-500">Para renglones tipo menú, presentaciones por litro, botanas o complementos sin foto.</span>
+                </div>
+                <span id="reg-menu-sec-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-slate-200 text-slate-700 font-mono">0 / 2 secciones</span>
+              </div>
+
+              <div class="flex items-center justify-end">
+                <button type="button" id="btn-add-menu-section" onclick="addRegisterMenuSection()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors flex items-center gap-1 shadow-xs">
+                  <i data-lucide="plus" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>+ Añadir Sección de Menú</span>
+                </button>
+              </div>
+
+              <div id="reg-menu-sections-container" class="space-y-3">
+                <div class="p-3 rounded-2xl bg-white border border-dashed border-slate-300 text-center text-[11px] text-slate-400">
+                  No has añadido secciones tipo menú. (Opcional, útil para complementos o presentaciones sin foto).
+                </div>
               </div>
             </div>
           </div>
@@ -734,15 +1094,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
-      modal.dataset.version = "v399";
+      modal.dataset.version = "v400";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
-    // Si el modal no contiene el stepper completo o carece de los nuevos campos o es versión antigua
-    if (!document.getElementById("reg-step-1") || !document.getElementById("reg-schedule") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v399") {
+    // Si el modal no contiene el stepper completo o carece de los nuevos campos de portada/destacados o es versión antigua
+    if (!document.getElementById("reg-step-1") || !document.getElementById("reg-cover-preview") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v400") {
       modal.innerHTML = renderWizardHTML();
-      modal.dataset.version = "v399";
+      modal.dataset.version = "v400";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
@@ -762,8 +1122,14 @@
     currentRegId = null;
     waVerified = false;
     currentPaymentMode = "mp";
+    registerCoverPhoto = "";
+    registerFeaturedProducts = [];
+    registerMenuSections = [];
+    tempNewProductPhoto = "";
     registerUploadedPhotos = [];
-    renderRegisterPhotosGrid();
+    renderRegisterCoverPreview();
+    renderRegisterFeaturedGrid();
+    renderRegisterMenuSections();
     setPaymentMode("mp");
     selectRegistrationPlan("microsite");
 
@@ -886,6 +1252,21 @@
 
       const deliveryChecked = checkedBoxes.includes("delivery") || (document.getElementById("reg-delivery") ? document.getElementById("reg-delivery").checked : false);
 
+      const featuredTitle = document.getElementById("reg-featured-title") ? document.getElementById("reg-featured-title").value.trim() : "Nuestra Selección Destacada";
+      const featuredSubtitle = document.getElementById("reg-featured-subtitle") ? document.getElementById("reg-featured-subtitle").value.trim() : "";
+      const featuredDesc = document.getElementById("reg-featured-desc") ? document.getElementById("reg-featured-desc").value.trim() : "";
+
+      const micrositeData = {
+        cover_photo: registerCoverPhoto || null,
+        featured_section: {
+          title: featuredTitle || "Nuestra Selección Destacada",
+          subtitle: featuredSubtitle,
+          description: featuredDesc,
+          products: registerFeaturedProducts
+        },
+        other_products_sections: registerMenuSections
+      };
+
       const payload = {
         business_name: currentBusinessName,
         category_slug: catSlug,
@@ -900,7 +1281,11 @@
         phone: phone,
         whatsapp: wa,
         schedule: schedule,
-        photos: (currentSelectedPlan === "microsite" && registerUploadedPhotos.length > 0) ? JSON.stringify(registerUploadedPhotos) : null,
+        cover_photo: (currentSelectedPlan === "microsite" && registerCoverPhoto) ? registerCoverPhoto : null,
+        microsite_data: (currentSelectedPlan === "microsite") ? JSON.stringify(micrositeData) : null,
+        photos: (currentSelectedPlan === "microsite" && registerFeaturedProducts.length > 0)
+          ? JSON.stringify(registerFeaturedProducts.map(p => p.photo).filter(Boolean))
+          : null,
         plan_type: currentSelectedPlan,
         preferred_contact_methods: prefMethods,
         website: website,
@@ -1260,6 +1645,19 @@
   window.promptRegisterPhotoUrl = promptRegisterPhotoUrl;
   window.removeRegisterPhoto = removeRegisterPhoto;
   window.renderRegisterPhotosGrid = renderRegisterPhotosGrid;
+  window.handleRegisterCoverFile = handleRegisterCoverFile;
+  window.promptRegisterCoverUrl = promptRegisterCoverUrl;
+  window.removeRegisterCoverPhoto = removeRegisterCoverPhoto;
+  window.handleNewProdPhotoFile = handleNewProdPhotoFile;
+  window.promptNewProdPhotoUrl = promptNewProdPhotoUrl;
+  window.removeNewProdPhoto = removeNewProdPhoto;
+  window.addRegisterFeaturedProduct = addRegisterFeaturedProduct;
+  window.removeRegisterFeaturedProduct = removeRegisterFeaturedProduct;
+  window.addRegisterMenuSection = addRegisterMenuSection;
+  window.removeRegisterMenuSection = removeRegisterMenuSection;
+  window.updateMenuSecMeta = updateMenuSecMeta;
+  window.addRegisterMenuItem = addRegisterMenuItem;
+  window.removeRegisterMenuItem = removeRegisterMenuItem;
   window.setPaymentMode = setPaymentMode;
   window.handleKamPaymentSubmit = handleKamPaymentSubmit;
   window.selectRegistrationPlan = selectRegistrationPlan;

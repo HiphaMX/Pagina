@@ -45,6 +45,8 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS photos TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS kam_name VARCHAR(100)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS cover_photo TEXT"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
             db.commit()
         else:
             for col, col_type in [
@@ -53,7 +55,9 @@ def ensure_epicentro_schema(db: Session):
                 ("schedule", "VARCHAR(150)"),
                 ("photos", "TEXT"),
                 ("kam_name", "VARCHAR(100)"),
-                ("payment_method", "VARCHAR(50)")
+                ("payment_method", "VARCHAR(50)"),
+                ("cover_photo", "TEXT"),
+                ("microsite_data", "TEXT")
             ]:
                 try:
                     db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
@@ -120,6 +124,8 @@ class RegisterInitiateRequest(BaseModel):
     preferred_contact_methods: Optional[str] = None
     schedule: Optional[str] = None
     photos: Optional[Union[List[str], str]] = None
+    cover_photo: Optional[str] = None
+    microsite_data: Optional[Union[dict, str]] = None
     kam_name: Optional[str] = None
     payment_method: Optional[str] = None
     delivery_available: bool = False
@@ -147,7 +153,9 @@ class UpdateRegistrationAdminRequest(BaseModel):
     delivery_available: Optional[bool] = None
     website: Optional[str] = None
     description: Optional[str] = None
-    photos: Optional[str] = None
+    photos: Optional[Union[List[str], str]] = None
+    cover_photo: Optional[str] = None
+    microsite_data: Optional[Union[dict, str]] = None
     kam_name: Optional[str] = None
     payment_method: Optional[str] = None
     payment_status: Optional[str] = None
@@ -366,6 +374,11 @@ async def initiate_registration(
         photos=None if is_free else (
             json.dumps(payload.photos) if isinstance(payload.photos, list)
             else (payload.photos.strip() if payload.photos else None)
+        ),
+        cover_photo=None if is_free else (payload.cover_photo.strip() if payload.cover_photo else None),
+        microsite_data=None if is_free else (
+            json.dumps(payload.microsite_data) if isinstance(payload.microsite_data, (dict, list))
+            else (payload.microsite_data.strip() if payload.microsite_data else None)
         ),
         kam_name=payload.kam_name.strip() if payload.kam_name else None,
         payment_method="free_basic" if is_free else (payload.payment_method.strip() if payload.payment_method else None),
@@ -702,6 +715,10 @@ def update_registration_details(
 
     update_dict = payload.dict(exclude_unset=True)
     for key, value in update_dict.items():
+        if key == "microsite_data" and isinstance(value, (dict, list)):
+            value = json.dumps(value)
+        elif key == "photos" and isinstance(value, list):
+            value = json.dumps(value)
         if hasattr(reg, key):
             setattr(reg, key, value)
 
@@ -787,6 +804,92 @@ def purge_test_registrations(
 def seed_official_showcases(db: Session):
     """Garantiza que Botica Silvestre y Chile Chillón existan como comercios verificados y activos con sus micrositios oficiales."""
     try:
+        BOTICA_DATA = {
+            "cover_photo": "Assets/botica/ethereal_botanical_hero.webp",
+            "featured_section": {
+                "title": "Extractos Botánicos & Fórmulas Maestras",
+                "subtitle": "LÍNEA SOUL SHINE · SÚPER ADAPTÓGENOS",
+                "description": "Frascos de 50 ml con pipeta dosificadora en base de tintura hidroalcohólica u oleato vegetal puro.",
+                "products": [
+                    { "name": "Balance", "price": 490.0, "description": "Ashwagandha KSM-66, Albahaca Santa (Tulsi) y Reishi.", "photo": "Assets/botica/products/Balance 01.webp" },
+                    { "name": "Focus", "price": 490.0, "description": "Melena de León, Bacopa Monnieri y Romero silvestre.", "photo": "Assets/botica/products/Focus 01.webp" },
+                    { "name": "Energy+", "price": 490.0, "description": "Cordyceps militaris, Rhodiola Rosea y Maca andina.", "photo": "Assets/botica/products/Energy 01.webp" },
+                    { "name": "Emuná", "price": 490.0, "description": "Chaga siberiano, Cola de Pavo y Sauco negro.", "photo": "Assets/botica/products/Emuna 01.webp" },
+                    { "name": "Smile", "price": 690.0, "description": "Azafrán español, Hierba de San Juan y Mucuna pruriens.", "photo": "Assets/botica/products/Smile 01.webp" },
+                    { "name": "Mindii", "price": 490.0, "description": "Ginkgo biloba, Gotu Kola y Melena de León.", "photo": "Assets/botica/products/Mindii 01.webp" },
+                    { "name": "Mystic", "price": 990.0, "description": "Loto Azul, Frankincense sagrado y Mirra silvestre.", "photo": "Assets/botica/products/Mystic 01.webp" },
+                    { "name": "Armonizador Áurico", "price": 190.0, "description": "Salvia blanca, palo santo, ruda y lavanda en hidrolato destilado.", "photo": "Assets/botica/products/Armonizador1.webp" }
+                ]
+            },
+            "other_products_sections": [
+                {
+                    "title": "Línea Sabina (Tinturas 50ml)",
+                    "subtitle": "MÁS DE LA BOTICA · HERBOLARIA CLÁSICA",
+                    "description": "Herbolaria tradicional en tinturas florales de 50ml",
+                    "items": [
+                        { "name": "Calma", "price": 390.0, "description": "Tila, azahar y pasiflora silvestre para momentos de tensión" },
+                        { "name": "Descansa", "price": 390.0, "description": "Valeriana medicinal y lúpulo para conciliar un sueño profundo" },
+                        { "name": "Equilibra", "price": 390.0, "description": "Toronjil y manzanilla criolla para digestiones pesadas" },
+                        { "name": "Luna", "price": 390.0, "description": "Artemisa y milenrama para apaciguar cólicos y ciclo femenino" },
+                        { "name": "Sueña", "price": 390.0, "description": "Mezcla onírica floral para relajar ondas cerebrales" }
+                    ]
+                },
+                {
+                    "title": "Pomadas Terapéuticas (60g)",
+                    "subtitle": "BÁLSAMOS DÉRMICOS · USO TÓPICO",
+                    "description": "Pomadas de aplicación dérmica elaboradas artesanalmente",
+                    "items": [
+                        { "name": "Colita de Rana", "price": 190.0, "description": "Árnica montana, caléndula y consuelda para moretones y torceduras" },
+                        { "name": "Piel Silvestre", "price": 250.0, "description": "Manteca de karité virgen, caléndula y rosa mosqueta" },
+                        { "name": "Abacho", "price": 190.0, "description": "Bálsamo pectoral con eucalipto, menta y romero" },
+                        { "name": "Descansa (Pomada)", "price": 190.0, "description": "Descontracturante muscular para cuello, hombros y espalda" },
+                        { "name": "Fluye", "price": 190.0, "description": "Castaño de indias y ciprés para mejorar circulación" }
+                    ]
+                }
+            ]
+        }
+
+        CHILLON_DATA = {
+            "cover_photo": "Assets/chillon/placa_fondo_restaurante_gourmet.jpg",
+            "featured_section": {
+                "title": "Catálogo de Salsas & Sazón de la Casa",
+                "subtitle": "SALSAS PICANTES 100% NATURALES · SELECCIÓN ARTESANAL",
+                "description": "Frascos de 250 ml elaborados con aceite vegetal comestible y chiles seleccionados sin conservadores.",
+                "products": [
+                    { "name": "Salsa Chile de Árbol", "price": 40.0, "description": "La receta consentida de la casa. Picor vibrante y sazón equilibrado, perfecta para acompañar tacos, botanas y platillos diarios.", "photo": "Assets/chillon/Salsas/de_arbol.jpg" },
+                    { "name": "Salsa Habanero", "price": 40.0, "description": "Intensidad cítrica y picor brillante característico del chile habanero fresco. El acompañamiento ideal para mariscos, cochinita y tostadas.", "photo": "Assets/chillon/Salsas/habanero.jpg" },
+                    { "name": "Habanero Tatemado", "price": 40.0, "description": "Tostado artesanal al comal que despierta notas ahumadas profundas. Extraordinaria para cortes de carne al carbón, hamburguesas y quesadillas.", "photo": "Assets/chillon/Salsas/tatemado.jpg" },
+                    { "name": "Salsa Negra Especial", "price": 40.0, "description": "Fórmula oscura de sazón complejo con mezcla de chiles deshidratados y especias finas. Indispensable para mariscos, micheladas y botanas.", "photo": "Assets/chillon/Salsas/negra.jpg" },
+                    { "name": "Semillas Enchiladas", "price": 40.0, "description": "Textura crujiente con semillas seleccionadas, ajonjolí y cacahuate frito en aceite aromatizado de chiles. Aporta sabor crocante a cualquier platillo.", "photo": "Assets/chillon/Salsas/semillas_enchiladas.jpg" },
+                    { "name": "Salsa Serrano", "price": 40.0, "description": "Nueva propuesta artesanal elaborada con chile serrano seleccionado. Sabor fresco, picor nítido y balance perfecto para huevos al gusto y antojitos.", "photo": "Assets/chillon/Salsas/serrano.jpg" }
+                ]
+            },
+            "other_products_sections": [
+                {
+                    "title": "Presentaciones por Litro (Eventos)",
+                    "subtitle": "LISTA DE MENÚ · ESTILO CARTA",
+                    "description": "Presentaciones familiares y taquizas",
+                    "items": [
+                        { "name": "Litro de Salsa Chile de Árbol", "price": 150.0, "description": "Presentación para reuniones, taquizas y asados familiares" },
+                        { "name": "Litro de Salsa Habanero Tatemado", "price": 150.0, "description": "Receta ahumada en presentación de 1 litro para parrilladas" },
+                        { "name": "Litro de Salsa Negra Especial", "price": 150.0, "description": "Base oscura para mariscos, aguachiles y botanas" },
+                        { "name": "Litro de Semillas Enchiladas", "price": 160.0, "description": "Crocante de semillas mixtas con chile de árbol y ajo en volumen" }
+                    ]
+                },
+                {
+                    "title": "Botanas & Complementos Caseros",
+                    "subtitle": "COMPLEMENTOS BOTANEROS · LISTA DE PRECIOS",
+                    "description": "Bocadillos y crujientes preparados artesanalmente",
+                    "items": [
+                        { "name": "Frasco Botanero de Semillas Enchiladas (200g)", "price": 65.0, "description": "Cacahuate, pepita, ajonjolí y arándano con aceite de chile" },
+                        { "name": "Totopos de Maíz Criollo Fritos (250g)", "price": 45.0, "description": "Bolsa de totopos crujientes ideales para dip de salsa" },
+                        { "name": "Cacahuates al Ajo y Chile Macha (180g)", "price": 50.0, "description": "Cacahuates dorados con láminas de ajo frito y hojuelas de árbol" },
+                        { "name": "Chicharrón de Chile Seco Botanero (80g)", "price": 55.0, "description": "Crujiente botanero para espolvorear en caldos, pizzas y carnes" }
+                    ]
+                }
+            ]
+        }
+
         # 1. BOTICA SILVESTRE (Cortesía / Comercio Fundador Oficial con Micrositio)
         all_boticas = db.query(EpicentroRegistration).filter(
             (EpicentroRegistration.business_name.ilike("%Botica Silvestre%")) |
@@ -813,6 +916,8 @@ def seed_official_showcases(db: Session):
                 schedule="Lunes a Sábado · 09:00 a 19:00 hrs",
                 website="botica-silvestre",
                 description="Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
+                cover_photo=BOTICA_DATA["cover_photo"],
+                microsite_data=json.dumps(BOTICA_DATA),
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="approved",
@@ -831,6 +936,12 @@ def seed_official_showcases(db: Session):
                     db.delete(dup)
 
             updated = False
+            if not botica.cover_photo:
+                botica.cover_photo = BOTICA_DATA["cover_photo"]
+                updated = True
+            if not botica.microsite_data:
+                botica.microsite_data = json.dumps(BOTICA_DATA)
+                updated = True
             if not botica.preferred_contact_methods:
                 botica.preferred_contact_methods = "whatsapp,delivery,punto-venta"
                 updated = True
@@ -879,6 +990,8 @@ def seed_official_showcases(db: Session):
                 schedule="Lunes a Domingo · 10:00 a 20:00 hrs",
                 website="chile-chillon",
                 description="Salsas picantes artesanales 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos.",
+                cover_photo=CHILLON_DATA["cover_photo"],
+                microsite_data=json.dumps(CHILLON_DATA),
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="waived",
@@ -899,6 +1012,12 @@ def seed_official_showcases(db: Session):
                     db.delete(dup)
 
             updated = False
+            if not chillon.cover_photo or chillon.cover_photo != CHILLON_DATA["cover_photo"]:
+                chillon.cover_photo = CHILLON_DATA["cover_photo"]
+                updated = True
+            if not chillon.microsite_data:
+                chillon.microsite_data = json.dumps(CHILLON_DATA)
+                updated = True
             if chillon.website != "chile-chillon":
                 chillon.website = "chile-chillon"
                 updated = True
