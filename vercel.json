@@ -150,7 +150,7 @@
           "value": "^(www\\.)?epizentro\\.com$"
         }
       ],
-      "dest": "/projects/EpicentroNatura/index.html"
+      "dest": "/projects/EpicentroNatura/"
     },
     {
       "src": "/(llms\\.txt|robots\\.txt)",
