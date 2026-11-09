@@ -130,7 +130,7 @@
           "value": "^(www\\.)?epizentro\\.com$"
         }
       ],
-      "dest": "/projects/EpicentroNatura/$1.html"
+      "dest": "/projects/EpicentroNatura/$1$2"
     },
     {
       "src": "/(epicentro-register\\.js|demo_businesses_seed\\.js)",
