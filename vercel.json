@@ -549,6 +549,19 @@
       "dest": "/projects/Dr. Jairo Dominguez/"
     },
     {
+      "src": "/(webmail|cpanel)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?ieer\\.com\\.mx$"
+        }
+      ],
+      "status": 302,
+      "headers": {
+        "Location": "https://mailbox.correoparatodos.mx"
+      }
+    },
+    {
       "src": "/(llms\\.txt|robots\\.txt|sitemap\\.xml)",
       "has": [
         {
