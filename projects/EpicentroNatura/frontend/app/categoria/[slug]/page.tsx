@@ -955,7 +955,7 @@ export default function CategoryPage() {
 
             <div className="flex items-center gap-2.5 shrink-0">
               <a
-                href="/#anunciate"
+                href="/?open_register=1"
                 className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 hover:from-blue-800 hover:to-purple-700 active:scale-95 transition-all shadow-md shadow-indigo-500/25"
               >
                 <PlusCircle className="w-4 h-4" />
