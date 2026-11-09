@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tu Negocio · Panadería Artesanal & Café | Página Demostrativa Plan Pro | Epicentro Natura</title>
+  <meta name="description" content="Página demostrativa de Plan Pro en Epicentro Natura. Ejemplo de negocio ficticio con catálogo de hasta 10 fotos de productos, enlace a sitio web oficial, WhatsApp y llamadas directas.">
+
+  <!-- Favicon y Fuentes -->
+  <link rel="icon" type="image/svg+xml" href="Assets/Epicentro2.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            serif: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              black: "#050810",
+              slate: "#0f172a",
+              forest: "#064e3b",
+              emerald: "#059669",
+              vibrant: "#10b981",
+              mint: "#6ee7b7",
+              softMint: "#ecfdf5",
+              gold: "#d97706",
+              softGold: "#fef3c7"
+            },
+            snow: {
+              100: "#ffffff",
+              200: "#fbfcfd",
+              300: "#f1f3f7",
+              400: "#e2e6ed",
+              500: "#c7cdd8"
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .font-brand-title {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-emerald-600 selection:text-white antialiased">
+
+  <!-- BANNER SUPERIOR INFORMATIVO PLAN PRO -->
+  <div class="bg-gradient-to-r from-emerald-950 via-slate-950 to-emerald-950 text-white border-b border-emerald-500/30 px-4 py-2.5 text-xs">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2 text-center sm:text-left">
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold uppercase tracking-wider text-[10px] border border-emerald-400/30 shrink-0">
+          <i data-lucide="sparkles" class="w-3 h-3"></i>
+          <span>DEMO PLAN PRO</span>
+        </span>
+        <span class="text-slate-200">
+          Esta es una <strong>página de prueba demostrativa</strong>. Así lucirá tu negocio al contratar el <strong>Plan Pro ($399 / año)</strong>.
+        </span>
+      </div>
+      <a href="index.html?open_register=1" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-[11px] shadow-sm transition-all hover:scale-105 shrink-0">
+        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+        <span>Contratar Plan Pro</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- TOP BAR NAVEGACIÓN -->
+  <aside class="bg-slate-950 text-white text-xs py-2.5 px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-400 transition-colors text-xs font-semibold">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Volver a Inicio Epicentro</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Epicentro</span>
+        <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+          natura
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HEADER / HERO DEL COMERCIO DEMO -->
+  <header class="relative bg-slate-950 text-white overflow-hidden pb-12 pt-8 sm:pt-12 border-b border-slate-800">
+    <div id="hero-cover-bg" class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1920&q=80');"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/40"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- BADGES SUPERIORES -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Abierto Hoy</span>
+          <span>· 08:00 a 20:00 hrs</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 text-xs font-bold">
+          <i data-lucide="award" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Plan Pro Verificado</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
+          <i data-lucide="truck" class="w-3.5 h-3.5"></i>
+          <span>Envíos a Domicilio en Cotos</span>
+        </span>
+      </div>
+
+      <!-- TÍTULO Y DESCRIPCIÓN -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-orange-950/40">
+            <i data-lucide="coffee" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-widest text-amber-400 block">Comercio Demostrativo Plan Pro</span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
+              Tu Negocio · Panadería Artesanal & Café
+            </h1>
+          </div>
+        </div>
+        <p class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+          En este espacio se publicará la descripción completa de tu empresa, productos estrella o servicios profesionales. Como cliente de <strong>Plan Pro</strong>, disfrutas de esta página exclusiva con hasta 10 fotos en alta resolución, botón a tu sitio web oficial y contacto directo sin intermediarios.
+        </p>
+      </div>
+
+      <!-- UBICACIÓN RÁPIDA -->
+      <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
+        <div class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span>Prol. Mariano Otero #4300, Local 4 (Frente a Coto Ceiba · Entrega directa en todos los cotos Natura y Los Robles)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span>Horario: Lunes a Domingo · 08:00 a 20:00 hrs</span>
+        </div>
+      </div>
+
+      <!-- BARRA DE ACCIÓN DIRECTA -->
+      <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
+        <a href="https://wa.me/523336762545?text=Hola,%20vi%20la%20p%C3%A1gina%20demostrativa%20de%20Tu%20Negocio%20en%20Epicentro%20Natura%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Enviar WhatsApp</span>
+        </a>
+        <a href="tel:+523336762545" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 transition-all active:scale-95">
+          <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
+          <span>Llamar</span>
+        </a>
+        <a href="#info-cobertura" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 transition-all active:scale-95">
+          <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
+          <span>Zona de cobertura</span>
+        </a>
+        <!-- BOTÓN EXCLUSIVO PLAN PRO: SITIO WEB PROPIO -->
+        <a href="https://hipha.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-900/80 to-teal-900/80 hover:from-emerald-800 hover:to-teal-800 text-emerald-300 font-bold text-sm sm:text-base border border-emerald-500/40 shadow-sm transition-all active:scale-95 group">
+          <i data-lucide="globe" class="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform"></i>
+          <span>Sitio web oficial</span>
+          <span class="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 ml-1">Plan Pro</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL: CATÁLOGO DE 10 FOTOS PLAN PRO -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    
+    <!-- SECCIÓN DE PRODUCTOS (Fondo Blanco Puro y Contenedor Limpio) -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <span class="text-xs font-black uppercase tracking-widest text-emerald-700">CATÁLOGO EXCLUSIVO PLAN PRO · HASTA 10 FOTOGRAFÍAS</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-950 mt-1 font-brand-title">Productos & Especialidades de la Casa</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Así se exhiben tus productos en el Plan Pro: con fotografía profesional en fondo blanco puro, precio visible y pedido directo por WhatsApp.</p>
+        </div>
+        <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5 shrink-0">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span>10 Fotos Incluidas en Plan Pro</span>
+        </span>
+      </div>
+
+      <!-- GRID DE LOS 10 PRODUCTOS MODELO (Fondo Blanco Puro: bg-white puro y object-contain) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- FOTO 1: Croissant Francés de Mantequilla -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80" alt="Croissant Francés de Mantequilla" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 1 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Croissant Francés de Mantequilla</h3>
+                <span class="text-base font-extrabold text-emerald-700">$45</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Hojaldre artesanal elaborado con mantequilla pura neozelandesa. Textura crujiente por fuera y suave alveolado por dentro.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Croissant%20Franc%C3%A9s%20($45)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 2: Hogaza de Masa Madre Rústica -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?auto=format&fit=crop&w=800&q=80" alt="Hogaza de Masa Madre Rústica" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 2 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Hogaza de Masa Madre Rústica</h3>
+                <span class="text-base font-extrabold text-emerald-700">$85</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Fermentación lenta de 36 horas con harina integral orgánica molida en piedra. Corteza dorada crocante y miga hidratada.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Hogaza%20de%20Masa%20Madre%20($85)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 3: Café Latte de Especialidad -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80" alt="Café Latte de Especialidad" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 3 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Café Latte de Especialidad</h3>
+                <span class="text-base font-extrabold text-emerald-700">$60</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Espresso doble de granos arábica de origen Chiapas tostados artesanalmente con microespuma de leche cremada al punto.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Caf%C3%A9%20Latte%20($60)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 4: Cold Brew Infusión 18 hrs -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80" alt="Cold Brew Infusión 18 hrs" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 4 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Cold Brew Infusión 18 hrs</h3>
+                <span class="text-base font-extrabold text-emerald-700">$65</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Extracción fría gota a gota durante 18 horas. Notas dulces naturales a chocolate y nuez, baja acidez y frescura pura.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Cold%20Brew%20($65)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 5: Bagel Horneado con Salmón Ahumado -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?auto=format&fit=crop&w=800&q=80" alt="Bagel Horneado con Salmón Ahumado" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 5 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Bagel de Salmón Ahumado</h3>
+                <span class="text-base font-extrabold text-emerald-700">$110</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Bagel artesanal con semillas tostadas, queso crema a las finas hierbas, finas láminas de salmón noruego y alcaparras.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Bagel%20de%20Salm%C3%B3n%20($110)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 6: Roll de Canela Glaseado con Nueces -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=800&q=80" alt="Roll de Canela Glaseado con Nueces" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 6 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Roll de Canela Glaseado</h3>
+                <span class="text-base font-extrabold text-emerald-700">$48</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Masa brioche enrollada con canela de Ceilán, azúcar morena y rematada con glaseado tibio de queso crema y nuez pecana.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Roll%20de%20Canela%20($48)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 7: Ciabatta Artesanal con Jamón Serrano -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" alt="Ciabatta Artesanal con Jamón Serrano" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 7 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Ciabatta Jamón Serrano</h3>
+                <span class="text-base font-extrabold text-emerald-700">$115</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Pan rústico italiano con aceite de oliva extra virgen, jamón serrano reserva, queso manchego curado y arúgula fresca.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Ciabatta%20Jam%C3%B3n%20Serrano%20($115)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 8: Tarta Rústica de Frutos Rojos -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=800&q=80" alt="Tarta Rústica de Frutos Rojos" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 8 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Tarta de Frutos Rojos</h3>
+                <span class="text-base font-extrabold text-emerald-700">$65</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Base crocante sableé con crema pastelera aromatizada con vainas de vainilla natural de Papantla y selección de zarzamoras y frambuesas.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Tarta%20de%20Frutos%20Rojos%20($65)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 9: Quiche Florentino con Espinaca y Queso -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&w=800&q=80" alt="Quiche Florentino con Espinaca y Queso" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 9 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Quiche Florentino</h3>
+                <span class="text-base font-extrabold text-emerald-700">$75</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Tarta salada francesa rellena de espinacas tiernas salteadas con echalote, queso gouda artesanal y mezcla suave de crema fresca.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Quiche%20Florentino%20($75)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FOTO 10: Muffin Artesanal de Arándanos -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-60 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=800&q=80" alt="Muffin Artesanal de Arándanos" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Foto 10 de 10
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Muffin de Arándanos Silvestres</h3>
+                <span class="text-base font-extrabold text-emerald-700">$42</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Muffin esponjoso horneado con abundantes arándanos frescos de Jalisco y toque de ralladura de limón amarillo natural.
+              </p>
+            </div>
+            <a href="https://wa.me/523336762545?text=Hola,%20quiero%20ordenar%20Muffin%20de%20Ar%C3%A1ndanos%20($42)%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Pedir por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: INFORMACIÓN DE COBERTURA, COTAS Y HORARIOS -->
+    <section id="info-cobertura" class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm">
+      <div class="space-y-4">
+        <div class="flex items-center gap-2 text-emerald-700">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+          <h3 class="text-lg font-black uppercase tracking-wider text-slate-900">Cobertura en Cotos Natura</h3>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          En esta sección se muestra el alcance de servicio a domicilio de tu negocio en la zona. Servicio con entrega directa a la caseta de acceso o puerta en cotos residenciales:
+        </p>
+        <ul class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-700 pt-2">
+          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Coto Ceiba</li>
+          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Coto Sauce</li>
+          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Coto Roble</li>
+          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Coto Encino</li>
+          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Coto Fresno</li>
+          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> Los Robles Residencial</li>
+        </ul>
+      </div>
+
+      <div class="space-y-4 border-t md:border-t-0 md:border-l border-slate-100 pt-6 md:pt-0 md:pl-8">
+        <div class="flex items-center gap-2 text-emerald-700">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+          <h3 class="text-lg font-black uppercase tracking-wider text-slate-900">Horarios & Pedidos</h3>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          Los clientes de Epicentro pueden consultar tus horarios de atención en tiempo real y hacer pedidos o reservaciones directamente:
+        </p>
+        <div class="space-y-2 text-xs text-slate-700 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="font-bold">Lunes a Viernes</span>
+            <span>08:00 a 20:00 hrs</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="font-bold">Sábados</span>
+            <span>08:30 a 20:00 hrs</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="font-bold">Domingos</span>
+            <span>09:00 a 17:00 hrs</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CONVERSIÓN COMERCIAL - ¿QUIERES UNA PÁGINA COMO ESTA? -->
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 border border-emerald-500/30 p-8 sm:p-12 text-white shadow-xl">
+      <div class="relative z-10 max-w-3xl space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-extrabold uppercase tracking-wider border border-emerald-400/30">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>PROMOCIÓN DE LANZAMIENTO</span>
+        </div>
+
+        <h3 class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-snug font-brand-title">
+          ¿Tienes un negocio, comercio o servicio profesional en el Epicentro?
+        </h3>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+          Publica tu propia <strong>página interactiva como esta</strong> en la plataforma vecinal más visitada de la zona. Incluye hasta 10 fotos de tus productos, botón con enlace directo a tu sitio web oficial, WhatsApp y llamadas directas sin intermediarios ni comisiones sobre ventas.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300 pt-2">
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>Página interactiva personalizada</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>Hasta 10 fotografías de productos</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>Botón exclusivo a tu sitio web</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>Presencia destacada en el home</span>
+          </div>
+        </div>
+
+        <div class="pt-4 flex flex-wrap items-center gap-4">
+          <a href="index.html?open_register=1" class="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm sm:text-base shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i>
+            <span>Registrar mi negocio en Plan Pro ($399 / año)</span>
+          </a>
+          <a href="https://wa.me/523336762545?text=Hola%20Hipha,%20quiero%20contratar%20el%20Plan%20Pro%20para%20mi%20negocio%20en%20Epicentro%20Natura" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 transition-all active:scale-95">
+            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+            <span>Hablar con un asesor</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-white border-t border-slate-850 py-10 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <img src="Assets/Epicentro2.svg" alt="Epicentro Natura" class="w-6 h-6">
+        <div>
+          <span class="font-bold text-sm text-white">Epicentro Natura</span>
+          <p class="text-[11px] text-slate-400">Directorio y red comercial hiperlocal para vecinos y comercios</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="index.html" class="hover:text-emerald-400 transition-colors">Inicio</a>
+        <a href="index.html?open_register=1" class="hover:text-emerald-400 transition-colors font-bold text-emerald-400">Registrar Negocio</a>
+        <a href="https://hipha.mx" target="_blank" class="hover:text-emerald-400 transition-colors">Desarrollado por Hipha</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

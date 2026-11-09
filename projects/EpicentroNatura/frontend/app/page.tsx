@@ -564,10 +564,10 @@ export default function EpicentroNaturaCleanLight() {
     );
   };
 
-  // Slide auto-rotation (6 slides)
+  // Slide auto-rotation (8 slides)
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 6);
+      setCurrentSlide((prev) => (prev + 1) % 8);
     }, 7000);
     return () => clearInterval(timer);
   }, []);
@@ -703,24 +703,25 @@ export default function EpicentroNaturaCleanLight() {
 
       {/* CONTENIDO PRINCIPAL */}
       <main className="flex-1 space-y-10">
-        {/* 1. MEGA HERO 1 SLIDER CASI DEL TAMAÑO DE LA PANTALLA (6 MARCAS LOCALES) */}
+        {/* 1. MEGA HERO 1 SLIDER CASI DEL TAMAÑO DE LA PANTALLA (8 CATEGORÍAS LOCALES) */}
         <section className="relative w-full px-3 sm:px-6 lg:px-8 pt-4">
           <div className="max-w-7xl mx-auto relative overflow-hidden rounded-3xl bg-slate-950 border border-slate-800 shadow-2xl">
             {/* Slider Container */}
             <div className="relative min-h-[76vh] sm:min-h-[82vh] flex items-stretch">
-              {/* SLIDE 1: TAQUERÍA (El Güero Taquero) */}
+              
+              {/* SLIDE 1: COMIDA & DELIVERY */}
               <div
                 className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
                   currentSlide === 0 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
                 }`}
                 style={{
                   backgroundImage:
-                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=1920&q=80')",
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80')",
                 }}
               >
                 <div>
                   <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-orange-400 block mb-2">
-                    Comida y Delivery
+                    Comida & Delivery
                   </span>
                 </div>
 
@@ -735,7 +736,7 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550202?text=Hola%20Tu%20Negocio,%20quiero%20hacer%20un%20pedido%20a%20domicilio%20en%20mi%20coto"
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Comida"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all active:scale-95"
@@ -744,14 +745,14 @@ export default function EpicentroNaturaCleanLight() {
                     <span>Enviar WhatsApp</span>
                   </a>
                   <a
-                    href="tel:+523315550202"
+                    href="tel:+523336762545"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
                     <Phone className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <a
-                    href="chile-chillon.html"
+                    href="tu-negocio.html"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
                     <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
@@ -760,19 +761,19 @@ export default function EpicentroNaturaCleanLight() {
                 </div>
               </div>
 
-              {/* SLIDE 2: VETERINARIA (Veterinaria Huellitas Natura) */}
+              {/* SLIDE 2: EDUCACIÓN */}
               <div
                 className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
                   currentSlide === 1 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
                 }`}
                 style={{
                   backgroundImage:
-                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1920&q=80')",
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80')",
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-red-400 block mb-2">
-                    Veterinarias
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-blue-400 block mb-2">
+                    Educación
                   </span>
                 </div>
 
@@ -787,23 +788,23 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550207?text=Hola%20Tu%20Negocio,%20necesito%20atenci%C3%B3n%20para%20mi%20mascota"
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Educaci%C3%B3n"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-red-500/25 transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
                   </a>
                   <a
-                    href="tel:+523315550207"
+                    href="tel:+523336762545"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-red-400 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-blue-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <a
-                    href="botica-silvestre.html"
+                    href="tu-negocio.html"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
                     <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
@@ -812,19 +813,19 @@ export default function EpicentroNaturaCleanLight() {
                 </div>
               </div>
 
-              {/* SLIDE 3: PLANCHADURÍA (Planchaduría Doña Mary) */}
+              {/* SLIDE 3: FITNESS */}
               <div
                 className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
                   currentSlide === 2 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
                 }`}
                 style={{
                   backgroundImage:
-                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?auto=format&fit=crop&w=1920&q=80')",
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1920&q=80')",
                 }}
               >
                 <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-sky-400 block mb-2">
-                    Servicios hogar
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-cyan-400 block mb-2">
+                    Fitness
                   </span>
                 </div>
 
@@ -839,23 +840,23 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550208?text=Hola%20Tu%20Negocio,%20tengo%20ropa%20para%20planchar%20en%20mi%20coto"
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Fitness"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-600 hover:to-teal-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-cyan-500/25 transition-all active:scale-95"
                   >
                     <MessageCircle className="w-5 h-5" />
                     <span>Enviar WhatsApp</span>
                   </a>
                   <a
-                    href="tel:+523315550208"
+                    href="tel:+523336762545"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
-                    <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
+                    <Phone className="w-4 h-4 text-cyan-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <a
-                    href="chile-chillon.html"
+                    href="tu-negocio.html"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
                     <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
@@ -864,114 +865,10 @@ export default function EpicentroNaturaCleanLight() {
                 </div>
               </div>
 
-              {/* SLIDE 4: CARWASH (AquaWash Detallado en Cochera) */}
+              {/* SLIDE 4: HOGAR */}
               <div
                 className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
                   currentSlide === 3 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
-                }`}
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=1920&q=80')",
-                }}
-              >
-                <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-sky-400 block mb-2">
-                    Servicios hogar
-                  </span>
-                </div>
-
-                <div className="max-w-3xl space-y-4 py-4 z-10">
-                  <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    Tu Negocio
-                  </h2>
-                  <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
-                  <a
-                    href="https://wa.me/523315550103?text=Hola%20Tu%20Negocio,%20quiero%20agendar%20un%20lavado%20en%20mi%20cochera"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>Enviar WhatsApp</span>
-                  </a>
-                  <a
-                    href="tel:+523315550103"
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
-                  >
-                    <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
-                    <span>Llamar</span>
-                  </a>
-                  <a
-                    href="botica-silvestre.html"
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
-                  >
-                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
-                    <span>Ver más</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* SLIDE 5: PIZZAS A LA LEÑA (Pizzas a la Leña La Cantera) */}
-              <div
-                className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
-                  currentSlide === 4 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
-                }`}
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1920&q=80')",
-                }}
-              >
-                <div>
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-orange-400 block mb-2">
-                    Comida y Delivery
-                  </span>
-                </div>
-
-                <div className="max-w-3xl space-y-4 py-4 z-10">
-                  <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    Tu Negocio
-                  </h2>
-                  <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
-                  <a
-                    href="https://wa.me/523315550105?text=Hola%20Tu%20Negocio,%20quiero%20hacer%20un%20pedido%20a%20domicilio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all active:scale-95"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>Enviar WhatsApp</span>
-                  </a>
-                  <a
-                    href="tel:+523315550105"
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
-                  >
-                    <Phone className="w-4 h-4 text-orange-400 stroke-[2.2]" />
-                    <span>Llamar</span>
-                  </a>
-                  <a
-                    href="chile-chillon.html"
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
-                  >
-                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
-                    <span>Ver más</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* SLIDE 6: AGENTE DE BIENES RAÍCES (Valeria Rivas Asesoría Inmobiliaria) */}
-              <div
-                className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
-                  currentSlide === 5 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
                 }`}
                 style={{
                   backgroundImage:
@@ -980,7 +877,7 @@ export default function EpicentroNaturaCleanLight() {
               >
                 <div>
                   <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-teal-400 block mb-2">
-                    Hogar · Bienes Raíces
+                    Hogar
                   </span>
                 </div>
 
@@ -995,7 +892,7 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550209?text=Hola%20Tu%20Negocio,%20me%20interesa%20asesor%C3%ADa%20inmobiliaria%20en%20Natura"
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Hogar"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-700 hover:from-teal-700 hover:to-emerald-800 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-teal-600/25 transition-all active:scale-95"
@@ -1004,14 +901,14 @@ export default function EpicentroNaturaCleanLight() {
                     <span>Enviar WhatsApp</span>
                   </a>
                   <a
-                    href="tel:+523315550209"
+                    href="tel:+523336762545"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
                   >
                     <Phone className="w-4 h-4 text-teal-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
                   <a
-                    href="botica-silvestre.html"
+                    href="tu-negocio.html"
                     className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
                     <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
@@ -1019,34 +916,256 @@ export default function EpicentroNaturaCleanLight() {
                   </a>
                 </div>
               </div>
+
+              {/* SLIDE 5: MASCOTAS */}
+              <div
+                className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
+                  currentSlide === 4 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
+                }`}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1920&q=80')",
+                }}
+              >
+                <div>
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-amber-400 block mb-2">
+                    Mascotas
+                  </span>
+                </div>
+
+                <div className="max-w-3xl space-y-4 py-4 z-10">
+                  <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
+                    Tu Negocio
+                  </h2>
+                  <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
+                  <a
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Mascotas"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-amber-500/25 transition-all active:scale-95"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    <span>Enviar WhatsApp</span>
+                  </a>
+                  <a
+                    href="tel:+523336762545"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  >
+                    <Phone className="w-4 h-4 text-amber-400 stroke-[2.2]" />
+                    <span>Llamar</span>
+                  </a>
+                  <a
+                    href="tu-negocio.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
+                  >
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* SLIDE 6: PRODUCTOS ARTESANALES */}
+              <div
+                className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
+                  currentSlide === 5 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
+                }`}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1920&q=80')",
+                }}
+              >
+                <div>
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-purple-400 block mb-2">
+                    Productos artesanales
+                  </span>
+                </div>
+
+                <div className="max-w-3xl space-y-4 py-4 z-10">
+                  <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
+                    Tu Negocio
+                  </h2>
+                  <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
+                  <a
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Productos%20Artesanales"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-purple-500/25 transition-all active:scale-95"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    <span>Enviar WhatsApp</span>
+                  </a>
+                  <a
+                    href="tel:+523336762545"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  >
+                    <Phone className="w-4 h-4 text-purple-400 stroke-[2.2]" />
+                    <span>Llamar</span>
+                  </a>
+                  <a
+                    href="tu-negocio.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
+                  >
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* SLIDE 7: SERVICIOS HOGAR */}
+              <div
+                className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
+                  currentSlide === 6 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
+                }`}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1920&q=80')",
+                }}
+              >
+                <div>
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-sky-400 block mb-2">
+                    Servicios hogar
+                  </span>
+                </div>
+
+                <div className="max-w-3xl space-y-4 py-4 z-10">
+                  <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
+                    Tu Negocio
+                  </h2>
+                  <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
+                  <a
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Servicios%20Hogar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    <span>Enviar WhatsApp</span>
+                  </a>
+                  <a
+                    href="tel:+523336762545"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  >
+                    <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
+                    <span>Llamar</span>
+                  </a>
+                  <a
+                    href="tu-negocio.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
+                  >
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* SLIDE 8: SERVICIOS PROFESIONALES */}
+              <div
+                className={`absolute inset-0 p-8 sm:p-14 lg:p-16 flex flex-col justify-between transition-opacity duration-700 bg-cover bg-center text-white ${
+                  currentSlide === 7 ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
+                }`}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0.45) 100%), url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80')",
+                }}
+              >
+                <div>
+                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-indigo-400 block mb-2">
+                    Servicios Profesionales
+                  </span>
+                </div>
+
+                <div className="max-w-3xl space-y-4 py-4 z-10">
+                  <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
+                    Tu Negocio
+                  </h2>
+                  <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
+                  <a
+                    href="https://wa.me/523336762545?text=Hola%20Epicentro%20Natura,%20quiero%20anunciar%20mi%20negocio%20en%20el%20slider%20de%20Servicios%20Profesionales"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-indigo-500/25 transition-all active:scale-95"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    <span>Enviar WhatsApp</span>
+                  </a>
+                  <a
+                    href="tel:+523336762545"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  >
+                    <Phone className="w-4 h-4 text-indigo-400 stroke-[2.2]" />
+                    <span>Llamar</span>
+                  </a>
+                  <a
+                    href="tu-negocio.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
+                  >
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
+                </div>
+              </div>
+
             </div>
 
             {/* Barra inferior del Slider */}
             <div className="px-6 sm:px-10 py-4 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between text-xs text-slate-300">
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setCurrentSlide((prev) => (prev - 1 + 6) % 6)}
+                  onClick={() => setCurrentSlide((prev) => (prev - 1 + 8) % 8)}
                   className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => setCurrentSlide((prev) => (prev + 1) % 6)}
+                  onClick={() => setCurrentSlide((prev) => (prev + 1) % 8)}
                   className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
-                <span className="font-mono text-slate-400 ml-2">{currentSlide + 1} de 6</span>
+                <span className="font-mono text-slate-400 ml-2">{currentSlide + 1} de 8</span>
               </div>
 
-              {/* Indicadores Apple-style (6 slides) */}
+              {/* Indicadores Apple-style (8 slides) */}
               <div className="flex items-center gap-2">
-                {[0, 1, 2, 3, 4, 5].map((idx) => (
+                {[0, 1, 2, 3, 4, 5, 6, 7].map((idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
                     className={`h-1.5 rounded-full transition-all ${
-                      currentSlide === idx ? `w-8 ${["bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]", "bg-gradient-to-r from-red-500 to-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]", "bg-gradient-to-r from-sky-500 to-blue-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]", "bg-gradient-to-r from-sky-500 to-blue-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]", "bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]", "bg-gradient-to-r from-teal-500 to-emerald-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]"][idx]}` : "w-3 bg-slate-700 hover:bg-slate-600"
+                      currentSlide === idx
+                        ? `w-8 ${
+                            [
+                              "bg-gradient-to-r from-orange-500 to-amber-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]",
+                              "bg-gradient-to-r from-blue-500 to-indigo-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]",
+                              "bg-gradient-to-r from-cyan-500 to-teal-500 shadow-[0_0_8px_rgba(6,182,212,0.6)]",
+                              "bg-gradient-to-r from-teal-500 to-emerald-500 shadow-[0_0_8px_rgba(20,184,166,0.6)]",
+                              "bg-gradient-to-r from-amber-500 to-orange-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+                              "bg-gradient-to-r from-purple-500 to-fuchsia-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]",
+                              "bg-gradient-to-r from-sky-500 to-blue-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]",
+                              "bg-gradient-to-r from-indigo-500 to-violet-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]",
+                            ][idx]
+                          }`
+                        : "w-3 bg-slate-700 hover:bg-slate-600"
                     }`}
                   />
                 ))}
@@ -1207,7 +1326,7 @@ export default function EpicentroNaturaCleanLight() {
               </p>
             </div>
             <a
-              href="https://wa.me/523315550000?text=Hola,%20me%20interesa%20contratar%20un%20Slider%20Publicitario%20en%20Epicentro%20Natura"
+              href="https://wa.me/523336762545?text=Hola,%20me%20interesa%20contratar%20un%20Slider%20Publicitario%20en%20Epicentro%20Natura"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm shadow-lg transition-all active:scale-95 shrink-0"
