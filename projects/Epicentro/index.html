@@ -149,27 +149,31 @@
     <div id="cursor-dot"></div>
     <div id="cursor-ring"></div>
 
-    <!-- ─── CABECERA FIJA SUPERIOR (IDÉNTICA AL HOME DE HIPHA) ─── -->
+    <!-- ─── CABECERA FIJA SUPERIOR ─── -->
     <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10 px-6 py-4 transition-all duration-300" id="deck-header">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             
-            <!-- Dual Logo: Hipha + Divisor + Epicentro -->
-            <div class="flex items-center gap-3 sm:gap-4">
-                <a href="/" class="flex items-center group" title="Regresar al Home de Hipha">
-                    <img id="nav-hipha-logo" src="/projects/HiphaMX/HiphaIdentidad/Logotipo/HiphaWhite.svg" alt="Hipha" class="h-10 md:h-14 transition-transform group-hover:scale-105 w-auto object-contain">
+            <!-- Logo: Epizentro -->
+            <div class="flex items-center gap-3">
+                <a href="/" class="flex items-center group" title="Epizentro · Red de Comercio Hiperlocal">
+                    <img id="nav-epicentro-logo" src="/projects/Epicentro/Assets/Epizentro.svg" alt="Epizentro" class="h-8 md:h-10 transition-transform group-hover:scale-105 w-auto object-contain">
                 </a>
-                <span id="nav-divider" class="text-slate-500 font-extralight text-2xl md:text-3xl select-none">/</span>
-                <div class="flex items-center">
-                    <img id="nav-epicentro-logo" src="/projects/Epicentro/Assets/Epizentro.svg" alt="Epizentro" class="h-7 md:h-9 transition-transform group-hover:scale-105 w-auto object-contain">
-                </div>
+                <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300 text-[10px] font-bold uppercase tracking-wider border border-primary-400/30">
+                    Red Territorial
+                </span>
             </div>
 
-            <!-- Controles a la derecha (Regreso al home de la agencia) -->
-            <div class="flex items-center gap-2 sm:gap-4">
-                <a href="/" id="nav-agency-link" class="text-sm font-semibold text-slate-300 hover:text-white transition-colors inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10">
-                    <i class="ph-bold ph-arrow-left text-xs"></i>
-                    <span>Agencia Hipha</span>
+            <!-- Controles a la derecha -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="/natura/" class="text-xs sm:text-sm font-bold text-slate-900 bg-white hover:bg-slate-100 transition-all inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Natura (En Vivo)</span>
+                    <i class="ph-bold ph-arrow-right text-xs"></i>
                 </a>
+                <button type="button" onclick="openEpicentroContactForm('Solicitar Epicentro', 'Hola, me interesa activar un Epicentro para mi fraccionamiento o colonia.')" class="hidden md:inline-flex text-xs font-semibold text-slate-300 hover:text-white transition-colors items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer">
+                    <i class="ph-bold ph-buildings text-xs text-primary-400"></i>
+                    <span>Solicitar Epicentro</span>
+                </button>
             </div>
 
         </div>
@@ -199,49 +203,92 @@
     <main id="slides-track" class="w-full h-full">
 
         <!-- ══════════════════════════════════════════════════════════════ -->
-        <!-- PANTALLA 1: LA REVOLUCIÓN DEL MICELIO                       -->
+        <!-- PANTALLA 1: LA REVOLUCIÓN DEL MICELIO & EPICENTROS ACTIVOS   -->
         <!-- ══════════════════════════════════════════════════════════════ -->
         <section class="slide-section w-full h-screen relative flex items-center justify-center px-4 sm:px-6 overflow-hidden bg-transparent" id="slide-0">
-            <div class="relative z-10 max-w-5xl mx-auto text-center space-y-4 sm:space-y-6 pt-12 sm:pt-16 w-full min-w-0">
+            <div class="relative z-10 max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 pt-14 sm:pt-16 w-full min-w-0">
                 
-                <!-- Tag Superior (Estilo Exacto del Home) -->
-                <span class="block text-primary-400 font-semibold tracking-wide uppercase text-sm mb-2">
-                    Revolución del Micelio
+                <!-- Tag Superior -->
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-500/20 text-primary-300 text-xs font-semibold tracking-wide uppercase border border-primary-400/30">
+                    <i class="ph-bold ph-sparkle text-sm"></i>
+                    Red Territorial de Comercio Hiperlocal
                 </span>
 
-                <!-- Heading con degradado del Home -->
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.15] mb-4">
+                <!-- Heading con degradado -->
+                <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-[1.15]">
                     El algoritmo nos separó.<br class="hidden sm:inline" />
                     <span style="background: linear-gradient(to right, #22d3ee, #a855f7, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">El micelio nos vuelve a conectar.</span>
                 </h1>
 
-                <!-- Argumento de Ruptura (Tamaño y estilo de párrafo del Home) -->
-                <p class="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-normal mb-6">
-                    Las plataformas tradicionales cobran hasta un <strong class="text-white font-semibold">30% de peaje</strong> por llevarte un pedido. Hipha activa el <strong class="text-primary-400 font-semibold">Epicentro</strong>: no estamos tan cerca de todo, pero sí hacemos menos de 10 minutos en el trayecto.
+                <!-- Argumento de Ruptura -->
+                <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-normal">
+                    Conéctate al Epicentro de tu zona: pedidos directos a tus vecinos a <strong class="text-white font-semibold">-3 KM</strong>, entregas en <strong class="text-white font-semibold">&lt; 10 min</strong> y <strong class="text-emerald-400 font-semibold">0% comisiones</strong>.
                 </p>
 
-                <!-- 3 Métricas Rápidas en Glass Panels del Home -->
-                <div class="grid grid-cols-3 gap-3 sm:gap-4 max-w-xl mx-auto w-full min-w-0 mb-6">
-                    <div class="glass-panel p-3.5 sm:p-5 rounded-2xl border border-white/10 text-center">
-                        <div class="text-2xl sm:text-3xl font-bold text-primary-400">0%</div>
-                        <div class="text-xs text-slate-400 font-medium mt-1">Comisión</div>
+                <!-- CARD MONUMENTAL: EPICENTRO ACTIVO (NATURA) -->
+                <div class="max-w-xl mx-auto glass-panel p-4 sm:p-6 rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-emerald-950/40 via-slate-900/90 to-transparent shadow-[0_0_35px_rgba(16,185,129,0.25)] text-left relative overflow-hidden">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold uppercase tracking-wider border border-emerald-400/40">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            EPICENTRO ACTIVO · EN VIVO
+                        </span>
+                        <span class="text-xs text-slate-400 font-mono">Zapopan Sur · -3 KM</span>
                     </div>
-                    <div class="glass-panel p-3.5 sm:p-5 rounded-2xl border border-white/10 text-center">
-                        <div class="text-2xl sm:text-3xl font-bold text-primary-400">-3 KM</div>
-                        <div class="text-xs text-slate-400 font-medium mt-1">&lt; 10 min trayecto</div>
+                    
+                    <div class="space-y-1 mb-3">
+                        <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                            <span>Epicentro Natura</span>
+                            <i class="ph-fill ph-map-pin text-emerald-400 text-lg"></i>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Cotos Ceiba, Los Robles, El Fortín, Luna Bosque, La Granja y Monte Verde.
+                        </p>
                     </div>
-                    <div class="glass-panel p-3.5 sm:p-5 rounded-2xl border border-white/10 text-center">
-                        <div class="text-2xl sm:text-3xl font-bold text-fuchsia-400">Directo</div>
-                        <div class="text-xs text-slate-400 font-medium mt-1">A tu hogar</div>
+
+                    <!-- Highlights Compactos -->
+                    <div class="grid grid-cols-3 gap-2 py-2 border-y border-white/10 mb-3.5 text-center">
+                        <div>
+                            <div class="text-base sm:text-lg font-bold text-primary-400">12</div>
+                            <div class="text-[10px] text-slate-400">Categorías</div>
+                        </div>
+                        <div>
+                            <div class="text-base sm:text-lg font-bold text-cyan-400">&lt; 10 min</div>
+                            <div class="text-[10px] text-slate-400">Delivery directo</div>
+                        </div>
+                        <div>
+                            <div class="text-base sm:text-lg font-bold text-emerald-400">0%</div>
+                            <div class="text-[10px] text-slate-400">Comisión</div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="flex flex-col sm:flex-row items-center gap-2.5">
+                        <a href="/natura/" class="w-full sm:flex-1 py-3 px-5 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] group">
+                            <span>Entrar al Directorio Natura</span>
+                            <i class="ph-bold ph-arrow-right text-base group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="/natura/tu-negocio" class="w-full sm:w-auto py-3 px-4 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/15 flex items-center justify-center gap-2 transition-all">
+                            <i class="ph-bold ph-plus-circle text-sm text-emerald-400"></i>
+                            <span>Registra tu negocio</span>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Indicador de Scroll hacia abajo -->
-                <div class="pt-2 flex flex-col items-center justify-center gap-1.5 cursor-pointer group" onclick="goToSlide(1)">
-                    <span class="text-xs font-semibold tracking-wide uppercase text-slate-400 group-hover:text-primary-400 transition-colors">Baja el mouse para descubrir cómo</span>
-                    <div class="w-5 h-8 sm:w-6 sm:h-10 rounded-full border-2 border-slate-600 group-hover:border-primary-400 flex items-start justify-center p-1 transition-colors">
-                        <div class="w-1.5 h-2 rounded-full bg-primary-400 bounce-scroll"></div>
-                    </div>
+                <!-- Opciones de radar / explorar -->
+                <div class="pt-1 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-xs">
+                    <button type="button" onclick="showAvailableListFlow(); openEpicentrosModal();" class="text-slate-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                        <i class="ph-bold ph-compass"></i>
+                        <span>Próximos epicentros (Bugambilias, Zona Real)</span>
+                    </button>
+                    <span class="text-slate-600 hidden sm:inline">·</span>
+                    <button type="button" onclick="startGeoLocationFlow(); openEpicentrosModal();" class="text-slate-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                        <i class="ph-bold ph-crosshair"></i>
+                        <span>Detectar por GPS</span>
+                    </button>
+                    <span class="text-slate-600 hidden sm:inline">·</span>
+                    <span class="text-slate-400 cursor-pointer hover:text-primary-300 transition-colors" onclick="goToSlide(1)">
+                        ¿Cómo funciona? ↓
+                    </span>
                 </div>
 
             </div>
@@ -402,15 +449,15 @@
                     La tecnología de Hipha florece a la luz del día: interfaces limpias, compras sin peajes y una red viva de cotos que se respaldan mutuamente.
                 </p>
 
-                <!-- BOTÓN PRINCIPAL MONUMENTAL (Estilo Hero Home - Puente a Epizentro) -->
+                <!-- BOTÓN PRINCIPAL MONUMENTAL (Lleva a Natura) -->
                 <div class="pt-2 flex flex-col items-center justify-center gap-3 w-full">
-                    <a href="https://www.epizentro.com" target="_blank" rel="noopener noreferrer" class="bg-white text-slate-900 font-semibold px-8 sm:px-10 py-4 sm:py-4.5 rounded-full hover:bg-slate-100 transition-all shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(6,182,212,0.4)] inline-flex items-center justify-center gap-3 text-base sm:text-lg group transform hover:-translate-y-1">
+                    <a href="/natura/" class="bg-white text-slate-900 font-semibold px-8 sm:px-10 py-4 sm:py-4.5 rounded-full hover:bg-slate-100 transition-all shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] inline-flex items-center justify-center gap-3 text-base sm:text-lg group transform hover:-translate-y-1">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Explorar epicentros</span>
+                        <span>Entrar a Epicentro Natura</span>
                         <i class="ph-bold ph-arrow-right group-hover:translate-x-1.5 transition-transform text-xl"></i>
                     </a>
                     <span class="text-xs text-slate-500 font-medium">
-                        Haz clic para acceder al portal oficial de Epizentro
+                        Accede al directorio comercial, delivery y comunidad de Natura
                     </span>
                 </div>
 
@@ -602,8 +649,8 @@
                             </p>
                         </div>
                         <div class="shrink-0 w-full sm:w-auto">
-                            <a href="https://www.epizentro.com" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:shadow-[0_0_35px_rgba(6,182,212,0.4)] group cursor-pointer">
-                                <span>Entrar a Epizentro</span>
+                            <a href="/natura/" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-bold text-sm sm:text-base transition-all shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] group cursor-pointer">
+                                <span>Entrar a Epicentro Natura</span>
                                 <i class="ph-bold ph-arrow-right group-hover:translate-x-1.5 transition-transform text-lg"></i>
                             </a>
                         </div>
@@ -647,8 +694,8 @@
                             </p>
                         </div>
                         <div class="shrink-0 w-full sm:w-auto">
-                            <a href="https://www.epizentro.com" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all shadow-md group cursor-pointer">
-                                <span>Entrar a Epizentro</span>
+                            <a href="/natura/" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-bold text-sm transition-all shadow-md group cursor-pointer">
+                                <span>Entrar a Epicentro Natura</span>
                                 <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
                             </a>
                         </div>
@@ -707,8 +754,8 @@
                         </p>
                     </div>
                     <div class="shrink-0 w-full sm:w-auto">
-                        <a href="https://www.epizentro.com" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all shadow-md group cursor-pointer">
-                            <span>Entrar a Epizentro</span>
+                        <a href="/natura/" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all shadow-md group cursor-pointer">
+                            <span>Entrar al Directorio Natura</span>
                             <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     </div>

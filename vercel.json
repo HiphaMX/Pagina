@@ -100,7 +100,7 @@
       "dest": "/projects/EpicentroNatura/$1"
     },
     {
-      "src": "/(Assets|assets|categorias|frontend)/(.*)",
+      "src": "/natura/(Assets|assets|categorias|frontend)/(.*)",
       "has": [
         {
           "type": "host",
@@ -110,7 +110,27 @@
       "dest": "/projects/EpicentroNatura/$1/$2"
     },
     {
-      "src": "/(comunidad-natura|comunidad)(.*)",
+      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|negocio|cultura-natura|categoria|admin|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1$2"
+    },
+    {
+      "src": "/natura/(epicentro-register\\.js|demo_businesses_seed\\.js)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1"
+    },
+    {
+      "src": "/(natura/)?(comunidad-natura|comunidad)(.*)",
       "has": [
         {
           "type": "host",
@@ -123,17 +143,30 @@
       }
     },
     {
-      "src": "/(tu-negocio|chile-chillon|botica-silvestre|negocio|cultura-natura|categoria|admin|index)(.html|)",
+      "src": "/natura",
       "has": [
         {
           "type": "host",
           "value": "^(www\\.)?epizentro\\.com$"
         }
       ],
-      "dest": "/projects/EpicentroNatura/$1$2"
+      "status": 308,
+      "headers": {
+        "Location": "/natura/"
+      }
     },
     {
-      "src": "/(epicentro-register\\.js|demo_businesses_seed\\.js)",
+      "src": "/natura/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/"
+    },
+    {
+      "src": "/natura/(.*)",
       "has": [
         {
           "type": "host",
@@ -143,6 +176,29 @@
       "dest": "/projects/EpicentroNatura/$1"
     },
     {
+      "src": "/(tu-negocio|chile-chillon|botica-silvestre|negocio|cultura-natura|categoria|admin)(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "status": 308,
+      "headers": {
+        "Location": "/natura/$1$2"
+      }
+    },
+    {
+      "src": "/(Assets|assets)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/Epicentro/Assets/$2"
+    },
+    {
       "src": "/",
       "has": [
         {
@@ -150,7 +206,7 @@
           "value": "^(www\\.)?epizentro\\.com$"
         }
       ],
-      "dest": "/projects/EpicentroNatura/"
+      "dest": "/projects/Epicentro/"
     },
     {
       "src": "/(llms\\.txt|robots\\.txt)",
@@ -886,17 +942,17 @@
     {
       "src": "/(epicentro-natura|EpicentroNatura)",
       "status": 301,
-      "headers": { "Location": "https://www.epizentro.com" }
+      "headers": { "Location": "https://www.epizentro.com/natura/" }
     },
     {
       "src": "/epicentro/natura",
       "status": 308,
-      "headers": { "Location": "https://www.epizentro.com" }
+      "headers": { "Location": "https://www.epizentro.com/natura/" }
     },
     {
       "src": "/epicentro/natura/",
       "status": 308,
-      "headers": { "Location": "https://www.epizentro.com" }
+      "headers": { "Location": "https://www.epizentro.com/natura/" }
     },
     {
       "src": "/epicentro/natura/(comunidad-natura|comunidad)(.*)",
@@ -906,7 +962,7 @@
     {
       "src": "/epicentro/natura/(.*)",
       "status": 308,
-      "headers": { "Location": "https://www.epizentro.com/$1" }
+      "headers": { "Location": "https://www.epizentro.com/natura/$1" }
     },
     {
       "src": "/epicentro",

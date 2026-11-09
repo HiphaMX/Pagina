@@ -121,9 +121,9 @@
   <!-- TOP BAR COMUNITARIA -->
   <aside class="bg-brand-black text-white text-xs py-2 px-4 border-b border-brand-slate">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="/epicentro" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-purple-400 transition-colors text-xs font-semibold">
+      <a href="/" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-purple-400 transition-colors text-xs font-semibold">
         <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-        <span>Red Epicentros Hipha</span>
+        <span>Todos los Epicentros</span>
       </a>
       <span class="font-bold text-slate-200 tracking-wide text-xs sm:text-[13px]">
         Comunidad Epicentro Natura
@@ -1407,7 +1407,7 @@
         if (window.location.protocol === "file:") {
           micrositeUrl = (isSubfolder ? "../" : "") + slug + ".html";
         } else {
-          micrositeUrl = "/epicentro/natura/" + slug;
+          micrositeUrl = "/natura/" + slug;
         }
         return `
           <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">

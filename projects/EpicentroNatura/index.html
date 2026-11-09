@@ -99,9 +99,9 @@
   <!-- TOP BAR COMUNITARIA -->
   <aside class="bg-brand-black text-white text-xs py-2 px-4 border-b border-brand-slate">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="/epicentro" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-purple-400 transition-colors text-xs font-semibold">
+      <a href="/" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-purple-400 transition-colors text-xs font-semibold">
         <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-        <span>Red Epicentros Hipha</span>
+        <span>Todos los Epicentros</span>
       </a>
       <span class="font-bold text-slate-200 tracking-wide text-xs sm:text-[13px]">
         Comunidad Epicentro Natura
@@ -120,7 +120,7 @@
         <!-- Fila Superior / Izquierda: Logo y Botón Registrar Móvil -->
         <div class="w-full md:w-auto flex items-center justify-between gap-4">
           <!-- Logo Requerido: Epicentro (Azul) + etiqueta natura -->
-          <a href="/epicentro/natura/" class="flex items-center gap-2.5 group shrink-0" title="Epicentro Natura">
+          <a href="/natura/" class="flex items-center gap-2.5 group shrink-0" title="Epicentro Natura">
             <img src="Assets/Epizentro2.svg" alt="Epizentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
             <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-purple-50 text-indigo-950 border border-purple-200">
               natura
@@ -1207,7 +1207,7 @@
         if (window.location.protocol === "file:") {
           micrositeUrl = (isSubfolder ? "../" : "") + slug + ".html";
         } else {
-          micrositeUrl = "/epicentro/natura/" + slug;
+          micrositeUrl = "/natura/" + slug;
         }
         return `
           <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
