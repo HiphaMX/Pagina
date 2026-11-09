@@ -155,6 +155,17 @@ class Settings(BaseSettings):
     IEER_CC_EMAIL: str = "hola@hipha.mx"
     IEER_RECAPTCHA_SECRET_KEY: str = ""
 
+    # EPIZENTRO Specific SMTP settings (Pendiente de credenciales dedicadas)
+    EPIZENTRO_SMTP_HOST: str = ""
+    EPIZENTRO_SMTP_PORT: Union[int, str] = 587
+    EPIZENTRO_SMTP_USER: str = ""
+    EPIZENTRO_SMTP_PASSWORD: str = ""
+    EPIZENTRO_EMAILS_FROM_EMAIL: str = "hola@epizentro.com"
+    EPIZENTRO_EMAILS_FROM_NAME: str = "Epizentro"
+    EPIZENTRO_NOTIFICATION_EMAIL: str = "hola@hipha.mx"
+    EPIZENTRO_CC_EMAIL: str = "hola@hipha.mx"
+    EPIZENTRO_RECAPTCHA_SECRET_KEY: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
     # RECONCILIATION Specific Settings (Multi-Entity)

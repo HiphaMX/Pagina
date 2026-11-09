@@ -1,4 +1,4 @@
-# robots.txt for Epicentro Natura - Zapopan, Jalisco
+# robots.txt for Epizentro - Zapopan, Jalisco
 User-agent: *
 Allow: /
 
@@ -19,4 +19,4 @@ User-agent: ClaudeBot
 Allow: /
 
 # Sitemaps and LLMs Index
-Sitemap: https://hipha.mx/EpicentroNatura/sitemap.xml
+Sitemap: https://www.epizentro.com/sitemap.xml

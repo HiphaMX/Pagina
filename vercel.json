@@ -94,6 +94,89 @@
       "has": [
         {
           "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1"
+    },
+    {
+      "src": "/(Assets|assets|categorias|frontend)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1/$2"
+    },
+    {
+      "src": "/(comunidad-natura|comunidad)(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "status": 302,
+      "headers": {
+        "Location": "https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b"
+      }
+    },
+    {
+      "src": "/(tu-negocio|chile-chillon|botica-silvestre|negocio|cultura-natura|categoria|admin)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1.html"
+    },
+    {
+      "src": "/(epicentro-register\\.js|demo_businesses_seed\\.js)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1"
+    },
+    {
+      "src": "/(index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/index.html"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/EpicentroNatura/$1"
+    },
+    {
+      "src": "/(llms\\.txt|robots\\.txt)",
+      "has": [
+        {
+          "type": "host",
           "value": "^(www\\.)?amdi\\.mx$"
         }
       ],
@@ -823,16 +906,17 @@
     {
       "src": "/(epicentro-natura|EpicentroNatura)",
       "status": 301,
-      "headers": { "Location": "/epicentro/natura/" }
+      "headers": { "Location": "https://www.epizentro.com" }
     },
     {
       "src": "/epicentro/natura",
       "status": 308,
-      "headers": { "Location": "/epicentro/natura/" }
+      "headers": { "Location": "https://www.epizentro.com" }
     },
     {
       "src": "/epicentro/natura/",
-      "dest": "/projects/EpicentroNatura/"
+      "status": 308,
+      "headers": { "Location": "https://www.epizentro.com" }
     },
     {
       "src": "/epicentro/natura/(comunidad-natura|comunidad)(.*)",
@@ -841,7 +925,8 @@
     },
     {
       "src": "/epicentro/natura/(.*)",
-      "dest": "/projects/EpicentroNatura/$1"
+      "status": 308,
+      "headers": { "Location": "https://www.epizentro.com/$1" }
     },
     {
       "src": "/epicentro",

@@ -270,7 +270,7 @@ def build_approved_email_html(business_name: str, owner_name: str) -> str:
           <p>Hola <strong>{owner_name}</strong>,</p>
           <p>Nos complace informarte que la solicitud para <strong>{business_name}</strong> ha sido verificada y aprobada por la administración de Epicentro Natura.</p>
           <p>Tu comercio ya cuenta con el <strong>Sello Vecino Verificado</strong> y está visible para todas las familias y cotos de la zona.</p>
-          <a href="https://www.hipha.mx/epicentro/natura/" class="btn" style="color:#ffffff;">Ver Directorio en Vivo</a>
+          <a href="https://www.epizentro.com" class="btn" style="color:#ffffff;">Ver Directorio en Vivo</a>
         </div>
       </div>
     </body>
@@ -283,13 +283,13 @@ async def send_otp_email_task(business_name: str, owner_name: str, to_email: str
     try:
         html = build_otp_email_html(business_name, owner_name, otp)
         msg, host, port, user, pwd = _prepare_project_email(
-            project_prefix="HIPHA",
-            from_name="Epicentro Natura",
-            from_email="hola@hipha.mx",
+            project_prefix="EPIZENTRO",
+            from_name="Epizentro",
+            from_email="hola@epizentro.com",
             to_email=to_email,
-            subject=f"Tu código de verificación para Epicentro Natura: {otp}",
+            subject=f"Tu código de verificación para Epizentro: {otp}",
             html_content=html,
-            domain="hipha.mx"
+            domain="epizentro.com"
         )
         await _send_smtp(msg, host, port, user, pwd)
         logger.info(f"OTP enviado con éxito en background a {to_email} para {business_name}")
@@ -302,13 +302,13 @@ async def send_approval_email_task(business_name: str, owner_name: str, to_email
     try:
         html = build_approved_email_html(business_name, owner_name)
         msg, host, port, user, pwd = _prepare_project_email(
-            project_prefix="HIPHA",
-            from_name="Epicentro Natura",
-            from_email="hola@hipha.mx",
+            project_prefix="EPIZENTRO",
+            from_name="Epizentro",
+            from_email="hola@epizentro.com",
             to_email=to_email,
-            subject=f"¡Tu negocio {business_name} ha sido aprobado en Epicentro Natura!",
+            subject=f"¡Tu negocio {business_name} ha sido aprobado en Epizentro!",
             html_content=html,
-            domain="hipha.mx"
+            domain="epizentro.com"
         )
         await _send_smtp(msg, host, port, user, pwd)
         logger.info(f"Correo de aprobación enviado en background a {to_email} para {business_name}")
@@ -494,13 +494,13 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
         raise HTTPException(status_code=500, detail="No se pudo inicializar la pasarela de pago.")
 
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
-    site_domain = os.getenv("FRONTEND_URL", "https://www.hipha.mx")
+    site_domain = os.getenv("EPIZENTRO_URL", "https://www.epizentro.com")
     amount = float(reg.payment_amount or 399.0)
 
     preference_data = {
         "items": [
             {
-                "title": f"Suscripción Anual: {reg.business_name} (Epicentro Natura)",
+                "title": f"Suscripción Anual: {reg.business_name} (Epizentro)",
                 "quantity": 1,
                 "currency_id": "MXN",
                 "unit_price": amount,
@@ -515,12 +515,12 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
             }
         },
         "back_urls": {
-            "success": f"{site_domain}/epicentro/natura/?payment=success&reg_id={reg.id}",
-            "failure": f"{site_domain}/epicentro/natura/?payment=failure&reg_id={reg.id}",
-            "pending": f"{site_domain}/epicentro/natura/?payment=pending&reg_id={reg.id}"
+            "success": f"{site_domain}/?payment=success&reg_id={reg.id}",
+            "failure": f"{site_domain}/?payment=failure&reg_id={reg.id}",
+            "pending": f"{site_domain}/?payment=pending&reg_id={reg.id}"
         },
         "auto_return": "approved",
-        "statement_descriptor": "EPICENTRO NATURA",
+        "statement_descriptor": "EPIZENTRO",
         "notification_url": f"{backend_url}/api/mercadopago/webhook?store=epicentro",
         "metadata": {
             "registration_id": reg.id,
