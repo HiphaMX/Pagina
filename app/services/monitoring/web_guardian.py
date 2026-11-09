@@ -32,7 +32,9 @@ DEFAULT_CLIENT_SITES = [
     {"name": "Botica Silvestre", "domain": "botica-silvestre.com", "url": "https://www.botica-silvestre.com"},
     {"name": "Jessica Mendoza Bienes Raíces", "domain": "jessicamendozabienesraices.com", "url": "https://www.jessicamendozabienesraices.com"},
     {"name": "Grupo Gari", "domain": "grupo-gari.com", "url": "https://www.grupo-gari.com"},
-    {"name": "Letrerama", "domain": "letrerama.com", "url": "https://www.letrerama.com"}
+    {"name": "Letrerama", "domain": "letrerama.com", "url": "https://www.letrerama.com"},
+    {"name": "Dr. Jairo Domínguez", "domain": "jairodominguez-urologo.com", "url": "https://jairodominguez-urologo.com"},
+    {"name": "IEER", "domain": "ieer.com.mx", "url": "https://ieer.com.mx"}
 ]
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 (HiphaWebGuardian/1.0)"

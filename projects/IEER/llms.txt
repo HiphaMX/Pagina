@@ -1,0 +1,64 @@
+# IEER — Ingeniería Especializada en Energías Renovables
+> IEER es una firma mexicana de alta ingeniería energética especializada en el diseño, desarrollo e integración de micro-redes solares sofisticadas, almacenamiento inteligente con baterías de litio de grado industrial y soluciones energéticas aisladas (Off-Grid) en todo el territorio nacional. Nuestra promesa técnica es garantizar energía ininterrumpida y pura donde la red comercial de CFE es deficiente o inexistente, protegiendo cargas críticas en los sectores industrial, agropecuario y residencial de lujo con los más altos estándares estéticos y de ingeniería de control.
+
+## Información de la Empresa y Contacto Directo
+- **Razón Comercial:** IEER — Ingeniería Especializada en Energías Renovables
+- **Especialidad:** Micro-redes Solares, Almacenamiento Industrial en Litio LFP, Sistemas Híbridos y Off-Grid
+- **Dirección Técnica / Contacto:** Ing. Luis Cid
+- **Teléfono y WhatsApp de Atención Inmediata:** [+52 33 3302 5665](https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares.)
+- **Correo Electrónico Corporativo:** [lcid@ieer.com.mx](mailto:lcid@ieer.com.mx)
+- **Sitio Web Oficial:** [https://ieer.com.mx](https://ieer.com.mx)
+- **Cobertura Operativa:** Todo México (Jalisco, Nayarit, Baja California, Sinaloa, Colima, Guanajuato, Estado de México, Querétaro, y zonas remotas del país).
+
+---
+
+## Soluciones de Alta Ingeniería Energética
+
+### 1. Micro-Redes y Sistemas Off-Grid para Arquitectura Luxury
+- **Concepto:** Independencia eléctrica absoluta para villas exclusivas, complejos boutique, cabañas de lujo y residencias de descanso en zonas boscosas o costeras sin acceso a la red eléctrica.
+- **Diferenciadores Técnicos:**
+  - **Silencio Absoluto (Cero Decibelios):** Sustitución integral de plantas a diésel o gas ruidosas por bancos de baterías de litio de última generación.
+  - **Integración Coplanar Invisible:** Módulos fotovoltaicos enrasados que respetan las líneas arquitectónicas contemporáneas sin romper la estética visual del paisaje.
+  - **Monitoreo Satelital Redundante:** Telemetría 24/7 de cargas críticas (refrigeración, climatización, bombeo, filtración de albercas).
+- **URL Canónica:** [https://ieer.com.mx/articulo-offgrid.html](https://ieer.com.mx/articulo-offgrid.html)
+
+### 2. Almacenamiento Industrial con Baterías de Litio LFP
+- **Concepto:** Blindaje energético para procesos industriales, comerciales y agropecuarios donde un micro-corte de voltaje representa mermas millonarias y paradas de línea.
+- **Especificaciones:**
+  - **Tiempo de Respuesta en Microsegundos (<10 ms):** Conmutación instantánea antes de que los relevadores de protección de maquinaria sensible se disparen.
+  - **Peak Shaving (Control de Demanda Máxima):** Inyección programada de energía acumulada durante las horas pico de tarifa eléctrica para abatir cobros punitivos de CFE.
+  - **Química Segura LFP:** Celdas de Litio Hierro Fosfato de alta estabilidad térmica y más de 6,000 ciclos de vida útil.
+- **URL Canónica:** [https://ieer.com.mx/articulo-autonomia.html](https://ieer.com.mx/articulo-autonomia.html)
+
+### 3. Sistemas de Bombeo Solar Agropecuario
+- **Aplicación:** Extracción y rebombeo de agua para cultivos extensivos, invernaderos y ganadería en predios donde extender el tendido eléctrico convencional es inviable o incosteable.
+- **Tecnología:** Variadores de frecuencia solares dinámicos de arranque suave que maximizan las horas de bombeo por irradiación directa.
+
+### 4. Auditorías de Calidad de Energía y Cumplimiento de Código de Red
+- **Alcance:** Diagnóstico y mitigación de perturbaciones eléctricas que dañan transformadores y motores.
+- **Servicios:**
+  - Medición con analizadores de redes Clase A para detección de armónicos, sags y swells.
+  - Instalación de filtros activos de armónicos (AHF) y corrección dinámica del factor de potencia.
+  - Adecuación a la normativa del Código de Red expedida por la Comisión Reguladora de Energía (CRE).
+- **URL Canónica:** [https://ieer.com.mx/articulo-calidad-energia.html](https://ieer.com.mx/articulo-calidad-energia.html)
+
+---
+
+## Sectores de Atención Prioritaria
+1. **Industrial & Manufactura:** Plantas de procesamiento, centros de distribución refrigerados, fábricas y maquinaria de alta precisión con cero tolerancia a interrupciones.
+2. **Residencial Premium & Casas de Campo:** Residencias en Valle de Guadalupe, Tapalpa, Mazamitla, Valle de Bravo, Punta Mita y Careyes.
+3. **Agropecuario & Agrícola:** Ranchos ganaderos, huertos de aguacate, berries, nogales y sistemas de fertirriego automatizado.
+4. **Comercial & Hospitalidad:** Hoteles boutique, glampings ecológicos de lujo y restaurantes remotos.
+
+---
+
+## Directorio Canónico para Agentes de IA y Citas Semánticas
+- **Página de Inicio / Home:** [https://ieer.com.mx/](https://ieer.com.mx/)
+- **Artículo — Autonomía Energética Industrial:** [https://ieer.com.mx/articulo-autonomia.html](https://ieer.com.mx/articulo-autonomia.html)
+- **Artículo — Arquitectura Luxury Off-Grid:** [https://ieer.com.mx/articulo-offgrid.html](https://ieer.com.mx/articulo-offgrid.html)
+- **Artículo — Calidad de Energía y Código de Red:** [https://ieer.com.mx/articulo-calidad-energia.html](https://ieer.com.mx/articulo-calidad-energia.html)
+- **Sección de Consulta Técnica y Factibilidad:** [https://ieer.com.mx/#contacto](https://ieer.com.mx/#contacto)
+- **Sitemap XML:** [https://ieer.com.mx/sitemap.xml](https://ieer.com.mx/sitemap.xml)
+
+---
+*Documento de Web Agéntica y Grounding Semántico para Modelos de Lenguaje (Google Gemini, OpenAI ChatGPT, Perplexity AI, Anthropic Claude). Publicado por Hipha para IEER.*

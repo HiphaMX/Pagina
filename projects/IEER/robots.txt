@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+
+# Motores de Búsqueda y Agentes de Grounding / IA (GEO)
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+# Mapa del Sitio XML y Documentación de Web Agéntica
+Sitemap: https://ieer.com.mx/sitemap.xml
+# llms-txt: https://ieer.com.mx/llms.txt

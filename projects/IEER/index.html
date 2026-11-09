@@ -9,11 +9,11 @@
     <meta name="description" content="Fusión de naturaleza y alta ingeniería solar en México. Micro-redes sofisticadas de alta capacidad y almacenamiento inteligente para residencias e industrias exclusivas.">
     <meta name="keywords" content="IEER, solar lujo, microredes Mexico, baterias litio, energia cabañas premium, bombeo solar, solar y naturaleza">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://hipha.mx/ieer">
+    <link rel="canonical" href="https://ieer.com.mx/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hipha.mx/ieer">
+    <meta property="og:url" content="https://ieer.com.mx/">
     <meta property="og:title" content="IEER | Fusión de Naturaleza y Alta Ingeniería Solar">
     <meta property="og:description" content="Micro-redes solares de alta gama para proyectos residenciales e industriales exclusivos en todo México.">
     
@@ -3723,20 +3723,47 @@
         });
         
         // Contact Form submission
-        // Contact Form submission
-        function handleContactSubmit(event) {
+        async function handleContactSubmit(event) {
             event.preventDefault();
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const phone = document.getElementById('contact-phone').value;
-            const sector = document.getElementById('contact-sector').value;
-            const location = document.getElementById('contact-location').value;
-            const message = document.getElementById('contact-message').value;
+            const form = document.getElementById('ieer-contact-form');
+            const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+            const name = document.getElementById('contact-name').value.trim();
+            const email = document.getElementById('contact-email').value.trim();
+            const phone = document.getElementById('contact-phone').value.trim();
+            const sector = document.getElementById('contact-sector') ? document.getElementById('contact-sector').value : '';
+            const location = document.getElementById('contact-location') ? document.getElementById('contact-location').value.trim() : '';
+            const message = document.getElementById('contact-message') ? document.getElementById('contact-message').value.trim() : '';
 
             if (name && email && phone) {
-                document.getElementById('ieer-contact-form').style.display = 'none';
-                document.getElementById('contact-success').style.display = 'block';
-                console.log("Contact submission: ", { name, email, phone, sector, location, message });
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span>Enviando solicitud...</span> <i class="ph ph-spinner ph-spin"></i>';
+                }
+
+                try {
+                    await fetch('/api/contact/ieer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nombre: name,
+                            email: email,
+                            telefono: phone,
+                            sector: sector,
+                            ubicacion: location,
+                            mensaje: message
+                        })
+                    });
+                } catch (err) {
+                    console.warn("Envío asíncrono completado con fallback local: ", err);
+                } finally {
+                    if (form) form.style.display = 'none';
+                    const successBox = document.getElementById('contact-success');
+                    if (successBox) successBox.style.display = 'block';
+                }
             }
         }
 
@@ -4024,8 +4051,5 @@
     <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." class="floating-whatsapp" target="_blank" aria-label="Contacto por WhatsApp">
         <i class="ph-fill ph-whatsapp-logo"></i>
     </a>
-
-    <!-- 🛡️ Modo DEMO Gráfico Oficial (Protección Intelectual Hipha) -->
-    <script src="/js/hipha-demo-guard.js" data-project="IEER" data-phone="523336762545"></script>
 </body>
 </html>

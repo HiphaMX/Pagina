@@ -1,5 +1,8 @@
 from fastapi import APIRouter
-from app.api.projects import hipha, chilechillon, healthyice, whiteclean, grupogari, valencia_servicios, amdi, letrerama, jessica_mendoza
+from app.api.projects import (
+    hipha, chilechillon, healthyice, whiteclean, grupogari,
+    valencia_servicios, amdi, letrerama, jessica_mendoza, ieer
+)
 
 router = APIRouter()
 
@@ -12,6 +15,7 @@ router.include_router(valencia_servicios.router)
 router.include_router(amdi.router)
 router.include_router(letrerama.router)
 router.include_router(jessica_mendoza.router)
+router.include_router(ieer.router)
 
 
 

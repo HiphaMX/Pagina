@@ -3350,4 +3350,176 @@ async def send_jairodominguez_notification_team(form_data):
         return False
 
 
+async def send_ieer_notification_team(form_data):
+    """
+    Envía notificación por correo al equipo de ingeniería de IEER ante un nuevo prospecto o consulta técnica.
+    Utiliza _prepare_project_email con fallback seguro al SMTP general de la agencia.
+    """
+    to_email = settings.IEER_NOTIFICATION_EMAIL or "lcid@ieer.com.mx"
+    cc_email = settings.IEER_CC_EMAIL or "hola@hipha.mx"
+    from_email = settings.IEER_EMAILS_FROM_EMAIL or "lcid@ieer.com.mx"
+
+    telefono_clean = "".join(filter(str.isdigit, form_data.telefono or ""))
+    if telefono_clean.startswith("52") and len(telefono_clean) > 10:
+        telefono_clean = telefono_clean[2:]
+
+    sector_label = form_data.sector or "No especificado"
+    ubicacion_label = getattr(form_data, "ubicacion", None) or "No especificada"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Nueva Consulta Técnica IEER</title>
+    </head>
+    <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0f1315; color: #e3ddd5; padding: 24px 0; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background: #141a1c; border-radius: 8px; border: 1px solid #344245; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            <div style="background: linear-gradient(135deg, #141a1c 0%, #1e2729 100%); padding: 32px 24px; border-bottom: 2px solid #a98567; text-align: center;">
+                <h1 style="color: #e3ddd5; font-size: 22px; font-weight: 300; letter-spacing: 2px; margin: 0; text-transform: uppercase;">IEER</h1>
+                <p style="color: #a98567; font-size: 13px; margin: 6px 0 0 0; letter-spacing: 1px;">Ingeniería Especializada en Energías Renovables</p>
+            </div>
+            
+            <div style="padding: 28px 24px;">
+                <h2 style="color: #e3ddd5; font-size: 18px; margin-top: 0; font-weight: 500; border-left: 3px solid #a98567; padding-left: 10px;">
+                    Nueva Solicitud de Consulta Técnica
+                </h2>
+                <p style="color: #7e8d90; font-size: 14px; line-height: 1.5;">
+                    Se ha recibido una nueva solicitud de análisis técnico y micro-redes a través de <strong style="color: #e3ddd5;">ieer.com.mx</strong>:
+                </p>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px;">
+                    <tr style="border-bottom: 1px solid #232c2e;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #a98567; width: 35%;">Nombre / Organización:</td>
+                        <td style="padding: 10px 0; color: #e3ddd5;">{form_data.nombre}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #232c2e;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #a98567;">Correo:</td>
+                        <td style="padding: 10px 0; color: #e3ddd5;"><a href="mailto:{form_data.email}" style="color: #e3ddd5; text-decoration: underline;">{form_data.email}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #232c2e;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #a98567;">Teléfono:</td>
+                        <td style="padding: 10px 0; color: #e3ddd5;"><a href="tel:{form_data.telefono}" style="color: #e3ddd5; text-decoration: none;">{form_data.telefono}</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #232c2e;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #a98567;">Sector / Tipo de Proyecto:</td>
+                        <td style="padding: 10px 0; color: #e3ddd5;">{sector_label}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #232c2e;">
+                        <td style="padding: 10px 0; font-weight: bold; color: #a98567;">Ubicación:</td>
+                        <td style="padding: 10px 0; color: #e3ddd5;">{ubicacion_label}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; font-weight: bold; color: #a98567; vertical-align: top;">Descripción de Carga:</td>
+                        <td style="padding: 10px 0; color: #e3ddd5; line-height: 1.5;">{form_data.mensaje or 'Sin mensaje adicional'}</td>
+                    </tr>
+                </table>
+
+                <div style="text-align: center; margin: 30px 0 10px 0;">
+                    <a href="https://wa.me/52{telefono_clean}?text=Hola%20{form_data.nombre},%20nos%20comunicamos%20de%20IEER%20respecto%20a%20tu%20consulta%20técnica%20de%20energía%20solar." 
+                       style="background: #a98567; color: #141a1c; text-decoration: none; padding: 12px 26px; border-radius: 6px; font-weight: bold; font-size: 14px; display: inline-block; letter-spacing: 0.5px;">
+                        💬 Abrir WhatsApp con el Prospecto
+                    </a>
+                </div>
+            </div>
+            
+            <div style="background: #0f1315; padding: 14px; text-align: center; font-size: 11px; color: #7e8d90; border-top: 1px solid #232c2e;">
+                Notificación del Sistema · IEER Digital Platform · Desarrollado por Hipha
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="IEER",
+        from_name="IEER | Energías Renovables",
+        from_email=from_email,
+        to_email=to_email,
+        subject=f"⚡ NUEVA CONSULTA TÉCNICA: {form_data.nombre} ({sector_label})",
+        html_content=html_content,
+        domain="ieer.com.mx"
+    )
+
+    if cc_email:
+        message["Cc"] = cc_email
+
+    del message['Reply-To']
+    message['Reply-To'] = form_data.email
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Notificación de IEER enviada con éxito a {to_email} (CC: {cc_email})")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar notificación al equipo de IEER: {str(e)}")
+        return False
+
+
+async def send_ieer_confirmation_email(form_data):
+    """
+    Envía acuse de recibo y bienvenida al cliente/prospecto que completó el formulario en ieer.com.mx.
+    """
+    from_email = settings.IEER_EMAILS_FROM_EMAIL or "lcid@ieer.com.mx"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Confirmación de Solicitud | IEER</title>
+    </head>
+    <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0f1315; color: #e3ddd5; padding: 24px 0; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background: #141a1c; border-radius: 8px; border: 1px solid #344245; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #141a1c 0%, #1e2729 100%); padding: 32px 24px; border-bottom: 2px solid #a98567; text-align: center;">
+                <h1 style="color: #e3ddd5; font-size: 22px; font-weight: 300; letter-spacing: 2px; margin: 0; text-transform: uppercase;">IEER</h1>
+                <p style="color: #a98567; font-size: 13px; margin: 6px 0 0 0; letter-spacing: 1px;">Ingeniería Especializada en Energías Renovables</p>
+            </div>
+            
+            <div style="padding: 28px 24px;">
+                <h2 style="color: #e3ddd5; font-size: 18px; margin-top: 0; font-weight: 400;">
+                    Estimado/a {form_data.nombre},
+                </h2>
+                <p style="color: #7e8d90; font-size: 14px; line-height: 1.6;">
+                    Hemos recibido correctamente los datos de tu proyecto y necesidades de carga. Nuestro equipo de ingenieros especialistas está evaluando los requerimientos para preparar un estudio de factibilidad técnica preliminar.
+                </p>
+                <p style="color: #7e8d90; font-size: 14px; line-height: 1.6;">
+                    En breve nos pondremos en contacto contigo a través de tu número de contacto o correo electrónico registrado.
+                </p>
+                <div style="background: #1e2729; border-left: 3px solid #a98567; padding: 14px 18px; margin: 22px 0; border-radius: 4px;">
+                    <p style="margin: 0; color: #e3ddd5; font-size: 13px; font-style: italic;">
+                        "Fusión de naturaleza y alta ingeniería. Energía sin límites donde la red no llega."
+                    </p>
+                </div>
+                <p style="color: #7e8d90; font-size: 13px; margin-bottom: 0;">
+                    Atentamente,<br>
+                    <strong style="color: #e3ddd5;">Dirección de Ingeniería · IEER</strong><br>
+                    <a href="https://ieer.com.mx" style="color: #a98567; text-decoration: none;">ieer.com.mx</a>
+                </p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="IEER",
+        from_name="IEER | Energías Renovables",
+        from_email=from_email,
+        to_email=form_data.email,
+        subject="Hemos recibido tu solicitud de consulta técnica | IEER",
+        html_content=html_content,
+        domain="ieer.com.mx"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"Confirmación de IEER enviada con éxito al cliente {form_data.email}")
+        return True
+    except Exception as e:
+        logger.error(f"Fallo al enviar confirmación de IEER a {form_data.email}: {str(e)}")
+        return False
+
+
+
 

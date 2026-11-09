@@ -102,7 +102,8 @@ def startup_db_setup():
                     {"name": "DAM Pisos", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "info@dampisos.com"},
                     {"name": "El Ofertón del Piso", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "contacto@ofertondelpiso.com"},
                     {"name": "Oncología Robótica", "service_type": "complete", "billing_day": 10, "monthly_fee": 9500.0, "start_date": "2026-10-09", "contact_email": "citas@oncologiarobotica.com.mx"},
-                    {"name": "Dr. Jairo Domínguez", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2026-10-28", "contact_email": "r2urodominguez@hotmail.com"}
+                    {"name": "Dr. Jairo Domínguez", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2026-10-28", "contact_email": "r2urodominguez@hotmail.com"},
+                    {"name": "IEER", "service_type": "complete", "billing_day": 1, "monthly_fee": 9500.0, "start_date": "2026-11-01", "contact_email": "lcid@ieer.com.mx"}
                 ]
                 for ic in initial_clients:
                     db.add(AgencyClient(**ic))

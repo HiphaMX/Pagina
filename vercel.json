@@ -549,6 +549,56 @@
       "dest": "/projects/Dr. Jairo Dominguez/"
     },
     {
+      "src": "/(llms\\.txt|robots\\.txt|sitemap\\.xml)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?ieer\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/IEER/$1"
+    },
+    {
+      "src": "/(Assets|js)/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?ieer\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/IEER/$1/$2"
+    },
+    {
+      "src": "/(articulo-autonomia|articulo-calidad-energia|articulo-offgrid|index)(.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?ieer\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/IEER/$1$2"
+    },
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?ieer\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/IEER/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?ieer\\.com\\.mx$"
+        }
+      ],
+      "dest": "/projects/IEER/$1"
+    },
+    {
       "src": "/amdi",
       "status": 308,
       "headers": { "Location": "/amdi/" }

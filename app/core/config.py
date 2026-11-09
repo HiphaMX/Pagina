@@ -144,6 +144,17 @@ class Settings(BaseSettings):
     JAIRODOMINGUEZ_CC_EMAIL: str = "hola@hipha.mx"
     JAIRODOMINGUEZ_RECAPTCHA_SECRET_KEY: str = ""
 
+    # IEER Specific SMTP settings (Pendiente de credenciales dedicadas)
+    IEER_SMTP_HOST: str = ""
+    IEER_SMTP_PORT: Union[int, str] = 587
+    IEER_SMTP_USER: str = ""
+    IEER_SMTP_PASSWORD: str = ""
+    IEER_EMAILS_FROM_EMAIL: str = "lcid@ieer.com.mx"
+    IEER_EMAILS_FROM_NAME: str = "IEER | Ingeniería Especializada en Energías Renovables"
+    IEER_NOTIFICATION_EMAIL: str = "lcid@ieer.com.mx"
+    IEER_CC_EMAIL: str = "hola@hipha.mx"
+    IEER_RECAPTCHA_SECRET_KEY: str = ""
+
     GOOGLE_PLACES_API_KEY: str = ""
 
     # RECONCILIATION Specific Settings (Multi-Entity)
