@@ -762,7 +762,7 @@
                 <span>Sitio Web Oficial del Negocio</span>
                 <span class="px-1.5 py-0.5 text-[9px] font-black rounded bg-emerald-100 text-emerald-800 uppercase">Plan Pro</span>
               </span>
-              <span class="text-[11px] font-normal text-slate-400">Opcional (para jalar tráfico a tu página)</span>
+              <span class="text-[11px] font-normal text-slate-400">(Opcional)</span>
             </label>
             <div class="relative">
               <i data-lucide="globe" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
