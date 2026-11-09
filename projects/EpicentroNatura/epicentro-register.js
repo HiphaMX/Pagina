@@ -547,13 +547,13 @@
       if (!res.ok) throw new Error(data.detail || "Error al registrar pago con KAM");
       showStep4Success(data.folio || `NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`, {
         title: "¡Registro con Asesor KAM en Proceso!",
-        desc: `Tu registro fue canalizado con ${kamName}. Tu suscripción anual y Sello Vecino Verificado se activarán una vez validado tu pago ($399 MXN).`
+        desc: `Tu registro fue canalizado con ${kamName}. Hemos enviado las instrucciones y datos para transferencia bancaria a tu correo electrónico registrado. Tu página interactiva en epizentro se activará una vez validado tu pago ($399 MXN).`
       }, "pending_payment");
     } catch (err) {
       console.warn("Aviso KAM payment:", err);
       showStep4Success(`NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`, {
         title: "¡Registro con Asesor KAM en Proceso!",
-        desc: "Tu solicitud de suscripción anual fue recibida. Se validará con tu asesor para activar tu Sello Vecino Verificado."
+        desc: "Tu solicitud de suscripción anual fue recibida. Hemos enviado los datos para transferencia bancaria a tu correo electrónico para activar tu página interactiva en epizentro."
       }, "pending_payment");
     } finally {
       if (btn) {
@@ -775,14 +775,14 @@
             <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
           </div>
 
-          <!-- CONFIGURACIÓN DE MICROSITIO ($399/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+          <!-- CONFIGURACIÓN DE PÁGINA INTERACTIVA EN EPIZENTRO ($399/AÑO): PORTADA, DESTACADOS Y MENÚ -->
           <div id="reg-photos-section" class="border-t border-slate-100 pt-3 space-y-4">
-            <!-- 1. PORTADA DEL MICROSITIO -->
+            <!-- 1. PORTADA DE TU PÁGINA INTERACTIVA -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="text-xs font-bold text-slate-900 block">1. Portada del Micrositio (Hero Banner)</span>
-                  <span class="text-[11px] text-slate-500">Fotografía horizontal para el fondo superior de tu micrositio.</span>
+                  <span class="text-xs font-bold text-slate-900 block">1. Portada de tu página interactiva (Hero Banner)</span>
+                  <span class="text-[11px] text-slate-500">Fotografía horizontal para el fondo superior de tu página interactiva.</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                   <input type="file" id="reg-cover-file-input" accept="image/*" class="hidden" onchange="handleRegisterCoverFile(event)">
@@ -958,12 +958,9 @@
           <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center">
             <i data-lucide="award" class="w-6 h-6"></i>
           </div>
-          <span class="inline-block px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-            Suscripción Anual $399 MXN · Sello Oficial + Tu Propio Micrositio
-          </span>
-          <h4 class="text-lg font-black text-slate-950">Insignia Vecino Verificado y Micrositio con Catálogo</h4>
+          <h4 class="text-lg font-black text-slate-950">Página interactiva en epizentro con catálogo</h4>
           <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-            Obtén tu <strong>micrositio web interactivo exclusivo</strong> (con fotos de productos, precios, menú de pedidos directos por WhatsApp y distintivo verificado ante casetas de cotos).
+            Obtén tu <strong>página interactiva en epizentro</strong> (con fotos de productos, precios y menú de pedidos directos por WhatsApp).
           </p>
 
           <div class="py-2">
@@ -971,11 +968,10 @@
             <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual</span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
-            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu Micrositio Web Propio</div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu página interactiva en epizentro</div>
             <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Catálogo hasta 10 Fotos & Precios</div>
             <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Pedidos Directos a tu WhatsApp</div>
-            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Sello Verificado Oficial</div>
           </div>
         </div>
 
@@ -1014,11 +1010,14 @@
             </div>
           </div>
 
-          <div class="p-3 rounded-xl bg-white border border-slate-200 text-[11px] text-slate-700 space-y-1">
-            <div class="font-bold text-slate-900">Datos para Transferencia Directa (STP / SPEI):</div>
-            <div>Banco: <span class="font-mono font-semibold">STP / BBVA</span> · Hipha Marketing Digital</div>
-            <div>CLABE: <span class="font-mono font-semibold">646180157088123456</span></div>
-            <div>Monto: <span class="font-bold text-emerald-700">$399.00 MXN / año</span> · Concepto: <span class="font-mono">Suscripcion Natura</span></div>
+          <div class="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex items-start gap-2.5">
+            <i data-lucide="mail-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <div>
+              <p class="font-bold text-emerald-900">Instrucciones de Transferencia Bancaria</p>
+              <p class="text-[11px] text-emerald-800/90 mt-0.5 leading-relaxed">
+                Al confirmar tu registro, recibirás automáticamente en tu correo electrónico los datos bancarios oficiales (CLABE interbancaria, banco y referencia) junto con tu número de folio para completar la activación de tu página interactiva en epizentro.
+              </p>
+            </div>
           </div>
 
           <div>
@@ -1066,7 +1065,7 @@
             <div>
               <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo registro básico sin costo?</h5>
               <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                El <strong>registro gratuito</strong> incluye únicamente tus datos generales de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>No incluye micrositio web interactivo, catálogo de fotos ni insignia de vecino verificado.</em>
+                El <strong>registro gratuito</strong> incluye únicamente tus datos generales de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(No incluye página interactiva en epizentro)</em>
               </p>
               <div class="pt-2">
                 <button type="button" onclick="skipVerificationPayment()" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors">
@@ -1094,15 +1093,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
-      modal.dataset.version = "v403";
+      modal.dataset.version = "v404";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
     // Si el modal no contiene el stepper completo o carece de los nuevos campos de portada/destacados o es versión antigua
-    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v403") {
+    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v404") {
       modal.innerHTML = renderWizardHTML();
-      modal.dataset.version = "v403";
+      modal.dataset.version = "v404";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
@@ -1180,7 +1179,7 @@
     if (step === 1) {
       if (label) label.textContent = isFree ? "Paso 1 de 2" : "Paso 1 de 3";
       if (title) title.textContent = isFree ? "Alta Básica Comunitaria (Gratis)" : "Registrar Comercio o Servicio";
-      if (desc) desc.textContent = isFree ? "Publicación en el directorio con datos de contacto e hipervínculos funcionales." : "Conéctate directamente con las familias de cotos Natura con micrositio y catálogo.";
+      if (desc) desc.textContent = isFree ? "Publicación en el directorio con datos de contacto e hipervínculos funcionales." : "Conéctate directamente con las familias de cotos Natura con tu página interactiva y catálogo.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-slate-200 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-slate-200 transition-all";
@@ -1193,15 +1192,15 @@
       if (bar3) bar3.className = isFree ? "h-1.5 rounded-full bg-emerald-600 transition-all" : "h-1.5 rounded-full bg-slate-200 transition-all";
     } else if (step === 3) {
       if (label) label.textContent = "Paso 3 de 3";
-      if (title) title.textContent = "Suscripción Anual ($399 MXN) y Micrositio";
-      if (desc) desc.textContent = "Activa tu Micrositio web interactivo con catálogo de fotos y Sello Vecino Verificado.";
+      if (title) title.textContent = "Suscripción anual por página interactiva";
+      if (desc) desc.textContent = "";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
     } else if (step === 4) {
       if (label) label.textContent = "Completado";
       if (title) title.textContent = isFree ? "¡Registro Básico Gratuito Enviado!" : "Estatus de Registro y Verificación";
-      if (desc) desc.textContent = isFree ? "Tu negocio ha sido registrado con datos generales e hipervínculos de contacto." : "Consulta el estado de tu activación comunitaria y Sello Vecino Verificado.";
+      if (desc) desc.textContent = isFree ? "Tu negocio ha sido registrado con datos generales e hipervínculos de contacto." : "Consulta el estado de activación de tu página interactiva en epizentro.";
       if (bar1) bar1.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar2) bar2.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
       if (bar3) bar3.className = "h-1.5 rounded-full bg-emerald-600 transition-all";
@@ -1445,7 +1444,7 @@
     const folioSuffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
     showStep4Success(`NATURA-GRATIS-${folioSuffix}`, {
       title: "¡Registro Básico Gratuito Enviado!",
-      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu micrositio interactivo y catálogo de fotos con la suscripción anual en cualquier momento."
+      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu página interactiva en epizentro con catálogo de fotos con la suscripción anual en cualquier momento."
     }, "free_basic");
   }
 
@@ -1494,7 +1493,7 @@
       const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
       showStep4Success(`NATURA-SUB-${suffix}`, {
         title: "¡Completando Pago en Mercado Pago!",
-        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para validar tu comercio."
+        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para activar tu página interactiva en epizentro."
       }, "pending_payment");
     } catch (err) {
       console.warn("Aviso Mercado Pago:", err);
@@ -1502,7 +1501,7 @@
       const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
       showStep4Success(`NATURA-SUB-${suffix}`, {
         title: "¡Completando Pago en Mercado Pago!",
-        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para validar tu comercio."
+        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para activar tu página interactiva en epizentro."
       }, "pending_payment");
     } finally {
       if (btn) {
@@ -1514,7 +1513,7 @@
   }
 
   async function skipVerificationPayment() {
-    const ok = confirm("¿Confirmas tu registro básico gratuito?\n\nImportante: Tu negocio aparecerá en el directorio comunitario con tus datos generales (teléfono, WhatsApp, ubicación y horarios), pero NO incluirá micrositio web interactivo, fotos de catálogo ni insignia de Vecino Verificado.");
+    const ok = confirm("¿Confirmas tu registro básico gratuito?\n\nImportante: Tu negocio aparecerá en el directorio comunitario con tus datos generales (teléfono, WhatsApp, ubicación y horarios), pero NO incluye página interactiva en epizentro.");
     if (!ok) return;
 
     try {
@@ -1527,7 +1526,7 @@
             kam_name: "Registro Básico Gratuito",
             amount: 0.0,
             payment_method: "free_basic",
-            notes: "Alta básica sin costo (solo teléfono, whatsapp, ubicación y horarios; sin fotos/micrositio)"
+            notes: "Alta básica sin costo (solo teléfono, whatsapp, ubicación y horarios; sin página interactiva)"
           })
         }).catch(e => console.warn("Aviso reporte gratis:", e));
       }
@@ -1538,7 +1537,7 @@
     const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
     showStep4Success(`NATURA-GRATIS-${suffix}`, {
       title: "¡Registro Básico Gratuito Enviado!",
-      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu micrositio y fotos con la suscripción anual en cualquier momento."
+      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu página interactiva en epizentro y fotos con la suscripción anual en cualquier momento."
     }, "free_basic");
   }
 
@@ -1596,7 +1595,7 @@
       setTimeout(() => {
         showStep4Success(data.folio || `NATURA-VERIFIED-${codeVal}`, {
           title: "¡Comercio Verificado con Cortesía!",
-          desc: "Tu código de cortesía ha sido validado exitosamente. Tu comercio cuenta con Sello Oficial Vecino Verificado y Micrositio con catálogo."
+          desc: "Tu código de cortesía ha sido validado exitosamente. Tu comercio cuenta con su Página interactiva en epizentro con catálogo."
         }, "verified_success");
       }, 700);
     } catch (err) {
@@ -1608,7 +1607,7 @@
         setTimeout(() => {
           showStep4Success(`NATURA-PROMO-${codeVal}`, {
             title: "¡Comercio Verificado con Cortesía!",
-            desc: "Tu código promocional ha sido aceptado. Tu comercio cuenta con Sello Oficial Vecino Verificado."
+            desc: "Tu código promocional ha sido aceptado. Tu comercio cuenta con su Página interactiva en epizentro con catálogo."
           }, "verified_success");
         }, 700);
       } else {
@@ -1630,7 +1629,7 @@
     if (!container) return;
 
     if (mode === "pending_payment") {
-      const waMsg = encodeURIComponent(`Hola Hipha / Epicentro Natura, inicié mi suscripción anual para "${bName}" con folio ${folio}. Adjunto mi comprobante para validar mi Sello Vecino Verificado y activar mi Micrositio con catálogo.`);
+      const waMsg = encodeURIComponent(`Hola Hipha / Epicentro Natura, inicié mi suscripción anual para "${bName}" con folio ${folio}. Adjunto mi comprobante para activar mi página interactiva en epizentro con catálogo.`);
       const waLink = `https://wa.me/523336762545?text=${waMsg}`;
 
       container.innerHTML = `
@@ -1644,10 +1643,10 @@
             Pendiente de Acreditación · Validación Requerida
           </div>
 
-          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Completando Pago en Mercado Pago!"}</h4>
+          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : (currentPaymentMode === 'kam' ? "¡Registro con Asesor KAM Recibido!" : "¡Completando Pago en Mercado Pago!")}</h4>
           
           <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>Sello Vecino Verificado</strong> y tu <strong>Micrositio con Catálogo</strong>, se requiere validar tu pago de <strong>$399 MXN</strong>.
+            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>página interactiva en epizentro con catálogo</strong>, se requiere validar tu pago de <strong>$399 MXN</strong>.`}
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto space-y-1">
@@ -1668,11 +1667,17 @@
             </button>
             <p id="check-status-feedback" class="text-[11px] text-slate-500 hidden text-center px-2 leading-relaxed"></p>
 
+            ${currentPaymentMode === 'mp' ? `
             <div class="pt-1">
               <a href="https://mpago.la/2jXGN6C" target="_blank" rel="noopener noreferrer" class="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 underline transition-colors">
                 ¿No abrió la ventana? Reabrir enlace de Mercado Pago ($399 MXN) &rarr;
               </a>
-            </div>
+            </div>` : `
+            <div class="pt-1">
+              <p class="text-[11px] text-slate-500 text-center leading-relaxed">
+                Hemos enviado las instrucciones y datos para transferencia bancaria (SPEI) a tu correo electrónico registrado.
+              </p>
+            </div>`}
           </div>
 
           <div class="pt-3 border-t border-slate-100">
@@ -1706,7 +1711,7 @@
           </div>
 
           <p class="text-xs text-slate-500 max-w-xs mx-auto">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu micrositio web interactivo y catálogo fotográfico con la suscripción anual ($399 MXN) en cualquier momento."}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu página interactiva en epizentro con catálogo con la suscripción anual ($399 MXN) en cualquier momento."}
           </p>
 
           <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
@@ -1730,7 +1735,7 @@
           <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Comercio Verificado con Éxito!"}</h4>
           
           <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            Tu comercio <strong class="text-slate-900">${bName}</strong> cuenta con Sello Oficial Vecino Verificado y Micrositio interactivo con catálogo.
+            Tu comercio <strong class="text-slate-900">${bName}</strong> cuenta con su Página interactiva en epizentro con catálogo.
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
@@ -1739,7 +1744,7 @@
           </div>
 
           <p class="text-xs text-slate-500 max-w-xs mx-auto">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : "Tu negocio ya se encuentra registrado y activo en el directorio comunitario con fotos y micrositio."}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : "Tu negocio ya se encuentra registrado y activo en el directorio comunitario con su página interactiva en epizentro."}
           </p>
 
           <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
@@ -1783,7 +1788,7 @@
         setTimeout(() => {
           showStep4Success(data.folio || `NATURA-VERIFIED-${currentRegId.slice(-4).toUpperCase()}`, {
             title: "¡Comercio Verificado con Éxito!",
-            desc: "Tu pago ha sido acreditado. Tu comercio cuenta con Sello Oficial Vecino Verificado y Micrositio con catálogo activo."
+            desc: "Tu pago ha sido acreditado. Tu comercio cuenta con su Página interactiva en epizentro con catálogo activo."
           }, "verified_success");
         }, 800);
       } else {
@@ -1861,7 +1866,7 @@
         if (regIdParam) currentRegId = regIdParam;
         showStep4Success(regIdParam ? `NATURA-VERIFIED-${regIdParam.slice(-4).toUpperCase()}` : "NATURA-VERIFIED-OK", {
           title: "¡Pago Acreditado con Éxito!",
-          desc: "Tu suscripción anual y Sello Vecino Verificado están activos. Tu micrositio y catálogo ya están habilitados en el directorio comunitario."
+          desc: "Tu suscripción anual está activa. Tu página interactiva en epizentro y catálogo ya están habilitados en el directorio comunitario."
         }, "verified_success");
         return;
       }

@@ -316,6 +316,78 @@ async def send_approval_email_task(business_name: str, owner_name: str, to_email
         logger.error(f"Error background enviando aprobación a {to_email}: {e}")
 
 
+def build_kam_transfer_email_html(business_name: str, owner_name: str, folio: str, kam_name: str) -> str:
+    return f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }}
+        .card {{ max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }}
+        .header {{ background: linear-gradient(135deg, #059669 0%, #064e3b 100%); padding: 32px 24px; text-align: center; color: #ffffff; }}
+        .header h1 {{ margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }}
+        .header p {{ margin: 6px 0 0; font-size: 13px; opacity: 0.9; }}
+        .content {{ padding: 32px 28px; color: #0f172a; line-height: 1.6; font-size: 14px; }}
+        .bank-box {{ background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 20px; margin: 20px 0; }}
+        .badge {{ display: inline-block; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 11px; margin-bottom: 12px; }}
+        .btn {{ display: block; text-align: center; background: #25D366; color: #ffffff; padding: 14px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; margin-top: 20px; font-size: 14px; }}
+        .footer {{ padding: 20px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }}
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="header">
+          <h1>Epizentro Natura</h1>
+          <p>Página interactiva en epizentro · Suscripción Anual</p>
+        </div>
+        <div class="content">
+          <div class="badge">Folio de Registro: {folio}</div>
+          <p>Hola <strong>{owner_name}</strong>,</p>
+          <p>Hemos recibido la solicitud para activar la <strong>página interactiva en epizentro con catálogo</strong> de tu negocio <strong>{business_name}</strong> (asignada a: <em>{kam_name}</em>).</p>
+          <p>A continuación te proporcionamos los datos oficiales para realizar la transferencia bancaria (SPEI):</p>
+          
+          <div class="bank-box">
+            <div style="font-size:12px;font-weight:800;color:#0f172a;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;">Datos para Transferencia (SPEI)</div>
+            <p style="margin:4px 0;"><strong>Banco:</strong> STP / BBVA</p>
+            <p style="margin:4px 0;"><strong>Beneficiario:</strong> Hipha Marketing Digital</p>
+            <p style="margin:4px 0;"><strong>CLABE Interbancaria:</strong> <span style="font-family:monospace;font-size:15px;color:#059669;font-weight:900;">646180157088123456</span></p>
+            <p style="margin:4px 0;"><strong>Monto:</strong> <span style="font-size:15px;font-weight:900;color:#0f172a;">$399.00 MXN</span> (Suscripción Anual)</p>
+            <p style="margin:4px 0;"><strong>Concepto / Referencia:</strong> <span style="font-family:monospace;font-weight:700;">{folio}</span></p>
+          </div>
+
+          <p style="font-size: 13px; color: #475569;">Una vez realizada la transferencia, envía tu comprobante al canal de WhatsApp de soporte o a tu asesor asignado para activar inmediatamente tu página interactiva:</p>
+
+          <a href="https://wa.me/523336762545?text=Hola%20Hipha%2C%20adjunto%20comprobante%20de%20pago%20para%20folio%20{folio}%20de%20{business_name}" class="btn" style="color:#ffffff;">Enviar Comprobante por WhatsApp</a>
+        </div>
+        <div class="footer">
+          Epizentro · Desarrollado y administrado por Hipha Marketing Digital.
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+
+async def send_kam_transfer_instructions_email_task(business_name: str, owner_name: str, to_email: str, folio: str, kam_name: str):
+    """Envía por correo los datos de transferencia bancaria SPEI para altas con asesor KAM."""
+    try:
+        html = build_kam_transfer_email_html(business_name, owner_name, folio, kam_name)
+        msg, host, port, user, pwd = _prepare_project_email(
+            project_prefix="HIPHA",
+            from_name="Hipha · Epizentro",
+            from_email="hola@hipha.mx",
+            to_email=to_email,
+            subject=f"Instrucciones de Pago · Página interactiva en epizentro ({folio})",
+            html_content=html,
+            domain="hipha.mx"
+        )
+        await _send_smtp(msg, host, port, user, pwd)
+        logger.info(f"Instrucciones bancarias enviadas con éxito en background a {to_email} para {business_name}")
+    except Exception as e:
+        logger.error(f"Error background enviando instrucciones bancarias a {to_email}: {e}")
+
+
 # --- ENDPOINTS ---
 
 @router.post("/register/initiate")
@@ -736,8 +808,9 @@ def update_registration_details(
 
 
 @router.post("/register/report-kam-payment")
-def report_kam_payment(
+async def report_kam_payment(
     payload: KamPaymentReportRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
     """Registra solicitud de pago o alta acordada con un Asesor KAM / Transferencia."""
@@ -779,6 +852,17 @@ def report_kam_payment(
         folio = f"NATURA-GRATIS-{folio_suffix}"
     else:
         folio = f"NATURA-KAM-{folio_suffix}"
+
+    # Si es alta con Asesor KAM / Transferencia, enviar datos bancarios oficiales al correo registrado
+    if method not in ("mercadopago_subscription", "free_basic") and reg.email:
+        background_tasks.add_task(
+            send_kam_transfer_instructions_email_task,
+            reg.business_name,
+            reg.owner_name or reg.business_name,
+            reg.email,
+            folio,
+            kam
+        )
 
     return {
         "success": True,
@@ -942,13 +1026,12 @@ def seed_official_showcases(db: Session):
             ]
         }
 
-        # 1. BOTICA SILVESTRE (Cortesía / Comercio Fundador Oficial con Micrositio)
-        all_boticas = db.query(EpicentroRegistration).filter(
-            (EpicentroRegistration.business_name.ilike("%Botica Silvestre%")) |
-            (EpicentroRegistration.id == "reg-botica-silvestre")
-        ).order_by(EpicentroRegistration.created_at.asc()).all()
+        # 1. BOTICA SILVESTRE (Cortesía / Comercio Fundador Oficial con Página Interactiva)
+        botica = db.query(EpicentroRegistration).filter(
+            EpicentroRegistration.id == "reg-botica-silvestre"
+        ).first()
 
-        if not all_boticas:
+        if not botica:
             botica = EpicentroRegistration(
                 id="reg-botica-silvestre",
                 business_name="Botica Silvestre",
@@ -976,17 +1059,12 @@ def seed_official_showcases(db: Session):
                 payment_amount=399.0,
                 is_verified_badge=True,
                 status="active",
-                moderation_notes="Comercio fundador oficial con micrositio activo."
+                moderation_notes="Comercio fundador oficial con página interactiva activa."
             )
             db.add(botica)
             db.commit()
             db.refresh(botica)
         else:
-            botica = all_boticas[0]
-            if len(all_boticas) > 1:
-                for dup in all_boticas[1:]:
-                    db.delete(dup)
-
             updated = False
             if not botica.cover_photo:
                 botica.cover_photo = BOTICA_DATA["cover_photo"]
@@ -1012,31 +1090,15 @@ def seed_official_showcases(db: Session):
             if not botica.is_verified_badge:
                 botica.is_verified_badge = True
                 updated = True
-            if updated or len(all_boticas) > 1:
+            if updated:
                 db.commit()
 
         # 2. CHILE CHILLÓN (Registro Oficial Único)
-        # Priorizar siempre el registro creado por el usuario y purgar cualquier registro dummy previo
-        user_chillon = db.query(EpicentroRegistration).filter(
-            (EpicentroRegistration.business_name.ilike("%chill%")) &
-            (EpicentroRegistration.id != "reg-chile-chillon")
-        ).order_by(EpicentroRegistration.created_at.asc()).first()
+        chillon = db.query(EpicentroRegistration).filter(
+            EpicentroRegistration.id == "reg-chile-chillon"
+        ).first()
 
-        if user_chillon:
-            dummies = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == "reg-chile-chillon").all()
-            if dummies:
-                for d in dummies:
-                    db.delete(d)
-                db.commit()
-            all_chillon = [user_chillon]
-        else:
-            all_chillon = db.query(EpicentroRegistration).filter(
-                (EpicentroRegistration.business_name.ilike("%Chile Chillón%")) |
-                (EpicentroRegistration.business_name.ilike("%Chile Chillon%")) |
-                (EpicentroRegistration.id == "reg-chile-chillon")
-            ).order_by(EpicentroRegistration.created_at.asc()).all()
-
-        if not all_chillon:
+        if not chillon:
             chillon = EpicentroRegistration(
                 id="reg-chile-chillon",
                 business_name="Chile Chillón",
@@ -1066,17 +1128,12 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
-                moderation_notes="Cortesía oficial Hipha: micrositio profesional y catálogo interactivo activo."
+                moderation_notes="Cortesía oficial Hipha: página interactiva con catálogo activo."
             )
             db.add(chillon)
             db.commit()
             db.refresh(chillon)
         else:
-            chillon = all_chillon[0]
-            if len(all_chillon) > 1:
-                for dup in all_chillon[1:]:
-                    db.delete(dup)
-
             updated = False
             if not chillon.cover_photo:
                 chillon.cover_photo = CHILLON_DATA["cover_photo"]
@@ -1115,7 +1172,7 @@ def seed_official_showcases(db: Session):
                 chillon.payment_status = "waived"
                 chillon.kam_name = "Cortesía Hipha"
                 updated = True
-            if updated or len(all_chillon) > 1:
+            if updated:
                 db.commit()
 
     except Exception as e:
