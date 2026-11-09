@@ -726,16 +726,16 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="max-w-3xl space-y-4 py-4 z-10">
                   <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    El Güero Taquero
+                    Tu Negocio
                   </h2>
                   <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    Tacos y costras de suadero, pastor con piña asada al carbón, carnaza, arrachera, pancita y tripita dorada. Servidos con tortillas recién hechas, cebollitas cambray y salsas de molcajete directo a la pluma de tu coto.
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550202?text=Hola%20El%20G%C3%BCero%20Taquero,%20quiero%20hacer%20un%20pedido%20a%20domicilio%20en%20mi%20coto"
+                    href="https://wa.me/523315550202?text=Hola%20Tu%20Negocio,%20quiero%20hacer%20un%20pedido%20a%20domicilio%20en%20mi%20coto"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all active:scale-95"
@@ -750,21 +750,13 @@ export default function EpicentroNaturaCleanLight() {
                     <Phone className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
-                  <button
-                    onClick={() =>
-                      setLocationModalData({
-                        isOpen: true,
-                        name: "El Güero Taquero",
-                        address: "Prol. Mariano Otero #4290 (Frente al ingreso Coto Ceiba)",
-                        note: "Entrega en caseta de todos los cotos Natura y El Fortín",
-                        copied: false,
-                      })
-                    }
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  <a
+                    href="chile-chillon.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
-                    <MapPin className="w-4 h-4 text-orange-400 stroke-[2.2]" />
-                    <span>Ver ubicación</span>
-                  </button>
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
                 </div>
               </div>
 
@@ -786,16 +778,16 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="max-w-3xl space-y-4 py-4 z-10">
                   <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    Veterinaria Huellitas Natura
+                    Tu Negocio
                   </h2>
                   <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    Consultas médicas veterinarias, cuadro completo de vacunas, desparasitaciones, cirugías menores y estética canina profesional con baño medicado y secado. Cuidamos a tu mejor amigo con entrega y atención en cotos.
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550207?text=Hola%20Veterinaria%20Huellitas%20Natura,%20necesito%20atenci%C3%B3n%20para%20mi%20mascota"
+                    href="https://wa.me/523315550207?text=Hola%20Tu%20Negocio,%20necesito%20atenci%C3%B3n%20para%20mi%20mascota"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-red-500/25 transition-all active:scale-95"
@@ -810,21 +802,13 @@ export default function EpicentroNaturaCleanLight() {
                     <Phone className="w-4 h-4 text-red-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
-                  <button
-                    onClick={() =>
-                      setLocationModalData({
-                        isOpen: true,
-                        name: "Veterinaria Huellitas Natura",
-                        address: "Plaza Natura Local 2 (Junto a Parque Central)",
-                        note: "Atención presencial y servicio a domicilio en cotos",
-                        copied: false,
-                      })
-                    }
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  <a
+                    href="botica-silvestre.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
-                    <MapPin className="w-4 h-4 text-red-400 stroke-[2.2]" />
-                    <span>Ver ubicación</span>
-                  </button>
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
                 </div>
               </div>
 
@@ -846,16 +830,16 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="max-w-3xl space-y-4 py-4 z-10">
                   <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    Planchaduría Doña Mary
+                    Tu Negocio
                   </h2>
                   <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    Planchado profesional por docena en prendas de vestir, camisas y uniformes escolares con almidón ligero y entrega protegida en ganchos. Recolección y entrega puntual a la puerta o caseta de tu coto.
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550208?text=Hola%20Do%C3%B1a%20Mary,%20tengo%20ropa%20para%20planchar%20en%20mi%20coto"
+                    href="https://wa.me/523315550208?text=Hola%20Tu%20Negocio,%20tengo%20ropa%20para%20planchar%20en%20mi%20coto"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
@@ -870,21 +854,13 @@ export default function EpicentroNaturaCleanLight() {
                     <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
-                  <button
-                    onClick={() =>
-                      setLocationModalData({
-                        isOpen: true,
-                        name: "Planchaduría Doña Mary",
-                        address: "Coto Roble Casa 24 / Servicio en toda la zona Natura",
-                        note: "Recolección y entrega sin costo adicional en cotos",
-                        copied: false,
-                      })
-                    }
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  <a
+                    href="chile-chillon.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
-                    <MapPin className="w-4 h-4 text-sky-400 stroke-[2.2]" />
-                    <span>Ver ubicación</span>
-                  </button>
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
                 </div>
               </div>
 
@@ -906,16 +882,16 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="max-w-3xl space-y-4 py-4 z-10">
                   <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    AquaWash Detallado en Cochera
+                    Tu Negocio
                   </h2>
                   <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    Lavado automotriz en seco, abrillantado, encerado cerámico y aspirado profundo de tapicería en la cochera de tu casa. Cuidamos la pintura de tu auto sin usar gasolina ni gastar agua comunitaria.
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550103?text=Hola%20AquaWash,%20quiero%20agendar%20un%20lavado%20en%20mi%20cochera"
+                    href="https://wa.me/523315550103?text=Hola%20Tu%20Negocio,%20quiero%20agendar%20un%20lavado%20en%20mi%20cochera"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-blue-500/25 transition-all active:scale-95"
@@ -930,21 +906,13 @@ export default function EpicentroNaturaCleanLight() {
                     <Phone className="w-4 h-4 text-sky-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
-                  <button
-                    onClick={() =>
-                      setLocationModalData({
-                        isOpen: true,
-                        name: "AquaWash Detallado en Cochera",
-                        address: "Servicio móvil a domicilio en todos los cotos Natura",
-                        note: "Llegamos con equipo autónomo y productos biodegradables",
-                        copied: false,
-                      })
-                    }
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  <a
+                    href="botica-silvestre.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
-                    <MapPin className="w-4 h-4 text-sky-400 stroke-[2.2]" />
-                    <span>Ver ubicación</span>
-                  </button>
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
                 </div>
               </div>
 
@@ -966,16 +934,16 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="max-w-3xl space-y-4 py-4 z-10">
                   <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    Pizzas a la Leña La Cantera
+                    Tu Negocio
                   </h2>
                   <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    Pizzas rústicas horneadas al momento en horno de piedra con masa madre de fermentación lenta de 48 horas, salsa de tomate San Marzano y quesos artesanales fundidos. Crujientes y calientitas hasta tu mesa.
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550105?text=Hola%20Pizzas%20La%20Cantera,%20quiero%20hacer%20un%20pedido%20a%20domicilio"
+                    href="https://wa.me/523315550105?text=Hola%20Tu%20Negocio,%20quiero%20hacer%20un%20pedido%20a%20domicilio"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all active:scale-95"
@@ -990,21 +958,13 @@ export default function EpicentroNaturaCleanLight() {
                     <Phone className="w-4 h-4 text-orange-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
-                  <button
-                    onClick={() =>
-                      setLocationModalData({
-                        isOpen: true,
-                        name: "Pizzas a la Leña La Cantera",
-                        address: "Prol. Mariano Otero esq. Las Rosas",
-                        note: "Horno de piedra rústico con entrega a caseta de cotos",
-                        copied: false,
-                      })
-                    }
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  <a
+                    href="chile-chillon.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
-                    <MapPin className="w-4 h-4 text-orange-400 stroke-[2.2]" />
-                    <span>Ver ubicación</span>
-                  </button>
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
                 </div>
               </div>
 
@@ -1026,16 +986,16 @@ export default function EpicentroNaturaCleanLight() {
 
                 <div className="max-w-3xl space-y-4 py-4 z-10">
                   <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
-                    Valeria Rivas Asesoría Inmobiliaria
+                    Tu Negocio
                   </h2>
                   <p className="text-sm sm:text-lg text-slate-200 font-normal leading-relaxed max-w-2xl">
-                    Especialista en compra, venta y arrendamiento de casas residenciales en cotos de Mariano Otero y El Fortín. Valuación comercial certificada sin costo para vecinos, trámites notariales seguros y asesoría hipotecaria.
+                    En este espacio puede aparecer la descripción general de los productos o servicios que ofreces en la zona del epicentro.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 z-10 pt-4 border-t border-white/15">
                   <a
-                    href="https://wa.me/523315550209?text=Hola%20Valeria,%20me%20interesa%20asesor%C3%ADa%20inmobiliaria%20en%20Natura"
+                    href="https://wa.me/523315550209?text=Hola%20Tu%20Negocio,%20me%20interesa%20asesor%C3%ADa%20inmobiliaria%20en%20Natura"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-700 hover:from-teal-700 hover:to-emerald-800 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-teal-600/25 transition-all active:scale-95"
@@ -1050,21 +1010,13 @@ export default function EpicentroNaturaCleanLight() {
                     <Phone className="w-4 h-4 text-teal-400 stroke-[2.2]" />
                     <span>Llamar</span>
                   </a>
-                  <button
-                    onClick={() =>
-                      setLocationModalData({
-                        isOpen: true,
-                        name: "Valeria Rivas Asesoría Inmobiliaria",
-                        address: "Prol. Mariano Otero #4500 (Oficina Coto Encino)",
-                        note: "Atención presencial en cotos de la zona previa cita",
-                        copied: false,
-                      })
-                    }
-                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  <a
+                    href="botica-silvestre.html"
+                    className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 backdrop-blur-md transition-all shadow-sm active:scale-95 group/btn"
                   >
-                    <MapPin className="w-4 h-4 text-teal-400 stroke-[2.2]" />
-                    <span>Ver ubicación</span>
-                  </button>
+                    <ArrowRight className="w-4 h-4 text-emerald-400 stroke-[2.2] group-hover/btn:translate-x-0.5 transition-transform" />
+                    <span>Ver más</span>
+                  </a>
                 </div>
               </div>
             </div>
