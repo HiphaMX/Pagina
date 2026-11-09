@@ -97,32 +97,38 @@
     const btnMicro = document.getElementById("plan-btn-microsite");
     const btnFree = document.getElementById("plan-btn-free");
     const photosSec = document.getElementById("reg-photos-section");
+    const proNotice = document.getElementById("reg-pro-notice");
     const freeNotice = document.getElementById("reg-free-notice");
+    const websiteSec = document.getElementById("reg-website-section");
     const stepLabel = document.getElementById("wizard-step-label");
     const btnSubmit1 = document.getElementById("btn-submit-step1");
 
     if (plan === "microsite") {
       if (btnMicro) {
-        btnMicro.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex flex-col justify-between cursor-pointer";
+        btnMicro.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex items-center justify-between cursor-pointer";
       }
       if (btnFree) {
-        btnFree.className = "p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex flex-col justify-between opacity-80 hover:opacity-100 cursor-pointer";
+        btnFree.className = "p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex items-center justify-between opacity-80 hover:opacity-100 cursor-pointer";
       }
       if (photosSec) photosSec.classList.remove("hidden");
+      if (proNotice) proNotice.classList.remove("hidden");
       if (freeNotice) freeNotice.classList.add("hidden");
+      if (websiteSec) websiteSec.classList.remove("hidden");
       if (stepLabel) stepLabel.textContent = "Paso 1 de 3";
       if (btnSubmit1) {
         btnSubmit1.innerHTML = `<span>Continuar a Validación (Paso 1 de 3)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
       }
     } else {
       if (btnMicro) {
-        btnMicro.className = "p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex flex-col justify-between opacity-80 hover:opacity-100 cursor-pointer";
+        btnMicro.className = "p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex items-center justify-between opacity-80 hover:opacity-100 cursor-pointer";
       }
       if (btnFree) {
-        btnFree.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-slate-900 flex flex-col justify-between cursor-pointer";
+        btnFree.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-slate-900 flex items-center justify-between cursor-pointer";
       }
       if (photosSec) photosSec.classList.add("hidden");
+      if (proNotice) proNotice.classList.add("hidden");
       if (freeNotice) freeNotice.classList.remove("hidden");
+      if (websiteSec) websiteSec.classList.add("hidden");
       if (stepLabel) stepLabel.textContent = "Paso 1 de 2";
       if (btnSubmit1) {
         btnSubmit1.innerHTML = `<span>Continuar con Registro Gratuito (Paso 1 de 2)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
@@ -616,31 +622,32 @@
       <div id="reg-step-1">
         <!-- SELECTOR DE PLAN: PLAN PRO ($399/AÑO) VS REGISTRO GRATUITO ($0) -->
         <div class="mb-4 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button type="button" id="plan-btn-microsite" onclick="selectRegistrationPlan('microsite')" class="p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex flex-col justify-between cursor-pointer">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> Plan Pro
-              </span>
-              <span class="px-2 py-0.5 text-[10px] font-black uppercase rounded-md bg-emerald-100 text-emerald-800 font-mono">$399 / año</span>
-            </div>
-            <p class="text-[11px] text-slate-500 leading-snug">Micrositio interactivo propio, catálogo hasta 10 fotos, pedidos WhatsApp y Sello Vecino Verificado.</p>
+          <button type="button" id="plan-btn-microsite" onclick="selectRegistrationPlan('microsite')" class="p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex items-center justify-between cursor-pointer">
+            <span class="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Plan Pro
+            </span>
+            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-emerald-100 text-emerald-800 font-mono">$399 / año</span>
           </button>
 
-          <button type="button" id="plan-btn-free" onclick="selectRegistrationPlan('free_basic')" class="p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex flex-col justify-between opacity-80 hover:opacity-100 cursor-pointer">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400"></i> Registro Gratuito
-              </span>
-              <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-200 text-slate-700 font-mono">$0</span>
-            </div>
-            <p class="text-[11px] text-slate-500 leading-snug">Presencia en el directorio con datos generales: teléfono, WhatsApp, ubicación y horarios. Solo textos e hipervínculos.</p>
+          <button type="button" id="plan-btn-free" onclick="selectRegistrationPlan('free_basic')" class="p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex items-center justify-between opacity-80 hover:opacity-100 cursor-pointer">
+            <span class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1.5">
+              <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i> Registro gratuito
+            </span>
+            <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-slate-200 text-slate-700 font-mono">$0</span>
           </button>
+        </div>
+
+        <div id="reg-pro-notice" class="mb-4 p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 flex items-start gap-2.5 text-left">
+          <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+          <p class="text-[11px] text-emerald-950 leading-relaxed font-medium">
+            Página interactiva con posibilidad de publicar hasta 10 fotografías de tus productos o servicios, además posibilidad de incluir un botón hacia tu sitio web propio.
+          </p>
         </div>
 
         <div id="reg-free-notice" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-2.5 text-left">
           <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
-          <p class="text-[11px] text-amber-900 leading-relaxed">
-            <strong>Ficha Básica Gratuita ($0):</strong> Tu comercio se publicará con textos de contacto e hipervínculos funcionales directos (llamada y WhatsApp). <em>No incluye carga de fotos ni micrositio web interactivo.</em>
+          <p class="text-[11px] text-amber-900 leading-relaxed font-medium">
+            Tu comercio se publicará con textos de contacto e hipervínculos funcionales directos (llamada y WhatsApp). No incluye fotos ni vínculo a sitios web.
           </p>
         </div>
 
@@ -749,9 +756,12 @@
             </div>
           </div>
 
-          <div>
+          <div id="reg-website-section">
             <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center justify-between">
-              <span>Sitio Web Oficial del Negocio</span>
+              <span class="flex items-center gap-1.5">
+                <span>Sitio Web Oficial del Negocio</span>
+                <span class="px-1.5 py-0.5 text-[9px] font-black rounded bg-emerald-100 text-emerald-800 uppercase">Plan Pro</span>
+              </span>
               <span class="text-[11px] font-normal text-slate-400">Opcional (para jalar tráfico a tu página)</span>
             </label>
             <div class="relative">
@@ -1084,15 +1094,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
-      modal.dataset.version = "v402";
+      modal.dataset.version = "v403";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
     // Si el modal no contiene el stepper completo o carece de los nuevos campos de portada/destacados o es versión antigua
-    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v402") {
+    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v403") {
       modal.innerHTML = renderWizardHTML();
-      modal.dataset.version = "v402";
+      modal.dataset.version = "v403";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
@@ -1233,7 +1243,8 @@
       const email = document.getElementById("reg-email") ? document.getElementById("reg-email").value.trim() : "";
       const phone = document.getElementById("reg-phone") ? document.getElementById("reg-phone").value.trim() : "";
       const wa = document.getElementById("reg-wa") ? document.getElementById("reg-wa").value.trim() : "";
-      const website = document.getElementById("reg-website") ? document.getElementById("reg-website").value.trim() : "";
+      const rawWebsite = document.getElementById("reg-website") ? document.getElementById("reg-website").value.trim() : "";
+      const website = (currentSelectedPlan === "microsite") ? (rawWebsite || null) : null;
       const schedule = document.getElementById("reg-schedule") ? document.getElementById("reg-schedule").value.trim() : "Lunes a Sábado · 09:00 a 19:00 hrs";
 
       // Métodos de contacto preferidos
@@ -1248,7 +1259,7 @@
 
       const micrositeData = {
         cover_photo: registerCoverPhoto || null,
-        website_url: website || null,
+        website_url: website,
         featured_section: {
           title: featuredTitle || "Nuestra Selección Destacada",
           subtitle: featuredSubtitle,
