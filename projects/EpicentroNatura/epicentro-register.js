@@ -39,21 +39,29 @@
       { slug: "abogados-legal", label: "Abogados & Legal" },
       { slug: "diseno-marketing", label: "Diseño & Marketing" },
       { slug: "inmobiliario", label: "Inmobiliario" },
-      { slug: "consultoria", label: "Consultoría" }
+      { slug: "consultoria", label: "Consultoría" },
+      { slug: "diseno-interiores", label: "Diseño de interiores" },
+      { slug: "arquitectura", label: "Arquitectura" },
+      { slug: "fisioterapeuta", label: "Fisioterapeuta" },
+      { slug: "finanzas", label: "Finanzas" },
+      { slug: "otros", label: "Otros" }
     ],
     "servicios-hogar": [
       { slug: "electricidad-iluminacion", label: "Electricidad e Iluminación" },
       { slug: "fontaneria-gas", label: "Fontanería y Gas" },
       { slug: "carpinteria", label: "Carpintería" },
+      { slug: "cerrajeria", label: "Cerrajería" },
+      { slug: "limpieza-especializada", label: "Limpieza especializada" },
+      { slug: "mantenimiento", label: "Mantenimiento" },
+      { slug: "jardineria", label: "Jardinería" },
+      { slug: "carwash", label: "Carwash" },
       { slug: "tintoreria-planchaduria", label: "Tintorería y Planchaduría" },
-      { slug: "carwash-ecologico", label: "Carwash Ecológico" }
+      { slug: "otros", label: "Otros" }
     ],
     "hogar": [
       { slug: "cortinas-persianas", label: "Cortinas y Persianas" },
       { slug: "plantas-paisajismo", label: "Plantas y Paisajismo" },
-      { slug: "muebles-decoracion", label: "Muebles y Decoración" },
-      { slug: "cerrajeria", label: "Cerrajería" },
-      { slug: "limpieza-mantenimiento", label: "Limpieza y Mantenimiento" }
+      { slug: "muebles-decoracion", label: "Muebles y Decoración" }
     ],
     "mascotas": [
       { slug: "estetica-spa", label: "Estética y Spa Canino" },
@@ -66,7 +74,8 @@
       { slug: "entrenador-personal", label: "Entrenador Personal" },
       { slug: "yoga-pilates", label: "Yoga y Pilates" },
       { slug: "cross-training", label: "Cross Training" },
-      { slug: "artes-marciales", label: "Artes Marciales" }
+      { slug: "artes-marciales", label: "Artes Marciales" },
+      { slug: "tiendas-suplementos", label: "Tiendas de suplementos" }
     ]
   };
 
@@ -605,12 +614,12 @@
 
       <!-- FASE 1: DATOS DEL COMERCIO Y CONTACTO -->
       <div id="reg-step-1">
-        <!-- SELECTOR DE PLAN: MICROSITIO ($399/AÑO) VS REGISTRO GRATUITO ($0) -->
+        <!-- SELECTOR DE PLAN: PLAN PRO ($399/AÑO) VS REGISTRO GRATUITO ($0) -->
         <div class="mb-4 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button type="button" id="plan-btn-microsite" onclick="selectRegistrationPlan('microsite')" class="p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex flex-col justify-between cursor-pointer">
             <div class="flex items-center justify-between mb-1">
               <span class="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> Plan con Micrositio
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> Plan Pro
               </span>
               <span class="px-2 py-0.5 text-[10px] font-black uppercase rounded-md bg-emerald-100 text-emerald-800 font-mono">$399 / año</span>
             </div>
@@ -622,7 +631,7 @@
               <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                 <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400"></i> Registro Gratuito
               </span>
-              <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-200 text-slate-700 font-mono">$0 Gratis</span>
+              <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-200 text-slate-700 font-mono">$0</span>
             </div>
             <p class="text-[11px] text-slate-500 leading-snug">Presencia en el directorio con datos generales: teléfono, WhatsApp, ubicación y horarios. Solo textos e hipervínculos.</p>
           </button>
@@ -648,7 +657,7 @@
             <div>
               <label class="block text-xs font-bold text-slate-800 mb-1">Giro de la Oferta *</label>
               <select id="reg-category" onchange="syncSubcategoriesDropdown()" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                <option value="comida-delivery">Comida & Delivery (incluye Postres y Café)</option>
+                <option value="comida-delivery">Comida & Delivery</option>
                 <option value="productos-artesanales">Productos artesanales</option>
                 <option value="educacion">Educación</option>
                 <option value="servicios-profesionales">Servicios Profesionales</option>
@@ -1075,15 +1084,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
-      modal.dataset.version = "v401";
+      modal.dataset.version = "v402";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
     // Si el modal no contiene el stepper completo o carece de los nuevos campos de portada/destacados o es versión antigua
-    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v401") {
+    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v402") {
       modal.innerHTML = renderWizardHTML();
-      modal.dataset.version = "v401";
+      modal.dataset.version = "v402";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
