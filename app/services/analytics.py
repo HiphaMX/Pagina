@@ -28,6 +28,7 @@ CLIENTS = {
     "Grupo Gari": "555407699",
     "Valencia Servicios": "555402565",
     "Oncología Robótica": "558168081",
+    "Epizentro": "563745142",
 }
 
 def get_ga4_credentials():

@@ -103,7 +103,8 @@ def startup_db_setup():
                     {"name": "El Ofertón del Piso", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "contacto@ofertondelpiso.com"},
                     {"name": "Oncología Robótica", "service_type": "complete", "billing_day": 10, "monthly_fee": 9500.0, "start_date": "2026-10-09", "contact_email": "citas@oncologiarobotica.com.mx", "contact_name": "Dra. Jacqueline H. Díaz Garza", "contact_phone": "33 1108 5716", "website_url": "https://oncologia-robotica.com", "ga4_property_id": "558168081"},
                     {"name": "Dr. Jairo Domínguez", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2026-10-28", "contact_email": "r2urodominguez@hotmail.com"},
-                    {"name": "IEER", "service_type": "complete", "billing_day": 1, "monthly_fee": 9500.0, "start_date": "2026-11-01", "contact_email": "lcid@ieer.com.mx"}
+                    {"name": "IEER", "service_type": "complete", "billing_day": 1, "monthly_fee": 9500.0, "start_date": "2026-11-01", "contact_email": "lcid@ieer.com.mx"},
+                    {"name": "Epizentro", "service_type": "complete", "billing_day": 1, "monthly_fee": 0.0, "start_date": "2026-11-01", "contact_email": "contacto@hipha.mx", "website_url": "https://www.epizentro.com", "ga4_property_id": "563745142"}
                 ]
                 for ic in initial_clients:
                     db.add(AgencyClient(**ic))
@@ -132,6 +133,29 @@ def startup_db_setup():
                 elif not onco.ga4_property_id:
                     onco.ga4_property_id = "558168081"
                     onco.website_url = "https://oncologia-robotica.com"
+                    db.commit()
+
+                epiz = db.query(AgencyClient).filter(AgencyClient.name.ilike("Epizentro%")).first()
+                if not epiz:
+                    import datetime
+                    db.add(AgencyClient(
+                        name="Epizentro",
+                        contact_name="Epizentro Red Hiperlocal",
+                        contact_email="contacto@hipha.mx",
+                        service_type="complete",
+                        billing_period="monthly",
+                        billing_day=1,
+                        monthly_fee=0.0,
+                        start_date=datetime.date(2026, 11, 1),
+                        status="active",
+                        website_url="https://www.epizentro.com",
+                        ga4_property_id="563745142",
+                        notes="Plataforma y Red Comercial Hiperlocal Epizentro"
+                    ))
+                    db.commit()
+                elif not epiz.ga4_property_id or epiz.ga4_property_id != "563745142":
+                    epiz.ga4_property_id = "563745142"
+                    epiz.website_url = "https://www.epizentro.com"
                     db.commit()
         finally:
             db.close()

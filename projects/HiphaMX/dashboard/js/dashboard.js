@@ -1487,7 +1487,9 @@ const CLIENT_COLOR_PALETTE = {
     'white clean': { bg: 'rgba(226, 232, 240, 0.15)', text: '#e2e8f0', border: 'rgba(226, 232, 240, 0.35)' },
     'uro-oncology': { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.35)' },
     'urología avanzada': { bg: 'rgba(14, 165, 233, 0.15)', text: '#38bdf8', border: 'rgba(14, 165, 233, 0.35)' },
-    'hipha': { bg: 'rgba(0, 229, 255, 0.2)', text: '#00e5ff', border: 'rgba(0, 229, 255, 0.4)' }
+    'hipha': { bg: 'rgba(0, 229, 255, 0.2)', text: '#00e5ff', border: 'rgba(0, 229, 255, 0.4)' },
+    'epizentro': { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.35)' },
+    'epicentro': { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.35)' }
 };
 
 function getClientStyle(clientName) {
@@ -1909,7 +1911,7 @@ function updateClientFilterOptions() {
     const clientsSet = new Set();
     
     // Lista base
-    ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+    ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha', 'Epizentro'].forEach(c => clientsSet.add(c));
     
     // Clientes del directorio de la agencia
     if (Array.isArray(clientsDirectoryData)) {
@@ -1938,7 +1940,7 @@ function updateClientFilterOptions() {
 function syncAllClientsDropdowns() {
     const clientsSet = new Set();
     // Clientes base
-    ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+    ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha', 'Epizentro'].forEach(c => clientsSet.add(c));
 
     // Clientes del directorio de la agencia
     if (Array.isArray(clientsDirectoryData)) {
@@ -3114,7 +3116,7 @@ function openMonthlyReportModal() {
     if (selectClient && selectClient.options.length <= 1) {
         selectClient.innerHTML = '<option value="all">Todos los clientes</option>';
         const clientsSet = new Set();
-        ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha'].forEach(c => clientsSet.add(c));
+        ['Letrerama', 'Grupo Gari', 'AMDI', 'Jessica Mendoza', 'Chile Chillón', 'Valencia Servicios', 'White Clean', 'Uro-Oncology', 'Urología Avanzada', 'Botica Silvestre', 'Hipha', 'Epizentro'].forEach(c => clientsSet.add(c));
         
         workflowTasks.forEach(t => {
             if (t.client_name) clientsSet.add(t.client_name.trim());
@@ -9598,7 +9600,8 @@ const DEFAULT_AGENCY_CLIENTS = [
     { name: "Botica Silvestre", contact_name: "Botica Silvestre", contact_email: "contacto@boticasilvestre.com" },
     { name: "DAM Pisos", contact_name: "DAM Pisos", contact_email: "info@dampisos.com" },
     { name: "El Ofertón del Piso", contact_name: "El Ofertón del Piso", contact_email: "contacto@ofertondelpiso.com" },
-    { name: "Oncología Robótica", contact_name: "Dra. Jacqueline H. Díaz Garza", contact_email: "citas@oncologiarobotica.com.mx" }
+    { name: "Oncología Robótica", contact_name: "Dra. Jacqueline H. Díaz Garza", contact_email: "citas@oncologiarobotica.com.mx" },
+    { name: "Epizentro", contact_name: "Epizentro Red Hiperlocal", contact_email: "contacto@hipha.mx" }
 ];
 
 let quotationsCatalog = [...DEFAULT_OFFICIAL_CATALOG];
