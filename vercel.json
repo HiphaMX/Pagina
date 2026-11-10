@@ -120,7 +120,7 @@
       "dest": "/projects/EpicentroNatura/$1$2"
     },
     {
-      "src": "/natura/(epicentro-register\\.js|demo_businesses_seed\\.js)",
+      "src": "/natura/(epicentro-register\\.js|demo_businesses_seed\\.js|epicentro-search\\.js)",
       "has": [
         {
           "type": "host",

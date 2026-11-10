@@ -762,6 +762,9 @@
     </div>
   </footer>
 
+  <!-- MOTOR DE BÚSQUEDA INTELIGENTE EPICENTRO -->
+  <script src="../epicentro-search.js"></script>
+
   <!-- SCRIPT DE DATOS, FILTROS Y CATEGORÍAS INDEPENDIENTES -->
   <script>
     // 10 CATEGORÍAS COMPLETAS DE EPICENTRO NATURA
@@ -1444,20 +1447,14 @@
     // APLICAR TODOS LOS FILTROS
     function applyAllFilters() {
       const searchInput = document.getElementById("search-input");
-      const q = searchInput ? searchInput.value.toLowerCase().trim() : "";
+      const q = searchInput ? searchInput.value.trim() : "";
       const cotoSelect = document.getElementById("coto-select");
       const coto = cotoSelect ? cotoSelect.value : "all";
 
-      const filtered = ALL_BUSINESSES.filter(b => {
-        const matchCat = (currentCategorySlug === "all") || (b.category_slug === currentCategorySlug) || (currentCategorySlug === "comida-delivery" && b.category_slug === "postres-cafe") || (currentCategorySlug === "educacion" && b.category_slug === "escuelas") || (currentCategorySlug === "escuelas" && b.category_slug === "educacion");
+      function filterBusinessItem(b, requireCatMatch) {
+        const matchCat = !requireCatMatch || (currentCategorySlug === "all") || (b.category_slug === currentCategorySlug) || (currentCategorySlug === "comida-delivery" && (b.category_slug === "postres-cafe" || b.category_slug === "comida-delivery")) || (currentCategorySlug === "educacion" && b.category_slug === "escuelas") || (currentCategorySlug === "escuelas" && b.category_slug === "educacion");
         const matchSubcat = (currentSubcategoryFilter === "all") || (b.subcategory_slug === currentSubcategoryFilter);
-        const matchText = !q ||
-          b.name.toLowerCase().includes(q) ||
-          b.description.toLowerCase().includes(q) ||
-          b.address.toLowerCase().includes(q) ||
-          (b.category_label && b.category_label.toLowerCase().includes(q)) ||
-          (b.subcategory_label && b.subcategory_label.toLowerCase().includes(q)) ||
-          (b.community_name && b.community_name.toLowerCase().includes(q));
+        const matchText = typeof matchBusinessSearch === "function" ? matchBusinessSearch(b, q) : (!q || (b.name && b.name.toLowerCase().includes(q.toLowerCase())));
         const matchCoto = (coto === "all") || (b.community_slug === coto);
         const matchType = (currentTypeFilter === "all") ||
           (currentTypeFilter === "local-establecido" && (b.type_slug === "local-establecido" || b.type_slug === "local_establecido" || b.type_slug === "punto-venta-fijo")) ||
@@ -1466,7 +1463,19 @@
         const matchPickup = !filterPickup || (b.has_pickup === true);
 
         return matchCat && matchSubcat && matchText && matchCoto && matchType && matchDelivery && matchPickup;
-      });
+      }
+
+      let isCrossCategoryFallback = false;
+      let filtered = ALL_BUSINESSES.filter(b => filterBusinessItem(b, true));
+
+      // Si no hubo resultados en la categoría actual pero hay texto de búsqueda, buscar en todo el directorio
+      if (filtered.length === 0 && q && currentCategorySlug !== "all") {
+        const globalMatches = ALL_BUSINESSES.filter(b => filterBusinessItem(b, false));
+        if (globalMatches.length > 0) {
+          filtered = globalMatches;
+          isCrossCategoryFallback = true;
+        }
+      }
 
       // Sincronizar URL suavemente
       if (window.history && window.history.replaceState) {
@@ -1478,10 +1487,13 @@
         window.history.replaceState({}, "", url);
       }
 
-      const countEl = document.getElementById("cat-badge-count"); if (countEl) countEl.textContent = `${filtered.length} negocio${filtered.length === 1 ? "" : "s"}`;
+      const countEl = document.getElementById("cat-badge-count");
+      if (countEl) countEl.textContent = `${filtered.length} negocio${filtered.length === 1 ? "" : "s"}`;
       updateStructuredData(filtered);
 
       const grid = document.getElementById("category-businesses-grid");
+      if (!grid) return;
+
       if (filtered.length === 0) {
         if (!q && coto === "all" && currentTypeFilter === "all" && !filterDelivery && !filterPickup) {
           grid.innerHTML = `
@@ -1498,40 +1510,54 @@
                   <i data-lucide="plus-circle" class="w-4 h-4"></i>
                   <span>Dar de Alta mi Negocio</span>
                 </button>
-                <a href="../index.html" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors inline-flex items-center gap-1.5">
+                <a href="${typeof getCategoryPageUrl === 'function' ? getCategoryPageUrl('all') : '../categoria.html?cat=all'}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors inline-flex items-center gap-1.5">
                   <i data-lucide="arrow-left" class="w-4 h-4"></i>
                   <span>Ver Todo el Directorio</span>
                 </a>
               </div>
             </div>
           `;
-          lucide.createIcons();
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
           return;
         }
 
-        const isCrossCategory = currentCategorySlug !== "all" && q;
         grid.innerHTML = `
-          <div class="col-span-full bg-white rounded-3xl border border-snow-400 p-12 text-center">
+          <div class="col-span-full bg-white rounded-3xl border border-snow-400 p-12 text-center shadow-xs">
             <i data-lucide="store" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-            <h4 class="text-base font-bold text-slate-800">No encontramos negocios para "${q || 'estos filtros'}"</h4>
-            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">${isCrossCategory ? 'No hay coincidencias en esta categoría. Puedes buscar en todo el directorio o probar con otra palabra.' : 'Prueba cambiando el tipo de negocio o seleccionando "Toda la zona".'}</p>
+            <h4 class="text-base font-bold text-slate-800">No encontramos negocios para "${typeof escapeHtml === 'function' ? escapeHtml(q || 'estos filtros') : (q || 'estos filtros')}"</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Prueba buscando por productos (ej. <em>salsas, adaptógenos, planos, botica</em>) o seleccionando "Toda la zona".</p>
             <div class="flex items-center justify-center gap-3 mt-4">
-              ${isCrossCategory ? `
-                <a href="../categoria.html?cat=all&q=${encodeURIComponent(q)}&coto=${encodeURIComponent(coto)}" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-colors">
-                  Buscar en todas las categorías
-                </a>
-              ` : ''}
               <button onclick="resetFilters()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors">
                 Restablecer Filtros
               </button>
             </div>
           </div>
         `;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
         return;
       }
 
-      grid.innerHTML = filtered.map(b => {
+      // Si se activa fallback cross-category, mostrar aviso elegante
+      const fallbackNoticeHtml = isCrossCategoryFallback ? `
+        <div class="col-span-full bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50 border border-indigo-200/80 rounded-2xl p-3.5 sm:p-4 mb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <i data-lucide="compass" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-900">
+                Mostrando <span class="text-indigo-600 font-black">${filtered.length} negocio${filtered.length === 1 ? '' : 's'}</span> en todo el directorio para "<span class="text-indigo-600">${typeof escapeHtml === 'function' ? escapeHtml(q) : q}</span>"
+              </p>
+              <p class="text-[11px] text-slate-500 mt-0.5">No se encontraron negocios dentro de la categoría actual, pero aquí están las coincidencias globales:</p>
+            </div>
+          </div>
+          <button onclick="switchCategory('all')" class="self-start sm:self-auto px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-colors shrink-0 shadow-xs">
+            Ver todo el directorio
+          </button>
+        </div>
+      ` : "";
+
+      grid.innerHTML = fallbackNoticeHtml + filtered.map(b => {
         const theme = (typeof CATEGORY_THEMES !== "undefined" && CATEGORY_THEMES[b.category_slug || (typeof currentCategory !== "undefined" && currentCategory && currentCategory.slug)]) ? CATEGORY_THEMES[b.category_slug || (typeof currentCategory !== "undefined" && currentCategory && currentCategory.slug)] : (typeof CATEGORY_THEMES !== "undefined" ? CATEGORY_THEMES["comida-delivery"] : null);
         const ctaButtonHtml = buildBusinessActionButtons(b, theme);
 

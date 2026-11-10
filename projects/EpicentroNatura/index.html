@@ -950,6 +950,9 @@
     </div>
   </div>
 
+  <!-- MOTOR DE BÚSQUEDA INTELIGENTE EPICENTRO -->
+  <script src="epicentro-search.js"></script>
+
   <!-- JAVASCRIPT: DATOS, FILTRADOS Y CONTROL DEL MEGA HERO SLIDER -->
   <script>
     // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO OFICIAL)
@@ -1458,15 +1461,23 @@
     }
 
     function triggerHomeSearch() {
-      const q = document.getElementById("search-input").value.trim();
-      const coto = document.getElementById("coto-select").value;
-      window.location.href = `categoria.html?cat=all&q=${encodeURIComponent(q)}&coto=${encodeURIComponent(coto)}`;
+      const input = document.getElementById("search-input");
+      const q = input ? input.value.trim() : "";
+      const cotoSelect = document.getElementById("coto-select");
+      const coto = cotoSelect ? cotoSelect.value : "all";
+      window.location.href = typeof getCategoryPageUrl === "function" 
+        ? getCategoryPageUrl("all", q, coto) 
+        : `categoria.html?cat=all&q=${encodeURIComponent(q)}&coto=${encodeURIComponent(coto)}`;
     }
 
     function onCotoSelectChange() {
       const select = document.getElementById("coto-select");
+      const input = document.getElementById("search-input");
+      const q = input ? input.value.trim() : "";
       if (select && select.value !== "all") {
-        window.location.href = `categoria.html?cat=all&coto=${encodeURIComponent(select.value)}`;
+        window.location.href = typeof getCategoryPageUrl === "function"
+          ? getCategoryPageUrl("all", q, select.value)
+          : `categoria.html?cat=all&coto=${encodeURIComponent(select.value)}`;
       }
     }
 
