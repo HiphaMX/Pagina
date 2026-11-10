@@ -105,32 +105,15 @@
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16 md:-mt-20 z-10 pb-6 sm:pb-8">
       <div class="bg-slate-950/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80 space-y-6">
         
-        <!-- Fila Superior: Avatar + Badges de Estatus -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
-              <i id="hero-category-icon" data-lucide="store" class="w-7 h-7 sm:w-8 sm:h-8"></i>
-            </div>
-            <div>
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span id="hero-schedule-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
-                  <span id="hero-schedule-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span id="hero-schedule-status">Abierto Hoy</span>
-                  <span id="hero-schedule-hours">· 09:00 a 19:00 hrs</span>
-                </span>
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
-                  <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
-                  <span>Epizentro</span>
-                </span>
-                <span id="hero-service-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
-                  <i data-lucide="truck" class="w-3.5 h-3.5"></i>
-                  <span id="hero-service-badge-text">Servicio en Zona</span>
-                </span>
-              </div>
-              <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
-                Comercio Verificado
-              </h1>
-            </div>
+        <!-- Fila Superior: Avatar + Título -->
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
+            <i id="hero-category-icon" data-lucide="store" class="w-7 h-7 sm:w-8 sm:h-8"></i>
+          </div>
+          <div>
+            <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
+              Comercio Verificado
+            </h1>
           </div>
         </div>
 
@@ -139,8 +122,8 @@
           Cargando información del comercio...
         </p>
 
-        <!-- Ubicación y Horario -->
-        <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400 pt-1 border-t border-slate-800/80">
+        <!-- Ubicación, Horario y Servicio -->
+        <div class="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400 pt-2 border-t border-slate-800/80">
           <div class="flex items-center gap-2">
             <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
             <span id="hero-location-text">Natura Bosque Residencial, Zapopan</span>
@@ -149,26 +132,32 @@
             <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
             <span id="hero-schedule-info">Horario: Lunes a Sábado · 09:00 a 19:00 hrs</span>
           </div>
+          <div id="hero-service-info-row" class="flex items-center gap-2">
+            <i data-lucide="truck" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span id="hero-service-info">Envíos y servicio en cotos de la zona</span>
+          </div>
         </div>
 
         <!-- Botonera de Acción Directa -->
-        <div class="flex flex-wrap items-center gap-3 pt-2">
-          <a id="hero-whatsapp-btn" href="#" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 pt-2">
+          <a id="hero-whatsapp-btn" href="#" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95 shrink-0">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
             <span>Enviar WhatsApp</span>
           </a>
-          <a id="hero-phone-btn" href="#" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/15 transition-all active:scale-95">
-            <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
-            <span>Llamar</span>
-          </a>
-          <a href="#info-cobertura" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/15 transition-all active:scale-95">
-            <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
-            <span>Zona de cobertura</span>
-          </a>
-          <a id="hero-website-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-sm border border-emerald-500/30 transition-all active:scale-95">
-            <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
-            <span>Sitio web</span>
-          </a>
+          <div class="flex items-center gap-2 w-full sm:w-auto [&>*]:flex-1 sm:[&>*]:flex-initial">
+            <a id="hero-phone-btn" href="#" class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-3 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition-all active:scale-95 whitespace-nowrap">
+              <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
+              <span>Llamar</span>
+            </a>
+            <a href="#info-cobertura" class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-3 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition-all active:scale-95 whitespace-nowrap">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
+              <span>Cobertura</span>
+            </a>
+            <a id="hero-website-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-center gap-1.5 px-3 sm:px-4 py-3 sm:py-3.5 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-xs sm:text-sm border border-emerald-500/30 transition-all active:scale-95 whitespace-nowrap">
+              <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
+              <span>Sitio web</span>
+            </a>
+          </div>
         </div>
 
       </div>
@@ -387,6 +376,17 @@
       if (schedHours) {
         const parts = scheduleStr.split("·");
         schedHours.textContent = parts.length > 1 ? ` · ${parts[1].trim()}` : ` · ${scheduleStr}`;
+      }
+
+      const serviceInfoEl = document.getElementById("hero-service-info");
+      if (serviceInfoEl) {
+        if (reg.service_type === "delivery") {
+          serviceInfoEl.textContent = "Envíos directos a domicilio en cotos de la zona";
+        } else if (reg.service_type === "pickup") {
+          serviceInfoEl.textContent = "Punto de recolección y venta en la zona";
+        } else {
+          serviceInfoEl.textContent = "Envíos a domicilio y atención en cotos de la zona";
+        }
       }
 
       // 7. Botones de acción directa
