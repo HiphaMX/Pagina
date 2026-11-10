@@ -3521,5 +3521,196 @@ async def send_ieer_confirmation_email(form_data):
         return False
 
 
+# ==============================================================================
+# EPIZENTRO - NOTIFICACIONES Y ABORDAJE DE COMERCIOS
+# ==============================================================================
+
+async def send_epizentro_payment_notification_team(reg, total: float, payment_id: str) -> bool:
+    """Notifica al equipo de Hipha / Epizentro (hola@hipha.mx) cuando un comercio completa su pago de suscripción anual."""
+    to_email = getattr(settings, "EPIZENTRO_NOTIFICATION_EMAIL", "") or "hola@hipha.mx"
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f1f5f9; margin: 0; padding: 24px; }}
+        .card {{ max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }}
+        .header {{ background: #0f172a; padding: 28px; text-align: center; color: #ffffff; border-bottom: 3px solid #10b981; }}
+        .header h2 {{ margin: 0; font-size: 20px; font-weight: 800; }}
+        .header p {{ margin: 6px 0 0; font-size: 13px; color: #94a3b8; }}
+        .content {{ padding: 28px; color: #1e293b; font-size: 14px; line-height: 1.6; }}
+        .badge {{ display: inline-block; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 11px; }}
+        .info-grid {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 18px 0; }}
+        .info-row {{ margin-bottom: 10px; }}
+        .info-row:last-child {{ margin-bottom: 0; }}
+        .label {{ font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }}
+        .val {{ font-size: 14px; font-weight: 600; color: #0f172a; }}
+        .btn {{ display: inline-block; background: #059669; color: #ffffff; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; margin-top: 14px; }}
+        .footer {{ padding: 16px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }}
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="header">
+          <h2>🔔 ¡Nueva Suscripción Anual Pagada en Epizentro!</h2>
+          <p>Notificación Operativa de Pasarela Mercado Pago</p>
+        </div>
+        <div class="content">
+          <p>Se ha confirmado un pago de suscripción anual para alta de página interactiva con catálogo:</p>
+          <div class="info-grid">
+            <div class="info-row"><span class="label">Comercio:</span> <span class="val">{reg.business_name}</span></div>
+            <div class="info-row"><span class="label">Responsable:</span> <span class="val">{reg.owner_name}</span></div>
+            <div class="info-row"><span class="label">Correo Electrónico:</span> <span class="val">{reg.email}</span></div>
+            <div class="info-row"><span class="label">WhatsApp:</span> <span class="val">{reg.whatsapp}</span></div>
+            <div class="info-row"><span class="label">Coto / Ubicación:</span> <span class="val">{reg.coto_address}</span></div>
+            <div class="info-row"><span class="label">Monto Confirmado:</span> <span class="val" style="color: #059669; font-size: 16px;">${total} MXN</span></div>
+            <div class="info-row"><span class="label">Mercado Pago Payment ID:</span> <span class="val" style="font-family: monospace;">{payment_id}</span></div>
+            <div class="info-row"><span class="label">Folio / Reg ID:</span> <span class="val" style="font-family: monospace;">{reg.id}</span></div>
+          </div>
+          <p style="margin-top: 16px;">El comercio ha quedado con estatus <code>approved</code> y sello de Vecino Verificado activado. Ingresa al panel de administración para supervisar su catálogo.</p>
+          <div style="text-align: center;">
+            <a href="https://www.epizentro.com/natura/admin" class="btn" style="color:#ffffff;">Abrir Panel de Administración Epizentro</a>
+          </div>
+        </div>
+        <div class="footer">
+          Epizentro · Hipha Marketing Digital · Notificación Automática de Webhook
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="EPIZENTRO",
+        from_name="Epizentro Natura · Notificaciones",
+        from_email="hola@epizentro.com",
+        to_email=to_email,
+        subject=f"🔔 [Epizentro] ¡Suscripción Anual Pagada!: {reg.business_name} (${total} MXN)",
+        html_content=html_content,
+        domain="epizentro.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"[EPIZENTRO] Notificación de pago enviada al equipo ({to_email}) para {reg.business_name}")
+        return True
+    except Exception as e:
+        logger.error(f"[EPIZENTRO] Error enviando notificación de pago al equipo: {e}")
+        return False
+
+
+async def send_epizentro_onboarding_email_merchant(reg, total: float, payment_id: str) -> bool:
+    """Envía al comercio registrado el correo oficial de confirmación de pago y ruta de abordaje a Epizentro."""
+    if not reg.email:
+        logger.warning(f"[EPIZENTRO] No se pudo enviar correo de abordaje porque el comercio {reg.business_name} no tiene email.")
+        return False
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; }}
+        .card {{ max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }}
+        .header {{ background: #0f172a; padding: 36px 30px; text-align: center; color: #ffffff; border-bottom: 3px solid #10b981; }}
+        .header h1 {{ margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }}
+        .header p {{ margin: 8px 0 0; font-size: 13px; color: #94a3b8; font-weight: 500; }}
+        .badge-verified {{ display: inline-flex; align-items: center; gap: 6px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 6px 14px; border-radius: 999px; font-weight: 800; font-size: 12px; margin-top: 14px; }}
+        .content {{ padding: 32px 30px; color: #1e293b; font-size: 14px; line-height: 1.6; }}
+        .highlight-box {{ background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 18px 20px; margin: 20px 0; }}
+        .step-item {{ display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }}
+        .step-item:last-child {{ margin-bottom: 0; }}
+        .step-num {{ flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #059669; color: #ffffff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }}
+        .step-text {{ font-size: 13px; color: #334155; }}
+        .step-title {{ font-weight: 700; color: #0f172a; display: block; margin-bottom: 2px; }}
+        .btn {{ display: block; text-align: center; background: #059669; color: #ffffff; padding: 14px 20px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 14px; margin: 26px 0 16px; box-shadow: 0 4px 10px rgba(5,150,105,0.25); }}
+        .footer {{ padding: 22px 30px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; text-align: center; }}
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="header">
+          <h1>¡Bienvenido a Epizentro!</h1>
+          <p>La Red Comercial Hiperlocal que Conecta tu Comunidad</p>
+          <div class="badge-verified">
+            ✓ Sello Vecino Verificado: ACTIVADO
+          </div>
+        </div>
+        <div class="content">
+          <p>Hola <strong>{reg.owner_name}</strong>,</p>
+          <p>¡Confirmamos con éxito la recepción de tu pago por concepto de <strong>Suscripción Anual en Epizentro</strong> para tu negocio <strong>{reg.business_name}</strong>!</p>
+          
+          <div class="highlight-box">
+            <div style="font-size:11px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Detalles de la Suscripción</div>
+            <div style="margin: 4px 0;"><strong>Negocio:</strong> {reg.business_name}</div>
+            <div style="margin: 4px 0;"><strong>Monto Anual:</strong> <span style="color:#059669;font-weight:800;">${total} MXN</span> (Exento de comisiones por pedido)</div>
+            <div style="margin: 4px 0;"><strong>Folio Mercado Pago:</strong> <span style="font-family:monospace;color:#475569;">{payment_id}</span></div>
+            <div style="margin: 4px 0;"><strong>Ubicación Asignada:</strong> {reg.coto_address}</div>
+          </div>
+
+          <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 24px 0 14px;">Tu Ruta de Abordaje a Epizentro:</h3>
+          
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <span class="step-title">Insignia de Vecino Verificado Activa</span>
+              Tu comercio cuenta con el distintivo oficial de confianza local para que tus vecinos compren con total seguridad.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <span class="step-title">Página Interactiva y Catálogo de Fotos</span>
+              Tu micrositio interactivo con catálogo de fotos está listo para recibir pedidos directos a tu WhatsApp con <strong>0% de comisiones por venta</strong>.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <span class="step-title">Dinamización Hiperlocal (-3 KM)</span>
+              Te conectamos directamente con los cotos y fraccionamientos vecinos para entregas directas y compras comunitarias.
+            </div>
+          </div>
+
+          <a href="https://www.epizentro.com/natura/" class="btn" style="color:#ffffff;">Explorar Directorio en Vivo</a>
+
+          <p style="font-size: 12px; color: #64748b; margin-top: 18px;">
+            Si deseas actualizar tus fotografías, horarios o números de contacto en cualquier momento, solo respóndenos a este correo (<a href="mailto:hola@epizentro.com" style="color:#059669;text-decoration:none;">hola@epizentro.com</a>) o escríbenos al canal de WhatsApp de soporte.
+          </p>
+        </div>
+        <div class="footer">
+          Epizentro · Administrado e impulsado por Hipha Marketing Digital.<br>
+          Conectando cotos, fraccionamientos y barrios a -3 KM.
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="EPIZENTRO",
+        from_name="Epizentro",
+        from_email="hola@epizentro.com",
+        to_email=reg.email,
+        subject=f"🎉 ¡Bienvenido a Epizentro! Confirmación de Suscripción Anual: {reg.business_name}",
+        html_content=html_content,
+        domain="epizentro.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"[EPIZENTRO] Correo de abordaje enviado con éxito al comercio {reg.email} ({reg.business_name})")
+        return True
+    except Exception as e:
+        logger.error(f"[EPIZENTRO] Error enviando correo de abordaje a {reg.email}: {e}")
+        return False
+
+
+
 
 

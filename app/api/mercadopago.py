@@ -207,9 +207,9 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                 
                 if status == "approved":
                     metadata = payment.get("metadata", {})
-                    # Mercado Pago might return empty metadata or we might not have email.
-                    payer_email = metadata.get("payer_email")
-                    if payer_email:
+                    # Mercado Pago might return empty metadata or email under payment.payer
+                    payer_email = metadata.get("payer_email") or (payment.get("payer") or {}).get("email")
+                    if payer_email or metadata.get("registration_id"):
                         import asyncio
                         store_name = metadata.get("store") or "botica"
                         
@@ -217,7 +217,7 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                         payer_phone = metadata.get("payer_phone", "")
                         address_str = metadata.get("address", "")
                         cart_html = metadata.get("cart_html", "")
-                        total = float(metadata.get("total", 0.0))
+                        total = float(metadata.get("total", 0.0) or payment.get("transaction_amount", 0.0))
                         order_id_str = metadata.get("order_id")
                         
                         if store_name == "healthyice":
@@ -257,38 +257,29 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                             if reg_id:
                                 try:
                                     from app.models.epicentro_registration import EpicentroRegistration
-                                    from app.core.mailer import _prepare_project_email, _send_smtp
+                                    from app.core.mailer import (
+                                        send_epizentro_payment_notification_team,
+                                        send_epizentro_onboarding_email_merchant
+                                    )
                                     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == str(reg_id)).first()
                                     if reg:
                                         reg.payment_status = "approved"
                                         reg.mercadopago_payment_id = str(payment_id)
                                         reg.is_verified_badge = True
-                                        if reg.email_verified and reg.whatsapp_verified:
-                                            reg.status = "pending_approval"
+                                        reg.status = "active"
                                         db.commit()
 
-                                        # Notificar al equipo Hipha
-                                        team_html = f"""
-                                        <h3>¡Nueva Verificación Oficial Pagada en Epicentro Natura!</h3>
-                                        <p><strong>Comercio:</strong> {reg.business_name}</p>
-                                        <p><strong>Responsable:</strong> {reg.owner_name}</p>
-                                        <p><strong>Email:</strong> {reg.email} (Verificado: {reg.email_verified})</p>
-                                        <p><strong>WhatsApp:</strong> {reg.whatsapp} (Verificado: {reg.whatsapp_verified})</p>
-                                        <p><strong>Ubicación:</strong> {reg.coto_address}</p>
-                                        <p><strong>Monto Pagado:</strong> ${total} MXN</p>
-                                        <p><strong>Mercado Pago ID:</strong> {payment_id}</p>
-                                        <p><em>Ingresa al panel administrativo para aprobar y publicar.</em></p>
-                                        """
-                                        msg, host, port, user, pwd = _prepare_project_email(
-                                            project_prefix="HIPHA",
-                                            from_name="Epicentro Natura Notificaciones",
-                                            from_email="hola@hipha.mx",
-                                            to_email="hola@hipha.mx",
-                                            subject=f"🔔 [Epicentro Natura] Verificación Pagada: {reg.business_name} (${total} MXN)",
-                                            html_content=team_html,
-                                            domain="hipha.mx"
-                                        )
-                                        await _send_smtp(msg, host, port, user, pwd)
+                                        # 1. Notificar al equipo de Hipha / Epizentro (hola@hipha.mx)
+                                        try:
+                                            await send_epizentro_payment_notification_team(reg, total, str(payment_id))
+                                        except Exception as mail_err:
+                                            print(f"Error enviando correo al equipo Epizentro: {mail_err}")
+
+                                        # 2. Enviar correo oficial de Abordaje y bienvenida al comercio
+                                        try:
+                                            await send_epizentro_onboarding_email_merchant(reg, total, str(payment_id))
+                                        except Exception as mail_err:
+                                            print(f"Error enviando correo de abordaje a comercio Epizentro: {mail_err}")
                                 except Exception as epicentro_err:
                                     print(f"Error procesando pago webhook Epicentro: {epicentro_err}")
                         else:

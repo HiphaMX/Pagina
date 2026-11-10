@@ -156,7 +156,7 @@
             <!-- Logo: Epizentro (Centrado con Red Local) -->
             <div class="flex items-center gap-3">
                 <a href="/" class="flex items-center group" title="Epizentro · Red Local de Comercio Hiperlocal">
-                    <img id="nav-epicentro-logo" src="/projects/Epicentro/Assets/Epizentro.svg" alt="Epizentro" class="h-8 md:h-10 transition-transform group-hover:scale-105 w-auto object-contain">
+                    <img id="nav-epicentro-logo" src="/Assets/Epizentro.svg" alt="Epizentro" class="h-8 md:h-10 transition-transform group-hover:scale-105 w-auto object-contain">
                 </a>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300 text-[10px] font-bold uppercase tracking-wider border border-primary-400/30">
                     Red Local
@@ -1139,7 +1139,7 @@
             };
 
             try {
-                const response = await fetch('/api/contact/submit', {
+                const response = await fetch('/api/epicentro/contact', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)

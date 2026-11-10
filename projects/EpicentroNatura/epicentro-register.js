@@ -530,76 +530,8 @@
   }
 
   function setPaymentMode(mode) {
-    currentPaymentMode = mode;
-    const tabMp = document.getElementById("tab-pay-mp");
-    const tabKam = document.getElementById("tab-pay-kam");
-    const panelMp = document.getElementById("panel-pay-mp");
-    const panelKam = document.getElementById("panel-pay-kam");
-
-    if (mode === "mp") {
-      if (tabMp) tabMp.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs flex items-center justify-center gap-1.5";
-      if (tabKam) tabKam.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5";
-      if (panelMp) panelMp.classList.remove("hidden");
-      if (panelKam) panelKam.classList.add("hidden");
-    } else {
-      if (tabMp) tabMp.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5";
-      if (tabKam) tabKam.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-emerald-950 shadow-xs flex items-center justify-center gap-1.5";
-      if (panelMp) panelMp.classList.add("hidden");
-      if (panelKam) panelKam.classList.remove("hidden");
-    }
+    currentPaymentMode = "mp";
     if (window.lucide && lucide.createIcons) lucide.createIcons();
-  }
-
-  async function handleKamPaymentSubmit(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    const kamInput = document.getElementById("reg-kam-name");
-    const kamName = kamInput ? kamInput.value.trim() : "";
-    const kamNotes = document.getElementById("reg-kam-notes") ? document.getElementById("reg-kam-notes").value.trim() : "";
-
-    if (!kamName) {
-      alert("Por favor indica el nombre de tu Asesor KAM o Ejecutivo Hipha asignado.");
-      if (kamInput) kamInput.focus();
-      return;
-    }
-
-    const btn = document.getElementById("btn-submit-kam-payment");
-    const originalText = btn ? btn.innerHTML : "";
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Registrando con Asesor...</span>`;
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    try {
-      const res = await fetch("/api/epicentro/register/report-kam-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          registration_id: currentRegId,
-          kam_name: kamName,
-          amount: 399.0,
-          notes: kamNotes
-        })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || "Error al registrar pago con KAM");
-      showStep4Success(data.folio || `NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`, {
-        title: "¡Registro con Asesor KAM en Proceso!",
-        desc: `Tu registro fue canalizado con ${kamName}. Hemos enviado las instrucciones y datos para transferencia bancaria a tu correo electrónico registrado. Tu página interactiva en epizentro se activará una vez validado tu pago ($399 MXN).`
-      }, "pending_payment");
-    } catch (err) {
-      console.warn("Aviso KAM payment:", err);
-      showStep4Success(`NATURA-KAM-${Math.floor(1000 + Math.random() * 9000)}`, {
-        title: "¡Registro con Asesor KAM en Proceso!",
-        desc: "Tu solicitud de suscripción anual fue recibida. Hemos enviado los datos para transferencia bancaria a tu correo electrónico para activar tu página interactiva en epizentro."
-      }, "pending_payment");
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-        if (window.lucide && lucide.createIcons) lucide.createIcons();
-      }
-    }
   }
 
   function detectActiveCategory(explicitCat) {
@@ -1024,65 +956,16 @@
           </div>
         </div>
 
-        <!-- Selector de Método de Pago / Pasarela o KAM -->
-        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl border border-slate-200">
-          <button type="button" id="tab-pay-mp" onclick="setPaymentMode('mp')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs flex items-center justify-center gap-1.5">
-            <i data-lucide="credit-card" class="w-3.5 h-3.5 text-sky-600"></i>
-            <span>Mercado Pago ($399 / año)</span>
+        <!-- Pasarela Oficial de Pago Seguro Mercado Pago -->
+        <div class="space-y-3 p-4 rounded-2xl bg-white border border-slate-200 text-center shadow-xs">
+          <button type="button" id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+            <span>Pagar Suscripción Anual con Mercado Pago ($399 MXN / año)</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
-          <button type="button" id="tab-pay-kam" onclick="setPaymentMode('kam')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5">
-            <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-600"></i>
-            <span>Asesor KAM / Transferencia</span>
-          </button>
-        </div>
-
-        <!-- Panel Mercado Pago -->
-        <div id="panel-pay-mp" class="space-y-3">
-          <button id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
-            <span>Activar Suscripción Anual con Mercado Pago ($399 MXN / año)</span>
-            <i data-lucide="external-link" class="w-4 h-4"></i>
-          </button>
-          <p class="text-[11px] text-center text-slate-400">
-            Suscripción anual segura vía Mercado Pago. Acepta Tarjetas de Débito/Crédito y saldo en cuenta. Activación automática.
+          <p class="text-[11px] text-center text-slate-500 leading-relaxed">
+            🔒 Pago seguro procesado directamente en Mercado Pago. Acepta Tarjetas de Crédito, Débito, Transferencia SPEI y Saldo en cuenta. Activación automática e inmediata tras conciliar.
           </p>
-        </div>
-
-        <!-- Panel Asesor KAM / Transferencia Directa -->
-        <div id="panel-pay-kam" class="hidden space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
-          <div class="flex items-center gap-2 mb-1">
-            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-              <i data-lucide="briefcase" class="w-4 h-4"></i>
-            </div>
-            <div>
-              <h5 class="text-xs font-bold text-slate-900">Pago Acordado con Asesor KAM o Transferencia</h5>
-              <p class="text-[10px] text-slate-500">Registra el nombre de tu ejecutivo Hipha para activación directa.</p>
-            </div>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex items-start gap-2.5">
-            <i data-lucide="mail-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <div>
-              <p class="font-bold text-emerald-900">Instrucciones de Transferencia Bancaria</p>
-              <p class="text-[11px] text-emerald-800/90 mt-0.5 leading-relaxed">
-                Al confirmar tu registro, recibirás automáticamente en tu correo electrónico los datos bancarios oficiales (CLABE interbancaria, banco y referencia) junto con tu número de folio para completar la activación de tu página interactiva en epizentro.
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-800 mb-1">Nombre del Asesor KAM o Ejecutivo Asignado *</label>
-            <input type="text" id="reg-kam-name" placeholder="Ej. Carlos Méndez / Hipha KAM" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-800 mb-1">Notas / Folio de Acuerdo o Comprobante (Opcional)</label>
-            <input type="text" id="reg-kam-notes" placeholder="Ej. Transferencia anual realizada hoy / Pago acordado en visita" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-          </div>
-
-          <button type="button" id="btn-submit-kam-payment" onclick="handleKamPaymentSubmit()" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
-            <span>Registrar Alta con Asesor KAM</span>
-            <i data-lucide="check" class="w-4 h-4"></i>
-          </button>
         </div>
 
         <!-- Canjear Código de Cortesía / Invitación -->
@@ -1142,15 +1025,15 @@
     if (!modal) {
       modal = document.createElement("div");
       modal.id = "register-modal";
-      modal.dataset.version = "v404";
+      modal.dataset.version = "v500";
       modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs";
       document.body.appendChild(modal);
     }
 
-    // Si el modal no contiene el stepper completo o carece de los nuevos campos de portada/destacados o es versión antigua
-    if (!document.getElementById("reg-step-1") || !document.getElementById("step4-dynamic-content") || !document.getElementById("tab-pay-kam") || modal.dataset.version !== "v404") {
+    // Si el modal no contiene el stepper completo o carece del botón oficial de Mercado Pago o es versión antigua
+    if (!document.getElementById("reg-step-1") || !document.getElementById("btn-pay-mp") || modal.dataset.version !== "v500") {
       modal.innerHTML = renderWizardHTML();
-      modal.dataset.version = "v404";
+      modal.dataset.version = "v500";
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
     return modal;
@@ -1427,7 +1310,12 @@
       }
       markWaAsVerified();
     } catch (err) {
-      markWaAsVerified();
+      alert("No se pudo validar WhatsApp: " + (err.message || "Por favor verifica que hayas enviado tu código al bot o intenta nuevamente."));
+      const btn = document.getElementById("btn-verify-wa");
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Confirmar Validación";
+      }
     }
   }
 
@@ -1505,54 +1393,50 @@
     setWizardStep(3);
   }
 
-  const MP_ANNUAL_SUBSCRIPTION_URL = "https://mpago.la/2jXGN6C";
-
   async function triggerMercadoPagoPayment() {
+    if (!currentRegId) {
+      alert("Por favor completa los pasos anteriores antes de proceder al pago.");
+      return;
+    }
+
     const btn = document.getElementById("btn-pay-mp");
     const origText = btn ? btn.innerHTML : "";
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Abriendo Mercado Pago...</span>`;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Generando pasarela de pago segura...</span>`;
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     try {
-      // Registrar en backend la intención de suscripción con monto de $399
-      if (currentRegId && !currentRegId.startsWith("mock-")) {
-        await fetch("/api/epicentro/register/report-kam-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            registration_id: currentRegId,
-            kam_name: "Mercado Pago Suscripción Anual (Link Directo)",
-            amount: 399.0,
-            payment_method: "mercadopago_subscription",
-            notes: `Inició suscripción anual en ${MP_ANNUAL_SUBSCRIPTION_URL}`
-          })
-        }).catch(e => console.warn("Aviso reporte MP:", e));
+      // 1. Solicitar preferencia oficial y trazable a Mercado Pago vinculada al registro
+      const res = await fetch("/api/epicentro/register/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          registration_id: currentRegId
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.detail || "No se pudo generar la pasarela de pago.");
       }
 
-      // Abrir enlace oficial de suscripción anual en Mercado Pago
-      const opened = window.open(MP_ANNUAL_SUBSCRIPTION_URL, "_blank");
-      if (!opened) {
-        window.location.href = MP_ANNUAL_SUBSCRIPTION_URL;
-        return;
+      const checkoutUrl = data.init_point || data.sandbox_init_point;
+      if (!checkoutUrl) {
+        throw new Error("Mercado Pago no retornó un punto de pago válido.");
       }
 
-      const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
-      showStep4Success(`NATURA-SUB-${suffix}`, {
-        title: "¡Completando Pago en Mercado Pago!",
-        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para activar tu página interactiva en epizentro."
-      }, "pending_payment");
+      // Guardar reg_id en almacenamiento de sesión para seguimiento
+      try {
+        sessionStorage.setItem("last_epicentro_reg_id", currentRegId);
+      } catch (e) {}
+
+      // Redirigir directamente al checkout seguro de Mercado Pago
+      window.location.href = checkoutUrl;
     } catch (err) {
-      console.warn("Aviso Mercado Pago:", err);
-      window.open(MP_ANNUAL_SUBSCRIPTION_URL, "_blank");
-      const suffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
-      showStep4Success(`NATURA-SUB-${suffix}`, {
-        title: "¡Completando Pago en Mercado Pago!",
-        desc: "Hemos registrado tu solicitud de suscripción anual ($399 MXN). Completa el pago en Mercado Pago y envía tu comprobante por WhatsApp para activar tu página interactiva en epizentro."
-      }, "pending_payment");
-    } finally {
+      console.error("Error iniciando pago en Mercado Pago:", err);
+      alert("Error al inicializar Mercado Pago: " + (err.message || "Por favor intenta nuevamente."));
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = origText;
@@ -1692,10 +1576,10 @@
             Pendiente de Acreditación · Validación Requerida
           </div>
 
-          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : (currentPaymentMode === 'kam' ? "¡Registro con Asesor KAM Recibido!" : "¡Completando Pago en Mercado Pago!")}</h4>
+          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Completando Pago en Mercado Pago!"}</h4>
           
           <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>página interactiva en epizentro con catálogo</strong>, se requiere validar tu pago de <strong>$399 MXN</strong>.`}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>página interactiva en epizentro con catálogo</strong>, completa tu suscripción anual de <strong>$399 MXN</strong> en Mercado Pago.`}
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto space-y-1">
@@ -1716,17 +1600,11 @@
             </button>
             <p id="check-status-feedback" class="text-[11px] text-slate-500 hidden text-center px-2 leading-relaxed"></p>
 
-            ${currentPaymentMode === 'mp' ? `
             <div class="pt-1">
               <a href="https://mpago.la/2jXGN6C" target="_blank" rel="noopener noreferrer" class="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 underline transition-colors">
-                ¿No abrió la ventana? Reabrir enlace de Mercado Pago ($399 MXN) &rarr;
+                ¿No abrió la ventana? Reabrir pasarela de Mercado Pago ($399 MXN) &rarr;
               </a>
-            </div>` : `
-            <div class="pt-1">
-              <p class="text-[11px] text-slate-500 text-center leading-relaxed">
-                Hemos enviado las instrucciones y datos para transferencia bancaria (SPEI) a tu correo electrónico registrado.
-              </p>
-            </div>`}
+            </div>
           </div>
 
           <div class="pt-3 border-t border-slate-100">
@@ -1901,7 +1779,6 @@
   window.addRegisterMenuItem = addRegisterMenuItem;
   window.removeRegisterMenuItem = removeRegisterMenuItem;
   window.setPaymentMode = setPaymentMode;
-  window.handleKamPaymentSubmit = handleKamPaymentSubmit;
   window.selectRegistrationPlan = selectRegistrationPlan;
   window.finishFreeRegistration = finishFreeRegistration;
 
@@ -1928,9 +1805,6 @@
         if (step > 1 && step <= 4) {
           if (step >= 2) waVerified = true;
           setWizardStep(step);
-        }
-        if (urlParams.get("pay_mode") === "kam") {
-          setPaymentMode("kam");
         }
       }
     } catch (e) {}

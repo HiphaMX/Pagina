@@ -40,16 +40,19 @@ async def submit_contact_form(form_data: ContactForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for HiphaMX contact form (email: {form_data.email}).")
         return {"message": "Formulario recibido correctamente"}
 
-    # Validar reCAPTCHA v3 de forma estricta (no opcional)
-    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
-        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for HiphaMX contact form (email: {form_data.email}).")
-        return {"message": "Formulario recibido correctamente"}
+    # Validar reCAPTCHA v3 sólo si la llave secreta está configurada en el servidor
+    secret_key = (settings.HIPHA_RECAPTCHA_SECRET_KEY or "").strip()
+    if secret_key:
+        if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+            logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for HiphaMX contact form (email: {form_data.email}).")
+            return {"message": "Formulario recibido correctamente"}
 
-    secret_key = settings.HIPHA_RECAPTCHA_SECRET_KEY
-    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "HiphaMX")
-    if not is_human:
-        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for HiphaMX contact form (email: {form_data.email}).")
-        return {"message": "Formulario recibido correctamente"}
+        is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "HiphaMX")
+        if not is_human:
+            logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for HiphaMX contact form (email: {form_data.email}).")
+            return {"message": "Formulario recibido correctamente"}
+    elif form_data.recaptcha_token and form_data.recaptcha_token.strip():
+        logger.info(f"Token reCAPTCHA recibido pero HIPHA_RECAPTCHA_SECRET_KEY no configurado en servidor.")
 
     is_contract = form_data.mensaje.startswith("ACEPTACIÓN DE CONTRATO VÍA WEB")
     
@@ -73,16 +76,18 @@ async def submit_newsletter_form(form_data: NewsletterForm):
         logger.warning(f"[SPAM DETECTED] Honeypot field filled for HiphaMX newsletter form (email: {form_data.email}).")
         return {"message": "Suscripción exitosa"}
 
-    # Validar reCAPTCHA v3 de forma estricta (no opcional)
-    if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
-        logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for HiphaMX newsletter form (email: {form_data.email}).")
-        return {"message": "Suscripción exitosa"}
+    secret_key = (settings.HIPHA_RECAPTCHA_SECRET_KEY or "").strip()
+    if secret_key:
+        if not form_data.recaptcha_token or not form_data.recaptcha_token.strip():
+            logger.warning(f"[SPAM DETECTED] Missing or empty reCAPTCHA token for HiphaMX newsletter form (email: {form_data.email}).")
+            return {"message": "Suscripción exitosa"}
 
-    secret_key = settings.HIPHA_RECAPTCHA_SECRET_KEY
-    is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "HiphaMX_Newsletter")
-    if not is_human:
-        logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for HiphaMX newsletter form (email: {form_data.email}).")
-        return {"message": "Suscripción exitosa"}
+        is_human = await verify_recaptcha(form_data.recaptcha_token, secret_key, "HiphaMX_Newsletter")
+        if not is_human:
+            logger.warning(f"[SPAM DETECTED] reCAPTCHA validation failed for HiphaMX newsletter form (email: {form_data.email}).")
+            return {"message": "Suscripción exitosa"}
+    elif form_data.recaptcha_token and form_data.recaptcha_token.strip():
+        logger.info(f"Token reCAPTCHA recibido pero HIPHA_RECAPTCHA_SECRET_KEY no configurado en servidor.")
 
     # Enviar correo de bienvenida al suscriptor
     subscriber_email_sent = await send_newsletter_welcome(form_data.email)
