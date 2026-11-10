@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMDI Diseño Interior · Proyectos de Remodelación, Planos y Renders | Epizentro Natura</title>
+  <meta name="description" content="Estudio de diseño de interiores, proyectos de remodelación, planos arquitectónicos y renders 3D en Natura Bosque Residencial y cotos de Prolongación Mariano Otero, Zapopan. Consultoría y pedidos directos por WhatsApp.">
+
+  <!-- Favicon y Fuentes -->
+  <link rel="icon" type="image/svg+xml" href="Assets/Epizentro2.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            serif: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              black: "#050810",
+              slate: "#0f172a",
+              forest: "#064e3b",
+              emerald: "#059669",
+              vibrant: "#10b981",
+              mint: "#6ee7b7",
+              softMint: "#ecfdf5",
+              gold: "#d97706",
+              softGold: "#fef3c7"
+            },
+            snow: {
+              100: "#ffffff",
+              200: "#fbfcfd",
+              300: "#f1f3f7",
+              400: "#e2e6ed",
+              500: "#c7cdd8"
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .font-brand-title {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-emerald-600 selection:text-white antialiased">
+
+  <!-- TOP BAR NAVEGACIÓN -->
+  <aside class="bg-slate-950 text-white text-xs py-2.5 px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="categoria.html?cat=servicios-profesionales" class="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-400 transition-colors text-xs font-semibold">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Volver a Servicios Profesionales</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Epizentro</span>
+        <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+          natura
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HEADER / HERO DEL COMERCIO -->
+  <header class="relative bg-slate-950 text-white overflow-hidden pb-12 pt-8 sm:pt-12 border-b border-slate-800">
+    <div id="hero-cover-bg" class="absolute inset-0 opacity-30 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80');"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/40"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- BADGES SUPERIORES -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span id="hero-schedule-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+          <span id="hero-schedule-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="hero-schedule-status">Abierto Hoy</span>
+          <span id="hero-schedule-hours">· 09:00 a 17:00 hrs</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
+          <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+          <span>Epizentro</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
+          <i data-lucide="home" class="w-3.5 h-3.5"></i>
+          <span>Servicio en Cotos</span>
+        </span>
+      </div>
+
+      <!-- TÍTULO Y DESCRIPCIÓN -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
+            <i data-lucide="palette" class="w-6 h-6"></i>
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
+            AMDI Diseño Interior
+          </h1>
+        </div>
+        <p id="hero-business-description" class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
+          Escuchamos las ideas de nuestros clientes y encontramos la manera de llevarlas a la realidad, creamos el lugar que cuenta tu historia. Proyectos integrales de diseño de interiores, planos arquitectónicos, renders 3D y consultoría especializada para hogares en cotos de la zona.
+        </p>
+      </div>
+
+      <!-- UBICACIÓN RÁPIDA -->
+      <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
+        <div class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span id="hero-location-text">Natura Bosque Residencial (Atención en cotos de la zona y con previa cita)</span>
+        </div>
+        <div id="hero-schedule-info-row" class="flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span id="hero-schedule-info">Horario: Lunes a Viernes · 09:00 a 17:00 hrs</span>
+        </div>
+      </div>
+
+      <!-- BARRA DE ACCIÓN DIRECTA -->
+      <div class="flex flex-wrap items-center gap-3 pt-4">
+        <a id="hero-whatsapp-btn" href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior%2C%20vi%20su%20p%C3%A1gina%20interactiva%20en%20Epizentro%20Natura%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Enviar WhatsApp</span>
+        </a>
+        <a id="hero-phone-btn" href="tel:3313111147" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
+          <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
+          <span>Llamar</span>
+        </a>
+        <a href="#info-cobertura" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
+          <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
+          <span>Zona de cobertura</span>
+        </a>
+        <a id="hero-website-btn" href="https://www.amdi.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-sm border border-emerald-500/30 transition-all active:scale-95">
+          <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
+          <span>Sitio web</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL: CATÁLOGO Y MENÚ DE SERVICIOS -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    
+    <!-- SECCIÓN 1: PROYECTOS Y CONSULTORÍAS DESTACADAS -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <span id="featured-section-subtitle" class="text-xs font-black uppercase tracking-widest text-emerald-700">LLEVAMOS A LA REALIDAD TU PROYECTO · DISEÑO & DECORACIÓN</span>
+          <h2 id="featured-section-title" class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Diseño de Interiores & Consultoría</h2>
+          <p id="featured-section-desc" class="text-xs sm:text-sm text-slate-500 mt-1">Escuchamos las ideas de nuestros clientes y encontramos la manera de llevarlas a la realidad, creamos el lugar que cuenta tu historia.</p>
+        </div>
+        <span id="featured-variety-count" class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span>Servicio Verificado</span>
+        </span>
+      </div>
+
+      <!-- GRID DE SERVICIOS DESTACADOS -->
+      <div id="featured-products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Servicio 1: Visita de consultoría -->
+        <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+          <div class="relative h-64 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+            <img id="featured-prod-img-0" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80" alt="Visita de consultoría - AMDI Diseño Interior" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+              Asesoría Profesional
+            </span>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">Visita de consultoría</h3>
+                <span class="text-base font-extrabold text-emerald-700">$950</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Consultoría de 60 minutos en diseño y decoración. Durante una visita podemos ayudarte a resolver las dudas que pueden surgir cuando estás realizando un proyecto de diseño de interiores.
+              </p>
+            </div>
+            <a href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior,%20quiero%20agendar%20una%20Visita%20de%20consultor%C3%ADa%20($950)%20para%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+              <span>Agendar por WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: OTRAS SECCIONES DE SERVICIOS Y PLANOS -->
+    <div id="other-products-sections-wrapper" class="space-y-8">
+      <div id="other-products-sections-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Sección: Servicios disponibles -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <span class="text-[11px] font-black uppercase tracking-wider text-emerald-700">¿PROYECTO EN PUERTA?</span>
+              <h3 class="text-xl font-black text-slate-950 mt-1 font-brand-title">Servicios disponibles</h3>
+              <p class="text-xs text-slate-500 mt-1">Tenemos algunos servicios que pueden ser de utilidad para tu proyecto</p>
+            </div>
+
+            <div class="space-y-3 divide-y divide-slate-100">
+              <div class="pt-3 first:pt-0 space-y-1">
+                <div class="flex items-center justify-between gap-3">
+                  <h4 class="text-sm font-bold text-slate-900">Planos y renders</h4>
+                  <span class="text-sm font-black text-emerald-700 shrink-0">$3,000</span>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                  Si necesitas ejecutar un proyecto de remodelación, lo más probable es que tener planos disponibles para ejecutarlo pueda resolver cualquier duda a tus proveedores. El costo se ajusta a tu proyecto, precio base desde $3,000.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior,%20me%20interesa%20cotizar%20Planos%20y%20renders%20para%20mi%20proyecto" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>Cotizar Planos & Renders por WhatsApp</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: INFORMACIÓN OPERATIVA, ATENCIÓN Y PAGOS -->
+    <div id="info-operativa" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Zona de cobertura -->
+      <div id="info-cobertura" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 scroll-mt-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+            <i data-lucide="map" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Zona de Cobertura en Cotos</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Visitas de consultoría y levantamientos en Natura Bosque Residencial, Los Robles, Luna Bosque, El Fortín y zona Mariano Otero.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modalidad de atención -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Atención con Previa Cita</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Agenda tu consultoría presencial o sesión virtual de diseño acordando horario por WhatsApp.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métodos de pago -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+            <i data-lucide="credit-card" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Métodos de Pago Aceptados</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Transferencia interbancaria SPEI, tarjetas de débito/crédito y efectivo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horario de atención -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Horario de Atención</h3>
+            <p id="section-schedule-desc" class="text-xs text-slate-500 mt-0.5">Lunes a Viernes · 09:00 a 17:00 hrs (Mensajes por WhatsApp atendidos todo el día).</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BANNER COMERCIAL: ¿QUIERES TU PROPIA PÁGINA INTERACTIVA POR $399 MXN? -->
+    <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center md:text-left">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">BENEFICIO EXCLUSIVO EPIZENTRO NATURA</span>
+        <h3 class="text-xl sm:text-2xl font-black text-white">¿Tienes un negocio o servicio en la zona?</h3>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
+          Con la suscripción anual obtienes tu página interactiva en epizentro con catálogo de fotos, precios y pedidos directos a tu WhatsApp, además de botón a tu sitio web oficial.
+        </p>
+      </div>
+      <a href="index.html?open_register=1" class="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>Obtener mi página interactiva en Epizentro</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER EPIZENTRO NATURA -->
+  <footer class="bg-slate-950 text-white text-xs py-8 px-4 border-t border-slate-800 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 group">
+          <img src="Assets/Epizentro.svg" alt="Epizentro" class="h-6 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            natura
+          </span>
+        </a>
+        <span class="text-slate-600 hidden sm:inline">|</span>
+        <span class="text-slate-400 text-xs hidden sm:inline">Página Interactiva Oficial de Comercio Verificado · Epizentro Natura.</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400 text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">Directorio Comercial</a>
+        <a href="categoria.html?cat=servicios-profesionales" class="hover:text-white transition-colors">Servicios Profesionales</a>
+        <a href="index.html?open_register=1" class="hover:text-emerald-400 transition-colors">Registra tu negocio</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+    if (window.location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView();
+      }, 50);
+    }
+
+    // Sincronización en vivo de configuración del micrositio desde backend
+    async function syncAmdiMicrosite() {
+      let reg = null;
+      try {
+        const res = await fetch("/api/epicentro/businesses/amdi");
+        if (res.ok) reg = await res.json();
+      } catch (e) {}
+
+      if (!reg) return;
+
+      let mdata = null;
+      if (reg.microsite_data) {
+        try {
+          mdata = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
+        } catch (e) {}
+      }
+
+      // Actualizar descripción
+      if (reg.description) {
+        const descEl = document.getElementById("hero-business-description");
+        if (descEl) descEl.textContent = reg.description;
+      }
+
+      // Actualizar sitio web
+      let siteUrl = "";
+      if (mdata && mdata.website_url !== undefined && mdata.website_url !== null) {
+        siteUrl = String(mdata.website_url).trim();
+      } else if (reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
+        siteUrl = String(reg.website).trim();
+      }
+      const webBtn = document.getElementById("hero-website-btn");
+      if (webBtn && siteUrl) {
+        webBtn.href = siteUrl.startsWith("http") ? siteUrl : "https://" + siteUrl;
+        webBtn.classList.remove("hidden");
+        webBtn.classList.add("inline-flex");
+      }
+
+      // Actualizar portada
+      if (reg.cover_photo) {
+        const coverEl = document.getElementById("hero-cover-bg");
+        if (coverEl) coverEl.style.backgroundImage = `url('${reg.cover_photo}')`;
+      }
+
+      // Actualizar productos destacados si existen en mdata
+      if (mdata && mdata.featured_section && Array.isArray(mdata.featured_section.products) && mdata.featured_section.products.length > 0) {
+        const feat = mdata.featured_section;
+        const grid = document.getElementById("featured-products-grid");
+        const cleanWa = (reg.whatsapp || "3313111147").replace(/\D/g, "");
+        if (grid) {
+          grid.innerHTML = feat.products.map(prod => `
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+              <div class="relative h-64 w-full overflow-hidden bg-white border-b border-slate-100 flex items-center justify-center p-4">
+                <img src="${prod.photo || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'}" alt="${prod.name}" class="h-full w-auto object-contain bg-white group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-900/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs">
+                  Asesoría Profesional
+                </span>
+              </div>
+              <div class="p-6 flex-1 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">${prod.name}</h3>
+                    <span class="text-base font-extrabold text-emerald-700">$${prod.price || 0}</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">
+                    ${prod.description || ''}
+                  </p>
+                </div>
+                <a href="https://wa.me/52${cleanWa}?text=Hola%20AMDI%20Dise%C3%B1o%20Interior,%20quiero%20cotizar%20${encodeURIComponent(prod.name)}%20para%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                  <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                  <span>Cotizar por WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          `).join("");
+        }
+      }
+
+      // Actualizar otras secciones de servicios
+      if (mdata && Array.isArray(mdata.other_products_sections) && mdata.other_products_sections.length > 0) {
+        const otherGrid = document.getElementById("other-products-sections-grid");
+        const cleanWa = (reg.whatsapp || "3313111147").replace(/\D/g, "");
+        if (otherGrid) {
+          otherGrid.innerHTML = mdata.other_products_sections.map(sec => `
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                  ${sec.subtitle ? `<span class="text-[11px] font-black uppercase tracking-wider text-emerald-700">${sec.subtitle}</span>` : ''}
+                  <h3 class="text-xl font-black text-slate-950 mt-1 font-brand-title">${sec.title}</h3>
+                  ${sec.description ? `<p class="text-xs text-slate-500 mt-1">${sec.description}</p>` : ''}
+                </div>
+                <div class="space-y-3 divide-y divide-slate-100">
+                  ${(sec.items || []).map(item => `
+                    <div class="pt-3 first:pt-0 space-y-1">
+                      <div class="flex items-center justify-between gap-3">
+                        <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
+                        <span class="text-sm font-black text-emerald-700 shrink-0">$${item.price || 0}</span>
+                      </div>
+                      ${item.description ? `<p class="text-xs text-slate-500 leading-relaxed">${item.description}</p>` : ''}
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+              <a href="https://wa.me/52${cleanWa}?text=Hola%20AMDI%20Dise%C3%B1o%20Interior,%20me%20interesa%20solicitar%20informaci%C3%B3n%20sobre%20${encodeURIComponent(sec.title)}" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>Solicitar por WhatsApp</span>
+              </a>
+            </div>
+          `).join("");
+        }
+      }
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      syncAmdiMicrosite();
+    });
+  </script>
+</body>
+</html>

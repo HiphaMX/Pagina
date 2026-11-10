@@ -110,7 +110,7 @@
       "dest": "/projects/EpicentroNatura/$1/$2"
     },
     {
-      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|negocio|cultura-natura|categoria|admin|index)(.html|)",
+      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|negocio|cultura-natura|categoria|admin|index)(.html|)",
       "has": [
         {
           "type": "host",
@@ -176,7 +176,7 @@
       "dest": "/projects/EpicentroNatura/$1"
     },
     {
-      "src": "/(tu-negocio|chile-chillon|botica-silvestre|negocio|cultura-natura|categoria|admin)(.*)",
+      "src": "/(tu-negocio|chile-chillon|botica-silvestre|amdi|negocio|cultura-natura|categoria|admin)(.*)",
       "has": [
         {
           "type": "host",

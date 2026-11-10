@@ -1024,8 +1024,48 @@
       }
     ];
 
-    // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO EN APERTURA)
-    const ALL_BUSINESSES = [];
+    // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO OFICIAL)
+    const ALL_BUSINESSES = [
+      {
+        id: "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
+        name: "AMDI Diseño Interior",
+        category_slug: "servicios-profesionales",
+        category_label: "Servicios Profesionales",
+        subcategory_slug: "diseno-interiores",
+        subcategory_label: "Diseño de Interiores",
+        type: "local-establecido",
+        type_slug: "local-establecido",
+        type_label: "Estudio de Diseño",
+        space_label: "Atención en cotos & Previa cita",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Visitas en cotos",
+        pickup_badge: "Cita previa",
+        coto: "Natura Bosque Residencial",
+        address: "Natura Bosque Residencial",
+        description: "Escuchamos las ideas de nuestros clientes y encontramos la manera de llevarlas a la realidad, creamos el lugar que cuenta tu historia. Proyectos de diseño, planos ejecutivos, renders 3D y consultoría para tu hogar en cotos de la zona.",
+        phone: "3313111147",
+        whatsapp: "3313111147",
+        website: "amdi",
+        schedule: "Lunes a Viernes · 09:00 a 17:00 hrs",
+        hours: "Lunes a Viernes · 09:00 a 17:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
+        has_badge: true,
+        badge_text: "Epicentro",
+        rating: 5.0,
+        reviews: 14,
+        has_photos: true,
+        has_microsite: true,
+        photos: [
+          "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
+        ]
+      }
+    ];
 
     // COORDENADAS GPS DE LAS 10 ZONAS GEOGRÁFICAS
     const ZONE_COORDINATES = {
@@ -1233,6 +1273,38 @@
                 (b.name && b.name.trim().toLowerCase() === normName)
               );
 
+              const isChillon = normName.includes("chill") || biz.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || biz.id === "reg-chile-chillon";
+              const isBotica = normName.includes("botica") || biz.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || biz.id === "reg-botica-silvestre";
+              const isAmdi = biz.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
+
+              let mdata = null;
+              if (biz.microsite_data) {
+                try {
+                  mdata = typeof biz.microsite_data === "string" ? JSON.parse(biz.microsite_data) : biz.microsite_data;
+                } catch(e) {}
+              }
+
+              const hasInteractive = isChillon || isBotica || isAmdi || biz.payment_status === "approved" || biz.payment_status === "waived" || !!(mdata && (mdata.featured_section || mdata.featured_products));
+
+              let bizPhotos = [];
+              if (typeof biz.photos === 'string' && biz.photos.startsWith('[')) {
+                try { bizPhotos = JSON.parse(biz.photos); } catch(e) {}
+              } else if (Array.isArray(biz.photos)) {
+                bizPhotos = biz.photos;
+              }
+              if (bizPhotos.length === 0 && mdata) {
+                if (mdata.featured_section && Array.isArray(mdata.featured_section.products)) {
+                  mdata.featured_section.products.forEach(p => { if (p.photo) bizPhotos.push(p.photo); });
+                }
+                if (mdata.cover_photo && !bizPhotos.includes(mdata.cover_photo)) {
+                  bizPhotos.unshift(mdata.cover_photo);
+                }
+              }
+
+              const finalDesc = biz.description || 
+                (mdata && mdata.featured_section && mdata.featured_section.description) || 
+                (isAmdi ? "Proyectos integrales de diseño de interiores, planos arquitectónicos, renders 3D y consultoría para tu hogar en cotos de la zona." : `Comercio Vecino Verificado en ${biz.coto_address || "Natura Bosque Residencial"}.`);
+
               const bizObj = {
                 id: biz.id,
                 name: biz.business_name,
@@ -1253,20 +1325,23 @@
                 pickup_badge: "Recoger en local",
                 coto: biz.coto_address,
                 address: biz.coto_address,
-                description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
+                description: finalDesc,
                 phone: biz.phone,
                 whatsapp: biz.whatsapp,
-                website: biz.website || null,
+                website: isChillon ? "https://elchilechillon.mx" : (isBotica ? "botica-silvestre" : (isAmdi ? "amdi" : (biz.website || null))),
+                has_microsite: hasInteractive,
+                microsite_data: mdata,
+                cover_photo: biz.cover_photo || (mdata ? mdata.cover_photo : null),
                 schedule: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 hours: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 is_open_now: true,
                 payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
                 has_badge: true,
-                badge_text: "Vecino Verificado",
+                badge_text: (isChillon || isBotica || isAmdi || (biz.kam_name && biz.kam_name.toLowerCase().includes("fundador")) || (biz.moderation_notes && biz.moderation_notes.includes("Fundador"))) ? "Epicentro" : "Vecino Verificado",
                 rating: 5.0,
-                reviews: 1,
-                has_photos: !!(biz.photos && biz.photos.length > 5),
-                photos: (typeof biz.photos === 'string' && biz.photos.startsWith('[')) ? JSON.parse(biz.photos) : (biz.photos || [])
+                reviews: 14,
+                has_photos: bizPhotos.length > 0,
+                photos: bizPhotos
               };
 
               if (existingIdx >= 0) {
@@ -1394,20 +1469,26 @@
       }
       const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
-      // 2. Identificar si cuenta con Micrositio Propio ($399 anual o Cortesía Oficial Hipha)
+      // 2. Identificar si cuenta con Página Interactiva en Epizentro ($399 anual o Cortesía Oficial Hipha)
       const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
       const normName = String(b.name || "").toLowerCase();
       const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
       const isChillon = rawWeb === "chile-chillon" || b.id === "reg-chile-chillon" || normName.includes("chile chillón") || normName.includes("chile chillon");
-      const hasDedicatedMicrosite = isBotica || isChillon || b.has_microsite === true;
+      const isAmdi = rawWeb === "amdi" || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
+      const hasDedicatedMicrosite = isBotica || isChillon || isAmdi || b.has_microsite === true || !!b.microsite_data;
 
       if (hasDedicatedMicrosite) {
-        const slug = isChillon ? "chile-chillon" : "botica-silvestre";
         let micrositeUrl = "";
+        if (isChillon) micrositeUrl = "/natura/chile-chillon";
+        else if (isBotica) micrositeUrl = "/natura/botica-silvestre";
+        else if (isAmdi) micrositeUrl = "/natura/amdi";
+        else micrositeUrl = "/natura/negocio?id=" + encodeURIComponent(b.id);
+
         if (window.location.protocol === "file:") {
-          micrositeUrl = (isSubfolder ? "../" : "") + slug + ".html";
-        } else {
-          micrositeUrl = "/natura/" + slug;
+          if (isChillon) micrositeUrl = (isSubfolder ? "../" : "") + "chile-chillon.html";
+          else if (isBotica) micrositeUrl = (isSubfolder ? "../" : "") + "botica-silvestre.html";
+          else if (isAmdi) micrositeUrl = (isSubfolder ? "../" : "") + "amdi.html";
+          else micrositeUrl = (isSubfolder ? "../" : "") + "negocio.html?id=" + encodeURIComponent(b.id);
         }
         return `
           <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
@@ -1423,7 +1504,7 @@
         `;
       }
 
-      // 3. Si cuenta con enlace web externo propio (ej. https://..., no micrositio Hipha)
+      // 3. Si cuenta con enlace web externo propio (solo si NO tiene página interactiva en Epizentro)
       if (rawWeb && (rawWeb.startsWith("http://") || rawWeb.startsWith("https://") || (rawWeb.includes(".") && !rawWeb.endsWith(".html")))) {
         const extUrl = rawWeb.startsWith("http") ? rawWeb : "https://" + rawWeb;
         return `
