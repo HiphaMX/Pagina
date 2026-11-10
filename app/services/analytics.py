@@ -27,6 +27,7 @@ CLIENTS = {
     "Letrerama": "555315028",
     "Grupo Gari": "555407699",
     "Valencia Servicios": "555402565",
+    "Oncología Robótica": "558168081",
 }
 
 def get_ga4_credentials():
@@ -92,6 +93,7 @@ def get_discovered_clients():
             discovered = {}
             for acc in data.get("accountSummaries", []):
                 for prop in acc.get("propertySummaries", []):
+                    prop_id = prop.get("property", "").replace("properties/", "")
                     # Omitir propiedad de prueba inactiva y ex-clientes dados de baja
                     if prop_id in ("437684943", "537288803"):
                         continue
@@ -108,6 +110,8 @@ def get_discovered_clients():
                         display_name = "DAM Pisos"
                     elif display_name == "Dr Jairo Dominguez":
                         display_name = "Dr. Jairo Domínguez"
+                    elif display_name.lower() in ("oncologia robotica", "oncología robótica"):
+                        display_name = "Oncología Robótica"
                     if prop_id:
                         discovered[display_name] = prop_id
             if discovered:
@@ -142,9 +146,9 @@ def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date:
         
         for row in response.rows:
             date_str = row.dimension_values[0].value
-            new_u = int(row.metric_values[0].value)
-            act_u = int(row.metric_values[1].value)
-            views = int(row.metric_values[2].value)
+            new_u = int(row.metric_values[0].value) if len(row.metric_values) > 0 else 0
+            act_u = int(row.metric_values[1].value) if len(row.metric_values) > 1 else 0
+            views = int(row.metric_values[2].value) if len(row.metric_values) > 2 else 0
             
             total_new_users += new_u
             total_active_users += act_u
@@ -161,7 +165,7 @@ def get_basic_metrics(property_id: str, start_date: str = "30daysAgo", end_date:
         dates_data.sort(key=lambda x: x["date"])
 
         # Usar totales consolidados desduplicados oficiales de GA4
-        if response.totals:
+        if response.totals and len(response.totals[0].metric_values) >= 3:
             tot = response.totals[0]
             summary_new = int(tot.metric_values[0].value)
             summary_active = int(tot.metric_values[1].value)
@@ -325,7 +329,7 @@ def get_audience_breakdown(property_id: str, start_date: str = "30daysAgo", end_
                 results["devices"].append({
                     "device": label,
                     "raw": cat,
-                    "users": int(row.metric_values[0].value)
+                    "users": int(row.metric_values[0].value) if row.metric_values else 0
                 })
         except Exception as ed:
             print(f"Error fetching devices for property {property_id}: {ed}")
@@ -344,7 +348,7 @@ def get_audience_breakdown(property_id: str, start_date: str = "30daysAgo", end_
                 label_g = "Mujer" if g == "female" else ("Hombre" if g == "male" else g.capitalize())
                 results["demographics"]["gender"].append({
                     "gender": label_g,
-                    "users": int(row.metric_values[0].value)
+                    "users": int(row.metric_values[0].value) if row.metric_values else 0
                 })
         except Exception as eg:
             print(f"Error fetching gender for property {property_id}: {eg}")
@@ -360,7 +364,7 @@ def get_audience_breakdown(property_id: str, start_date: str = "30daysAgo", end_
             for row in res_age.rows:
                 results["demographics"]["age"].append({
                     "bracket": row.dimension_values[0].value,
-                    "users": int(row.metric_values[0].value)
+                    "users": int(row.metric_values[0].value) if row.metric_values else 0
                 })
         except Exception as ea:
             print(f"Error fetching age for property {property_id}: {ea}")
@@ -380,7 +384,7 @@ def get_audience_breakdown(property_id: str, start_date: str = "30daysAgo", end_
                 if city_name and city_name != "(not set)":
                     results["locations"].append({
                         "city": city_name,
-                        "users": int(row.metric_values[0].value)
+                        "users": int(row.metric_values[0].value) if row.metric_values else 0
                     })
         except Exception as ec:
             print(f"Error fetching locations for property {property_id}: {ec}")

@@ -9598,7 +9598,7 @@ const DEFAULT_AGENCY_CLIENTS = [
     { name: "Botica Silvestre", contact_name: "Botica Silvestre", contact_email: "contacto@boticasilvestre.com" },
     { name: "DAM Pisos", contact_name: "DAM Pisos", contact_email: "info@dampisos.com" },
     { name: "El Ofertón del Piso", contact_name: "El Ofertón del Piso", contact_email: "contacto@ofertondelpiso.com" },
-    { name: "Oncología Robótica", contact_name: "Oncología Robótica", contact_email: "citas@oncologiarobotica.com.mx" }
+    { name: "Oncología Robótica", contact_name: "Dra. Jacqueline H. Díaz Garza", contact_email: "citas@oncologiarobotica.com.mx" }
 ];
 
 let quotationsCatalog = [...DEFAULT_OFFICIAL_CATALOG];

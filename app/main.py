@@ -101,7 +101,7 @@ def startup_db_setup():
                     {"name": "Botica Silvestre", "service_type": "web_design", "billing_day": 1, "monthly_fee": 6000.0, "start_date": "2024-05-01", "contact_email": "contacto@boticasilvestre.com"},
                     {"name": "DAM Pisos", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "info@dampisos.com"},
                     {"name": "El Ofertón del Piso", "service_type": "design", "billing_day": 25, "monthly_fee": 4500.0, "start_date": "2024-06-01", "contact_email": "contacto@ofertondelpiso.com"},
-                    {"name": "Oncología Robótica", "service_type": "complete", "billing_day": 10, "monthly_fee": 9500.0, "start_date": "2026-10-09", "contact_email": "citas@oncologiarobotica.com.mx"},
+                    {"name": "Oncología Robótica", "service_type": "complete", "billing_day": 10, "monthly_fee": 9500.0, "start_date": "2026-10-09", "contact_email": "citas@oncologiarobotica.com.mx", "contact_name": "Dra. Jacqueline H. Díaz Garza", "contact_phone": "33 1108 5716", "website_url": "https://oncologia-robotica.com", "ga4_property_id": "558168081"},
                     {"name": "Dr. Jairo Domínguez", "service_type": "complete", "billing_day": 18, "monthly_fee": 9000.0, "start_date": "2026-10-28", "contact_email": "r2urodominguez@hotmail.com"},
                     {"name": "IEER", "service_type": "complete", "billing_day": 1, "monthly_fee": 9500.0, "start_date": "2026-11-01", "contact_email": "lcid@ieer.com.mx"}
                 ]
@@ -109,6 +109,30 @@ def startup_db_setup():
                     db.add(AgencyClient(**ic))
                 db.commit()
                 print(f"✓ {len(initial_clients)} clientes de agencia sembrados con éxito.")
+            else:
+                onco = db.query(AgencyClient).filter(AgencyClient.name.ilike("Oncolog%a Rob%tica")).first()
+                if not onco:
+                    import datetime
+                    db.add(AgencyClient(
+                        name="Oncología Robótica",
+                        contact_name="Dra. Jacqueline H. Díaz Garza",
+                        contact_email="citas@oncologiarobotica.com.mx",
+                        contact_phone="33 1108 5716",
+                        service_type="complete",
+                        billing_period="monthly",
+                        billing_day=10,
+                        monthly_fee=9500.0,
+                        start_date=datetime.date(2026, 10, 9),
+                        status="active",
+                        website_url="https://oncologia-robotica.com",
+                        ga4_property_id="558168081",
+                        notes="Especialista en Cirugía Oncológica y Robótica Da Vinci - Dra. Jacqueline H. Díaz Garza"
+                    ))
+                    db.commit()
+                elif not onco.ga4_property_id:
+                    onco.ga4_property_id = "558168081"
+                    onco.website_url = "https://oncologia-robotica.com"
+                    db.commit()
         finally:
             db.close()
     except Exception as ce:
