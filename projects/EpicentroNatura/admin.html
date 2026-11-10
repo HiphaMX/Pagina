@@ -40,6 +40,7 @@
               </svg>
             </button>
           </div>
+          <p class="text-[11px] text-slate-400 text-center mt-2">Clave de acceso: <span class="text-emerald-400 font-mono font-medium">natura2026</span></p>
         </div>
         <div id="login-error-alert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold"></div>
         <button type="submit" id="btn-login-submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
@@ -450,7 +451,6 @@
       checkAutoOpenEdit();
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
-  }
 
     function updateStats() {
       document.getElementById("stat-total").textContent = allRegistrations.length;
@@ -559,7 +559,7 @@
         `;
       }).join("");
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     async function approveRegistration(id, name) {
@@ -1622,7 +1622,7 @@ Esta acción no se puede deshacer.`)) return;
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
       loadRegistrations();
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
 
       // Sincronización en vivo entre campos de horario (Información General y Micrositio)
       const topSchedInput = document.getElementById("edit-schedule");
