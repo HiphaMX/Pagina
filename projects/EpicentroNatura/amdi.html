@@ -74,77 +74,108 @@
     </div>
   </aside>
 
-  <!-- HEADER / HERO DEL COMERCIO -->
-  <header class="relative bg-slate-950 text-white overflow-hidden pb-12 pt-8 sm:pt-12 border-b border-slate-800">
-    <div id="hero-cover-bg" class="absolute inset-0 opacity-30 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80');"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/40"></div>
+  <!-- HEADER / HERO DEL COMERCIO (SPLIT HERO DESTACADO) -->
+  <header class="relative bg-slate-950 text-white overflow-hidden py-8 sm:py-12 lg:py-14 border-b border-slate-800">
+    <!-- Luz ambiental sutil en el fondo -->
+    <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-slate-800/40 blur-3xl pointer-events-none"></div>
 
-    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-      
-      <!-- BADGES SUPERIORES -->
-      <div class="flex flex-wrap items-center gap-2">
-        <span id="hero-schedule-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
-          <span id="hero-schedule-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="hero-schedule-status">Abierto Hoy</span>
-          <span id="hero-schedule-hours">· 09:00 a 17:00 hrs</span>
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
-          <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
-          <span>Epizentro</span>
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
-          <i data-lucide="home" class="w-3.5 h-3.5"></i>
-          <span>Servicio en Cotos</span>
-        </span>
-      </div>
-
-      <!-- TÍTULO Y DESCRIPCIÓN -->
-      <div class="space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
-            <i data-lucide="palette" class="w-6 h-6"></i>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+        
+        <!-- COLUMNA IZQUIERDA: INFORMACIÓN COMERCIAL (7 COLS EN DESKTOP) -->
+        <div class="lg:col-span-7 space-y-5 order-2 lg:order-1">
+          
+          <!-- BADGES SUPERIORES -->
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="hero-schedule-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
+              <span id="hero-schedule-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="hero-schedule-status">Abierto Hoy</span>
+              <span id="hero-schedule-hours">· 09:00 a 17:00 hrs</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold">
+              <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+              <span>Epizentro</span>
+            </span>
+            <span id="hero-service-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold">
+              <i data-lucide="home" class="w-3.5 h-3.5"></i>
+              <span id="hero-service-badge-text">Servicio en Cotos</span>
+            </span>
           </div>
-          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
-            AMDI Diseño Interior
-          </h1>
-        </div>
-        <p id="hero-business-description" class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed">
-          Escuchamos las ideas de nuestros clientes y encontramos la manera de llevarlas a la realidad, creamos el lugar que cuenta tu historia. Proyectos integrales de diseño de interiores, planos arquitectónicos, renders 3D y consultoría especializada para hogares en cotos de la zona.
-        </p>
-      </div>
 
-      <!-- UBICACIÓN RÁPIDA -->
-      <div class="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400">
-        <div class="flex items-center gap-2">
-          <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-          <span id="hero-location-text">Natura Bosque Residencial (Atención en cotos de la zona y con previa cita)</span>
-        </div>
-        <div id="hero-schedule-info-row" class="flex items-center gap-2">
-          <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-          <span id="hero-schedule-info">Horario: Lunes a Viernes · 09:00 a 17:00 hrs</span>
-        </div>
-      </div>
+          <!-- TÍTULO Y DESCRIPCIÓN -->
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
+                <i data-lucide="palette" class="w-6 h-6"></i>
+              </div>
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
+                AMDI Diseño Interior
+              </h1>
+            </div>
+            <p id="hero-business-description" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+              Escuchamos las ideas de nuestros clientes y encontramos la manera de llevarlas a la realidad, creamos el lugar que cuenta tu historia. Proyectos integrales de diseño de interiores, planos arquitectónicos, renders 3D y consultoría especializada para hogares en cotos de la zona.
+            </p>
+          </div>
 
-      <!-- BARRA DE ACCIÓN DIRECTA -->
-      <div class="flex flex-wrap items-center gap-3 pt-4">
-        <a id="hero-whatsapp-btn" href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior%2C%20vi%20su%20p%C3%A1gina%20interactiva%20en%20Epizentro%20Natura%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
-          <i data-lucide="message-circle" class="w-4 h-4"></i>
-          <span>Enviar WhatsApp</span>
-        </a>
-        <a id="hero-phone-btn" href="tel:3313111147" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
-          <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
-          <span>Llamar</span>
-        </a>
-        <a href="#info-cobertura" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all active:scale-95">
-          <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
-          <span>Zona de cobertura</span>
-        </a>
-        <a id="hero-website-btn" href="https://www.amdi.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-sm border border-emerald-500/30 transition-all active:scale-95">
-          <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
-          <span>Sitio web</span>
-        </a>
-      </div>
+          <!-- UBICACIÓN RÁPIDA -->
+          <div class="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs sm:text-sm text-slate-400 pt-1">
+            <div class="flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span id="hero-location-text">Natura Bosque Residencial (Atención en cotos de la zona y con previa cita)</span>
+            </div>
+            <div id="hero-schedule-info-row" class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+              <span id="hero-schedule-info">Horario: Lunes a Viernes · 09:00 a 17:00 hrs</span>
+            </div>
+          </div>
 
+          <!-- BARRA DE ACCIÓN DIRECTA -->
+          <div class="flex flex-wrap items-center gap-2.5 pt-2">
+            <a id="hero-whatsapp-btn" href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior%2C%20vi%20su%20p%C3%A1gina%20interactiva%20en%20Epizentro%20Natura%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>Enviar WhatsApp</span>
+            </a>
+            <a id="hero-phone-btn" href="tel:3313111147" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/15 transition-all active:scale-95">
+              <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
+              <span>Llamar</span>
+            </a>
+            <a href="#info-cobertura" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/15 transition-all active:scale-95">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
+              <span>Zona de cobertura</span>
+            </a>
+            <a id="hero-website-btn" href="https://www.amdi.mx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-sm border border-emerald-500/30 transition-all active:scale-95">
+              <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
+              <span>Sitio web</span>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: ESCAPARATE FOTOGRÁFICO DESTACADO (5 COLS EN DESKTOP) -->
+        <div class="lg:col-span-5 order-1 lg:order-2">
+          <div class="relative w-full rounded-3xl overflow-hidden bg-slate-900 border border-slate-700/60 shadow-2xl shadow-black/60 group">
+            <div class="relative h-64 sm:h-72 lg:h-[340px] w-full overflow-hidden">
+              <img id="hero-showcase-img" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85" alt="AMDI Diseño Interior - Portada" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" loading="eager">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none"></div>
+              
+              <!-- Badges flotantes sobre la foto -->
+              <div class="absolute top-3.5 right-3.5 flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-emerald-500/30 text-emerald-300 text-[10px] font-bold uppercase tracking-wider shadow-md">
+                  Verificado
+                </span>
+              </div>
+              <div class="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between text-[11px] text-white/90">
+                <span class="px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 font-medium flex items-center gap-1.5 shadow-md">
+                  <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>Fotografía del Establecimiento</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </header>
 
@@ -376,6 +407,8 @@
       if (reg.cover_photo) {
         const coverEl = document.getElementById("hero-cover-bg");
         if (coverEl) coverEl.style.backgroundImage = `url('${reg.cover_photo}')`;
+        const showcaseImg = document.getElementById("hero-showcase-img");
+        if (showcaseImg) showcaseImg.src = reg.cover_photo;
       }
 
       // Actualizar productos destacados si existen en mdata
