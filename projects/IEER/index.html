@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- Google Tag Manager & Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-P9D4NRLL"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J06TRYKQC3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-J06TRYKQC3');
+    </script>
+    
     <!-- SEO Optimization -->
     <title>IEER | Ingeniería de Micro-Redes y Autonomía Energética Solar</title>
     <meta name="description" content="Fusión de naturaleza y alta ingeniería solar en México. Micro-redes sofisticadas de alta capacidad y almacenamiento inteligente para residencias e industrias exclusivas.">
@@ -17,10 +28,10 @@
     <meta property="og:title" content="IEER | Fusión de Naturaleza y Alta Ingeniería Solar">
     <meta property="og:description" content="Micro-redes solares de alta gama para proyectos residenciales e industriales exclusivos en todo México.">
     
-    <!-- Google Fonts: Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
+    <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Outfit:wght@100;200;300;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400..700&family=Outfit:wght@100;200;300;400;600;800&family=Space+Grotesk:wght@300;400;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons via jsDelivr CDN -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
@@ -57,7 +68,7 @@
             --font-display: 'Outfit', sans-serif;
             --font-tech: 'Space Grotesk', sans-serif;
             --font-future: 'Syncopate', sans-serif;
-            --font-accent: 'Zerafoc', sans-serif;
+            --font-accent: 'Google Sans Flex', 'Zerafoc', sans-serif;
             --font-body: 'Outfit', sans-serif;
             
             --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
@@ -248,7 +259,7 @@
             display: none;
             font-family: var(--font-accent);
             font-size: 1.15rem;
-            font-weight: normal;
+            font-weight: 600;
             color: var(--color-alabaster);
             text-decoration: none;
             letter-spacing: 0.1em;
@@ -397,7 +408,7 @@
 
         .hero-title span {
             font-family: var(--font-accent);
-            font-weight: normal;
+            font-weight: 600;
             color: var(--color-bronze);
         }
 
@@ -561,7 +572,7 @@
 
         .metric-val {
             font-size: 3.5rem;
-            font-weight: normal; /* Normal weight for local accent ttf */
+            font-weight: 600;
             color: var(--color-bronze); /* Highlight value in bronze */
             font-family: var(--font-accent);
             letter-spacing: -0.01em;
@@ -611,8 +622,8 @@
 
         .section-title span {
             font-family: var(--font-accent);
-            font-weight: normal;
-            font-style: italic;
+            font-weight: 600;
+            font-style: normal;
             color: var(--color-bronze);
         }
 
@@ -939,8 +950,8 @@
 
         .promise-service-title span {
             font-family: var(--font-accent);
-            font-weight: normal;
-            font-style: italic;
+            font-weight: 600;
+            font-style: normal;
             color: var(--color-bronze);
         }
 
@@ -1116,6 +1127,7 @@
 
         .sector-massive-title {
             font-family: var(--font-accent);
+            font-weight: 600;
             font-size: 11.5vw;
             line-height: 0.8;
             color: rgba(255, 255, 255, 0.95);
@@ -1184,12 +1196,12 @@
         }
 
         .sector-slide-subtitle {
-            font-family: 'Zerafoc', sans-serif;
+            font-family: var(--font-accent);
             font-size: 2.25rem;
-            font-weight: normal;
+            font-weight: 600;
             color: var(--color-bronze);
             margin-bottom: 1.5rem;
-            font-style: italic;
+            font-style: normal;
             line-height: 1.2;
             letter-spacing: -0.01em;
         }
@@ -1458,8 +1470,9 @@
         }
 
         .zerocircle-right span {
-            font-family: 'Zerafoc', sans-serif;
-            font-style: italic;
+            font-family: var(--font-accent);
+            font-weight: 600;
+            font-style: normal;
             color: var(--color-bronze);
             text-transform: none;
             font-size: 1.28em;

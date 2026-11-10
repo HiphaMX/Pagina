@@ -41,7 +41,7 @@
 - **Tipografías:**
   - `Display / Títulos:` *Outfit* (pesos ultra-ligeros para elegancia minimalista)
   - `Tech / Badges:` *Space Grotesk* y *Syncopate*
-  - `Acento Signature:` *Zerafoc*
+  - `Acento Signature:` *Google Sans Flex* (Semibold 600)
 
 ---
 
