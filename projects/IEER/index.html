@@ -1121,15 +1121,16 @@
             pointer-events: none;
             display: flex;
             align-items: flex-end;
-            height: 12vw;
+            height: 6vw;
+            min-height: 65px;
             overflow: visible;
         }
 
         .sector-massive-title {
             font-family: var(--font-accent);
             font-weight: 600;
-            font-size: 11.5vw;
-            line-height: 0.8;
+            font-size: clamp(3rem, 5.4vw, 5.8rem);
+            line-height: 0.85;
             color: rgba(255, 255, 255, 0.95);
             position: absolute;
             left: 0;
@@ -1139,7 +1140,7 @@
             clip-path: inset(0 100% 0 0); /* Inicialmente cortado a lo largo */
             transform: translate3d(-60px, 0, 0);
             transition: clip-path 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease-in-out;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
             white-space: nowrap;
         }
 
@@ -1993,6 +1994,21 @@
         }
 
         /* Responsive */
+        @media (max-width: 1280px) and (min-width: 992px) {
+            .sector-massive-title {
+                font-size: clamp(2.4rem, 4.4vw, 4.6rem);
+            }
+            .sector-description-container {
+                max-width: 440px;
+                right: 2.5rem;
+                bottom: 3.5rem;
+            }
+            .sector-massive-title-container {
+                left: 2.5rem;
+                bottom: 3.5rem;
+            }
+        }
+
         /* Responsive & Mobile Optimization */
         @media (max-width: 991px) {
             .container { padding: 0 2rem; }
@@ -2899,7 +2915,7 @@
     <section class="metrics">
         <div class="container metrics-grid">
             <div class="metric-item">
-                <div class="metric-val gradient-text-bronze">3,567</div>
+                <div class="metric-val gradient-text-bronze">+400</div>
                 <div class="metric-label">PROYECTOS COMPLETADOS</div>
             </div>
             <div class="metric-item">
