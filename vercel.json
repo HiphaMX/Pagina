@@ -965,6 +965,21 @@
       "headers": { "Location": "https://www.epizentro.com/natura/$1" }
     },
     {
+      "src": "/natura",
+      "status": 308,
+      "headers": { "Location": "https://www.epizentro.com/natura/" }
+    },
+    {
+      "src": "/natura/",
+      "status": 308,
+      "headers": { "Location": "https://www.epizentro.com/natura/" }
+    },
+    {
+      "src": "/natura/(.*)",
+      "status": 308,
+      "headers": { "Location": "https://www.epizentro.com/natura/$1" }
+    },
+    {
       "src": "/epicentro",
       "status": 308,
       "headers": { "Location": "/epicentro/" }
