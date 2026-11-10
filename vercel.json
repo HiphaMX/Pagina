@@ -718,17 +718,7 @@
           "value": "^(www\\.)?ieer\\.com\\.mx$"
         }
       ],
-      "dest": "/projects/IEER/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?ieer\\.com\\.mx$"
-        }
-      ],
-      "dest": "/projects/IEER/$1"
+      "dest": "/projects/IEER/"
     },
     {
       "src": "/amdi",
