@@ -792,10 +792,11 @@
           if (varietyCountEl) varietyCountEl.textContent = `${feat.products.length} Fórmulas Activas`;
           featGrid.innerHTML = feat.products.map(prod => {
             const prodTag = prod.tag || prod.badge || "Tintura / Oleato 30ml";
+            const isCover = prod.fit === "cover" || prod.photo_fit === "cover";
             return `
             <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
-              <div class="relative h-64 sm:h-72 w-full overflow-hidden bg-white border-b border-slate-100">
-                <img src="${prod.photo || 'Assets/botica/products/Balance 01.webp'}" alt="${prod.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+              <div class="relative h-52 sm:h-56 w-full overflow-hidden bg-white border-b border-slate-100 ${isCover ? '' : 'flex items-center justify-center p-3'}">
+                <img src="${prod.photo || 'Assets/botica/products/Balance 01.webp'}" alt="${prod.name}" class="${isCover ? 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500' : 'h-full w-auto max-w-full object-contain bg-white group-hover:scale-105 transition-transform duration-300'}" loading="lazy">
                 ${prodTag ? `
                 <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs border border-emerald-500/20 shadow-xs">
                   ${prodTag}

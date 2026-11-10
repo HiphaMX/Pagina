@@ -272,6 +272,7 @@
     const priceInput = document.getElementById("reg-new-prod-price");
     const descInput = document.getElementById("reg-new-prod-desc");
     const tagInput = document.getElementById("reg-new-prod-tag");
+    const fitInput = document.getElementById("reg-new-prod-fit");
 
     const name = nameInput ? nameInput.value.trim() : "";
     if (!name) {
@@ -282,13 +283,15 @@
     const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
     const desc = descInput ? descInput.value.trim() : "";
     const tag = tagInput ? tagInput.value.trim() : "";
+    const fit = fitInput ? fitInput.value : "contain";
 
     registerFeaturedProducts.push({
       name: name,
       price: price,
       description: desc,
       photo: tempNewProductPhoto || "",
-      tag: tag
+      tag: tag,
+      fit: fit
     });
 
     if (nameInput) nameInput.value = "";
@@ -315,6 +318,13 @@
     }
   };
 
+  window.toggleRegisterProductFit = function(idx) {
+    if (idx < 0 || idx >= registerFeaturedProducts.length) return;
+    const currentFit = registerFeaturedProducts[idx].fit || "contain";
+    registerFeaturedProducts[idx].fit = (currentFit === "cover") ? "contain" : "cover";
+    renderRegisterFeaturedGrid();
+  };
+
   function renderRegisterFeaturedGrid() {
     const grid = document.getElementById("reg-featured-grid");
     const badge = document.getElementById("reg-featured-counter-badge");
@@ -338,19 +348,23 @@
         <div class="flex items-center gap-3 min-w-0">
           <div class="relative w-12 h-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
             ${p.photo
-              ? `<img src="${p.photo}" alt="${p.name}" class="w-full h-full object-cover">`
+              ? `<img src="${p.photo}" alt="${p.name}" class="w-full h-full ${p.fit === 'cover' ? 'object-cover' : 'object-contain p-1'}">`
               : `<span class="text-xs font-mono font-bold text-slate-400">#${idx + 1}</span>`}
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-xs font-bold text-slate-900 truncate">${p.name}</span>
               ${p.tag ? `<span class="px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[9px] font-bold uppercase tracking-wider shrink-0">${p.tag}</span>` : ''}
+              <span class="px-1.5 py-0.5 rounded-md ${p.fit === 'cover' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'} text-[9px] font-mono shrink-0">${p.fit === 'cover' ? 'Rellenar' : 'Altura'}</span>
             </div>
             <div class="text-[11px] font-mono font-bold text-emerald-700">$${parseFloat(p.price || 0).toFixed(2)} MXN</div>
             ${p.description ? `<p class="text-[10px] text-slate-500 truncate max-w-[200px] sm:max-w-xs">${p.description}</p>` : ''}
           </div>
         </div>
         <div class="flex items-center gap-1 shrink-0">
+          <button type="button" onclick="toggleRegisterProductFit(${idx})" title="Alternar ajuste: Altura o Rellenar" class="px-2 py-1 rounded-lg ${p.fit === 'cover' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-600'} text-[10px] font-bold flex items-center gap-1 transition-colors">
+            <span>${p.fit === 'cover' ? '🖼️ Rellenar' : '📐 Altura'}</span>
+          </button>
           <button type="button" onclick="editRegisterProductTag(${idx})" title="Cambiar etiqueta" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 text-[10px] font-bold flex items-center gap-1 transition-colors">
             <i data-lucide="tag" class="w-3 h-3 text-emerald-600"></i>
             <span>${p.tag ? p.tag : '+ Etiqueta'}</span>
@@ -880,12 +894,18 @@
                     <input type="number" step="0.5" id="reg-new-prod-price" placeholder="Precio ($ ej. 95)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none font-mono">
                   </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-1.5">
                   <div class="sm:col-span-2">
                     <input type="text" id="reg-new-prod-desc" placeholder="Descripción breve (ej. Chile tostado artesanal con cacahuate y ajo)" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
                   </div>
                   <div>
-                    <input type="text" id="reg-new-prod-tag" placeholder="Etiqueta foto (ej. Asesoría, Especialidad)" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                    <input type="text" id="reg-new-prod-tag" placeholder="Etiqueta (ej. Salsa picante)" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                  </div>
+                  <div>
+                    <select id="reg-new-prod-fit" class="w-full px-2 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none">
+                      <option value="contain">📐 Altura (Fondo blanco)</option>
+                      <option value="cover">🖼️ Rellenar campo (Foto)</option>
+                    </select>
                   </div>
                 </div>
                 <button type="button" onclick="addRegisterFeaturedProduct()" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5">
@@ -1873,6 +1893,8 @@
   window.removeNewProdPhoto = removeNewProdPhoto;
   window.addRegisterFeaturedProduct = addRegisterFeaturedProduct;
   window.removeRegisterFeaturedProduct = removeRegisterFeaturedProduct;
+  window.editRegisterProductTag = editRegisterProductTag;
+  window.toggleRegisterProductFit = toggleRegisterProductFit;
   window.addRegisterMenuSection = addRegisterMenuSection;
   window.removeRegisterMenuSection = removeRegisterMenuSection;
   window.updateMenuSecMeta = updateMenuSecMeta;
