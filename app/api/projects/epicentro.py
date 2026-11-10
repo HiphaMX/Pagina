@@ -3,6 +3,7 @@ import random
 import uuid
 import json
 import logging
+import secrets
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Union
 from pydantic import BaseModel, EmailStr
@@ -18,19 +19,11 @@ from app.api.mercadopago import get_sdk_for_store
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-ADMIN_SECRET = os.getenv("ADMIN_SECRET_TOKEN", "natura_admin_secret_2026")
-ALLOWED_ADMIN_TOKENS = {
-    ADMIN_SECRET.strip().lower(),
-    "natura_admin_secret_2026",
-    "natura2026",
-    "natura",
-    "hipha2026",
-    "hipha",
-    "epicentro",
-    "epicentro2026",
-    "admin",
-    "admin2026"
-}
+ADMIN_SECRET = (
+    os.getenv("EPIZENTRO_ADMIN_SECRET") or
+    os.getenv("ADMIN_SECRET_TOKEN") or
+    "natura_admin_secret_2026"
+).strip()
 
 
 def ensure_epicentro_schema(db: Session):
@@ -75,15 +68,14 @@ def ensure_epicentro_schema(db: Session):
 
 def verify_admin(
     x_admin_token: Optional[str] = Header(None),
-    authorization: Optional[str] = Header(None),
-    admin_token: Optional[str] = Query(None)
+    authorization: Optional[str] = Header(None)
 ):
-    token = x_admin_token or admin_token
+    token = x_admin_token
     if not token and authorization:
         parts = authorization.split()
         if len(parts) == 2 and parts[0].lower() == "bearer":
             token = parts[1]
-    if not token or (token.strip().lower() not in ALLOWED_ADMIN_TOKENS):
+    if not token or not secrets.compare_digest(token.strip(), ADMIN_SECRET):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token administrativo no autorizado"
@@ -107,6 +99,15 @@ def mask_email(email: str) -> str:
 
 
 # --- SCHEMAS ---
+
+class EpizentroContactForm(BaseModel):
+    nombre: str
+    email: EmailStr
+    telefono: Optional[str] = None
+    plan_contratado: Optional[str] = "Epizentro"
+    mensaje: Optional[str] = ""
+    honeypot: Optional[str] = None
+
 
 class RegisterInitiateRequest(BaseModel):
     business_name: str
@@ -316,79 +317,78 @@ async def send_approval_email_task(business_name: str, owner_name: str, to_email
         logger.error(f"Error background enviando aprobación a {to_email}: {e}")
 
 
-def build_kam_transfer_email_html(business_name: str, owner_name: str, folio: str, kam_name: str) -> str:
-    return f"""
+# --- ENDPOINTS ---
+
+@router.post("/contact")
+async def submit_epizentro_contact(form_data: EpizentroContactForm):
+    """Procesa el formulario de contacto de epizentro.com sin riesgo de descarte y con correos institucionales."""
+    if form_data.honeypot:
+        logger.warning(f"[SPAM DETECTED] Honeypot field filled for Epizentro contact form (email: {form_data.email}).")
+        return {"message": "Formulario recibido correctamente"}
+
+    # 1. Enviar notificación al equipo de Hipha / Epizentro (hola@hipha.mx)
+    team_html = f"""
+    <h3>¡Nuevo Mensaje de Contacto en Epizentro!</h3>
+    <p><strong>Nombre:</strong> {form_data.nombre}</p>
+    <p><strong>Email:</strong> {form_data.email}</p>
+    <p><strong>Teléfono:</strong> {form_data.telefono or 'No proporcionado'}</p>
+    <p><strong>Interés / Plan:</strong> {form_data.plan_contratado or 'Epizentro'}</p>
+    <p><strong>Mensaje:</strong></p>
+    <p style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">{form_data.mensaje}</p>
+    """
+    msg, host, port, user, pwd = _prepare_project_email(
+        project_prefix="EPIZENTRO",
+        from_name="Epizentro Contacto",
+        from_email="hola@epizentro.com",
+        to_email="hola@hipha.mx",
+        subject=f"📬 [Epizentro] Mensaje de Contacto: {form_data.nombre}",
+        html_content=team_html,
+        domain="epizentro.com"
+    )
+    try:
+        await _send_smtp(msg, host, port, user, pwd)
+    except Exception as e:
+        logger.error(f"Error enviando correo de contacto al equipo Epizentro: {e}")
+
+    # 2. Enviar confirmación al prospecto con identidad de Epizentro
+    lead_html = f"""
     <!DOCTYPE html>
     <html lang="es">
-    <head>
-      <meta charset="utf-8">
-      <style>
-        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }}
-        .card {{ max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }}
-        .header {{ background: linear-gradient(135deg, #059669 0%, #064e3b 100%); padding: 32px 24px; text-align: center; color: #ffffff; }}
-        .header h1 {{ margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }}
-        .header p {{ margin: 6px 0 0; font-size: 13px; opacity: 0.9; }}
-        .content {{ padding: 32px 28px; color: #0f172a; line-height: 1.6; font-size: 14px; }}
-        .bank-box {{ background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 20px; margin: 20px 0; }}
-        .badge {{ display: inline-block; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 11px; margin-bottom: 12px; }}
-        .btn {{ display: block; text-align: center; background: #25D366; color: #ffffff; padding: 14px 20px; border-radius: 12px; text-decoration: none; font-weight: 700; margin-top: 20px; font-size: 14px; }}
-        .footer {{ padding: 20px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }}
-      </style>
-    </head>
-    <body>
-      <div class="card">
-        <div class="header">
-          <h1>Epizentro Natura</h1>
-          <p>Página interactiva en epizentro · Suscripción Anual</p>
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; padding: 24px; color: #1e293b;">
+      <div style="max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 28px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+        <h2 style="color: #0f172a; margin-top: 0; font-size: 20px;">¡Hola {form_data.nombre}!</h2>
+        <p>Hemos recibido tu mensaje de contacto respecto a la red comercial hiperlocal <strong>Epizentro</strong>.</p>
+        <p>Un asesor de nuestro equipo se pondrá en contacto contigo muy pronto vía WhatsApp o correo electrónico para resolver todas tus dudas sobre la dinamización de tu zona o la integración de tu negocio.</p>
+        <div style="background: #f1f5f9; padding: 16px; border-radius: 12px; margin: 20px 0; font-size: 13px; border-left: 4px solid #10b981;">
+          <strong>Resumen de tu mensaje:</strong><br>
+          <em style="color: #475569;">"{form_data.mensaje}"</em>
         </div>
-        <div class="content">
-          <div class="badge">Folio de Registro: {folio}</div>
-          <p>Hola <strong>{owner_name}</strong>,</p>
-          <p>Hemos recibido la solicitud para activar la <strong>página interactiva en epizentro con catálogo</strong> de tu negocio <strong>{business_name}</strong> (asignada a: <em>{kam_name}</em>).</p>
-          <p>A continuación te proporcionamos los datos oficiales para realizar la transferencia bancaria (SPEI):</p>
-          
-          <div class="bank-box">
-            <div style="font-size:12px;font-weight:800;color:#0f172a;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;">Datos para Transferencia (SPEI)</div>
-            <p style="margin:4px 0;"><strong>Banco:</strong> STP / BBVA</p>
-            <p style="margin:4px 0;"><strong>Beneficiario:</strong> Hipha Marketing Digital</p>
-            <p style="margin:4px 0;"><strong>CLABE Interbancaria:</strong> <span style="font-family:monospace;font-size:15px;color:#059669;font-weight:900;">646180157088123456</span></p>
-            <p style="margin:4px 0;"><strong>Monto:</strong> <span style="font-size:15px;font-weight:900;color:#0f172a;">$399.00 MXN</span> (Suscripción Anual)</p>
-            <p style="margin:4px 0;"><strong>Concepto / Referencia:</strong> <span style="font-family:monospace;font-weight:700;">{folio}</span></p>
-          </div>
-
-          <p style="font-size: 13px; color: #475569;">Una vez realizada la transferencia, envía tu comprobante al canal de WhatsApp de soporte o a tu asesor asignado para activar inmediatamente tu página interactiva:</p>
-
-          <a href="https://wa.me/523336762545?text=Hola%20Hipha%2C%20adjunto%20comprobante%20de%20pago%20para%20folio%20{folio}%20de%20{business_name}" class="btn" style="color:#ffffff;">Enviar Comprobante por WhatsApp</a>
-        </div>
-        <div class="footer">
-          Epizentro · Desarrollado y administrado por Hipha Marketing Digital.
-        </div>
+        <p style="font-size: 12px; color: #64748b; margin-top: 24px;">
+          Atentamente,<br>
+          <strong>Equipo Epizentro</strong><br>
+          <a href="https://www.epizentro.com" style="color: #059669; text-decoration: none;">epizentro.com</a>
+        </p>
       </div>
     </body>
     </html>
     """
-
-
-async def send_kam_transfer_instructions_email_task(business_name: str, owner_name: str, to_email: str, folio: str, kam_name: str):
-    """Envía por correo los datos de transferencia bancaria SPEI para altas con asesor KAM."""
+    lead_msg, l_host, l_port, l_user, l_pwd = _prepare_project_email(
+        project_prefix="EPIZENTRO",
+        from_name="Epizentro",
+        from_email="hola@epizentro.com",
+        to_email=form_data.email,
+        subject="Hemos recibido tu solicitud en Epizentro",
+        html_content=lead_html,
+        domain="epizentro.com"
+    )
     try:
-        html = build_kam_transfer_email_html(business_name, owner_name, folio, kam_name)
-        msg, host, port, user, pwd = _prepare_project_email(
-            project_prefix="HIPHA",
-            from_name="Hipha · Epizentro",
-            from_email="hola@hipha.mx",
-            to_email=to_email,
-            subject=f"Instrucciones de Pago · Página interactiva en epizentro ({folio})",
-            html_content=html,
-            domain="hipha.mx"
-        )
-        await _send_smtp(msg, host, port, user, pwd)
-        logger.info(f"Instrucciones bancarias enviadas con éxito en background a {to_email} para {business_name}")
+        await _send_smtp(lead_msg, l_host, l_port, l_user, l_pwd)
     except Exception as e:
-        logger.error(f"Error background enviando instrucciones bancarias a {to_email}: {e}")
+        logger.error(f"Error enviando confirmación al prospecto de Epizentro: {e}")
 
+    return {"message": "Formulario recibido correctamente"}
 
-# --- ENDPOINTS ---
 
 @router.post("/register/initiate")
 async def initiate_registration(
@@ -587,9 +587,9 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
             }
         },
         "back_urls": {
-            "success": f"{site_domain}/?payment=success&reg_id={reg.id}",
-            "failure": f"{site_domain}/?payment=failure&reg_id={reg.id}",
-            "pending": f"{site_domain}/?payment=pending&reg_id={reg.id}"
+            "success": f"{site_domain}/natura/?payment=success&reg_id={reg.id}",
+            "failure": f"{site_domain}/natura/tu-negocio?payment=failure&reg_id={reg.id}",
+            "pending": f"{site_domain}/natura/?payment=pending&reg_id={reg.id}"
         },
         "auto_return": "approved",
         "statement_descriptor": "EPIZENTRO",
@@ -821,20 +821,22 @@ async def report_kam_payment(
 
     kam = payload.kam_name.strip()
     reg.kam_name = kam
-    method = payload.payment_method or "kam_direct"
+    method = payload.payment_method or "mercadopago_subscription"
+    
+    if method not in ("mercadopago_subscription", "free_basic"):
+        raise HTTPException(
+            status_code=400,
+            detail="Por políticas de privacidad y seguridad, los pagos de suscripción se realizan exclusivamente en línea vía Mercado Pago."
+        )
+
     reg.payment_method = method
     
     if method == "mercadopago_subscription":
         reg.payment_status = "pending_mp_payment"
-    elif method == "free_basic":
+        reg.payment_amount = 399.0
+    else:
         reg.payment_status = "free_basic"
-    else:
-        reg.payment_status = "pending_kam_verification"
-
-    if payload.amount is not None:
-        reg.payment_amount = payload.amount
-    else:
-        reg.payment_amount = 0.0 if method == "free_basic" else 399.0
+        reg.payment_amount = 0.0
 
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     note_line = f"Registro de pago '{method}' con '{kam}' ({now_str} UTC)"
@@ -848,21 +850,8 @@ async def report_kam_payment(
     folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
     if method == "mercadopago_subscription":
         folio = f"NATURA-SUB-{folio_suffix}"
-    elif method == "free_basic":
-        folio = f"NATURA-GRATIS-{folio_suffix}"
     else:
-        folio = f"NATURA-KAM-{folio_suffix}"
-
-    # Si es alta con Asesor KAM / Transferencia, enviar datos bancarios oficiales al correo registrado
-    if method not in ("mercadopago_subscription", "free_basic") and reg.email:
-        background_tasks.add_task(
-            send_kam_transfer_instructions_email_task,
-            reg.business_name,
-            reg.owner_name or reg.business_name,
-            reg.email,
-            folio,
-            kam
-        )
+        folio = f"NATURA-GRATIS-{folio_suffix}"
 
     return {
         "success": True,

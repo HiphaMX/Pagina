@@ -83,6 +83,10 @@
         </div>
 
         <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+          <button onclick="openSubcategoriesManagerModal()" title="Gestionar subcategorías y filtros por categoría" class="px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 text-xs font-bold flex items-center gap-1.5 transition-colors">
+            <i data-lucide="tags" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Subcategorías</span>
+          </button>
           <button onclick="handlePurgeTests()" title="Elimina registros de prueba de la base de datos" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 transition-colors">
             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             <span class="hidden md:inline">Limpiar Pruebas</span>
@@ -177,21 +181,9 @@
     let inMemoryToken = "";
 
     function getToken() {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlToken = urlParams.get("token");
-        if (urlToken) {
-          inMemoryToken = urlToken.trim();
-          return inMemoryToken;
-        }
-        if (urlParams.get("demo") === "1" || urlParams.get("auto") === "1") {
-          inMemoryToken = "natura2026";
-          return inMemoryToken;
-        }
-      } catch (e) {}
       if (inMemoryToken) return inMemoryToken;
       try {
-        return sessionStorage.getItem("epicentro_admin_token") || localStorage.getItem("epicentro_admin_token") || "";
+        return sessionStorage.getItem("epicentro_admin_token") || "";
       } catch (e) {
         return "";
       }
@@ -202,10 +194,8 @@
       try {
         if (tok) {
           sessionStorage.setItem("epicentro_admin_token", tok.trim());
-          localStorage.setItem("epicentro_admin_token", tok.trim());
         } else {
           sessionStorage.removeItem("epicentro_admin_token");
-          localStorage.removeItem("epicentro_admin_token");
         }
       } catch (e) {}
     }
@@ -260,7 +250,6 @@
         }
 
         allRegistrations = await res.json();
-        try { localStorage.setItem("epicentro_admin_registrations", JSON.stringify(allRegistrations)); } catch (e) {}
         setToken(tokenVal);
 
         // Desbloquear pantalla
@@ -272,20 +261,11 @@
         checkAutoOpenEdit();
         if (window.lucide && lucide.createIcons) lucide.createIcons();
       } catch (err) {
-        // En caso de modo demostración, red local o fallback sin conexión:
-        const validLocalTokens = ["natura2026", "hipha2026", "epicentro2026", "admin2026", "natura_admin_secret_2026", "hipha", "natura", "epicentro", "admin"];
-        if (validLocalTokens.includes(tokenVal.toLowerCase())) {
-          setToken(tokenVal);
-          document.getElementById("auth-lock-screen").classList.add("hidden");
-          document.getElementById("admin-dashboard-view").classList.remove("hidden");
-          await loadRegistrations();
-        } else {
-          if (errBox) {
-            errBox.classList.remove("hidden");
-            errBox.textContent = err.message || "Error al verificar credenciales.";
-          }
-          if (input) input.focus();
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = err.message || "Token administrativo no autorizado o error de conexión.";
         }
+        if (input) input.focus();
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<span>Ingresar al Panel</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
@@ -296,6 +276,9 @@
     function handleAdminLogout() {
       setToken("");
       allRegistrations = [];
+      try {
+        localStorage.removeItem("epicentro_admin_registrations");
+      } catch (e) {}
       document.getElementById("admin-dashboard-view").classList.add("hidden");
       document.getElementById("auth-lock-screen").classList.remove("hidden");
       const errBox = document.getElementById("login-error-alert");
@@ -353,7 +336,6 @@
         }
 
         allRegistrations = await res.json();
-        try { localStorage.setItem("epicentro_admin_registrations", JSON.stringify(allRegistrations)); } catch (e) {}
         document.getElementById("auth-lock-screen").classList.add("hidden");
         document.getElementById("admin-dashboard-view").classList.remove("hidden");
         updateStats();
@@ -361,20 +343,7 @@
         checkAutoOpenEdit();
       } catch (err) {
         console.warn("Aviso al cargar registros reales (cargando muestra demostrativa):", err);
-        let loadedFromLocal = false;
-        try {
-          const localSaved = localStorage.getItem("epicentro_admin_registrations");
-          if (localSaved) {
-            const parsed = JSON.parse(localSaved);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-              allRegistrations = parsed;
-              loadedFromLocal = true;
-            }
-          }
-        } catch (e) {}
-
-        if (!loadedFromLocal) {
-          allRegistrations = [
+        allRegistrations = [
           {
             id: "reg-botica-silvestre",
             business_name: "Botica Silvestre",
@@ -1080,6 +1049,344 @@ Esta acción no se puede deshacer.`)) return;
     function removeAdminPhoto(idx) { removeAdminFeaturedProduct(idx); }
     function renderAdminPhotosGrid() { renderAdminFeaturedGrid(); }
 
+    // --- GESTIÓN INTEGRAL DE SUBCATEGORÍAS EN ADMIN ---
+    const BASE_SUBCATEGORIES_MAP = {
+      "comida-delivery": [
+        { slug: "salsas-artesanales", label: "Salsas Picantes 100% Naturales" },
+        { slug: "pizzas-pastas", label: "Pizzas y Pastas" },
+        { slug: "tacos-carnes", label: "Tacos y Carnes" },
+        { slug: "comida-casera", label: "Comida Casera" },
+        { slug: "snacks-botanas", label: "Snacks y Botanas" },
+        { slug: "mariscos", label: "Mariscos" },
+        { slug: "pasteleria-reposteria", label: "Pastelería y Repostería" },
+        { slug: "cafeterias-barras", label: "Cafeterías y Barras" },
+        { slug: "helados-nieve", label: "Helados y Nieve" },
+        { slug: "donas-churros", label: "Donas y Churros" },
+        { slug: "galletas-postres", label: "Galletas y Postres" }
+      ],
+      "productos-artesanales": [
+        { slug: "herbolaria-cuidado-natural", label: "Herbolaria y Cuidado Natural" },
+        { slug: "alimentos-gourmet", label: "Alimentos Gourmet y Conservas" },
+        { slug: "velas-aromaterapia", label: "Velas y Aromaterapia" },
+        { slug: "textiles-decoracion", label: "Textiles y Decoración" },
+        { slug: "joyeria-ceramica", label: "Joyería y Cerámica" }
+      ],
+      "educacion": [
+        { slug: "colegios-institutos", label: "Colegios e Institutos" },
+        { slug: "clases-particulares", label: "Clases Particulares" },
+        { slug: "bienestar-formacion", label: "Bienestar y Formación" },
+        { slug: "idiomas", label: "Idiomas" },
+        { slug: "arte-musica", label: "Arte y Música" }
+      ],
+      "servicios-profesionales": [
+        { slug: "diseno-interiores", label: "Diseño de Interiores" },
+        { slug: "contabilidad-fiscal", label: "Contabilidad & Fiscal" },
+        { slug: "abogados-legal", label: "Abogados & Legal" },
+        { slug: "diseno-marketing", label: "Diseño & Marketing" },
+        { slug: "inmobiliario", label: "Inmobiliario" },
+        { slug: "consultoria", label: "Consultoría" },
+        { slug: "arquitectura", label: "Arquitectura" },
+        { slug: "fisioterapeuta", label: "Fisioterapeuta" },
+        { slug: "finanzas", label: "Finanzas" },
+        { slug: "otros", label: "Otros" }
+      ],
+      "servicios-hogar": [
+        { slug: "electricidad-iluminacion", label: "Electricidad e Iluminación" },
+        { slug: "fontaneria-gas", label: "Fontanería y Gas" },
+        { slug: "carpinteria", label: "Carpintería" },
+        { slug: "cerrajeria", label: "Cerrajería" },
+        { slug: "limpieza-especializada", label: "Limpieza especializada" },
+        { slug: "mantenimiento", label: "Mantenimiento" },
+        { slug: "jardineria", label: "Jardinería" },
+        { slug: "carwash", label: "Carwash" },
+        { slug: "tintoreria-planchaduria", label: "Tintorería y Planchaduría" },
+        { slug: "otros", label: "Otros" }
+      ],
+      "hogar": [
+        { slug: "cortinas-persianas", label: "Cortinas y Persianas" },
+        { slug: "plantas-paisajismo", label: "Plantas y Paisajismo" },
+        { slug: "muebles-decoracion", label: "Muebles y Decoración" }
+      ],
+      "mascotas": [
+        { slug: "estetica-spa", label: "Estética y Spa Canino" },
+        { slug: "veterinaria-vacunas", label: "Veterinaria y Vacunas" },
+        { slug: "alimentos-accesorios", label: "Alimentos y Accesorios" },
+        { slug: "paseadores-cuidado", label: "Paseadores y Cuidado" }
+      ],
+      "fitness": [
+        { slug: "gimnasios-studios", label: "Gimnasios y Studios" },
+        { slug: "entrenador-personal", label: "Entrenador Personal" },
+        { slug: "yoga-pilates", label: "Yoga y Pilates" },
+        { slug: "cross-training", label: "Cross Training" },
+        { slug: "artes-marciales", label: "Artes Marciales" },
+        { slug: "tiendas-suplementos", label: "Tiendas de suplementos" }
+      ]
+    };
+
+    function slugify(text) {
+      if (!text) return "";
+      return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9 -]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
+    }
+
+    function getCustomSubcategoriesStore() {
+      try {
+        const stored = localStorage.getItem("epicentro_custom_subcategories");
+        return stored ? JSON.parse(stored) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveCustomSubcategoriesStore(store) {
+      try {
+        localStorage.setItem("epicentro_custom_subcategories", JSON.stringify(store));
+      } catch (e) {}
+    }
+
+    function getMergedSubcategories(categorySlug) {
+      const base = BASE_SUBCATEGORIES_MAP[categorySlug] || [];
+      const customStore = getCustomSubcategoriesStore();
+      const custom = customStore[categorySlug] || [];
+
+      const fromRegistrations = [];
+      allRegistrations.forEach(r => {
+        if (r.category_slug === categorySlug && r.subcategory_label && r.subcategory_label.trim()) {
+          const sLabel = r.subcategory_label.trim();
+          const sSlug = r.subcategory_slug || slugify(sLabel);
+          fromRegistrations.push({ slug: sSlug, label: sLabel });
+        }
+      });
+
+      const map = new Map();
+      base.forEach(item => map.set(item.slug, { slug: item.slug, label: item.label, isCustom: false }));
+      custom.forEach(item => map.set(item.slug, { slug: item.slug, label: item.label, isCustom: true }));
+      fromRegistrations.forEach(item => {
+        if (!map.has(item.slug)) {
+          map.set(item.slug, { slug: item.slug, label: item.label, isCustom: true });
+        }
+      });
+
+      return Array.from(map.values());
+    }
+
+    function registerCustomSubcategory(categorySlug, label, slug) {
+      if (!categorySlug || !label) return;
+      const sSlug = slug || slugify(label);
+      const store = getCustomSubcategoriesStore();
+      if (!store[categorySlug]) store[categorySlug] = [];
+      if (!store[categorySlug].some(s => s.slug === sSlug || s.label.toLowerCase() === label.toLowerCase())) {
+        store[categorySlug].push({ slug: sSlug, label: label });
+        saveCustomSubcategoriesStore(store);
+      }
+    }
+
+    function handleAdminCategoryChange() {
+      const cat = document.getElementById("edit-category-slug").value;
+      const currentSub = document.getElementById("edit-subcategory-label").value;
+      syncAdminSubcategoriesDropdown(cat, currentSub);
+    }
+
+    function syncAdminSubcategoriesDropdown(catSlug, currentLabel = "") {
+      const select = document.getElementById("edit-subcategory-select");
+      if (!select) return;
+      const list = getMergedSubcategories(catSlug);
+      
+      let html = `<option value="">-- Elige subcategoría o escribe abajo --</option>`;
+      let foundMatch = false;
+
+      list.forEach(s => {
+        const isSel = currentLabel && (s.label.toLowerCase() === currentLabel.toLowerCase() || s.slug === slugify(currentLabel));
+        if (isSel) foundMatch = true;
+        html += `<option value="${s.label}" ${isSel ? "selected" : ""}>${s.label}</option>`;
+      });
+
+      html += `<option value="__custom__" ${(!foundMatch && currentLabel) ? "selected" : ""}>✏️ Personalizada...</option>`;
+      select.innerHTML = html;
+    }
+
+    function handleAdminSubcategorySelectChange() {
+      const select = document.getElementById("edit-subcategory-select");
+      const input = document.getElementById("edit-subcategory-label");
+      if (!select || !input) return;
+
+      if (select.value === "__custom__") {
+        input.focus();
+      } else {
+        input.value = select.value;
+      }
+    }
+
+    function handleAdminSubcategoryInputChange() {
+      const input = document.getElementById("edit-subcategory-label");
+      const select = document.getElementById("edit-subcategory-select");
+      if (!input || !select) return;
+      const val = input.value.trim().toLowerCase();
+      let matched = false;
+      for (let opt of select.options) {
+        if (opt.value && opt.value !== "__custom__" && opt.value.toLowerCase() === val) {
+          select.value = opt.value;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched && val) {
+        select.value = "__custom__";
+      } else if (!val) {
+        select.value = "";
+      }
+    }
+
+    function clearAdminSubcategory() {
+      const input = document.getElementById("edit-subcategory-label");
+      const select = document.getElementById("edit-subcategory-select");
+      if (input) input.value = "";
+      if (select) select.value = "";
+    }
+
+    // --- MODAL DE GESTIÓN DE SUBCATEGORÍAS ---
+    function openSubcategoriesManagerModal() {
+      const modal = document.getElementById("subcategories-manager-modal");
+      if (!modal) return;
+      renderSubcategoriesManagerList();
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function closeSubcategoriesManagerModal() {
+      const modal = document.getElementById("subcategories-manager-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function renderSubcategoriesManagerList() {
+      const catSelect = document.getElementById("subcat-mgr-category-select");
+      const container = document.getElementById("subcat-mgr-list-container");
+      const countBadge = document.getElementById("subcat-mgr-count-badge");
+      if (!catSelect || !container) return;
+
+      const catSlug = catSelect.value;
+      const list = getMergedSubcategories(catSlug);
+      countBadge.textContent = `${list.length} subcategorías`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 rounded-xl bg-slate-950/60 border border-dashed border-slate-800 text-center text-xs text-slate-500">
+            No hay subcategorías registradas en esta categoría. Puedes añadir la primera arriba.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const matchingRegs = allRegistrations.filter(r => 
+          r.category_slug === catSlug && 
+          (r.subcategory_slug === item.slug || (r.subcategory_label && r.subcategory_label.toLowerCase() === item.label.toLowerCase()))
+        );
+        const count = matchingRegs.length;
+
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition-colors">
+            <div class="min-w-0 pr-3">
+              <div class="font-bold text-xs text-white flex items-center gap-2 truncate">
+                <span class="truncate">${item.label}</span>
+                ${item.isCustom ? `<span class="px-1.5 py-0.2 rounded text-[9px] bg-purple-500/20 text-purple-300 font-mono">Personalizada</span>` : ''}
+              </div>
+              <div class="text-[10px] text-slate-500 font-mono truncate">slug: ${item.slug}</div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${count > 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
+                ${count} ${count === 1 ? 'comercio' : 'comercios'}
+              </span>
+              <button type="button" onclick="handleDeleteSubcategory('${catSlug}', '${item.slug}', '${encodeURIComponent(item.label)}', ${count})" title="Eliminar subcategoría" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function handleAddSubcategoryFromManager() {
+      const catSelect = document.getElementById("subcat-mgr-category-select");
+      const input = document.getElementById("subcat-mgr-new-input");
+      if (!catSelect || !input) return;
+
+      const label = input.value.trim();
+      if (!label) {
+        alert("Escribe el nombre de la subcategoría.");
+        return;
+      }
+
+      const catSlug = catSelect.value;
+      const slug = slugify(label);
+
+      registerCustomSubcategory(catSlug, label, slug);
+      input.value = "";
+      renderSubcategoriesManagerList();
+    }
+
+    async function handleDeleteSubcategory(catSlug, subSlug, encodedLabel, count) {
+      const label = decodeURIComponent(encodedLabel);
+      if (count > 0) {
+        const confirmClear = confirm(
+          `⚠️ Hay ${count} comercio(s) con la subcategoría "${label}".\n\n` +
+          `¿Deseas desasociar esta subcategoría de los ${count} comercios y eliminarla?`
+        );
+        if (!confirmClear) return;
+
+        const token = getToken();
+        for (const r of allRegistrations) {
+          if (r.category_slug === catSlug && (r.subcategory_slug === subSlug || (r.subcategory_label && r.subcategory_label.toLowerCase() === label.toLowerCase()))) {
+            r.subcategory_label = null;
+            r.subcategory_slug = null;
+            try {
+              await fetch(`/api/epicentro/admin/registrations/${r.id}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Admin-Token": token
+                },
+                body: JSON.stringify({
+                  subcategory_label: null,
+                  subcategory_slug: null
+                })
+              });
+            } catch (e) {
+              console.warn("Error desasociando subcategoría:", e);
+            }
+          }
+        }
+        renderTable();
+      } else {
+        if (!confirm(`¿Eliminar la subcategoría "${label}" de la lista?`)) return;
+      }
+
+      const store = getCustomSubcategoriesStore();
+      if (store[catSlug]) {
+        store[catSlug] = store[catSlug].filter(s => s.slug !== subSlug && s.label.toLowerCase() !== label.toLowerCase());
+        saveCustomSubcategoriesStore(store);
+      }
+
+      if (BASE_SUBCATEGORIES_MAP[catSlug]) {
+        BASE_SUBCATEGORIES_MAP[catSlug] = BASE_SUBCATEGORIES_MAP[catSlug].filter(s => s.slug !== subSlug);
+      }
+
+      renderSubcategoriesManagerList();
+    }
+
     function openEditModal(id) {
       const reg = allRegistrations.find(r => r.id === id);
       if (!reg) return;
@@ -1087,6 +1394,7 @@ Esta acción no se puede deshacer.`)) return;
       document.getElementById("edit-reg-id").value = reg.id;
       document.getElementById("edit-business-name").value = reg.business_name || "";
       document.getElementById("edit-category-slug").value = reg.category_slug || "comida-delivery";
+      syncAdminSubcategoriesDropdown(reg.category_slug || "comida-delivery", reg.subcategory_label || "");
       document.getElementById("edit-subcategory-label").value = reg.subcategory_label || "";
       document.getElementById("edit-coto-address").value = reg.coto_address || "";
       document.getElementById("edit-schedule").value = reg.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs";
@@ -1231,11 +1539,19 @@ Esta acción no se puede deshacer.`)) return;
         other_products_sections: adminMenuSections
       };
 
+      const subcatLabel = document.getElementById("edit-subcategory-label").value.trim();
+      const subcatSlug = subcatLabel ? slugify(subcatLabel) : null;
+
+      if (subcatLabel && catSelect.value) {
+        registerCustomSubcategory(catSelect.value, subcatLabel, subcatSlug);
+      }
+
       const payload = {
         business_name: document.getElementById("edit-business-name").value.trim(),
         category_slug: catSelect.value,
         category_label: catLabel,
-        subcategory_label: document.getElementById("edit-subcategory-label").value.trim(),
+        subcategory_label: subcatLabel || null,
+        subcategory_slug: subcatSlug,
         coto_address: document.getElementById("edit-coto-address").value.trim(),
         schedule: heroSchedule,
         owner_name: document.getElementById("edit-owner-name").value.trim(),
@@ -1287,9 +1603,6 @@ Esta acción no se puede deshacer.`)) return;
             ...payload,
             microsite_data: JSON.stringify(micrositeData)
           };
-          try {
-            localStorage.setItem("epicentro_admin_registrations", JSON.stringify(allRegistrations));
-          } catch (e) {}
         }
         alert(`¡Ficha de '${payload.business_name}' actualizada correctamente!`);
         closeEditModal();
@@ -1308,9 +1621,6 @@ Esta acción no se puede deshacer.`)) return;
 
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("demo") === "1" || urlParams.get("auto") === "1") {
-        setToken("natura2026");
-      }
       loadRegistrations();
       lucide.createIcons();
 
@@ -1355,7 +1665,7 @@ Esta acción no se puede deshacer.`)) return;
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Giro / Categoría *</label>
-            <select id="edit-category-slug" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+            <select id="edit-category-slug" onchange="handleAdminCategoryChange()" class="w-full px-3 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
               <option value="comida-delivery">Comida & Delivery</option>
               <option value="productos-artesanales">Productos artesanales</option>
               <option value="educacion">Educación</option>
@@ -1367,8 +1677,17 @@ Esta acción no se puede deshacer.`)) return;
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Subcategoría</label>
-            <input type="text" id="edit-subcategory-label" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Ej. Pizzas y Pastas">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-300">Subcategoría (Etiqueta Tarjeta)</label>
+              <button type="button" onclick="clearAdminSubcategory()" class="text-[10px] text-slate-400 hover:text-rose-400 transition-colors">✕ Quitar</button>
+            </div>
+            <div class="space-y-1.5">
+              <select id="edit-subcategory-select" onchange="handleAdminSubcategorySelectChange()" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+                <!-- Se llena dinámicamente -->
+              </select>
+              <input type="text" id="edit-subcategory-label" oninput="handleAdminSubcategoryInputChange()" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="O escribe una personalizada (ej. Salsas Caseras)">
+            </div>
+            <span class="text-[10px] text-slate-500 block mt-1">Elige del listado o escribe una libre. Define el texto morado en la tarjeta y el filtro de la categoría.</span>
           </div>
         </div>
 
@@ -1657,6 +1976,73 @@ Esta acción no se puede deshacer.`)) return;
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL DE GESTIÓN DE SUBCATEGORÍAS -->
+  <div id="subcategories-manager-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
+    <div class="relative w-full max-w-2xl rounded-3xl bg-slate-900 border border-slate-800 text-white p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeSubcategoriesManagerModal()" class="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-6 pr-8">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/20 text-purple-400 border border-purple-500/30">
+          <i data-lucide="tags" class="w-3 h-3"></i>
+          <span>Taxonomía & Filtros del Directorio</span>
+        </div>
+        <h3 class="text-xl sm:text-2xl font-black text-white mt-1">Gestor de Subcategorías</h3>
+        <p class="text-xs text-slate-400 mt-1">
+          Las subcategorías definen la etiqueta superior de cada tarjeta en el directorio (ej. <span class="text-purple-300 font-semibold font-mono">Salsas Picantes 100% Naturales</span>) y generan automáticamente las píldoras de filtrado en la cabecera.
+        </p>
+      </div>
+
+      <!-- Selector de Categoría a Gestionar -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Selecciona Categoría Principal</label>
+          <select id="subcat-mgr-category-select" onchange="renderSubcategoriesManagerList()" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-purple-500 focus:outline-none">
+            <option value="comida-delivery">Comida & Delivery</option>
+            <option value="productos-artesanales">Productos artesanales</option>
+            <option value="educacion">Educación</option>
+            <option value="servicios-profesionales">Servicios Profesionales</option>
+            <option value="servicios-hogar">Servicios hogar</option>
+            <option value="hogar">Hogar y Decoración</option>
+            <option value="mascotas">Mascotas</option>
+            <option value="fitness">Fitness</option>
+          </select>
+        </div>
+
+        <!-- Formulario para Añadir Nueva Subcategoría -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+          <label class="block text-xs font-bold text-slate-200">Añadir Nueva Subcategoría</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="subcat-mgr-new-input" placeholder="Ej. Hamburguesas Gourmet, Cuidado Facial..." class="flex-1 px-3.5 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white focus:border-purple-500 focus:outline-none">
+            <button type="button" onclick="handleAddSubcategoryFromManager()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5 shrink-0">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Añadir</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Listado de Subcategorías Activas -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-300">Subcategorías Registradas en esta Categoría</span>
+            <span id="subcat-mgr-count-badge" class="text-[10px] font-mono text-slate-400">0 subcategorías</span>
+          </div>
+
+          <div id="subcat-mgr-list-container" class="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+            <!-- Se llena dinámicamente -->
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-end">
+          <button type="button" onclick="closeSubcategoriesManagerModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors">
+            Cerrar
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </body>

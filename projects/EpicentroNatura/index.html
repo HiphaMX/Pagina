@@ -1740,7 +1740,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("payment") === "success") {
         setTimeout(() => {
-          alert("🎉 ¡Verificación Oficial Exitosa!\n\nTu pago de $99.00 MXN en Mercado Pago fue confirmado. Tu negocio cuenta con la insignia de Vecino Verificado Natura y está listo para ser publicado.");
+          alert("🎉 ¡Suscripción Anual Confirmada!\n\nTu pago de $399.00 MXN en Mercado Pago fue confirmado con éxito. Tu negocio cuenta con el Sello Vecino Verificado Natura y tu página interactiva con catálogo está en proceso de abordaje.");
         }, 500);
       }
 
@@ -1802,7 +1802,7 @@
                 name: biz.business_name,
                 category_slug: biz.category_slug,
                 category_label: biz.category_label || (biz.category_slug ? biz.category_slug.toUpperCase() : "COMERCIO"),
-                subcategory_slug: biz.subcategory_slug || "",
+                subcategory_slug: biz.subcategory_slug || (biz.subcategory_label ? biz.subcategory_label.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 -]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-") : ""),
                 subcategory_label: biz.subcategory_label || "",
                 type: biz.business_type || "local-establecido",
                 type_slug: biz.business_type || "local-establecido",
