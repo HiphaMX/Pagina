@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 ADMIN_SECRET = (
     os.getenv("EPIZENTRO_ADMIN_SECRET") or
     os.getenv("ADMIN_SECRET_TOKEN") or
-    "natura_admin_secret_2026"
+    "Epizentr0_Natura#2026!"
 ).strip()
 
 
@@ -81,7 +81,7 @@ def verify_admin(
             detail="Token administrativo requerido"
         )
     token_clean = token.strip()
-    valid_tokens = [ADMIN_SECRET, "natura2026", "natura_admin_secret_2026"]
+    valid_tokens = [ADMIN_SECRET]
     if not any(secrets.compare_digest(token_clean, vt) for vt in valid_tokens if vt):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -202,6 +202,32 @@ class ApplyCouponRequest(BaseModel):
 
 class ModerationActionRequest(BaseModel):
     notes: Optional[str] = None
+
+
+class BusinessPublicOut(BaseModel):
+    id: str
+    business_name: str
+    category_slug: str
+    category_label: Optional[str] = None
+    subcategory_slug: Optional[str] = None
+    subcategory_label: Optional[str] = None
+    coto_address: Optional[str] = None
+    business_type: Optional[str] = "local-establecido"
+    space_label: Optional[str] = None
+    whatsapp: Optional[str] = None
+    preferred_contact_methods: Optional[str] = None
+    schedule: Optional[str] = None
+    delivery_available: bool = False
+    website: Optional[str] = None
+    description: Optional[str] = None
+    photos: Optional[str] = None
+    cover_photo: Optional[str] = None
+    microsite_data: Optional[str] = None
+    is_verified_badge: bool = False
+    status: str = "active"
+
+    class Config:
+        from_attributes = True
 
 
 # --- EMAIL TEMPLATES ---
@@ -669,9 +695,9 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
     reg.payment_status = "waived"
     reg.payment_amount = 0.0
     reg.is_verified_badge = True
-    reg.status = "active"
+    reg.status = "pending_approval"
     code_desc = VALID_COUPON_CODES.get(code, "Cupón de Cortesía Válido")
-    reg.moderation_notes = f"Verificación con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC"
+    reg.moderation_notes = f"Exención con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC. En espera de aprobación final de moderador."
     db.commit()
     db.refresh(reg)
 
@@ -680,11 +706,11 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
 
     return {
         "success": True,
-        "message": f"¡Código {code} aplicado con éxito! Tu comercio cuenta con Sello Oficial Vecino Verificado.",
+        "message": f"¡Código {code} aplicado con éxito! Tu cuota ha sido exonerada. Tu comercio está en cola de moderación prioritaria con Sello Oficial.",
         "folio": folio,
         "business_name": reg.business_name,
         "is_verified_badge": True,
-        "status": "active"
+        "status": "pending_approval"
     }
 
 
@@ -826,7 +852,13 @@ async def report_kam_payment(
     if not reg:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
 
-    kam = payload.kam_name.strip()
+    if reg.status in ("active", "rejected"):
+        raise HTTPException(
+            status_code=400,
+            detail="No se puede modificar la modalidad de un registro que ya ha sido moderado."
+        )
+
+    kam = payload.kam_name.strip()[:80]
     reg.kam_name = kam
     method = payload.payment_method or "mercadopago_subscription"
     
@@ -848,7 +880,8 @@ async def report_kam_payment(
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     note_line = f"Registro de pago '{method}' con '{kam}' ({now_str} UTC)"
     if payload.notes:
-        note_line += f": {payload.notes}"
+        clean_notes = payload.notes.strip()[:300]
+        note_line += f": {clean_notes}"
     reg.moderation_notes = (reg.moderation_notes + "\n" if reg.moderation_notes else "") + note_line
 
     db.commit()
@@ -1181,7 +1214,7 @@ def seed_official_showcases(db: Session):
 seed_botica_silvestre_if_missing = seed_official_showcases
 
 
-@router.get("/businesses/active")
+@router.get("/businesses/active", response_model=List[BusinessPublicOut])
 def list_active_verified_businesses(db: Session = Depends(get_db)):
     """Retorna los comercios reales que ya están activos y verificados para el directorio público."""
     ensure_epicentro_schema(db)
@@ -1195,7 +1228,7 @@ def list_active_verified_businesses(db: Session = Depends(get_db)):
     return results
 
 
-@router.get("/businesses/{slug_or_id}")
+@router.get("/businesses/{slug_or_id}", response_model=BusinessPublicOut)
 def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
     """Retorna los datos de un comercio o micrositio por ID o slug para sincronización en vivo."""
     import unicodedata

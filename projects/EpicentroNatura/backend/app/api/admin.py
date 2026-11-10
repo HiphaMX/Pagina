@@ -1,5 +1,6 @@
 import os
 import uuid
+import secrets
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, Header, HTTPException, status
@@ -12,7 +13,11 @@ from app.api.notices import enrich_notice
 
 router = APIRouter(prefix="/api/v1/admin", tags=["Admin Engine"])
 
-ADMIN_TOKEN = os.getenv("ADMIN_SECRET_TOKEN", "natura_admin_secret_2026")
+ADMIN_TOKEN = (
+    os.getenv("EPIZENTRO_ADMIN_SECRET") or
+    os.getenv("ADMIN_SECRET_TOKEN") or
+    "natura_admin_secret_2026"
+).strip()
 
 
 def verify_admin_token(
@@ -29,7 +34,7 @@ def verify_admin_token(
         if len(parts) == 2 and parts[0].lower() == "bearer":
             token = parts[1]
 
-    if not token or token != ADMIN_TOKEN:
+    if not token or not secrets.compare_digest(token.strip(), ADMIN_TOKEN):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token de administración inválido o no suministrado"

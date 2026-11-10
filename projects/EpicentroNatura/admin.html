@@ -40,7 +40,6 @@
               </svg>
             </button>
           </div>
-          <p class="text-[11px] text-slate-400 text-center mt-2">Clave de acceso: <span class="text-emerald-400 font-mono font-medium">natura2026</span></p>
         </div>
         <div id="login-error-alert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold"></div>
         <button type="submit" id="btn-login-submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
@@ -180,6 +179,16 @@
     let allRegistrations = [];
     let currentFilter = "all";
     let inMemoryToken = "";
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
     function getToken() {
       if (inMemoryToken) return inMemoryToken;
@@ -343,113 +352,18 @@
         renderTable();
         checkAutoOpenEdit();
       } catch (err) {
-        console.warn("Aviso al cargar registros reales (cargando muestra demostrativa):", err);
-        allRegistrations = [
-          {
-            id: "reg-botica-silvestre",
-            business_name: "Botica Silvestre",
-            category_slug: "productos-artesanales",
-            category_label: "Productos artesanales",
-            subcategory_slug: "herbolaria-cuidado-natural",
-            subcategory_label: "Herbolaria y Cuidado Natural",
-            business_type: "local-establecido",
-            space_label: "Local físico",
-            coto_address: "Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial)",
-            owner_name: "Botica Silvestre",
-            email: "hola@boticasilvestre.com.mx",
-            phone: "33 3676 2545",
-            whatsapp: "33 3676 2545",
-            website: "botica-silvestre",
-            schedule: "Lunes a Sábado · 09:00 a 19:00 hrs",
-            status: "active",
-            payment_status: "approved",
-            payment_amount: 399.0,
-            kam_name: "Cortesía Hipha Fundador",
-            payment_method: "mercadopago",
-            is_verified_badge: true,
-            delivery_available: true,
-            preferred_contact_methods: "whatsapp,delivery,punto-venta",
-            cover_photo: "Assets/botica/ethereal_botanical_hero.webp",
-            microsite_data: JSON.stringify({
-              cover_photo: "Assets/botica/ethereal_botanical_hero.webp",
-              website_url: "https://boticasilvestre.com.mx",
-              featured_section: {
-                title: "Extractos Botánicos & Fórmulas Maestras",
-                subtitle: "LÍNEA SOUL SHINE · SÚPER ADAPTÓGENOS",
-                description: "Frascos de 50 ml con pipeta dosificadora en base de tintura hidroalcohólica u oleato vegetal puro.",
-                products: [
-                  { name: "Mindii", price: 490.0, description: "Ginkgo biloba, Gotu Kola y Melena de León.", photo: "Assets/botica/products/Mindii 01.webp" },
-                  { name: "Focus", price: 490.0, description: "Melena de León, Bacopa Monnieri y Romero silvestre.", photo: "Assets/botica/products/Focus 01.webp" }
-                ]
-              }
-            }),
-            moderation_notes: "Comercio fundador oficial con micrositio web interactivo y catálogo de fotos activo."
-          },
-          {
-            id: "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97",
-            business_name: "El Chile Chillón",
-            category_slug: "comida-delivery",
-            category_label: "Comida y Delivery",
-            subcategory_slug: "salsas-artesanales",
-            subcategory_label: "Salsas Picantes 100% Naturales",
-            business_type: "sin-punto-venta",
-            space_label: "A domicilio en coto / Con previa cita",
-            coto_address: "Natura Bosque Residencial",
-            owner_name: "Francisco Delgadillo",
-            email: "efe.creativo@gmail.com",
-            phone: "3921097809",
-            whatsapp: "3921097809",
-            website: "https://elchilechillon.mx",
-            schedule: "Lunes a viernes · 09:00 a 17:00 hrs",
-            status: "active",
-            payment_status: "waived",
-            payment_amount: 399.0,
-            kam_name: "Chizko",
-            payment_method: "mercadopago",
-            is_verified_badge: true,
-            delivery_available: true,
-            preferred_contact_methods: "whatsapp",
-            description: "Disfruta de nuestras salsas picantes en tu mesa. Salsas 100% originales y naturales",
-            cover_photo: "Assets/chillon/placa_fondo_restaurante_gourmet.jpg",
-            microsite_data: JSON.stringify({
-              cover_photo: "Assets/chillon/Hero chile chillon.png",
-              website_url: "https://elchilechillon.mx",
-              featured_section: {
-                title: "Catálogo de Salsas & Sazón de la Casa",
-                subtitle: "Selección Artesanal 250ml",
-                description: "Frascos de 250 ml elaborados con aceite vegetal comestible y chiles seleccionados sin conservadores.",
-                products: [
-                  { name: "Salsa Chile de Árbol", price: 40.0, description: "Picor vibrante y sazón equilibrado.", photo: "Assets/chillon/Salsas/de_arbol.jpg" },
-                  { name: "Salsa Habanero", price: 40.0, description: "Intensidad cítrica y picor brillante.", photo: "Assets/chillon/Salsas/habanero.jpg" },
-                  { name: "Habanero Tatemado", price: 40.0, description: "Tostado artesanal al comal.", photo: "Assets/chillon/Salsas/tatemado.jpg" }
-                ]
-              },
-              other_products_sections: [
-                {
-                  title: "Presentaciones por Litro (Eventos)",
-                  subtitle: "Por Volumen",
-                  description: "Para reuniones familiares y taquizas.",
-                  items: [
-                    { name: "Litro de Salsa Chile de Árbol", price: 150.0, description: "Presentación para reuniones" }
-                  ]
-                }
-              ]
-            }),
-            photos: JSON.stringify([
-              "Assets/chillon/Salsas/de_arbol.jpg",
-              "Assets/chillon/Salsas/habanero.jpg",
-              "Assets/chillon/Salsas/tatemado.jpg"
-            ]),
-            moderation_notes: "Cortesía oficial Hipha: micrositio profesional y catálogo interactivo activo ($399 anual exento)."
-          }
-        ];
+        console.error("Error al cargar registros administrativos:", err);
+        allRegistrations = [];
+        setToken("");
+        document.getElementById("auth-lock-screen").classList.remove("hidden");
+        document.getElementById("admin-dashboard-view").classList.add("hidden");
+        const errBox = document.getElementById("login-error-alert");
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "No fue posible verificar la sesión o conectar con el servidor administrativo. Ingresa nuevamente.";
+        }
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
-      document.getElementById("auth-lock-screen").classList.add("hidden");
-      document.getElementById("admin-dashboard-view").classList.remove("hidden");
-      updateStats();
-      renderTable();
-      checkAutoOpenEdit();
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function updateStats() {
@@ -490,32 +404,46 @@
           statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30">EN PROCESO</span>`;
         }
 
+        const bName = escapeHtml(r.business_name || "");
+        const oName = escapeHtml(r.owner_name || "");
+        const cAddress = escapeHtml(r.coto_address || "");
+        const catLabel = escapeHtml(r.category_label || r.category_slug || "");
+        const subcatLabel = escapeHtml(r.subcategory_label || "");
+        const sched = escapeHtml(r.schedule || "");
+        const email = escapeHtml(r.email || "");
         const waNum = (r.whatsapp || "").replace(/\D/g, "");
-        const waLink = `https://wa.me/52${waNum}?text=Hola%20${encodeURIComponent(r.owner_name)},%20te%20contacto%20de%20Epicentro%20Natura%20respecto%20a%20tu%20comercio%20${encodeURIComponent(r.business_name)}.`;
+        const rawWa = escapeHtml(r.whatsapp || "");
+        const waCode = escapeHtml(r.whatsapp_code || "");
+        const kamName = escapeHtml(r.kam_name || "");
+        const safeId = escapeHtml(r.id || "");
+        const rawWebsite = (r.website || "").trim();
+        const safeWebsite = rawWebsite.startsWith("http") ? rawWebsite : (rawWebsite ? "https://" + rawWebsite : "");
+
+        const waLink = `https://wa.me/52${waNum}?text=Hola%20${encodeURIComponent(r.owner_name || "")},%20te%20contacto%20de%20Epicentro%20Natura%20respecto%20a%20tu%20comercio%20${encodeURIComponent(r.business_name || "")}.`;
 
         return `
           <tr class="hover:bg-slate-900/50 transition-colors">
             <td class="py-3.5 px-4">
               <div class="font-bold text-white text-sm flex items-center gap-1.5">
-                <span>${r.business_name}</span>
-                ${r.website ? `<a href="${r.website.startsWith('http') ? r.website : 'https://' + r.website}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 text-[11px] font-normal" title="Visitar sitio web oficial"><i data-lucide="globe" class="w-3.5 h-3.5"></i></a>` : ''}
+                <span>${bName}</span>
+                ${safeWebsite ? `<a href="${safeWebsite}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 text-[11px] font-normal" title="Visitar sitio web oficial"><i data-lucide="globe" class="w-3.5 h-3.5"></i></a>` : ''}
               </div>
-              <div class="text-[11px] text-slate-400">${r.category_label || r.category_slug} · <span class="text-emerald-400">${r.subcategory_label || ''}</span></div>
-              ${r.schedule ? `<div class="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5"><i data-lucide="clock" class="w-3 h-3 text-emerald-500 shrink-0"></i> <span>${r.schedule}</span></div>` : ''}
+              <div class="text-[11px] text-slate-400">${catLabel} · <span class="text-emerald-400">${subcatLabel}</span></div>
+              ${sched ? `<div class="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5"><i data-lucide="clock" class="w-3 h-3 text-emerald-500 shrink-0"></i> <span>${sched}</span></div>` : ''}
             </td>
             <td class="py-3.5 px-4">
-              <div class="font-medium text-slate-200">${r.owner_name}</div>
-              <div class="text-[11px] text-slate-400 font-mono">${r.coto_address}</div>
+              <div class="font-medium text-slate-200">${oName}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${cAddress}</div>
             </td>
             <td class="py-3.5 px-4">
               <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check" class="w-3.5 h-3.5"></i> Registrado</span>
-              <div class="text-[10px] text-slate-500">${r.email}</div>
+              <div class="text-[10px] text-slate-500">${email}</div>
             </td>
             <td class="py-3.5 px-4">
               ${isWaOk 
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check" class="w-3.5 h-3.5"></i> Validado</span>`
                 : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Pendiente</span>`}
-              <div class="text-[10px] text-slate-500 font-mono">${r.whatsapp} (${r.whatsapp_code || ''})</div>
+              <div class="text-[10px] text-slate-500 font-mono">${rawWa} (${waCode})</div>
             </td>
             <td class="py-3.5 px-4">
               ${r.payment_status === "free_basic"
@@ -525,14 +453,14 @@
                 : isPaid
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> $${r.payment_amount || 399} MXN Pagado</span>`
                 : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400"><i data-lucide="circle-slash" class="w-3.5 h-3.5"></i> Pendiente</span>`}
-              ${r.kam_name ? `<div class="text-[10px] text-amber-300 font-medium mt-0.5">KAM: ${r.kam_name}</div>` : ''}
+              ${kamName ? `<div class="text-[10px] text-amber-300 font-medium mt-0.5">KAM: ${kamName}</div>` : ''}
             </td>
             <td class="py-3.5 px-4">
               ${statusBadge}
             </td>
             <td class="py-3.5 px-4 text-right">
               <div class="flex items-center justify-end gap-1.5">
-                <button onclick="openEditModal('${r.id}')" title="Editar Ficha" class="p-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-bold text-xs flex items-center gap-1 transition-colors">
+                <button onclick="openEditModal('${safeId}')" title="Editar Ficha" class="p-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-bold text-xs flex items-center gap-1 transition-colors">
                   <i data-lucide="edit-3" class="w-4 h-4"></i>
                   <span class="hidden sm:inline">Editar</span>
                 </button>
@@ -540,17 +468,17 @@
                   <i data-lucide="message-circle" class="w-4 h-4"></i>
                 </a>
                 ${r.status !== "active" ? `
-                  <button onclick="approveRegistration('${r.id}', '${r.business_name}')" title="Aprobar y Publicar en Directorio" class="p-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 font-bold text-xs flex items-center gap-1 transition-colors">
+                  <button onclick="approveRegistration('${safeId}')" title="Aprobar y Publicar en Directorio" class="p-1.5 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 font-bold text-xs flex items-center gap-1 transition-colors">
                     <i data-lucide="check" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Aprobar</span>
                   </button>
                 ` : ''}
                 ${r.status !== "rejected" ? `
-                  <button onclick="rejectRegistration('${r.id}', '${r.business_name}')" title="Rechazar" class="p-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 transition-colors">
+                  <button onclick="rejectRegistration('${safeId}')" title="Rechazar" class="p-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 transition-colors">
                     <i data-lucide="x" class="w-4 h-4"></i>
                   </button>
                 ` : ''}
-                <button onclick="handleDeleteRegistration('${r.id}', '${r.business_name}')" title="Eliminar permanentemente de la base de datos" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition-colors">
+                <button onclick="handleDeleteRegistration('${safeId}')" title="Eliminar permanentemente de la base de datos" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition-colors">
                   <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
               </div>
@@ -562,7 +490,9 @@
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
-    async function approveRegistration(id, name) {
+    async function approveRegistration(id) {
+      const reg = allRegistrations.find(x => x.id === id);
+      const name = reg ? reg.business_name : "este comercio";
       if (!confirm(`¿Confirmas la aprobación y activación oficial de '${name}' en el directorio de Epicentro Natura?`)) return;
 
       const token = getToken();
@@ -583,7 +513,9 @@
       loadRegistrations();
     }
 
-    async function rejectRegistration(id, name) {
+    async function rejectRegistration(id) {
+      const reg = allRegistrations.find(x => x.id === id);
+      const name = reg ? reg.business_name : "este comercio";
       if (!confirm(`¿Deseas suspender o rechazar la solicitud de '${name}'?`)) return;
 
       const token = getToken();
@@ -603,7 +535,9 @@
       loadRegistrations();
     }
 
-    async function handleDeleteRegistration(id, name) {
+    async function handleDeleteRegistration(id) {
+      const reg = allRegistrations.find(x => x.id === id);
+      const name = reg ? reg.business_name : "este registro";
       if (!confirm(`⚠️ ATENCIÓN:
 
 ¿Estás seguro de eliminar PERMANENTEMENTE el registro de '${name}' de la base de datos?
