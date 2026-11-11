@@ -39,8 +39,8 @@
       "image": "https://ieer.com.mx/Assets/nature_irrigation.jpg",
       "author": {
         "@type": "Person",
-        "name": "Ing. Luis Cid",
-        "jobTitle": "Director de Ingeniería",
+        "name": "Frank D.",
+        "jobTitle": "Ingeniería Especializada en Energías Renovables",
         "worksFor": {
           "@type": "Organization",
           "name": "IEER"
@@ -88,6 +88,7 @@
             --bg-nature: #080b0c;
             --bg-nature-accent: #040607;
             --color-bronze: #a98567;
+            --color-bronze-glow: rgba(169, 133, 103, 0.4);
             --color-alabaster: #e3ddd5;
             --text-main: #e3ddd5;
             --text-muted: #7e8d90;
@@ -529,36 +530,21 @@
             gap: 1.25rem;
         }
 
-        .footer-logo-wrapper {
-            position: relative;
-            width: 155px;
-            height: 180px;
-            display: block;
+        .footer-brand-title {
+            font-family: var(--font-future);
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: var(--color-alabaster);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: inline-block;
             transition: var(--transition-premium);
         }
 
-        .footer-logo {
-            width: 155px;
-            height: auto;
-            opacity: 0.9;
-            transition: opacity var(--transition-premium);
-        }
-
-        .footer-logo.logo-hover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .footer-logo-wrapper:hover .logo-default {
-            opacity: 0;
-        }
-
-        .footer-logo-wrapper:hover .logo-hover {
-            opacity: 1;
-            filter: drop-shadow(0 0 12px rgba(162, 184, 65, 0.35)) drop-shadow(0 0 4px rgba(155, 121, 91, 0.25));
+        .footer-brand-title:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 15px var(--color-bronze-glow);
         }
 
         .footer-brand-text {
@@ -639,12 +625,52 @@
         }
 
         @media (max-width: 991px) {
+            .article-hero {
+                text-align: center;
+            }
+            .article-meta {
+                justify-content: center;
+            }
+            .article-title {
+                text-align: center;
+            }
+            .article-footer {
+                justify-content: center !important;
+                text-align: center;
+            }
+            .author-box {
+                flex-direction: column;
+                text-align: center;
+            }
+            .author-info {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
             #interactive-reveal-footer {
                 padding: 4rem 1.5rem 2rem 1.5rem;
             }
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 2.5rem;
+            }
+            .footer-brand, .footer-col {
+                text-align: center;
+                align-items: center;
+            }
+            .footer-brand-title {
+                margin: 0 auto;
+            }
+            .footer-brand-text {
+                margin: 0 auto;
+                max-width: 500px;
+                text-align: center;
+            }
+            .footer-links {
+                align-items: center;
+            }
+            .footer-links a {
+                justify-content: center;
             }
             .footer-bottom {
                 flex-direction: column;
@@ -791,10 +817,10 @@
 
                 <footer class="article-footer">
                     <div class="author-box">
-                        <div class="author-avatar">LC</div>
+                        <div class="author-avatar">FD</div>
                         <div class="author-info">
-                            <p class="author-name" style="font-weight: 600; color: var(--color-alabaster); margin-bottom: 0.25rem;">Ing. Luis Cid</p>
-                            <p>Director de Ingeniería // Especialista en Sistemas Eléctricos y Bombeo Solar</p>
+                            <p class="author-name" style="font-weight: 600; color: var(--color-alabaster); margin-bottom: 0.25rem;">Frank D.</p>
+                            <p>Ingeniería Especializada en Energías Renovables</p>
                         </div>
                     </div>
                     <div>
@@ -812,10 +838,7 @@
         <div class="footer-inner-content">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="footer-logo-wrapper">
-                        <img src="/Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
-                        <img src="/Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
-                    </div>
+                    <a href="/#inicio" class="footer-brand-title">IEER</a>
                     <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
                 </div>
                 

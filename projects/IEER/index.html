@@ -286,12 +286,13 @@
 
         .nav-brand-link {
             display: none;
-            font-family: var(--font-accent);
-            font-size: 1.15rem;
-            font-weight: 600;
+            font-family: var(--font-future);
+            font-size: 1.05rem;
+            font-weight: 700;
             color: var(--color-alabaster);
             text-decoration: none;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
             transition: var(--transition-premium);
         }
 
@@ -1726,40 +1727,21 @@
             gap: 1.25rem;
         }
 
-        .footer-logo-wrapper {
-            position: relative;
-            width: 155px;
-            height: 180px;
-            display: block;
+        .footer-brand-title {
+            font-family: var(--font-future);
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: var(--color-alabaster);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: inline-block;
             transition: var(--transition-premium);
         }
 
-        .footer-logo {
-            width: 155px;
-            height: auto;
-            opacity: 0.9;
-            transition: opacity var(--transition-premium);
-        }
-
-        .footer-logo.logo-hover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .footer-logo-wrapper:hover {
-            transform: translateY(-2px);
-        }
-
-        .footer-logo-wrapper:hover .logo-default {
-            opacity: 0;
-        }
-
-        .footer-logo-wrapper:hover .logo-hover {
-            opacity: 1;
-            filter: drop-shadow(0 0 12px rgba(162, 184, 65, 0.35)) drop-shadow(0 0 4px rgba(155, 121, 91, 0.25));
+        .footer-brand-title:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 15px var(--color-bronze-glow);
         }
 
         .footer-brand-text {
@@ -2328,9 +2310,26 @@
             .promise-text-block {
                 transform: translate3d(50px, 0, 0);
                 transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
             }
             .promise-text-block.active {
                 transform: translate3d(0, 0, 0);
+            }
+            .promise-tech-badge {
+                margin: 0 auto 1.25rem auto;
+                align-self: center;
+            }
+            .promise-service-title {
+                text-align: center;
+            }
+            .promise-service-desc {
+                text-align: center;
+                margin: 0 auto;
+                max-width: 90%;
             }
             .promise-timeline-bar {
                 padding-left: 0;
@@ -2386,11 +2385,59 @@
                 gap: 3.5rem;
             }
             #interactive-reveal-footer {
-                padding: 4rem 1.5rem 2rem 1.5rem;
+                padding: 4rem 1.5rem 2.5rem 1.5rem;
+                text-align: center;
+            }
+            .footer-inner-content {
+                text-align: center;
+                align-items: center;
             }
             .footer-grid {
                 grid-template-columns: 1fr;
-                gap: 3.5rem;
+                gap: 3rem;
+                text-align: center;
+                justify-items: center;
+            }
+            .footer-brand {
+                align-items: center;
+                text-align: center;
+                margin: 0 auto;
+            }
+            .footer-brand-title {
+                margin: 0 auto;
+                text-align: center;
+            }
+            .footer-brand-text {
+                text-align: center;
+                margin: 0 auto;
+                max-width: 440px;
+            }
+            .footer-col {
+                align-items: center;
+                text-align: center;
+            }
+            .footer-col-title {
+                text-align: center;
+            }
+            .footer-links {
+                align-items: center;
+                text-align: center;
+                padding: 0;
+            }
+            .footer-links li {
+                justify-content: center;
+                text-align: center;
+            }
+            .footer-links a {
+                justify-content: center;
+                text-align: center;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                gap: 0.75rem;
             }
             .nav-links {
                 gap: 1.5rem;
@@ -2398,7 +2445,7 @@
             .conversational-paragraph {
                 font-size: 1.35rem;
                 line-height: 2.2;
-                text-align: left;
+                text-align: center;
             }
             .inline-input, .inline-select {
                 display: block;
@@ -2406,38 +2453,61 @@
             }
             .inline-input input, .inline-select select {
                 width: 100% !important;
-                text-align: left;
+                text-align: center;
                 padding-left: 0;
             }
             .terminal-hud-header {
                 flex-direction: column;
                 gap: 1.25rem;
-                align-items: flex-start;
+                align-items: center;
+                text-align: center;
             }
             .blog-section {
                 padding: 5rem 0;
             }
             .blog-title-container {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 2rem;
+                align-items: center;
+                text-align: center;
+                gap: 1.5rem;
                 padding: 0 1rem;
                 margin-bottom: 3.5rem;
             }
+            .blog-title-left {
+                text-align: center;
+            }
             .blog-title-right {
-                text-align: left;
+                text-align: center;
+            }
+            .blog-all-btn {
+                margin: 1.25rem auto 0 auto;
+                align-self: center;
             }
             .blog-grid {
                 grid-template-columns: 1fr;
                 gap: 4rem;
                 padding: 0 1rem;
             }
+            .blog-post-content {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .blog-post-meta {
+                justify-content: center;
+            }
+            .blog-post-title {
+                text-align: center;
+                font-size: 1.35rem;
+            }
+            .blog-post-excerpt {
+                text-align: center;
+            }
             .blog-footer-cta-container {
                 padding: 0 1rem;
                 margin-top: 3.5rem;
-            }
-            .blog-post-title {
-                font-size: 1.35rem;
+                text-align: center;
             }
             .reviews-section {
                 padding: 5rem 0;
@@ -2480,11 +2550,49 @@
 
         @media (max-width: 767px) {
             .container { padding: 0 1.5rem; }
-            .hero-title { font-size: clamp(2.5rem, 8vw, 3.5rem); }
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .hero-content .badge {
+                align-self: center;
+                margin: 0 auto 1.5rem auto;
+            }
+            .hero-title {
+                font-size: clamp(2.5rem, 8vw, 3.5rem);
+                text-align: center;
+            }
+            .hero-desc {
+                text-align: center;
+                margin: 0 auto 2.5rem auto;
+                max-width: 90%;
+            }
+            .hero-actions {
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
             .metrics-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .section-title { font-size: clamp(2rem, 6vw, 2.5rem); }
-            .conversational-paragraph { font-size: 1.25rem; line-height: 1.9; }
-            .section-header { margin: 0 auto 3rem auto; }
+            .section-title {
+                font-size: clamp(2rem, 6vw, 2.5rem);
+                text-align: center;
+            }
+            .section-desc {
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .conversational-paragraph {
+                font-size: 1.25rem;
+                line-height: 1.9;
+                text-align: center;
+            }
+            .section-header {
+                margin: 0 auto 3rem auto;
+                text-align: center;
+            }
             
             header { 
                 position: fixed !important;
@@ -3610,10 +3718,7 @@
 
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="footer-logo-wrapper">
-                        <img src="Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
-                        <img src="Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
-                    </div>
+                    <a href="#inicio" class="footer-brand-title">IEER</a>
                     <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
                 </div>
                 

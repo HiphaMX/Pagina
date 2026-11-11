@@ -173,10 +173,17 @@
             display: none;
             text-decoration: none;
             font-family: var(--font-future);
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.18em;
             color: var(--color-alabaster);
+            text-transform: uppercase;
+            transition: var(--transition-premium);
+        }
+
+        .nav-brand-link:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 10px var(--color-bronze-glow);
         }
 
         .hamburger-btn {
@@ -611,40 +618,21 @@
             gap: 1.5rem;
         }
 
-        .footer-logo-wrapper {
-            position: relative;
-            width: 155px;
-            height: 180px;
-            display: block;
+        .footer-brand-title {
+            font-family: var(--font-future);
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: var(--color-alabaster);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: inline-block;
             transition: var(--transition-premium);
         }
 
-        .footer-logo {
-            width: 155px;
-            height: auto;
-            opacity: 0.9;
-            transition: opacity var(--transition-premium);
-        }
-
-        .footer-logo.logo-hover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .footer-logo-wrapper:hover {
-            transform: translateY(-2px);
-        }
-
-        .footer-logo-wrapper:hover .logo-default {
-            opacity: 0;
-        }
-
-        .footer-logo-wrapper:hover .logo-hover {
-            opacity: 1;
-            filter: drop-shadow(0 0 12px rgba(162, 184, 65, 0.35)) drop-shadow(0 0 4px rgba(155, 121, 91, 0.25));
+        .footer-brand-title:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 15px var(--color-bronze-glow);
         }
 
         .footer-brand-text {
@@ -929,6 +917,27 @@
                 font-size: 0.7rem;
                 padding: 0.45rem 1rem;
             }
+            .journal-hero {
+                padding: 10rem 1rem 3.5rem;
+                text-align: center;
+            }
+            .hero-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .hero-container .badge {
+                margin: 0 auto 1.5rem auto;
+                align-self: center;
+            }
+            .section-title {
+                text-align: center;
+            }
+            .section-desc {
+                text-align: center;
+                margin: 0 auto;
+            }
             .journal-content {
                 padding: 3rem 1rem 5rem;
             }
@@ -936,17 +945,97 @@
                 grid-template-columns: 1fr;
                 gap: 2.5rem;
             }
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                gap: 1rem;
+            .post-card-content {
                 text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .post-meta {
+                justify-content: center;
+            }
+            .post-title {
+                text-align: center;
+            }
+            .post-excerpt {
+                text-align: center;
+            }
+            .advisory-banner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 3rem 1.5rem;
+            }
+            .advisory-text {
+                text-align: center;
+            }
+            .advisory-title {
+                text-align: center;
+            }
+            .advisory-desc {
+                text-align: center;
+                margin: 0 auto;
             }
             .advisory-actions {
                 flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+            }
+            #interactive-reveal-footer {
+                padding: 4rem 1.5rem 2.5rem 1.5rem;
+                text-align: center;
+            }
+            .footer-inner-content {
+                text-align: center;
+                align-items: center;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+                justify-items: center;
+            }
+            .footer-brand {
+                align-items: center;
+                text-align: center;
+                margin: 0 auto;
+            }
+            .footer-brand-title {
+                margin: 0 auto;
+                text-align: center;
+            }
+            .footer-brand-text {
+                text-align: center;
+                margin: 0 auto;
+                max-width: 440px;
+            }
+            .footer-col {
+                align-items: center;
+                text-align: center;
+            }
+            .footer-col-title {
+                text-align: center;
+            }
+            .footer-links {
+                align-items: center;
+                text-align: center;
+                padding: 0;
+            }
+            .footer-links li {
+                justify-content: center;
+                text-align: center;
+            }
+            .footer-links a {
+                justify-content: center;
+                text-align: center;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                gap: 0.75rem;
             }
             .floating-whatsapp {
                 bottom: 1.5rem;
@@ -1135,10 +1224,7 @@
         <div class="footer-inner-content">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="footer-logo-wrapper">
-                        <img src="/Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
-                        <img src="/Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
-                    </div>
+                    <a href="/#inicio" class="footer-brand-title">IEER</a>
                     <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
                 </div>
                 
