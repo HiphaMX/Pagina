@@ -102,4 +102,6 @@
   - **Alineación de Enlace en Footer:** Homologación en las 14 páginas del texto de solución a solo `Industrial` (retirando `& BESS`).
 - **2026-11-11 (Formulario Home - Sector Industrial):**
   - **Inclusión de Sector Industrial:** Adición de `<option value="Sector Industrial">Sector Industrial</option>` como primera opción de selección en el selector de sector (`#contact-sector`) del formulario de diagnóstico de la página principal (`index.html`), habilitando la recepción y canalización de proyectos industriales desde la Home. Despliegue en producción verificado.
+- **2026-11-11 (Badges Hero de Landings de Sector - Retiro de "Segmento"):**
+  - **Limpieza de Nomenclatura en Badges:** Eliminación de la palabra `Segmento` en las etiquetas superiores (hero badge capsules) de las 4 landings (`industrial.html`, `agricola.html`, `comercial.html` y `residencial.html`), pasando a ser: *Industrial & Gran Escala*, *Agropecuario & Bombeo Solar*, *Comercial & Servicios* y *Residencial Luxury & Off-Grid*. Despliegue verificado en producción.
 
