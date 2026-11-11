@@ -68,3 +68,4 @@
 - **2026-11-09:** Configuración de enrutamiento por host `^(www\.)?ieer\.com\.mx$` en `vercel.json`.
 - **2026-11-09:** Implementación de endpoint de backend `/api/contact/ieer` y funciones SMTP de fallback seguro en `mailer.py`.
 - **2026-11-09:** Incorporación a `AgencyClient` en base de datos y al monitoreo continuo de `WebGuardian`.
+- **2026-11-10:** Integración de la sección de Comprobación de Experiencia y Certeza Operativa debajo del Hero1 (estilo Design Flow, bento grid de 3 pilares: tiempo de respuesta ≤ 24h, ciclo integral de 4 etapas, y alcances de 5 kW a +100 kW en laboratorios, fábricas, clínicas, spa y hotelería). Despliegue en producción verificado.
