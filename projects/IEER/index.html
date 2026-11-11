@@ -167,9 +167,9 @@
         .nav-wrapper {
             pointer-events: auto;
             margin: 0 auto;
-            width: calc(100% - 3rem);
-            max-width: 520px; /* Highly compact capsule */
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(20, 26, 28, 0.28);
+            width: fit-content;
+            max-width: calc(100% - 2rem);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.45);
             border: 1px solid rgba(227, 221, 213, 0.08);
             border-radius: var(--radius-full);
             backdrop-filter: blur(28px) saturate(220%);
@@ -177,7 +177,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0.75rem 1.75rem;
+            padding: 0.75rem 2.25rem;
             box-shadow: 
                 inset 0 1px 0 rgba(255, 255, 255, 0.12),
                 0 15px 35px rgba(0, 0, 0, 0.35);
@@ -185,13 +185,13 @@
         }
 
         header.scrolled .nav-wrapper {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(10, 14, 15, 0.35);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.75);
             border-color: rgba(169, 133, 103, 0.25);
             box-shadow: 
                 inset 0 1px 0 rgba(255, 255, 255, 0.16),
                 0 20px 45px rgba(0, 0, 0, 0.45), 
                 0 0 30px rgba(169, 133, 103, 0.04);
-            padding: 0.55rem 1.75rem;
+            padding: 0.55rem 2.25rem;
         }
 
         .logo {
@@ -235,8 +235,9 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 3rem; /* Expanded space between menu links */
+            gap: clamp(1.5rem, 2.5vw, 2.5rem);
             list-style: none;
+            white-space: nowrap;
         }
 
         .nav-links a {
@@ -2403,7 +2404,7 @@
                 top: calc(100% + 10px);
                 left: 0;
                 right: 0;
-                background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(20, 26, 28, 0.96);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.96);
                 border: 1px solid rgba(227, 221, 213, 0.08);
                 border-radius: 20px;
                 backdrop-filter: blur(25px) saturate(180%);
@@ -2830,7 +2831,6 @@
             
             <nav class="nav-menu">
                 <ul class="nav-links">
-                    <li><a href="#experiencia">Experiencia</a></li>
                     <li><a href="#autonomia">Servicios</a></li>
                     <li><a href="#sectores">Soluciones</a></li>
                     <li><a href="#blog">Blog</a></li>
