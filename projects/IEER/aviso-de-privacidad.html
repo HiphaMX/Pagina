@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Tag Manager & Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-P9D4NRLL"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J06TRYKQC3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J06TRYKQC3');
+    </script>
+    
+    <!-- SEO Optimization -->
+    <title>Aviso de Privacidad Integral | IEER</title>
+    <meta name="description" content="Aviso de Privacidad Integral de IEER (Ingeniería Especializada en Energías Renovables) en estricto cumplimiento con la Ley Federal de Protección de Datos Personales (LFPDPPP).">
+    <link rel="canonical" href="https://ieer.com.mx/aviso-de-privacidad">
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Aviso de Privacidad Integral | IEER">
+    <meta property="og:description" content="Protección de datos personales, confidencialidad técnica y términos de tratamiento para clientes y proyectos de IEER.">
+    <meta property="og:url" content="https://ieer.com.mx/aviso-de-privacidad">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://ieer.com.mx/Assets/industrial_storage.jpg">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400..700&family=Outfit:wght@100;200;300;400;600;800&family=Space+Grotesk:wght@300;400;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    
+    <style>
+        @font-face {
+            font-family: 'Zerafoc';
+            src: url('/Assets/fonts/Zerafoc.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Zerafoc';
+            src: url('/Assets/fonts/Zerafoc-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        :root {
+            --bg-nature: #080b0c;
+            --bg-nature-accent: #040607;
+            --color-forest: #222d2f;
+            --color-bronze: #a98567;
+            --color-bronze-glow: rgba(169, 133, 103, 0.25);
+            --color-alabaster: #e3ddd5;
+            --color-border: rgba(169, 133, 103, 0.12);
+            --color-border-active: rgba(227, 221, 213, 0.25);
+            --color-card-bg: rgba(12, 16, 18, 0.65);
+            --text-main: #e3ddd5;
+            --text-muted: #7e8d90;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-tech: 'Space Grotesk', sans-serif;
+            --font-future: 'Syncopate', sans-serif;
+            --font-accent: 'Google Sans Flex', 'Zerafoc', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            
+            --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            overflow-x: clip;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-nature);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: clip;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(169, 133, 103, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(34, 45, 47, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Capsule Nav Bar */
+        header {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            pointer-events: none;
+            transition: var(--transition-premium);
+        }
+
+        header.scrolled {
+            top: 1.25rem;
+        }
+
+        .nav-wrapper {
+            pointer-events: auto;
+            margin: 0 auto;
+            width: fit-content;
+            max-width: calc(100% - 2rem);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.45);
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(28px) saturate(220%);
+            -webkit-backdrop-filter: blur(28px) saturate(220%);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(227, 221, 213, 0.15);
+            display: flex;
+            align-items: center;
+            padding: 0.55rem 1.75rem;
+            gap: 2.5rem;
+            transition: var(--transition-premium);
+        }
+
+        .nav-brand-link {
+            font-family: var(--font-future);
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-brand-link::after {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: var(--color-bronze);
+            border-radius: 50%;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+        }
+
+        .nav-links a {
+            font-family: var(--font-tech);
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(227, 221, 213, 0.65);
+            text-decoration: none;
+            transition: var(--transition-premium);
+            position: relative;
+            padding: 0.4rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+        }
+
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger-bar {
+            width: 22px;
+            height: 1.5px;
+            background-color: var(--color-alabaster);
+            transition: 0.3s ease;
+        }
+
+        /* Hero Section */
+        .legal-hero {
+            padding: 11rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-future);
+            font-size: 0.68rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-bronze);
+            background: rgba(169, 133, 103, 0.08);
+            border: 1px solid rgba(169, 133, 103, 0.2);
+            padding: 0.4rem 1.1rem;
+            border-radius: var(--radius-full);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-accent);
+            font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-title span {
+            color: var(--color-bronze);
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            font-weight: 200;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Main Legal Content */
+        .legal-main {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 0 2rem 8rem;
+            width: 100%;
+        }
+
+        .legal-card {
+            background: rgba(12, 16, 18, 0.7);
+            border: 1px solid rgba(169, 133, 103, 0.15);
+            border-radius: var(--radius-lg);
+            padding: 3.5rem 3rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .legal-section h2 {
+            font-family: var(--font-accent);
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--color-bronze);
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .legal-section p, .legal-section ul {
+            font-size: 0.98rem;
+            font-weight: 200;
+            color: rgba(227, 221, 213, 0.82);
+            line-height: 1.85;
+            margin-bottom: 1rem;
+        }
+
+        .legal-section ul {
+            padding-left: 1.5rem;
+            list-style: disc;
+        }
+
+        .legal-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .legal-section strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .legal-section a {
+            color: var(--color-bronze);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .legal-section a:hover {
+            color: #fff;
+        }
+
+        .legal-highlight-box {
+            background: rgba(169, 133, 103, 0.08);
+            border-left: 3px solid var(--color-bronze);
+            padding: 1.5rem;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 1.5rem 0;
+        }
+
+        /* Floating Luxury Obsidian HUD WhatsApp */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            width: 58px;
+            height: 58px;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf274;
+            font-size: 1.85rem;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(37, 211, 102, 0.2);
+            z-index: 99;
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 1px solid rgba(169, 133, 103, 0.45);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: whatsapp-bronze-pulse 3s infinite ease-in-out;
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        @keyframes whatsapp-bronze-pulse {
+            0% { transform: scale(0.9); opacity: 0.2; border-color: rgba(169, 133, 103, 0.2); }
+            50% { transform: scale(1.05); opacity: 0.8; border-color: rgba(169, 133, 103, 0.6); }
+            100% { transform: scale(1.2); opacity: 0; border-color: rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+        }
+
+        /* Homologated Footer */
+        #interactive-reveal-footer {
+            position: relative;
+            width: 100%;
+            z-index: 10;
+            background-color: #0b1112;
+            color: var(--color-alabaster);
+            padding: 8rem 4rem 4rem 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-top: 1px solid rgba(227, 221, 213, 0.08);
+            margin-top: auto;
+        }
+
+        .footer-inner-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .footer-logo-wrapper {
+            position: relative;
+            width: 155px;
+            height: 180px;
+            display: block;
+            transition: var(--transition-premium);
+        }
+
+        .footer-logo {
+            width: 155px;
+            height: auto;
+            opacity: 0.9;
+            transition: opacity var(--transition-premium);
+        }
+
+        .footer-logo.logo-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .footer-logo-wrapper:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer-logo-wrapper:hover .logo-default {
+            opacity: 0;
+        }
+
+        .footer-logo-wrapper:hover .logo-hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 12px rgba(162, 184, 65, 0.35)) drop-shadow(0 0 4px rgba(155, 121, 91, 0.25));
+        }
+
+        .footer-brand-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-weight: 200;
+            color: rgba(227, 221, 213, 0.6);
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .footer-col-title {
+            font-family: var(--font-tech);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--color-alabaster);
+            font-weight: 400;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.95rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            list-style: none;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: rgba(227, 221, 213, 0.6);
+            font-weight: 200;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-premium);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-bronze);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(227, 221, 213, 0.08);
+            font-size: 0.85rem;
+            color: rgba(227, 221, 213, 0.4);
+        }
+
+        .subfooter-logo {
+            height: 24px;
+            width: auto;
+            opacity: 0.7;
+            transition: opacity var(--transition-premium);
+        }
+
+        .subfooter-logo:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 991px) {
+            .nav-wrapper {
+                width: calc(100% - 2rem);
+                justify-content: space-between;
+                padding: 0.75rem 1.25rem;
+            }
+            .hamburger-btn {
+                display: flex;
+            }
+            .nav-menu {
+                position: absolute;
+                top: calc(100% + 0.75rem);
+                left: 0;
+                width: 100%;
+                background: rgba(12, 16, 18, 0.95);
+                border: 1px solid rgba(227, 221, 213, 0.12);
+                border-radius: 20px;
+                display: none;
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1.25rem;
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+                opacity: 0;
+                transform: translateY(-10px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                z-index: 100;
+            }
+            .nav-menu.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.25rem;
+                width: 100%;
+            }
+            .legal-hero {
+                padding: 9rem 1rem 3rem;
+            }
+            .legal-main {
+                padding: 0 1rem 5rem;
+            }
+            .legal-card {
+                padding: 2.5rem 1.5rem;
+            }
+            #interactive-reveal-footer {
+                padding: 4rem 1.5rem 2rem 1.5rem;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
+            .floating-whatsapp::before {
+                inset: -6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Capsule Navigation Header -->
+    <header id="main-header">
+        <div class="nav-wrapper">
+            <a href="/#inicio" class="nav-brand-link">IEER</a>
+            
+            <button class="hamburger-btn" aria-label="Menu" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+            
+            <nav class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="/#inicio">Inicio</a></li>
+                    <li><a href="/#autonomia">Servicios</a></li>
+                    <li><a href="/#sectores">Soluciones</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Legal Content -->
+    <main>
+        <section class="legal-hero">
+            <div class="hero-container">
+                <span class="badge"><i class="ph ph-shield-check"></i> Marco Legal & Confidencialidad</span>
+                <h1 class="section-title">Aviso de <span>Privacidad</span></h1>
+                <p class="section-desc">Compromiso estricto de confidencialidad, tratamiento ético y salvaguarda de datos personales conforme a la LFPDPPP.</p>
+            </div>
+        </section>
+
+        <section class="legal-main">
+            <div class="legal-card">
+                
+                <div class="legal-section">
+                    <h2>1. Identidad y Domicilio del Responsable</h2>
+                    <p>
+                        <strong>IEER — Ingeniería Especializada en Energías Renovables</strong> (en lo sucesivo, <em>"IEER"</em>), con dirección de operaciones técnicas a cargo del <strong>Ing. Luis Cid</strong>, con domicilio en el estado de Jalisco, México, y portal web oficial <a href="https://ieer.com.mx">https://ieer.com.mx</a>, es el responsable del uso, tratamiento y protección de sus datos personales, en estricto cumplimiento con lo dispuesto por la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong>, su Reglamento y los Lineamientos del Aviso de Privacidad vigentes en los Estados Unidos Mexicanos.
+                    </p>
+                </div>
+
+                <div class="legal-section">
+                    <h2>2. Datos Personales que Recabamos</h2>
+                    <p>Para la debida evaluación técnica, dictaminación de viabilidad energética y formulación de propuestas de ingeniería de micro-redes, almacenamiento en litio y bombeo solar, IEER podrá recabar los siguientes datos personales:</p>
+                    <ul>
+                        <li><strong>Datos de Identificación y Contacto:</strong> Nombre completo, correo electrónico corporativo o personal, número telefónico fijo o móvil con WhatsApp, razón social o nombre comercial de la empresa o predio.</li>
+                        <li><strong>Datos de Facturación y Fiscales:</strong> Registro Federal de Contribuyentes (RFC), domicilio fiscal y comprobantes de situación fiscal (exclusivamente al formalizar relaciones comerciales).</li>
+                        <li><strong>Datos Técnicos de Proyecto y Operativos:</strong> Recibos de energía eléctrica emitidos por la Comisión Federal de Electricidad (CFE), perfiles de demanda horaria (GDMTH/DIST), diagramas unifilares de centros de carga, coordenadas satelitales del predio o rancho, y datos de aforo o niveles dinámicos de pozos profundos.</li>
+                    </ul>
+                    <div class="legal-highlight-box">
+                        <strong>Declaración de no recabación de datos sensibles:</strong> IEER no solicita ni procesa datos personales considerados como sensibles (origen racial, creencias religiosas, afiliaciones políticas o estado de salud) bajo ninguna circunstancia.
+                    </div>
+                </div>
+
+                <div class="legal-section">
+                    <h2>3. Finalidades Primarias del Tratamiento</h2>
+                    <p>Los datos personales que recabamos son indispensables para las siguientes finalidades primarias:</p>
+                    <ul>
+                        <li>Procesar solicitudes de cotización técnica, estudios de ahorro y análisis de factibilidad energética.</li>
+                        <li>Elaborar memorias de cálculo, ingeniería de detalle, diagramas unifilares y proyectos de cumplimiento con el Código de Red 2.0 ante la CRE y CENACE.</li>
+                        <li>Gestionar la contratación, entrega, instalación, comisionamiento y garantías de sistemas fotovoltaicos, variadores de bombeo y bancos BESS.</li>
+                        <li>Establecer canales de comunicación técnica directa vía correo electrónico (<a href="mailto:lcid@ieer.com.mx">lcid@ieer.com.mx</a>) y mensajería instantánea para la supervisión y soporte de proyectos.</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section">
+                    <h2>4. Finalidades Secundarias</h2>
+                    <p>De manera adicional, podremos utilizar su información para finalidades secundarias que nos permiten brindarle una mejor atención:</p>
+                    <ul>
+                        <li>Envío de alertas técnicas sobre cambios regulatorios en tarifas eléctricas o Código de Red.</li>
+                        <li>Avisos periódicos de mantenimiento preventivo y telemetría de rendimiento de sistemas instalados.</li>
+                    </ul>
+                    <p>En caso de que no desee que sus datos personales sean tratados para estas finalidades secundarias, podrá manifestarlo en cualquier momento enviando un correo a <a href="mailto:lcid@ieer.com.mx">lcid@ieer.com.mx</a>, sin que esto limite el cumplimiento de nuestros servicios contratados.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h2>5. Transferencia de Datos Personales</h2>
+                    <p>
+                        IEER <strong>no vende, comercializa ni arrienda</strong> sus datos personales a terceras empresas con fines publicitarios. Sus datos únicamente podrán ser transferidos sin requerir su consentimiento en los supuestos previstos en el artículo 37 de la LFPDPPP, o bien a proveedores técnicos estrictamente vinculados con la ejecución del servicio (por ejemplo, plataformas satelitales de telemetría de inversores o peritos verificadores UVIE debidamente acreditados ante la Secretaría de Energía).
+                    </p>
+                </div>
+
+                <div class="legal-section">
+                    <h2>6. Ejercicio de Derechos ARCO</h2>
+                    <p>Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos y las condiciones del uso que les damos (<strong>Acceso</strong>). Asimismo, es su derecho solicitar la corrección de su información personal si se encuentra desactualizada, inexacta o incompleta (<strong>Rectificación</strong>); que la eliminemos de nuestros registros cuando considere que no está siendo utilizada conforme a los principios de la ley (<strong>Cancelación</strong>); así como oponerse al uso de sus datos para fines específicos (<strong>Oposición</strong>). Estos se conocen como derechos <strong>ARCO</strong>.</p>
+                    <p>Para el ejercicio de cualquiera de los derechos ARCO, usted deberá enviar una solicitud formal por escrito al correo electrónico:</p>
+                    <div class="legal-highlight-box">
+                        <strong>Oficina de Privacidad IEER:</strong><br>
+                        Titular: Ing. Luis Cid<br>
+                        Correo: <a href="mailto:lcid@ieer.com.mx">lcid@ieer.com.mx</a><br>
+                        Teléfono / WhatsApp: <a href="tel:+523333025665">+52 33 3302 5665</a>
+                    </div>
+                    <p>Su solicitud deberá contener: (i) nombre del titular y correo para comunicar la respuesta; (ii) copia de identificación oficial que acredite su titularidad; y (iii) descripción clara y precisa de los datos respecto de los que busca ejercer alguno de los derechos ARCO. Su solicitud será atendida y respondida en un plazo máximo de 20 días hábiles.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h2>7. Medidas de Seguridad</h2>
+                    <p>IEER cuenta con medidas de seguridad administrativas, técnicas y físicas rigurosas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o uso no autorizado. Nuestras comunicaciones digitales operan bajo protocolos de cifrado de alta seguridad <strong>SSL/TLS (HTTPS)</strong> y nuestros repositorios de telemetría e ingeniería residen en servidores de alta resiliencia con acceso restringido exclusivamente a personal de ingeniería autorizado.</p>
+                </div>
+
+                <div class="legal-section">
+                    <h2>8. Modificaciones al Presente Aviso de Privacidad</h2>
+                    <p>El presente aviso de privacidad puede sufrir modificaciones, cambios o actualizaciones derivadas de nuevos requerimientos legales, de nuestras propias necesidades operativas o de cambios en nuestras prácticas de privacidad. Nos comprometemos a mantenerlo informado sobre los cambios que pueda sufrir este aviso a través de su publicación permanente y actualizada en esta misma página web (<a href="https://ieer.com.mx/aviso-de-privacidad">https://ieer.com.mx/aviso-de-privacidad</a>).</p>
+                    <p><em>Última actualización: Noviembre de 2026.</em></p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Homologated Footer -->
+    <footer id="interactive-reveal-footer">
+        <div class="footer-inner-content">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo-wrapper">
+                        <img src="/Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
+                        <img src="/Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
+                    </div>
+                    <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Soluciones</h4>
+                    <ul class="footer-links">
+                        <li><a href="/comercial">Comercial & Servicios</a></li>
+                        <li><a href="/agricola">Agrícola</a></li>
+                        <li><a href="/residencial">Residencial</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Navegación</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/preguntas-frecuentes">Preguntas Frecuentes</a></li>
+                        <li><a href="/aviso-de-privacidad">Aviso de Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Contacto</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
+                        <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>Copyright 2026 © IEER | Diseño by</span>
+                <a href="https://www.hipha.mx/" target="_blank" class="subfooter-link" rel="noopener noreferrer">
+                    <img src="/Assets/LogoSubfooter/LogoSubfooter.svg" alt="Hipha" class="subfooter-logo">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Luxury Obsidian HUD WhatsApp -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesoría%20sobre%20sus%20servicios%20de%20ingenier%C3%ADa." class="floating-whatsapp" aria-label="WhatsApp Asesoría IEER" target="_blank" rel="noopener noreferrer">
+        <i class="ph ph-whatsapp-logo"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script>
+        // Sticky Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 40) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Hamburger Menu Toggle
+        const hamburgerBtn = document.querySelector('.hamburger-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburgerBtn && navMenu) {
+            hamburgerBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const active = navMenu.classList.toggle('active');
+                hamburgerBtn.classList.toggle('active');
+                hamburgerBtn.setAttribute('aria-expanded', active);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

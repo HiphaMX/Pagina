@@ -449,16 +449,164 @@
             inset: -12px;
         }
 
-        @media (max-width: 767px) {
-            .floating-whatsapp {
-                bottom: 1.5rem;
-                right: 1.5rem;
-                width: 48px;
-                height: 48px;
-                font-size: 1.5rem;
+        /* Homologated Footer */
+        #interactive-reveal-footer {
+            position: relative;
+            width: 100%;
+            z-index: 10;
+            background-color: #0b1112;
+            color: var(--color-alabaster);
+            padding: 8rem 4rem 4rem 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-top: 1px solid rgba(227, 221, 213, 0.08);
+            margin-top: 6rem;
+        }
+
+        .footer-inner-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .footer-logo-wrapper {
+            position: relative;
+            width: 155px;
+            height: 180px;
+            display: block;
+            transition: var(--transition-premium);
+        }
+
+        .footer-logo {
+            width: 155px;
+            height: auto;
+            opacity: 0.9;
+            transition: opacity var(--transition-premium);
+        }
+
+        .footer-logo.logo-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .footer-logo-wrapper:hover .logo-default {
+            opacity: 0;
+        }
+
+        .footer-logo-wrapper:hover .logo-hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 12px rgba(162, 184, 65, 0.35)) drop-shadow(0 0 4px rgba(155, 121, 91, 0.25));
+        }
+
+        .footer-brand-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-weight: 200;
+            color: rgba(227, 221, 213, 0.6);
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .footer-col-title {
+            font-family: var(--font-tech);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--color-alabaster);
+            font-weight: 400;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.95rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            list-style: none;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: rgba(227, 221, 213, 0.6);
+            font-weight: 200;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-premium);
+        }
+
+        .footer-links a:hover {
+            color: var(--color-bronze);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(227, 221, 213, 0.08);
+            font-size: 0.85rem;
+            color: rgba(227, 221, 213, 0.4);
+        }
+
+        .subfooter-link {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .subfooter-logo {
+            height: 24px;
+            width: auto;
+            opacity: 0.7;
+            transition: opacity var(--transition-premium);
+        }
+
+        .subfooter-logo:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 991px) {
+            #interactive-reveal-footer {
+                padding: 4rem 1.5rem 2rem 1.5rem;
             }
-            .floating-whatsapp::before {
-                inset: -6px;
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
             }
         }
     </style>
@@ -548,6 +696,56 @@
             </footer>
         </article>
     </main>
+
+    <!-- Footer -->
+    <footer id="interactive-reveal-footer">
+        <div class="footer-inner-content">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo-wrapper">
+                        <img src="/Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
+                        <img src="/Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
+                    </div>
+                    <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Soluciones</h4>
+                    <ul class="footer-links">
+                        <li><a href="/comercial">Comercial & Servicios</a></li>
+                        <li><a href="/agricola">Agrícola</a></li>
+                        <li><a href="/residencial">Residencial</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Navegación</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/preguntas-frecuentes">Preguntas Frecuentes</a></li>
+                        <li><a href="/aviso-de-privacidad">Aviso de Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Contacto</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
+                        <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>Copyright 2026 © IEER | Diseño by</span>
+                <a href="https://www.hipha.mx/" target="_blank" class="subfooter-link" rel="noopener noreferrer">
+                    <img src="/Assets/LogoSubfooter/LogoSubfooter.svg" alt="Hipha" class="subfooter-logo">
+                </a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Floating WhatsApp Button HUD -->
     <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20almacenamiento%20industrial." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">

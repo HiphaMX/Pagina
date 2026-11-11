@@ -66,6 +66,8 @@
 - **Artículo 06 — Baterías Litio LFP vs. Plomo-Ácido:** [https://ieer.com.mx/articulo-baterias-litio](https://ieer.com.mx/articulo-baterias-litio)
 - **Sección de Consulta Técnica y Factibilidad:** [https://ieer.com.mx/#contacto](https://ieer.com.mx/#contacto)
 - **Repositorio Editorial / Journal Completo:** [https://ieer.com.mx/blog](https://ieer.com.mx/blog)
+- **Centro de Preguntas Frecuentes:** [https://ieer.com.mx/preguntas-frecuentes](https://ieer.com.mx/preguntas-frecuentes)
+- **Aviso de Privacidad Integral:** [https://ieer.com.mx/aviso-de-privacidad](https://ieer.com.mx/aviso-de-privacidad)
 - **Sitemap XML:** [https://ieer.com.mx/sitemap.xml](https://ieer.com.mx/sitemap.xml)
 
 ---
