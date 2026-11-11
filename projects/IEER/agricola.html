@@ -26,6 +26,27 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://ieer.com.mx/Assets/nature_irrigation.jpg">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+    
+    <!-- Schema.org Service Microdata -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Bombeo Solar y Continuidad Energética Agrícola",
+      "provider": {
+        "@type": "Organization",
+        "name": "IEER - Ingeniería Especializada en Energías Renovables",
+        "url": "https://ieer.com.mx"
+      },
+      "serviceType": "Bombeo Solar Fotovoltaico e Híbrido en Pozo Profundo y Superficie",
+      "areaServed": "MX",
+      "description": "Sistemas de bombeo solar híbrido y energía autónoma para pozos profundos, ranchos y riego tecnificado en México. Cero consumo de diésel y agua constante.",
+      "url": "https://ieer.com.mx/agricola"
+    }
+    </script>
+    
     <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -658,28 +679,89 @@
             opacity: 0.6;
         }
 
-        /* Floating WhatsApp Button */
-        .whatsapp-float-btn {
+        /* Floating WhatsApp Button (HUD Obsidian Luxury) */
+        .floating-whatsapp {
             position: fixed;
             bottom: 2.5rem;
             right: 2.5rem;
             width: 58px;
             height: 58px;
-            background: #25d366;
-            color: #fff;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #3bf274;
             font-size: 1.85rem;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
-            z-index: 99;
             text-decoration: none;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(37, 211, 102, 0.2),
+                inset 0 0 10px rgba(37, 211, 102, 0.1);
+            z-index: 99;
             transition: var(--transition-premium);
         }
 
-        .whatsapp-float-btn:hover {
-            transform: scale(1.1);
+        .floating-whatsapp::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 1px solid rgba(169, 133, 103, 0.45);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: whatsapp-bronze-pulse 3s infinite ease-in-out;
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        @keyframes whatsapp-bronze-pulse {
+            0% { transform: scale(0.9); opacity: 0.2; border-color: rgba(169, 133, 103, 0.2); }
+            50% { transform: scale(1.05); opacity: 0.8; border-color: rgba(169, 133, 103, 0.6); }
+            100% { transform: scale(1.2); opacity: 0; border-color: rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6),
+                0 0 25px rgba(37, 211, 102, 0.5),
+                inset 0 0 15px rgba(37, 211, 102, 0.25);
+        }
+
+        .floating-whatsapp:hover i {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+        }
+
+        .floating-whatsapp:hover::before {
+            border-color: rgba(37, 211, 102, 0.6);
+            inset: -12px;
         }
 
         /* Responsive */
@@ -767,12 +849,15 @@
                 width: 100%;
                 justify-content: center;
             }
-            .whatsapp-float-btn {
+            .floating-whatsapp {
                 bottom: 1.5rem;
                 right: 1.5rem;
-                width: 50px;
-                height: 50px;
+                width: 48px;
+                height: 48px;
                 font-size: 1.5rem;
+            }
+            .floating-whatsapp::before {
+                inset: -6px;
             }
         }
     </style>
@@ -802,6 +887,7 @@
         </div>
     </header>
 
+    <main id="main-content">
     <!-- Sector Hero -->
     <section class="sector-hero">
         <div class="hero-bg">
@@ -900,21 +986,22 @@
             </div>
 
             <form id="agricola-contact-form" class="inquiry-form" onsubmit="handleContactSubmit(event)">
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
                 <div class="form-group">
-                    <label for="name">Nombre / Rancho o Agrícola</label>
-                    <input type="text" id="contact-name" placeholder="Ej. Ing. Roberto Mendoza / Rancho El Encino" required>
+                    <label for="contact-name">Nombre / Rancho o Agrícola</label>
+                    <input type="text" id="contact-name" name="name" placeholder="Ej. Ing. Roberto Mendoza / Rancho El Encino" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">Correo Electrónico</label>
-                    <input type="email" id="contact-email" placeholder="roberto@ranchoelencino.com" required>
+                    <label for="contact-email">Correo Electrónico</label>
+                    <input type="email" id="contact-email" name="email" placeholder="roberto@ranchoelencino.com" required>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Teléfono / WhatsApp</label>
-                    <input type="tel" id="contact-phone" placeholder="+52 33 0000 0000" required>
+                    <label for="contact-phone">Teléfono / WhatsApp</label>
+                    <input type="tel" id="contact-phone" name="phone" placeholder="+52 33 0000 0000" required>
                 </div>
                 <div class="form-group">
-                    <label for="sector">Tipo de Proyecto</label>
-                    <select id="contact-sector">
+                    <label for="contact-sector">Tipo de Proyecto</label>
+                    <select id="contact-sector" name="sector">
                         <option value="Rancho / Campo / Bombeo" selected>Rancho / Campo / Bombeo</option>
                         <option value="Complejo Industrial">Complejo Industrial</option>
                         <option value="Comercial / Restaurante">Comercial / Restaurante</option>
@@ -922,12 +1009,12 @@
                     </select>
                 </div>
                 <div class="form-group full-width">
-                    <label for="location">Ubicación del Predio</label>
-                    <input type="text" id="contact-location" placeholder="Municipio y Estado (Ej. Ciudad Guzmán, Jalisco / Culiacán, Sinaloa)">
+                    <label for="contact-location">Ubicación del Predio</label>
+                    <input type="text" id="contact-location" name="location" placeholder="Municipio y Estado (Ej. Ciudad Guzmán, Jalisco / Culiacán, Sinaloa)">
                 </div>
                 <div class="form-group full-width">
-                    <label for="message">Datos de la Bomba o Requerimiento Hídrico</label>
-                    <textarea id="contact-message" placeholder="Indica HP de la bomba, profundidad del pozo en metros, horas de riego requeridas o si es bomba sumergible / superficial..."></textarea>
+                    <label for="contact-message">Datos de la Bomba o Requerimiento Hídrico</label>
+                    <textarea id="contact-message" name="message" placeholder="Indica HP de la bomba, profundidad del pozo en metros, horas de riego requeridas o si es bomba sumergible / superficial..."></textarea>
                 </div>
                 <div class="form-group full-width" style="text-align: center; margin-top: 1rem;">
                     <button type="submit" class="btn-primary" style="margin: 0 auto; cursor: pointer;">
@@ -944,6 +1031,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
     <footer id="interactive-reveal-footer">
@@ -977,22 +1065,22 @@
                     <ul class="footer-links">
                         <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
                         <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
-                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20asesoría%20para%20un%20proyecto%20agrícola" target="_blank"><i class="ph ph-whatsapp-logo"></i> WhatsApp Agropecuario</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20asesoría%20para%20un%20proyecto%20agrícola" target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo"></i> WhatsApp Agropecuario</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
                 <span>Copyright 2026 © IEER | Soluciones Agrícolas</span>
-                <a href="https://www.hipha.mx/" target="_blank" class="subfooter-link">
+                <a href="https://www.hipha.mx/" target="_blank" rel="noopener noreferrer" class="subfooter-link">
                     <img src="Assets/LogoSubfooter/LogoSubfooter.svg" alt="Hipha" class="subfooter-logo">
                 </a>
             </div>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp -->
-    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesoría%20sobre%20bombeo%20solar%20agrícola." class="whatsapp-float-btn" target="_blank" aria-label="WhatsApp IEER">
-        <i class="ph ph-whatsapp-logo"></i>
+    <!-- Floating WhatsApp Button HUD -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesoría%20sobre%20bombeo%20solar%20agrícola." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Agrícola IEER">
+        <i class="ph-fill ph-whatsapp-logo"></i>
     </a>
 
     <!-- Scripts -->
@@ -1009,28 +1097,46 @@
             hamburgerBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 navMenu.classList.toggle('active');
+                hamburgerBtn.classList.toggle('active');
+            });
+            // Close mobile menu when tapping any navigation link
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                });
             });
             document.addEventListener('click', (e) => {
                 if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
                     navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
                 }
             });
         }
 
         async function handleContactSubmit(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<span>Enviando...</span> <i class="ph ph-spinner ph-spin"></i>';
             btn.disabled = true;
 
+            // Honeypot spam defense
+            const honeypot = form.querySelector('input[name="_gotcha"]');
+            if (honeypot && honeypot.value) {
+                form.style.display = 'none';
+                document.getElementById('contact-success').style.display = 'block';
+                return;
+            }
+
             const payload = {
-                nombre: document.getElementById('contact-name').value,
-                email: document.getElementById('contact-email').value,
-                telefono: document.getElementById('contact-phone').value,
+                nombre: document.getElementById('contact-name').value.trim(),
+                email: document.getElementById('contact-email').value.trim(),
+                telefono: document.getElementById('contact-phone').value.trim(),
                 sector: document.getElementById('contact-sector').value,
-                ubicacion: document.getElementById('contact-location').value,
-                mensaje: document.getElementById('contact-message').value
+                ubicacion: document.getElementById('contact-location').value.trim(),
+                mensaje: document.getElementById('contact-message').value.trim()
             };
 
             try {
@@ -1040,16 +1146,16 @@
                     body: JSON.stringify(payload)
                 });
                 if (response.ok) {
-                    document.getElementById('agricola-contact-form').style.display = 'none';
+                    form.style.display = 'none';
                     document.getElementById('contact-success').style.display = 'block';
                 } else {
-                    alert('Hubo un error al procesar la solicitud. Por favor intenta por WhatsApp.');
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
+                    throw new Error(`HTTP status ${response.status}`);
                 }
             } catch (err) {
-                document.getElementById('agricola-contact-form').style.display = 'none';
-                document.getElementById('contact-success').style.display = 'block';
+                console.error('Error al enviar formulario agrícola:', err);
+                alert('No se pudo enviar la solicitud automáticamente. Por favor contáctanos vía WhatsApp (+52 33 3302 5665).');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
     </script>

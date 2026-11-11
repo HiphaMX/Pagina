@@ -18,6 +18,7 @@
     <title>IEER Journal | Todas las Publicaciones y Artículos Técnicos</title>
     <meta name="description" content="Explora el acervo editorial completo de IEER. Artículos de ingeniería sobre autonomía energética, almacenamiento en litio, micro-redes, calidad de energía y bombeo solar.">
     <link rel="canonical" href="https://ieer.com.mx/blog">
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
     
     <!-- Open Graph -->
     <meta property="og:title" content="IEER Journal | Todas las Publicaciones">
@@ -25,6 +26,25 @@
     <meta property="og:url" content="https://ieer.com.mx/blog">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://ieer.com.mx/Assets/industrial_storage.jpg">
+    
+    <!-- Schema.org Blog Microdata -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "IEER Journal",
+      "description": "Acervo editorial de ingeniería especializada en energías renovables, micro-redes, almacenamiento en litio y código de red.",
+      "url": "https://ieer.com.mx/blog",
+      "publisher": {
+        "@type": "Organization",
+        "name": "IEER - Ingeniería Especializada en Energías Renovables",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ieer.com.mx/Assets/Logotipo/IEER.svg"
+        }
+      }
+    }
+    </script>
     
     <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -695,29 +715,89 @@
             opacity: 1;
         }
 
-        /* Floating WhatsApp Action Pill */
-        .whatsapp-float-btn {
+        /* Floating Luxury Obsidian HUD WhatsApp */
+        .floating-whatsapp {
             position: fixed;
             bottom: 2.5rem;
             right: 2.5rem;
             width: 58px;
             height: 58px;
-            background: #25d366;
-            color: #fff;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #3bf274;
             font-size: 1.85rem;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4), 0 0 30px rgba(37, 211, 102, 0.2);
-            z-index: 99;
             text-decoration: none;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(37, 211, 102, 0.2),
+                inset 0 0 10px rgba(37, 211, 102, 0.1);
+            z-index: 99;
             transition: var(--transition-premium);
         }
 
-        .whatsapp-float-btn:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.6);
+        .floating-whatsapp::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 1px solid rgba(169, 133, 103, 0.45);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: whatsapp-bronze-pulse 3s infinite ease-in-out;
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        @keyframes whatsapp-bronze-pulse {
+            0% { transform: scale(0.9); opacity: 0.2; border-color: rgba(169, 133, 103, 0.2); }
+            50% { transform: scale(1.05); opacity: 0.8; border-color: rgba(169, 133, 103, 0.6); }
+            100% { transform: scale(1.2); opacity: 0; border-color: rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6),
+                0 0 25px rgba(37, 211, 102, 0.5),
+                inset 0 0 15px rgba(37, 211, 102, 0.25);
+        }
+
+        .floating-whatsapp:hover i {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+        }
+
+        .floating-whatsapp:hover::before {
+            border-color: rgba(37, 211, 102, 0.6);
+            inset: -12px;
         }
 
         /* Responsive Breakpoints */
@@ -828,12 +908,24 @@
             }
             .filter-section {
                 top: 4.5rem;
-                padding: 1.5rem 1rem;
+                padding: 1rem 0;
             }
             .filter-container {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                justify-content: flex-start;
+                padding: 0 1.25rem 0.5rem 1.25rem;
                 gap: 0.5rem;
+                scrollbar-width: none;
+            }
+            .filter-container::-webkit-scrollbar {
+                display: none;
             }
             .filter-btn {
+                white-space: nowrap;
+                flex-shrink: 0;
                 font-size: 0.7rem;
                 padding: 0.45rem 1rem;
             }
@@ -856,12 +948,15 @@
             .advisory-actions {
                 flex-direction: column;
             }
-            .whatsapp-float-btn {
+            .floating-whatsapp {
                 bottom: 1.5rem;
                 right: 1.5rem;
-                width: 50px;
-                height: 50px;
+                width: 48px;
+                height: 48px;
                 font-size: 1.5rem;
+            }
+            .floating-whatsapp::before {
+                inset: -6px;
             }
         }
     </style>
@@ -917,7 +1012,7 @@
         <div class="journal-grid" id="journal-grid">
             
             <!-- Article 1: Almacenamiento Industrial -->
-            <a href="articulo-autonomia.html" class="blog-post-card" data-category="almacenamiento">
+            <a href="/articulo-autonomia" class="blog-post-card" data-category="almacenamiento">
                 <div class="blog-img-wrapper">
                     <img src="Assets/industrial_storage.jpg" alt="Autonomía Energética Industrial" class="blog-post-img" loading="lazy">
                     <span class="card-badge-overlay">Reciente</span>
@@ -933,7 +1028,7 @@
             </a>
 
             <!-- Article 2: Micro-Redes Luxury -->
-            <a href="articulo-offgrid.html" class="blog-post-card" data-category="micro-redes">
+            <a href="/articulo-offgrid" class="blog-post-card" data-category="micro-redes">
                 <div class="blog-img-wrapper">
                     <img src="Assets/nature_solar.jpg" alt="Sistemas Off-grid Residenciales" class="blog-post-img" loading="lazy">
                     <span class="card-badge-overlay">Reciente</span>
@@ -949,7 +1044,7 @@
             </a>
 
             <!-- Article 3: Calidad de Energía -->
-            <a href="articulo-calidad-energia.html" class="blog-post-card" data-category="calidad-energia">
+            <a href="/articulo-calidad-energia" class="blog-post-card" data-category="calidad-energia">
                 <div class="blog-img-wrapper">
                     <img src="Assets/telemetry_terminal.jpg" alt="Calidad de Energía Industrial" class="blog-post-img" loading="lazy">
                     <span class="card-badge-overlay">Reciente</span>
@@ -965,7 +1060,7 @@
             </a>
 
             <!-- Article 4: Código de Red 2.0 -->
-            <a href="articulo-codigo-red.html" class="blog-post-card" data-category="normativa">
+            <a href="/articulo-codigo-red" class="blog-post-card" data-category="normativa">
                 <div class="blog-img-wrapper">
                     <img src="Assets/remote_mountain_solar.jpg" alt="Código de Red CENACE y CFE" class="blog-post-img" loading="lazy">
                     <span class="card-badge-overlay">Auditoría</span>
@@ -981,7 +1076,7 @@
             </a>
 
             <!-- Article 5: Bombeo Solar Agropecuario -->
-            <a href="articulo-bombeo-solar.html" class="blog-post-card" data-category="agropecuario">
+            <a href="/articulo-bombeo-solar" class="blog-post-card" data-category="agropecuario">
                 <div class="blog-img-wrapper">
                     <img src="Assets/nature_irrigation.jpg" alt="Bombeo Solar Agropecuario" class="blog-post-img" loading="lazy">
                     <span class="card-badge-overlay">Agropecuario</span>
@@ -997,7 +1092,7 @@
             </a>
 
             <!-- Article 6: Litio LFP vs Plomo-Ácido -->
-            <a href="articulo-baterias-litio.html" class="blog-post-card" data-category="almacenamiento">
+            <a href="/articulo-baterias-litio" class="blog-post-card" data-category="almacenamiento">
                 <div class="blog-img-wrapper">
                     <img src="Assets/lithium_battery.jpg" alt="Baterías Litio LFP Almacenamiento" class="blog-post-img" loading="lazy">
                     <span class="card-badge-overlay">Ingeniería</span>
@@ -1020,7 +1115,7 @@
                 <div class="advisory-info">
                     <span class="badge"><i class="ph ph-lightning"></i> Consultoría Inmediata</span>
                     <h3>¿Requieres un estudio técnico para <span>tu proyecto</span>?</h3>
-                    <p>Brindamos soluciones desde una pequeña demanda (5 kW) hasta gran industria (+100 kW). Diseñamos con especificaciones rigurosas para laboratorios, fábricas, clínicas, spa y hotelería. Respuesta garantizada en 24 horas.</p>
+                    <p>Brindamos soluciones desde una pequeña demanda (5 kW) hasta gran industria (+1 MW). Diseñamos con especificaciones rigurosas para laboratorios, fábricas, clínicas, spa y hotelería. Tiempo de respuesta máximo.</p>
                 </div>
                 <div class="advisory-actions">
                     <a href="https://wa.me/523333025665?text=Hola%20IEER,%20revisé%20su%20Journal%20y%20deseo%20una%20propuesta%20técnica%20para%20un%20proyecto" target="_blank" class="btn-whatsapp-advisory">
@@ -1086,8 +1181,8 @@
         </div>
     </footer>
 
-    <!-- Floating WhatsApp Action -->
-    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20informaci%C3%B3n%20sobre%20sus%20servicios%20de%20ingenier%C3%ADa." class="whatsapp-float-btn" aria-label="Contactar a IEER por WhatsApp" target="_blank" rel="noopener noreferrer">
+    <!-- Floating Luxury Obsidian HUD WhatsApp -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20informaci%C3%B3n%20sobre%20sus%20servicios%20de%20ingenier%C3%ADa." class="floating-whatsapp" aria-label="Contactar a IEER por WhatsApp" target="_blank" rel="noopener noreferrer">
         <i class="ph ph-whatsapp-logo"></i>
     </a>
 
@@ -1120,6 +1215,14 @@
                     hamburgerBtn.classList.remove('active');
                     hamburgerBtn.setAttribute('aria-expanded', 'false');
                 }
+            });
+
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                });
             });
         }
 

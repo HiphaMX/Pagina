@@ -28,4 +28,4 @@ Allow: /
 
 # Mapa del Sitio XML y Documentación de Web Agéntica
 Sitemap: https://ieer.com.mx/sitemap.xml
-# llms-txt: https://ieer.com.mx/llms.txt
+llms-txt: https://ieer.com.mx/llms.txt

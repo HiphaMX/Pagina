@@ -26,6 +26,40 @@
     <meta property="og:type" content="article">
     <meta property="og:image" content="https://ieer.com.mx/Assets/lithium_battery.jpg">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Baterías Litio LFP vs. Plomo-Ácido: Ciclo de Vida y Retorno de Inversión",
+      "description": "Comparativa técnica entre baterías de Litio LFP (LiFePO4) y Plomo-Ácido en sistemas solares y almacenamiento BESS: Costo Nivelado (LCOS), DoD y retorno de inversión.",
+      "image": "https://ieer.com.mx/Assets/lithium_battery.jpg",
+      "author": {
+        "@type": "Person",
+        "name": "Ing. Luis Cid",
+        "jobTitle": "Director de Ingeniería",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "IEER"
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "IEER",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ieer.com.mx/Assets/Logotipo/IEER.svg"
+        }
+      },
+      "datePublished": "2026-11-01",
+      "dateModified": "2026-11-10",
+      "mainEntityOfPage": "https://ieer.com.mx/articulo-baterias-litio"
+    }
+    </script>
+    
     <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -391,12 +425,78 @@
             letter-spacing: 0.15em;
             text-transform: uppercase;
             text-decoration: none;
+            transition: var(--transiti        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35);
+        }
+
+        /* Floating WhatsApp Button HUD */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 58px;
+            height: 58px;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf274;
+            font-size: 1.8rem;
+            text-decoration: none;
+            z-index: 999;
+            transition: var(--transition-premium);
+            animation: whatsapp-bronze-shadow-pulse 3s infinite ease-in-out;
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
             transition: var(--transition-premium);
         }
 
-        .btn-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35);
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 211, 102, 0.5);
+        }
+
+        @keyframes whatsapp-bronze-shadow-pulse {
+            0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(169, 133, 103, 0.55); }
+            70% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 16px rgba(169, 133, 103, 0); }
+            100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @media (max-width: 767px) {
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -405,153 +505,172 @@
     <!-- Back Navigation Capsule -->
     <header>
         <div class="nav-wrapper">
-            <a href="/blog" class="back-link">
-                <i class="ph ph-arrow-left"></i> Volver al Journal
-            </a>
+            <nav aria-label="Navegación de retorno">
+                <a href="/blog" class="back-link">
+                    <i class="ph ph-arrow-left"></i> Volver al Journal
+                </a>
+            </nav>
         </div>
     </header>
 
-    <!-- Article Hero -->
-    <section class="article-hero">
-        <div class="article-hero-bg">
-            <img src="Assets/lithium_battery.jpg" alt="Baterías Litio LFP en Sistemas BESS IEER">
-        </div>
-        <div class="article-hero-vignette"></div>
-        <div class="container">
-            <div class="article-meta">
-                <span>06 // Almacenamiento & BESS</span>
-                <span class="dot"></span>
-                <span>Lectura: 9 min</span>
-                <span class="dot"></span>
-                <span>Noviembre 2026</span>
-            </div>
-            <h1 class="article-title">Baterías Litio LFP vs. Plomo-Ácido: Ciclo de Vida, LCOS y Retorno de Inversión</h1>
-        </div>
-    </section>
-
-    <!-- Article Content -->
-    <article class="container">
-        <div class="article-body">
-            <p>En el diseño de sistemas fotovoltaicos aislados (Off-Grid), microrredes industriales y soluciones de almacenamiento para aplanamiento de picos (Peak Shaving), el banco de baterías representa la inversión más estratégica del proyecto. Durante décadas, las tecnologías de plomo-ácido (inundadas, AGM y Gel) dominaron el mercado por su bajo costo aparente de adquisición inicial (CapEx).</p>
-
-            <p>Sin embargo, en aplicaciones de misión crítica donde la confiabilidad debe ser del 99.99%, el plomo-ácido ha quedado completamente superado. La adopción masiva de la química **Litio Hierro Fosfato (LiFePO4 o LFP)** ha transformado los fundamentos económicos del almacenamiento estacionario, multiplicando por diez la vida útil y reduciendo drásticamente el costo real por kilovatio-hora entregado.</p>
-
-            <blockquote>
-                "Comprar baterías evaluando únicamente el costo por kWh de placa nominal en lugar de la energía acumulada a lo largo de su ciclo de vida (LCOS) es la causa principal de sobrecostos en sistemas energéticos industriales."
-            </blockquote>
-
-            <h2>1. Limitaciones Termodinámicas y Electroquímicas del Plomo-Ácido</h2>
-            <p>Para entender la superioridad del litio LFP, es necesario analizar las fallas intrínsecas que aquejan a las baterías de plomo:</p>
-
-            <ul>
-                <li><strong>Efecto Peukert y Pérdida de Capacidad por Tasa de Descarga:</strong> Cuando un motor o compresor industrial demanda alta potencia (descargas superiores a C/5 o C/2), la capacidad disponible de una batería de plomo se desploma hasta en un 40% debido a la lentitud de difusión del ácido sulfúrico en las placas de plomo.</li>
-                <li><strong>Sulfatación Irreversible:</strong> Si el banco de baterías no se recarga al 100% de manera inmediata tras una descarga profunda (condición habitual durante días nublados consecutivos), los cristales de sulfato de plomo se endurecen, reduciendo la capacidad útil permanentemente.</li>
-                <li><strong>Emanación de Gases Tóxicos y Corrosivos:</strong> Durante la fase de absorción y ecualización, las celdas de plomo liberan gas hidrógeno altamente inflamable y vapores de ácido sulfúrico, exigiendo cuartos de baterías con ventilación forzada bajo normativas antiexplosión (ATEX/NEC).</li>
-                <li><strong>Baja Eficiencia de Ida y Vuelta (Round-Trip Efficiency ~75%):</strong> Entre el 20% y 25% de la energía solar generada se disipa en calor durante la recarga electroquímica del plomo.</li>
-            </ul>
-
-            <h2>2. Seguridad Intrínseca de la Química LiFePO4 (LFP)</h2>
-            <p>Dentro del universo de las baterías de litio, existen dos grandes ramas: las químicas basadas en níquel y cobalto (**NMC / NCA**, populares en vehículos eléctricos ligeros por su alta densidad de energía gravitacional) y el **Fosfato de Hierro y Litio (LiFePO4 / LFP)**, el estándar predilecto para almacenamiento estacionario.</p>
-
-            <p>El enlace molecular fósforo-oxígeno (\(P-O\)) en las celdas LFP es covalente y extremadamente rígido. Esto significa que, incluso bajo condiciones extremas de sobrecarga, perforación mecánica o temperaturas superiores a <strong>270 °C</strong>, la celda no libera oxígeno gaseoso ni entra en **escape térmico violento (Thermal Runaway)**, a diferencia de las celdas NMC cuyo escape térmico se desencadena a partir de los 150-210 °C.</p>
-
-            <h2>3. Profundidad de Descarga (DoD) y Comparativa de Ciclos Útiles</h2>
-            <p>La métrica que define la economía de un sistema de almacenamiento es cuánta energía puede extraerse sin degradar prematuramente el cátodo:</p>
-
-            <div class="tech-table-wrapper">
-                <table class="tech-table">
-                    <thead>
-                        <tr>
-                            <th>Parámetro Técnico</th>
-                            <th>Plomo-Ácido (AGM / Ciclo Profundo)</th>
-                            <th>Litio Hierro Fosfato (LiFePO4)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Profundidad de Descarga (DoD)</strong></td>
-                            <td>50% recomendado (máximo 80% esporádico)</td>
-                            <td><strong>90% a 100% continuo</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Ciclos de Vida Útiles</strong></td>
-                            <td>500 a 1,200 ciclos (@ 50% DoD)</td>
-                            <td><strong>6,000 a 8,000+ ciclos (@ 90% DoD)</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Eficiencia Energética (Round-Trip)</strong></td>
-                            <td>75% - 80% (alta pérdida en calor)</td>
-                            <td><strong>95% - 98% (mínima disipación)</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Densidad Energética / Peso</strong></td>
-                            <td>30 - 40 Wh/kg (muy pesada)</td>
-                            <td>120 - 160 Wh/kg (70% menos peso)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Mantenimiento Requerido</strong></td>
-                            <td>Medición de densidad, agua destilada o bornes</td>
-                            <td><strong>Cero mantenimiento (Sellado hermético)</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Monitoreo y Control</strong></td>
-                            <td>Voltaje pasivo analógico</td>
-                            <td><strong>BMS inteligente digital (CANbus / Modbus)</strong></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Vida Calendario Estimada</strong></td>
-                            <td>3 a 5 años (requiere múltiples cambios)</td>
-                            <td><strong>15 a 20+ años</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2>4. El Factor Económico Decisivo: Costo Nivelado de Almacenamiento (LCOS)</h2>
-            <p>Para determinar la rentabilidad real de un proyecto de almacenamiento en una clínica, complejo industrial o rancho agrícola, los directores financieros deben evaluar el **Costo Nivelado de Almacenamiento (LCOS - Levelized Cost of Storage)**, que mide el costo real por cada kWh entregado a la carga a lo largo de 15 años de operación:</p>
-
-            <div class="formula-card">
-                <div class="formula-title">Ecuación de Costo Nivelado de Almacenamiento</div>
-                <div class="formula-math">LCOS = CapEx + ∑ OpEx (Reemplazos + Mantenimiento) / (Energía Ciclo × N° Ciclos × DoD × η)</div>
-                <div class="formula-desc">
-                    El LCOS contabiliza el costo total de adquisición, los reemplazos obligatorios de bancos de baterías a lo largo del tiempo, las pérdidas por eficiencia de carga y los costos de climatización de cuartos de baterías.
+    <main id="main-content">
+        <!-- Article Wrapper -->
+        <article>
+            <!-- Article Hero -->
+            <section class="article-hero">
+                <div class="article-hero-bg">
+                    <img src="/Assets/lithium_battery.jpg" alt="Baterías Litio LFP en Sistemas BESS IEER">
                 </div>
-            </div>
-
-            <p><strong>Ejemplo práctico para un banco de 100 kWh de capacidad útil:</strong></p>
-            <ul>
-                <li><strong>Con Plomo-Ácido AGM:</strong> Para disponer de 100 kWh útiles al 50% de DoD, se requiere instalar un banco de <strong>200 kWh brutos</strong>. Con una vida útil promedio de 3.5 años en ciclos diarios, el cliente deberá adquirir y reemplazar el banco completo <strong>4 veces en un horizonte de 15 años</strong>. El LCOS resultante oscila entre <strong>$0.38 y $0.52 USD por kWh</strong>.</li>
-                <li><strong>Con Litio LFP (IEER):</strong> Para disponer de 100 kWh útiles al 90% de DoD, basta instalar <strong>110 kWh brutos</strong>. El banco opera con más de 6,000 ciclos sin reemplazos durante los mismos 15 años. El LCOS resultante se reduce a <strong>$0.09 a $0.14 USD por kWh</strong>, lo que representa un ahorro superior al <strong>68% en el costo acumulado de la energía</strong>.</li>
-            </ul>
-
-            <h2>5. El Rol Crítico del Sistema de Gestión de Baterías (BMS)</h2>
-            <p>Cada rack de baterías LFP que integramos en **IEER** incorpora un **BMS (Battery Management System)** industrial de arquitectura redundante. El BMS supervisa en intervalos de milisegundos:</p>
-            <ul>
-                <li><strong>Voltaje individual de cada celda:</strong> Con balanceo activo para garantizar que ninguna celda se sobrecargue o descargue asimétricamente.</li>
-                <li><strong>Monitoreo térmico multizona:</strong> Sensores distribuidos en los módulos para modular la corriente si la temperatura ambiente supera los límites seguros.</li>
-                <li><strong>Integración en tiempo real con inversores híbridos:</strong> Comunicación bidireccional nativa vía protocolos **CANbus y Modbus TCP/IP** con marcas líderes mundiales (Victron Energy, Solis, Sungrow, Kehua, Deye), permitiendo diagnósticos remotos y actualizaciones de firmware vía nube.</li>
-            </ul>
-
-            <div class="article-cta-box">
-                <h3>¿Planeas un Sistema de Almacenamiento o Deseas Reemplazar Baterías de Plomo?</h3>
-                <p>Nuestros ingenieros calculan tu LCOS específico y diseñan bancos de litio LFP modulares y escalables de 10 kWh hasta más de 1 MWh.</p>
-                <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesoría%20técnica%20para%20un%20sistema%20de%20almacenamiento%20en%20baterías%20de%20litio%20LFP" class="btn-cta" target="_blank">
-                    <i class="ph ph-whatsapp-logo"></i>
-                    <span>Cotizar Banco de Litio LFP</span>
-                </a>
-            </div>
-        </div>
-
-        <div class="article-footer">
-            <div class="author-box">
-                <div class="author-avatar">LC</div>
-                <div class="author-info">
-                    <h4>Ing. Luis Cid</h4>
-                    <p>Director de Ingeniería // Especialista en Sistemas BESS y Almacenamiento de Litio</p>
+                <div class="article-hero-vignette"></div>
+                <div class="container">
+                    <div class="article-meta">
+                        <span>06 // Almacenamiento & BESS</span>
+                        <span class="dot"></span>
+                        <span>Lectura: 9 min</span>
+                        <span class="dot"></span>
+                        <span>Noviembre 2026</span>
+                    </div>
+                    <h1 class="article-title">Baterías Litio LFP vs. Plomo-Ácido: Ciclo de Vida y Retorno de Inversión</h1>
                 </div>
+            </section>
+
+            <!-- Article Content -->
+            <div class="container">
+                <div class="article-body">
+                    <p>En el diseño de sistemas fotovoltaicos aislados (Off-Grid), microrredes industriales y soluciones de almacenamiento para aplanamiento de picos (Peak Shaving), el banco de baterías representa la inversión más estratégica del proyecto. Durante décadas, las tecnologías de plomo-ácido (inundadas, AGM y Gel) dominaron el mercado por su bajo costo aparente de adquisición inicial (CapEx).</p>
+
+                    <p>Sin embargo, en aplicaciones de misión crítica donde la confiabilidad debe ser del 99.99%, el plomo-ácido ha quedado completamente superado. La adopción masiva de la química <strong>Litio Hierro Fosfato (LiFePO<sub>4</sub> o LFP)</strong> ha transformado los fundamentos económicos del almacenamiento estacionario, multiplicando por diez la vida útil y reduciendo drásticamente el costo real por kilovatio-hora entregado.</p>
+
+                    <blockquote>
+                        "Comprar baterías evaluando únicamente el costo por kWh de placa nominal en lugar de la energía acumulada a lo largo de su ciclo de vida (LCOS) es la causa principal de sobrecostos en sistemas energéticos industriales."
+                    </blockquote>
+
+                    <h2>1. Limitaciones Termodinámicas y Electroquímicas del Plomo-Ácido</h2>
+                    <p>Para entender la superioridad del litio LFP, es necesario analizar las fallas intrínsecas que aquejan a las baterías de plomo:</p>
+
+                    <ul>
+                        <li><strong>Efecto Peukert y Pérdida de Capacidad por Tasa de Descarga:</strong> Cuando un motor o compresor industrial demanda alta potencia (descargas superiores a C/5 o C/2), la capacidad disponible de una batería de plomo se desploma hasta en un 40% debido a la lentitud de difusión del ácido sulfúrico en las placas de plomo.</li>
+                        <li><strong>Sulfatación Irreversible:</strong> Si el banco de baterías no se recarga al 100% de manera inmediata tras una descarga profunda (condición habitual durante días nublados consecutivos), los cristales de sulfato de plomo se endurecen, reduciendo la capacidad útil permanentemente.</li>
+                        <li><strong>Emanación de Gases Tóxicos y Corrosivos:</strong> Durante la fase de absorción y ecualización, las celdas de plomo liberan gas hidrógeno altamente inflamable y vapores de ácido sulfúrico, exigiendo cuartos de baterías con ventilación forzada bajo normativas antiexplosión (ATEX/NEC).</li>
+                        <li><strong>Baja Eficiencia de Ida y Vuelta (Round-Trip Efficiency ~75%):</strong> Entre el 20% y 25% de la energía solar generada se disipa en calor durante la recarga electroquímica del plomo.</li>
+                    </ul>
+
+                    <h2>2. Seguridad Intrínseca de la Química LiFePO4 (LFP)</h2>
+                    <p>Dentro del universo de las baterías de litio, existen dos grandes ramas: las químicas basadas en níquel y cobalto (<strong>NMC / NCA</strong>, populares en vehículos eléctricos ligeros por su alta densidad de energía gravitacional) y el <strong>Fosfato de Hierro y Litio (LiFePO<sub>4</sub> / LFP)</strong>, el estándar predilecto para almacenamiento estacionario.</p>
+
+                    <p>El enlace molecular fósforo-oxígeno (P–O) en las celdas LFP es covalente y extremadamente rígido. Esto significa que, incluso bajo condiciones extremas de sobrecarga, perforación mecánica o temperaturas superiores a <strong>270 °C</strong>, la celda no libera oxígeno gaseoso ni entra en <strong>escape térmico violento (Thermal Runaway)</strong>, a diferencia de las celdas NMC cuyo escape térmico se desencadena a partir de los 150-210 °C. Diseñado bajo cumplimiento estricto de las normas <strong>UL 9540, UL 9540A e IEC 62619</strong>.</p>
+
+                    <h2>3. Profundidad de Descarga (DoD) y Comparativa de Ciclos Útiles</h2>
+                    <p>La métrica que define la economía de un sistema de almacenamiento es cuánta energía puede extraerse sin degradar prematuramente el cátodo:</p>
+
+                    <div class="tech-table-wrapper">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Parámetro Técnico</th>
+                                    <th>Plomo-Ácido (AGM / Ciclo Profundo)</th>
+                                    <th>Litio Hierro Fosfato (LiFePO<sub>4</sub>)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Profundidad de Descarga (DoD)</strong></td>
+                                    <td>50% recomendado (máximo 80% esporádico)</td>
+                                    <td><strong>90% a 100% continuo</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ciclos de Vida Útiles</strong></td>
+                                    <td>500 a 1,200 ciclos (@ 50% DoD)</td>
+                                    <td><strong>6,000 a 8,000+ ciclos (@ 90% DoD)</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Eficiencia Energética (Round-Trip)</strong></td>
+                                    <td>75% - 80% (alta pérdida en calor)</td>
+                                    <td><strong>95% - 98% (mínima disipación)</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Densidad Energética / Peso</strong></td>
+                                    <td>30 - 40 Wh/kg (muy pesada)</td>
+                                    <td>120 - 160 Wh/kg (70% menos peso)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mantenimiento Requerido</strong></td>
+                                    <td>Medición de densidad, agua destilada o bornes</td>
+                                    <td><strong>Cero mantenimiento (Sellado hermético)</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Monitoreo y Control</strong></td>
+                                    <td>Voltaje pasivo analógico</td>
+                                    <td><strong>BMS inteligente digital (CANbus / Modbus)</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vida Calendario Estimada</strong></td>
+                                    <td>3 a 5 años (requiere múltiples cambios)</td>
+                                    <td><strong>15 a 20+ años</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>4. El Factor Económico Decisivo: Costo Nivelado de Almacenamiento (LCOS)</h2>
+                    <p>Para determinar la rentabilidad real de un proyecto de almacenamiento en una clínica, complejo industrial o rancho agrícola, los directores financieros deben evaluar el <strong>Costo Nivelado de Almacenamiento (LCOS - Levelized Cost of Storage)</strong>, que mide el costo real por cada kWh entregado a la carga a lo largo de 15 años de operación:</p>
+
+                    <div class="formula-card">
+                        <div class="formula-title">Ecuación Fundamental de Costo Nivelado de Almacenamiento (LCOS)</div>
+                        <div class="formula-math">LCOS ($/kWh) = [ CapEx + ∑ (OpEx + Reemplazos + Recarga) ] / [ Capacidad Nominal (kWh) × Ciclos × DoD × η<sub>RTE</sub> ]</div>
+                        <div class="formula-desc">
+                            El LCOS contabiliza el costo total de adquisición, los reemplazos obligatorios de bancos de baterías a lo largo del tiempo, las pérdidas por eficiencia de carga y los costos de climatización de cuartos de baterías.
+                        </div>
+                    </div>
+
+                    <p><strong>Ejemplo práctico para un banco de 100 kWh de capacidad útil:</strong></p>
+                    <ul>
+                        <li><strong>Con Plomo-Ácido AGM:</strong> Para disponer de 100 kWh útiles al 50% de DoD, se requiere instalar un banco de <strong>200 kWh brutos</strong>. Con una vida útil promedio de 3.5 años en ciclos diarios, el cliente deberá adquirir y reemplazar el banco completo <strong>4 veces en un horizonte de 15 años</strong>. El LCOS resultante oscila entre <strong>$0.38 y $0.52 USD por kWh</strong>.</li>
+                        <li><strong>Con Litio LFP (IEER):</strong> Para disponer de 100 kWh útiles al 90% de DoD, basta instalar <strong>110 kWh brutos</strong>. El banco opera con más de 6,000 ciclos sin reemplazos durante los mismos 15 años. El LCOS resultante se reduce a <strong>$0.09 a $0.14 USD por kWh</strong>, lo que representa un ahorro superior al <strong>68% en el costo acumulado de la energía</strong>.</li>
+                    </ul>
+
+                    <h2>5. El Rol Crítico del Sistema de Gestión de Baterías (BMS)</h2>
+                    <p>Cada rack de baterías LFP que integramos en <strong>IEER</strong> incorpora un <strong>BMS (Battery Management System)</strong> industrial de arquitectura redundante. El BMS supervisa en intervalos de milisegundos:</p>
+                    <ul>
+                        <li><strong>Voltaje individual de cada celda:</strong> Con balanceo activo para garantizar que ninguna celda se sobrecargue o descargue asimétricamente.</li>
+                        <li><strong>Monitoreo térmico multizona:</strong> Sensores distribuidos en los módulos para modular la corriente si la temperatura ambiente supera los límites seguros.</li>
+                        <li><strong>Integración en tiempo real con inversores híbridos:</strong> Comunicación bidireccional nativa vía protocolos <strong>CANbus y Modbus TCP/IP</strong> con marcas líderes mundiales (Victron Energy, Solis, Sungrow, Kehua, Deye), permitiendo diagnósticos remotos y actualizaciones de firmware vía nube.</li>
+                    </ul>
+
+                    <div class="article-cta-box">
+                        <h3>¿Planeas un Sistema de Almacenamiento o Deseas Reemplazar Baterías de Plomo?</h3>
+                        <p>Nuestros ingenieros calculan tu LCOS específico y diseñan bancos de litio LFP modulares y escalables de 10 kWh hasta más de 1 MWh.</p>
+                        <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesor%C3%ADa%20t%C3%A9cnica%20para%20un%20sistema%20de%20almacenamiento%20en%20bater%C3%ADas%20de%20litio%20LFP" class="btn-cta" target="_blank" rel="noopener noreferrer">
+                            <i class="ph ph-whatsapp-logo"></i>
+                            <span>Cotizar Banco de Litio LFP</span>
+                        </a>
+                    </div>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="author-box">
+                        <div class="author-avatar">LC</div>
+                        <div class="author-info">
+                            <p class="author-name" style="font-weight: 600; color: var(--color-alabaster); margin-bottom: 0.25rem;">Ing. Luis Cid</p>
+                            <p>Director de Ingeniería // Especialista en Sistemas BESS y Almacenamiento de Litio</p>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/blog" class="back-link" style="color: var(--color-bronze);">
+                            <i class="ph ph-newspaper"></i> Ver más artículos del Journal
+                        </a>
+                    </div>
+                </footer>
             </div>
-            <div>
-                <a href="/blog" class="back-link" style="color: var(--color-bronze);">
+        </article>
+    </main>
+
+    <!-- Floating WhatsApp Button HUD -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20interesa%20un%20an%C3%A1lisis%20de%20almacenamiento%20en%20bater%C3%ADas%20de%20litio%20LFP" class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp">
+        <i class="ph ph-whatsapp-logo"></i>
+    </a>
+</body>
+</html>);">
                     <i class="ph ph-newspaper"></i> Ver más artículos del Journal
                 </a>
             </div>

@@ -26,6 +26,40 @@
     <meta property="og:type" content="article">
     <meta property="og:image" content="https://ieer.com.mx/Assets/nature_irrigation.jpg">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Bombeo Solar de Alto Rendimiento en Pozo Profundo y Superficie",
+      "description": "Ingeniería avanzada de bombeo solar fotovoltaico para pozo profundo y superficie en México. Variadores MPPT, erradicación de diésel y dimensionamiento hidráulico CDT.",
+      "image": "https://ieer.com.mx/Assets/nature_irrigation.jpg",
+      "author": {
+        "@type": "Person",
+        "name": "Ing. Luis Cid",
+        "jobTitle": "Director de Ingeniería",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "IEER"
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "IEER",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ieer.com.mx/Assets/Logotipo/IEER.svg"
+        }
+      },
+      "datePublished": "2026-11-01",
+      "dateModified": "2026-11-10",
+      "mainEntityOfPage": "https://ieer.com.mx/articulo-bombeo-solar"
+    }
+    </script>
+    
     <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -398,6 +432,75 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35);
         }
+
+        /* Floating WhatsApp Button HUD */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 58px;
+            height: 58px;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf274;
+            font-size: 1.8rem;
+            text-decoration: none;
+            z-index: 999;
+            transition: var(--transition-premium);
+            animation: whatsapp-bronze-shadow-pulse 3s infinite ease-in-out;
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 211, 102, 0.5);
+        }
+
+        @keyframes whatsapp-bronze-shadow-pulse {
+            0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(169, 133, 103, 0.55); }
+            70% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 16px rgba(169, 133, 103, 0); }
+            100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @media (max-width: 767px) {
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -405,140 +508,157 @@
     <!-- Back Navigation Capsule -->
     <header>
         <div class="nav-wrapper">
-            <a href="/blog" class="back-link">
-                <i class="ph ph-arrow-left"></i> Volver al Journal
-            </a>
+            <nav aria-label="Navegación de retorno">
+                <a href="/blog" class="back-link">
+                    <i class="ph ph-arrow-left"></i> Volver al Journal
+                </a>
+            </nav>
         </div>
     </header>
 
-    <!-- Article Hero -->
-    <section class="article-hero">
-        <div class="article-hero-bg">
-            <img src="Assets/nature_irrigation.jpg" alt="Bombeo Solar en Pozo Profundo IEER">
-        </div>
-        <div class="article-hero-vignette"></div>
-        <div class="container">
-            <div class="article-meta">
-                <span>05 // Ingeniería Hidráulica & Agro</span>
-                <span class="dot"></span>
-                <span>Lectura: 8 min</span>
-                <span class="dot"></span>
-                <span>Noviembre 2026</span>
-            </div>
-            <h1 class="article-title">Bombeo Solar de Alto Rendimiento en Pozo Profundo y Superficie: Cero Diésel</h1>
-        </div>
-    </section>
-
-    <!-- Article Content -->
-    <article class="container">
-        <div class="article-body">
-            <p>En el sector agroalimentario, minero y de desarrollo territorial en México, el acceso continuo y confiable al agua representa el factor más crítico de viabilidad operativa. Históricamente, los productores agrícolas e industriales en zonas no interconectadas o con redes eléctricas deficientes han dependido de plantas generadoras diésel o de costosas extensiones de líneas de media tensión ante la CFE.</p>
-
-            <p>Con costos del diésel superando los <strong>$24.50 MXN por litro</strong>, fletes logísticos en caminos de terracería y mantenimientos mecánicos constantes cada 250 horas, los costos operativos (OpEx) erosionan severamente la rentabilidad de las cosechas. El **bombeo solar fotovoltaico directo** ha evolucionado de ser una solución de nicho para pequeños bebederos de ganado a convertirse en sistemas de alta ingeniería capaces de accionar motores sumergibles de <strong>15 a más de 150 HP</strong> a profundidades que rebasan los 250 metros.</p>
-
-            <blockquote>
-                "El bombeo solar moderno no almacena energía en costosas baterías químicas: transforma los fotones del sol directamente en volumen de agua almacenada en presas, cisternas o cabezales de riego por goteo con costo por metro cúbico cercano a cero."
-            </blockquote>
-
-            <h2>1. Fundamentos Hidráulicos: Cálculo de la Carga Dinámica Total (CDT)</h2>
-            <p>El error más recurrente en proyectos solares agrícolas no radica en los paneles fotovoltaicos, sino en un dimensionamiento hidráulico deficiente. Para garantizar que la bomba entregue el gasto nominal requerido (litros por segundo o galones por minuto) durante toda la ventana solar útil, es indispensable calcular con rigor la **Carga Dinámica Total (CDT / TDH)**:</p>
-
-            <div class="formula-card">
-                <div class="formula-title">Ecuación Fundamental de Carga Hidráulica</div>
-                <div class="formula-math">CDT = Carga Estática + Pérdidas por Fricción (Hf) + Presión de Descarga (P<sub>req</sub>)</div>
-                <div class="formula-desc">
-                    <strong>Carga Estática:</strong> Nivel dinámico de abatimiento del pozo más desnivel topográfico hasta el punto de descarga.<br>
-                    <strong>Pérdidas por Fricción (Hf):</strong> Caída de presión en tubería de columna y conducción por rugosidad (Hazen-Williams o Darcy-Weisbach).<br>
-                    <strong>Presión Requerida:</strong> Presión mínima de operación exigida en el cabezal de filtrado o aspersión/goteo (usualmente 2.5 a 4.0 bar).
+    <main id="main-content">
+        <!-- Article Wrapper -->
+        <article>
+            <!-- Article Hero -->
+            <section class="article-hero">
+                <div class="article-hero-bg">
+                    <img src="/Assets/nature_irrigation.jpg" alt="Bombeo Solar en Pozo Profundo IEER">
                 </div>
-            </div>
-
-            <p>A partir de la CDT y el caudal requerido (\(Q\)), la potencia hidráulica teórica se determina y se aplica el factor de sobredimensionamiento fotovoltaico (\(DC/AC\) ratio de 1.25 a 1.40). Esta relación asegura que el sistema comience a bombear agua desde las primeras horas de la mañana (irradiancia de 250 W/m²) y mantenga el caudal hasta el ocaso, maximizando las horas de bombeo efectivas diarias.</p>
-
-            <h2>2. Variadores de Frecuencia Solares (Solar VFD) con Algoritmo MPPT</h2>
-            <p>El corazón electromecánico del sistema es el **Variador de Frecuencia Solar (Solar VFD)** de grado industrial. A diferencia de un inversor convencional de interconexión, el VFD solar realiza una modulación por ancho de pulsos (PWM) vectorial de alto rendimiento que gobierna directamente la frecuencia (0 a 60 Hz) y el voltaje entregado a la bomba trifásica:</p>
-
-            <ul>
-                <li><strong>Algoritmo MPPT Dinámico (&gt;99% de Eficiencia):</strong> Lee continuamente la curva de irradiancia solar y modula las revoluciones por minuto (RPM) de la bomba para extraer la máxima potencia posible del arreglo de celdas en cualquier condición meteorológica o nubosidad pasajera.</li>
-                <li><strong>Arranque Suave (Soft Start):</strong> Los motores sumergibles tradicionales en arranque directo demandan picos de corriente de entre 6 y 8 veces su corriente nominal, provocando torsión severa en la flecha, desgaste prematuro de impulsores y fatiga en la columna. El Solar VFD realiza una aceleración progresiva de 0 a 60 Hz en 15 a 30 segundos, eliminando por completo el **golpe de ariete** hidráulico y el estrés electromecánico.</li>
-                <li><strong>Eliminación de Baterías:</strong> La energía se inyecta directamente al motor o se complementa en tiempo real, erradicando los costos periódicos de sustitución de acumuladores.</li>
-            </ul>
-
-            <div class="tech-table-wrapper">
-                <table class="tech-table">
-                    <thead>
-                        <tr>
-                            <th>Tecnología de Bombeo</th>
-                            <th>Inversión Inicial (CapEx)</th>
-                            <th>Costo Operativo (OpEx $/m³)</th>
-                            <th>Mantenimiento Preventivo</th>
-                            <th>Vida Útil Estimada</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Bombeo Solar Directo (IEER)</strong></td>
-                            <td>Moderada a Alta</td>
-                            <td><strong>Prácticamente $0.00 MXN</strong></td>
-                            <td>Inspección anual y limpieza básica</td>
-                            <td>25 a 30 años (Paneles) / 10+ (VFD)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Planta Generadora Diésel</strong></td>
-                            <td>Baja</td>
-                            <td>Muy Alto ($3.80 - $6.50 MXN/m³)</td>
-                            <td>Cambio de aceite, filtros cada 250 hrs</td>
-                            <td>4 a 7 años (Horas de motor)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Extensión Línea CFE Media Tensión</strong></td>
-                            <td>Muy Alta ($500k+/km + fianza CFE)</td>
-                            <td>Medio-Alto (Tarifa agrícola / comercial)</td>
-                            <td>Poda de servidumbre, transformador</td>
-                            <td>20 años (Sujeto a fallas de red)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2>3. Hibridación Inteligente: Bombeo Continuo 24/7 sin Interrupción</h2>
-            <p>Existen temporadas críticas de floración o llenado de fruto donde los turnos de riego no pueden suspenderse si el día amanece nublado o si se requiere aplicar fertirriego durante la noche para evitar la evapotranspiración diurna. En **IEER**, implementamos tableros de **hibridación solar automática (Dual Power AC/DC)**:</p>
-
-            <p>El sistema cuenta con entradas simultáneas para corriente continua (paneles fotovoltaicos) y corriente alterna (red CFE o generador diésel de respaldo). A través de un módulo de sincronización automática, el VFD solar combina ambas fuentes en tiempo real: si el sol proporciona el 70% de la energía necesaria, el generador o la red únicamente inyecta el 30% restante, asegurando que ni una sola gota de diésel se queme de manera innecesaria.</p>
-
-            <h2>4. Protección Integral de Pozo y Telemetría Satelital IoT</h2>
-            <p>Proteger la inversión subterránea de la bomba y el espejo del acuífero es tan importante como suministrar la energía. Nuestras instalaciones integran:</p>
-            <ul>
-                <li><strong>Protección contra Marcha en Seco (Dry-Run Protection):</strong> Detección automática por caída de factor de potencia y sondas hidrostáticas de nivel bajo en pozo para cortar el bombeo antes de que los bujes se dañen por cavitación.</li>
-                <li><strong>Transductores de Presión en Cabezal:</strong> Control PID integrado para mantener la presión de riego calibrada exactamente al requerimiento de los emisores de goteo o aspersores.</li>
-                <li><strong>Telemetría Remota (Satélite / Red Celular / LoRaWAN):</strong> Monitoreo desde smartphone o central de mando del caudal instantáneo (m³/hr), volumen acumulado en el día, irradiancia, temperatura del motor y alertas tempranas de fallas.</li>
-            </ul>
-
-            <div class="article-cta-box">
-                <h3>¿Necesitas Abatir Costos de Riego o Electrificar un Pozo?</h3>
-                <p>Nuestros ingenieros especialistas en hidráulica y energía solar diseñan tu sistema a la medida con retorno de inversión garantizado en menos de 24 meses.</p>
-                <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20dimensionamiento%20y%20cotización%20para%20un%20sistema%20de%20bombeo%20solar%20agrícola" class="btn-cta" target="_blank">
-                    <i class="ph ph-whatsapp-logo"></i>
-                    <span>Consultar Proyecto Hidráulico</span>
-                </a>
-            </div>
-        </div>
-
-        <div class="article-footer">
-            <div class="author-box">
-                <div class="author-avatar">LC</div>
-                <div class="author-info">
-                    <h4>Ing. Luis Cid</h4>
-                    <p>Director de Ingeniería // Especialista en Sistemas Eléctricos y Bombeo Solar</p>
+                <div class="article-hero-vignette"></div>
+                <div class="container">
+                    <div class="article-meta">
+                        <span>05 // Ingeniería Hidráulica & Agro</span>
+                        <span class="dot"></span>
+                        <span>Lectura: 8 min</span>
+                        <span class="dot"></span>
+                        <span>Noviembre 2026</span>
+                    </div>
+                    <h1 class="article-title">Bombeo Solar de Alto Rendimiento en Pozo Profundo y Superficie: Cero Diésel</h1>
                 </div>
-            </div>
-            <div>
-                <a href="/blog" class="back-link" style="color: var(--color-bronze);">
-                    <i class="ph ph-newspaper"></i> Ver más artículos del Journal
-                </a>
-            </div>
-        </div>
-    </article>
+            </section>
 
+            <!-- Article Content -->
+            <div class="container">
+                <div class="article-body">
+                    <p>En el sector agroalimentario, minero y de desarrollo territorial en México, el acceso continuo y confiable al agua representa el factor más crítico de viabilidad operativa. Históricamente, los productores agrícolas e industriales en zonas no interconectadas o con redes eléctricas deficientes han dependido de plantas generadoras diésel o de costosas extensiones de líneas de media tensión ante la CFE.</p>
+
+                    <p>Con costos del diésel superando los <strong>$24.50 MXN por litro</strong>, fletes logísticos en caminos de terracería y mantenimientos mecánicos constantes cada 250 horas, los costos operativos (OpEx) erosionan severamente la rentabilidad de las cosechas. El <strong>bombeo solar fotovoltaico directo</strong> ha evolucionado de ser una solución de nicho para pequeños bebederos de ganado a convertirse en sistemas de alta ingeniería capaces de accionar motores sumergibles de <strong>15 a más de 150 HP</strong> a profundidades que rebasan los 250 metros.</p>
+
+                    <blockquote>
+                        "El bombeo solar moderno no almacena energía en costosas baterías químicas: transforma los fotones del sol directamente en volumen de agua almacenada en presas, cisternas o cabezales de riego por goteo con costo marginal nulo de energía."
+                    </blockquote>
+
+                    <h2>1. Fundamentos Hidráulicos: Cálculo de la Carga Dinámica Total (CDT)</h2>
+                    <p>El error más recurrente en proyectos solares agrícolas no radica en los paneles fotovoltaicos, sino en un dimensionamiento hidráulico deficiente. Para garantizar que la bomba entregue el gasto nominal requerido (litros por segundo) durante toda la ventana solar útil, es indispensable calcular con rigor la <strong>Carga Dinámica Total (CDT / TDH)</strong>:</p>
+
+                    <div class="formula-card">
+                        <div class="formula-title">Ecuación Fundamental de Carga Hidráulica Dinámica Total</div>
+                        <div class="formula-math">CDT (m) = H<sub>estática</sub> (m) + H<sub>fricción</sub> (m) + H<sub>presión</sub> (m.c.a.)</div>
+                        <div class="formula-desc">
+                            <strong>H<sub>estática</sub> (m):</strong> Nivel dinámico de abatimiento del pozo más desnivel topográfico vertical hasta el punto de descarga.<br>
+                            <strong>H<sub>fricción</sub> (m):</strong> Pérdidas de carga por fricción a lo largo de la columna de bombeo y tubería calculadas mediante Hazen-Williams o Darcy-Weisbach.<br>
+                            <strong>H<sub>presión</sub> (m.c.a.):</strong> Carga equivalente de la presión mínima exigida en cabezal de filtrado o emisor (donde 1.0 bar = 10.2 metros de columna de agua [m.c.a.]).
+                        </div>
+                    </div>
+
+                    <div class="formula-card" style="margin-top: 1.5rem;">
+                        <div class="formula-title">Potencia al Eje de la Bomba y Dimensionamiento Fotovoltaico</div>
+                        <div class="formula-math">P<sub>bomba</sub> (HP) = [ Q (L/s) × CDT (m) ] / [ 75 × η<sub>bomba</sub> ]</div>
+                        <div class="formula-desc">
+                            Donde <strong>Q</strong> es el caudal de extracción de diseño, <strong>η<sub>bomba</sub></strong> es la eficiencia electromecánica del conjunto motor-bomba sumergible (0.60 a 0.75) y se aplica un factor de sobredimensionamiento <strong>DC/AC de 1.25 a 1.40</strong> en potencia pico solar (kWp) para asegurar bombeo en horas de baja irradiancia matutina (250 W/m²).
+                        </div>
+                    </div>
+
+                    <h2>2. Variadores de Frecuencia Solares (Solar VFD) con Algoritmo MPPT</h2>
+                    <p>El corazón electromecánico del sistema es el <strong>Variador de Frecuencia Solar (Solar VFD)</strong> de grado industrial. A diferencia de un inversor convencional de interconexión, el VFD solar realiza una modulación por ancho de pulsos (PWM) vectorial de alto rendimiento que gobierna directamente la frecuencia (0 a 60 Hz) y el voltaje entregado a la bomba trifásica:</p>
+
+                    <ul>
+                        <li><strong>Algoritmo MPPT Dinámico (&gt;99% de Eficiencia):</strong> Lee continuamente la curva de irradiancia solar y modula las revoluciones por minuto (RPM) de la bomba para extraer la máxima potencia posible del arreglo de celdas en cualquier condición meteorológica o nubosidad pasajera.</li>
+                        <li><strong>Arranque Suave (Soft Start):</strong> Los motores sumergibles tradicionales en arranque directo demandan picos de corriente de entre 6 y 8 veces su corriente nominal, provocando torsión severa en la flecha, desgaste prematuro de impulsores y fatiga en la columna. El Solar VFD realiza una aceleración progresiva de 0 a 60 Hz en 15 a 30 segundos, eliminando por completo el <strong>golpe de ariete</strong> hidráulico y el estrés electromecánico.</li>
+                        <li><strong>Eliminación de Baterías:</strong> La energía se inyecta directamente al motor o se complementa en tiempo real, erradicando los costos periódicos de sustitución de acumuladores.</li>
+                    </ul>
+
+                    <div class="tech-table-wrapper">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Tecnología de Bombeo</th>
+                                    <th>Inversión Inicial (CapEx)</th>
+                                    <th>Costo Operativo (OpEx $/m³)</th>
+                                    <th>Mantenimiento Preventivo</th>
+                                    <th>Vida Útil Estimada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Bombeo Solar Directo (IEER)</strong></td>
+                                    <td>Moderada a Alta</td>
+                                    <td><strong>&lt; $0.04 MXN/m³</strong></td>
+                                    <td>Inspección semestral y limpieza periódica</td>
+                                    <td>25 a 30 años (Paneles) / 10+ (VFD)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Planta Generadora Diésel</strong></td>
+                                    <td>Baja</td>
+                                    <td>Muy Alto ($3.80 - $6.50 MXN/m³)</td>
+                                    <td>Cambio de aceite, filtros cada 250 hrs</td>
+                                    <td>4 a 7 años (Horas de motor)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Extensión Línea CFE Media Tensión</strong></td>
+                                    <td>Muy Alta ($500,000+ MXN/km)</td>
+                                    <td>Medio-Alto (Tarifa agrícola / comercial)</td>
+                                    <td>Poda de servidumbre, transformador</td>
+                                    <td>20 años (Sujeto a fallas de red)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>3. Hibridación Inteligente: Bombeo Continuo 24/7 sin Interrupción</h2>
+                    <p>Existen temporadas críticas de floración o llenado de fruto donde los turnos de riego no pueden suspenderse si el día amanece nublado o si se requiere aplicar fertirriego durante la noche para evitar la evapotranspiración diurna. En <strong>IEER</strong>, implementamos tableros de <strong>hibridación solar automática (Dual Power AC/DC)</strong>:</p>
+
+                    <p>El sistema cuenta con entradas simultáneas para corriente continua (paneles fotovoltaicos) y corriente alterna (red CFE o generador diésel de respaldo). A través de un módulo de sincronización automática, el VFD solar combina ambas fuentes en tiempo real: si el sol proporciona el 70% de la energía necesaria, el generador o la red únicamente inyecta el 30% restante, asegurando que ni una sola gota de diésel se queme de manera innecesaria.</p>
+
+                    <h2>4. Protección Integral de Pozo y Telemetría Satelital IoT</h2>
+                    <p>Proteger la inversión subterránea de la bomba y el espejo del acuífero es tan importante como suministrar la energía. Nuestras instalaciones integran:</p>
+                    <ul>
+                        <li><strong>Protección contra Marcha en Seco (Dry-Run Protection):</strong> Detección automática por caída de factor de potencia y sondas hidrostáticas de nivel bajo en pozo para cortar el bombeo antes de que los bujes se dañen por cavitación.</li>
+                        <li><strong>Transductores de Presión en Cabezal:</strong> Control PID integrado para mantener la presión de riego calibrada exactamente al requerimiento de los emisores de goteo o aspersores.</li>
+                        <li><strong>Telemetría Remota (Satélite / Red Celular / LoRaWAN):</strong> Monitoreo desde smartphone o central de mando del caudal instantáneo (m³/hr), volumen acumulado en el día, irradiancia, temperatura del motor y alertas tempranas de fallas bajo lineamientos de CONAGUA y NMX-AA-179-SCFI-2018.</li>
+                    </ul>
+
+                    <div class="article-cta-box">
+                        <h3>¿Necesitas Abatir Costos de Riego o Electrificar un Pozo?</h3>
+                        <p>Nuestros ingenieros especialistas en hidráulica y energía solar diseñan tu sistema a la medida con retorno de inversión garantizado en menos de 24 meses.</p>
+                        <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20dimensionamiento%20y%20cotizaci%C3%B3n%20para%20un%20sistema%20de%20bombeo%20solar%20agr%C3%ADcola" class="btn-cta" target="_blank" rel="noopener noreferrer">
+                            <i class="ph ph-whatsapp-logo"></i>
+                            <span>Consultar Proyecto Hidráulico</span>
+                        </a>
+                    </div>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="author-box">
+                        <div class="author-avatar">LC</div>
+                        <div class="author-info">
+                            <p class="author-name" style="font-weight: 600; color: var(--color-alabaster); margin-bottom: 0.25rem;">Ing. Luis Cid</p>
+                            <p>Director de Ingeniería // Especialista en Sistemas Eléctricos y Bombeo Solar</p>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/blog" class="back-link" style="color: var(--color-bronze);">
+                            <i class="ph ph-newspaper"></i> Ver más artículos del Journal
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </article>
+    </main>
+
+    <!-- Floating WhatsApp Button HUD -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20interesa%20una%20cotizaci%C3%B3n%20de%20bombeo%20solar%20para%20pozo%20agr%C3%ADcola" class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp">
+        <i class="ph ph-whatsapp-logo"></i>
+    </a>
 </body>
 </html>

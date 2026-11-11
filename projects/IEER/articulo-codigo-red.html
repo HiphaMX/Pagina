@@ -26,6 +26,40 @@
     <meta property="og:type" content="article">
     <meta property="og:image" content="https://ieer.com.mx/Assets/remote_mountain_solar.jpg">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Código de Red 2.0: Guía de Cumplimiento en Media y Alta Tensión",
+      "description": "Análisis técnico integral sobre los requerimientos del Código de Red emitido por la CRE y CENACE en México: factor de potencia, armónicos y soluciones de mitigación.",
+      "image": "https://ieer.com.mx/Assets/remote_mountain_solar.jpg",
+      "author": {
+        "@type": "Person",
+        "name": "Ing. Luis Cid",
+        "jobTitle": "Director de Ingeniería",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "IEER"
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "IEER",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ieer.com.mx/Assets/Logotipo/IEER.svg"
+        }
+      },
+      "datePublished": "2026-11-01",
+      "dateModified": "2026-11-10",
+      "mainEntityOfPage": "https://ieer.com.mx/articulo-codigo-red"
+    }
+    </script>
+    
     <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -368,6 +402,75 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35);
         }
+
+        /* Floating WhatsApp Button HUD */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 58px;
+            height: 58px;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf274;
+            font-size: 1.8rem;
+            text-decoration: none;
+            z-index: 999;
+            transition: var(--transition-premium);
+            animation: whatsapp-bronze-shadow-pulse 3s infinite ease-in-out;
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 211, 102, 0.5);
+        }
+
+        @keyframes whatsapp-bronze-shadow-pulse {
+            0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(169, 133, 103, 0.55); }
+            70% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 16px rgba(169, 133, 103, 0); }
+            100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @media (max-width: 767px) {
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -375,128 +478,139 @@
     <!-- Back Navigation Capsule -->
     <header>
         <div class="nav-wrapper">
-            <a href="/blog" class="back-link">
-                <i class="ph ph-arrow-left"></i> Volver al Journal
-            </a>
+            <nav aria-label="Navegación de retorno">
+                <a href="/blog" class="back-link">
+                    <i class="ph ph-arrow-left"></i> Volver al Journal
+                </a>
+            </nav>
         </div>
     </header>
 
-    <!-- Article Hero -->
-    <section class="article-hero">
-        <div class="article-hero-bg">
-            <img src="Assets/remote_mountain_solar.jpg" alt="Código de Red en Media Tensión IEER">
-        </div>
-        <div class="article-hero-vignette"></div>
-        <div class="container">
-            <div class="article-meta">
-                <span>04 // Normativa Eléctrica & CENACE</span>
-                <span class="dot"></span>
-                <span>Lectura: 7 min</span>
-                <span class="dot"></span>
-                <span>Noviembre 2026</span>
-            </div>
-            <h1 class="article-title">Código de Red 2.0: Guía de Cumplimiento Técnico en Media y Alta Tensión</h1>
-        </div>
-    </section>
-
-    <!-- Article Content -->
-    <article class="container">
-        <div class="article-body">
-            <p>El Sistema Eléctrico Nacional (SEN) en México atraviesa una de sus mayores transformaciones regulatorias y operativas. Con la entrada en vigor plenamente exigible de la resolución **RES/550/2021** (conocida comúnmente como Código de Red 2.0) expedida por la Comisión Reguladora de Energía (CRE), los Centros de Carga conectados en Media Tensión (MT) y Alta Tensión (AT) han dejado de operar bajo criterios de tolerancia pasiva.</p>
-
-            <p>Hoy en día, las sanciones por incumplimiento no solo representan multas severas que van desde el 2% hasta el 10% de los ingresos brutos anuales del centro de carga, sino el riesgo inminente de desconexión forzada por parte del Centro Nacional de Control de Energía (CENACE) ante perturbaciones que pongan en peligro la estabilidad del sistema.</p>
-
-            <blockquote>
-                "El Código de Red no debe concebirse como un trámite administrativo punitivo, sino como una auditoría de eficiencia que previene fallas catastróficas en transformadores y maquinaria crítica industrial."
-            </blockquote>
-
-            <h2>1. Parámetros Técnicos Críticos de Inspección</h2>
-            <p>Para centros de carga industriales y comerciales en media tensión (voltajes entre 1 kV y 35 kV con demanda contratada igual o superior a 1 MW), las exigencias se concentran en cuatro pilares electromagnéticos:</p>
-
-            <ul>
-                <li><strong>Factor de Potencia Dinámico:</strong> El nuevo estándar exige un factor de potencia mínimo de <strong>0.95 en atraso (inductivo) o adelanto (capacitivo)</strong> medido en ventanas de cinco minutos durante el 95% del tiempo mensual. Para el año 2026 en adelante, la meta asciende al 0.97.</li>
-                <li><strong>Distorsión Armónica Total (THD-V y TDD):</strong> Las cargas no lineales (variadores de frecuencia, hornos de arco, soldadoras, fuentes conmutadas) inyectan armónicos de corriente que distorsionan la onda senoidal de voltaje. El límite de THD en voltaje no debe superar el 5.0% en barras de MT.</li>
-                <li><strong>Fluctuaciones de Tensión (Flicker):</strong> Se evalúa la severidad de parpadeo de corta duración (Pst ≤ 1.0) y larga duración (Plt ≤ 0.8) inducido por cargas cíclicas de alto impacto.</li>
-                <li><strong>Desbalance de Corriente y Tensión:</strong> El desbalance de voltaje entre fases no debe exceder el 2.0% para evitar calentamiento asimétrico en devanados de motores trifásicos.</li>
-            </ul>
-
-            <div class="tech-table-wrapper">
-                <table class="tech-table">
-                    <thead>
-                        <tr>
-                            <th>Parámetro Eléctrico</th>
-                            <th>Límite Exigido (CRE / CENACE)</th>
-                            <th>Consecuencia del Incumplimiento</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Factor de Potencia (fp)</td>
-                            <td>≥ 0.95 (95% del tiempo en atraso/adelanto)</td>
-                            <td>Cargos punitivos en recibo y apercibimiento CRE</td>
-                        </tr>
-                        <tr>
-                            <td>Distorsión Armónica Voltaje</td>
-                            <td>THD-V &lt; 5.0% (individual &lt; 3.0%)</td>
-                            <td>Calentamiento de cables, disparos en relevadores</td>
-                        </tr>
-                        <tr>
-                            <td>Flicker (Severidad)</td>
-                            <td>Pst ≤ 1.0 / Plt ≤ 0.8</td>
-                            <td>Afectación a vecinos de red y penalización CENACE</td>
-                        </tr>
-                        <tr>
-                            <td>Desbalance de Tensión</td>
-                            <td>≤ 2.0% entre fases</td>
-                            <td>Pérdida de garantía en motores e inversores</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2>2. La Solución de Ingeniería: Filtros Activos AHF y Almacenamiento</h2>
-            <p>Históricamente, muchas plantas recurrían a bancos de capacitores fijos o automáticos electromecánicos para corregir el factor de potencia. Sin embargo, en entornos industriales modernos con alta penetración de electrónica de potencia, los bancos de capacitores tradicionales pueden entrar en **resonancia armónica**, amplificando las corrientes destructivas y destruyéndose prematuramente.</p>
-
-            <p>En **IEER**, abordamos el Código de Red mediante dos tecnologías de vanguardia:</p>
-            <ul>
-                <li><strong>Filtros Activos de Armónicos (AHF) con Compensación Var Dinámica (SVG):</strong> Inyectan corrientes en contrafase en microsegundos, anulando las frecuencias armónicas hasta el orden 51 y compensando potencia reactiva instantánea sin riesgo de resonancia.</li>
-                <li><strong>Sistemas de Almacenamiento en Baterías de Litio LFP con Inversores Formadores de Red (Grid-Forming):</strong> Amortiguan las fluctuaciones severas de voltaje y permiten aplanar la curva de demanda (Peak Shaving) al mismo tiempo que garantizan el cumplimiento normativo.</li>
-            </ul>
-
-            <h2>3. Ruta Crítica para la Certificación ante la CRE</h2>
-            <p>La elaboración del **Plan de Trabajo** formal ante la CRE requiere una metodología rigurosa:</p>
-            <ol style="margin: 2rem 0; padding-left: 1.5rem; line-height: 1.8;">
-                <li style="margin-bottom: 1rem;"><strong>Campaña de Medición de 7 Días Continuos:</strong> Instalación de analizadores de calidad de energía Clase A certificados según IEC 61000-4-30 en el Punto de Conexión (PC).</li>
-                <li style="margin-bottom: 1rem;"><strong>Estudio de Flujos de Carga y Cortocircuito:</strong> Modelado computacional del diagrama unifilar en software especializado (ETAP / Neplan).</li>
-                <li style="margin-bottom: 1rem;"><strong>Diseño de la Solución de Mitigación:</strong> Especificación técnica precisa de los equipos de filtrado dinámico o acondicionamiento necesarios.</li>
-                <li style="margin-bottom: 1rem;"><strong>Presentación y Validación:</strong> Ingreso de la carpeta técnica con firma de Unidad de Inspección y seguimiento hasta la emisión de la constancia de cumplimiento.</li>
-            </ol>
-
-            <div class="article-cta-box">
-                <h3>¿Tu Centro de Carga Requiere Cumplir con Código de Red?</h3>
-                <p>Nuestros ingenieros especialistas realizan la campaña de medición Clase A y diseñan la solución de mitigación garantizada ante la CRE y el CENACE.</p>
-                <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20una%20auditoría%20para%20cumplimiento%20de%20Código%20de%20Red%202.0" class="btn-cta" target="_blank">
-                    <i class="ph ph-whatsapp-logo"></i>
-                    <span>Consultar con Especialistas</span>
-                </a>
-            </div>
-        </div>
-
-        <div class="article-footer">
-            <div class="author-box">
-                <div class="author-avatar">LC</div>
-                <div class="author-info">
-                    <h4>Ing. Luis Cid</h4>
-                    <p>Director de Ingeniería // Especialista en Código de Red y Calidad de Energía</p>
+    <main id="main-content">
+        <!-- Article Wrapper -->
+        <article>
+            <!-- Article Hero -->
+            <section class="article-hero">
+                <div class="article-hero-bg">
+                    <img src="/Assets/remote_mountain_solar.jpg" alt="Código de Red en Media Tensión IEER">
                 </div>
-            </div>
-            <div>
-                <a href="/blog" class="back-link" style="color: var(--color-bronze);">
-                    <i class="ph ph-newspaper"></i> Ver más artículos del Journal
-                </a>
-            </div>
-        </div>
-    </article>
+                <div class="article-hero-vignette"></div>
+                <div class="container">
+                    <div class="article-meta">
+                        <span>04 // Normativa Eléctrica & CENACE</span>
+                        <span class="dot"></span>
+                        <span>Lectura: 7 min</span>
+                        <span class="dot"></span>
+                        <span>Noviembre 2026</span>
+                    </div>
+                    <h1 class="article-title">Código de Red 2.0: Guía de Cumplimiento Técnico en Media y Alta Tensión</h1>
+                </div>
+            </section>
 
+            <!-- Article Content -->
+            <div class="container">
+                <div class="article-body">
+                    <p>El Sistema Eléctrico Nacional (SEN) en México atraviesa una de sus mayores transformaciones regulatorias y operativas. Con la entrada en vigor plenamente exigible de la resolución <strong>RES/550/2021</strong> (conocida comúnmente como Código de Red 2.0) expedida por la Comisión Reguladora de Energía (CRE), los Centros de Carga conectados en Media Tensión (MT) y Alta Tensión (AT) han dejado de operar bajo criterios de tolerancia pasiva.</p>
+
+                    <p>Hoy en día, las sanciones por incumplimiento no solo representan multas severas que van desde el 2% hasta el 10% de los ingresos brutos anuales del centro de carga, sino el riesgo inminente de desconexión forzada por parte del Centro Nacional de Control de Energía (CENACE) ante perturbaciones que pongan en peligro la estabilidad del sistema.</p>
+
+                    <blockquote>
+                        "El Código de Red no debe concebirse como un trámite administrativo punitivo, sino como una auditoría de eficiencia que previene fallas catastróficas en transformadores y maquinaria crítica industrial."
+                    </blockquote>
+
+                    <h2>1. Parámetros Técnicos Críticos de Inspección</h2>
+                    <p>Para centros de carga industriales y comerciales en media tensión (voltajes entre 1 kV y 35 kV con demanda contratada igual o superior a 1 MW), las exigencias se concentran en cuatro pilares electromagnéticos:</p>
+
+                    <ul>
+                        <li><strong>Factor de Potencia Dinámico:</strong> En Media Tensión (MT), el estándar exige mantener un factor de potencia entre <strong>0.95 inductivo y 1.00</strong> medido en ventanas de 5 minutos durante el 95% del tiempo mensual. Para Centros de Carga conectados en Alta Tensión (AT ≥ 69 kV), la exigencia asciende normativamente a <strong>0.97 inductivo / capacitivo</strong> a partir de 2026.</li>
+                        <li><strong>Distorsión Armónica Total (THD-V y TDD):</strong> Las cargas no lineales (variadores de frecuencia, hornos de arco, soldadoras, fuentes conmutadas) inyectan armónicos de corriente que distorsionan la onda senoidal de voltaje. El límite de THD en voltaje no debe superar el 5.0% en barras de MT bajo <strong>IEEE 519-2022</strong>.</li>
+                        <li><strong>Fluctuaciones de Tensión (Flicker):</strong> Se evalúa la severidad de parpadeo de corta duración (Pst ≤ 1.0) y larga duración (Plt ≤ 0.8) inducido por cargas cíclicas de alto impacto.</li>
+                        <li><strong>Desbalance de Corriente y Tensión:</strong> El desbalance de voltaje entre fases no debe exceder el 2.0% para evitar calentamiento asimétrico en devanados de motores trifásicos.</li>
+                    </ul>
+
+                    <div class="tech-table-wrapper">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Parámetro Eléctrico</th>
+                                    <th>Límite Exigido (CRE / CENACE)</th>
+                                    <th>Consecuencia del Incumplimiento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Factor de Potencia (fp)</td>
+                                    <td>≥ 0.95 MT / ≥ 0.97 AT (95% del tiempo)</td>
+                                    <td>Cargos punitivos en recibo y apercibimiento CRE</td>
+                                </tr>
+                                <tr>
+                                    <td>Distorsión Armónica Voltaje</td>
+                                    <td>THD-V &lt; 5.0% (individual &lt; 3.0%)</td>
+                                    <td>Calentamiento de transformadores, disparos en relevadores</td>
+                                </tr>
+                                <tr>
+                                    <td>Flicker (Severidad)</td>
+                                    <td>Pst ≤ 1.0 / Plt ≤ 0.8</td>
+                                    <td>Afectación a vecinos de red y penalización CENACE</td>
+                                </tr>
+                                <tr>
+                                    <td>Desbalance de Tensión</td>
+                                    <td>≤ 2.0% entre fases</td>
+                                    <td>Pérdida de garantía en motores e inversores</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>2. La Solución de Ingeniería: Filtros Activos AHF y Almacenamiento</h2>
+                    <p>Históricamente, muchas plantas recurrían a bancos de capacitores fijos o automáticos electromecánicos para corregir el factor de potencia. Sin embargo, en entornos industriales modernos con alta penetración de electrónica de potencia, los bancos de capacitores tradicionales pueden entrar en <strong>resonancia armónica</strong>, amplificando las corrientes destructivas y destruyéndose prematuramente.</p>
+
+                    <p>En <strong>IEER</strong>, abordamos el Código de Red mediante dos tecnologías de vanguardia:</p>
+                    <ul>
+                        <li><strong>Filtros Activos de Armónicos (AHF) con Compensación Var Dinámica (SVG):</strong> Inyectan corrientes en contrafase en tiempo sub-ciclo (&lt;5 ms), anulando las frecuencias armónicas hasta el orden 50 (3,000 Hz) bajo norma IEEE 519-2022 y compensando potencia reactiva instantánea sin riesgo de resonancia.</li>
+                        <li><strong>Sistemas de Almacenamiento en Baterías de Litio LFP con Inversores Formadores de Red (Grid-Forming):</strong> Amortiguan las fluctuaciones severas de voltaje y permiten aplanar la curva de demanda (Peak Shaving) al mismo tiempo que garantizan el cumplimiento normativo.</li>
+                    </ul>
+
+                    <h2>3. Ruta Crítica para la Certificación ante la CRE</h2>
+                    <p>La elaboración del <strong>Plan de Trabajo</strong> formal ante la CRE requiere una metodología rigurosa:</p>
+                    <ol style="margin: 2rem 0; padding-left: 1.5rem; line-height: 1.8;">
+                        <li style="margin-bottom: 1rem;"><strong>Campaña de Medición de 7 Días Continuos:</strong> Instalación de analizadores de calidad de energía Clase A certificados según IEC 61000-4-30 en el Punto de Conexión (PC).</li>
+                        <li style="margin-bottom: 1rem;"><strong>Estudio de Flujos de Carga y Cortocircuito:</strong> Modelado computacional del diagrama unifilar en software especializado (ETAP / Neplan).</li>
+                        <li style="margin-bottom: 1rem;"><strong>Diseño de la Solución de Mitigación:</strong> Especificación técnica precisa de los equipos de filtrado dinámico o acondicionamiento necesarios.</li>
+                        <li style="margin-bottom: 1rem;"><strong>Presentación y Validación:</strong> Ingreso de la carpeta técnica con firma de Unidad de Inspección y seguimiento hasta la emisión de la constancia de cumplimiento.</li>
+                    </ol>
+
+                    <div class="article-cta-box">
+                        <h3>¿Tu Centro de Carga Requiere Cumplir con Código de Red?</h3>
+                        <p>Nuestros ingenieros especialistas realizan la campaña de medición Clase A y diseñan la solución de mitigación garantizada ante la CRE y el CENACE.</p>
+                        <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20una%20auditor%C3%ADa%20para%20cumplimiento%20de%20C%C3%B3digo%20de%20Red%202.0" class="btn-cta" target="_blank" rel="noopener noreferrer">
+                            <i class="ph ph-whatsapp-logo"></i>
+                            <span>Consultar con Especialistas</span>
+                        </a>
+                    </div>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="author-box">
+                        <div class="author-avatar">LC</div>
+                        <div class="author-info">
+                            <p class="author-name" style="font-weight: 600; color: var(--color-alabaster); margin-bottom: 0.25rem;">Ing. Luis Cid</p>
+                            <p>Director de Ingeniería // Especialista en Código de Red y Calidad de Energía</p>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/blog" class="back-link" style="color: var(--color-bronze);">
+                            <i class="ph ph-newspaper"></i> Ver más artículos del Journal
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </article>
+    </main>
+
+    <!-- Floating WhatsApp Button HUD -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesor%C3%ADa%20para%20cumplimiento%20de%20C%C3%B3digo%20de%20Red%202.0" class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp">
+        <i class="ph ph-whatsapp-logo"></i>
+    </a>
 </body>
 </html>

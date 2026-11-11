@@ -27,6 +27,33 @@
     <meta property="og:url" content="https://ieer.com.mx/">
     <meta property="og:title" content="IEER | Fusión de Naturaleza y Alta Ingeniería Solar">
     <meta property="og:description" content="Micro-redes solares de alta gama para proyectos residenciales e industriales exclusivos en todo México.">
+    <meta property="og:image" content="https://ieer.com.mx/Assets/hero_solar_landscape.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "IEER",
+      "legalName": "IEER Renovables S.A. de C.V.",
+      "url": "https://ieer.com.mx/",
+      "logo": "https://ieer.com.mx/Assets/Logotipo/IEER.svg",
+      "image": "https://ieer.com.mx/Assets/hero_solar_landscape.jpg",
+      "description": "Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.",
+      "telephone": "+52-33-3302-5665",
+      "email": "lcid@ieer.com.mx",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "MX"
+      },
+      "sameAs": [
+        "https://www.hipha.mx/"
+      ]
+    }
+    </script>
     
     <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1474,7 +1501,7 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: var(--transition-premium);
-            border-radius: 4px;
+            border-radius: var(--radius-full);
             padding: 1.25rem 3.5rem;
             justify-content: center;
             box-shadow: 0 4px 20px rgba(169, 133, 103, 0.25);
@@ -2358,6 +2385,9 @@
                 grid-template-columns: 1fr;
                 gap: 3.5rem;
             }
+            #interactive-reveal-footer {
+                padding: 4rem 1.5rem 2rem 1.5rem;
+            }
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 3.5rem;
@@ -2789,13 +2819,15 @@
         }
         body.custom-cursor-active a, 
         body.custom-cursor-active button, 
-        body.custom-cursor-active select, 
-        body.custom-cursor-active input, 
-        body.custom-cursor-active textarea, 
         body.custom-cursor-active .btn, 
         body.custom-cursor-active .sector-nav-btn, 
         body.custom-cursor-active .blog-post-card {
             cursor: none;
+        }
+        body.custom-cursor-active input, 
+        body.custom-cursor-active textarea, 
+        body.custom-cursor-active select {
+            cursor: auto !important;
         }
 
         #hero-particles-canvas {
@@ -3057,8 +3089,8 @@
                 <!-- Card 3: ¿CUÁLES SON LOS ALCANCES? -->
                 <div class="proof-card">
                     <span class="proof-question">¿Cuáles son los alcances?</span>
-                    <div class="proof-metric gradient-text-bronze">5 a +100 kW</div>
-                    <p class="proof-answer">Desde pequeña demanda (5 kW) hasta gran demanda (+100 kW) para laboratorios, fábricas, clínicas, spa y hotelería.</p>
+                    <div class="proof-metric gradient-text-bronze">5 kW a +1 MW</div>
+                    <p class="proof-answer">Desde demanda residencial y comercial (5 kW) hasta gran escala industrial (+1 MW) para manufactura, clínicas, bodegas y complejos agroindustriales.</p>
                 </div>
             </div>
         </div>
@@ -3202,11 +3234,12 @@
         <div class="sector-desc-vignette"></div>
 
         <!-- Content Area -->
+        <h2 class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Sectores de Ingeniería y Soluciones</h2>
         <div class="sectors-viewport">
             <!-- Left Side: Massive Title (Bottom-Left) -->
             <div class="sector-massive-title-container">
                 <div class="sector-massive-title active" data-index="0">COMERCIAL</div>
-                <div class="sector-massive-title" data-index="1">AGRICOLA</div>
+                <div class="sector-massive-title" data-index="1">AGRÍCOLA</div>
                 <div class="sector-massive-title" data-index="2">RESIDENCIAL</div>
             </div>
 
@@ -3214,15 +3247,15 @@
             <div class="sector-description-container">
                 <!-- Slide 1 Content -->
                 <div class="sector-desc-slide active" data-index="0">
-                    <span class="sector-badge-accent">BE POWERED —</span>
-                    <h4 class="sector-slide-subtitle">At the speed of light</h4>
+                    <span class="sector-badge-accent">ENERGÍA CONTINUA —</span>
+                    <h3 class="sector-slide-subtitle">Respaldo Ininterrumpido</h3>
                     <p class="sector-slide-paragraph">Respaldos eléctricos ininterrumpidos y calidad energética para restaurantes de lujo, hoteles boutique y desarrollos comerciales con cero tolerancia a apagones.</p>
                     <ul class="sector-slide-specs">
                         <li><span>Litio de alta densidad</span></li>
                         <li>•</li>
                         <li><span>Cero emisiones de CO2</span></li>
                         <li>•</li>
-                        <li><span>Conexión en microsegundos</span></li>
+                        <li><span>Transferencia sub-ciclo (&lt;10 ms)</span></li>
                     </ul>
                     <a href="/comercial" class="sector-cta-btn">
                         <span>Ver más</span>
@@ -3232,8 +3265,8 @@
                 
                 <!-- Slide 2 Content -->
                 <div class="sector-desc-slide" data-index="1">
-                    <span class="sector-badge-accent">BE SUSTAINABLE —</span>
-                    <h4 class="sector-slide-subtitle">Harnessing solar power</h4>
+                    <span class="sector-badge-accent">SOSTENIBILIDAD RURAL —</span>
+                    <h3 class="sector-slide-subtitle">Potencia Hidro-Solar</h3>
                     <p class="sector-slide-paragraph">Energía constante para sistemas de bombeo de agua profundos, riego tecnificado y automatización agrícola en zonas de alta densidad sin red pública.</p>
                     <ul class="sector-slide-specs">
                         <li><span>Bombeo solar directo</span></li>
@@ -3250,8 +3283,8 @@
                 
                 <!-- Slide 3 Content -->
                 <div class="sector-desc-slide" data-index="2">
-                    <span class="sector-badge-accent">BE INDEPENDENT —</span>
-                    <h4 class="sector-slide-subtitle">Comfort without limits</h4>
+                    <span class="sector-badge-accent">INDEPENDENCIA PURA —</span>
+                    <h3 class="sector-slide-subtitle">Confort Sin Límites</h3>
                     <p class="sector-slide-paragraph">Independencia total y confort absoluto para cabañas boutique y residencias exclusivas. Integración arquitectónica discreta y respetuosa con el paisaje.</p>
                     <ul class="sector-slide-specs">
                         <li><span>Soporte clima pesado</span></li>
@@ -3285,7 +3318,7 @@
 
         <div class="blog-grid">
             <!-- Article 1 -->
-            <a href="articulo-autonomia.html" class="blog-post-card">
+            <a href="/articulo-autonomia" class="blog-post-card">
                 <div class="blog-img-wrapper">
                     <img src="Assets/industrial_storage.jpg" alt="Autonomía Energética Industrial" class="blog-post-img">
                 </div>
@@ -3300,7 +3333,7 @@
             </a>
 
             <!-- Article 2 -->
-            <a href="articulo-offgrid.html" class="blog-post-card">
+            <a href="/articulo-offgrid" class="blog-post-card">
                 <div class="blog-img-wrapper">
                     <img src="Assets/nature_solar.jpg" alt="Sistemas Off-grid Residenciales" class="blog-post-img">
                 </div>
@@ -3315,7 +3348,7 @@
             </a>
 
             <!-- Article 3 -->
-            <a href="articulo-calidad-energia.html" class="blog-post-card">
+            <a href="/articulo-calidad-energia" class="blog-post-card">
                 <div class="blog-img-wrapper">
                     <img src="Assets/telemetry_terminal.jpg" alt="Calidad de Energía Industrial" class="blog-post-img">
                 </div>
@@ -3485,28 +3518,29 @@
             <div style="margin-bottom: 4.5rem; text-align: left;">
                 <span class="badge" style="margin-bottom: 1rem;"><i class="ph ph-envelope-open"></i> Consulta Técnica</span>
                 <h2 class="section-title">Energía <span>infinita</span></h2>
-                <p class="section-desc" style="max-width: 700px; margin-left: 0;">Estas a un paso de mantener tu operación eléctrica en cualquier situación y ubicación, sin depender de las redes comerciales con completa autonomía, completa el formulario para recibir un estudio de factibilidad técnica por parte de nuestro equipo de ingeniería.</p>
+                <p class="section-desc" style="max-width: 700px; margin-left: 0;">Estás a un paso de mantener tu operación eléctrica en cualquier situación y ubicación, sin depender de las redes comerciales con completa autonomía, completa el formulario para recibir un estudio de factibilidad técnica por parte de nuestro equipo de ingeniería.</p>
             </div>
 
             <form id="ieer-contact-form" class="inquiry-grid-form" onsubmit="handleContactSubmit(event)">
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
                 <div class="professional-group">
                     <label for="contact-name">Nombre completo / Organización</label>
-                    <input type="text" id="contact-name" placeholder="Ej. Ing. Alejandro Garza / Rancho Santo Tomás" required autocomplete="name">
+                    <input type="text" id="contact-name" name="name" placeholder="Ej. Ing. Alejandro Garza / Rancho Santo Tomás" required autocomplete="name">
                 </div>
 
                 <div class="professional-group">
                     <label for="contact-email">Correo electrónico corporativo</label>
-                    <input type="email" id="contact-email" placeholder="Ej. alejandro@ranchosantotomas.com" required autocomplete="email">
+                    <input type="email" id="contact-email" name="email" placeholder="Ej. alejandro@ranchosantotomas.com" required autocomplete="email">
                 </div>
 
                 <div class="professional-group">
                     <label for="contact-phone">Teléfono de contacto</label>
-                    <input type="tel" id="contact-phone" placeholder="Ej. +52 33 3302 5665" required autocomplete="tel">
+                    <input type="tel" id="contact-phone" name="phone" placeholder="Ej. +52 33 3302 5665" required autocomplete="tel">
                 </div>
 
                 <div class="professional-group">
                     <label for="contact-sector">Sector / Tipo de Proyecto (opcional)</label>
-                    <select id="contact-sector">
+                    <select id="contact-sector" name="sector">
                         <option value="" disabled selected>Selecciona una opción (opcional)</option>
                         <option value="Residencial">Residencial</option>
                         <option value="Rancho / Campo">Rancho / Campo / Bombeo</option>
@@ -3519,12 +3553,12 @@
 
                 <div class="professional-group form-column-full">
                     <label for="contact-location">Ubicación del proyecto (opcional)</label>
-                    <input type="text" id="contact-location" placeholder="Ciudad, Municipio y Estado (Ej. Valle de Bravo, Estado de México)">
+                    <input type="text" id="contact-location" name="location" placeholder="Ciudad, Municipio y Estado (Ej. Valle de Bravo, Estado de México)">
                 </div>
 
                 <div class="professional-group form-column-full">
                     <label for="contact-message">Descripción y Necesidades de Carga (opcional)</label>
-                    <textarea id="contact-message" placeholder="Describe las cargas críticas que requieres respaldar (ej. bombas de riego, sistemas de refrigeración, aire acondicionado, casa de campo con cero apagones)..."></textarea>
+                    <textarea id="contact-message" name="message" placeholder="Describe las cargas críticas que requieres respaldar (ej. bombas de riego, sistemas de refrigeración, aire acondicionado, casa de campo con cero apagones)..."></textarea>
                 </div>
 
                 <div class="form-column-full submit-container" style="margin-top: 1.5rem;">
@@ -3557,11 +3591,11 @@
 
         <div class="zerocircle-container">
             <!-- Header layout with connecting line -->
-            <div class="zerocircle-header">
-                <h2 class="zerocircle-left">Ingeniería</h2>
-                <div class="zerocircle-divider"></div>
-                <h2 class="zerocircle-right">sin <span>límites</span></h2>
-            </div>
+            <h2 class="zerocircle-header">
+                <span class="zerocircle-left">Ingeniería</span>
+                <span class="zerocircle-divider" aria-hidden="true"></span>
+                <span class="zerocircle-right">sin <span>límites</span></span>
+            </h2>
 
 
         </div>
@@ -3584,21 +3618,22 @@
                 </div>
                 
                 <div class="footer-col">
-                    <h4 class="footer-col-title">Servicios</h4>
+                    <h4 class="footer-col-title">Segmentos</h4>
                     <ul class="footer-links">
-                        <li><a href="#autonomia">Respaldo de energía</a></li>
-                        <li><a href="#sectores">Energía solar</a></li>
-                        <li><a href="#autonomia">Sistemas aislados</a></li>
-                        <li><a href="#contacto">Análisis técnico</a></li>
+                        <li><a href="/comercial">Comercial & Servicios</a></li>
+                        <li><a href="/agricola">Agrícola & Bombeo</a></li>
+                        <li><a href="/residencial">Residencial Luxury</a></li>
+                        <li><a href="#experiencia">Sistemas Industriales</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h4 class="footer-col-title">Navegación</h4>
+                    <h4 class="footer-col-title">Journal Técnico</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Preguntas frecuentes</a></li>
-                        <li><a href="#">Aviso de privacidad</a></li>
-                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="/blog">Editorial & Artículos</a></li>
+                        <li><a href="/articulo-codigo-red">Código de Red 2.0</a></li>
+                        <li><a href="/articulo-bombeo-solar">Bombeo Solar Fotovoltaico</a></li>
+                        <li><a href="/llms.txt">Índice Semántico (llms.txt)</a></li>
                     </ul>
                 </div>
                 
@@ -3607,7 +3642,7 @@
                     <ul class="footer-links">
                         <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
                         <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
-                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
                     </ul>
                 </div>
             </div>
@@ -3632,43 +3667,53 @@
             const canvas = document.getElementById('hero-particles-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
+            const hero = document.getElementById('inicio') || document.querySelector('.hero');
             
-            let width = canvas.width = canvas.offsetWidth;
-            let height = canvas.height = canvas.offsetHeight;
+            let dpr = window.devicePixelRatio || 1;
+            let width = canvas.offsetWidth;
+            let height = canvas.offsetHeight;
             
-            window.addEventListener('resize', () => {
-                width = canvas.width = canvas.offsetWidth;
-                height = canvas.height = canvas.offsetHeight;
-            });
+            function setupCanvasDimensions() {
+                dpr = window.devicePixelRatio || 1;
+                width = canvas.offsetWidth;
+                height = canvas.offsetHeight;
+                canvas.width = Math.floor(width * dpr);
+                canvas.height = Math.floor(height * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            setupCanvasDimensions();
+            window.addEventListener('resize', setupCanvasDimensions);
             
             let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
-            const hero = document.querySelector('.hero');
             
             const setMousePos = (clientX, clientY) => {
+                if (!hero) return;
                 const rect = hero.getBoundingClientRect();
                 mouse.targetX = clientX - rect.left;
                 mouse.targetY = clientY - rect.top;
             };
             
-            hero.addEventListener('mousemove', (e) => {
-                setMousePos(e.clientX, e.clientY);
-            });
-            
-            hero.addEventListener('mouseleave', () => {
-                mouse.targetX = -1000;
-                mouse.targetY = -1000;
-            });
-            
-            hero.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 0) {
-                    setMousePos(e.touches[0].clientX, e.touches[0].clientY);
-                }
-            }, { passive: true });
-            
-            hero.addEventListener('touchend', () => {
-                mouse.targetX = -1000;
-                mouse.targetY = -1000;
-            });
+            if (hero) {
+                hero.addEventListener('mousemove', (e) => {
+                    setMousePos(e.clientX, e.clientY);
+                });
+                
+                hero.addEventListener('mouseleave', () => {
+                    mouse.targetX = -1000;
+                    mouse.targetY = -1000;
+                });
+                
+                hero.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) {
+                        setMousePos(e.touches[0].clientX, e.touches[0].clientY);
+                    }
+                }, { passive: true });
+                
+                hero.addEventListener('touchend', () => {
+                    mouse.targetX = -1000;
+                    mouse.targetY = -1000;
+                });
+            }
             
             const numParticles = 40;
             const particles = [];
@@ -3708,8 +3753,15 @@
                 });
             }
             
+            let animFrameId = null;
+            let isHeroVisible = true;
+            
             function animate() {
-                requestAnimationFrame(animate);
+                if (!isHeroVisible) {
+                    animFrameId = null;
+                    return;
+                }
+                animFrameId = requestAnimationFrame(animate);
                 ctx.clearRect(0, 0, width, height);
                 
                 if (mouse.targetX !== -1000) {
@@ -3810,6 +3862,23 @@
                     ctx.fill();
                     ctx.shadowBlur = 0;
                 });
+            if ('IntersectionObserver' in window && hero) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isHeroVisible = entry.isIntersecting;
+                        if (isHeroVisible) {
+                            if (!animFrameId) animFrameId = requestAnimationFrame(animate);
+                            if (window.__ieerStartTimelapse) window.__ieerStartTimelapse();
+                        } else {
+                            if (animFrameId) {
+                                cancelAnimationFrame(animFrameId);
+                                animFrameId = null;
+                            }
+                            if (window.__ieerStopTimelapse) window.__ieerStopTimelapse();
+                        }
+                    });
+                }, { threshold: 0.05 });
+                observer.observe(hero);
             }
             
             animate();
@@ -4027,6 +4096,15 @@
             const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
             const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
 
+            // Honeypot spam defense
+            const honeypot = form ? form.querySelector('input[name="_gotcha"]') : null;
+            if (honeypot && honeypot.value) {
+                if (form) form.style.display = 'none';
+                const successBox = document.getElementById('contact-success');
+                if (successBox) successBox.style.display = 'block';
+                return;
+            }
+
             const name = document.getElementById('contact-name').value.trim();
             const email = document.getElementById('contact-email').value.trim();
             const phone = document.getElementById('contact-phone').value.trim();
@@ -4041,7 +4119,7 @@
                 }
 
                 try {
-                    await fetch('/api/contact/ieer', {
+                    const response = await fetch('/api/contact/ieer', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -4055,12 +4133,20 @@
                             mensaje: message
                         })
                     });
+                    if (response.ok) {
+                        if (form) form.style.display = 'none';
+                        const successBox = document.getElementById('contact-success');
+                        if (successBox) successBox.style.display = 'block';
+                    } else {
+                        throw new Error(`HTTP status ${response.status}`);
+                    }
                 } catch (err) {
-                    console.warn("Envío asíncrono completado con fallback local: ", err);
-                } finally {
-                    if (form) form.style.display = 'none';
-                    const successBox = document.getElementById('contact-success');
-                    if (successBox) successBox.style.display = 'block';
+                    console.error("Error al procesar envío de contacto:", err);
+                    alert("No fue posible enviar tu consulta en este momento. Por favor contáctanos directamente vía WhatsApp (+52 33 3302 5665).");
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHtml;
+                    }
                 }
             }
         }
@@ -4247,8 +4333,20 @@
             oscCtx.shadowBlur = 0; // reset shadow
         }
 
-        // Trigger timelapse interval
-        setInterval(runTimelapseCycle, 60);
+        // Trigger timelapse interval with viewport-aware controls
+        let timelapseInterval = null;
+        window.__ieerStartTimelapse = function() {
+            if (!timelapseInterval) {
+                timelapseInterval = setInterval(runTimelapseCycle, 60);
+            }
+        };
+        window.__ieerStopTimelapse = function() {
+            if (timelapseInterval) {
+                clearInterval(timelapseInterval);
+                timelapseInterval = null;
+            }
+        };
+        window.__ieerStartTimelapse();
 
         // Removed galaxy canvas scroll animations and initializers
         

@@ -20,19 +20,20 @@
   - **Silencio Absoluto (Cero Decibelios):** Sustitución integral de plantas a diésel o gas ruidosas por bancos de baterías de litio de última generación.
   - **Integración Coplanar Invisible:** Módulos fotovoltaicos enrasados que respetan las líneas arquitectónicas contemporáneas sin romper la estética visual del paisaje.
   - **Monitoreo Satelital Redundante:** Telemetría 24/7 de cargas críticas (refrigeración, climatización, bombeo, filtración de albercas).
-- **URL Canónica:** [https://ieer.com.mx/articulo-offgrid.html](https://ieer.com.mx/articulo-offgrid.html)
+- **URL Canónica:** [https://ieer.com.mx/articulo-offgrid](https://ieer.com.mx/articulo-offgrid)
 
 ### 2. Almacenamiento Industrial con Baterías de Litio LFP
 - **Concepto:** Blindaje energético para procesos industriales, comerciales y agropecuarios donde un micro-corte de voltaje representa mermas millonarias y paradas de línea.
 - **Especificaciones:**
-  - **Tiempo de Respuesta en Microsegundos (<10 ms):** Conmutación instantánea antes de que los relevadores de protección de maquinaria sensible se disparen.
+  - **Transferencia en Tiempo Sub-Ciclo (<10 ms):** Conmutación instantánea antes de que los relevadores de protección de maquinaria sensible se disparen.
   - **Peak Shaving (Control de Demanda Máxima):** Inyección programada de energía acumulada durante las horas pico de tarifa eléctrica para abatir cobros punitivos de CFE.
   - **Química Segura LFP:** Celdas de Litio Hierro Fosfato de alta estabilidad térmica y más de 6,000 ciclos de vida útil.
-- **URL Canónica:** [https://ieer.com.mx/articulo-autonomia.html](https://ieer.com.mx/articulo-autonomia.html)
+- **URL Canónica:** [https://ieer.com.mx/articulo-autonomia](https://ieer.com.mx/articulo-autonomia)
 
 ### 3. Sistemas de Bombeo Solar Agropecuario
 - **Aplicación:** Extracción y rebombeo de agua para cultivos extensivos, invernaderos y ganadería en predios donde extender el tendido eléctrico convencional es inviable o incosteable.
 - **Tecnología:** Variadores de frecuencia solares dinámicos de arranque suave que maximizan las horas de bombeo por irradiación directa.
+- **URL Canónica:** [https://ieer.com.mx/articulo-bombeo-solar](https://ieer.com.mx/articulo-bombeo-solar)
 
 ### 4. Auditorías de Calidad de Energía y Cumplimiento de Código de Red
 - **Alcance:** Diagnóstico y mitigación de perturbaciones eléctricas que dañan transformadores y motores.
@@ -40,7 +41,7 @@
   - Medición con analizadores de redes Clase A para detección de armónicos, sags y swells.
   - Instalación de filtros activos de armónicos (AHF) y corrección dinámica del factor de potencia.
   - Adecuación a la normativa del Código de Red expedida por la Comisión Reguladora de Energía (CRE).
-- **URL Canónica:** [https://ieer.com.mx/articulo-calidad-energia.html](https://ieer.com.mx/articulo-calidad-energia.html)
+- **URL Canónica:** [https://ieer.com.mx/articulo-calidad-energia](https://ieer.com.mx/articulo-calidad-energia)
 
 ---
 
@@ -57,12 +58,12 @@
 - **Landing Segmento Comercial e Industrial:** [https://ieer.com.mx/comercial](https://ieer.com.mx/comercial)
 - **Landing Segmento Agrícola y Bombeo:** [https://ieer.com.mx/agricola](https://ieer.com.mx/agricola)
 - **Landing Segmento Residencial Luxury:** [https://ieer.com.mx/residencial](https://ieer.com.mx/residencial)
-- **Artículo 01 — Autonomía Energética Industrial:** [https://ieer.com.mx/articulo-autonomia.html](https://ieer.com.mx/articulo-autonomia.html)
-- **Artículo 02 — Arquitectura Luxury Off-Grid:** [https://ieer.com.mx/articulo-offgrid.html](https://ieer.com.mx/articulo-offgrid.html)
-- **Artículo 03 — Calidad de Energía Industrial:** [https://ieer.com.mx/articulo-calidad-energia.html](https://ieer.com.mx/articulo-calidad-energia.html)
-- **Artículo 04 — Código de Red 2.0 en Media y Alta Tensión:** [https://ieer.com.mx/articulo-codigo-red.html](https://ieer.com.mx/articulo-codigo-red.html)
-- **Artículo 05 — Bombeo Solar de Alto Rendimiento en Pozo Profundo:** [https://ieer.com.mx/articulo-bombeo-solar.html](https://ieer.com.mx/articulo-bombeo-solar.html)
-- **Artículo 06 — Baterías Litio LFP vs. Plomo-Ácido:** [https://ieer.com.mx/articulo-baterias-litio.html](https://ieer.com.mx/articulo-baterias-litio.html)
+- **Artículo 01 — Autonomía Energética Industrial:** [https://ieer.com.mx/articulo-autonomia](https://ieer.com.mx/articulo-autonomia)
+- **Artículo 02 — Arquitectura Luxury Off-Grid:** [https://ieer.com.mx/articulo-offgrid](https://ieer.com.mx/articulo-offgrid)
+- **Artículo 03 — Calidad de Energía Industrial:** [https://ieer.com.mx/articulo-calidad-energia](https://ieer.com.mx/articulo-calidad-energia)
+- **Artículo 04 — Código de Red 2.0 en Media y Alta Tensión:** [https://ieer.com.mx/articulo-codigo-red](https://ieer.com.mx/articulo-codigo-red)
+- **Artículo 05 — Bombeo Solar de Alto Rendimiento en Pozo Profundo:** [https://ieer.com.mx/articulo-bombeo-solar](https://ieer.com.mx/articulo-bombeo-solar)
+- **Artículo 06 — Baterías Litio LFP vs. Plomo-Ácido:** [https://ieer.com.mx/articulo-baterias-litio](https://ieer.com.mx/articulo-baterias-litio)
 - **Sección de Consulta Técnica y Factibilidad:** [https://ieer.com.mx/#contacto](https://ieer.com.mx/#contacto)
 - **Repositorio Editorial / Journal Completo:** [https://ieer.com.mx/blog](https://ieer.com.mx/blog)
 - **Sitemap XML:** [https://ieer.com.mx/sitemap.xml](https://ieer.com.mx/sitemap.xml)

@@ -17,13 +17,54 @@
     
     <!-- SEO Optimization -->
     <title>Calidad de Energía: El Silencioso Pilar de la Eficiencia | IEER Journal</title>
-    <meta name="description" content="El impacto económico invisible de las distorsiones armónicas y fluctuaciones de voltaje en maquinaria y sistemas de control industrial.">
+    <meta name="description" content="Auditoría técnica sobre distorsiones armónicas, sags, swells y voltajes de modo común bajo normas IEEE 519 e IEEE 1159 en la industria mexicana.">
     <link rel="canonical" href="https://ieer.com.mx/articulo-calidad-energia">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Calidad de Energía: El Silencioso Pilar de la Eficiencia | IEER Journal">
+    <meta property="og:description" content="Análisis técnico de armónicos, sags de tensión y mitigación con Filtros Activos AHF y compensación dinámica SVG.">
+    <meta property="og:url" content="https://ieer.com.mx/articulo-calidad-energia">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://ieer.com.mx/Assets/commercial_solar_rooftop.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Calidad de Energía: El Silencioso Pilar de la Eficiencia",
+      "description": "El impacto económico de las distorsiones armónicas, fluctuaciones de voltaje y soluciones de filtrado activo en sistemas industriales.",
+      "image": "https://ieer.com.mx/Assets/commercial_solar_rooftop.jpg",
+      "author": {
+        "@type": "Person",
+        "name": "Ing. Luis Cid",
+        "jobTitle": "Director de Ingeniería",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "IEER"
+        }
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "IEER",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ieer.com.mx/Assets/Logotipo/IEER.svg"
+        }
+      },
+      "datePublished": "2026-08-25",
+      "dateModified": "2026-11-10",
+      "mainEntityOfPage": "https://ieer.com.mx/articulo-calidad-energia"
+    }
+    </script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Outfit:wght@100;200;300;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400..700&family=Outfit:wght@100;200;300;400;600;800&family=Space+Grotesk:wght@300;400;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
@@ -426,79 +467,93 @@
 
     <!-- Back Navigation Capsule -->
     <header>
-        <div class="nav-wrapper">
+        <nav class="nav-wrapper" style="max-width: 440px; display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1.5rem;" aria-label="Navegación de retorno">
             <a href="/" class="back-link">
-                <i class="ph ph-arrow-left"></i> Volver a inicio
+                <i class="ph ph-arrow-left"></i> Inicio
             </a>
-        </div>
+            <div style="width: 1px; height: 14px; background: rgba(227, 221, 213, 0.15);"></div>
+            <a href="/blog" class="back-link">
+                <i class="ph ph-newspaper"></i> Journal
+            </a>
+        </nav>
     </header>
 
-    <!-- Article Hero -->
-    <section class="article-hero">
-        <div class="article-hero-bg">
-            <img src="Assets/telemetry_terminal.jpg" alt="Medición de Calidad de Energía">
-        </div>
-        <div class="article-hero-vignette"></div>
-        
-        <div class="container">
-            <div class="article-meta">
-                <span>03 // Auditoría Técnica</span>
-                <span class="dot"></span>
-                <span>Lectura: 6 min</span>
+    <main id="main-content">
+        <!-- Article Hero -->
+        <section class="article-hero">
+            <div class="article-hero-bg">
+                <img src="Assets/telemetry_terminal.jpg" alt="Medición de Calidad de Energía">
             </div>
-            <h1 class="article-title">Calidad de Energía: El Silencioso Pilar de la Eficiencia</h1>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="container">
-        <article class="article-body">
-            <p>En el ámbito del consumo eléctrico comercial e industrial, existe un factor crítico que suele pasar desapercibido hasta que ocurre una catástrofe: la <strong>calidad de la energía</strong>. La mayoría de los directores financieros y jefes de mantenimiento asumen que la energía entregada es perfecta si el voltaje promedio es correcto. Sin embargo, las distorsiones internas de la onda sinusoidal representan un costo invisible masivo que degrada silenciosamente la infraestructura.</p>
-
-            <h2>¿Qué es la Distorsión Armónica?</h2>
-            <p>La proliferación de cargas no lineales (como variadores de frecuencia, fuentes conmutadas de servidores, sistemas de iluminación LED y computadoras) introduce perturbaciones llamadas armónicos. Estos armónicos distorsionan la onda de corriente alterna ideal de 60 Hz en múltiples múltiplos de la frecuencia fundamental.</p>
+            <div class="article-hero-vignette"></div>
             
-            <blockquote>
-                "Una mala calidad de energía acorta a la mitad el ciclo de vida de motores y transformadores sin dejar rastro visible en los primeros meses."
-            </blockquote>
-
-            <h2>Síntomas de una Energía Contaminada</h2>
-            <p>Cuando los armónicos u otras distorsiones como sags (bajas de tensión) y swells (picos de tensión) aumentan, las plantas y complejos comerciales experimentan síntomas costosos:</p>
-            
-            <ul>
-                <li><strong>Calentamiento Excesivo en Conductores y Transformadores:</strong> La distorsión aumenta la corriente eficaz total, disipando calor ineficiente y dañando los aislamientos térmicos.</li>
-                <li><strong>Disparos Falsos en Interruptores:</strong> Sistemas de protección termomagnética o diferenciales que se activan sin una sobrecarga real aparente.</li>
-                <li><strong>Desgaste en Rodamientos y Cojinetes de Motores:</strong> Corrientes parasitarias en el eje causadas por distorsiones de voltaje inducido, destruyendo la lubricación interna.</li>
-            </ul>
-
-            <h2>La Solución de Alta Ingeniería</h2>
-            <p>Para mitigar estas fallas, se requiere instrumentar auditorías de calidad de energía utilizando analizadores de redes de clase A. Entre las soluciones más eficaces se encuentran los <strong>filtros activos de armónicos (AHF)</strong> e inversores con factor de potencia corregido, que inyectan corrientes compensadoras dinámicas en milisegundos para limpiar el flujo eléctrico antes de que llegue a la maquinaria de precisión.</p>
-            
-            <p>Mantener una energía limpia no solo evita penalizaciones del Código de Red vigentes en México, sino que se traduce directamente en la reducción de costos operativos y la protección de los activos tecnológicos más caros de la empresa.</p>
-        </article>
-
-        <!-- CTA Box -->
-        <div class="contact-cta">
-            <h3>¿Detectas calentamiento inusual en tus tableros?</h3>
-            <p>Realizamos auditorías de Código de Red y calidad de energía bajo especificaciones de la Comisión Reguladora de Energía.</p>
-            <a href="/#contacto" class="btn btn-primary">Agendar Auditoría de Red</a>
-        </div>
-
-        <!-- Footer -->
-        <div class="article-footer">
-            <div class="author-box">
-                <div class="author-info">
-                    <span class="author-name">Ing. Abelardo</span>
-                    <span class="author-role">INGENIERÍA SIN LÍMITES — IEER</span>
+            <div class="container">
+                <div class="article-meta">
+                    <span>03 // Auditoría & Calidad de Energía</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 6 min</span>
                 </div>
+                <h1 class="article-title">Calidad de Energía: El Silencioso Pilar de la Eficiencia</h1>
             </div>
-            <div style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--text-muted);">
-                Agosto, 2026
+        </section>
+
+        <!-- Main Content -->
+        <article class="container">
+            <div class="article-body">
+                <p>En el ámbito del consumo eléctrico comercial e industrial, existe un factor crítico que suele pasar desapercibido hasta que ocurre una catástrofe: la <strong>calidad de la energía</strong>. La mayoría de los directores financieros y jefes de mantenimiento asumen que la energía entregada es óptima si el voltímetro marca el valor nominal esperado. Sin embargo, las distorsiones internas de la onda sinusoidal representan un costo oculto masivo que desgasta y destruye silenciosamente la infraestructura.</p>
+
+                <h2>¿Qué es la Distorsión Armónica Total ($THD$)?</h2>
+                <p>La proliferación intensiva de cargas no lineales (como variadores de frecuencia VFD, fuentes conmutadas de centros de datos, rectificadores de tracción e iluminación LED industrial) inyecta perturbaciones armónicas a la red. Estos armónicos son componentes senoidales cuya frecuencia es un <strong>múltiplo entero de la frecuencia fundamental de 60 Hz</strong> (ej. 3º armónico a 180 Hz, 5º a 300 Hz, 7º a 420 Hz), deformando la onda pura y generando sobrecorrientes en conductores de neutro y devanados magnéticos.</p>
+                
+                <blockquote>
+                    "Una deficiente calidad de energía puede acortar a más de la mitad la vida útil de motores y transformadores de distribución sin manifestar síntomas evidentes en los primeros meses de operación."
+                </blockquote>
+
+                <h2>Síntomas de una Red Contaminada</h2>
+                <p>Cuando los armónicos y los disturbios dinámicos definidos bajo la norma <strong>IEEE 1159</strong> se combinan —como <em>sags</em> (depresiones momentáneas de tensión RMS entre 0.1 y 0.9 p.u.) y <em>swells</em> (aumentos transitorios entre 1.1 y 1.8 p.u.)— los centros de carga sufren afectaciones severas:</p>
+                
+                <ul style="margin: 2rem 0; padding-left: 1.5rem; line-height: 1.8;">
+                    <li style="margin-bottom: 1rem;"><strong>Efecto Joule y Pérdidas Parásitas en Transformadores:</strong> La distorsión armónica eleva las corrientes por corrientes de Foucault (Eddy currents) y pérdidas por histéresis, sobrecalentando el núcleo y degradando el dieléctrico del aceite o resina epóxica.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Disparos Falsos y Fatiga en Protecciones:</strong> Disparo errático de interruptores termomagnéticos y diferenciales por lectura errónea de corrientes de cresta no sinusoidales.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Picaduras por Electroerosión (EDM) en Rodamientos:</strong> Los pulsos de modulación por ancho de pulsos (PWM) en variadores generan voltajes de modo común ($V_{cm}$) en el rotor del motor. Cuando el voltaje excede la rigidez de la película lubricante, se producen micro-arcos destructivos (fluting) en las pistas de los baleros.</li>
+                </ul>
+
+                <h2>La Solución de Alta Ingeniería IEER</h2>
+                <p>Para mitigar estas patologías eléctricas, en <strong>IEER</strong> ejecutamos auditorías completas mediante analizadores de calidad de energía Clase A (certificados bajo IEC 61000-4-30). Con base en los datos de muestreo a alta resolución, implementamos:</p>
+                <ul style="margin: 2rem 0; padding-left: 1.5rem; line-height: 1.8;">
+                    <li style="margin-bottom: 1rem;"><strong>Filtros Activos de Armónicos (AHF):</strong> Dispositivos basados en transistores IGBT que miden la distorsión en tiempo real e inyectan corrientes compensadoras en oposición de fase en tiempo sub-ciclo (&lt;5 ms), reduciendo la $THD_I$ por debajo del 5% y cumpliendo con IEEE 519-2022.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Generadores Estáticos de Var (SVG):</strong> Compensación ultra-rápida y continua de factor de potencia tanto inductivo como capacitivo, eliminando penalizaciones ante CFE y asegurando cumplimiento estricto con el Código de Red 2.0.</li>
+                </ul>
             </div>
-        </div>
+
+            <!-- CTA Box -->
+            <div class="contact-cta" style="background: rgba(14, 18, 20, 0.7); border: 1px solid rgba(169, 133, 103, 0.2); padding: 3rem 2.5rem; border-radius: 16px; margin-top: 5rem; text-align: center;">
+                <h3 style="font-family: var(--font-display); font-weight: 300; color: var(--color-alabaster); margin-bottom: 1rem; font-size: 1.7rem;">¿Detectas calentamiento inusual o disparos en tus tableros?</h3>
+                <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">Realizamos auditorías de calidad de energía y Código de Red bajo normativas internacionales IEEE e IEC, con soluciones de mitigación garantizadas.</p>
+                <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20una%20auditor%C3%ADa%20de%20calidad%20de%20energ%C3%ADa%20y%20mitigaci%C3%B3n%20de%20arm%C3%B3nicos." class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    <i class="ph ph-whatsapp-logo"></i> Agendar Auditoría de Red
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <footer class="article-footer" style="margin-top: 6rem; border-top: 1px solid rgba(169, 133, 103, 0.15); padding-top: 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                <div class="author-box" style="display: flex; align-items: center; gap: 1.25rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--color-bronze), #4a3627); display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 700; color: #080b0c; font-size: 0.95rem; border: 1px solid rgba(227, 221, 213, 0.2);">LC</div>
+                    <div class="author-info">
+                        <span class="author-name" style="font-weight: 600; color: var(--color-alabaster); font-size: 0.95rem;">Ing. Luis Cid</span>
+                        <span class="author-role" style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-tech);">Director de Ingeniería // Especialista en Calidad de Energía y Código de Red</span>
+                    </div>
+                </div>
+                <div>
+                    <a href="/blog" class="back-link" style="color: var(--color-bronze);">
+                        <i class="ph ph-newspaper"></i> Ver más artículos del Journal
+                    </a>
+                </div>
+            </footer>
+        </article>
     </main>
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." class="floating-whatsapp" target="_blank" aria-label="Contacto por WhatsApp">
+
+    <!-- Floating WhatsApp Button HUD -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20calidad%20de%20energ%C3%ADa." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Contacto por WhatsApp">
         <i class="ph-fill ph-whatsapp-logo"></i>
     </a>
 </body>
