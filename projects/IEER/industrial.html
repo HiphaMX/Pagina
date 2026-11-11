@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Tag Manager & Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-P9D4NRLL"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J06TRYKQC3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J06TRYKQC3');
+    </script>
+    
+    <!-- SEO Optimization -->
+    <title>Almacenamiento BESS y Respaldo Eléctrico Industrial | IEER</title>
+    <meta name="description" content="Soluciones de alta ingeniería energética para plantas de manufactura, parques industriales y centros de datos en México. Sistemas BESS en MWh, Código de Red 2.0 y Peak Shaving.">
+    <link rel="canonical" href="https://ieer.com.mx/industrial">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="IEER Industrial | Blindaje Energético, BESS y Código de Red 2.0">
+    <meta property="og:description" content="Sistemas BESS a gran escala en litio LFP para manufactura continua, reducción de demanda máxima CFE y cumplimiento de Código de Red 2.0 en México.">
+    <meta property="og:url" content="https://ieer.com.mx/industrial">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://ieer.com.mx/Assets/industrial_storage.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+    
+    <!-- Schema.org Service Microdata -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Almacenamiento BESS y Respaldo Eléctrico Industrial",
+      "provider": {
+        "@type": "Organization",
+        "name": "IEER - Ingeniería Especializada en Energías Renovables",
+        "url": "https://ieer.com.mx"
+      },
+      "serviceType": "Sistemas de Almacenamiento de Energía BESS y Código de Red 2.0",
+      "areaServed": "MX",
+      "description": "Soluciones de alta ingeniería energética para plantas de manufactura, parques industriales y centros de datos en México. Sistemas BESS en MWh, Código de Red 2.0 y Peak Shaving.",
+      "url": "https://ieer.com.mx/industrial"
+    }
+    </script>
+    
+    <!-- Google Fonts: Google Sans Flex (Accent), Outfit (Sophisticated Display & Body), Space Grotesk (Minimalist Tech), Syncopate (Wide Headers) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400..700&family=Outfit:wght@100;200;300;400;600;800&family=Space+Grotesk:wght@300;400;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    
+    <style>
+        @font-face {
+            font-family: 'Zerafoc';
+            src: url('Assets/fonts/Zerafoc.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Zerafoc';
+            src: url('Assets/fonts/Zerafoc-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        :root {
+            --bg-nature: #080b0c;
+            --bg-nature-accent: #040607;
+            --color-forest: #222d2f;
+            --color-bronze: #a98567;
+            --color-bronze-glow: rgba(169, 133, 103, 0.25);
+            --color-alabaster: #e3ddd5;
+            --color-border: rgba(169, 133, 103, 0.12);
+            --color-border-active: rgba(227, 221, 213, 0.25);
+            --color-card-bg: rgba(12, 16, 18, 0.65);
+            --text-main: #e3ddd5;
+            --text-muted: #7e8d90;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-tech: 'Space Grotesk', sans-serif;
+            --font-future: 'Syncopate', sans-serif;
+            --font-accent: 'Google Sans Flex', 'Zerafoc', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            
+            --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            overflow-x: clip;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-nature);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: clip;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(169, 133, 103, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(34, 45, 47, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Capsule Nav Bar */
+        header {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            pointer-events: none;
+            transition: var(--transition-premium);
+        }
+
+        header.scrolled {
+            top: 1.25rem;
+        }
+
+        .nav-wrapper {
+            pointer-events: auto;
+            margin: 0 auto;
+            width: fit-content;
+            max-width: calc(100% - 2rem);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.45);
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(28px) saturate(220%);
+            -webkit-backdrop-filter: blur(28px) saturate(220%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2.25rem;
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                0 15px 35px rgba(0, 0, 0, 0.35);
+            transition: var(--transition-premium);
+        }
+
+        header.scrolled .nav-wrapper {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.75);
+            border-color: rgba(169, 133, 103, 0.25);
+            padding: 0.55rem 2.25rem;
+        }
+
+        .nav-brand-link {
+            display: none;
+            text-decoration: none;
+            font-family: var(--font-future);
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: var(--color-alabaster);
+            text-transform: uppercase;
+            transition: var(--transition-premium);
+        }
+
+        .nav-brand-link:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 10px var(--color-bronze-glow);
+        }
+
+        .hamburger-btn {
+            display: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: clamp(1.5rem, 2.5vw, 2.5rem);
+            list-style: none;
+            white-space: nowrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(227, 221, 213, 0.85);
+            font-family: var(--font-tech);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            transition: var(--transition-premium);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            padding: 0.2rem 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 12px var(--color-bronze-glow);
+        }
+
+        /* Sector Hero */
+        .sector-hero {
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            padding: 12rem 2rem 6rem;
+            background: radial-gradient(ellipse at 50% 30%, rgba(169, 133, 103, 0.1) 0%, transparent 70%);
+            overflow: hidden;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.24) contrast(1.18);
+        }
+
+        .hero-vignette {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg-nature) 0%, rgba(8, 11, 12, 0.6) 50%, rgba(8, 11, 12, 0.88) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-tech);
+            font-size: 0.72rem;
+            letter-spacing: 0.22em;
+            color: var(--color-bronze);
+            text-transform: uppercase;
+            padding: 0.45rem 1.1rem;
+            border-radius: var(--radius-full);
+            background: rgba(169, 133, 103, 0.08);
+            border: 1px solid rgba(169, 133, 103, 0.25);
+            margin-bottom: 1.75rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5.5vw, 4.8rem);
+            font-weight: 200;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            color: var(--color-alabaster);
+        }
+
+        .hero-title span {
+            font-family: var(--font-accent);
+            font-weight: 600;
+            font-style: normal;
+            color: var(--color-bronze);
+        }
+
+        .hero-desc {
+            font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+            line-height: 1.8;
+            color: rgba(227, 221, 213, 0.8);
+            max-width: 860px;
+            margin: 0 auto 3rem;
+            font-weight: 250;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.2rem;
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.35) 0%, rgba(169, 133, 103, 0.15) 100%), rgba(12, 16, 18, 0.95);
+            border: 1px solid var(--color-bronze);
+            border-radius: var(--radius-full);
+            color: #fff;
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition-premium);
+            box-shadow: 0 15px 35px rgba(169, 133, 103, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 45px rgba(169, 133, 103, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.2rem;
+            background: transparent;
+            border: 1px solid rgba(227, 221, 213, 0.2);
+            border-radius: var(--radius-full);
+            color: var(--color-alabaster);
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition-premium);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-bronze);
+            color: var(--color-bronze);
+            background: rgba(169, 133, 103, 0.08);
+        }
+
+        /* Metrics Bar */
+        .metrics-section {
+            padding: 5rem 2rem;
+            border-bottom: 1px solid var(--color-border);
+            background: rgba(12, 16, 18, 0.4);
+        }
+
+        .metrics-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .metric-card {
+            background: rgba(12, 16, 18, 0.6);
+            border: 1px solid rgba(227, 221, 213, 0.06);
+            border-radius: var(--radius-md);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: var(--transition-premium);
+        }
+
+        .metric-card:hover {
+            border-color: rgba(169, 133, 103, 0.35);
+            transform: translateY(-4px);
+        }
+
+        .metric-num {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 200;
+            color: var(--color-bronze);
+            line-height: 1;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-label {
+            font-family: var(--font-tech);
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-alabaster);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-sub {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 250;
+        }
+
+        /* Content & Solutions Section */
+        .solutions-section {
+            padding: 8rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 200;
+            color: var(--color-alabaster);
+            margin-bottom: 1.25rem;
+        }
+
+        .section-title span {
+            font-family: var(--font-accent);
+            font-weight: 600;
+            font-style: normal;
+            color: var(--color-bronze);
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .solution-card {
+            background: rgba(12, 16, 18, 0.6);
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2.2rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-premium);
+        }
+
+        .solution-card:hover {
+            border-color: rgba(169, 133, 103, 0.35);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+        }
+
+        .solution-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(169, 133, 103, 0.1);
+            border: 1px solid rgba(169, 133, 103, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-bronze);
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .solution-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 300;
+            color: var(--color-alabaster);
+            margin-bottom: 1rem;
+        }
+
+        .solution-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-weight: 250;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .solution-specs {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(227, 221, 213, 0.06);
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            color: var(--color-bronze);
+            text-transform: uppercase;
+        }
+
+        .solution-specs li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Sector Contact Section */
+        .sector-inquiry {
+            padding: 8rem 2rem;
+            background: radial-gradient(circle at 50% 50%, #121b1d 0%, #070b0c 85%);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .inquiry-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .inquiry-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.75rem;
+            margin-top: 3.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: var(--color-alabaster);
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(12, 16, 18, 0.75);
+            border: 1px solid rgba(227, 221, 213, 0.12);
+            border-radius: var(--radius-sm);
+            padding: 0.95rem 1.25rem;
+            color: var(--color-alabaster);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: var(--transition-premium);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-bronze);
+            box-shadow: 0 0 15px rgba(169, 133, 103, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Footer */
+        #interactive-reveal-footer {
+            background: #040607;
+            border-top: 1px solid var(--color-border);
+            padding: 6rem 2rem 3rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto 5rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .footer-brand-title {
+            font-family: var(--font-future);
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: var(--color-alabaster);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: inline-block;
+            transition: var(--transition-premium);
+        }
+
+        .footer-brand-title:hover {
+            color: var(--color-bronze);
+            text-shadow: 0 0 15px var(--color-bronze-glow);
+        }
+
+        .footer-brand-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 200;
+            max-width: 380px;
+        }
+
+        .footer-col-title {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-bronze);
+            margin-bottom: 1.75rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            transition: var(--transition-premium);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-alabaster);
+            transform: translateX(4px);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(227, 221, 213, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-tech);
+        }
+
+        .subfooter-link {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .subfooter-logo {
+            height: 18px;
+            opacity: 0.6;
+        }
+
+        /* Floating WhatsApp Button (HUD Obsidian Luxury) */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            width: 58px;
+            height: 58px;
+            background: rgba(16, 23, 24, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3bf274;
+            font-size: 1.85rem;
+            text-decoration: none;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(37, 211, 102, 0.2),
+                inset 0 0 10px rgba(37, 211, 102, 0.1);
+            z-index: 99;
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 1px solid rgba(169, 133, 103, 0.45);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: whatsapp-bronze-pulse 3s infinite ease-in-out;
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 7px;
+            height: 7px;
+            background-color: #e3ddd5;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #e3ddd5;
+            animation: whatsapp-dot-flash 2s infinite alternate;
+        }
+
+        @keyframes whatsapp-bronze-pulse {
+            0% { transform: scale(0.9); opacity: 0.2; border-color: rgba(169, 133, 103, 0.2); }
+            50% { transform: scale(1.05); opacity: 0.8; border-color: rgba(169, 133, 103, 0.6); }
+            100% { transform: scale(1.2); opacity: 0; border-color: rgba(169, 133, 103, 0); }
+        }
+
+        @keyframes whatsapp-dot-flash {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .floating-whatsapp i {
+            filter: drop-shadow(0 0 5px rgba(37, 211, 102, 0.6));
+            transition: var(--transition-premium);
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08) translateY(-2px);
+            border-color: #3bf274;
+            color: #ffffff;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6),
+                0 0 25px rgba(37, 211, 102, 0.5),
+                inset 0 0 15px rgba(37, 211, 102, 0.25);
+        }
+
+        .floating-whatsapp:hover i {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+        }
+
+        .floating-whatsapp:hover::before {
+            border-color: rgba(37, 211, 102, 0.6);
+            inset: -12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .metrics-grid,
+            .solutions-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .inquiry-form {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                top: 1rem;
+                padding: 0 1rem;
+            }
+            .nav-wrapper {
+                padding: 0.6rem 1.25rem;
+                width: 100% !important;
+                max-width: 480px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav-brand-link {
+                display: block;
+            }
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 22px;
+                height: 14px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+            }
+            .hamburger-bar {
+                width: 100%;
+                height: 2px;
+                background-color: var(--color-alabaster);
+                border-radius: 2px;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(1) {
+                transform: translateY(6px) rotate(45deg);
+                background-color: var(--color-bronze);
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(3) {
+                transform: translateY(-6px) rotate(-45deg);
+                background-color: var(--color-bronze);
+            }
+            .nav-menu {
+                position: absolute;
+                top: calc(100% + 10px);
+                left: 0;
+                right: 0;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.96);
+                border: 1px solid rgba(227, 221, 213, 0.08);
+                border-radius: 20px;
+                backdrop-filter: blur(25px) saturate(180%);
+                -webkit-backdrop-filter: blur(25px) saturate(180%);
+                display: none;
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1.25rem;
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.25rem;
+                width: 100%;
+            }
+            .sector-hero {
+                padding: 9rem 1rem 4rem;
+                text-align: center;
+                justify-content: center;
+            }
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin: 0 auto;
+            }
+            .hero-content .badge {
+                margin: 0 auto 1.5rem auto;
+                align-self: center;
+            }
+            .hero-title {
+                text-align: center;
+            }
+            .hero-desc {
+                text-align: center;
+                margin: 0 auto 2.5rem auto;
+            }
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+                align-items: center;
+                justify-content: center;
+            }
+            .section-header {
+                text-align: center;
+                margin: 0 auto 3rem auto;
+            }
+            .section-title {
+                text-align: center;
+            }
+            .section-desc {
+                text-align: center;
+                margin: 0 auto;
+            }
+            .solution-card {
+                text-align: center;
+                align-items: center;
+            }
+            .solution-icon {
+                margin: 0 auto 1.75rem auto;
+            }
+            .solution-card h3 {
+                text-align: center;
+            }
+            .solution-card p {
+                text-align: center;
+            }
+            .solution-specs {
+                align-items: center;
+                text-align: center;
+                width: 100%;
+            }
+            .solution-specs li {
+                justify-content: center;
+                text-align: center;
+            }
+            .inquiry-form {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .form-group {
+                text-align: center;
+                align-items: center;
+            }
+            .form-group label {
+                text-align: center;
+                width: 100%;
+            }
+            .form-group input, .form-group select, .form-group textarea {
+                text-align: center;
+                text-align-last: center;
+            }
+            .form-guarantees {
+                justify-content: center;
+                text-align: center;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+            #interactive-reveal-footer {
+                padding: 4rem 1.5rem 2.5rem 1.5rem;
+                text-align: center;
+            }
+            .footer-inner-content {
+                text-align: center;
+                align-items: center;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+                justify-items: center;
+            }
+            .footer-brand {
+                align-items: center;
+                text-align: center;
+                margin: 0 auto;
+            }
+            .footer-brand-title {
+                margin: 0 auto;
+                text-align: center;
+            }
+            .footer-brand-text {
+                text-align: center;
+                margin: 0 auto;
+                max-width: 440px;
+            }
+            .footer-col {
+                align-items: center;
+                text-align: center;
+            }
+            .footer-col-title {
+                text-align: center;
+            }
+            .footer-links {
+                align-items: center;
+                text-align: center;
+                padding: 0;
+            }
+            .footer-links li {
+                justify-content: center;
+                text-align: center;
+            }
+            .footer-links a {
+                justify-content: center;
+                text-align: center;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                gap: 0.75rem;
+            }
+            .floating-whatsapp {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
+            .floating-whatsapp::before {
+                inset: -6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Capsule Navigation Header -->
+    <header id="main-header">
+        <div class="nav-wrapper">
+            <a href="/#inicio" class="nav-brand-link">IEER</a>
+            
+            <button class="hamburger-btn" aria-label="Menu" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+            
+            <nav class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="/#inicio">Inicio</a></li>
+                    <li><a href="/#autonomia">Servicios</a></li>
+                    <li><a href="/#sectores">Soluciones</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+    <!-- Sector Hero -->
+    <section class="sector-hero">
+        <div class="hero-bg">
+            <img src="Assets/industrial_storage.jpg" alt="Ingeniería Energética Industrial y BESS IEER">
+        </div>
+        <div class="hero-vignette"></div>
+        <div class="hero-content">
+            <span class="badge"><i class="ph ph-factory"></i> Segmento Industrial & Gran Escala</span>
+            <h1 class="hero-title">Blindaje Energético para la <span>Industria Mexicana</span></h1>
+            <p class="hero-desc">Sistemas de almacenamiento en baterías BESS en escala de MWh, cumplimiento riguroso de Código de Red 2.0 y supresión de disturbios eléctricos para plantas de manufactura continua, naves industriales y centros de datos.</p>
+            <div class="hero-actions">
+                <a href="#contacto" class="btn-primary">
+                    <span>Solicitar Factibilidad Industrial</span>
+                    <i class="ph ph-arrow-right"></i>
+                </a>
+                <a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20interesa%20un%20sistema%20de%20almacenamiento%20BESS%20o%20respaldo%20para%20un%20complejo%20industrial" target="_blank" class="btn-secondary">
+                    <i class="ph ph-whatsapp-logo"></i>
+                    <span>Consultar por WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Bar -->
+    <section class="metrics-section">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-num">&lt; 10 ms</div>
+                <div class="metric-label">Transferencia Sub-Ciclo</div>
+                <p class="metric-sub">Conmutación estática imperceptible para PLCs, variadores de frecuencia y líneas continuas.</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-num">100%</div>
+                <div class="metric-label">Código de Red 2.0</div>
+                <p class="metric-sub">Filtrado activo de armónicos, corrección dinámica de FP y mitigación de sanciones ante la CRE.</p>
+            </div>
+            <div class="metric-card">
+                <div class="metric-num">MWh</div>
+                <div class="metric-label">Capacidad BESS Modular</div>
+                <p class="metric-sub">Contenedores climatizados para Peak Shaving, arbitraje tarifario y soporte en media y alta tensión.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Section -->
+    <section class="solutions-section">
+        <div class="section-header">
+            <span class="badge"><i class="ph ph-shield-check"></i> Soluciones de Gran Escala</span>
+            <h2 class="section-title">Ingeniería Pesada para <span>Cero Tolerancia a Paradas</span></h2>
+            <p class="section-desc">En la industria moderna un sag de voltaje o un micro-corte desconfigura robots de ensamble, quema extrusoras y causa pérdidas de materia prima millonarias. En IEER diseñamos infraestructura pesada con respuesta inmediata.</p>
+        </div>
+
+        <div class="solutions-grid">
+            <div class="solution-card">
+                <div class="solution-icon"><i class="ph ph-factory"></i></div>
+                <h3>Plantas de Manufactura & Ensamblaje</h3>
+                <p>Protección integral de maquinaria sensible, robótica, centros de maquinado CNC y extrusoras contra variaciones súbitas de voltaje y sags de la red eléctrica de CFE.</p>
+                <ul class="solution-specs">
+                    <li><i class="ph ph-check"></i> Cero mermas por micro-cortes</li>
+                    <li><i class="ph ph-check"></i> Filtrado dinámico de armónicos</li>
+                    <li><i class="ph ph-check"></i> Continuidad operativa en turnos 24/7</li>
+                </ul>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-icon"><i class="ph ph-buildings"></i></div>
+                <h3>Parques Industriales & Logísticos</h3>
+                <p>Sistemas BESS contenerizados para mitigación de demanda máxima (Peak Shaving) en tarifas GDMTH y DIST, micro-redes privadas y estabilidad de suministro para clusters logísticos.</p>
+                <ul class="solution-specs">
+                    <li><i class="ph ph-check"></i> Reducción de cargos por demanda</li>
+                    <li><i class="ph ph-check"></i> Integración en media tensión (13.8 / 23 / 34.5 kV)</li>
+                    <li><i class="ph ph-check"></i> Retorno de inversión acelerado</li>
+                </ul>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-icon"><i class="ph ph-cpu"></i></div>
+                <h3>Centros de Datos & Cargas Críticas</h3>
+                <p>Infraestructura ininterrumpida de grado hiperescala, respaldo con celdas LiFePO4 de alta densidad energética y redundancia N+1 para cuartos de servidores y telecomunicaciones.</p>
+                <ul class="solution-specs">
+                    <li><i class="ph ph-check"></i> Topología N+1 / 2N redundante</li>
+                    <li><i class="ph ph-check"></i> Cero emisiones de CO2 frente a diésel</li>
+                    <li><i class="ph ph-check"></i> Monitoreo satelital y SCADA 24/7</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sector Contact Section -->
+    <section class="sector-inquiry" id="contacto">
+        <div class="inquiry-container">
+            <div style="text-align: center;">
+                <span class="badge"><i class="ph ph-envelope-open"></i> Diagnóstico Técnico Inmediato</span>
+                <h2 class="section-title">Inicia tu Diagnóstico <span>Técnico Industrial</span></h2>
+                <p class="section-desc">Analizamos la curva de carga, perfil de demanda (kW) y recibos CFE en media/alta tensión de tu planta en menos de 24 horas para entregarte una propuesta técnica y económica definitiva.</p>
+            </div>
+
+            <form id="industrial-contact-form" class="inquiry-form" onsubmit="handleContactSubmit(event)">
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+                <div class="form-group">
+                    <label for="contact-name">Nombre / Razón Social</label>
+                    <input type="text" id="contact-name" name="name" placeholder="Ej. Grupo Industrial del Bajío S.A. de C.V." required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Correo Corporativo</label>
+                    <input type="email" id="contact-email" name="email" placeholder="contacto@empresa.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-phone">Teléfono / WhatsApp</label>
+                    <input type="tel" id="contact-phone" name="phone" placeholder="+52 33 0000 0000" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-sector">Giro Industrial</label>
+                    <select id="contact-sector" name="sector">
+                        <option value="Parque Industrial / Logístico" selected>Parque Industrial / Logístico</option>
+                        <option value="Manufactura / Metalmecánica">Manufactura / Metalmecánica</option>
+                        <option value="Farmacéutica / Química">Farmacéutica / Química</option>
+                        <option value="Alimentos y Bebidas">Alimentos y Bebidas</option>
+                        <option value="Centro de Datos / TI">Centro de Datos / TI</option>
+                        <option value="Inyección de Plásticos / Automotriz">Inyección de Plásticos / Automotriz</option>
+                        <option value="Otro Giro Industrial">Otro Giro Industrial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contact-demand">Demanda Contratada / Tarifa CFE</label>
+                    <input type="text" id="contact-demand" name="demand" placeholder="Ej. 750 kW / Tarifa GDMTH">
+                </div>
+                <div class="form-group">
+                    <label for="contact-location">Ubicación de la Planta o Parque</label>
+                    <input type="text" id="contact-location" name="location" placeholder="Ciudad y Estado (Ej. Parque Industrial Querétaro)">
+                </div>
+                <div class="form-group full-width">
+                    <label for="contact-message">Detalles de Cargas Críticas, Sags o Necesidades de BESS</label>
+                    <textarea id="contact-message" name="message" placeholder="Describe los equipos críticos, paradas por micro-cortes, necesidad de cumplimiento de Código de Red o interés en Peak Shaving..."></textarea>
+                </div>
+                <div class="form-group full-width" style="text-align: center; margin-top: 1rem;">
+                    <button type="submit" class="btn-primary" style="margin: 0 auto; cursor: pointer;">
+                        <span>Enviar Solicitud Industrial</span>
+                        <i class="ph ph-paper-plane-tilt"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div id="contact-success" style="display: none; text-align: center; margin-top: 2rem; padding: 2rem; background: rgba(169, 133, 103, 0.1); border: 1px solid var(--color-bronze); border-radius: var(--radius-md);">
+                <i class="ph ph-check-circle" style="font-size: 2.5rem; color: #25d366; margin-bottom: 0.5rem; display: block;"></i>
+                <h3 style="color: var(--color-alabaster); margin-bottom: 0.5rem;">Solicitud Recibida con Éxito</h3>
+                <p style="color: var(--text-muted);">Un ingeniero director de IEER evaluará la demanda técnica de tu planta y se pondrá en contacto en menos de 24 horas.</p>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="interactive-reveal-footer">
+        <div class="footer-inner-content">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/#inicio" class="footer-brand-title">IEER</a>
+                    <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Soluciones</h4>
+                    <ul class="footer-links">
+                        <li><a href="/industrial">Industrial & BESS</a></li>
+                        <li><a href="/comercial">Comercial & Servicios</a></li>
+                        <li><a href="/agricola">Agrícola</a></li>
+                        <li><a href="/residencial">Residencial</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Navegación</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/preguntas-frecuentes">Preguntas Frecuentes</a></li>
+                        <li><a href="/aviso-de-privacidad">Aviso de Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Contacto</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
+                        <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>Copyright 2026 © IEER | Diseño by</span>
+                <a href="https://www.hipha.mx/" target="_blank" class="subfooter-link" rel="noopener noreferrer">
+                    <img src="/Assets/LogoSubfooter/LogoSubfooter.svg" alt="Hipha" class="subfooter-logo">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button HUD -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20solicito%20asesoría%20para%20un%20proyecto%20industrial%20o%20sistema%20BESS." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Industrial IEER">
+        <i class="ph-fill ph-whatsapp-logo"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        const hamburgerBtn = document.querySelector('.hamburger-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburgerBtn && navMenu) {
+            hamburgerBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navMenu.classList.toggle('active');
+                hamburgerBtn.classList.toggle('active');
+            });
+            // Close mobile menu when tapping any navigation link
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                });
+            });
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                }
+            });
+        }
+
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span>Enviando...</span> <i class="ph ph-spinner ph-spin"></i>';
+            btn.disabled = true;
+
+            // Honeypot spam defense
+            const honeypot = form.querySelector('input[name="_gotcha"]');
+            if (honeypot && honeypot.value) {
+                form.style.display = 'none';
+                document.getElementById('contact-success').style.display = 'block';
+                return;
+            }
+
+            const payload = {
+                nombre: document.getElementById('contact-name').value.trim(),
+                email: document.getElementById('contact-email').value.trim(),
+                telefono: document.getElementById('contact-phone').value.trim(),
+                sector: `Industrial - ${document.getElementById('contact-sector').value}`,
+                demanda: document.getElementById('contact-demand') ? document.getElementById('contact-demand').value.trim() : '',
+                ubicacion: document.getElementById('contact-location').value.trim(),
+                mensaje: document.getElementById('contact-message').value.trim()
+            };
+
+            try {
+                const response = await fetch('/api/contact/ieer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (response.ok) {
+                    form.style.display = 'none';
+                    document.getElementById('contact-success').style.display = 'block';
+                } else {
+                    throw new Error(`HTTP status ${response.status}`);
+                }
+            } catch (err) {
+                console.error('Error al enviar formulario industrial:', err);
+                alert('No se pudo enviar la solicitud automáticamente. Por favor contáctanos vía WhatsApp (+52 33 3302 5665).');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

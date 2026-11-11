@@ -2772,23 +2772,24 @@
                 left: 0;
                 width: 100%;
                 display: flex;
-                gap: 0.4rem;
+                flex-wrap: wrap;
+                gap: 0.35rem;
                 justify-content: center;
                 background: rgba(227, 221, 213, 0.03);
                 border: 1px solid rgba(227, 221, 213, 0.06);
-                padding: 0.4rem;
+                padding: 0.35rem;
                 border-radius: 30px;
                 max-width: 480px;
                 margin: 0 auto 2.5rem auto;
                 box-sizing: border-box;
             }
             .sector-nav-btn {
-                padding: 0.5rem 0.75rem !important;
+                padding: 0.45rem 0.65rem !important;
                 border-radius: 20px;
-                font-size: 0.7rem !important;
+                font-size: 0.68rem !important;
                 font-family: var(--font-tech);
                 text-transform: uppercase;
-                letter-spacing: 0.08em !important;
+                letter-spacing: 0.06em !important;
                 color: rgba(227, 221, 213, 0.5);
                 transition: all 0.4s ease;
                 border: 1px solid transparent;
@@ -3329,6 +3330,7 @@
             <div class="sector-bg-slide active" style="background-image: linear-gradient(to top, rgba(11, 17, 18, 0.95) 0%, rgba(11, 17, 18, 0.3) 50%, rgba(11, 17, 18, 0.8) 100%), url('Assets/commercial_luxury.jpg');"></div>
             <div class="sector-bg-slide" style="background-image: linear-gradient(to top, rgba(11, 17, 18, 0.95) 0%, rgba(11, 17, 18, 0.3) 50%, rgba(11, 17, 18, 0.8) 100%), url('Assets/nature_irrigation.jpg');"></div>
             <div class="sector-bg-slide" style="background-image: linear-gradient(to top, rgba(11, 17, 18, 0.95) 0%, rgba(11, 17, 18, 0.3) 50%, rgba(11, 17, 18, 0.8) 100%), url('Assets/nature_solar.jpg');"></div>
+            <div class="sector-bg-slide" style="background-image: linear-gradient(to top, rgba(11, 17, 18, 0.95) 0%, rgba(11, 17, 18, 0.3) 50%, rgba(11, 17, 18, 0.8) 100%), url('Assets/industrial_storage.jpg');"></div>
         </div>
 
         <!-- Sleek Slider Navigation Menu (Top Right of Section) -->
@@ -3336,6 +3338,7 @@
             <button class="sector-nav-btn active" onclick="switchSector(0, true)">Comercial</button>
             <button class="sector-nav-btn" onclick="switchSector(1, true)">Agrícola</button>
             <button class="sector-nav-btn" onclick="switchSector(2, true)">Residencial</button>
+            <button class="sector-nav-btn" onclick="switchSector(3, true)">Industrial</button>
         </div>
 
         <!-- Dark vignette overlay for right-side text legibility -->
@@ -3349,6 +3352,7 @@
                 <div class="sector-massive-title active" data-index="0">COMERCIAL</div>
                 <div class="sector-massive-title" data-index="1">AGRÍCOLA</div>
                 <div class="sector-massive-title" data-index="2">RESIDENCIAL</div>
+                <div class="sector-massive-title" data-index="3">INDUSTRIAL</div>
             </div>
 
             <!-- Right Side: Description and Features (Bottom-Right) -->
@@ -3402,6 +3406,24 @@
                         <li><span>Cero ruidos y vibraciones</span></li>
                     </ul>
                     <a href="/residencial" class="sector-cta-btn">
+                        <span>Ver más</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Slide 4 Content -->
+                <div class="sector-desc-slide" data-index="3">
+                    <span class="sector-badge-accent">CONTINUIDAD PESADA —</span>
+                    <h3 class="sector-slide-subtitle">Resiliencia & Código de Red</h3>
+                    <p class="sector-slide-paragraph">Sistemas BESS de gran escala, mitigación de picos (Peak Shaving) y filtrado de armónicos para plantas de manufactura continua, parques industriales y centros de datos.</p>
+                    <ul class="sector-slide-specs">
+                        <li><span>Almacenamiento BESS MWh</span></li>
+                        <li>•</li>
+                        <li><span>Código de Red 2.0</span></li>
+                        <li>•</li>
+                        <li><span>Transferencia sub-ciclo (&lt;10 ms)</span></li>
+                    </ul>
+                    <a href="/industrial" class="sector-cta-btn">
                         <span>Ver más</span>
                         <i class="ph ph-arrow-right"></i>
                     </a>
@@ -3652,7 +3674,6 @@
                         <option value="" disabled selected>Selecciona una opción (opcional)</option>
                         <option value="Residencial">Residencial</option>
                         <option value="Rancho / Campo">Rancho / Campo / Bombeo</option>
-                        <option value="Complejo Industrial">Complejo Industrial</option>
                         <option value="Comercial / Negocio">Comercial / Restaurante</option>
                         <option value="Hotelería / Spa / Wellness">Hotelería / Spa / Wellness</option>
                         <option value="Hospitales / UCIs / Laboratorios">Hospitales / UCIs / Laboratorios</option>
@@ -3725,6 +3746,7 @@
                 <div class="footer-col">
                     <h4 class="footer-col-title">Soluciones</h4>
                     <ul class="footer-links">
+                        <li><a href="/industrial">Industrial & BESS</a></li>
                         <li><a href="/comercial">Comercial & Servicios</a></li>
                         <li><a href="/agricola">Agrícola</a></li>
                         <li><a href="/residencial">Residencial</a></li>
@@ -4064,7 +4086,8 @@
         function startSectorAutoplay() {
             if (sectorAutoplayInterval) clearInterval(sectorAutoplayInterval);
             sectorAutoplayInterval = setInterval(() => {
-                const nextIndex = (currentSectorIndex + 1) % 3;
+                const totalSectors = document.querySelectorAll('.sector-nav-btn').length || 4;
+                const nextIndex = (currentSectorIndex + 1) % totalSectors;
                 switchSector(nextIndex, false);
             }, 6000); // 6s per sector
         }
@@ -4099,13 +4122,14 @@
                 const sectorEndX = e.changedTouches[0].clientX;
                 const diffX = sectorStartX - sectorEndX;
                 if (Math.abs(diffX) > 40) {
+                    const totalSectors = document.querySelectorAll('.sector-nav-btn').length || 4;
                     if (diffX > 0) {
                         // Swipe left -> next
-                        const nextIdx = (currentSectorIndex + 1) % 3;
+                        const nextIdx = (currentSectorIndex + 1) % totalSectors;
                         switchSector(nextIdx, true);
                     } else {
                         // Swipe right -> prev
-                        const prevIdx = (currentSectorIndex - 1 + 3) % 3;
+                        const prevIdx = (currentSectorIndex - 1 + totalSectors) % totalSectors;
                         switchSector(prevIdx, true);
                     }
                 }

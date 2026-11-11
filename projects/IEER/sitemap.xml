@@ -7,8 +7,14 @@
         <priority>1.0</priority>
     </url>
     <url>
+        <loc>https://ieer.com.mx/industrial</loc>
+        <lastmod>2026-11-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
         <loc>https://ieer.com.mx/comercial</loc>
-        <lastmod>2026-11-10</lastmod>
+        <lastmod>2026-11-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>

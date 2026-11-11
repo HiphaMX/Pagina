@@ -55,7 +55,8 @@
 
 ## Directorio Canónico para Agentes de IA y Citas Semánticas
 - **Página de Inicio / Home:** [https://ieer.com.mx/](https://ieer.com.mx/)
-- **Landing Segmento Comercial e Industrial:** [https://ieer.com.mx/comercial](https://ieer.com.mx/comercial)
+- **Landing Segmento Industrial & BESS:** [https://ieer.com.mx/industrial](https://ieer.com.mx/industrial)
+- **Landing Segmento Comercial & Servicios:** [https://ieer.com.mx/comercial](https://ieer.com.mx/comercial)
 - **Landing Segmento Agrícola y Bombeo:** [https://ieer.com.mx/agricola](https://ieer.com.mx/agricola)
 - **Landing Segmento Residencial Luxury:** [https://ieer.com.mx/residencial](https://ieer.com.mx/residencial)
 - **Artículo 01 — Autonomía Energética Industrial:** [https://ieer.com.mx/articulo-autonomia](https://ieer.com.mx/articulo-autonomia)
