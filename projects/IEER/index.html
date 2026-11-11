@@ -53,15 +53,15 @@
 
         :root {
             /* Palette: Organic Nature & Luxury Tech */
-            --bg-nature: #141a1c; /* Deep slate pine / dark mineral charcoal */
-            --bg-nature-accent: #0f1315; /* Darker shading */
-            --color-forest: #344245; /* Muted forest green/slate */
+            --bg-nature: #080b0c; /* Deep obsidian slate */
+            --bg-nature-accent: #040607; /* Darker shading */
+            --color-forest: #222d2f; /* Muted forest green/slate */
             --color-bronze: #a98567; /* Earth wood / bronze */
             --color-bronze-glow: rgba(169, 133, 103, 0.25);
             --color-alabaster: #e3ddd5; /* Alabaster sand / warm off-white */
             --color-border: rgba(169, 133, 103, 0.12);
             --color-border-active: rgba(227, 221, 213, 0.25);
-            --color-card-bg: rgba(20, 27, 28, 0.55);
+            --color-card-bg: rgba(12, 16, 18, 0.65);
             --text-main: #e3ddd5; /* Warm premium text */
             --text-muted: #7e8d90; /* Muted forest slate text */
             
@@ -361,8 +361,8 @@
         .hero-vignette {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(20, 26, 28, 0.15) 0%, rgba(20, 26, 28, 0.8) 85%, var(--bg-nature) 100%),
-                        radial-gradient(circle at center, transparent 30%, rgba(20, 26, 28, 0.7) 100%);
+            background: linear-gradient(to bottom, rgba(8, 11, 12, 0.15) 0%, rgba(8, 11, 12, 0.8) 85%, var(--bg-nature) 100%),
+                        radial-gradient(circle at center, transparent 30%, rgba(8, 11, 12, 0.7) 100%);
             z-index: 3;
             pointer-events: none;
         }
@@ -641,7 +641,7 @@
         .experience-proof {
             position: relative;
             padding: clamp(4.5rem, 6.5vw, 6.5rem) 0;
-            background: linear-gradient(180deg, rgba(15, 19, 21, 0.5) 0%, rgba(20, 27, 28, 0.9) 50%, rgba(11, 17, 18, 0.95) 100%);
+            background: linear-gradient(180deg, rgba(8, 11, 12, 0.5) 0%, rgba(10, 14, 15, 0.9) 50%, rgba(6, 8, 9, 0.95) 100%);
             border-top: 1px solid var(--color-border);
             border-bottom: 1px solid var(--color-border);
             overflow: hidden;
@@ -670,7 +670,7 @@
         }
 
         .proof-card {
-            background: rgba(20, 27, 28, 0.5);
+            background: rgba(12, 16, 18, 0.5);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
             padding: 3rem 2.25rem;
@@ -1405,7 +1405,7 @@
 
         /* Dropdown options inside dark slate */
         .professional-group select option {
-            background-color: #141a1c;
+            background-color: #080b0c;
             color: var(--color-alabaster);
         }
 

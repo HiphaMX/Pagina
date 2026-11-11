@@ -33,8 +33,8 @@
 ## 🎨 DIRECCIÓN DE ARTE & ESTÉTICA
 - **Concepto:** *Organic Nature & Luxury Tech* (Fusión de texturas naturales minerales y precisión de ingeniería).
 - **Paleta de Colores:**
-  - `Fondo Principal:` `#141a1c` (Deep Slate Pine / Gris carbón forestal oscuro)
-  - `Cards & Paneles:` `rgba(20, 27, 28, 0.55)`
+  - `Fondo Principal:` `#080b0c` (Deep Obsidian Slate / Negro mineral ultra-oscuro)
+  - `Cards & Paneles:` `rgba(12, 16, 18, 0.65)`
   - `Acento de Lujo (Energía):` `#a98567` (Warm Bronze / Bronce tierra)
   - `Acento de Luz (Texto):` `#e3ddd5` (Alabaster Cream)
   - `Bordes sutiles:` `rgba(169, 133, 103, 0.12)`
