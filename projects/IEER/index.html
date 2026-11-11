@@ -3225,9 +3225,9 @@
 
         <!-- Sleek Slider Navigation Menu (Top Right of Section) -->
         <div class="sector-slider-nav">
-            <button class="sector-nav-btn active" onclick="switchSector(0)">Comercial</button>
-            <button class="sector-nav-btn" onclick="switchSector(1)">Agrícola</button>
-            <button class="sector-nav-btn" onclick="switchSector(2)">Residencial</button>
+            <button class="sector-nav-btn active" onclick="switchSector(0, true)">Comercial</button>
+            <button class="sector-nav-btn" onclick="switchSector(1, true)">Agrícola</button>
+            <button class="sector-nav-btn" onclick="switchSector(2, true)">Residencial</button>
         </div>
 
         <!-- Dark vignette overlay for right-side text legibility -->
@@ -3862,6 +3862,8 @@
                     ctx.fill();
                     ctx.shadowBlur = 0;
                 });
+            }
+            
             if ('IntersectionObserver' in window && hero) {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
@@ -3925,7 +3927,11 @@
             });
         }
         // Sectors Showcase Interaction (Longbow Style)
-        function switchSector(index) {
+        let currentSectorIndex = 0;
+        let sectorAutoplayInterval = null;
+
+        function switchSector(index, userInitiated = false) {
+            currentSectorIndex = index;
             const bgSlides = document.querySelectorAll('.sector-bg-slide');
             const navBtns = document.querySelectorAll('.sector-nav-btn');
             const massiveTitles = document.querySelectorAll('.sector-massive-title');
@@ -3946,6 +3952,63 @@
             descSlides.forEach((desc, idx) => {
                 desc.classList.toggle('active', idx === index);
             });
+
+            if (userInitiated) {
+                resetSectorAutoplay();
+            }
+        }
+        window.switchSector = switchSector;
+
+        function startSectorAutoplay() {
+            if (sectorAutoplayInterval) clearInterval(sectorAutoplayInterval);
+            sectorAutoplayInterval = setInterval(() => {
+                const nextIndex = (currentSectorIndex + 1) % 3;
+                switchSector(nextIndex, false);
+            }, 6000); // 6s per sector
+        }
+
+        function stopSectorAutoplay() {
+            if (sectorAutoplayInterval) {
+                clearInterval(sectorAutoplayInterval);
+                sectorAutoplayInterval = null;
+            }
+        }
+
+        function resetSectorAutoplay() {
+            stopSectorAutoplay();
+            startSectorAutoplay();
+        }
+
+        const sectorsSection = document.getElementById('sectores');
+        if (sectorsSection) {
+            startSectorAutoplay();
+            sectorsSection.addEventListener('mouseenter', stopSectorAutoplay);
+            sectorsSection.addEventListener('mouseleave', startSectorAutoplay);
+
+            // Touch swipe support on sectors showcase
+            let sectorStartX = 0;
+            sectorsSection.addEventListener('touchstart', (e) => {
+                sectorStartX = e.touches[0].clientX;
+                stopSectorAutoplay();
+            }, { passive: true });
+
+            sectorsSection.addEventListener('touchend', (e) => {
+                if (!sectorStartX) return;
+                const sectorEndX = e.changedTouches[0].clientX;
+                const diffX = sectorStartX - sectorEndX;
+                if (Math.abs(diffX) > 40) {
+                    if (diffX > 0) {
+                        // Swipe left -> next
+                        const nextIdx = (currentSectorIndex + 1) % 3;
+                        switchSector(nextIdx, true);
+                    } else {
+                        // Swipe right -> prev
+                        const prevIdx = (currentSectorIndex - 1 + 3) % 3;
+                        switchSector(prevIdx, true);
+                    }
+                }
+                startSectorAutoplay();
+            }, { passive: true });
         }
         
         // Promise Section Slider Logic (Sticky Scroll Timeline - Blue Inspired)
