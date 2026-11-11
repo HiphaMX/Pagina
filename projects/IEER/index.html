@@ -636,12 +636,12 @@
         }
 
         /* ==========================================================================
-           Experience Proof Section (Comprobación de Experiencia - Design Flow)
+           Experience Proof Section (Certeza Operativa - Minimal Luxury Design Flow)
            ========================================================================== */
         .experience-proof {
             position: relative;
-            padding: clamp(5.5rem, 8vw, 8rem) 0;
-            background: linear-gradient(180deg, rgba(15, 19, 21, 0.6) 0%, rgba(20, 27, 28, 0.95) 50%, rgba(11, 17, 18, 0.98) 100%);
+            padding: clamp(4.5rem, 6.5vw, 6.5rem) 0;
+            background: linear-gradient(180deg, rgba(15, 19, 21, 0.5) 0%, rgba(20, 27, 28, 0.9) 50%, rgba(11, 17, 18, 0.95) 100%);
             border-top: 1px solid var(--color-border);
             border-bottom: 1px solid var(--color-border);
             overflow: hidden;
@@ -654,9 +654,9 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 1000px;
-            height: 450px;
-            background: radial-gradient(ellipse at center, rgba(169, 133, 103, 0.08) 0%, rgba(52, 66, 69, 0.05) 45%, transparent 70%);
+            width: 900px;
+            height: 350px;
+            background: radial-gradient(ellipse at center, rgba(169, 133, 103, 0.07) 0%, transparent 70%);
             pointer-events: none;
             z-index: 1;
         }
@@ -667,237 +667,52 @@
             gap: 2rem;
             position: relative;
             z-index: 2;
-            align-items: stretch;
         }
 
         .proof-card {
-            background: rgba(20, 27, 28, 0.6);
+            background: rgba(20, 27, 28, 0.5);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
-            padding: 2.75rem 2.25rem;
+            padding: 3rem 2.25rem;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 1.25rem;
             position: relative;
             transition: var(--transition-premium);
-            overflow: hidden;
-        }
-
-        .proof-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(169, 133, 103, 0.45), transparent);
-            opacity: 0;
-            transition: opacity 0.5s ease;
         }
 
         .proof-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             border-color: rgba(169, 133, 103, 0.35);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(169, 133, 103, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(169, 133, 103, 0.06);
         }
 
-        .proof-card:hover::after {
-            opacity: 1;
-        }
-
-        .proof-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.25rem;
-            border-bottom: 1px solid rgba(169, 133, 103, 0.1);
-        }
-
-        .proof-card-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
+        .proof-question {
             font-family: var(--font-tech);
             font-size: 0.75rem;
             font-weight: 500;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             color: var(--color-bronze);
-            background: rgba(169, 133, 103, 0.08);
-            border: 1px solid rgba(169, 133, 103, 0.2);
-            padding: 0.35rem 0.9rem;
-            border-radius: var(--radius-full);
         }
 
-        .proof-card-badge i {
-            font-size: 1rem;
-        }
-
-        .proof-card-index {
-            font-family: var(--font-tech);
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            opacity: 0.6;
-            letter-spacing: 0.08em;
-        }
-
-        .proof-card-main {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            flex-grow: 1;
-        }
-
-        .proof-highlight-hud {
-            background: rgba(11, 17, 18, 0.55);
-            border: 1px solid rgba(227, 221, 213, 0.06);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-        }
-
-        .proof-hud-stat {
-            font-size: clamp(2rem, 2.6vw, 2.6rem);
+        .proof-metric {
             font-family: var(--font-accent);
+            font-size: clamp(2.2rem, 2.8vw, 2.85rem);
             font-weight: 600;
-            line-height: 1.05;
+            line-height: 1.1;
             letter-spacing: -0.02em;
         }
 
-        .proof-hud-label {
-            font-family: var(--font-tech);
-            font-size: 0.68rem;
-            color: var(--text-muted);
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-        }
-
-        .proof-card-desc {
-            font-size: 0.96rem;
+        .proof-answer {
+            font-family: var(--font-body);
+            font-size: 1.02rem;
             color: var(--color-alabaster);
             line-height: 1.75;
-            font-weight: 300;
-            opacity: 0.92;
-        }
-
-        .proof-card-desc strong {
-            color: #fff;
-            font-weight: 500;
-        }
-
-        /* Card 1: Features list */
-        .proof-feature-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 0.25rem;
-        }
-
-        .proof-feature-list li {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.88rem;
-            color: var(--text-muted);
-        }
-
-        .proof-feature-list li i {
-            color: var(--color-bronze);
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        /* Card 2: Pipeline nodes */
-        .proof-pipeline {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .pipeline-node {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            background: rgba(15, 20, 22, 0.55);
-            border: 1px solid rgba(169, 133, 103, 0.12);
-            padding: 0.65rem 0.95rem;
-            border-radius: 10px;
-            font-size: 0.84rem;
-            color: var(--color-alabaster);
-            transition: var(--transition-premium);
-        }
-
-        .pipeline-node:hover {
-            border-color: rgba(169, 133, 103, 0.35);
-            background: rgba(169, 133, 103, 0.08);
-        }
-
-        .pipeline-node-num {
-            font-family: var(--font-tech);
-            font-size: 0.72rem;
-            color: var(--color-bronze);
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        /* Card 3: Sectors tag cloud */
-        .proof-sectors-cloud {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.25rem;
-        }
-
-        .proof-sector-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            background: rgba(169, 133, 103, 0.08);
-            border: 1px solid rgba(169, 133, 103, 0.18);
-            padding: 0.35rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.78rem;
-            color: var(--color-alabaster);
-            font-family: var(--font-tech);
-            letter-spacing: 0.04em;
-            transition: var(--transition-premium);
-        }
-
-        .proof-sector-chip i {
-            color: var(--color-bronze);
-            font-size: 0.9rem;
-        }
-
-        .proof-sector-chip:hover {
-            background: rgba(169, 133, 103, 0.18);
-            border-color: rgba(169, 133, 103, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .proof-card-footer {
-            margin-top: 2rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid rgba(169, 133, 103, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            font-family: var(--font-tech);
-            font-size: 0.73rem;
-            color: var(--text-muted);
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-
-        .proof-card-footer i {
-            color: var(--color-bronze);
-            font-size: 1rem;
-            flex-shrink: 0;
+            font-weight: 200;
+            opacity: 0.88;
         }
 
          /* Sticky Scroll Timeline Layout (Blue Inspired) */
@@ -3089,131 +2904,30 @@
     <!-- Experience Proof / Certeza Operativa (Design Flow) -->
     <section class="experience-proof" id="experiencia">
         <div class="container">
-            <div class="section-header">
-                <div class="badge"><i class="ph ph-certificate"></i> Comprobación de Experiencia</div>
-                <h2 class="section-title">Certeza Técnica. <br><span class="gradient-text-bronze">Respaldo Integral.</span></h2>
-                <p class="section-desc">Diseñamos soluciones energéticas de alta ingeniería con tiempos de respuesta ágiles, acompañamiento de punta a punta y cobertura para todo tipo de demandas.</p>
+            <div class="section-header" style="margin-bottom: 3.5rem;">
+                <h2 class="section-title">Certeza <span>Operativa</span></h2>
             </div>
 
             <div class="proof-grid">
                 <!-- Card 1: ¿POR QUÉ IEER? -->
                 <div class="proof-card">
-                    <div>
-                        <div class="proof-card-top">
-                            <div class="proof-card-badge">
-                                <i class="ph ph-lightning"></i>
-                                <span>¿POR QUÉ IEER?</span>
-                            </div>
-                            <span class="proof-card-index">01 // AGILIDAD</span>
-                        </div>
-
-                        <div class="proof-card-main">
-                            <div class="proof-highlight-hud">
-                                <div class="proof-hud-stat gradient-text-bronze">≤ 24h</div>
-                                <div class="proof-hud-label">Tiempo de respuesta máximo</div>
-                            </div>
-
-                            <p class="proof-card-desc">
-                                <strong>Tiempo de respuesta máximo en 24 horas.</strong> Nuestro equipo de ingeniería asigna atención prioritaria directa a cada requerimiento, garantizando diagnósticos técnicos ágiles y soporte continuo sin intermediarios ni demoras operativas.
-                            </p>
-
-                            <ul class="proof-feature-list">
-                                <li><i class="ph ph-check-circle"></i> <span>Atención técnica directa con ingenieros especialistas</span></li>
-                                <li><i class="ph ph-check-circle"></i> <span>Soporte técnico los 365 días del año</span></li>
-                                <li><i class="ph ph-check-circle"></i> <span>Diagnóstico ágil y evaluación de viabilidad en sitio</span></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="proof-card-footer">
-                        <i class="ph ph-clock-countdown"></i> Compromiso de respuesta en 24 horas
-                    </div>
+                    <span class="proof-question">¿Por qué IEER?</span>
+                    <div class="proof-metric gradient-text-bronze">24 Horas</div>
+                    <p class="proof-answer">Tiempo de respuesta máximo en 24 horas.</p>
                 </div>
 
                 <!-- Card 2: ¿QUÉ INCLUYE? -->
                 <div class="proof-card">
-                    <div>
-                        <div class="proof-card-top">
-                            <div class="proof-card-badge">
-                                <i class="ph ph-stack"></i>
-                                <span>¿QUÉ INCLUYE?</span>
-                            </div>
-                            <span class="proof-card-index">02 // INTEGRAL</span>
-                        </div>
-
-                        <div class="proof-card-main">
-                            <div class="proof-highlight-hud">
-                                <div class="proof-hud-stat gradient-text-bronze">Llave en Mano</div>
-                                <div class="proof-hud-label">Ciclo completo de ingeniería</div>
-                            </div>
-
-                            <p class="proof-card-desc">
-                                <strong>Propuesta técnica y económica, negociación, cierre de proyecto e instalación.</strong> Controlamos cada hito del desarrollo con rigor de ingeniería, entregando proyectos llave en mano listos para operar bajo las normas más estrictas.
-                            </p>
-
-                            <div class="proof-pipeline">
-                                <div class="pipeline-node">
-                                    <span class="pipeline-node-num">01</span>
-                                    <span>Propuesta técnica y económica</span>
-                                </div>
-                                <div class="pipeline-node">
-                                    <span class="pipeline-node-num">02</span>
-                                    <span>Negociación transparente</span>
-                                </div>
-                                <div class="pipeline-node">
-                                    <span class="pipeline-node-num">03</span>
-                                    <span>Cierre de proyecto</span>
-                                </div>
-                                <div class="pipeline-node">
-                                    <span class="pipeline-node-num">04</span>
-                                    <span>Instalación y puesta en marcha</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="proof-card-footer">
-                        <i class="ph ph-shield-check"></i> Todas las garantías revisadas directamente
-                    </div>
+                    <span class="proof-question">¿Qué incluye?</span>
+                    <div class="proof-metric gradient-text-bronze">Llave en Mano</div>
+                    <p class="proof-answer">Propuesta técnica y económica, negociación, cierre de proyecto e instalación.</p>
                 </div>
 
                 <!-- Card 3: ¿CUÁLES SON LOS ALCANCES? -->
                 <div class="proof-card">
-                    <div>
-                        <div class="proof-card-top">
-                            <div class="proof-card-badge">
-                                <i class="ph ph-faders"></i>
-                                <span>¿CUÁLES SON LOS ALCANCES?</span>
-                            </div>
-                            <span class="proof-card-index">03 // COBERTURA</span>
-                        </div>
-
-                        <div class="proof-card-main">
-                            <div class="proof-highlight-hud">
-                                <div class="proof-hud-stat gradient-text-bronze">5 kW <span style="font-size: 1.4rem; opacity: 0.6; font-weight: 300;">→</span> +100 kW</div>
-                                <div class="proof-hud-label">Pequeña a gran demanda</div>
-                            </div>
-
-                            <p class="proof-card-desc">
-                                <strong>Brindamos servicios a clientes desde una pequeña demanda de energía (5 kW) hasta clientes de gran demanda (arriba de 100 kW).</strong> Trabajamos con especificaciones muy concretas para sectores de alta exigencia, diseñando desde el área eléctrica hasta la puesta en marcha.
-                            </p>
-
-                            <div class="proof-sectors-wrapper" style="display: flex; flex-direction: column; gap: 0.6rem;">
-                                <div style="font-family: var(--font-tech); font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase;">Especificaciones concretas para:</div>
-                                <div class="proof-sectors-cloud">
-                                    <span class="proof-sector-chip"><i class="ph ph-flask"></i> Laboratorios</span>
-                                    <span class="proof-sector-chip"><i class="ph ph-factory"></i> Fábricas</span>
-                                    <span class="proof-sector-chip"><i class="ph ph-first-aid"></i> Clínicas</span>
-                                    <span class="proof-sector-chip"><i class="ph ph-sparkle"></i> Spa</span>
-                                    <span class="proof-sector-chip"><i class="ph ph-buildings"></i> Hotelería</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="proof-card-footer">
-                        <i class="ph ph-cpu"></i> Del área eléctrica a la puesta en marcha
-                    </div>
+                    <span class="proof-question">¿Cuáles son los alcances?</span>
+                    <div class="proof-metric gradient-text-bronze">5 a +100 kW</div>
+                    <p class="proof-answer">Desde pequeña demanda (5 kW) hasta gran demanda (+100 kW) para laboratorios, fábricas, clínicas, spa y hotelería. Diseñamos desde el área eléctrica hasta la puesta en marcha.</p>
                 </div>
             </div>
         </div>
