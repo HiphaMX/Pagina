@@ -1325,7 +1325,44 @@
             opacity: 0.85;
         }
 
+        .sector-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            padding: 0.8rem 1.85rem;
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.28) 0%, rgba(169, 133, 103, 0.08) 100%), rgba(12, 16, 18, 0.85);
+            border: 1px solid rgba(169, 133, 103, 0.35);
+            border-radius: var(--radius-full);
+            color: var(--color-alabaster);
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition-premium);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
 
+        .sector-cta-btn:hover {
+            color: #fff;
+            border-color: var(--color-bronze);
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.45) 0%, rgba(169, 133, 103, 0.18) 100%), rgba(12, 16, 18, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(169, 133, 103, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .sector-cta-btn i {
+            transition: transform 0.4s ease;
+            font-size: 0.88rem;
+            color: var(--color-bronze);
+        }
+
+        .sector-cta-btn:hover i {
+            transform: translateX(4px);
+            color: #fff;
+        }
 
         /* Cosmic Aurora & Space Background */
         /* Professional Wide Form Styling */
@@ -2677,6 +2714,11 @@
                 font-size: 0.75rem;
                 color: rgba(227, 221, 213, 0.6);
             }
+            .sector-cta-btn {
+                margin-top: 1.5rem;
+                padding: 0.75rem 1.6rem;
+                font-size: 0.72rem;
+            }
         }
 
         @media (max-width: 479px) {
@@ -3181,6 +3223,10 @@
                         <li>•</li>
                         <li><span>Conexión en microsegundos</span></li>
                     </ul>
+                    <a href="/comercial" class="sector-cta-btn">
+                        <span>Ver más</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
                 </div>
                 
                 <!-- Slide 2 Content -->
@@ -3195,6 +3241,10 @@
                         <li>•</li>
                         <li><span>Retorno de inversión acelerado</span></li>
                     </ul>
+                    <a href="/agricola" class="sector-cta-btn">
+                        <span>Ver más</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
                 </div>
                 
                 <!-- Slide 3 Content -->
@@ -3209,6 +3259,10 @@
                         <li>•</li>
                         <li><span>Cero ruidos y vibraciones</span></li>
                     </ul>
+                    <a href="/residencial" class="sector-cta-btn">
+                        <span>Ver más</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -3217,7 +3271,6 @@
     <section class="blog-section" id="blog">
         <div class="blog-title-container">
             <div class="blog-title-left">
-                <span class="badge" style="margin-bottom: 1rem;"><i class="ph ph-newspaper"></i> IEER Journal · Publicaciones Recientes</span>
                 <h2 class="section-title" style="margin-left: 0;">Perspectivas de <span>Ingeniería</span></h2>
                 <p class="section-desc" style="max-width: 600px; margin-left: 0; margin-top: 1.5rem;">Artículos técnicos y reflexiones editoriales sobre la vanguardia en autonomía, almacenamiento de energía y fiabilidad industrial.</p>
             </div>
@@ -3273,13 +3326,6 @@
                 <h3 class="blog-post-title">Calidad de Energía: El Silencioso Pilar de la Eficiencia</h3>
                 <p class="blog-post-excerpt">El impacto económico invisible de las distorsiones armónicas y fluctuaciones de voltaje en el ciclo de vida de maquinaria pesada.</p>
                 <span class="blog-post-link">Leer artículo <i class="ph ph-arrow-up-right"></i></span>
-            </a>
-        </div>
-
-        <div class="blog-footer-cta-container">
-            <a href="/blog" class="blog-all-btn">
-                <span>Ver más publicaciones</span>
-                <i class="ph ph-arrow-right"></i>
             </a>
         </div>
     </section>
@@ -3461,10 +3507,12 @@
                     <label for="contact-sector">Sector / Tipo de Proyecto (opcional)</label>
                     <select id="contact-sector">
                         <option value="" disabled selected>Selecciona una opción (opcional)</option>
-                        <option value="Residencial Premium">Residencial Premium</option>
+                        <option value="Residencial">Residencial</option>
                         <option value="Rancho / Campo">Rancho / Campo / Bombeo</option>
-                        <option value="Complejo Industrial">Complejo Industrial / Redundancia</option>
+                        <option value="Complejo Industrial">Complejo Industrial</option>
                         <option value="Comercial / Negocio">Comercial / Restaurante</option>
+                        <option value="Hotelería / Spa / Wellness">Hotelería / Spa / Wellness</option>
+                        <option value="Hospitales / UCIs / Laboratorios">Hospitales / UCIs / Laboratorios</option>
                     </select>
                 </div>
 

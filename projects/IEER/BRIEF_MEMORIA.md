@@ -52,14 +52,22 @@
    - Radar concéntrico de cobertura nacional (estilo Zerocircle).
    - Formulario de consulta técnica conectado a `/api/contact/ieer`.
    - Botón directo de WhatsApp flotante hacia `+52 33 3302 5665`.
-2. **IEER Journal (Artículos Técnicos Especializados):**
-   - `blog.html`: Repositorio Editorial Completo (`/blog`) con buscador y filtrado interactivo por categorías (Almacenamiento, Micro-Redes, Calidad de Energía, Normativa, Bombeo).
+2. **Landing Pages Dedicadas por Segmento:**
+   - `comercial.html` (`/comercial`): Especializada en almacenamiento BESS comercial e industrial, Peak Shaving, continuidad de línea (<10 ms) y retorno de inversión.
+   - `agricola.html` (`/agricola`): Especializada en bombeo solar fotovoltaico de 10 a 150 HP, sustitución de diésel y pivotes/goteo tecnificado.
+   - `residencial.html` (`/residencial`): Especializada en residencias de descanso, villas de lujo, cero decibelios e integración arquitectónica coplanar.
+3. **IEER Journal (Artículos Técnicos Especializados):**
+   - `blog.html`: Repositorio Editorial Completo (`/blog`) con buscador y filtrado interactivo por categorías (Almacenamiento, Micro-Redes, Calidad de Energía, Normativa, Agropecuario).
    - `articulo-autonomia.html`: La Nueva Era de la Autonomía Energética Industrial.
-   - `articulo-calidad-energia.html`: Calidad de Energía y Código de Red.
+   - `articulo-calidad-energia.html`: Calidad de Energía: El Silencioso Pilar de la Eficiencia.
    - `articulo-offgrid.html`: Integración de Sistemas Off-Grid en Arquitectura Luxury.
-3. **Web Agéntica & GEO:**
+   - `articulo-codigo-red.html`: Código de Red 2.0: Guía de Cumplimiento Técnico en Media y Alta Tensión.
+   - `articulo-bombeo-solar.html`: Bombeo Solar de Alto Rendimiento en Pozo Profundo y Superficie: Cero Diésel.
+   - `articulo-baterias-litio.html`: Baterías Litio LFP vs. Plomo-Ácido: Ciclo de Vida, LCOS y Retorno de Inversión.
+4. **Web Agéntica & GEO:**
    - `llms.txt`: Resumen semántico para modelos de lenguaje (Gemini, ChatGPT, Perplexity).
    - `robots.txt`: Permisos explícitos para buscadores y motores de grounding IA.
+   - `sitemap.xml`: Índice canónico XML de páginas y artículos técnicos.
 
 ---
 
@@ -72,3 +80,6 @@
 - **2026-11-10:** Integración de la sección de Comprobación de Experiencia y Certeza Operativa debajo del Hero1 (estilo Design Flow, bento grid de 3 pilares: tiempo de respuesta ≤ 24h, ciclo integral de 4 etapas, y alcances de 5 kW a +100 kW en laboratorios, fábricas, clínicas, spa y hotelería). Despliegue en producción verificado.
 - **2026-11-10:** Corrección de geometría adaptativa de la cápsula de navegación.
 - **2026-11-10:** Reestructuración editorial de la sección de Blog en `index.html`: retiro del texto 'CONSTRUYENDO EL FUTURO ENERGÉTICO', categorización de las 3 fichas insignias como 'Publicaciones Recientes', incorporación de CTAs 'Ver todas las publicaciones' (cabecera) y 'Ver más publicaciones' (pie). Creación de la página completa `blog.html` (`/blog`) con filtrado dinámico por categorías y enrutamiento configurado en `vercel.json`. Despliegue verificado en producción.
+- **2026-11-10 / 2026-11-11:** Limpieza de UI en `index.html`: retiro del botón 'Ver más publicaciones' inferior y de la etiqueta 'IEER Journal · Publicaciones Recientes'. Incorporación de botones CTA 'Ver más' en cada slide del Mega Parallax Slider de Segmentos apuntando a sus respectivas landings (`/comercial`, `/agricola`, `/residencial`). Actualización de opciones del formulario de contacto (Residencial, Complejo Industrial, Hotelería / Spa / Wellness, Hospitales / UCIs / Laboratorios).
+- **2026-11-10 / 2026-11-11:** Creación de 3 landings de segmento de mercado con diseño Luxury Tech y UX optimizada en móvil: `comercial.html`, `agricola.html`, `residencial.html`.
+- **2026-11-10 / 2026-11-11:** Creación de 3 artículos técnicos completos con análisis matemático, fórmulas de ingeniería, tablas comparativas y autoría de Ing. Luis Cid: `articulo-codigo-red.html`, `articulo-bombeo-solar.html`, `articulo-baterias-litio.html`. Actualización de `blog.html` para enlazar artículos directamente en lugar de enlaces WhatsApp externos. Actualización de `vercel.json` y `llms.txt`, y creación de `sitemap.xml`.
