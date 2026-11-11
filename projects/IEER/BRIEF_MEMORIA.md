@@ -53,6 +53,7 @@
    - Formulario de consulta técnica conectado a `/api/contact/ieer`.
    - Botón directo de WhatsApp flotante hacia `+52 33 3302 5665`.
 2. **IEER Journal (Artículos Técnicos Especializados):**
+   - `blog.html`: Repositorio Editorial Completo (`/blog`) con buscador y filtrado interactivo por categorías (Almacenamiento, Micro-Redes, Calidad de Energía, Normativa, Bombeo).
    - `articulo-autonomia.html`: La Nueva Era de la Autonomía Energética Industrial.
    - `articulo-calidad-energia.html`: Calidad de Energía y Código de Red.
    - `articulo-offgrid.html`: Integración de Sistemas Off-Grid en Arquitectura Luxury.
@@ -69,3 +70,5 @@
 - **2026-11-09:** Implementación de endpoint de backend `/api/contact/ieer` y funciones SMTP de fallback seguro en `mailer.py`.
 - **2026-11-09:** Incorporación a `AgencyClient` en base de datos y al monitoreo continuo de `WebGuardian`.
 - **2026-11-10:** Integración de la sección de Comprobación de Experiencia y Certeza Operativa debajo del Hero1 (estilo Design Flow, bento grid de 3 pilares: tiempo de respuesta ≤ 24h, ciclo integral de 4 etapas, y alcances de 5 kW a +100 kW en laboratorios, fábricas, clínicas, spa y hotelería). Despliegue en producción verificado.
+- **2026-11-10:** Corrección de geometría adaptativa de la cápsula de navegación.
+- **2026-11-10:** Reestructuración editorial de la sección de Blog en `index.html`: retiro del texto 'CONSTRUYENDO EL FUTURO ENERGÉTICO', categorización de las 3 fichas insignias como 'Publicaciones Recientes', incorporación de CTAs 'Ver todas las publicaciones' (cabecera) y 'Ver más publicaciones' (pie). Creación de la página completa `blog.html` (`/blog`) con filtrado dinámico por categorías y enrutamiento configurado en `vercel.json`. Despliegue verificado en producción.

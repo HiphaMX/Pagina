@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Tag Manager & Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-P9D4NRLL"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J06TRYKQC3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J06TRYKQC3');
+    </script>
+    
+    <!-- SEO Optimization -->
+    <title>IEER Journal | Todas las Publicaciones y Artículos Técnicos</title>
+    <meta name="description" content="Explora el acervo editorial completo de IEER. Artículos de ingeniería sobre autonomía energética, almacenamiento en litio, micro-redes, calidad de energía y bombeo solar.">
+    <link rel="canonical" href="https://ieer.com.mx/blog">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="IEER Journal | Todas las Publicaciones">
+    <meta property="og:description" content="Perspectivas de ingeniería y reflexiones editoriales sobre la vanguardia en energía solar, micro-redes y fiabilidad industrial en México.">
+    <meta property="og:url" content="https://ieer.com.mx/blog">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://ieer.com.mx/Assets/industrial_storage.jpg">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Outfit:wght@100;200;300;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+    
+    <style>
+        :root {
+            --bg-nature: #080b0c;
+            --bg-nature-accent: #040607;
+            --color-forest: #222d2f;
+            --color-bronze: #a98567;
+            --color-bronze-glow: rgba(169, 133, 103, 0.25);
+            --color-alabaster: #e3ddd5;
+            --color-border: rgba(169, 133, 103, 0.12);
+            --color-border-active: rgba(227, 221, 213, 0.25);
+            --color-card-bg: rgba(12, 16, 18, 0.65);
+            --text-main: #e3ddd5;
+            --text-muted: #7e8d90;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-tech: 'Space Grotesk', sans-serif;
+            --font-future: 'Syncopate', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            
+            --transition-premium: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            overflow-x: clip;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-nature);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: clip;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(169, 133, 103, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(34, 45, 47, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Capsule Nav Bar */
+        header {
+            position: fixed;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            pointer-events: none;
+            transition: var(--transition-premium);
+        }
+
+        header.scrolled {
+            top: 1.25rem;
+        }
+
+        .nav-wrapper {
+            pointer-events: auto;
+            margin: 0 auto;
+            width: fit-content;
+            max-width: calc(100% - 2rem);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.45);
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(28px) saturate(220%);
+            -webkit-backdrop-filter: blur(28px) saturate(220%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2.25rem;
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                0 15px 35px rgba(0, 0, 0, 0.35);
+            transition: var(--transition-premium);
+        }
+
+        header.scrolled .nav-wrapper {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.75);
+            border-color: rgba(169, 133, 103, 0.25);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                0 20px 45px rgba(0, 0, 0, 0.45), 
+                0 0 30px rgba(169, 133, 103, 0.04);
+            padding: 0.55rem 2.25rem;
+        }
+
+        .nav-brand-link {
+            display: none;
+            text-decoration: none;
+            font-family: var(--font-future);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--color-alabaster);
+        }
+
+        .hamburger-btn {
+            display: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: clamp(1.5rem, 2.5vw, 2.5rem);
+            list-style: none;
+            white-space: nowrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(227, 221, 213, 0.85);
+            font-family: var(--font-tech);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            transition: var(--transition-premium);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            padding: 0.2rem 0;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--color-bronze);
+            text-shadow: 0 0 12px var(--color-bronze-glow);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--color-bronze);
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--color-bronze-glow);
+        }
+
+        /* Hero Editorial Section */
+        .journal-hero {
+            position: relative;
+            padding: 13rem 2rem 5rem;
+            text-align: center;
+            background: radial-gradient(ellipse at 50% 0%, rgba(169, 133, 103, 0.12) 0%, transparent 60%);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-tech);
+            font-size: 0.72rem;
+            letter-spacing: 0.22em;
+            color: var(--color-bronze);
+            text-transform: uppercase;
+            padding: 0.45rem 1.1rem;
+            border-radius: var(--radius-full);
+            background: rgba(169, 133, 103, 0.08);
+            border: 1px solid rgba(169, 133, 103, 0.22);
+            margin-bottom: 1.75rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4.2rem);
+            font-weight: 200;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            color: var(--color-alabaster);
+        }
+
+        .section-title span {
+            color: var(--color-bronze);
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .section-desc {
+            font-size: clamp(1rem, 1.2vw, 1.15rem);
+            line-height: 1.8;
+            color: var(--text-muted);
+            max-width: 720px;
+            margin: 0 auto;
+            font-weight: 200;
+        }
+
+        /* Filter Controls */
+        .filter-section {
+            padding: 2.5rem 2rem;
+            background: rgba(8, 11, 12, 0.7);
+            border-bottom: 1px solid rgba(227, 221, 213, 0.06);
+            position: sticky;
+            top: 5rem;
+            z-index: 40;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .filter-btn {
+            background: rgba(12, 16, 18, 0.6);
+            border: 1px solid rgba(227, 221, 213, 0.1);
+            color: var(--text-muted);
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.55rem 1.25rem;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition-premium);
+        }
+
+        .filter-btn:hover {
+            color: var(--color-alabaster);
+            border-color: rgba(169, 133, 103, 0.4);
+            background: rgba(169, 133, 103, 0.1);
+        }
+
+        .filter-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.35) 0%, rgba(169, 133, 103, 0.15) 100%), rgba(12, 16, 18, 0.95);
+            border-color: var(--color-bronze);
+            box-shadow: 0 0 15px rgba(169, 133, 103, 0.25);
+        }
+
+        /* Blog Grid Section */
+        .journal-content {
+            padding: 5rem 2rem 8rem;
+            flex: 1;
+        }
+
+        .journal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3.5rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .blog-post-card {
+            display: flex;
+            flex-direction: column;
+            background: rgba(12, 16, 18, 0.5);
+            border: 1px solid rgba(227, 221, 213, 0.06);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition-premium);
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+        }
+
+        .blog-post-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(169, 133, 103, 0.35);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(169, 133, 103, 0.08);
+            background: rgba(12, 16, 18, 0.85);
+        }
+
+        .blog-img-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid rgba(227, 221, 213, 0.08);
+            margin-bottom: 1.75rem;
+            background: #06090a;
+        }
+
+        .blog-post-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .blog-post-card:hover .blog-post-img {
+            transform: scale(1.06);
+        }
+
+        .card-badge-overlay {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(8, 11, 12, 0.85);
+            border: 1px solid rgba(169, 133, 103, 0.3);
+            color: var(--color-bronze);
+            font-family: var(--font-tech);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(8px);
+        }
+
+        .blog-post-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: var(--font-tech);
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            color: rgba(169, 133, 103, 0.75);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .blog-post-meta .dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(169, 133, 103, 0.35);
+        }
+
+        .blog-post-title {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 300;
+            line-height: 1.35;
+            color: var(--color-alabaster);
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            transition: var(--transition-premium);
+        }
+
+        .blog-post-card:hover .blog-post-title {
+            color: var(--color-bronze);
+        }
+
+        .blog-post-excerpt {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.7;
+            font-weight: 200;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .blog-post-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--color-alabaster);
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: var(--transition-premium);
+        }
+
+        .blog-post-link i {
+            transition: transform 0.4s ease;
+            font-size: 0.85rem;
+        }
+
+        .blog-post-card:hover .blog-post-link {
+            color: var(--color-bronze);
+        }
+
+        .blog-post-card:hover .blog-post-link i {
+            transform: translate3d(4px, 0, 0);
+        }
+
+        /* Technical Advisory Banner */
+        .advisory-banner-wrapper {
+            max-width: 1400px;
+            margin: 4rem auto 0;
+            padding: 0;
+        }
+
+        .advisory-banner {
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.12) 0%, rgba(8, 11, 12, 0.85) 60%), rgba(12, 16, 18, 0.7);
+            border: 1px solid rgba(169, 133, 103, 0.25);
+            border-radius: var(--radius-lg);
+            padding: 4rem 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advisory-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(169, 133, 103, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .advisory-info {
+            max-width: 750px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .advisory-info h3 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+            font-weight: 300;
+            line-height: 1.25;
+            color: var(--color-alabaster);
+            margin-bottom: 1rem;
+        }
+
+        .advisory-info h3 span {
+            color: var(--color-bronze);
+            font-style: italic;
+        }
+
+        .advisory-info p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.7;
+            font-weight: 200;
+        }
+
+        .advisory-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 250px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-whatsapp-advisory {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: #25d366;
+            color: #040607;
+            padding: 1rem 1.75rem;
+            border-radius: var(--radius-full);
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition-premium);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.25);
+        }
+
+        .btn-whatsapp-advisory:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.4);
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary-advisory {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            background: transparent;
+            color: var(--color-alabaster);
+            padding: 0.95rem 1.75rem;
+            border-radius: var(--radius-full);
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid rgba(227, 221, 213, 0.2);
+            transition: var(--transition-premium);
+        }
+
+        .btn-secondary-advisory:hover {
+            border-color: var(--color-bronze);
+            color: var(--color-bronze);
+            background: rgba(169, 133, 103, 0.08);
+        }
+
+        /* Footer */
+        #interactive-reveal-footer {
+            background: #040607;
+            border-top: 1px solid var(--color-border);
+            padding: 6rem 2rem 3rem;
+            margin-top: auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto 5rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-wrapper {
+            position: relative;
+            width: 160px;
+            height: 48px;
+        }
+
+        .footer-logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: opacity 0.4s ease;
+        }
+
+        .logo-hover {
+            opacity: 0;
+        }
+
+        .footer-logo-wrapper:hover .logo-hover {
+            opacity: 1;
+        }
+
+        .footer-logo-wrapper:hover .logo-default {
+            opacity: 0;
+        }
+
+        .footer-brand-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            font-weight: 200;
+            max-width: 380px;
+        }
+
+        .footer-col-title {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-bronze);
+            margin-bottom: 1.75rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            transition: var(--transition-premium);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-alabaster);
+            transform: translateX(4px);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(227, 221, 213, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-tech);
+        }
+
+        .subfooter-link {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .subfooter-logo {
+            height: 18px;
+            width: auto;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .subfooter-logo:hover {
+            opacity: 1;
+        }
+
+        /* Floating WhatsApp Action Pill */
+        .whatsapp-float-btn {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            width: 58px;
+            height: 58px;
+            background: #25d366;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.85rem;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4), 0 0 30px rgba(37, 211, 102, 0.2);
+            z-index: 99;
+            text-decoration: none;
+            transition: var(--transition-premium);
+        }
+
+        .whatsapp-float-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.6);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1100px) {
+            .journal-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+            .advisory-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 3rem 2.5rem;
+            }
+            .advisory-actions {
+                width: 100%;
+                flex-direction: row;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                top: 1rem;
+                padding: 0 1rem;
+            }
+            .nav-wrapper {
+                padding: 0.6rem 1.25rem;
+                width: 100% !important;
+                max-width: 480px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                margin: 0 auto !important;
+            }
+            .nav-brand-link {
+                display: block;
+            }
+            .hamburger-btn {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 22px;
+                height: 14px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                z-index: 110;
+            }
+            .hamburger-bar {
+                width: 100%;
+                height: 2px;
+                background-color: var(--color-alabaster);
+                border-radius: 2px;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(1) {
+                transform: translateY(6px) rotate(45deg);
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger-btn.active .hamburger-bar:nth-child(3) {
+                transform: translateY(-6px) rotate(-45deg);
+            }
+            .nav-menu {
+                position: absolute;
+                top: calc(100% + 10px);
+                left: 0;
+                right: 0;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(8, 11, 12, 0.96);
+                border: 1px solid rgba(227, 221, 213, 0.08);
+                border-radius: 20px;
+                backdrop-filter: blur(25px) saturate(180%);
+                -webkit-backdrop-filter: blur(25px) saturate(180%);
+                display: none;
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1.25rem;
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+                opacity: 0;
+                transform: translateY(-10px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                z-index: 100;
+            }
+            .nav-menu.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.25rem;
+                width: 100%;
+            }
+            .nav-links a {
+                font-size: 0.85rem;
+                letter-spacing: 0.2em;
+                padding: 0.5rem;
+            }
+            .journal-hero {
+                padding: 10rem 1rem 3.5rem;
+            }
+            .filter-section {
+                top: 4.5rem;
+                padding: 1.5rem 1rem;
+            }
+            .filter-container {
+                gap: 0.5rem;
+            }
+            .filter-btn {
+                font-size: 0.7rem;
+                padding: 0.45rem 1rem;
+            }
+            .journal-content {
+                padding: 3rem 1rem 5rem;
+            }
+            .journal-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .advisory-actions {
+                flex-direction: column;
+            }
+            .whatsapp-float-btn {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Capsule Navigation Header -->
+    <header id="main-header">
+        <div class="nav-wrapper">
+            <a href="/#inicio" class="nav-brand-link">IEER</a>
+            
+            <button class="hamburger-btn" aria-label="Menu" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+            
+            <nav class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="/#inicio">Inicio</a></li>
+                    <li><a href="/#autonomia">Servicios</a></li>
+                    <li><a href="/#sectores">Soluciones</a></li>
+                    <li><a href="/blog" class="active">Blog</a></li>
+                    <li><a href="/#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Journal Hero -->
+    <section class="journal-hero">
+        <div class="hero-container">
+            <span class="badge"><i class="ph ph-newspaper"></i> IEER Journal // Acervo Editorial</span>
+            <h1 class="section-title">Todas las <span>Publicaciones</span></h1>
+            <p class="section-desc">Artículos técnicos, análisis de normativas del Código de Red y reflexiones de alta ingeniería sobre autonomía energética, almacenamiento en litio y micro-redes en México.</p>
+        </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">Todas (6)</button>
+            <button class="filter-btn" data-filter="almacenamiento">Almacenamiento (2)</button>
+            <button class="filter-btn" data-filter="micro-redes">Micro-Redes (1)</button>
+            <button class="filter-btn" data-filter="calidad-energia">Calidad de Energía (1)</button>
+            <button class="filter-btn" data-filter="normativa">Normativa & CFE (1)</button>
+            <button class="filter-btn" data-filter="agropecuario">Agropecuario (1)</button>
+        </div>
+    </section>
+
+    <!-- Main Journal Content Grid -->
+    <main class="journal-content">
+        <div class="journal-grid" id="journal-grid">
+            
+            <!-- Article 1: Almacenamiento Industrial -->
+            <a href="articulo-autonomia.html" class="blog-post-card" data-category="almacenamiento">
+                <div class="blog-img-wrapper">
+                    <img src="Assets/industrial_storage.jpg" alt="Autonomía Energética Industrial" class="blog-post-img" loading="lazy">
+                    <span class="card-badge-overlay">Reciente</span>
+                </div>
+                <div class="blog-post-meta">
+                    <span>01 // Almacenamiento</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 5 min</span>
+                </div>
+                <h2 class="blog-post-title">La Nueva Era de la Autonomía Energética Industrial</h2>
+                <p class="blog-post-excerpt">Cómo los sistemas de almacenamiento de última generación en litio LFP redefinen la continuidad operativa y la resiliencia en plantas críticas ante las deficiencias de la red comercial.</p>
+                <span class="blog-post-link">Leer artículo completo <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+
+            <!-- Article 2: Micro-Redes Luxury -->
+            <a href="articulo-offgrid.html" class="blog-post-card" data-category="micro-redes">
+                <div class="blog-img-wrapper">
+                    <img src="Assets/nature_solar.jpg" alt="Sistemas Off-grid Residenciales" class="blog-post-img" loading="lazy">
+                    <span class="card-badge-overlay">Reciente</span>
+                </div>
+                <div class="blog-post-meta">
+                    <span>02 // Micro-Redes</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 4 min</span>
+                </div>
+                <h2 class="blog-post-title">Integración de Sistemas Off-Grid en Arquitectura Luxury</h2>
+                <p class="blog-post-excerpt">El arte de diseñar ingeniería desconectada de la red que opera en absoluta armonía visual y acústica en residencias de descanso y entornos naturales remotos.</p>
+                <span class="blog-post-link">Leer artículo completo <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+
+            <!-- Article 3: Calidad de Energía -->
+            <a href="articulo-calidad-energia.html" class="blog-post-card" data-category="calidad-energia">
+                <div class="blog-img-wrapper">
+                    <img src="Assets/telemetry_terminal.jpg" alt="Calidad de Energía Industrial" class="blog-post-img" loading="lazy">
+                    <span class="card-badge-overlay">Reciente</span>
+                </div>
+                <div class="blog-post-meta">
+                    <span>03 // Auditoría Técnica</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 6 min</span>
+                </div>
+                <h2 class="blog-post-title">Calidad de Energía: El Silencioso Pilar de la Eficiencia</h2>
+                <p class="blog-post-excerpt">El impacto económico invisible de las distorsiones armónicas y fluctuaciones de voltaje en el ciclo de vida, garantías y desgaste térmico de maquinaria pesada.</p>
+                <span class="blog-post-link">Leer artículo completo <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+
+            <!-- Article 4: Código de Red 2.0 -->
+            <a href="https://wa.me/523333025665?text=Hola%20IEER,%20leí%20el%20artículo%20de%20Código%20de%20Red%202.0%20y%20requiero%20asesoría%20para%20mi%20planta" class="blog-post-card" data-category="normativa" target="_blank">
+                <div class="blog-img-wrapper">
+                    <img src="Assets/remote_mountain_solar.jpg" alt="Código de Red CENACE y CFE" class="blog-post-img" loading="lazy">
+                    <span class="card-badge-overlay">Auditoría</span>
+                </div>
+                <div class="blog-post-meta">
+                    <span>04 // Normativa & CFE</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 7 min</span>
+                </div>
+                <h2 class="blog-post-title">Código de Red 2.0: Guía de Cumplimiento en Media y Alta Tensión</h2>
+                <p class="blog-post-excerpt">Aspectos técnicos obligatorios ante la CRE y el CENACE: cómo subsanar factor de potencia inductivo/capacitivo y prevenir sanciones severas en centros de carga.</p>
+                <span class="blog-post-link">Solicitar Asesoría Técnica <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+
+            <!-- Article 5: Bombeo Solar Agropecuario -->
+            <a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20información%20sobre%20sistemas%20de%20bombeo%20solar%20híbrido" class="blog-post-card" data-category="agropecuario" target="_blank">
+                <div class="blog-img-wrapper">
+                    <img src="Assets/nature_irrigation.jpg" alt="Bombeo Solar Agropecuario" class="blog-post-img" loading="lazy">
+                    <span class="card-badge-overlay">Agropecuario</span>
+                </div>
+                <div class="blog-post-meta">
+                    <span>05 // Agropecuario</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 5 min</span>
+                </div>
+                <h2 class="blog-post-title">Bombeo Solar de Alto Rendimiento en Pozo Profundo y Superficie</h2>
+                <p class="blog-post-excerpt">Continuidad hídrica asegurada para agricultura tecnificada y ganadería mediante sistemas solares híbridos que reducen a cero el consumo de diesel y costos de red.</p>
+                <span class="blog-post-link">Consultar Factibilidad <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+
+            <!-- Article 6: Litio LFP vs Plomo-Ácido -->
+            <a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20evaluación%20técnica%20de%20bancos%20de%20baterías%20litio" class="blog-post-card" data-category="almacenamiento" target="_blank">
+                <div class="blog-img-wrapper">
+                    <img src="Assets/lithium_battery.jpg" alt="Baterías Litio LFP Almacenamiento" class="blog-post-img" loading="lazy">
+                    <span class="card-badge-overlay">Ingeniería</span>
+                </div>
+                <div class="blog-post-meta">
+                    <span>06 // Tecnología Litio</span>
+                    <span class="dot"></span>
+                    <span>Lectura: 5 min</span>
+                </div>
+                <h2 class="blog-post-title">Baterías Litio LFP vs. Plomo-Ácido: Ciclo de Vida y Retorno de Inversión</h2>
+                <p class="blog-post-excerpt">Comparativa técnica sobre estabilidad térmica, DoD superior al 90%, nulo mantenimiento y coste total de propiedad (TCO) en proyectos industriales de 5 a +100 kW.</p>
+                <span class="blog-post-link">Consultar Especialistas <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+
+        </div>
+
+        <!-- Technical Advisory CTA Banner -->
+        <div class="advisory-banner-wrapper">
+            <div class="advisory-banner">
+                <div class="advisory-info">
+                    <span class="badge"><i class="ph ph-lightning"></i> Consultoría Inmediata</span>
+                    <h3>¿Requieres un estudio técnico para <span>tu proyecto</span>?</h3>
+                    <p>Brindamos soluciones desde una pequeña demanda (5 kW) hasta gran industria (+100 kW). Diseñamos con especificaciones rigurosas para laboratorios, fábricas, clínicas, spa y hotelería. Respuesta garantizada en 24 horas.</p>
+                </div>
+                <div class="advisory-actions">
+                    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20revisé%20su%20Journal%20y%20deseo%20una%20propuesta%20técnica%20para%20un%20proyecto" target="_blank" class="btn-whatsapp-advisory">
+                        <i class="ph ph-whatsapp-logo"></i>
+                        <span>WhatsApp Directo</span>
+                    </a>
+                    <a href="/#contacto" class="btn-secondary-advisory">
+                        <span>Formulario Técnico</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="interactive-reveal-footer">
+        <div class="footer-inner-content">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo-wrapper">
+                        <img src="Assets/Logotipo/IEER2.svg" alt="IEER" class="footer-logo logo-default">
+                        <img src="Assets/Logotipo/IEER.svg" alt="IEER" class="footer-logo logo-hover">
+                    </div>
+                    <p class="footer-brand-text">Ingeniería especializada en micro-redes, almacenamiento de baterías de litio y optimización energética independiente. Solidez de infraestructura en todo México.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Servicios</h4>
+                    <ul class="footer-links">
+                        <li><a href="/#autonomia">Respaldo de energía</a></li>
+                        <li><a href="/#sectores">Energía solar</a></li>
+                        <li><a href="/#autonomia">Sistemas aislados</a></li>
+                        <li><a href="/#contacto">Análisis técnico</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Navegación</h4>
+                    <ul class="footer-links">
+                        <li><a href="/#inicio">Inicio</a></li>
+                        <li><a href="/blog">Journal Editorial</a></li>
+                        <li><a href="/#contacto">Consulta Técnica</a></li>
+                        <li><a href="/llms.txt">Ficha IA (llms.txt)</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Contacto</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:lcid@ieer.com.mx"><i class="ph ph-envelope"></i> lcid@ieer.com.mx</a></li>
+                        <li><a href="tel:+523333025665"><i class="ph ph-phone"></i> +52 33 3302 5665</a></li>
+                        <li><a href="https://wa.me/523333025665?text=Hola%20IEER,%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20micro-redes%20y%20sistemas%20solares." target="_blank"><i class="ph ph-whatsapp-logo"></i> WhatsApp Directo</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>Copyright 2026 © IEER | Diseño by</span>
+                <a href="https://www.hipha.mx/" target="_blank" class="subfooter-link">
+                    <img src="Assets/LogoSubfooter/LogoSubfooter.svg" alt="Hipha" class="subfooter-logo">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Action -->
+    <a href="https://wa.me/523333025665?text=Hola%20IEER,%20deseo%20informaci%C3%B3n%20sobre%20sus%20servicios%20de%20ingenier%C3%ADa." class="whatsapp-float-btn" aria-label="Contactar a IEER por WhatsApp" target="_blank" rel="noopener noreferrer">
+        <i class="ph ph-whatsapp-logo"></i>
+    </a>
+
+    <!-- Interactive Filter & Navigation Script -->
+    <script>
+        // Sticky Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Hamburger Menu Toggle
+        const hamburgerBtn = document.querySelector('.hamburger-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        if (hamburgerBtn && navMenu) {
+            hamburgerBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const active = navMenu.classList.toggle('active');
+                hamburgerBtn.classList.toggle('active');
+                hamburgerBtn.setAttribute('aria-expanded', active);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    hamburgerBtn.classList.remove('active');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Category Filtering
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.journal-grid .blog-post-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                cards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    if (filter === 'all' || category === filter) {
+                        card.style.display = 'flex';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 50);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

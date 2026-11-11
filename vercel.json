@@ -701,7 +701,7 @@
       "dest": "/projects/IEER/$1/$2"
     },
     {
-      "src": "/(articulo-autonomia|articulo-calidad-energia|articulo-offgrid|index)(.html|)",
+      "src": "/(articulo-autonomia|articulo-calidad-energia|articulo-offgrid|blog|index)(.html|)",
       "has": [
         {
           "type": "host",

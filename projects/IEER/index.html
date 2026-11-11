@@ -1800,7 +1800,7 @@
         .blog-section {
             position: relative;
             padding: 8rem 0;
-            background: #0b1112;
+            background: #080b0c;
             border-top: 1px solid var(--color-border);
             z-index: 10;
         }
@@ -1931,6 +1931,87 @@
 
         .blog-post-card:hover .blog-post-link i {
             transform: translate3d(4px, 0, 0);
+        }
+
+        .blog-header-all-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-tech);
+            font-size: 0.72rem;
+            letter-spacing: 0.16em;
+            color: var(--color-bronze);
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 0.55rem 1.25rem;
+            border: 1px solid rgba(169, 133, 103, 0.28);
+            border-radius: var(--radius-full);
+            background: rgba(169, 133, 103, 0.06);
+            backdrop-filter: blur(12px);
+            transition: var(--transition-premium);
+        }
+
+        .blog-header-all-link:hover {
+            color: var(--color-alabaster);
+            border-color: var(--color-bronze);
+            background: rgba(169, 133, 103, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(169, 133, 103, 0.15);
+        }
+
+        .blog-header-all-link i {
+            transition: transform 0.4s ease;
+            font-size: 0.85rem;
+        }
+
+        .blog-header-all-link:hover i {
+            transform: translate(2px, -2px);
+        }
+
+        .blog-footer-cta-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 4.5rem;
+            padding: 0 4rem;
+        }
+
+        .blog-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 1rem 2.2rem;
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-alabaster);
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.2) 0%, rgba(169, 133, 103, 0.08) 100%), rgba(12, 16, 18, 0.8);
+            border: 1px solid rgba(169, 133, 103, 0.35);
+            border-radius: var(--radius-full);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: var(--transition-premium);
+        }
+
+        .blog-all-btn:hover {
+            color: #fff;
+            border-color: var(--color-bronze);
+            background: linear-gradient(135deg, rgba(169, 133, 103, 0.35) 0%, rgba(169, 133, 103, 0.15) 100%), rgba(12, 16, 18, 0.95);
+            box-shadow: 0 20px 45px rgba(169, 133, 103, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .blog-all-btn i {
+            transition: transform 0.4s ease;
+            font-size: 0.95rem;
+            color: var(--color-bronze);
+        }
+
+        .blog-all-btn:hover i {
+            transform: translateX(4px);
+            color: #fff;
         }
 
         /* Testimonials/Reviews Marquee Section */
@@ -2283,6 +2364,10 @@
                 grid-template-columns: 1fr;
                 gap: 4rem;
                 padding: 0 1rem;
+            }
+            .blog-footer-cta-container {
+                padding: 0 1rem;
+                margin-top: 3.5rem;
             }
             .blog-post-title {
                 font-size: 1.35rem;
@@ -3132,12 +3217,15 @@
     <section class="blog-section" id="blog">
         <div class="blog-title-container">
             <div class="blog-title-left">
-                <span class="badge" style="margin-bottom: 1rem;"><i class="ph ph-newspaper"></i> IEER Journal</span>
+                <span class="badge" style="margin-bottom: 1rem;"><i class="ph ph-newspaper"></i> IEER Journal · Publicaciones Recientes</span>
                 <h2 class="section-title" style="margin-left: 0;">Perspectivas de <span>Ingeniería</span></h2>
                 <p class="section-desc" style="max-width: 600px; margin-left: 0; margin-top: 1.5rem;">Artículos técnicos y reflexiones editoriales sobre la vanguardia en autonomía, almacenamiento de energía y fiabilidad industrial.</p>
             </div>
             <div class="blog-title-right">
-                <p style="font-family: var(--font-tech); font-size: 0.72rem; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase;">CONSTRUYENDO EL FUTURO ENERGÉTICO</p>
+                <a href="/blog" class="blog-header-all-link">
+                    <span>Ver todas las publicaciones</span>
+                    <i class="ph ph-arrow-up-right"></i>
+                </a>
             </div>
         </div>
 
@@ -3185,6 +3273,13 @@
                 <h3 class="blog-post-title">Calidad de Energía: El Silencioso Pilar de la Eficiencia</h3>
                 <p class="blog-post-excerpt">El impacto económico invisible de las distorsiones armónicas y fluctuaciones de voltaje en el ciclo de vida de maquinaria pesada.</p>
                 <span class="blog-post-link">Leer artículo <i class="ph ph-arrow-up-right"></i></span>
+            </a>
+        </div>
+
+        <div class="blog-footer-cta-container">
+            <a href="/blog" class="blog-all-btn">
+                <span>Ver más publicaciones</span>
+                <i class="ph ph-arrow-right"></i>
             </a>
         </div>
     </section>

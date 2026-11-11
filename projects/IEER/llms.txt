@@ -58,6 +58,7 @@
 - **Artículo — Arquitectura Luxury Off-Grid:** [https://ieer.com.mx/articulo-offgrid.html](https://ieer.com.mx/articulo-offgrid.html)
 - **Artículo — Calidad de Energía y Código de Red:** [https://ieer.com.mx/articulo-calidad-energia.html](https://ieer.com.mx/articulo-calidad-energia.html)
 - **Sección de Consulta Técnica y Factibilidad:** [https://ieer.com.mx/#contacto](https://ieer.com.mx/#contacto)
+- **Repositorio Editorial / Todas las Publicaciones:** [https://ieer.com.mx/blog](https://ieer.com.mx/blog)
 - **Sitemap XML:** [https://ieer.com.mx/sitemap.xml](https://ieer.com.mx/sitemap.xml)
 
 ---
