@@ -100,4 +100,6 @@
   - **Metadatos y Títulos Homologados:** Actualización precisa de etiquetas `<title>` y `og:title` en todas las páginas: Home (`IEER | Ingeniería Especializada en Energías Renovables`), Industrial, Comercial y Servicios, Agrícola (`Bombeo Solar y Continuidad Energética | IEER`), Residencial Luxury (`Autonomía Solar y Confort sin Límites | IEER`), Blog (`IEER Blog | Todas las Publicaciones`) y Preguntas Frecuentes (`Preguntas Frecuentes | IEER Ingeniería Especializada en Energías Renovables`).
   - **Transición Editorial de Journal a Blog:** Homologación en todo el ecosistema de la denominación 'Blog' en reemplazo de 'Journal' (títulos, cápsulas de retorno, enlaces de navegación, badges, textos de botones y enlaces de autor).
   - **Alineación de Enlace en Footer:** Homologación en las 14 páginas del texto de solución a solo `Industrial` (retirando `& BESS`).
+- **2026-11-11 (Formulario Home - Sector Industrial):**
+  - **Inclusión de Sector Industrial:** Adición de `<option value="Sector Industrial">Sector Industrial</option>` como primera opción de selección en el selector de sector (`#contact-sector`) del formulario de diagnóstico de la página principal (`index.html`), habilitando la recepción y canalización de proyectos industriales desde la Home. Despliegue en producción verificado.
 
