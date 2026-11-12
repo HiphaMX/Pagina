@@ -215,6 +215,7 @@ class BusinessPublicOut(BaseModel):
     coto_address: Optional[str] = None
     business_type: Optional[str] = "local-establecido"
     space_label: Optional[str] = None
+    phone: Optional[str] = None
     whatsapp: Optional[str] = None
     preferred_contact_methods: Optional[str] = None
     schedule: Optional[str] = None
@@ -224,11 +225,14 @@ class BusinessPublicOut(BaseModel):
     photos: Optional[str] = None
     cover_photo: Optional[str] = None
     microsite_data: Optional[str] = None
+    payment_status: Optional[str] = "free_basic"
+    payment_amount: Optional[float] = 0.0
     is_verified_badge: bool = False
     status: str = "active"
 
     class Config:
         from_attributes = True
+
 
 
 # --- EMAIL TEMPLATES ---

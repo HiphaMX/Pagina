@@ -320,6 +320,16 @@
         return;
       }
 
+      // Si el comercio es un Registro Básico Gratuito ($0), no cuenta con página interactiva dedicada
+      const rawWeb = String(reg.website || "").trim().toLowerCase();
+      const normName = String(reg.business_name || "").toLowerCase();
+      const isOfficial = rawWeb.includes("botica") || rawWeb.includes("chill") || rawWeb.includes("amdi") || normName.includes("botica") || normName.includes("chill") || normName.includes("amdi");
+      if (reg.payment_status === "free_basic" && !isOfficial) {
+        const targetCat = reg.category_slug || "servicios-hogar";
+        window.location.replace(`categoria.html?cat=${encodeURIComponent(targetCat)}`);
+        return;
+      }
+
       // 1. Títulos y Metadatos
       const bName = reg.business_name || "Comercio Verificado";
       document.title = `${bName} · Página Interactiva | Epizentro Natura`;

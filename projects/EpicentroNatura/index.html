@@ -1193,11 +1193,12 @@
 
       // 2. Identificar si cuenta con Página Interactiva en Epizentro ($399 anual o Cortesía Oficial Hipha)
       const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
-      const normName = String(b.name || "").toLowerCase();
       const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
       const isChillon = rawWeb === "chile-chillon" || b.id === "reg-chile-chillon" || normName.includes("chile chillón") || normName.includes("chile chillon");
       const isAmdi = rawWeb === "amdi" || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
-      const hasDedicatedMicrosite = isBotica || isChillon || isAmdi || b.has_microsite === true || !!b.microsite_data;
+      const isOfficialShowcase = isBotica || isChillon || isAmdi;
+      const isFreeBasic = b.payment_status === "free_basic" || (!isOfficialShowcase && b.payment_status !== "approved" && b.payment_status !== "waived" && (b.payment_amount === 0 || b.has_microsite === false));
+      const hasDedicatedMicrosite = !isFreeBasic && (isOfficialShowcase || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
         let micrositeUrl = "";
@@ -1770,6 +1771,7 @@
               const isChillon = normName.includes("chill") || biz.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || biz.id === "reg-chile-chillon";
               const isBotica = normName.includes("botica") || biz.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || biz.id === "reg-botica-silvestre";
               const isAmdi = biz.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
+              const isOfficialShowcase = isChillon || isBotica || isAmdi;
 
               let mdata = null;
               if (biz.microsite_data) {
@@ -1778,8 +1780,9 @@
                 } catch(e) {}
               }
 
-              // Determinar si cuenta con página interactiva en Epizentro
-              const hasInteractive = isChillon || isBotica || isAmdi || biz.payment_status === "approved" || biz.payment_status === "waived" || !!(mdata && (mdata.featured_section || mdata.featured_products));
+              // Determinar si es registro básico gratuito ($0) o cuenta con suscripción interactiva ($399 anual / cortesía)
+              const isFreeBasic = biz.payment_status === "free_basic" || (!isOfficialShowcase && biz.payment_status !== "approved" && biz.payment_status !== "waived" && (biz.payment_amount === 0));
+              const hasInteractive = !isFreeBasic && (isOfficialShowcase || biz.payment_status === "approved" || biz.payment_status === "waived");
 
               // Extraer fotos para la tarjeta
               let bizPhotos = [];
@@ -1826,6 +1829,8 @@
                 phone: biz.phone,
                 whatsapp: biz.whatsapp,
                 website: isChillon ? "https://elchilechillon.mx" : (isBotica ? "botica-silvestre" : (isAmdi ? "amdi" : (biz.website || null))),
+                payment_status: biz.payment_status || "free_basic",
+                payment_amount: biz.payment_amount !== null && biz.payment_amount !== undefined ? biz.payment_amount : 0.0,
                 has_microsite: hasInteractive,
                 microsite_data: mdata,
                 cover_photo: biz.cover_photo || (mdata ? mdata.cover_photo : null),
