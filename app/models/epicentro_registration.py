@@ -46,7 +46,7 @@ class EpicentroRegistration(Base):
     mercadopago_preference_id = Column(String(100), nullable=True, index=True)
     mercadopago_payment_id = Column(String(100), nullable=True, index=True)
     payment_status = Column(String(30), default="pending", index=True)  # pending, approved, rejected
-    payment_amount = Column(Float, default=399.0)
+    payment_amount = Column(Float, default=770.0)
     is_verified_badge = Column(Boolean, default=False)
 
     # Flujo de Moderación:

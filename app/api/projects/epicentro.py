@@ -140,7 +140,7 @@ class RegisterInitiateRequest(BaseModel):
     delivery_available: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
-    plan_type: Optional[str] = "microsite"  # "microsite" ($399/año) o "free_basic" ($0)
+    plan_type: Optional[str] = "microsite"  # "microsite" ($770/año) o "basic" ($99/año)
     honeypot: Optional[str] = None  # Trampa anti-bot
 
 
@@ -178,7 +178,7 @@ class KamPaymentReportRequest(BaseModel):
     registration_id: str
     kam_name: str
     payment_method: Optional[str] = "kam_direct"
-    amount: Optional[float] = 399.0
+    amount: Optional[float] = 770.0
     notes: Optional[str] = None
 
 
@@ -453,16 +453,16 @@ async def initiate_registration(
     # Generar código de WhatsApp (ej. NATURA-5819)
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
 
-    # Determinar si es Plan con Micrositio ($399) o Registro Básico Gratuito ($0)
-    is_free = (payload.plan_type == "free_basic")
-    initial_payment_amount = 0.0 if is_free else 399.0
-    initial_payment_status = "free_basic" if is_free else (
+    # Determinar si es Plan con Página Interactiva ($770) o Plan Directorio Comercial ($99)
+    is_basic = (payload.plan_type in ("basic", "free_basic", "directorio"))
+    initial_payment_amount = 99.0 if is_basic else 770.0
+    initial_payment_status = "pending_basic_payment" if is_basic else (
         "pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}"
     )
     initial_moderation_notes = (
-        "Alta en Registro Básico Gratuito ($0 MXN: solo textos e hipervínculos funcionales)."
-        if is_free else
-        "Solicitud Plan Anual con Micrositio ($399 MXN / año: catálogo interactivo y sello verificado)."
+        "Alta en Plan Directorio ($99 MXN / año: presencia verificada en directorio, llamadas y WhatsApp directo)."
+        if is_basic else
+        "Solicitud Plan Anual con Página Interactiva ($770 MXN / año: catálogo interactivo, fotos y pedidos a WhatsApp)."
     )
 
     # Crear o actualizar registro (email sin bloqueo de OTP para eliminar fricción a prospectos)
@@ -481,17 +481,17 @@ async def initiate_registration(
         whatsapp=payload.whatsapp.strip(),
         preferred_contact_methods=payload.preferred_contact_methods.strip() if payload.preferred_contact_methods else None,
         schedule=payload.schedule.strip() if payload.schedule else None,
-        photos=None if is_free else (
+        photos=None if is_basic else (
             json.dumps(payload.photos) if isinstance(payload.photos, list)
             else (payload.photos.strip() if payload.photos else None)
         ),
-        cover_photo=None if is_free else (payload.cover_photo.strip() if payload.cover_photo else None),
-        microsite_data=None if is_free else (
+        cover_photo=None if is_basic else (payload.cover_photo.strip() if payload.cover_photo else None),
+        microsite_data=None if is_basic else (
             json.dumps(payload.microsite_data) if isinstance(payload.microsite_data, (dict, list))
             else (payload.microsite_data.strip() if payload.microsite_data else None)
         ),
         kam_name=payload.kam_name.strip() if payload.kam_name else None,
-        payment_method="free_basic" if is_free else (payload.payment_method.strip() if payload.payment_method else None),
+        payment_method="mercadopago_subscription" if not payload.payment_method else payload.payment_method.strip(),
         delivery_available=payload.delivery_available,
         website=payload.website.strip() if payload.website else None,
         description=payload.description,
@@ -605,16 +605,23 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
 
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
     site_domain = os.getenv("EPIZENTRO_URL", "https://www.epizentro.com")
-    amount = float(reg.payment_amount or 399.0)
+    amount = float(reg.payment_amount if (reg.payment_amount is not None and reg.payment_amount > 0) else (99.0 if reg.payment_status in ("free_basic", "pending_basic_payment") else 770.0))
+    is_basic_plan = (amount <= 150.0)
+    item_title = f"Directorio Vecinal Natura: {reg.business_name} ($99 MXN/año)" if is_basic_plan else f"Página Interactiva Natura: {reg.business_name} ($770 MXN/año)"
+    item_desc = (
+        "Suscripción anual $99 MXN: Presencia en Directorio Oficial + Teléfono y WhatsApp directo"
+        if is_basic_plan else
+        "Suscripción anual $770 MXN: Sello Vecino Verificado + Página Interactiva con catálogo de productos y pedidos a WhatsApp"
+    )
 
     preference_data = {
         "items": [
             {
-                "title": f"Suscripción Anual: {reg.business_name} (Epizentro)",
+                "title": item_title,
                 "quantity": 1,
                 "currency_id": "MXN",
                 "unit_price": amount,
-                "description": "Suscripción anual $399 MXN: Sello Vecino Verificado + Micrositio interactivo con catálogo"
+                "description": item_desc
             }
         ],
         "payer": {
@@ -889,20 +896,26 @@ async def report_kam_payment(
     reg.kam_name = kam
     method = payload.payment_method or "mercadopago_subscription"
     
-    if method not in ("mercadopago_subscription", "free_basic"):
+    if method not in ("mercadopago_subscription", "basic_99", "basic", "free_basic", "kam_direct"):
         raise HTTPException(
             status_code=400,
-            detail="Por políticas de privacidad y seguridad, los pagos de suscripción se realizan exclusivamente en línea vía Mercado Pago."
+            detail="Por políticas de privacidad y seguridad, los pagos de suscripción se realizan en línea vía Mercado Pago o reporte oficial de KAM."
         )
 
     reg.payment_method = method
     
     if method == "mercadopago_subscription":
         reg.payment_status = "pending_mp_payment"
-        reg.payment_amount = 399.0
-    else:
+        reg.payment_amount = float(payload.amount or 770.0)
+    elif method in ("basic_99", "basic"):
+        reg.payment_status = "basic_approved" if (payload.amount and payload.amount > 0) else "pending_basic_payment"
+        reg.payment_amount = float(payload.amount or 99.0)
+    elif method == "free_basic":
         reg.payment_status = "free_basic"
-        reg.payment_amount = 0.0
+        reg.payment_amount = float(payload.amount or 0.0)
+    else:
+        reg.payment_status = "approved" if (payload.amount and payload.amount >= 500.0) else "basic_approved"
+        reg.payment_amount = float(payload.amount or 770.0)
 
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     note_line = f"Registro de pago '{method}' con '{kam}' ({now_str} UTC)"
@@ -917,6 +930,8 @@ async def report_kam_payment(
     folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
     if method == "mercadopago_subscription":
         folio = f"NATURA-SUB-{folio_suffix}"
+    elif method in ("basic_99", "basic"):
+        folio = f"NATURA-DIR-{folio_suffix}"
     else:
         folio = f"NATURA-GRATIS-{folio_suffix}"
 
@@ -1133,7 +1148,7 @@ def seed_official_showcases(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="approved",
-                payment_amount=399.0,
+                payment_amount=770.0,
                 is_verified_badge=True,
                 status="active",
                 moderation_notes="Comercio fundador oficial con página interactiva activa."
@@ -1194,7 +1209,7 @@ def seed_official_showcases(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="waived",
-                payment_amount=399.0,
+                payment_amount=770.0,
                 kam_name="Cortesía Hipha",
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
@@ -1262,7 +1277,7 @@ def seed_official_showcases(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="waived",
-                payment_amount=399.0,
+                payment_amount=770.0,
                 kam_name="Chizko",
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,

@@ -83,9 +83,9 @@
   let currentBusinessName = "";
   let waVerified = false;
   let currentPaymentMode = "mp";
-  let currentSelectedPlan = "microsite"; // "microsite" ($399/año) o "free_basic" ($0)
+  let currentSelectedPlan = "microsite"; // "microsite" ($770/año) o "basic" ($99/año)
 
-  // Configuración del Micrositio Oficial ($399/año)
+  // Configuración del Micrositio Oficial ($770/año)
   let registerCoverPhoto = "";
   let registerFeaturedProducts = []; // Array of { name, price, description, photo }
   let registerMenuSections = []; // Array of { title, subtitle, description, items: [{ name, price, description }] }
@@ -93,7 +93,7 @@
   let registerUploadedPhotos = []; // compatibilidad retroactiva
 
   function selectRegistrationPlan(plan) {
-    currentSelectedPlan = plan;
+    currentSelectedPlan = (plan === "free_basic" || plan === "basic") ? "basic" : "microsite";
     const btnMicro = document.getElementById("plan-btn-microsite");
     const btnFree = document.getElementById("plan-btn-free");
     const photosSec = document.getElementById("reg-photos-section");
@@ -103,7 +103,7 @@
     const stepLabel = document.getElementById("wizard-step-label");
     const btnSubmit1 = document.getElementById("btn-submit-step1");
 
-    if (plan === "microsite") {
+    if (currentSelectedPlan === "microsite") {
       if (btnMicro) {
         btnMicro.className = "p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex items-center justify-between cursor-pointer";
       }
@@ -129,9 +129,9 @@
       if (proNotice) proNotice.classList.add("hidden");
       if (freeNotice) freeNotice.classList.remove("hidden");
       if (websiteSec) websiteSec.classList.add("hidden");
-      if (stepLabel) stepLabel.textContent = "Paso 1 de 2";
+      if (stepLabel) stepLabel.textContent = "Paso 1 de 3";
       if (btnSubmit1) {
-        btnSubmit1.innerHTML = `<span>Continuar con Registro Gratuito (Paso 1 de 2)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        btnSubmit1.innerHTML = `<span>Continuar con Plan Directorio (Paso 1 de 3)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
       }
     }
     if (window.lucide && lucide.createIcons) lucide.createIcons();
@@ -590,34 +590,34 @@
 
       <!-- FASE 1: DATOS DEL COMERCIO Y CONTACTO -->
       <div id="reg-step-1">
-        <!-- SELECTOR DE PLAN: PLAN PRO ($399/AÑO) VS REGISTRO GRATUITO ($0) -->
+        <!-- SELECTOR DE PLAN: PÁGINA INTERACTIVA ($770/AÑO) VS PLAN DIRECTORIO ($99/AÑO) -->
         <div class="mb-4 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button type="button" id="plan-btn-microsite" onclick="selectRegistrationPlan('microsite')" class="p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex items-center justify-between cursor-pointer">
             <span class="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-1.5">
-              <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Plan Pro
+              <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Página Interactiva
             </span>
-            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-emerald-100 text-emerald-800 font-mono">$399 / año</span>
+            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-emerald-100 text-emerald-800 font-mono">$770 / año</span>
           </button>
 
-          <button type="button" id="plan-btn-free" onclick="selectRegistrationPlan('free_basic')" class="p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex items-center justify-between opacity-80 hover:opacity-100 cursor-pointer">
+          <button type="button" id="plan-btn-free" onclick="selectRegistrationPlan('basic')" class="p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex items-center justify-between opacity-80 hover:opacity-100 cursor-pointer">
             <span class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1.5">
-              <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i> Registro gratuito
+              <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i> Plan Directorio
             </span>
-            <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-slate-200 text-slate-700 font-mono">$0</span>
+            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-slate-200 text-slate-800 font-mono">$99 / año</span>
           </button>
         </div>
 
         <div id="reg-pro-notice" class="mb-4 p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 flex items-start gap-2.5 text-left">
           <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
           <p class="text-[11px] text-emerald-950 leading-relaxed font-medium">
-            Página interactiva con posibilidad de publicar hasta 10 fotografías de tus productos o servicios, además posibilidad de incluir un botón hacia tu sitio web propio.
+            <strong>Página interactiva oficial</strong> ($770 MXN/año · ~$64/mes): Vitrina digital en Epizentro con portada, hasta 10 fotos de productos o servicios, precios, pedidos directos por WhatsApp, Sello Vecino Verificado y botón a tu sitio web externo.
           </p>
         </div>
 
         <div id="reg-free-notice" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-2.5 text-left">
           <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
           <p class="text-[11px] text-amber-900 leading-relaxed font-medium">
-            Tu comercio se publicará con textos de contacto e hipervínculos funcionales directos (llamada y WhatsApp). No incluye fotos ni vínculo a sitios web.
+            <strong>Plan Directorio Oficial</strong> ($99 MXN/año · $8.25/mes): Tu negocio publicado en el directorio comunitario con llamadas y WhatsApp directo, ubicación y horarios. <em>(Sin página interactiva ni fotos de catálogo)</em>.
           </p>
         </div>
 
@@ -745,7 +745,7 @@
             <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
           </div>
 
-          <!-- CONFIGURACIÓN DE PÁGINA INTERACTIVA EN EPIZENTRO ($399/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+          <!-- CONFIGURACIÓN DE PÁGINA INTERACTIVA EN EPIZENTRO ($770/AÑO): PORTADA, DESTACADOS Y MENÚ -->
           <div id="reg-photos-section" class="border-t border-slate-100 pt-3 space-y-4">
             <!-- 1. PORTADA DE TU PÁGINA INTERACTIVA -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
@@ -935,22 +935,22 @@
 
       <!-- FASE 3: ACTIVACIÓN Y COBRO (MERCADO PAGO O ASESOR KAM) -->
       <div id="reg-step-3" class="hidden space-y-4">
-        <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-400/30 text-center space-y-3">
+        <div id="reg-step3-summary-card" class="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-400/30 text-center space-y-3">
           <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center">
             <i data-lucide="award" class="w-6 h-6"></i>
           </div>
-          <h4 class="text-lg font-black text-slate-950">Página interactiva en epizentro con catálogo</h4>
+          <h4 class="text-lg font-black text-slate-950">Página interactiva en Epizentro con catálogo</h4>
           <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-            Obtén tu <strong>página interactiva en epizentro</strong> (con fotos de productos, precios y menú de pedidos directos por WhatsApp).
+            Obtén tu <strong>página interactiva en Epizentro</strong> (con fotos de productos, precios y menú de pedidos directos por WhatsApp).
           </p>
 
           <div class="py-2">
-            <span class="text-3xl font-black text-slate-950 font-mono">$399.00</span>
-            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual</span>
+            <span class="text-3xl font-black text-slate-950 font-mono">$770.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$64/mes)</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
-            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu página interactiva en epizentro</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu página interactiva en Epizentro</div>
             <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Catálogo hasta 10 Fotos & Precios</div>
             <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Pedidos Directos a tu WhatsApp</div>
           </div>
@@ -958,9 +958,9 @@
 
         <!-- Pasarela Oficial de Pago Seguro Mercado Pago -->
         <div class="space-y-3 p-4 rounded-2xl bg-white border border-slate-200 text-center shadow-xs">
-          <button type="button" id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2">
+          <button type="button" id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
-            <span>Pagar Suscripción Anual con Mercado Pago ($399 MXN / año)</span>
+            <span>Pagar Suscripción Anual con Mercado Pago ($770 MXN / año)</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
           <p class="text-[11px] text-center text-slate-500 leading-relaxed">
@@ -971,7 +971,7 @@
         <!-- Canjear Código de Cortesía / Invitación -->
         <div class="mt-4 pt-3 border-t border-slate-200">
           <div class="text-left">
-            <button type="button" onclick="toggleCouponBox()" class="text-xs font-bold text-slate-600 hover:text-emerald-700 flex items-center justify-between w-full p-2 rounded-xl hover:bg-slate-100 transition-colors">
+            <button type="button" onclick="toggleCouponBox()" class="text-xs font-bold text-slate-600 hover:text-emerald-700 flex items-center justify-between w-full p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
               <span class="flex items-center gap-1.5"><i data-lucide="tag" class="w-3.5 h-3.5 text-emerald-600"></i> ¿Tienes código de cortesía o invitación?</span>
               <i id="coupon-chevron" data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
             </button>
@@ -979,7 +979,7 @@
               <label class="block text-[11px] font-bold text-slate-700">Ingresa tu código de cortesía o pase fundador:</label>
               <div class="flex gap-2">
                 <input type="text" id="reg-coupon-code" placeholder="Ej. NATURA100" class="w-full px-3 py-2 text-xs uppercase font-mono tracking-wider font-bold rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500">
-                <button type="button" onclick="handleApplyCoupon()" id="btn-apply-coupon" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors">
+                <button type="button" onclick="handleApplyCoupon()" id="btn-apply-coupon" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors cursor-pointer">
                   Aplicar
                 </button>
               </div>
@@ -988,20 +988,20 @@
           </div>
         </div>
 
-        <!-- DIFERENCIACIÓN DEL REGISTRO GRATUITO BÁSICO -->
-        <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
+        <!-- DIFERENCIACIÓN / CAMBIO DE PLAN EN PASO 3 -->
+        <div id="reg-alt-plan-card" class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left">
           <div class="flex items-start gap-3">
             <div class="w-7 h-7 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
               <i data-lucide="info" class="w-4 h-4"></i>
             </div>
             <div>
-              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo registro básico sin costo?</h5>
+              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo presencia en directorio por $99 MXN/año?</h5>
               <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                El <strong>registro gratuito</strong> incluye únicamente tus datos generales de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(No incluye página interactiva en epizentro)</em>
+                El <strong>Plan Directorio</strong> ($8.25/mes) incluye únicamente tus datos de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(Sin página interactiva ni catálogo)</em>.
               </p>
               <div class="pt-2">
-                <button type="button" onclick="skipVerificationPayment()" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors">
-                  Continuar con Registro Básico Gratuito ($0) &rarr;
+                <button type="button" onclick="selectRegistrationPlan('basic'); updateStep3PaymentUI();" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors cursor-pointer">
+                  Cambiar a Plan Directorio ($99 MXN / año) &rarr;
                 </button>
               </div>
             </div>
@@ -1340,49 +1340,119 @@
     if (!btn || !waVerified) return;
 
     btn.disabled = false;
-    if (currentSelectedPlan === "free_basic") {
-      btn.className = "w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
-      btn.innerHTML = `<span>Finalizar Registro Básico Gratuito ($0)</span> <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>`;
-      btn.onclick = finishFreeRegistration;
+    btn.className = "w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
+    if (currentSelectedPlan === "basic" || currentSelectedPlan === "free_basic") {
+      btn.innerHTML = `<span>Continuar a Pago de Plan Directorio ($99 MXN)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
     } else {
-      btn.className = "w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
-      btn.innerHTML = `<span>Continuar a Verificación Oficial (Paso 3 de 3)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-      btn.onclick = goToStep3;
+      btn.innerHTML = `<span>Continuar a Pago de Página Interactiva ($770 MXN)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
     }
+    btn.onclick = goToStep3;
     if (window.lucide && lucide.createIcons) lucide.createIcons();
   }
 
-  async function finishFreeRegistration() {
-    const btn = document.getElementById("btn-to-step-3");
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Guardando registro gratuito...</span>`;
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
+  function updateStep3PaymentUI() {
+    const isBasic = (currentSelectedPlan === "basic" || currentSelectedPlan === "free_basic");
+    const summaryCard = document.getElementById("reg-step3-summary-card");
+    if (summaryCard) {
+      if (isBasic) {
+        summaryCard.innerHTML = `
+          <div class="w-12 h-12 mx-auto rounded-full bg-blue-500/20 text-blue-600 flex items-center justify-center">
+            <i data-lucide="file-text" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-black text-slate-950">Plan Directorio Comercial Oficial</h4>
+          <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+            Presencia formal en el Directorio Comunitario de Natura con datos verificados de contacto para cotos de la zona.
+          </p>
 
-    try {
-      if (currentRegId && !currentRegId.startsWith("mock-")) {
-        await fetch("/api/epicentro/register/report-kam-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            registration_id: currentRegId,
-            kam_name: "Registro Básico Gratuito",
-            amount: 0.0,
-            payment_method: "free_basic",
-            notes: "Alta comunitaria básica sin costo (solo textos e hipervínculos: teléfono, WhatsApp, ubicación y horarios)"
-          })
-        }).catch(e => console.warn("Aviso reporte gratis:", e));
+          <div class="py-2">
+            <span class="text-3xl font-black text-slate-950 font-mono">$99.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual ($8.25/mes)</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-600"></i> Presencia Oficial en Directorio</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-600"></i> Botones de Llamada & WhatsApp</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-blue-600"></i> Filtro por Coto y Subcategoría</div>
+          </div>
+        `;
+      } else {
+        summaryCard.innerHTML = `
+          <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center">
+            <i data-lucide="award" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-black text-slate-950">Página interactiva en Epizentro con catálogo</h4>
+          <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+            Obtén tu <strong>página interactiva oficial en Epizentro</strong> con vitrina digital, fotos de productos, precios y pedidos directos por WhatsApp.
+          </p>
+
+          <div class="py-2">
+            <span class="text-3xl font-black text-slate-950 font-mono">$770.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$64/mes)</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tu página interactiva en Epizentro</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Catálogo hasta 10 Fotos & Precios</div>
+            <div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Pedidos Directos a tu WhatsApp</div>
+          </div>
+        `;
       }
-    } catch (e) {
-      console.warn(e);
     }
 
-    const folioSuffix = currentRegId ? (currentRegId.includes("-") ? currentRegId.split("-").pop().slice(0, 4).toUpperCase() : currentRegId.slice(-4).toUpperCase()) : Math.floor(1000 + Math.random() * 9000);
-    showStep4Success(`NATURA-GRATIS-${folioSuffix}`, {
-      title: "¡Registro Básico Gratuito Enviado!",
-      desc: "Tu comercio ha sido registrado con datos generales (teléfono, WhatsApp, ubicación y horarios). Podrás activar tu página interactiva en epizentro con catálogo de fotos con la suscripción anual en cualquier momento."
-    }, "free_basic");
+    const payBtn = document.getElementById("btn-pay-mp");
+    if (payBtn) {
+      const amtStr = isBasic ? "$99 MXN / año" : "$770 MXN / año";
+      payBtn.innerHTML = `
+        <i data-lucide="shield-check" class="w-5 h-5"></i>
+        <span>Pagar Suscripción Anual con Mercado Pago (${amtStr})</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      `;
+    }
+
+    const altPlanCard = document.getElementById("reg-alt-plan-card");
+    if (altPlanCard) {
+      if (isBasic) {
+        altPlanCard.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h5 class="text-xs font-bold text-slate-900">¿Quieres tu vitrina interactiva con catálogo de productos?</h5>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                Por <strong>$770 MXN al año</strong> (~$64/mes) obtienes tu página interactiva en Epizentro con fotos, lista de precios y pedidos directos a tu WhatsApp.
+              </p>
+              <div class="pt-2">
+                <button type="button" onclick="selectRegistrationPlan('microsite'); updateStep3PaymentUI();" class="text-xs font-bold text-emerald-700 hover:text-emerald-900 underline transition-colors cursor-pointer">
+                  Ascender a Página Interactiva con Catálogo ($770 MXN/año) &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        altPlanCard.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="w-7 h-7 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="info" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo presencia en directorio por $99 MXN/año?</h5>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                El <strong>Plan Directorio</strong> ($8.25/mes) incluye únicamente tus datos de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(Sin página interactiva ni catálogo)</em>.
+              </p>
+              <div class="pt-2">
+                <button type="button" onclick="selectRegistrationPlan('basic'); updateStep3PaymentUI();" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors cursor-pointer">
+                  Cambiar a Plan Directorio ($99 MXN / año) &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
   }
 
   function goToStep3() {
@@ -1391,6 +1461,7 @@
       return;
     }
     setWizardStep(3);
+    updateStep3PaymentUI();
   }
 
   async function triggerMercadoPagoPayment() {
@@ -1579,7 +1650,7 @@
           <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Completando Pago en Mercado Pago!"}</h4>
           
           <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>página interactiva en epizentro con catálogo</strong>, completa tu suscripción anual de <strong>$399 MXN</strong> en Mercado Pago.`}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>página interactiva en Epizentro con catálogo</strong>, completa tu suscripción anual de <strong>$770 MXN</strong> (o <strong>$99 MXN</strong> para Plan Directorio) en Mercado Pago.`}
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto space-y-1">
@@ -1601,9 +1672,9 @@
             <p id="check-status-feedback" class="text-[11px] text-slate-500 hidden text-center px-2 leading-relaxed"></p>
 
             <div class="pt-1">
-              <a href="https://mpago.la/2jXGN6C" target="_blank" rel="noopener noreferrer" class="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 underline transition-colors">
-                ¿No abrió la ventana? Reabrir pasarela de Mercado Pago ($399 MXN) &rarr;
-              </a>
+              <button type="button" onclick="triggerMercadoPagoPayment()" class="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 underline transition-colors cursor-pointer bg-transparent border-0">
+                ¿No abrió la ventana? Reabrir pasarela segura de Mercado Pago &rarr;
+              </button>
             </div>
           </div>
 
@@ -1623,22 +1694,22 @@
 
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-[11px] font-bold">
             <i data-lucide="check" class="w-3.5 h-3.5"></i>
-            Alta Básica Comunitaria Recibida
+            Alta Comunitaria Recibida
           </div>
 
-          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Registro Básico Gratuito Enviado!"}</h4>
+          <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Registro Enviado!"}</h4>
           
           <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
             Tu comercio <strong class="text-slate-900">${bName}</strong> ha sido registrado con sus datos generales (teléfono, WhatsApp, ubicación y horarios).
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Registro Básico</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Registro</span>
             <span class="text-base font-mono font-black text-blue-600">${folio}</span>
           </div>
 
           <p class="text-xs text-slate-500 max-w-xs mx-auto">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu página interactiva en epizentro con catálogo con la suscripción anual ($399 MXN) en cualquier momento."}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu página interactiva en Epizentro con catálogo con la suscripción anual ($770 MXN) en cualquier momento."}
           </p>
 
           <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">

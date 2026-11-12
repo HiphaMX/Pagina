@@ -452,11 +452,15 @@
             </td>
             <td class="py-3.5 px-4">
               ${r.payment_status === "free_basic"
-                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i> Registro Gratuito ($0)</span>`
+                ? (r.payment_amount && r.payment_amount > 0 
+                   ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> Plan Directorio ($${r.payment_amount})</span>`
+                   : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i> Registro Gratuito ($0)</span>`)
+                : r.payment_status === "basic_approved"
+                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Plan Directorio ($${r.payment_amount || 99})</span>`
                 : r.payment_status === "waived"
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-purple-400"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Cupón Aplicado ($0)</span>`
                 : isPaid
-                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> $${r.payment_amount || 399} MXN Pagado</span>`
+                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> $${r.payment_amount || 770} MXN Pagado</span>`
                 : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400"><i data-lucide="slash" class="w-3.5 h-3.5"></i> Pendiente</span>`}
               ${kamName ? `<div class="text-[10px] text-amber-300 font-medium mt-0.5">KAM: ${kamName}</div>` : ''}
             </td>
@@ -1351,7 +1355,7 @@ Esta acción no se puede deshacer.`)) return;
       paySelect.value = hasPayOpt ? targetPay : "pending";
       document.getElementById("edit-kam-name").value = reg.kam_name || "";
       document.getElementById("edit-payment-method").value = reg.payment_method || "mercadopago";
-      document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 399;
+      document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 770;
       document.getElementById("edit-is-verified-badge").checked = !!reg.is_verified_badge;
       document.getElementById("edit-delivery-available").checked = !!reg.delivery_available;
       document.getElementById("edit-moderation-notes").value = reg.moderation_notes || "";
@@ -1469,7 +1473,7 @@ Esta acción no se puede deshacer.`)) return;
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-amber-300 uppercase tracking-wide">Modalidad: Registro Básico Gratuito ($0 MXN)</span>
+                    <span class="text-xs font-black text-amber-300 uppercase tracking-wide">Modalidad: Plan Directorio ($99 MXN/año)</span>
                     <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Directorio</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
@@ -1480,7 +1484,7 @@ Esta acción no se puede deshacer.`)) return;
               <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
                 <button type="button" onclick="upgradeToPlan('approved')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5 whitespace-nowrap">
                   <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                  <span>Ascender a $399/año</span>
+                  <span>Ascender a $770/año</span>
                 </button>
               </div>
             </div>
@@ -1494,7 +1498,7 @@ Esta acción no se puede deshacer.`)) return;
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-emerald-300 uppercase tracking-wide">Modalidad: Suscripción Anual Activa ($399 MXN/año)</span>
+                    <span class="text-xs font-black text-emerald-300 uppercase tracking-wide">Modalidad: Suscripción Anual Activa ($770 MXN/año)</span>
                     <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-300 font-mono">Página Interactiva</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
@@ -1504,7 +1508,7 @@ Esta acción no se puede deshacer.`)) return;
               </div>
               <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
                 <button type="button" onclick="downgradeToFreeBasic()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors whitespace-nowrap">
-                  Cambiar a Básico ($0)
+                  Cambiar a Directorio ($99)
                 </button>
               </div>
             </div>
@@ -1528,7 +1532,7 @@ Esta acción no se puede deshacer.`)) return;
               </div>
               <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
                 <button type="button" onclick="downgradeToFreeBasic()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors whitespace-nowrap">
-                  Cambiar a Básico ($0)
+                  Cambiar a Directorio ($99)
                 </button>
               </div>
             </div>
@@ -1553,7 +1557,7 @@ Esta acción no se puede deshacer.`)) return;
               <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
                 <button type="button" onclick="upgradeToPlan('approved')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5 whitespace-nowrap">
                   <i data-lucide="check" class="w-3.5 h-3.5"></i>
-                  <span>Aprobar Pago ($399)</span>
+                  <span>Aprobar Pago ($770)</span>
                 </button>
               </div>
             </div>
@@ -1595,17 +1599,21 @@ Esta acción no se puede deshacer.`)) return;
 
     function upgradeToPlan(targetPlan) {
       const paySelect = document.getElementById("edit-payment-status");
+      const amtInput = document.getElementById("edit-payment-amount");
       if (paySelect) paySelect.value = targetPlan;
+      if (amtInput) amtInput.value = (targetPlan === "approved") ? "770" : "99";
       handleAdminPaymentStatusChange();
     }
 
     function downgradeToFreeBasic() {
       const bName = document.getElementById("edit-business-name").value || "este comercio";
-      if (!confirm(`¿Deseas cambiar '${bName}' a 'Registro Básico Gratuito ($0)'?\\n\\nEn el directorio público solo se mostrarán sus botones de Llamar y WhatsApp directo (sin página interactiva ni catálogo).`)) {
+      if (!confirm(`¿Deseas cambiar '${bName}' a 'Plan Directorio ($99 MXN)'?\\n\\nEn el directorio público solo se mostrarán sus botones de Llamar y WhatsApp directo (sin página interactiva ni catálogo).`)) {
         return;
       }
       const paySelect = document.getElementById("edit-payment-status");
+      const amtInput = document.getElementById("edit-payment-amount");
       if (paySelect) paySelect.value = "free_basic";
+      if (amtInput) amtInput.value = "99";
       handleAdminPaymentStatusChange();
     }
 
@@ -1614,11 +1622,15 @@ Esta acción no se puede deshacer.`)) return;
       const val = paySelect ? paySelect.value : "free_basic";
       const amtInput = document.getElementById("edit-payment-amount");
 
-      if (val === "free_basic" || val === "waived") {
+      if (val === "free_basic" || val === "basic_approved") {
+        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) === 0 || parseFloat(amtInput.value) > 150)) {
+          amtInput.value = "99";
+        }
+      } else if (val === "waived") {
         if (amtInput) amtInput.value = "0";
       } else if (val === "approved") {
-        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) === 0)) {
-          amtInput.value = "399";
+        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) <= 150)) {
+          amtInput.value = "770";
         }
       }
 
@@ -1878,9 +1890,9 @@ Esta acción no se puede deshacer.`)) return;
           <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Descripción breve del comercio..."></textarea>
         </div>
 
-        <!-- CONFIGURACIÓN DE PÁGINA INTERACTIVA EN EPIZENTRO ($399/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+        <!-- CONFIGURACIÓN DE PÁGINA INTERACTIVA EN EPIZENTRO ($770/AÑO): PORTADA, DESTACADOS Y MENÚ -->
         <div id="edit-microsite-section-wrapper" class="border-t border-slate-800 pt-3 space-y-4">
-          <!-- Banner cuando el plan es Registro Básico Gratuito ($0) -->
+          <!-- Banner cuando el plan es Plan Directorio ($99) o Básico ($0) -->
           <div id="microsite-plan-locked-banner" class="hidden p-4 rounded-2xl bg-slate-950/90 border border-amber-500/30">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div class="flex items-start gap-3">
@@ -1889,8 +1901,8 @@ Esta acción no se puede deshacer.`)) return;
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
-                    <h4 class="text-sm font-bold text-white">Página Interactiva No Incluida en Plan Básico</h4>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Gratuito ($0)</span>
+                    <h4 class="text-sm font-bold text-white">Página Interactiva No Incluida en Plan Directorio</h4>
+                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Directorio ($99)</span>
                   </div>
                   <p class="text-xs text-slate-400 mt-1 max-w-xl">
                     Este comercio cuenta únicamente con presencia en el directorio (botones directos de <strong>Llamar</strong> y <strong>WhatsApp</strong>). La página interactiva dedicada (<code class="text-emerald-400">/natura/negocio?id=...</code>) y el catálogo web no están activos para este registro.
@@ -1900,7 +1912,7 @@ Esta acción no se puede deshacer.`)) return;
               <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 w-full sm:w-auto">
                 <button type="button" onclick="upgradeToPlan('approved')" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap">
                   <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                  <span>Activar Suscripción ($399)</span>
+                  <span>Activar Suscripción ($770)</span>
                 </button>
                 <button type="button" onclick="toggleAdvancedMicrositeInputs()" id="btn-toggle-microsite-inputs" class="w-full sm:w-auto px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
                   <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
@@ -1914,7 +1926,7 @@ Esta acción no se puede deshacer.`)) return;
             </div>
           </div>
 
-          <!-- Banner cuando el plan es Suscripción ($399) o Cortesía ($0) -->
+          <!-- Banner cuando el plan es Suscripción ($770) o Cortesía ($0) -->
           <div id="microsite-plan-active-banner" class="hidden p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
@@ -2112,8 +2124,9 @@ Esta acción no se puede deshacer.`)) return;
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Estatus de Pago *</label>
             <select id="edit-payment-status" onchange="handleAdminPaymentStatusChange()" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-              <option value="free_basic">⚡ Registro Básico Gratuito ($0 - Sin Página Interactiva)</option>
-              <option value="approved">🚀 Suscripción Anual Pagada ($399 MXN - Con Página Interactiva)</option>
+              <option value="approved">🚀 Suscripción Anual Pagada ($770 MXN - Con Página Interactiva)</option>
+              <option value="basic_approved">⚡ Plan Directorio Pagado ($99 MXN - Sin Página Interactiva)</option>
+              <option value="free_basic">⚡ Plan Directorio / Legacy ($99 / $0 MXN)</option>
               <option value="waived">🎁 Exento / Cupón Cortesía ($0 - Con Página Interactiva)</option>
               <option value="pending">⏳ Pendiente de Pago</option>
               <option value="pending_mp_payment">💳 Pendiente Mercado Pago</option>
@@ -2135,7 +2148,7 @@ Esta acción no se puede deshacer.`)) return;
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Monto de Pago (MXN)</label>
-            <input type="number" step="0.5" id="edit-payment-amount" placeholder="399.00" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none font-mono">
+            <input type="number" step="0.5" id="edit-payment-amount" placeholder="770.00" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none font-mono">
           </div>
         </div>
 
