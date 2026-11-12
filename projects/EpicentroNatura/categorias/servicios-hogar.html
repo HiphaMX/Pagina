@@ -1393,21 +1393,28 @@
       }
       const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
-      // 2. Identificar si cuenta con Micrositio Propio ($399 anual o Cortesía Oficial Hipha)
+      // 2. Identificar si cuenta con Página Interactiva en Epizentro ($399 anual o Cortesía Oficial Hipha)
       const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
+      const normName = String(b.name || "").toLowerCase();
       const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
       const isChillon = rawWeb === "chile-chillon" || b.id === "reg-chile-chillon" || normName.includes("chile chillón") || normName.includes("chile chillon");
-      const isOfficial = isBotica || isChillon;
+      const isAmdi = rawWeb === "amdi" || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
+      const isOfficial = isBotica || isChillon || isAmdi;
       const isFreeBasic = b.payment_status === "free_basic" || (!isOfficial && b.payment_status !== "approved" && b.payment_status !== "waived" && (b.payment_amount === 0 || b.has_microsite === false));
       const hasDedicatedMicrosite = !isFreeBasic && (isOfficial || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
-        const slug = isChillon ? "chile-chillon" : "botica-silvestre";
         let micrositeUrl = "";
+        if (isChillon) micrositeUrl = "/natura/chile-chillon";
+        else if (isBotica) micrositeUrl = "/natura/botica-silvestre";
+        else if (isAmdi) micrositeUrl = "/natura/amdi";
+        else micrositeUrl = "/natura/negocio?id=" + encodeURIComponent(b.id);
+
         if (window.location.protocol === "file:") {
-          micrositeUrl = (isSubfolder ? "../" : "") + slug + ".html";
-        } else {
-          micrositeUrl = "/natura/" + slug;
+          if (isChillon) micrositeUrl = (isSubfolder ? "../" : "") + "chile-chillon.html";
+          else if (isBotica) micrositeUrl = (isSubfolder ? "../" : "") + "botica-silvestre.html";
+          else if (isAmdi) micrositeUrl = (isSubfolder ? "../" : "") + "amdi.html";
+          else micrositeUrl = (isSubfolder ? "../" : "") + "negocio.html?id=" + encodeURIComponent(b.id);
         }
         return `
           <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
