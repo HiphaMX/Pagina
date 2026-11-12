@@ -1058,7 +1058,7 @@
         has_photos: true,
         has_microsite: true,
         photos: [
-          "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
+          "../Assets/amdi/producto_1.webp"
         ]
       }
     ];
@@ -1266,7 +1266,8 @@
               const normName = (biz.business_name || "").trim().toLowerCase();
               const existingIdx = ALL_BUSINESSES.findIndex(b =>
                 b.id === biz.id ||
-                (b.name && b.name.trim().toLowerCase() === normName)
+                (b.name && b.name.trim().toLowerCase() === normName) ||
+                (normName.includes("amdi") && (b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || b.id === "reg-amdi" || (b.name && b.name.toLowerCase().includes("amdi"))))
               );
 
               const isChillon = normName.includes("chill") || biz.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || biz.id === "reg-chile-chillon";

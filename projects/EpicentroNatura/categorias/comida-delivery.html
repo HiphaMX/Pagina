@@ -1276,6 +1276,7 @@
                 if ((cleanNorm.includes("chile chillon") || cleanNorm.includes("chillon")) && 
                     (bNorm.includes("chile chillon") || bNorm.includes("chillon") || b.id === "reg-chile-chillon" || b.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97")) return true;
                 if (cleanNorm.includes("botica") && (bNorm.includes("botica") || b.id === "reg-botica-silvestre" || b.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e")) return true;
+                if (cleanNorm.includes("amdi") && (bNorm.includes("amdi") || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || b.id === "reg-amdi")) return true;
                 return false;
               });
 

@@ -14,9 +14,10 @@ from app.api.notices import enrich_notice
 router = APIRouter(prefix="/api/v1/admin", tags=["Admin Engine"])
 
 ADMIN_TOKEN = (
+    os.getenv("ADMIN_PASSWORD") or
     os.getenv("EPIZENTRO_ADMIN_SECRET") or
     os.getenv("ADMIN_SECRET_TOKEN") or
-    "natura_admin_secret_2026"
+    "Celi@ThePug2026"
 ).strip()
 
 

@@ -26,13 +26,13 @@
       <div>
         <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">Acceso Restringido</span>
         <h2 class="text-2xl font-black text-white mt-1">Moderación Epicentro Natura</h2>
-        <p class="text-xs text-slate-400 mt-2">Bandeja administrativa protegida. Ingresa tu contraseña o token de moderador para continuar.</p>
+        <p class="text-xs text-slate-400 mt-2">Bandeja administrativa protegida. Ingresa la clave maestra del dashboard (<code class="text-emerald-400 font-mono">Celi@ThePug2026</code>) para acceder.</p>
       </div>
 
       <form onsubmit="handleAdminLogin(event)" class="space-y-4">
         <div>
           <div class="relative">
-            <input type="password" id="login-password-input" required placeholder="Contraseña de Administrador" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" class="w-full pl-4 pr-11 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
+            <input type="password" id="login-password-input" required placeholder="Clave Maestra (Celi@ThePug2026)" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" class="w-full pl-4 pr-11 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
             <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1" title="Ver contraseña">
               <svg id="eye-icon-svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
@@ -130,8 +130,9 @@
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
         <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
           <button onclick="setFilter('all')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white" data-filter="all">Todas</button>
-          <button onclick="setFilter('active')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="active">Activas</button>
+          <button onclick="setFilter('pending_approval')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="pending_approval">Pendientes Aprobación</button>
           <button onclick="setFilter('pending_verification')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="pending_verification">En Verificación</button>
+          <button onclick="setFilter('active')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="active">Activas</button>
           <button onclick="setFilter('rejected')" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-300" data-filter="rejected">Rechazadas</button>
         </div>
 
@@ -323,6 +324,8 @@
         return;
       }
 
+      const isAlreadyUnlocked = !document.getElementById("admin-dashboard-view").classList.contains("hidden");
+
       try {
         const res = await fetch("/api/epicentro/admin/registrations", {
           headers: { "X-Admin-Token": token }
@@ -337,7 +340,7 @@
             const errBox = document.getElementById("login-error-alert");
             if (errBox) {
               errBox.classList.remove("hidden");
-              errBox.textContent = "Tu sesión ha expirado o la contraseña es inválida. Ingresa nuevamente.";
+              errBox.textContent = "Tu sesión ha expirado o la clave es incorrecta. Usa la clave maestra Celi@ThePug2026 para ingresar.";
             }
             if (window.lucide && lucide.createIcons) lucide.createIcons();
             return;
@@ -353,14 +356,16 @@
         checkAutoOpenEdit();
       } catch (err) {
         console.error("Error al cargar registros administrativos:", err);
-        allRegistrations = [];
-        setToken("");
-        document.getElementById("auth-lock-screen").classList.remove("hidden");
-        document.getElementById("admin-dashboard-view").classList.add("hidden");
-        const errBox = document.getElementById("login-error-alert");
-        if (errBox) {
-          errBox.classList.remove("hidden");
-          errBox.textContent = "No fue posible verificar la sesión o conectar con el servidor administrativo. Ingresa nuevamente.";
+        if (isAlreadyUnlocked) {
+          console.warn("Falla de red temporal al sincronizar registros. La sesión se mantiene activa.");
+        } else {
+          document.getElementById("auth-lock-screen").classList.remove("hidden");
+          document.getElementById("admin-dashboard-view").classList.add("hidden");
+          const errBox = document.getElementById("login-error-alert");
+          if (errBox) {
+            errBox.classList.remove("hidden");
+            errBox.textContent = "No fue posible conectar con el servidor administrativo. Verifica tu conexión.";
+          }
         }
         if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
@@ -452,7 +457,7 @@
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-purple-400"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Cupón Aplicado ($0)</span>`
                 : isPaid
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> $${r.payment_amount || 399} MXN Pagado</span>`
-                : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400"><i data-lucide="circle-slash" class="w-3.5 h-3.5"></i> Pendiente</span>`}
+                : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400"><i data-lucide="slash" class="w-3.5 h-3.5"></i> Pendiente</span>`}
               ${kamName ? `<div class="text-[10px] text-amber-300 font-medium mt-0.5">KAM: ${kamName}</div>` : ''}
             </td>
             <td class="py-3.5 px-4">
@@ -599,7 +604,7 @@ Esta acción no se puede deshacer.`)) return;
       } catch (e) {}
     }
 
-    function compressImageFile(file, maxWidth = 1000, quality = 0.82) {
+    function compressImageFile(file, maxWidth = 1000, quality = 0.80) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -633,7 +638,7 @@ Esta acción no se puede deshacer.`)) return;
       const file = (e.target.files || [])[0];
       if (!file) return;
       try {
-        adminCoverPhoto = await compressImageFile(file, 1400, 0.85);
+        adminCoverPhoto = await compressImageFile(file, 1200, 0.80);
         renderAdminCoverPreview();
       } catch (err) {
         console.warn("Error comprimiendo portada:", err);
@@ -684,7 +689,7 @@ Esta acción no se puede deshacer.`)) return;
       const file = (e.target.files || [])[0];
       if (!file) return;
       try {
-        tempAdminProdPhoto = await compressImageFile(file, 800, 0.85);
+        tempAdminProdPhoto = await compressImageFile(file, 650, 0.80);
         renderAdminNewProdPhotoPreview();
       } catch (err) {
         console.warn("Error comprimiendo foto:", err);
@@ -1340,7 +1345,10 @@ Esta acción no se puede deshacer.`)) return;
       document.getElementById("edit-preferred-contact-methods").value = reg.preferred_contact_methods || "whatsapp";
       document.getElementById("edit-description").value = reg.description || "";
       document.getElementById("edit-status").value = reg.status || "pending_verification";
-      document.getElementById("edit-payment-status").value = reg.payment_status || "pending";
+      const paySelect = document.getElementById("edit-payment-status");
+      const targetPay = reg.payment_status || "pending";
+      const hasPayOpt = Array.from(paySelect.options).some(o => o.value === targetPay);
+      paySelect.value = hasPayOpt ? targetPay : "pending";
       document.getElementById("edit-kam-name").value = reg.kam_name || "";
       document.getElementById("edit-payment-method").value = reg.payment_method || "mercadopago";
       document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 399;
@@ -1410,12 +1418,14 @@ Esta acción no se puede deshacer.`)) return;
       let heroWebsite = "";
       if (mdata && mdata.website_url !== undefined && mdata.website_url !== null) {
         heroWebsite = mdata.website_url;
-      } else if (reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || reg.website.includes("."))) {
+      } else if (reg.website) {
         heroWebsite = reg.website;
-      } else if (reg.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || reg.id === "reg-chile-chillon" || (reg.business_name && (reg.business_name.toLowerCase().includes("chillon") || reg.business_name.toLowerCase().includes("chillón") || reg.business_name.toLowerCase().includes("chill")))) {
+      } else if (reg.id === "reg-chile-chillon") {
         heroWebsite = "https://elchilechillon.mx";
-      } else if (reg.id === "reg-botica-silvestre" || (reg.business_name && reg.business_name.toLowerCase().includes("botica"))) {
+      } else if (reg.id === "reg-botica-silvestre") {
         heroWebsite = "https://boticasilvestre.com.mx";
+      } else if (reg.id === "reg-amdi" || reg.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83") {
+        heroWebsite = "https://www.amdi.mx";
       }
       const editMicroWebEl = document.getElementById("edit-microsite-website");
       if (editMicroWebEl) editMicroWebEl.value = heroWebsite;
@@ -1510,35 +1520,35 @@ Esta acción no se puede deshacer.`)) return;
 
       const token = getToken();
       try {
-        let apiOk = false;
-        try {
-          const res = await fetch(`/api/epicentro/admin/registrations/${id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Admin-Token": token
-            },
-            body: JSON.stringify(payload)
-          });
+        const res = await fetch(`/api/epicentro/admin/registrations/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Token": token
+          },
+          body: JSON.stringify(payload)
+        });
 
-          if (res.ok) {
-            apiOk = true;
-          } else if (res.status === 401) {
-            throw new Error("Sesión expirada o no autorizada.");
-          }
-        } catch (fetchErr) {
-          console.warn("Aviso al guardar en API (usando actualización local):", fetchErr);
+        if (res.status === 401) {
+          throw new Error("Sesión expirada o no autorizada. Por favor vuelve a iniciar sesión.");
         }
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `Error del servidor (${res.status}) al guardar los cambios.`);
+        }
+
+        const updatedData = await res.json().catch(() => null);
+        const savedReg = (updatedData && updatedData.registration) ? updatedData.registration : payload;
 
         const idx = allRegistrations.findIndex(r => r.id === id);
         if (idx >= 0) {
           allRegistrations[idx] = {
             ...allRegistrations[idx],
-            ...payload,
-            microsite_data: JSON.stringify(micrositeData)
+            ...savedReg,
+            microsite_data: typeof savedReg.microsite_data === "string" ? savedReg.microsite_data : JSON.stringify(micrositeData)
           };
         }
-        alert(`¡Ficha de '${payload.business_name}' actualizada correctamente!`);
+        alert(`¡Ficha de '${payload.business_name}' guardada y sincronizada correctamente!`);
         closeEditModal();
         renderTable();
         updateStats();
@@ -1859,11 +1869,13 @@ Esta acción no se puede deshacer.`)) return;
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Estatus de Pago *</label>
             <select id="edit-payment-status" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+              <option value="pending">Pendiente de Pago</option>
+              <option value="pending_mp_payment">Pendiente Mercado Pago</option>
+              <option value="pending_kam_direct">Pendiente Asesor KAM Directo</option>
+              <option value="pending_kam_verification">Pendiente Verificación KAM</option>
               <option value="approved">Suscripción Anual Pagada ($399 MXN)</option>
               <option value="free_basic">Registro Básico Gratuito ($0 - Sin Página Interactiva)</option>
-              <option value="pending">Pendiente de Pago</option>
               <option value="waived">Exento / Cupón Cortesía ($0)</option>
-              <option value="pending_kam_verification">Pendiente Verificación KAM</option>
               <option value="rejected">Pago Rechazado</option>
             </select>
           </div>
