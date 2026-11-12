@@ -26,13 +26,13 @@
       <div>
         <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">Acceso Restringido</span>
         <h2 class="text-2xl font-black text-white mt-1">Moderación Epicentro Natura</h2>
-        <p class="text-xs text-slate-400 mt-2">Bandeja administrativa protegida. Ingresa la clave maestra del dashboard (<code class="text-emerald-400 font-mono">Celi@ThePug2026</code>) para acceder.</p>
+        <p class="text-xs text-slate-400 mt-2">Bandeja administrativa protegida. Ingresa tu clave de acceso para continuar.</p>
       </div>
 
       <form onsubmit="handleAdminLogin(event)" class="space-y-4">
         <div>
           <div class="relative">
-            <input type="password" id="login-password-input" required placeholder="Clave Maestra (Celi@ThePug2026)" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" class="w-full pl-4 pr-11 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
+            <input type="password" id="login-password-input" required placeholder="Ingresa tu clave de acceso" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" class="w-full pl-4 pr-11 py-3 text-sm rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-hidden text-center tracking-widest font-mono">
             <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1" title="Ver contraseña">
               <svg id="eye-icon-svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
@@ -340,7 +340,7 @@
             const errBox = document.getElementById("login-error-alert");
             if (errBox) {
               errBox.classList.remove("hidden");
-              errBox.textContent = "Tu sesión ha expirado o la clave es incorrecta. Usa la clave maestra Celi@ThePug2026 para ingresar.";
+              errBox.textContent = "Tu sesión ha expirado o la clave es incorrecta. Por favor verifica tus credenciales para ingresar.";
             }
             if (window.lucide && lucide.createIcons) lucide.createIcons();
             return;
