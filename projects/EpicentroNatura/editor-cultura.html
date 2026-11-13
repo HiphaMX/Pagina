@@ -58,8 +58,8 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         
         <div class="flex items-center gap-3">
-          <a href="cultura-natura.html" target="_blank" class="flex items-center gap-2" title="Ver Cultura Natura">
-            <img src="/projects/EpicentroNatura/Assets/Epizentro2.svg" alt="Epizentro" class="h-6 w-auto object-contain">
+          <a href="/natura/cultura-natura#vida-en-comunidad" target="_blank" class="flex items-center gap-2" title="Ver Cultura Natura">
+            <img src="/projects/EpicentroNatura/Assets/Epizentro.svg" alt="Epizentro" class="h-6 w-auto object-contain">
             <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">natura</span>
           </a>
           <span class="text-slate-600 hidden sm:inline">|</span>
@@ -71,8 +71,8 @@
 
         <div class="flex items-center gap-3">
           <div class="text-right hidden sm:block">
-            <div id="top-author-name" class="text-xs font-extrabold text-white">Colaborador</div>
-            <div id="top-author-role" class="text-[10px] text-slate-400">Cronista Cultura Natura</div>
+            <div id="top-author-name" class="text-xs font-extrabold text-white">Editorial Cultura Natura</div>
+            <div id="top-author-role" class="text-[10px] text-slate-400">Cronista Comunitario · Epizentro</div>
           </div>
           <button onclick="handleLogout()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Cerrar sesión">
             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
@@ -90,11 +90,11 @@
       <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
         <button id="tab-btn-create" onclick="switchTab('create')" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 flex items-center gap-2 cursor-pointer transition-all">
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span>Redactar Nueva Crónica</span>
+          <span>Redactar Nueva Publicación</span>
         </button>
         <button id="tab-btn-list" onclick="switchTab('list')" class="px-4 py-2 rounded-xl text-xs font-extrabold text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 cursor-pointer transition-all">
           <i data-lucide="book-open" class="w-4 h-4"></i>
-          <span>Crónicas Publicadas</span>
+          <span>Publicaciones en Línea</span>
           <span id="tab-articles-count" class="px-1.5 py-0.5 rounded-md bg-slate-800 text-[10px] font-mono text-slate-300">0</span>
         </button>
       </div>
@@ -106,7 +106,7 @@
           <div class="flex items-center justify-between gap-4 border-b border-slate-800 pb-4">
             <div>
               <h3 id="form-heading" class="text-xl font-black text-white">Nueva Publicación</h3>
-              <p class="text-xs text-slate-400">Difunde un evento, actividad formativa, comunicado o crónica sobre la vida en Epizentro Natura.</p>
+              <p class="text-xs text-slate-400">Difunde un comunicado, evento, actividad o crónica sobre la vida en Epizentro Natura.</p>
             </div>
             <input type="hidden" id="edit-article-id" value="">
           </div>
@@ -116,14 +116,14 @@
             <!-- 1. TÍTULO Y CATEGORÍA -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="md:col-span-2">
-                <label class="block text-xs font-bold text-slate-300 mb-1">Título de la Crónica o Comunicado *</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Título de la Publicación o Comunicado *</label>
                 <input type="text" id="post-title" required placeholder="Ej. Tarde de Jazz y Ritmos Modernos en Casa de la Cultura" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none">
               </div>
 
               <div>
                 <label class="block text-xs font-bold text-slate-300 mb-1">Categoría *</label>
                 <select id="post-category" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-amber-400 focus:outline-none cursor-pointer">
-                  <option value="cronica">✨ Crónica Cultural</option>
+                  <option value="cronica">✨ Publicación</option>
                   <option value="evento">📅 Evento Comunitario</option>
                   <option value="comunicado">📢 Comunicado Oficial</option>
                   <option value="editorial">✍️ Editorial Vecinal</option>
@@ -170,40 +170,57 @@
               <input type="hidden" id="final-cover-url" required>
             </div>
 
-            <!-- 4. DATOS DEL AUTOR -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800">
-              <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">Nombre del Autor / Firma *</label>
-                <input type="text" id="post-author-name" required placeholder="Ej. Ana Martínez / Colectivo Cultura" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-amber-400 focus:outline-none">
+            <!-- 4. FIRMA Y PERFIL EDITORIAL (FIJADO Y VERIFICADO) -->
+            <div class="pt-2 border-t border-slate-800 space-y-2">
+              <label class="block text-xs font-bold text-slate-300">Firma y Perfil Editorial Asignado</label>
+              <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
+                <div class="w-11 h-11 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+                  <img src="/projects/EpicentroNatura/Assets/Epizentro.svg" alt="Editorial Epizentro" class="w-7 h-7 object-contain">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span id="author-card-name" class="text-sm font-extrabold text-white">Editorial Cultura Natura</span>
+                    <span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">Verificado</span>
+                  </div>
+                  <div id="author-card-role" class="text-xs text-slate-400 font-medium">Cronista Comunitario · Epizentro</div>
+                </div>
+                <div class="text-[11px] text-slate-500 hidden sm:block">Firma editorial oficial</div>
               </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">Rol o Afiliación (Opcional)</label>
-                <input type="text" id="post-author-role" placeholder="Ej. Cronista Vecinal · Natura" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-amber-400 focus:outline-none">
-              </div>
+              <input type="hidden" id="post-author-name" value="Editorial Cultura Natura">
+              <input type="hidden" id="post-author-role" value="Cronista Comunitario · Epizentro">
             </div>
 
-            <!-- 5. CUERPO DEL ARTÍCULO (CON BARRA DE HERRAMIENTAS) -->
+            <!-- 5. CUERPO DEL ARTÍCULO (CON BARRA DE HERRAMIENTAS Y SUBIDA DE IMÁGENES) -->
             <div class="space-y-2 pt-2 border-t border-slate-800">
-              <label class="block text-xs font-bold text-slate-300">Contenido de la Crónica o Comunicado *</label>
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold text-slate-300">Contenido de la Publicación *</label>
+                <span class="text-[11px] text-slate-400 hidden sm:inline">Párrafos normales, subtítulos e imágenes optimizadas</span>
+              </div>
               
               <!-- BARRA DE HERRAMIENTAS RÁPIDA -->
               <div class="flex items-center gap-1.5 flex-wrap bg-slate-950 p-2 rounded-xl border border-slate-800 text-xs">
-                <button type="button" onclick="insertFormat('h2')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">H2 Subtítulo</button>
-                <button type="button" onclick="insertFormat('h3')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">H3 Sección</button>
-                <button type="button" onclick="insertFormat('bold')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Negrita</button>
-                <button type="button" onclick="insertFormat('quote')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Cita</button>
-                <button type="button" onclick="insertFormat('list')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Lista</button>
-                <button type="button" onclick="insertFormat('link')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Enlace</button>
+                <button type="button" onclick="insertFormat('h2')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">H2 Subtítulo</button>
+                <button type="button" onclick="insertFormat('h3')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">H3 Sección</button>
+                <button type="button" onclick="insertFormat('bold')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Negrita</button>
+                <button type="button" onclick="insertFormat('quote')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Cita</button>
+                <button type="button" onclick="insertFormat('list')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Lista</button>
+                <button type="button" onclick="insertFormat('link')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Enlace</button>
+                <span class="text-slate-700">|</span>
+                <button type="button" onclick="triggerInlineImageUpload()" id="btn-inline-img" class="px-3 py-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 font-bold transition-colors flex items-center gap-1.5 cursor-pointer">
+                  <i data-lucide="image" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>Subir Foto al Texto</span>
+                </button>
+                <input type="file" id="inline-image-input" accept="image/*" onchange="handleInlineImageUpload(event)" class="hidden">
               </div>
 
-              <textarea id="post-content" rows="12" required placeholder="Escribe aquí la crónica, historia o detalles del evento. Puedes usar párrafos normales y la barra de herramientas superior..." class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none font-sans leading-relaxed"></textarea>
+              <textarea id="post-content" rows="14" required placeholder="Escribe aquí la historia, comunicado o detalles del evento. Puedes usar la barra de herramientas para agregar subtítulos, fotos intercaladas y enlaces..." class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none font-sans leading-relaxed"></textarea>
             </div>
 
             <!-- BOTONES DE ACCIÓN -->
             <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button type="button" onclick="openPreviewModal()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors">
                 <i data-lucide="eye" class="w-4 h-4 text-amber-400"></i>
-                <span>Previsualizar Crónica</span>
+                <span>Previsualizar</span>
               </button>
 
               <div class="flex items-center gap-3 w-full sm:w-auto">
@@ -212,7 +229,7 @@
                 </button>
                 <button type="submit" id="btn-save-post" class="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm tracking-wide shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer transition-all">
                   <i data-lucide="send" class="w-4 h-4"></i>
-                  <span id="btn-save-post-text">Publicar Crónica</span>
+                  <span id="btn-save-post-text">Publicar</span>
                 </button>
               </div>
             </div>
@@ -222,10 +239,10 @@
 
       </section>
 
-      <!-- VISTA 2: LISTADO DE CRÓNICAS PUBLICADAS -->
+      <!-- VISTA 2: LISTADO DE PUBLICACIONES EN LÍNEA -->
       <section id="view-list" class="hidden space-y-4">
         <div class="flex items-center justify-between gap-4">
-          <h3 class="text-xl font-black text-white">Crónicas y Comunicados en Línea</h3>
+          <h3 class="text-xl font-black text-white">Publicaciones en Línea</h3>
           <button onclick="fetchEditorialArticles()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
             <span>Actualizar</span>
@@ -253,12 +270,12 @@
       </div>
 
       <div class="space-y-1">
-        <h3 class="text-2xl font-black text-white tracking-tight">¡Crónica Publicada con Éxito!</h3>
+        <h3 class="text-2xl font-black text-white tracking-tight">¡Publicación Guardada con Éxito!</h3>
         <p class="text-xs text-slate-400">Ya se encuentra en vivo y lista para difundir en WhatsApp y redes.</p>
       </div>
 
       <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 text-left">
-        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Enlace Oficial de la Crónica</label>
+        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Enlace Oficial de la Publicación</label>
         <div class="flex items-center gap-2">
           <input type="text" id="success-share-url" readonly class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-emerald-400 font-mono select-all focus:outline-none">
           <button type="button" onclick="copySuccessUrl()" id="btn-copy-success" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors cursor-pointer shrink-0">
@@ -499,15 +516,105 @@
       const sel = textarea.value.substring(start, end);
       let rep = '';
 
-      if (type === 'h2') rep = '\n## ' + (sel || 'Subtítulo') + '\n';
-      else if (type === 'h3') rep = '\n### ' + (sel || 'Sección') + '\n';
-      else if (type === 'bold') rep = '**' + (sel || 'texto en negrita') + '**';
-      else if (type === 'quote') rep = '\n> ' + (sel || 'Cita o testimonio...') + '\n';
-      else if (type === 'list') rep = '\n- ' + (sel || 'Punto destacado') + '\n- Segundo punto';
-      else if (type === 'link') rep = '[' + (sel || 'Texto del enlace') + '](https://...)';
+      if (type === 'h2') {
+        rep = sel ? `\n\n## ${sel}\n\n` : '\n\n## ';
+      } else if (type === 'h3') {
+        rep = sel ? `\n\n### ${sel}\n\n` : '\n\n### ';
+      } else if (type === 'bold') {
+        rep = sel ? `**${sel}**` : '**texto en negrita**';
+      } else if (type === 'quote') {
+        rep = sel ? `\n\n> ${sel}\n\n` : '\n\n> ';
+      } else if (type === 'list') {
+        rep = sel ? `\n- ${sel}\n` : '\n- Punto destacado\n- Segundo punto\n';
+      } else if (type === 'link') {
+        rep = sel ? `[${sel}](https://...)` : '[enlace](https://...)';
+      }
 
       textarea.setRangeText(rep, start, end, 'end');
       textarea.focus();
+    }
+
+    // SUBIDA E INSERCIÓN DE IMAGEN EN EL CUERPO DEL TEXTO
+    function triggerInlineImageUpload() {
+      const input = document.getElementById('inline-image-input');
+      if (input) input.click();
+    }
+
+    async function compressFlexibleImageToWebP(file, maxWidth = 1200, maxHeight = 900, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth || height > maxHeight) {
+              const ratio = Math.min(maxWidth / width, maxHeight / height);
+              width = Math.round(width * ratio);
+              height = Math.round(height * ratio);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/webp', quality));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleInlineImageUpload(e) {
+      const file = (e.target.files || [])[0];
+      if (!file) return;
+
+      const btn = document.getElementById('btn-inline-img');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Subiendo...';
+
+      try {
+        // Optimización automática de proporción y peso
+        const compressedBase64 = await compressFlexibleImageToWebP(file, 1200, 900, 0.82);
+
+        const res = await fetch('/api/epicentro/cultura/upload-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Editor-Token': currentEditorToken
+          },
+          body: JSON.stringify({
+            image_base64: compressedBase64,
+            filename: file.name
+          })
+        });
+
+        if (!res.ok) throw new Error('Error al almacenar imagen.');
+        const data = await res.json();
+
+        const textarea = document.getElementById('post-content');
+        if (textarea) {
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          const altCaption = prompt('Pie de foto o descripción breve (opcional):', '') || '';
+          const markdownImg = `\n\n![${altCaption.trim()}](${data.url})\n\n`;
+          textarea.setRangeText(markdownImg, start, end, 'end');
+          textarea.focus();
+        }
+      } catch (err) {
+        alert('Error subiendo imagen al texto: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+        e.target.value = '';
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
     }
 
     function updateSummaryCounter() {
@@ -523,17 +630,17 @@
       const category = document.getElementById('post-category').value;
       const summary = document.getElementById('post-summary').value.trim();
       const coverUrl = document.getElementById('final-cover-url').value.trim();
-      const authorName = document.getElementById('post-author-name').value.trim();
-      const authorRole = document.getElementById('post-author-role').value.trim();
+      const authorName = (document.getElementById('post-author-name')?.value || 'Editorial Cultura Natura').trim();
+      const authorRole = (document.getElementById('post-author-role')?.value || 'Cronista Comunitario · Epizentro').trim();
       const rawContent = document.getElementById('post-content').value.trim();
       const editId = document.getElementById('edit-article-id').value.trim();
 
       if (!coverUrl) {
-        alert('Por favor sube una fotografía de portada para la crónica.');
+        alert('Por favor sube una fotografía de portada para la publicación.');
         return;
       }
 
-      // Convertir markdown básico a HTML
+      // Convertir markdown enriquecido a HTML
       const contentHtml = parseBasicMarkdownToHtml(rawContent);
 
       const payload = {
@@ -567,7 +674,7 @@
 
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
-          throw new Error(err.detail || 'Error al guardar la crónica.');
+          throw new Error(err.detail || 'Error al guardar la publicación.');
         }
 
         const data = await res.json();
@@ -578,7 +685,7 @@
         alert('Error: ' + err.message);
       } finally {
         btn.disabled = false;
-        btnText.textContent = 'Publicar Crónica';
+        btnText.textContent = editId ? 'Guardar Cambios' : 'Publicar';
       }
     }
 
@@ -594,29 +701,103 @@
           return;
         }
 
+        // 1. Imagen en Markdown: ![alt](url)
+        const imgMatch = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (imgMatch) {
+          if (inList) { htmlParts.push('</ul>'); inList = false; }
+          const alt = escapeHtml(imgMatch[1] || '');
+          const src = escapeHtml(imgMatch[2]);
+          htmlParts.push(`
+            <figure class="my-6">
+              <img src="${src}" alt="${alt || 'Fotografía de la publicación'}" class="w-full rounded-2xl object-cover border border-slate-200 shadow-sm" loading="lazy">
+              ${alt ? `<figcaption class="text-center text-xs text-slate-500 mt-2 italic">${alt}</figcaption>` : ''}
+            </figure>
+          `);
+          return;
+        }
+
+        // 2. Encabezados H3
         if (trimmed.startsWith('### ')) {
           if (inList) { htmlParts.push('</ul>'); inList = false; }
           htmlParts.push('<h3 class="text-xl font-bold text-slate-900 mt-6 mb-2">' + escapeHtml(trimmed.slice(4)) + '</h3>');
-        } else if (trimmed.startsWith('## ')) {
+          return;
+        }
+
+        // 3. Encabezados H2
+        if (trimmed.startsWith('## ')) {
           if (inList) { htmlParts.push('</ul>'); inList = false; }
           htmlParts.push('<h2 class="text-2xl font-black text-slate-950 mt-8 mb-3">' + escapeHtml(trimmed.slice(3)) + '</h2>');
-        } else if (trimmed.startsWith('> ')) {
+          return;
+        }
+
+        // 4. Blockquotes
+        if (trimmed.startsWith('> ')) {
           if (inList) { htmlParts.push('</ul>'); inList = false; }
-          htmlParts.push('<blockquote class="border-l-4 border-amber-500 pl-4 py-1.5 italic text-slate-700 my-4 bg-amber-50/40 rounded-r-xl">' + escapeHtml(trimmed.slice(2)) + '</blockquote>');
-        } else if (trimmed.startsWith('- ')) {
+          htmlParts.push('<blockquote class="border-l-4 border-indigo-600 pl-4 py-1.5 italic text-slate-700 my-4 bg-indigo-50/40 rounded-r-xl">' + escapeHtml(trimmed.slice(2)) + '</blockquote>');
+          return;
+        }
+
+        // 5. Listas con viñetas
+        if (trimmed.startsWith('- ')) {
           if (!inList) { htmlParts.push('<ul class="list-disc list-inside space-y-1 my-3 text-slate-700">'); inList = true; }
           htmlParts.push('<li>' + escapeHtml(trimmed.slice(2)) + '</li>');
-        } else {
-          if (inList) { htmlParts.push('</ul>'); inList = false; }
-          let p = escapeHtml(trimmed);
-          p = p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          p = p.replace(/\[(.*?)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-amber-700 underline font-bold">$1</a>');
-          htmlParts.push('<p class="mb-4 leading-relaxed">' + p + '</p>');
+          return;
         }
+
+        // 6. Párrafos normales con negritas y enlaces
+        if (inList) { htmlParts.push('</ul>'); inList = false; }
+        let p = escapeHtml(trimmed);
+        p = p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        p = p.replace(/\[(.*?)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-indigo-600 underline font-bold">$1</a>');
+        htmlParts.push('<p class="mb-4 leading-relaxed">' + p + '</p>');
       });
 
       if (inList) htmlParts.push('</ul>');
       return htmlParts.join('\n');
+    }
+
+    function htmlToEditableText(html) {
+      if (!html) return '';
+      let md = html;
+
+      // Reconvertir figuras e imágenes a markdown ![alt](src)
+      md = md.replace(/<figure[^>]*>[\s\S]*?<img[^>]*src=["']([^"']+)["'][^>]*alt=["']([^"']*)["'][^>]*>[\s\S]*?(?:<figcaption[^>]*>([\s\S]*?)<\/figcaption>)?[\s\S]*?<\/figure>/gi, (match, src, alt, caption) => {
+        const desc = (caption || alt || '').trim();
+        return `\n\n![${desc}](${src})\n\n`;
+      });
+      md = md.replace(/<img[^>]*src=["']([^"']+)["'][^>]*alt=["']([^"']*)["'][^>]*>/gi, '\n\n![$2]($1)\n\n');
+
+      // Reconvertir encabezados
+      md = md.replace(/<h2[^>]*>(.*?)<\/h2>/gi, '\n\n## $1\n\n');
+      md = md.replace(/<h3[^>]*>(.*?)<\/h3>/gi, '\n\n### $1\n\n');
+
+      // Reconvertir citas
+      md = md.replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gi, '\n\n> $1\n\n');
+
+      // Reconvertir negritas y cursivas
+      md = md.replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**');
+      md = md.replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**');
+      md = md.replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*');
+      md = md.replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*');
+
+      // Reconvertir enlaces
+      md = md.replace(/<a[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gi, '[$2]($1)');
+
+      // Reconvertir listas
+      md = md.replace(/<li[^>]*>(.*?)<\/li>/gi, '\n- $1');
+      md = md.replace(/<\/?ul[^>]*>/gi, '\n');
+
+      // Reconvertir párrafos y saltos
+      md = md.replace(/<p[^>]*>(.*?)<\/p>/gi, '\n\n$1\n\n');
+      md = md.replace(/<br\s*\/?>/gi, '\n');
+
+      // Limpiar etiquetas residuales preservando texto
+      const tmp = document.createElement('div');
+      tmp.innerHTML = md;
+      let text = tmp.textContent || tmp.innerText || '';
+
+      // Normalizar saltos de línea múltiples
+      return text.replace(/\n{3,}/g, '\n\n').trim();
     }
 
     function escapeHtml(str) {
@@ -627,12 +808,11 @@
       document.getElementById('article-form').reset();
       document.getElementById('edit-article-id').value = '';
       document.getElementById('form-heading').textContent = 'Nueva Publicación';
+      document.getElementById('btn-save-post-text').textContent = 'Publicar';
       removeCoverPhoto();
       updateSummaryCounter();
-      if (currentEditorProfile) {
-        document.getElementById('post-author-name').value = currentEditorProfile.name;
-        document.getElementById('post-author-role').value = currentEditorProfile.role || '';
-      }
+      document.getElementById('post-author-name').value = 'Editorial Cultura Natura';
+      document.getElementById('post-author-role').value = 'Cronista Comunitario · Epizentro';
     }
 
     // 6. MODAL DE ÉXITO
@@ -641,7 +821,7 @@
       const shareUrl = `https://www.epizentro.com/natura/cultura/cronica/${article.slug}`;
       document.getElementById('success-share-url').value = shareUrl;
 
-      const waMsg = encodeURIComponent(`Te comparto esta crónica de Cultura Natura: "${article.title}"\n\n${shareUrl}`);
+      const waMsg = encodeURIComponent(`Te comparto esta publicación de Cultura Natura: "${article.title}"\n\n${shareUrl}`);
       document.getElementById('success-whatsapp-link').href = `https://api.whatsapp.com/send?text=${waMsg}`;
       document.getElementById('success-view-link').href = `/natura/cultura/cronica/${article.slug}`;
 
@@ -687,7 +867,7 @@
       if (!container) return;
 
       if (!publishedArticles || publishedArticles.length === 0) {
-        empty.textContent = 'Aún no se han publicado crónicas. Sé el primero en compartir una.';
+        empty.textContent = 'Aún no se han registrado publicaciones. Sé el primero en compartir una.';
         empty.classList.remove('hidden');
         container.innerHTML = '';
         return;
@@ -702,11 +882,11 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase tracking-wider">${art.category}</span>
+                <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-400/30 text-[10px] font-bold uppercase tracking-wider">${art.category}</span>
                 <span class="text-[11px] font-mono text-slate-400">${new Date(art.published_at).toLocaleDateString('es-MX')}</span>
               </div>
               <h4 class="text-sm font-bold text-white truncate mt-0.5">${art.title}</h4>
-              <p class="text-[11px] text-slate-400 truncate">Por ${art.author_name} · ${art.views_count || 0} visitas</p>
+              <p class="text-[11px] text-slate-400 truncate">Por ${art.author_name || 'Editorial Cultura Natura'} · ${art.views_count || 0} visitas</p>
             </div>
           </div>
 
@@ -715,7 +895,7 @@
               <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
               <span>Ver</span>
             </a>
-            <button onclick="editArticle('${art.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer" title="Editar">
+            <button onclick="editArticle('${art.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer" title="Editar">
               <i data-lucide="edit" class="w-3.5 h-3.5"></i>
               <span>Editar</span>
             </button>
@@ -731,16 +911,16 @@
       if (!art) return;
 
       document.getElementById('edit-article-id').value = art.id;
-      document.getElementById('form-heading').textContent = 'Editar Crónica: ' + art.title;
+      document.getElementById('form-heading').textContent = 'Editar Publicación: ' + art.title;
+      document.getElementById('btn-save-post-text').textContent = 'Guardar Cambios';
       document.getElementById('post-title').value = art.title;
       document.getElementById('post-category').value = art.category || 'cronica';
       document.getElementById('post-summary').value = art.summary || '';
-      document.getElementById('post-author-name').value = art.author_name || '';
-      document.getElementById('post-author-role').value = art.author_role || '';
+      document.getElementById('post-author-name').value = 'Editorial Cultura Natura';
+      document.getElementById('post-author-role').value = 'Cronista Comunitario · Epizentro';
       
-      const tmpDiv = document.createElement('div');
-      tmpDiv.innerHTML = art.content_html || '';
-      document.getElementById('post-content').value = tmpDiv.textContent || tmpDiv.innerText || '';
+      // Preservar estructura tipográfica completa (encabezados, negritas, imágenes)
+      document.getElementById('post-content').value = htmlToEditableText(art.content_html || '');
 
       if (art.cover_image_url) {
         setCoverImage(art.cover_image_url);

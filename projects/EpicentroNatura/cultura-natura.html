@@ -122,9 +122,12 @@
       border-color: #fde68a !important;
     }
     .art-filter-btn.is-active {
-      background-color: #b45309 !important;
+      background-color: #0c1021 !important;
       color: #ffffff !important;
-      border-color: #b45309 !important;
+      border-color: #0c1021 !important;
+    }
+    .art-filter-btn.is-active:hover {
+      background-color: #1e2238 !important;
     }
     .art-filter-btn:not(.is-active) {
       background-color: #ffffff !important;
@@ -132,9 +135,9 @@
       border-color: #e2e8f0 !important;
     }
     .art-filter-btn:not(.is-active):hover {
-      background-color: #fef3c7 !important;
-      color: #b45309 !important;
-      border-color: #fde68a !important;
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
     }
     .scrollbar-none::-webkit-scrollbar {
       display: none;
@@ -166,10 +169,6 @@
 
         <!-- ACCIONES RÁPIDAS -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <a href="#cronicas-section" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition-colors">
-            <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-600"></i>
-            <span>Crónicas & Blog</span>
-          </a>
           <a href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" target="_blank" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors">
             <i data-lucide="message-circle" class="w-3.5 h-3.5 text-blue-600"></i>
             <span class="hidden sm:inline">Canal de Comunidad</span>
@@ -225,16 +224,17 @@
       </div>
     </div>
 
-    <!-- SECCIÓN EDITORIAL & BLOG: CRÓNICAS Y VIDA COMUNITARIA -->
-    <section id="cronicas-section" class="space-y-6 pt-2">
+    <!-- SECCIÓN EDITORIAL & BLOG: VIDA EN COMUNIDAD -->
+    <section id="vida-en-comunidad" class="space-y-6 pt-2">
+      <span id="cronicas-section" class="sr-only"></span>
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-snow-400 pb-4">
         <div class="space-y-1">
-          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black uppercase tracking-wider">
-            <i data-lucide="book-open" class="w-3 h-3 text-amber-700"></i>
-            <span>EDITORIAL & CRÓNICAS</span>
+          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-purple-50 text-indigo-950 border border-purple-200 text-[10px] font-black uppercase tracking-wider">
+            <i data-lucide="book-open" class="w-3 h-3 text-indigo-700"></i>
+            <span>EDITORIAL CULTURA NATURA</span>
           </div>
           <h2 class="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-            Crónicas & Vida en Comunidad
+            Vida en Comunidad
           </h2>
           <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
             Historias, eventos, actividades y reflexiones sobre la vida cultural y vecinal en Epizentro Natura.
@@ -243,19 +243,19 @@
 
         <div class="flex items-center gap-2">
           <a href="editor-cultura.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-snow-300 border border-snow-400 transition-colors shadow-2xs" title="Acceso para los redactores autorizados">
-            <i data-lucide="pen-tool" class="w-3.5 h-3.5 text-amber-600"></i>
+            <i data-lucide="pen-tool" class="w-3.5 h-3.5 text-indigo-600"></i>
             <span>Portal de Redacción</span>
           </a>
         </div>
       </div>
 
-      <!-- FILTROS DE CATEGORÍA DE CRÓNICAS -->
+      <!-- FILTROS DE CATEGORÍA DE PUBLICACIONES -->
       <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
         <button onclick="setArticleFilter('all')" id="btn-art-all" class="art-filter-btn is-active px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
           Todas las Publicaciones
         </button>
         <button onclick="setArticleFilter('cronica')" id="btn-art-cronica" class="art-filter-btn px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
-          ✨ Crónicas
+          ✨ Publicaciones
         </button>
         <button onclick="setArticleFilter('evento')" id="btn-art-evento" class="art-filter-btn px-4 py-2 rounded-xl text-xs font-extrabold border transition-all">
           📅 Eventos
@@ -740,24 +740,24 @@
         const coverImg = art.cover_image_url || '/projects/EpicentroNatura/Assets/Epizentro2.svg';
         const d = art.published_at ? new Date(art.published_at) : new Date();
         const dateStr = d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
-        const waShareMsg = encodeURIComponent(`Te comparto esta crónica de Cultura Natura: "${art.title}"\n\nhttps://www.epizentro.com${articleUrl}`);
+        const waShareMsg = encodeURIComponent(`Te comparto esta publicación de Cultura Natura: "${art.title}"\n\nhttps://www.epizentro.com${articleUrl}`);
         const waShareUrl = `https://api.whatsapp.com/send?text=${waShareMsg}`;
 
-        let catBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300';
-        let catLabel = '✨ Crónica';
+        let catBadgeColor = 'bg-purple-50 text-indigo-950 border-purple-200';
+        let catLabel = '✨ Publicación';
         if (art.category === 'evento') {
-          catBadgeColor = 'bg-emerald-100 text-emerald-900 border-emerald-300';
+          catBadgeColor = 'bg-emerald-50 text-emerald-950 border-emerald-200';
           catLabel = '📅 Evento';
         } else if (art.category === 'comunicado') {
-          catBadgeColor = 'bg-purple-100 text-purple-900 border-purple-300';
+          catBadgeColor = 'bg-blue-50 text-blue-950 border-blue-200';
           catLabel = '📢 Comunicado';
         } else if (art.category === 'editorial') {
-          catBadgeColor = 'bg-indigo-100 text-indigo-900 border-indigo-300';
+          catBadgeColor = 'bg-indigo-50 text-indigo-950 border-indigo-200';
           catLabel = '✍️ Editorial';
         }
 
         return `
-          <article class="bg-white rounded-3xl border border-snow-400 overflow-hidden shadow-rappi-card hover:shadow-rappi-hover hover:border-amber-400 transition-all flex flex-col justify-between group">
+          <article class="bg-white rounded-3xl border border-snow-400 overflow-hidden shadow-rappi-card hover:shadow-rappi-hover hover:border-indigo-400 transition-all flex flex-col justify-between group">
             
             <!-- PORTADA -->
             <div>
@@ -777,7 +777,7 @@
                   <span>${dateStr}</span>
                 </div>
 
-                <h3 class="text-base sm:text-lg font-black text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
+                <h3 class="text-base sm:text-lg font-black text-slate-900 group-hover:text-indigo-900 transition-colors leading-snug">
                   <a href="${articleUrl}">${art.title}</a>
                 </h3>
 
@@ -793,7 +793,7 @@
                     </div>
                     <div class="min-w-0">
                       <div class="text-[11px] font-bold text-slate-800 truncate">${art.author_name}</div>
-                      <div class="text-[10px] text-slate-400 truncate">${art.author_role || 'Colaborador Natura'}</div>
+                      <div class="text-[10px] text-slate-400 truncate">${art.author_role || 'Cronista Comunitario · Epizentro'}</div>
                     </div>
                   </div>
                   
@@ -806,8 +806,8 @@
 
             <!-- BOTÓN LEER -->
             <div class="p-6 pt-0">
-              <a href="${articleUrl}" class="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-amber-500 text-white hover:text-slate-950 font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 group/btn">
-                <span>Leer Crónica Completa</span>
+              <a href="${articleUrl}" class="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-indigo-600 text-white font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 group/btn">
+                <span>Leer Publicación</span>
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform"></i>
               </a>
             </div>

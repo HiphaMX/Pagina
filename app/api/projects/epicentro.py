@@ -1477,14 +1477,14 @@ CULTURA_EDITORS = {
         "id": "editor_1",
         "pin": (os.getenv("CULTURA_EDITOR_1_PIN") or "natura2026").strip(),
         "name": "Editorial Cultura Natura",
-        "role": "Cronista Comunitario",
+        "role": "Cronista Comunitario · Epizentro",
         "avatar": "/projects/EpicentroNatura/Assets/Epizentro2.svg",
     },
     "editor_2": {
         "id": "editor_2",
         "pin": (os.getenv("CULTURA_EDITOR_2_PIN") or "cronica2026").strip(),
-        "name": "Comité Vecinal Natura",
-        "role": "Colaborador Cultural",
+        "name": "Editorial Cultura Natura",
+        "role": "Cronista Comunitario · Epizentro",
         "avatar": "/projects/EpicentroNatura/Assets/Epizentro2.svg",
     },
 }
@@ -1637,6 +1637,10 @@ def create_cultura_article(
     ensure_epicentro_schema(db)
     slug = generate_article_slug(payload.title, db)
     
+    author_default_name = "Editorial Cultura Natura"
+    author_default_role = "Cronista Comunitario · Epizentro"
+    author_default_avatar = "/projects/EpicentroNatura/Assets/Epizentro2.svg"
+    
     new_article = EpicentroArticle(
         id=str(uuid.uuid4()),
         slug=slug,
@@ -1646,9 +1650,9 @@ def create_cultura_article(
         cover_image_url=payload.cover_image_url.strip(),
         gallery_images=json.dumps(payload.gallery_images) if payload.gallery_images else None,
         category=payload.category or "cronica",
-        author_name=payload.author_name.strip() if payload.author_name else editor["name"],
-        author_role=payload.author_role.strip() if payload.author_role else editor.get("role"),
-        author_avatar=payload.author_avatar.strip() if payload.author_avatar else editor.get("avatar"),
+        author_name=author_default_name,
+        author_role=author_default_role,
+        author_avatar=payload.author_avatar.strip() if payload.author_avatar else author_default_avatar,
         author_id=editor["id"],
         status=payload.status or "published",
         published_at=datetime.now(timezone.utc)
@@ -1677,9 +1681,10 @@ def update_cultura_article(
     article.content_html = payload.content_html
     article.cover_image_url = payload.cover_image_url.strip()
     article.category = payload.category or article.category
-    article.author_name = payload.author_name.strip() or article.author_name
-    if payload.author_role is not None:
-        article.author_role = payload.author_role.strip()
+    article.author_name = "Editorial Cultura Natura"
+    article.author_role = "Cronista Comunitario · Epizentro"
+    if not article.author_avatar:
+        article.author_avatar = "/projects/EpicentroNatura/Assets/Epizentro2.svg"
     if payload.status:
         article.status = payload.status
     if payload.gallery_images is not None:
@@ -1762,16 +1767,16 @@ def serve_cultura_media(media_file: str, db: Session = Depends(get_db)):
 
 
 def render_article_html(html_template: str, article: EpicentroArticle, cover_absolute: str, canonical_url: str) -> str:
-    """Inyecta de forma segura metadatos OpenGraph, Schema.org y contenido en el HTML de la crónica."""
+    """Inyecta de forma segura metadatos OpenGraph, Schema.org y contenido en el HTML de la publicación."""
     import html as html_lib
     
     title_escaped = html_lib.escape(article.title or "")
     summary_escaped = html_lib.escape(article.summary or "")
-    author_name_escaped = html_lib.escape(article.author_name or "Autor Colaborador")
-    author_role_escaped = html_lib.escape(article.author_role or "Colaborador Cultural · Epizentro Natura")
+    author_name_escaped = html_lib.escape(article.author_name or "Editorial Cultura Natura")
+    author_role_escaped = html_lib.escape(article.author_role or "Cronista Comunitario · Epizentro")
     category = (article.category or "cronica").lower()
-    category_upper = category.upper()
-    category_title = category.capitalize()
+    category_upper = "PUBLICACIÓN" if category in ("cronica", "publicacion") else category.upper()
+    category_title = "Publicación" if category in ("cronica", "publicacion") else category.capitalize()
     
     pub_date_str = "Reciente"
     iso_date = "2026-11-13"
@@ -1809,7 +1814,7 @@ def render_article_html(html_template: str, article: EpicentroArticle, cover_abs
 
     json_title = (article.title or "").replace('"', '\\"')
     json_summary = (article.summary or "").replace('"', '\\"')
-    json_author = (article.author_name or "Equipo Natura").replace('"', '\\"')
+    json_author = (article.author_name or "Editorial Cultura Natura").replace('"', '\\"')
 
     # JSON-LD Schema.org
     schema_script = f'''<script type="application/ld+json" id="article-jsonld">
@@ -1841,7 +1846,7 @@ def render_article_html(html_template: str, article: EpicentroArticle, cover_abs
     res = re.sub(r'<span id="art-category-text".*?>.*?</span>', f'<span id="art-category-text">{category_upper}</span>', res, flags=re.DOTALL)
     res = re.sub(r'<span id="art-date-text".*?>.*?</span>', f'<span id="art-date-text">{pub_date_str}</span>', res, flags=re.DOTALL)
     res = re.sub(r'<h1 id="art-title".*?>.*?</h1>', f'<h1 id="art-title" class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">{title_escaped}</h1>', res, flags=re.DOTALL)
-    res = re.sub(r'<p id="art-summary".*?>.*?</p>', f'<p id="art-summary" class="text-sm sm:text-lg text-slate-600 leading-relaxed font-medium border-l-4 border-amber-500 pl-4 py-1 bg-amber-50/50 rounded-r-xl">{summary_escaped}</p>', res, flags=re.DOTALL)
+    res = re.sub(r'<p id="art-summary".*?>.*?</p>', f'<p id="art-summary" class="text-sm sm:text-lg text-slate-700 leading-relaxed font-medium border-l-4 border-indigo-600 pl-4 py-1.5 bg-indigo-50/40 rounded-r-xl">{summary_escaped}</p>', res, flags=re.DOTALL)
     res = re.sub(r'<div id="art-author-avatar-box".*?>.*?</div>', f'<div id="art-author-avatar-box" class="w-11 h-11 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 border border-slate-200">{avatar_html}</div>', res, flags=re.DOTALL)
     res = re.sub(r'<div id="art-author-name".*?>.*?</div>', f'<div id="art-author-name" class="text-sm font-extrabold text-slate-900">{author_name_escaped}</div>', res, flags=re.DOTALL)
     res = re.sub(r'<div id="art-author-role".*?>.*?</div>', f'<div id="art-author-role" class="text-xs text-slate-500 font-medium">{author_role_escaped}</div>', res, flags=re.DOTALL)
@@ -1856,7 +1861,7 @@ def render_article_html(html_template: str, article: EpicentroArticle, cover_abs
     return res
 
 
-@router.get("/cultura/render/{slug}", response_class=HTMLResponse)
+@router.api_route("/cultura/render/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def render_cultura_article(slug: str, request: Request, db: Session = Depends(get_db)):
     """Micro-render SSR que inyecta los OpenGraph meta tags exactos para que WhatsApp muestre la tarjeta panorámica en chats."""
     ensure_epicentro_schema(db)
@@ -1885,46 +1890,46 @@ def render_cultura_article(slug: str, request: Request, db: Session = Depends(ge
     if not html_raw:
         # Fallback en caso extremo de filesystem inaccesible en serverless
         html_raw = """<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="meta-page-title">Crónicas de Cultura Natura · Epizentro</title>
-<meta id="meta-page-desc" name="description" content="Crónicas y vida comunitaria en Epizentro Natura">
+<title id="meta-page-title">Publicaciones de Cultura Natura · Epizentro</title>
+<meta id="meta-page-desc" name="description" content="Publicaciones y vida comunitaria en Epizentro Natura">
 <meta name="robots" content="index, follow">
-<link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/cultura-natura.html">
+<link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/cultura-natura#vida-en-comunidad">
 <meta property="og:type" content="article">
-<meta id="og-title" property="og:title" content="Crónicas de Cultura Natura">
+<meta id="og-title" property="og:title" content="Publicaciones de Cultura Natura">
 <meta id="og-desc" property="og:description" content="Vida comunitaria en Natura">
 <meta id="og-img" property="og:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
-<meta id="og-url" property="og:url" content="https://www.epizentro.com/natura/cultura-natura.html">
+<meta id="og-url" property="og:url" content="https://www.epizentro.com/natura/cultura-natura#vida-en-comunidad">
 <meta name="twitter:card" content="summary_large_image">
-<meta id="tw-title" name="twitter:title" content="Crónicas de Cultura Natura">
+<meta id="tw-title" name="twitter:title" content="Publicaciones de Cultura Natura">
 <meta id="tw-desc" name="twitter:description" content="Vida cultural en Natura">
 <meta id="tw-img" name="twitter:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
 <script type="application/ld+json" id="article-jsonld">{}</script>
 </head>
 <body class="bg-slate-900 text-white min-h-screen p-6 font-sans">
 <div class="max-w-3xl mx-auto space-y-6">
-<a href="/natura/cultura-natura.html" class="text-amber-400 font-bold text-xs inline-block">&larr; Volver a Cultura Natura</a>
-<span id="breadcrumb-category" class="hidden">Crónica</span>
-<span id="art-category-text" class="text-xs uppercase tracking-widest text-amber-400 font-black">CRÓNICA</span>
+<a href="/natura/cultura-natura#vida-en-comunidad" class="text-indigo-400 font-bold text-xs inline-block">&larr; Volver a Cultura Natura</a>
+<span id="breadcrumb-category" class="hidden">Publicación</span>
+<span id="art-category-text" class="text-xs uppercase tracking-widest text-indigo-400 font-black">PUBLICACIÓN</span>
 <span id="art-date-text" class="text-xs text-slate-400">Reciente</span>
 <h1 id="art-title" class="text-3xl sm:text-5xl font-black text-white">Cargando...</h1>
-<p id="art-summary" class="text-slate-300 text-lg border-l-4 border-amber-500 pl-4"></p>
+<p id="art-summary" class="text-slate-300 text-lg border-l-4 border-indigo-600 pl-4"></p>
 <div id="art-author-avatar-box" class="w-10 h-10 rounded-full bg-slate-800"></div>
-<div id="art-author-name" class="font-bold text-sm">Equipo Natura</div>
-<div id="art-author-role" class="text-xs text-slate-400">Colaborador</div>
+<div id="art-author-name" class="font-bold text-sm">Editorial Cultura Natura</div>
+<div id="art-author-role" class="text-xs text-slate-400">Cronista Comunitario · Epizentro</div>
 <img id="art-cover-img" src="" alt="Portada" class="w-full rounded-2xl aspect-video object-cover">
 <div id="art-body" class="prose prose-invert max-w-none text-slate-200"></div>
 </div></body></html>"""
 
     if not article:
         not_found_html = """<!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8"><title>Crónica no encontrada · Cultura Natura</title>
+<html lang="es"><head><meta charset="utf-8"><title>Publicación no encontrada · Cultura Natura</title>
 <script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
 <div class="text-center max-w-md space-y-4">
-<h1 class="text-3xl font-black">Crónica no encontrada</h1>
+<h1 class="text-3xl font-black">Publicación no encontrada</h1>
 <p class="text-sm text-slate-400">Esta publicación no existe o fue retirada por el equipo editorial.</p>
-<a href="/natura/cultura-natura.html" class="inline-block px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs">Volver a Cultura Natura</a>
+<a href="/natura/cultura-natura#vida-en-comunidad" class="inline-block px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs">Volver a Cultura Natura</a>
 </div></body></html>"""
         return HTMLResponse(content=not_found_html, status_code=404)
 
@@ -1947,7 +1952,7 @@ def render_cultura_article(slug: str, request: Request, db: Session = Depends(ge
     return HTMLResponse(
         content=rendered,
         headers={
-            "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+            "Cache-Control": "public, max-age=0, must-revalidate",
             "Access-Control-Allow-Origin": "*"
         }
     )
