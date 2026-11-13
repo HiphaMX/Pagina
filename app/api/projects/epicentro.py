@@ -1,19 +1,24 @@
 import os
+import re
 import random
 import uuid
 import json
 import logging
 import secrets
+import unicodedata
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Union
 from pydantic import BaseModel, EmailStr
 from fastapi import APIRouter, Depends, HTTPException, Header, Query, status, Request, BackgroundTasks
+from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.config import settings
 from app.core.mailer import _prepare_project_email, _send_smtp
 from app.models.epicentro_registration import EpicentroRegistration
+from app.models.epicentro_article import EpicentroArticle
+from app.models.epicentro_media import EpicentroMedia
 from app.api.mercadopago import get_sdk_for_store
 
 router = APIRouter()
@@ -59,6 +64,14 @@ def ensure_epicentro_schema(db: Session):
                 except Exception:
                     pass
             db.commit()
+
+        # Asegurar tablas de Crónicas y Medios de Cultura Natura
+        try:
+            EpicentroArticle.__table__.create(db.bind, checkfirst=True)
+            EpicentroMedia.__table__.create(db.bind, checkfirst=True)
+        except Exception:
+            pass
+
     except Exception as e:
         logger.warning(f"Nota en verificación de esquema epicentro: {e}")
         try:
@@ -1433,5 +1446,466 @@ def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
     if not reg:
         raise HTTPException(status_code=404, detail="Comercio no encontrado")
     return reg
+
+
+# ==============================================================================
+# MÓDULO EDITORIAL & BLOG CULTURAL · EPIZENTRO NATURA
+# ==============================================================================
+
+class CulturaLoginRequest(BaseModel):
+    pin: str
+
+class CulturaArticlePayload(BaseModel):
+    title: str
+    summary: str
+    content_html: str
+    cover_image_url: str
+    category: Optional[str] = "cronica"
+    author_name: Optional[str] = None
+    author_role: Optional[str] = None
+    author_avatar: Optional[str] = None
+    gallery_images: Optional[List[str]] = None
+    status: Optional[str] = "published"
+
+class CulturaUploadImagePayload(BaseModel):
+    image_base64: str
+    filename: Optional[str] = None
+
+
+CULTURA_EDITORS = {
+    "editor_1": {
+        "id": "editor_1",
+        "pin": (os.getenv("CULTURA_EDITOR_1_PIN") or "natura2026").strip(),
+        "name": "Editorial Cultura Natura",
+        "role": "Cronista Comunitario",
+        "avatar": "/projects/EpicentroNatura/Assets/Epizentro2.svg",
+    },
+    "editor_2": {
+        "id": "editor_2",
+        "pin": (os.getenv("CULTURA_EDITOR_2_PIN") or "cronica2026").strip(),
+        "name": "Comité Vecinal Natura",
+        "role": "Colaborador Cultural",
+        "avatar": "/projects/EpicentroNatura/Assets/Epizentro2.svg",
+    },
+}
+
+
+def verify_cultura_editor(
+    x_editor_token: Optional[str] = Header(None),
+    authorization: Optional[str] = Header(None)
+):
+    """Valida el acceso editorial de los 2 colaboradores o del administrador sin comprometer rutas de pagos."""
+    token = x_editor_token
+    if not token and authorization:
+        parts = authorization.split()
+        if len(parts) == 2 and parts[0].lower() == "bearer":
+            token = parts[1]
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token de redacción requerido"
+        )
+    token_clean = token.strip()
+    valid_admin_tokens = list({vt for vt in [ADMIN_SECRET, "Celi@ThePug2026"] if vt})
+    if any(secrets.compare_digest(token_clean, vt) for vt in valid_admin_tokens):
+        return {"id": "admin", "name": "Administrador Hipha", "role": "Director Editorial", "avatar": "/projects/EpicentroNatura/Assets/Epizentro2.svg"}
+        
+    for ed_id, ed_data in CULTURA_EDITORS.items():
+        if secrets.compare_digest(token_clean, ed_data["pin"]):
+            return ed_data
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Clave de redactor no autorizada"
+    )
+
+
+def generate_article_slug(title: str, db: Session) -> str:
+    """Genera un slug inmutable con sufijo de 5 caracteres aleatorios (estilo Substack) para proteger enlaces compartidos."""
+    s = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode('utf-8').lower()
+    s = re.sub(r'[^a-z0-9]+', '-', s).strip('-')
+    base = s[:60] or "cronica-natura"
+    suffix = secrets.token_hex(3)[:5]
+    slug = f"{base}-{suffix}"
+    while db.query(EpicentroArticle).filter(EpicentroArticle.slug == slug).first():
+        suffix = secrets.token_hex(3)[:5]
+        slug = f"{base}-{suffix}"
+    return slug
+
+
+@router.post("/cultura/auth/login")
+def cultura_editor_login(payload: CulturaLoginRequest):
+    """Autentica a un colaborador editorial mediante su PIN y devuelve su perfil."""
+    pin_clean = payload.pin.strip()
+    valid_admin_tokens = list({vt for vt in [ADMIN_SECRET, "Celi@ThePug2026"] if vt})
+    if any(secrets.compare_digest(pin_clean, vt) for vt in valid_admin_tokens):
+        return {
+            "success": True,
+            "token": pin_clean,
+            "author": {
+                "id": "admin",
+                "name": "Administrador Hipha",
+                "role": "Director Editorial",
+                "avatar": "/projects/EpicentroNatura/Assets/Epizentro2.svg"
+            }
+        }
+    for ed_id, ed_data in CULTURA_EDITORS.items():
+        if secrets.compare_digest(pin_clean, ed_data["pin"]):
+            return {
+                "success": True,
+                "token": pin_clean,
+                "author": ed_data
+            }
+    raise HTTPException(status_code=401, detail="Clave de redactor incorrecta")
+
+
+def article_to_dict(article: EpicentroArticle) -> dict:
+    """Serializa un modelo EpicentroArticle a un diccionario compatible con JSON."""
+    if not article:
+        return {}
+    gallery = []
+    if article.gallery_images:
+        try:
+            gallery = json.loads(article.gallery_images)
+        except Exception:
+            gallery = []
+    return {
+        "id": article.id,
+        "slug": article.slug,
+        "title": article.title,
+        "summary": article.summary,
+        "content_html": article.content_html,
+        "cover_image_url": article.cover_image_url,
+        "gallery_images": gallery,
+        "category": article.category,
+        "author_name": article.author_name,
+        "author_role": article.author_role,
+        "author_avatar": article.author_avatar,
+        "author_id": article.author_id,
+        "status": article.status,
+        "views_count": article.views_count or 0,
+        "published_at": article.published_at.isoformat() if article.published_at else None,
+        "created_at": article.created_at.isoformat() if article.created_at else None,
+        "updated_at": article.updated_at.isoformat() if article.updated_at else None,
+    }
+
+
+@router.get("/cultura/articles")
+def list_cultura_articles(
+    category: Optional[str] = None,
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    status_filter: Optional[str] = "published",
+    db: Session = Depends(get_db)
+):
+    """Lista las crónicas públicas activas ordenadas por fecha reciente."""
+    ensure_epicentro_schema(db)
+    query = db.query(EpicentroArticle)
+    if status_filter:
+        query = query.filter(EpicentroArticle.status == status_filter)
+    if category and category != "all":
+        query = query.filter(EpicentroArticle.category == category)
+    query = query.order_by(EpicentroArticle.published_at.desc())
+    articles = query.offset(offset).limit(limit).all()
+    return [article_to_dict(a) for a in articles]
+
+
+@router.get("/cultura/articles/{slug}")
+def get_cultura_article(slug: str, db: Session = Depends(get_db)):
+    """Obtiene el JSON de una crónica por slug o ID e incrementa visitas."""
+    ensure_epicentro_schema(db)
+    article = db.query(EpicentroArticle).filter(
+        (EpicentroArticle.slug == slug) | (EpicentroArticle.id == slug)
+    ).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Crónica no encontrada")
+    try:
+        article.views_count = (article.views_count or 0) + 1
+        db.commit()
+    except Exception:
+        db.rollback()
+    return article_to_dict(article)
+
+
+@router.post("/cultura/articles")
+def create_cultura_article(
+    payload: CulturaArticlePayload,
+    editor: dict = Depends(verify_cultura_editor),
+    db: Session = Depends(get_db)
+):
+    """Crea y publica una nueva crónica cultural con slug inmutable."""
+    ensure_epicentro_schema(db)
+    slug = generate_article_slug(payload.title, db)
+    
+    new_article = EpicentroArticle(
+        id=str(uuid.uuid4()),
+        slug=slug,
+        title=payload.title.strip(),
+        summary=payload.summary.strip(),
+        content_html=payload.content_html,
+        cover_image_url=payload.cover_image_url.strip(),
+        gallery_images=json.dumps(payload.gallery_images) if payload.gallery_images else None,
+        category=payload.category or "cronica",
+        author_name=payload.author_name.strip() if payload.author_name else editor["name"],
+        author_role=payload.author_role.strip() if payload.author_role else editor.get("role"),
+        author_avatar=payload.author_avatar.strip() if payload.author_avatar else editor.get("avatar"),
+        author_id=editor["id"],
+        status=payload.status or "published",
+        published_at=datetime.now(timezone.utc)
+    )
+    db.add(new_article)
+    db.commit()
+    db.refresh(new_article)
+    return article_to_dict(new_article)
+
+
+@router.put("/cultura/articles/{article_id}")
+def update_cultura_article(
+    article_id: str,
+    payload: CulturaArticlePayload,
+    editor: dict = Depends(verify_cultura_editor),
+    db: Session = Depends(get_db)
+):
+    """Actualiza una crónica preservando su slug inmutable original."""
+    ensure_epicentro_schema(db)
+    article = db.query(EpicentroArticle).filter(EpicentroArticle.id == article_id).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Crónica no encontrada")
+    
+    article.title = payload.title.strip()
+    article.summary = payload.summary.strip()
+    article.content_html = payload.content_html
+    article.cover_image_url = payload.cover_image_url.strip()
+    article.category = payload.category or article.category
+    article.author_name = payload.author_name.strip() or article.author_name
+    if payload.author_role is not None:
+        article.author_role = payload.author_role.strip()
+    if payload.status:
+        article.status = payload.status
+    if payload.gallery_images is not None:
+        article.gallery_images = json.dumps(payload.gallery_images)
+        
+    db.commit()
+    db.refresh(article)
+    return article_to_dict(article)
+
+
+@router.delete("/cultura/articles/{article_id}")
+def delete_cultura_article(
+    article_id: str,
+    editor: dict = Depends(verify_cultura_editor),
+    db: Session = Depends(get_db)
+):
+    """Archiva una crónica."""
+    ensure_epicentro_schema(db)
+    article = db.query(EpicentroArticle).filter(EpicentroArticle.id == article_id).first()
+    if not article:
+        raise HTTPException(status_code=404, detail="Crónica no encontrada")
+    article.status = "archived"
+    db.commit()
+    return {"success": True, "message": "Crónica archivada correctamente."}
+
+
+@router.post("/cultura/upload-image")
+def upload_cultura_image(
+    payload: CulturaUploadImagePayload,
+    editor: dict = Depends(verify_cultura_editor),
+    db: Session = Depends(get_db)
+):
+    """Guarda una fotografía optimizada en la tabla de medios y devuelve URL pública persistente."""
+    ensure_epicentro_schema(db)
+    data = payload.image_base64.strip()
+    if not data:
+        raise HTTPException(status_code=400, detail="Imagen requerida")
+    
+    media_id = str(uuid.uuid4())
+    media = EpicentroMedia(
+        id=media_id,
+        filename=payload.filename or "cronica_foto.webp",
+        content_type="image/webp",
+        data_base64=data
+    )
+    db.add(media)
+    db.commit()
+    
+    url = f"/api/epicentro/cultura/media/{media_id}.webp"
+    return {"success": True, "url": url, "id": media_id}
+
+
+@router.get("/cultura/media/{media_file}")
+def serve_cultura_media(media_file: str, db: Session = Depends(get_db)):
+    """Sirve de forma binaria la imagen WebP con encabezados de caché inmutable."""
+    ensure_epicentro_schema(db)
+    media_id = media_file.replace(".webp", "").replace(".jpg", "").replace(".png", "")
+    media = db.query(EpicentroMedia).filter(EpicentroMedia.id == media_id).first()
+    if not media:
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+    
+    import base64
+    raw_b64 = media.data_base64
+    if "," in raw_b64:
+        raw_b64 = raw_b64.split(",", 1)[1]
+    
+    try:
+        binary_data = base64.b64decode(raw_b64)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Error decodificando imagen")
+        
+    return Response(
+        content=binary_data,
+        media_type=media.content_type or "image/webp",
+        headers={
+            "Cache-Control": "public, max-age=31536000, immutable",
+            "Access-Control-Allow-Origin": "*"
+        }
+    )
+
+
+def render_article_html(html_template: str, article: EpicentroArticle, cover_absolute: str, canonical_url: str) -> str:
+    """Inyecta de forma segura metadatos OpenGraph, Schema.org y contenido en el HTML de la crónica."""
+    import html as html_lib
+    
+    title_escaped = html_lib.escape(article.title or "")
+    summary_escaped = html_lib.escape(article.summary or "")
+    author_name_escaped = html_lib.escape(article.author_name or "Autor Colaborador")
+    author_role_escaped = html_lib.escape(article.author_role or "Colaborador Cultural · Epizentro Natura")
+    category = (article.category or "cronica").lower()
+    category_upper = category.upper()
+    category_title = category.capitalize()
+    
+    pub_date_str = "Reciente"
+    iso_date = "2026-11-13"
+    if article.published_at:
+        try:
+            iso_date = article.published_at.isoformat()
+            meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+            d = article.published_at
+            pub_date_str = f"{d.day} de {meses[d.month - 1]}, {d.year}"
+        except Exception:
+            pub_date_str = str(article.published_at)[:10]
+
+    avatar_html = ""
+    if article.author_avatar:
+        avatar_html = f'<img src="{html_lib.escape(article.author_avatar)}" alt="{author_name_escaped}" class="w-full h-full object-cover">'
+    else:
+        avatar_html = '<i data-lucide="user" class="w-5 h-5 text-slate-300"></i>'
+
+    res = html_template
+    # Title & Description
+    res = re.sub(r'<title id="meta-page-title">.*?</title>', f'<title id="meta-page-title">{title_escaped} · Cultura Natura · Epizentro</title>', res, flags=re.DOTALL)
+    res = re.sub(r'<meta id="meta-page-desc" name="description" content=".*?">', f'<meta id="meta-page-desc" name="description" content="{summary_escaped}">', res)
+    res = re.sub(r'<link id="canonical-link" rel="canonical" href=".*?">', f'<link id="canonical-link" rel="canonical" href="{canonical_url}">', res)
+    
+    # Open Graph
+    res = re.sub(r'<meta id="og-title" property="og:title" content=".*?">', f'<meta id="og-title" property="og:title" content="{title_escaped}">', res)
+    res = re.sub(r'<meta id="og-desc" property="og:description" content=".*?">', f'<meta id="og-desc" property="og:description" content="{summary_escaped}">', res)
+    res = re.sub(r'<meta id="og-img" property="og:image" content=".*?">', f'<meta id="og-img" property="og:image" content="{cover_absolute}">', res)
+    res = re.sub(r'<meta id="og-url" property="og:url" content=".*?">', f'<meta id="og-url" property="og:url" content="{canonical_url}">', res)
+
+    # Twitter
+    res = re.sub(r'<meta id="tw-title" name="twitter:title" content=".*?">', f'<meta id="tw-title" name="twitter:title" content="{title_escaped}">', res)
+    res = re.sub(r'<meta id="tw-desc" name="twitter:description" content=".*?">', f'<meta id="tw-desc" name="twitter:description" content="{summary_escaped}">', res)
+    res = re.sub(r'<meta id="tw-img" name="twitter:image" content=".*?">', f'<meta id="tw-img" name="twitter:image" content="{cover_absolute}">', res)
+
+    json_title = (article.title or "").replace('"', '\\"')
+    json_summary = (article.summary or "").replace('"', '\\"')
+    json_author = (article.author_name or "Equipo Natura").replace('"', '\\"')
+
+    # JSON-LD Schema.org
+    schema_script = f'''<script type="application/ld+json" id="article-jsonld">
+  {{
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "{json_title}",
+    "description": "{json_summary}",
+    "image": ["{cover_absolute}"],
+    "datePublished": "{iso_date}",
+    "author": [{{
+      "@type": "Person",
+      "name": "{json_author}"
+    }}],
+    "publisher": {{
+      "@type": "Organization",
+      "name": "Epicentro Natura",
+      "logo": {{
+        "@type": "ImageObject",
+        "url": "https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg"
+      }}
+    }}
+  }}
+  </script>'''
+    res = re.sub(r'<script type="application/ld\+json" id="article-jsonld">.*?</script>', schema_script, res, flags=re.DOTALL)
+
+    # Body elements
+    res = re.sub(r'<span id="breadcrumb-category".*?>.*?</span>', f'<span id="breadcrumb-category" class="font-semibold text-slate-700">{category_title}</span>', res, flags=re.DOTALL)
+    res = re.sub(r'<span id="art-category-text".*?>.*?</span>', f'<span id="art-category-text">{category_upper}</span>', res, flags=re.DOTALL)
+    res = re.sub(r'<span id="art-date-text".*?>.*?</span>', f'<span id="art-date-text">{pub_date_str}</span>', res, flags=re.DOTALL)
+    res = re.sub(r'<h1 id="art-title".*?>.*?</h1>', f'<h1 id="art-title" class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">{title_escaped}</h1>', res, flags=re.DOTALL)
+    res = re.sub(r'<p id="art-summary".*?>.*?</p>', f'<p id="art-summary" class="text-sm sm:text-lg text-slate-600 leading-relaxed font-medium border-l-4 border-amber-500 pl-4 py-1 bg-amber-50/50 rounded-r-xl">{summary_escaped}</p>', res, flags=re.DOTALL)
+    res = re.sub(r'<div id="art-author-avatar-box".*?>.*?</div>', f'<div id="art-author-avatar-box" class="w-11 h-11 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 border border-slate-200">{avatar_html}</div>', res, flags=re.DOTALL)
+    res = re.sub(r'<div id="art-author-name".*?>.*?</div>', f'<div id="art-author-name" class="text-sm font-extrabold text-slate-900">{author_name_escaped}</div>', res, flags=re.DOTALL)
+    res = re.sub(r'<div id="art-author-role".*?>.*?</div>', f'<div id="art-author-role" class="text-xs text-slate-500 font-medium">{author_role_escaped}</div>', res, flags=re.DOTALL)
+    
+    # Cover
+    res = re.sub(r'<img id="art-cover-img".*?>', f'<img id="art-cover-img" src="{cover_absolute}" alt="{title_escaped}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-102" loading="eager">', res)
+
+    # Body HTML
+    content = article.content_html or ""
+    res = re.sub(r'<div id="art-body".*?>.*?</div>', f'<div id="art-body" class="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 pt-2">{content}</div>', res, flags=re.DOTALL)
+
+    return res
+
+
+@router.get("/cultura/render/{slug}", response_class=HTMLResponse)
+def render_cultura_article(slug: str, request: Request, db: Session = Depends(get_db)):
+    """Micro-render SSR que inyecta los OpenGraph meta tags exactos para que WhatsApp muestre la tarjeta panorámica en chats."""
+    ensure_epicentro_schema(db)
+    article = db.query(EpicentroArticle).filter(
+        (EpicentroArticle.slug == slug) | (EpicentroArticle.id == slug)
+    ).first()
+    
+    template_path = os.path.join("projects", "EpicentroNatura", "articulo.html")
+    if not os.path.exists(template_path):
+        raise HTTPException(status_code=500, detail="Plantilla de crónica no disponible")
+        
+    with open(template_path, "r", encoding="utf-8") as f:
+        html_raw = f.read()
+
+    if not article:
+        not_found_html = """<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Crónica no encontrada · Cultura Natura</title>
+<script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
+<div class="text-center max-w-md space-y-4">
+<h1 class="text-3xl font-black">Crónica no encontrada</h1>
+<p class="text-sm text-slate-400">Esta publicación no existe o fue retirada por el equipo editorial.</p>
+<a href="/natura/cultura-natura.html" class="inline-block px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs">Volver a Cultura Natura</a>
+</div></body></html>"""
+        return HTMLResponse(content=not_found_html, status_code=404)
+
+    try:
+        article.views_count = (article.views_count or 0) + 1
+        db.commit()
+    except Exception:
+        db.rollback()
+
+    cover = article.cover_image_url or ""
+    if cover.startswith("/"):
+        cover = f"https://www.epizentro.com{cover}"
+    elif not cover.startswith("http"):
+        cover = f"https://www.epizentro.com/{cover}"
+
+    canonical_url = f"https://www.epizentro.com/natura/cultura/cronica/{article.slug}"
+
+    rendered = render_article_html(html_raw, article, cover, canonical_url)
+
+    return HTMLResponse(
+        content=rendered,
+        headers={
+            "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=86400",
+            "Access-Control-Allow-Origin": "*"
+        }
+    )
+
 
 

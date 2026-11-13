@@ -8,6 +8,8 @@ from app.models.social_tracker import SocialAccount, SocialSnapshot
 from app.models.email_log import SentEmailLog
 from app.models.reconciliation import CFDIInvoice, BankTransaction
 from app.models.epicentro_registration import EpicentroRegistration
+from app.models.epicentro_article import EpicentroArticle
+from app.models.epicentro_media import EpicentroMedia
 
 __all__ = [
     "User",
@@ -24,6 +26,8 @@ __all__ = [
     "CFDIInvoice",
     "BankTransaction",
     "EpicentroRegistration",
+    "EpicentroArticle",
+    "EpicentroMedia",
 ]
 
 

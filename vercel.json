@@ -110,7 +110,27 @@
       "dest": "/projects/EpicentroNatura/$1/$2"
     },
     {
-      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|negocio|cultura-natura|categoria|admin|index)(.html|)",
+      "src": "/natura/cultura/cronica/([^/]+)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/api/epicentro/cultura/render/$1"
+    },
+    {
+      "src": "/natura/cronica/([^/]+)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/api/epicentro/cultura/render/$1"
+    },
+    {
+      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|negocio|cultura-natura|categoria|admin|editor-cultura|articulo|index)(.html|)",
       "has": [
         {
           "type": "host",

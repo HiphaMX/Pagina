@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Redacción · Cultura Natura · Epizentro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-full flex flex-col antialiased selection:bg-amber-500 selection:text-white">
+
+  <!-- PANTALLA DE ACCESO (LOGIN GATE) -->
+  <div id="auth-gate" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6">
+      
+      <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center mx-auto shadow-inner shadow-amber-500/5">
+        <i data-lucide="feather" class="w-8 h-8"></i>
+      </div>
+
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold tracking-widest uppercase">
+          Portal Editorial
+        </div>
+        <h2 class="text-2xl font-black text-white tracking-tight">Redacción Cultura Natura</h2>
+        <p class="text-xs text-slate-400">Ingresa con tu clave o PIN de colaborador autorizado</p>
+      </div>
+
+      <form onsubmit="handleEditorLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Clave o PIN de Redactor</label>
+          <input type="password" id="editor-pin-input" required placeholder="Ingresa tu clave de colaborador..." class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 focus:outline-none transition-colors">
+        </div>
+
+        <div id="login-error-alert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-semibold"></div>
+
+        <button type="submit" id="btn-login-submit" class="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm tracking-wide transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+          <span>Ingresar a Redacción</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <div class="pt-4 border-t border-slate-800 text-[11px] text-slate-500">
+        ¿Olvidaste tu PIN? Contacta a la coordinación de Epicentro Natura.
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL PRINCIPAL DE REDACCIÓN (OCULTO HASTA LOGIN) -->
+  <div id="editor-workspace" class="hidden min-h-screen flex flex-col">
+    
+    <!-- NAVBAR SUPERIOR -->
+    <header class="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        
+        <div class="flex items-center gap-3">
+          <a href="cultura-natura.html" target="_blank" class="flex items-center gap-2" title="Ver Cultura Natura">
+            <img src="/projects/EpicentroNatura/Assets/Epizentro2.svg" alt="Epizentro" class="h-6 w-auto object-contain">
+            <span class="text-[10px] font-extrabold lowercase px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">natura</span>
+          </a>
+          <span class="text-slate-600 hidden sm:inline">|</span>
+          <span class="text-xs font-bold text-amber-400 hidden sm:inline-flex items-center gap-1.5">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            <span>Portal Editorial</span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden sm:block">
+            <div id="top-author-name" class="text-xs font-extrabold text-white">Colaborador</div>
+            <div id="top-author-role" class="text-[10px] text-slate-400">Cronista Cultura Natura</div>
+          </div>
+          <button onclick="handleLogout()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer" title="Cerrar sesión">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span class="hidden md:inline">Salir</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- CUERPO DEL ESPACIO DE TRABAJO -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+      <!-- TABS DE NAVEGACIÓN -->
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+        <button id="tab-btn-create" onclick="switchTab('create')" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 flex items-center gap-2 cursor-pointer transition-all">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Redactar Nueva Crónica</span>
+        </button>
+        <button id="tab-btn-list" onclick="switchTab('list')" class="px-4 py-2 rounded-xl text-xs font-extrabold text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 cursor-pointer transition-all">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>Crónicas Publicadas</span>
+          <span id="tab-articles-count" class="px-1.5 py-0.5 rounded-md bg-slate-800 text-[10px] font-mono text-slate-300">0</span>
+        </button>
+      </div>
+
+      <!-- VISTA 1: FORMULARIO DE REDACCIÓN -->
+      <section id="view-create" class="space-y-6">
+        
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
+          <div class="flex items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <h3 id="form-heading" class="text-xl font-black text-white">Nueva Publicación</h3>
+              <p class="text-xs text-slate-400">Difunde un evento, actividad formativa, comunicado o crónica sobre la vida en Epizentro Natura.</p>
+            </div>
+            <input type="hidden" id="edit-article-id" value="">
+          </div>
+
+          <form id="article-form" onsubmit="handleSaveArticle(event)" class="space-y-6">
+            
+            <!-- 1. TÍTULO Y CATEGORÍA -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-300 mb-1">Título de la Crónica o Comunicado *</label>
+                <input type="text" id="post-title" required placeholder="Ej. Tarde de Jazz y Ritmos Modernos en Casa de la Cultura" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Categoría *</label>
+                <select id="post-category" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-amber-400 focus:outline-none cursor-pointer">
+                  <option value="cronica">✨ Crónica Cultural</option>
+                  <option value="evento">📅 Evento Comunitario</option>
+                  <option value="comunicado">📢 Comunicado Oficial</option>
+                  <option value="editorial">✍️ Editorial Vecinal</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 2. RESUMEN / EXTRACTO PARA WHATSAPP -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-bold text-slate-300">Extracto breve (Aparecerá en el preview de WhatsApp) *</label>
+                <span id="summary-char-counter" class="text-[10px] font-mono text-slate-500">0 / 280</span>
+              </div>
+              <textarea id="post-summary" rows="2" maxlength="280" required oninput="updateSummaryCounter()" placeholder="Breve síntesis de 1 o 2 oraciones que enganche al lector al recibir el enlace en WhatsApp..." class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs sm:text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none resize-none"></textarea>
+            </div>
+
+            <!-- 3. IMAGEN DE PORTADA (WEB COMPRESS & PREVIEW) -->
+            <div class="space-y-3">
+              <label class="block text-xs font-bold text-slate-300">
+                Fotografía de Portada * <span class="text-[11px] font-normal text-slate-400">(Recomendado 1200x630 px, se comprime automáticamente)</span>
+              </label>
+
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <label class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-600 cursor-pointer flex items-center gap-2 transition-colors">
+                  <i data-lucide="upload" class="w-4 h-4 text-amber-400"></i>
+                  <span>Subir Foto de Portada</span>
+                  <input type="file" id="cover-file-input" accept="image/*" onchange="handleCoverUpload(event)" class="hidden">
+                </label>
+
+                <div class="text-xs text-slate-400 flex items-center gap-2">
+                  <span>o URL directa:</span>
+                  <input type="url" id="cover-url-input" onchange="handleCoverUrlChange(event)" placeholder="https://..." class="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none w-56 sm:w-72">
+                </div>
+              </div>
+
+              <!-- PREVIEW DE PORTADA -->
+              <div id="cover-preview-box" class="hidden relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 aspect-[1.91/1] max-w-md group">
+                <img id="cover-preview-img" src="" alt="Portada" class="w-full h-full object-cover">
+                <button type="button" onclick="removeCoverPhoto()" class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-slate-950/80 text-rose-300 border border-rose-500/40 text-xs font-bold flex items-center gap-1 hover:bg-rose-600 hover:text-white transition-colors cursor-pointer">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  <span>Quitar</span>
+                </button>
+              </div>
+              <input type="hidden" id="final-cover-url" required>
+            </div>
+
+            <!-- 4. DATOS DEL AUTOR -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800">
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Nombre del Autor / Firma *</label>
+                <input type="text" id="post-author-name" required placeholder="Ej. Ana Martínez / Colectivo Cultura" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-amber-400 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Rol o Afiliación (Opcional)</label>
+                <input type="text" id="post-author-role" placeholder="Ej. Cronista Vecinal · Natura" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:border-amber-400 focus:outline-none">
+              </div>
+            </div>
+
+            <!-- 5. CUERPO DEL ARTÍCULO (CON BARRA DE HERRAMIENTAS) -->
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <label class="block text-xs font-bold text-slate-300">Contenido de la Crónica o Comunicado *</label>
+              
+              <!-- BARRA DE HERRAMIENTAS RÁPIDA -->
+              <div class="flex items-center gap-1.5 flex-wrap bg-slate-950 p-2 rounded-xl border border-slate-800 text-xs">
+                <button type="button" onclick="insertFormat('h2')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">H2 Subtítulo</button>
+                <button type="button" onclick="insertFormat('h3')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">H3 Sección</button>
+                <button type="button" onclick="insertFormat('bold')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Negrita</button>
+                <button type="button" onclick="insertFormat('quote')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Cita</button>
+                <button type="button" onclick="insertFormat('list')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Lista</button>
+                <button type="button" onclick="insertFormat('link')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition-colors">Enlace</button>
+              </div>
+
+              <textarea id="post-content" rows="12" required placeholder="Escribe aquí la crónica, historia o detalles del evento. Puedes usar párrafos normales y la barra de herramientas superior..." class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none font-sans leading-relaxed"></textarea>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <button type="button" onclick="openPreviewModal()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                <i data-lucide="eye" class="w-4 h-4 text-amber-400"></i>
+                <span>Previsualizar Crónica</span>
+              </button>
+
+              <div class="flex items-center gap-3 w-full sm:w-auto">
+                <button type="button" onclick="resetForm()" class="px-4 py-3 rounded-xl text-slate-400 hover:text-white text-xs font-bold cursor-pointer">
+                  Limpiar
+                </button>
+                <button type="submit" id="btn-save-post" class="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm tracking-wide shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer transition-all">
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  <span id="btn-save-post-text">Publicar Crónica</span>
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+      </section>
+
+      <!-- VISTA 2: LISTADO DE CRÓNICAS PUBLICADAS -->
+      <section id="view-list" class="hidden space-y-4">
+        <div class="flex items-center justify-between gap-4">
+          <h3 class="text-xl font-black text-white">Crónicas y Comunicados en Línea</h3>
+          <button onclick="fetchEditorialArticles()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Actualizar</span>
+          </button>
+        </div>
+
+        <div id="articles-table-container" class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+          <div id="articles-list-empty" class="p-12 text-center text-slate-500 text-xs">
+            Cargando crónicas...
+          </div>
+          <div id="articles-grid" class="divide-y divide-slate-800"></div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL DE ÉXITO Y ENLACE COMPARTIDO -->
+  <div id="success-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div class="relative w-full max-w-lg rounded-3xl bg-slate-900 border border-slate-800 p-6 sm:p-8 shadow-2xl text-center space-y-6">
+      
+      <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto shadow-inner shadow-emerald-500/5">
+        <i data-lucide="check-circle" class="w-8 h-8"></i>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-2xl font-black text-white tracking-tight">¡Crónica Publicada con Éxito!</h3>
+        <p class="text-xs text-slate-400">Ya se encuentra en vivo y lista para difundir en WhatsApp y redes.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 text-left">
+        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Enlace Oficial de la Crónica</label>
+        <div class="flex items-center gap-2">
+          <input type="text" id="success-share-url" readonly class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-emerald-400 font-mono select-all focus:outline-none">
+          <button type="button" onclick="copySuccessUrl()" id="btn-copy-success" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors cursor-pointer shrink-0">
+            Copiar
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <a id="success-whatsapp-link" href="#" target="_blank" class="w-full sm:flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Compartir en WhatsApp</span>
+        </a>
+        <a id="success-view-link" href="#" target="_blank" class="w-full sm:flex-1 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+          <span>Ver Publicación</span>
+        </a>
+      </div>
+
+      <button type="button" onclick="closeSuccessModal()" class="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer">
+        Volver al Editor
+      </button>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT DEL PORTAL DE REDACCIÓN -->
+  <script>
+    let currentEditorToken = '';
+    let currentEditorProfile = null;
+    let publishedArticles = [];
+
+    // 1. AUTENTICACIÓN
+    function getStoredToken() {
+      return localStorage.getItem('natura_editor_token') || '';
+    }
+
+    function setStoredToken(token, profile) {
+      if (token) {
+        localStorage.setItem('natura_editor_token', token);
+        if (profile) localStorage.setItem('natura_editor_profile', JSON.stringify(profile));
+      } else {
+        localStorage.removeItem('natura_editor_token');
+        localStorage.removeItem('natura_editor_profile');
+      }
+    }
+
+    async function handleEditorLogin(e) {
+      if (e) e.preventDefault();
+      const pinInput = document.getElementById('editor-pin-input');
+      const errAlert = document.getElementById('login-error-alert');
+      const pin = pinInput ? pinInput.value.trim() : '';
+      if (!pin) return;
+
+      if (errAlert) errAlert.classList.add('hidden');
+      const btn = document.getElementById('btn-login-submit');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/epicentro/cultura/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pin })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'Clave de colaborador no autorizada.');
+        }
+
+        const data = await res.json();
+        currentEditorToken = data.token;
+        currentEditorProfile = data.author;
+        setStoredToken(data.token, data.author);
+
+        showWorkspace();
+      } catch (err) {
+        if (errAlert) {
+          errAlert.textContent = err.message || 'Error al iniciar sesión.';
+          errAlert.classList.remove('hidden');
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function handleLogout() {
+      setStoredToken('', null);
+      currentEditorToken = '';
+      currentEditorProfile = null;
+      document.getElementById('editor-workspace').classList.add('hidden');
+      document.getElementById('auth-gate').classList.remove('hidden');
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function showWorkspace() {
+      document.getElementById('auth-gate').classList.add('hidden');
+      document.getElementById('editor-workspace').classList.remove('hidden');
+
+      if (currentEditorProfile) {
+        const nameEl = document.getElementById('top-author-name');
+        const roleEl = document.getElementById('top-author-role');
+        const authNameInput = document.getElementById('post-author-name');
+        const authRoleInput = document.getElementById('post-author-role');
+
+        if (nameEl) nameEl.textContent = currentEditorProfile.name;
+        if (roleEl) roleEl.textContent = currentEditorProfile.role || 'Colaborador';
+        if (authNameInput && !authNameInput.value) authNameInput.value = currentEditorProfile.name;
+        if (authRoleInput && !authRoleInput.value) authRoleInput.value = currentEditorProfile.role || '';
+      }
+
+      fetchEditorialArticles();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    // 2. TABS
+    function switchTab(tab) {
+      const btnCreate = document.getElementById('tab-btn-create');
+      const btnList = document.getElementById('tab-btn-list');
+      const viewCreate = document.getElementById('view-create');
+      const viewList = document.getElementById('view-list');
+
+      if (tab === 'create') {
+        btnCreate.className = 'px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 flex items-center gap-2 cursor-pointer transition-all';
+        btnList.className = 'px-4 py-2 rounded-xl text-xs font-extrabold text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 cursor-pointer transition-all';
+        viewCreate.classList.remove('hidden');
+        viewList.classList.add('hidden');
+      } else {
+        btnList.className = 'px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-slate-950 flex items-center gap-2 cursor-pointer transition-all';
+        btnCreate.className = 'px-4 py-2 rounded-xl text-xs font-extrabold text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 cursor-pointer transition-all';
+        viewList.classList.remove('hidden');
+        viewCreate.classList.add('hidden');
+        fetchEditorialArticles();
+      }
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    // 3. COMPRESIÓN DE FOTO DE PORTADA
+    async function compressImageToWebP(file, maxWidth = 1200, maxHeight = 630, quality = 0.85) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = maxWidth;
+            canvas.height = maxHeight;
+            const ctx = canvas.getContext('2d');
+
+            // Recorte proporcional centrado (cover 1.91:1)
+            const targetRatio = maxWidth / maxHeight;
+            const imgRatio = img.width / img.height;
+            let sx, sy, sWidth, sHeight;
+
+            if (imgRatio > targetRatio) {
+              sHeight = img.height;
+              sWidth = img.height * targetRatio;
+              sx = (img.width - sWidth) / 2;
+              sy = 0;
+            } else {
+              sWidth = img.width;
+              sHeight = img.width / targetRatio;
+              sx = 0;
+              sy = (img.height - sHeight) / 2;
+            }
+
+            ctx.fillStyle = '#050810';
+            ctx.fillRect(0, 0, maxWidth, maxHeight);
+            ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, maxWidth, maxHeight);
+            resolve(canvas.toDataURL('image/webp', quality));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleCoverUpload(e) {
+      const file = (e.target.files || [])[0];
+      if (!file) return;
+
+      try {
+        const compressedBase64 = await compressImageToWebP(file, 1200, 630, 0.85);
+
+        // Subir al endpoint de persistencia
+        const res = await fetch('/api/epicentro/cultura/upload-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Editor-Token': currentEditorToken
+          },
+          body: JSON.stringify({
+            image_base64: compressedBase64,
+            filename: file.name
+          })
+        });
+
+        if (!res.ok) throw new Error('Error al almacenar imagen.');
+        const data = await res.json();
+        setCoverImage(data.url);
+      } catch (err) {
+        alert('Error procesando fotografía: ' + err.message);
+      }
+      e.target.value = '';
+    }
+
+    function handleCoverUrlChange(e) {
+      const url = e.target.value.trim();
+      if (url && url.startsWith('http')) {
+        setCoverImage(url);
+      }
+    }
+
+    function setCoverImage(url) {
+      document.getElementById('final-cover-url').value = url;
+      const previewBox = document.getElementById('cover-preview-box');
+      const previewImg = document.getElementById('cover-preview-img');
+      previewImg.src = url;
+      previewBox.classList.remove('hidden');
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function removeCoverPhoto() {
+      document.getElementById('final-cover-url').value = '';
+      document.getElementById('cover-url-input').value = '';
+      document.getElementById('cover-preview-box').classList.add('hidden');
+    }
+
+    // 4. BARRA DE HERRAMIENTAS DE FORMATO
+    function insertFormat(type) {
+      const textarea = document.getElementById('post-content');
+      if (!textarea) return;
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const sel = textarea.value.substring(start, end);
+      let rep = '';
+
+      if (type === 'h2') rep = '\n## ' + (sel || 'Subtítulo') + '\n';
+      else if (type === 'h3') rep = '\n### ' + (sel || 'Sección') + '\n';
+      else if (type === 'bold') rep = '**' + (sel || 'texto en negrita') + '**';
+      else if (type === 'quote') rep = '\n> ' + (sel || 'Cita o testimonio...') + '\n';
+      else if (type === 'list') rep = '\n- ' + (sel || 'Punto destacado') + '\n- Segundo punto';
+      else if (type === 'link') rep = '[' + (sel || 'Texto del enlace') + '](https://...)';
+
+      textarea.setRangeText(rep, start, end, 'end');
+      textarea.focus();
+    }
+
+    function updateSummaryCounter() {
+      const val = document.getElementById('post-summary')?.value || '';
+      const counter = document.getElementById('summary-char-counter');
+      if (counter) counter.textContent = val.length + ' / 280';
+    }
+
+    // 5. GUARDAR Y PUBLICAR ARTÍCULO
+    async function handleSaveArticle(e) {
+      e.preventDefault();
+      const title = document.getElementById('post-title').value.trim();
+      const category = document.getElementById('post-category').value;
+      const summary = document.getElementById('post-summary').value.trim();
+      const coverUrl = document.getElementById('final-cover-url').value.trim();
+      const authorName = document.getElementById('post-author-name').value.trim();
+      const authorRole = document.getElementById('post-author-role').value.trim();
+      const rawContent = document.getElementById('post-content').value.trim();
+      const editId = document.getElementById('edit-article-id').value.trim();
+
+      if (!coverUrl) {
+        alert('Por favor sube una fotografía de portada para la crónica.');
+        return;
+      }
+
+      // Convertir markdown básico a HTML
+      const contentHtml = parseBasicMarkdownToHtml(rawContent);
+
+      const payload = {
+        title,
+        category,
+        summary,
+        cover_image_url: coverUrl,
+        author_name: authorName,
+        author_role: authorRole,
+        content_html: contentHtml,
+        status: 'published'
+      };
+
+      const btn = document.getElementById('btn-save-post');
+      const btnText = document.getElementById('btn-save-post-text');
+      btn.disabled = true;
+      btnText.textContent = 'Guardando...';
+
+      try {
+        const url = editId ? `/api/epicentro/cultura/articles/${editId}` : '/api/epicentro/cultura/articles';
+        const method = editId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Editor-Token': currentEditorToken
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'Error al guardar la crónica.');
+        }
+
+        const data = await res.json();
+        showSuccessModal(data);
+        resetForm();
+        fetchEditorialArticles();
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Publicar Crónica';
+      }
+    }
+
+    function parseBasicMarkdownToHtml(md) {
+      const lines = md.split('\n');
+      const htmlParts = [];
+      let inList = false;
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          if (inList) { htmlParts.push('</ul>'); inList = false; }
+          return;
+        }
+
+        if (trimmed.startsWith('### ')) {
+          if (inList) { htmlParts.push('</ul>'); inList = false; }
+          htmlParts.push('<h3 class="text-xl font-bold text-slate-900 mt-6 mb-2">' + escapeHtml(trimmed.slice(4)) + '</h3>');
+        } else if (trimmed.startsWith('## ')) {
+          if (inList) { htmlParts.push('</ul>'); inList = false; }
+          htmlParts.push('<h2 class="text-2xl font-black text-slate-950 mt-8 mb-3">' + escapeHtml(trimmed.slice(3)) + '</h2>');
+        } else if (trimmed.startsWith('> ')) {
+          if (inList) { htmlParts.push('</ul>'); inList = false; }
+          htmlParts.push('<blockquote class="border-l-4 border-amber-500 pl-4 py-1.5 italic text-slate-700 my-4 bg-amber-50/40 rounded-r-xl">' + escapeHtml(trimmed.slice(2)) + '</blockquote>');
+        } else if (trimmed.startsWith('- ')) {
+          if (!inList) { htmlParts.push('<ul class="list-disc list-inside space-y-1 my-3 text-slate-700">'); inList = true; }
+          htmlParts.push('<li>' + escapeHtml(trimmed.slice(2)) + '</li>');
+        } else {
+          if (inList) { htmlParts.push('</ul>'); inList = false; }
+          let p = escapeHtml(trimmed);
+          p = p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          p = p.replace(/\[(.*?)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-amber-700 underline font-bold">$1</a>');
+          htmlParts.push('<p class="mb-4 leading-relaxed">' + p + '</p>');
+        }
+      });
+
+      if (inList) htmlParts.push('</ul>');
+      return htmlParts.join('\n');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function resetForm() {
+      document.getElementById('article-form').reset();
+      document.getElementById('edit-article-id').value = '';
+      document.getElementById('form-heading').textContent = 'Nueva Publicación';
+      removeCoverPhoto();
+      updateSummaryCounter();
+      if (currentEditorProfile) {
+        document.getElementById('post-author-name').value = currentEditorProfile.name;
+        document.getElementById('post-author-role').value = currentEditorProfile.role || '';
+      }
+    }
+
+    // 6. MODAL DE ÉXITO
+    function showSuccessModal(article) {
+      const modal = document.getElementById('success-modal');
+      const shareUrl = `https://www.epizentro.com/natura/cultura/cronica/${article.slug}`;
+      document.getElementById('success-share-url').value = shareUrl;
+
+      const waMsg = encodeURIComponent(`Te comparto esta crónica de Cultura Natura: "${article.title}"\n\n${shareUrl}`);
+      document.getElementById('success-whatsapp-link').href = `https://api.whatsapp.com/send?text=${waMsg}`;
+      document.getElementById('success-view-link').href = `/natura/cultura/cronica/${article.slug}`;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copySuccessUrl() {
+      const input = document.getElementById('success-share-url');
+      navigator.clipboard.writeText(input.value).then(() => {
+        const btn = document.getElementById('btn-copy-success');
+        btn.textContent = '¡Copiado!';
+        setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
+      });
+    }
+
+    // 7. LISTADO DE ARTÍCULOS
+    async function fetchEditorialArticles() {
+      try {
+        const res = await fetch('/api/epicentro/cultura/articles?limit=50');
+        if (!res.ok) throw new Error('Error al listar');
+        publishedArticles = await res.json();
+
+        const badge = document.getElementById('tab-articles-count');
+        if (badge) badge.textContent = publishedArticles.length;
+
+        renderArticlesGrid();
+      } catch (e) {
+        console.warn('Error fetching articles:', e);
+      }
+    }
+
+    function renderArticlesGrid() {
+      const container = document.getElementById('articles-grid');
+      const empty = document.getElementById('articles-list-empty');
+      if (!container) return;
+
+      if (!publishedArticles || publishedArticles.length === 0) {
+        empty.textContent = 'Aún no se han publicado crónicas. Sé el primero en compartir una.';
+        empty.classList.remove('hidden');
+        container.innerHTML = '';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      container.innerHTML = publishedArticles.map(art => `
+        <div class="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-800/50 transition-colors">
+          <div class="flex items-center gap-3.5 min-w-0">
+            <div class="w-16 h-12 rounded-xl bg-slate-950 overflow-hidden shrink-0 border border-slate-700">
+              <img src="${art.cover_image_url || '/projects/EpicentroNatura/Assets/Epizentro2.svg'}" alt="${art.title}" class="w-full h-full object-cover">
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase tracking-wider">${art.category}</span>
+                <span class="text-[11px] font-mono text-slate-400">${new Date(art.published_at).toLocaleDateString('es-MX')}</span>
+              </div>
+              <h4 class="text-sm font-bold text-white truncate mt-0.5">${art.title}</h4>
+              <p class="text-[11px] text-slate-400 truncate">Por ${art.author_name} · ${art.views_count || 0} visitas</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+            <a href="/natura/cultura/cronica/${art.slug}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1 transition-colors" title="Ver en vivo">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>Ver</span>
+            </a>
+            <button onclick="editArticle('${art.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer" title="Editar">
+              <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+              <span>Editar</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function editArticle(id) {
+      const art = publishedArticles.find(a => a.id === id);
+      if (!art) return;
+
+      document.getElementById('edit-article-id').value = art.id;
+      document.getElementById('form-heading').textContent = 'Editar Crónica: ' + art.title;
+      document.getElementById('post-title').value = art.title;
+      document.getElementById('post-category').value = art.category || 'cronica';
+      document.getElementById('post-summary').value = art.summary || '';
+      document.getElementById('post-author-name').value = art.author_name || '';
+      document.getElementById('post-author-role').value = art.author_role || '';
+      
+      const tmpDiv = document.createElement('div');
+      tmpDiv.innerHTML = art.content_html || '';
+      document.getElementById('post-content').value = tmpDiv.textContent || tmpDiv.innerText || '';
+
+      if (art.cover_image_url) {
+        setCoverImage(art.cover_image_url);
+      }
+
+      updateSummaryCounter();
+      switchTab('create');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // INICIALIZACIÓN
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = getStoredToken();
+      const profile = localStorage.getItem('natura_editor_profile');
+      if (token) {
+        currentEditorToken = token;
+        if (profile) currentEditorProfile = JSON.parse(profile);
+        showWorkspace();
+      } else {
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
