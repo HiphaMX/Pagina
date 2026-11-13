@@ -1864,12 +1864,57 @@ def render_cultura_article(slug: str, request: Request, db: Session = Depends(ge
         (EpicentroArticle.slug == slug) | (EpicentroArticle.id == slug)
     ).first()
     
-    template_path = os.path.join("projects", "EpicentroNatura", "articulo.html")
-    if not os.path.exists(template_path):
-        raise HTTPException(status_code=500, detail="Plantilla de crónica no disponible")
-        
-    with open(template_path, "r", encoding="utf-8") as f:
-        html_raw = f.read()
+    template_candidates = [
+        os.path.join(os.path.dirname(__file__), "..", "..", "templates", "articulo.html"),
+        os.path.join(os.getcwd(), "app", "templates", "articulo.html"),
+        os.path.join(os.getcwd(), "projects", "EpicentroNatura", "articulo.html"),
+        os.path.join("app", "templates", "articulo.html"),
+        os.path.join("projects", "EpicentroNatura", "articulo.html"),
+    ]
+    html_raw = None
+    for cand in template_candidates:
+        if cand and os.path.exists(cand):
+            try:
+                with open(cand, "r", encoding="utf-8") as f:
+                    html_raw = f.read()
+                if html_raw:
+                    break
+            except Exception:
+                continue
+
+    if not html_raw:
+        # Fallback en caso extremo de filesystem inaccesible en serverless
+        html_raw = """<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="meta-page-title">Crónicas de Cultura Natura · Epizentro</title>
+<meta id="meta-page-desc" name="description" content="Crónicas y vida comunitaria en Epizentro Natura">
+<meta name="robots" content="index, follow">
+<link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/cultura-natura.html">
+<meta property="og:type" content="article">
+<meta id="og-title" property="og:title" content="Crónicas de Cultura Natura">
+<meta id="og-desc" property="og:description" content="Vida comunitaria en Natura">
+<meta id="og-img" property="og:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+<meta id="og-url" property="og:url" content="https://www.epizentro.com/natura/cultura-natura.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta id="tw-title" name="twitter:title" content="Crónicas de Cultura Natura">
+<meta id="tw-desc" name="twitter:description" content="Vida cultural en Natura">
+<meta id="tw-img" name="twitter:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="application/ld+json" id="article-jsonld">{}</script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-6 font-sans">
+<div class="max-w-3xl mx-auto space-y-6">
+<a href="/natura/cultura-natura.html" class="text-amber-400 font-bold text-xs inline-block">&larr; Volver a Cultura Natura</a>
+<span id="breadcrumb-category" class="hidden">Crónica</span>
+<span id="art-category-text" class="text-xs uppercase tracking-widest text-amber-400 font-black">CRÓNICA</span>
+<span id="art-date-text" class="text-xs text-slate-400">Reciente</span>
+<h1 id="art-title" class="text-3xl sm:text-5xl font-black text-white">Cargando...</h1>
+<p id="art-summary" class="text-slate-300 text-lg border-l-4 border-amber-500 pl-4"></p>
+<div id="art-author-avatar-box" class="w-10 h-10 rounded-full bg-slate-800"></div>
+<div id="art-author-name" class="font-bold text-sm">Equipo Natura</div>
+<div id="art-author-role" class="text-xs text-slate-400">Colaborador</div>
+<img id="art-cover-img" src="" alt="Portada" class="w-full rounded-2xl aspect-video object-cover">
+<div id="art-body" class="prose prose-invert max-w-none text-slate-200"></div>
+</div></body></html>"""
 
     if not article:
         not_found_html = """<!DOCTYPE html>

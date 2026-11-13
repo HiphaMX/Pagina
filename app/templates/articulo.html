@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLV1NVTMQM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-QLV1NVTMQM");
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="meta-page-title">Crónicas de Cultura Natura · Epizentro</title>
+  <meta id="meta-page-desc" name="description" content="Crónicas, comunicados y vida comunitaria en Epizentro Natura, Zapopan.">
+  <meta name="robots" content="index, follow">
+  <link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/cultura-natura.html">
+
+  <!-- OPEN GRAPH / WHATSAPP / FACEBOOK PREVIEWS -->
+  <meta property="og:type" content="article">
+  <meta id="og-title" property="og:title" content="Crónicas de Cultura Natura · Epizentro">
+  <meta id="og-desc" property="og:description" content="Difusión de eventos, crónicas y vida comunitaria en Epizentro Natura.">
+  <meta id="og-img" property="og:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta id="og-url" property="og:url" content="https://www.epizentro.com/natura/cultura-natura.html">
+  <meta property="og:site_name" content="Epizentro Natura">
+  <meta property="og:locale" content="es_MX">
+
+  <!-- TWITTER CARDS -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="tw-title" name="twitter:title" content="Crónicas de Cultura Natura · Epizentro">
+  <meta id="tw-desc" name="twitter:description" content="Difusión de eventos y vida cultural en Epizentro Natura.">
+  <meta id="tw-img" name="twitter:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+
+  <!-- FAVICON & FONTS -->
+  <link rel="icon" type="image/svg+xml" href="/projects/EpicentroNatura/Assets/Epizentro2.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- TAILWIND CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#050810',
+              carbon: '#0c1021',
+              slate: '#1e2238',
+              amber: '#b45309',
+              warmAmber: '#fef3c7',
+            },
+            snow: {
+              100: '#ffffff',
+              200: '#f8fafc',
+              300: '#f1f5f9',
+              400: '#e2e8f0',
+              500: '#cbd5e1'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- LUCIDE ICONS CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- SCHEMA.ORG JSON-LD -->
+  <script type="application/ld+json" id="article-jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": "Crónicas de Cultura Natura",
+    "description": "Crónicas y vida cultural en Epizentro Natura",
+    "image": ["https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg"],
+    "datePublished": "2026-11-13",
+    "author": [{
+      "@type": "Person",
+      "name": "Equipo Editorial Cultura Natura"
+    }],
+    "publisher": {
+      "@type": "Organization",
+      "name": "Epicentro Natura",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg"
+      }
+    }
+  }
+  </script>
+</head>
+
+<body class="min-h-screen bg-snow-200 text-slate-900 font-sans flex flex-col antialiased selection:bg-amber-500 selection:text-white">
+
+  <!-- HEADER / NAVBAR -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-snow-400 shadow-2xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-3">
+        
+        <!-- LOGO -->
+        <a href="cultura-natura.html" class="flex items-center gap-2.5 group shrink-0" title="Volver a Cultura Natura">
+          <img src="/projects/EpicentroNatura/Assets/Epizentro2.svg" alt="Epizentro" class="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-purple-50 text-indigo-950 border border-purple-200">
+            natura
+          </span>
+          <span class="text-xs font-bold text-amber-600 hidden sm:inline-block px-2.5 py-0.5 rounded-md bg-amber-50 border border-amber-200">
+            Crónicas & Cultura
+          </span>
+        </a>
+
+        <!-- ACCIONES RÁPIDAS -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button id="btn-share-top" onclick="shareArticle()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 transition-colors cursor-pointer">
+            <i data-lucide="share-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Compartir</span>
+          </button>
+          <a href="cultura-natura.html" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-snow-300 hover:bg-snow-400 border border-snow-400 transition-colors">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Cultura Natura</span>
+            <span class="sm:hidden">Volver</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- BREADCRUMB -->
+    <nav class="flex items-center gap-2 text-xs font-medium text-slate-500 py-1 flex-wrap" aria-label="Breadcrumb">
+      <a href="index.html" class="hover:text-amber-700 transition-colors flex items-center gap-1">
+        <i data-lucide="home" class="w-3.5 h-3.5"></i>
+        <span>Inicio</span>
+      </a>
+      <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
+      <a href="cultura-natura.html" class="hover:text-amber-700 transition-colors">
+        Cultura Natura
+      </a>
+      <i data-lucide="chevron-right" class="w-3 h-3 text-slate-400"></i>
+      <span id="breadcrumb-category" class="font-semibold text-slate-700">
+        Crónica
+      </span>
+    </nav>
+
+    <!-- ARTÍCULO COMPLETO -->
+    <article class="bg-white rounded-3xl border border-snow-400 overflow-hidden shadow-sm p-6 sm:p-10 lg:p-12 space-y-8">
+      
+      <!-- CABECERA: CATEGORÍA & FECHA -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <span id="art-category-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-amber-100 text-amber-900 border border-amber-300">
+            <i data-lucide="sparkles" class="w-3 h-3 text-amber-700"></i>
+            <span id="art-category-text">CRÓNICA CULTURAL</span>
+          </span>
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+            <span id="art-date-text">Reciente</span>
+          </div>
+        </div>
+
+        <!-- TÍTULO -->
+        <h1 id="art-title" class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+          Cargando crónica...
+        </h1>
+
+        <!-- EXTRACTO / SUMMARY -->
+        <p id="art-summary" class="text-sm sm:text-lg text-slate-600 leading-relaxed font-medium border-l-4 border-amber-500 pl-4 py-1 bg-amber-50/50 rounded-r-xl">
+        </p>
+
+        <!-- FICHA DE AUTOR & COMPARTIR -->
+        <div class="pt-4 border-t border-snow-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div id="art-author-avatar-box" class="w-11 h-11 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 border border-slate-200">
+              <i data-lucide="user" class="w-5 h-5 text-slate-300"></i>
+            </div>
+            <div>
+              <div id="art-author-name" class="text-sm font-extrabold text-slate-900">
+                Autor Colaborador
+              </div>
+              <div id="art-author-role" class="text-xs text-slate-500 font-medium">
+                Colaborador Cultural · Epizentro Natura
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÓN WHATSAPP -->
+          <button type="button" onclick="shareToWhatsApp()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition-all shadow-xs active:scale-95 cursor-pointer shrink-0">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>Compartir en WhatsApp</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- IMAGEN DE PORTADA (PROPORCIÓN RECOMENDADA 1.91:1) -->
+      <div id="art-cover-wrapper" class="relative w-full rounded-2xl overflow-hidden bg-slate-100 border border-snow-400 aspect-[16/9] sm:aspect-[1.91/1] shadow-xs">
+        <img id="art-cover-img" src="" alt="Portada de crónica" class="w-full h-full object-cover transition-transform duration-700 hover:scale-102" loading="eager">
+      </div>
+
+      <!-- CUERPO DEL ARTÍCULO -->
+      <div id="art-body" class="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 pt-2">
+      </div>
+
+      <!-- FOOTER DEL ARTÍCULO: COMPARTIR Y ACCIONES -->
+      <div class="pt-8 border-t border-snow-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-xs text-slate-600">
+          <span class="font-bold">¿Te gustó esta crónica?</span>
+          <span>Compártela con tus vecinos en cotos y grupos:</span>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button onclick="shareToWhatsApp()" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs transition-colors cursor-pointer">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>Enviar a WhatsApp</span>
+          </button>
+          <button onclick="copyArticleLink()" id="btn-copy-link" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-snow-300 hover:bg-snow-400 text-slate-800 font-bold text-xs transition-colors cursor-pointer">
+            <i data-lucide="link" class="w-4 h-4"></i>
+            <span id="copy-link-text">Copiar enlace</span>
+          </button>
+        </div>
+      </div>
+
+    </article>
+
+    <!-- BANNER COMUNITARIO -->
+    <section class="rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white p-8 sm:p-10 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 border border-amber-900/30">
+      <div class="space-y-2 text-center sm:text-left">
+        <span class="text-[10px] font-mono font-extrabold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+          COMUNIDAD VECINAL NATURA
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+          Recibe las crónicas y eventos en tu WhatsApp
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-lg">
+          Sigue el canal oficial de Epicentro Natura para enterarte de convocatorias, actividades formativas y vida social en nuestro vecindario.
+        </p>
+      </div>
+      <a href="https://whatsapp.com/channel/0029VbDrARy3GJOsfBGbg83b" target="_blank" rel="noopener" class="shrink-0 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95 inline-flex items-center gap-2">
+        <i data-lucide="message-circle" class="w-4 h-4"></i>
+        <span>Unirme al Canal</span>
+      </a>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-cyan-500/20 bg-[#050810] text-slate-400 py-10 text-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img src="/projects/EpicentroNatura/Assets/Epizentro.svg" alt="Epizentro" class="h-6 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">natura</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-slate-400 text-xs">Cultura & Crónicas Comunitarias</span>
+        </div>
+        <div class="flex items-center gap-5 text-slate-300">
+          <a href="cultura-natura.html" class="hover:text-amber-400 transition-colors">Cartelera Cultura</a>
+          <a href="index.html" class="hover:text-white transition-colors">Directorio</a>
+          <a href="editor-cultura.html" class="hover:text-indigo-400 transition-colors text-[11px] text-slate-500">Acceso Redactores</a>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500 text-[11px]">
+        <div>Copyright 2026 © Epicentro · Red Territorial de Comercio y Cultura Hiperlocal</div>
+        <div>Diseño por <a href="https://hipha.mx" target="_blank" class="hover:text-white">Hipha</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT CLIENT-SIDE FALLBACK & SHARE -->
+  <script>
+    const currentUrl = window.location.href;
+
+    function shareToWhatsApp() {
+      const title = (document.getElementById('art-title')?.textContent || 'Crónica Cultura Natura').trim();
+      const text = encodeURIComponent(`${title} — Lee esta crónica en Epizentro Natura: ${currentUrl}`);
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    function shareArticle() {
+      if (navigator.share) {
+        navigator.share({
+          title: document.getElementById('art-title')?.textContent || 'Crónica Cultura Natura',
+          text: document.getElementById('art-summary')?.textContent || '',
+          url: currentUrl
+        }).catch(() => shareToWhatsApp());
+      } else {
+        shareToWhatsApp();
+      }
+    }
+
+    function copyArticleLink() {
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        const textSpan = document.getElementById('copy-link-text');
+        if (textSpan) {
+          const prev = textSpan.textContent;
+          textSpan.textContent = '¡Enlace copiado!';
+          setTimeout(() => { textSpan.textContent = prev; }, 2500);
+        }
+      }).catch(() => {
+        prompt('Copia el enlace de esta crónica:', currentUrl);
+      });
+    }
+
+    // Client-side hydration fallback si el template fue cargado estático con ?slug=...
+    async function hydrateArticleClientSide() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+      if (!slug) return;
+
+      const titleEl = document.getElementById('art-title');
+      // Solo consultar si no vino pre-renderizado
+      if (titleEl && titleEl.textContent.includes('Cargando')) {
+        try {
+          const res = await fetch('/api/epicentro/cultura/articles/' + encodeURIComponent(slug));
+          if (!res.ok) throw new Error('Artículo no encontrado');
+          const data = await res.json();
+          
+          document.title = data.title + ' · Cultura Natura · Epizentro';
+          document.getElementById('meta-page-title').textContent = data.title + ' · Cultura Natura · Epizentro';
+          document.getElementById('meta-page-desc').setAttribute('content', data.summary || '');
+          titleEl.textContent = data.title;
+          document.getElementById('art-summary').textContent = data.summary || '';
+          document.getElementById('art-category-text').textContent = (data.category || 'CRÓNICA').toUpperCase();
+          document.getElementById('breadcrumb-category').textContent = (data.category || 'Crónica');
+          document.getElementById('art-author-name').textContent = data.author_name || 'Autor Colaborador';
+          document.getElementById('art-author-role').textContent = data.author_role || 'Colaborador Cultural · Epizentro';
+          
+          if (data.cover_image_url) {
+            const img = document.getElementById('art-cover-img');
+            img.src = data.cover_image_url;
+            img.alt = data.title;
+          }
+          
+          if (data.content_html) {
+            document.getElementById('art-body').innerHTML = data.content_html;
+          }
+
+          if (data.published_at) {
+            const d = new Date(data.published_at);
+            document.getElementById('art-date-text').textContent = d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+          }
+
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+        } catch (e) {
+          console.warn('Error cargando crónica:', e);
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      hydrateArticleClientSide();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

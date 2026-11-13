@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import FastAPI, Request, Depends
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 import os
 
 from app.api import contact, mercadopago, auth, sat, qa, visual_generator, social_tracker
@@ -13,7 +14,7 @@ from app.api.dashboard import routes as dashboard_routes
 from app.api.dashboard import reconciliation_routes
 from app.api.dashboard import web_health_routes
 from app.api.dashboard import quotations_routes
-from app.core.database import Base, engine, SessionLocal, ensure_db_initialized
+from app.core.database import Base, engine, SessionLocal, ensure_db_initialized, get_db
 from app.models.user import User
 from app.models.chilechillon_lead import ChileChillonLead
 from app.models.chilechillon_match import ChileChillonMatch
@@ -289,6 +290,14 @@ app.include_router(oncologia_robotica_project.router, prefix="/api/oncologia-rob
 app.include_router(jairo_dominguez_project.router, prefix="/api/jairo-dominguez", tags=["jairo-dominguez"])
 app.include_router(jairo_dominguez_project.router, prefix="/api/projects/jairo-dominguez", tags=["jairo-dominguez"])
 app.include_router(epicentro_project.router, prefix="/api/epicentro", tags=["epicentro"])
+
+
+@app.get("/natura/cultura/cronica/{slug}", response_class=HTMLResponse)
+@app.get("/natura/cronica/{slug}", response_class=HTMLResponse)
+def render_public_cronica_entrypoint(slug: str, request: Request, db: Session = Depends(get_db)):
+    """Punto de entrada público SSR para crónicas de Cultura Natura con OpenGraph para WhatsApp."""
+    return epicentro_project.render_cultura_article(slug, request, db)
+
 
 
 
