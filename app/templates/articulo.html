@@ -292,21 +292,15 @@
       </div>
 
       <!-- FOOTER DEL ARTÍCULO: COMPARTIR Y ACCIONES -->
-      <div class="pt-8 border-t border-snow-300 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-2 text-xs text-slate-600">
-          <span class="font-bold">¿Te gustó esta publicación?</span>
-          <span>Compártela con tus vecinos en cotos y grupos:</span>
-        </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button onclick="shareToWhatsApp()" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs transition-colors cursor-pointer">
-            <i data-lucide="message-circle" class="w-4 h-4"></i>
-            <span>Enviar a WhatsApp</span>
-          </button>
-          <button onclick="copyArticleLink()" id="btn-copy-link" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-snow-300 hover:bg-snow-400 text-slate-800 font-bold text-xs transition-colors cursor-pointer">
-            <i data-lucide="link" class="w-4 h-4"></i>
-            <span id="copy-link-text">Copiar enlace</span>
-          </button>
-        </div>
+      <div class="pt-8 border-t border-snow-300 flex flex-wrap items-center justify-center sm:justify-end gap-3">
+        <button onclick="shareToWhatsApp()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs transition-all shadow-xs active:scale-95 cursor-pointer">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Compartir en WhatsApp</span>
+        </button>
+        <button onclick="copyArticleLink()" id="btn-copy-link" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-snow-300 hover:bg-snow-400 text-slate-800 font-bold text-xs transition-all shadow-xs active:scale-95 cursor-pointer">
+          <i data-lucide="link" class="w-4 h-4"></i>
+          <span id="copy-link-text">Copiar enlace</span>
+        </button>
       </div>
 
     </article>
