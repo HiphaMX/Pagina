@@ -1431,7 +1431,7 @@
       }
       const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
-      // 2. Identificar si cuenta con Página Interactiva en Epizentro ($770 anual o Cortesía Oficial Hipha)
+      // 2. Identificar si cuenta con Página Escaparate Individual en Epizentro ($770 anual o Cortesía Oficial Hipha)
       const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
       const normName = String(b.name || "").toLowerCase();
       const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
@@ -1466,7 +1466,7 @@
         `;
       }
 
-      // 3. Si cuenta con enlace web externo propio (solo si NO tiene página interactiva en Epizentro)
+      // 3. Si cuenta con enlace web externo propio (solo si NO tiene Página Escaparate Individual en Epizentro)
       if (rawWeb && (rawWeb.startsWith("http://") || rawWeb.startsWith("https://") || (rawWeb.includes(".") && !rawWeb.endsWith(".html")))) {
         const extUrl = rawWeb.startsWith("http") ? rawWeb : "https://" + rawWeb;
         return `

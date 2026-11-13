@@ -453,10 +453,10 @@
             <td class="py-3.5 px-4">
               ${r.payment_status === "free_basic"
                 ? (r.payment_amount && r.payment_amount > 0 
-                   ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> Plan Directorio ($${r.payment_amount})</span>`
+                   ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> Plan Esencial ($${r.payment_amount})</span>`
                    : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i> Registro Gratuito ($0)</span>`)
                 : r.payment_status === "basic_approved"
-                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Plan Directorio ($${r.payment_amount || 99})</span>`
+                ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Plan Esencial ($${r.payment_amount || 199})</span>`
                 : r.payment_status === "waived"
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-purple-400"><i data-lucide="tag" class="w-3.5 h-3.5"></i> Cupón Aplicado ($0)</span>`
                 : isPaid
@@ -1473,11 +1473,11 @@ Esta acción no se puede deshacer.`)) return;
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-amber-300 uppercase tracking-wide">Modalidad: Plan Directorio ($99 MXN/año)</span>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Directorio</span>
+                    <span class="text-xs font-black text-amber-300 uppercase tracking-wide">Modalidad: Plan Esencial ($199 MXN/año)</span>
+                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Plan Esencial</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
-                    Este comercio cuenta con presencia en el directorio con botones de contacto directo (<strong class="text-white">Llamar</strong> y <strong class="text-white">WhatsApp</strong>). <span class="text-amber-200">No incluye página interactiva dedicada (/natura/negocio) ni catálogo web activo.</span>
+                    Este comercio cuenta con presencia en el directorio con botones de contacto directo (<strong class="text-white">Llamar</strong> y <strong class="text-white">WhatsApp</strong>). <span class="text-amber-200">No incluye Página Escaparate Individual dedicada (/natura/negocio) ni catálogo web activo.</span>
                   </p>
                 </div>
               </div>
@@ -1499,16 +1499,16 @@ Esta acción no se puede deshacer.`)) return;
                 <div>
                   <div class="flex items-center gap-2">
                     <span class="text-xs font-black text-emerald-300 uppercase tracking-wide">Modalidad: Suscripción Anual Activa ($770 MXN/año)</span>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-300 font-mono">Página Interactiva</span>
+                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-300 font-mono">Página Escaparate Individual</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
-                    Ficha completa en directorio + Página interactiva dedicada en <code class="text-emerald-300">/natura/negocio?id=...</code> con botón "Ver más", portada hero, hasta 10 productos destacados con foto y 2 secciones de menú.
+                    Ficha completa en directorio + Página Escaparate Individual dedicada en <code class="text-emerald-300">/natura/negocio?id=...</code> con botón "Ver más", portada hero, hasta 10 productos destacados con foto y 2 secciones de menú.
                   </p>
                 </div>
               </div>
               <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
                 <button type="button" onclick="downgradeToFreeBasic()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors whitespace-nowrap">
-                  Cambiar a Directorio ($99)
+                  Cambiar a Plan Esencial ($199)
                 </button>
               </div>
             </div>
@@ -1526,13 +1526,13 @@ Esta acción no se puede deshacer.`)) return;
                     <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-purple-500/20 text-purple-300 font-mono">Exento / Fundador</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
-                    Página interactiva completa otorgada por cortesía, convenio comercial o estatus de comercio fundador de Epizentro Natura.
+                    Página Escaparate Individual completa otorgada por cortesía, convenio comercial o estatus de comercio fundador de Epizentro Natura.
                   </p>
                 </div>
               </div>
               <div class="shrink-0 flex items-center gap-2 self-end sm:self-center">
                 <button type="button" onclick="downgradeToFreeBasic()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors whitespace-nowrap">
-                  Cambiar a Directorio ($99)
+                  Cambiar a Plan Esencial ($199)
                 </button>
               </div>
             </div>
@@ -1601,19 +1601,19 @@ Esta acción no se puede deshacer.`)) return;
       const paySelect = document.getElementById("edit-payment-status");
       const amtInput = document.getElementById("edit-payment-amount");
       if (paySelect) paySelect.value = targetPlan;
-      if (amtInput) amtInput.value = (targetPlan === "approved") ? "770" : "99";
+      if (amtInput) amtInput.value = (targetPlan === "approved") ? "770" : "199";
       handleAdminPaymentStatusChange();
     }
 
     function downgradeToFreeBasic() {
       const bName = document.getElementById("edit-business-name").value || "este comercio";
-      if (!confirm(`¿Deseas cambiar '${bName}' a 'Plan Directorio ($99 MXN)'?\\n\\nEn el directorio público solo se mostrarán sus botones de Llamar y WhatsApp directo (sin página interactiva ni catálogo).`)) {
+      if (!confirm(`¿Deseas cambiar '${bName}' a 'Plan Esencial ($199 MXN)'?\\n\\nEn el directorio público solo se mostrarán sus botones de Llamar y WhatsApp directo (sin Página Escaparate Individual ni catálogo).`)) {
         return;
       }
       const paySelect = document.getElementById("edit-payment-status");
       const amtInput = document.getElementById("edit-payment-amount");
       if (paySelect) paySelect.value = "free_basic";
-      if (amtInput) amtInput.value = "99";
+      if (amtInput) amtInput.value = "199";
       handleAdminPaymentStatusChange();
     }
 
@@ -1623,13 +1623,13 @@ Esta acción no se puede deshacer.`)) return;
       const amtInput = document.getElementById("edit-payment-amount");
 
       if (val === "free_basic" || val === "basic_approved") {
-        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) === 0 || parseFloat(amtInput.value) > 150)) {
-          amtInput.value = "99";
+        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) === 0 || parseFloat(amtInput.value) > 300)) {
+          amtInput.value = "199";
         }
       } else if (val === "waived") {
         if (amtInput) amtInput.value = "0";
       } else if (val === "approved") {
-        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) <= 150)) {
+        if (amtInput && (!amtInput.value || parseFloat(amtInput.value) <= 300)) {
           amtInput.value = "770";
         }
       }
@@ -1890,9 +1890,9 @@ Esta acción no se puede deshacer.`)) return;
           <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Descripción breve del comercio..."></textarea>
         </div>
 
-        <!-- CONFIGURACIÓN DE PÁGINA INTERACTIVA EN EPIZENTRO ($770/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+        <!-- CONFIGURACIÓN DE PÁGINA ESCAPARATE INDIVIDUAL EN EPIZENTRO ($770/AÑO): PORTADA, DESTACADOS Y MENÚ -->
         <div id="edit-microsite-section-wrapper" class="border-t border-slate-800 pt-3 space-y-4">
-          <!-- Banner cuando el plan es Plan Directorio ($99) o Básico ($0) -->
+          <!-- Banner cuando el plan es Plan Esencial ($199) o Básico ($0) -->
           <div id="microsite-plan-locked-banner" class="hidden p-4 rounded-2xl bg-slate-950/90 border border-amber-500/30">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div class="flex items-start gap-3">
@@ -1901,18 +1901,18 @@ Esta acción no se puede deshacer.`)) return;
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
-                    <h4 class="text-sm font-bold text-white">Página Interactiva No Incluida en Plan Directorio</h4>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Directorio ($99)</span>
+                    <h4 class="text-sm font-bold text-white">Página Escaparate Individual No Incluida en Plan Esencial</h4>
+                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Plan Esencial ($199)</span>
                   </div>
                   <p class="text-xs text-slate-400 mt-1 max-w-xl">
-                    Este comercio cuenta únicamente con presencia en el directorio (botones directos de <strong>Llamar</strong> y <strong>WhatsApp</strong>). La página interactiva dedicada (<code class="text-emerald-400">/natura/negocio?id=...</code>) y el catálogo web no están activos para este registro.
+                    Este comercio cuenta únicamente con presencia en el directorio (botones directos de <strong>Llamar</strong> y <strong>WhatsApp</strong>). La Página Escaparate Individual dedicada (<code class="text-emerald-400">/natura/negocio?id=...</code>) y el catálogo web no están activos para este registro.
                   </p>
                 </div>
               </div>
               <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 w-full sm:w-auto">
                 <button type="button" onclick="upgradeToPlan('approved')" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap">
                   <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                  <span>Activar Suscripción ($770)</span>
+                  <span>Activar Página Escaparate Individual ($770)</span>
                 </button>
                 <button type="button" onclick="toggleAdvancedMicrositeInputs()" id="btn-toggle-microsite-inputs" class="w-full sm:w-auto px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
                   <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
@@ -1934,7 +1934,7 @@ Esta acción no se puede deshacer.`)) return;
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs font-bold text-emerald-300">Página Interactiva Habilitada</span>
+                  <span class="text-xs font-bold text-emerald-300">Página Escaparate Individual Habilitada</span>
                   <span class="px-2 py-0.2 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-400 font-mono">En Vivo</span>
                 </div>
                 <span class="text-[11px] text-slate-400">Portada en alta resolución, hasta 10 productos destacados con fotos y 2 secciones de menú.</span>
@@ -1944,12 +1944,12 @@ Esta acción no se puede deshacer.`)) return;
 
           <!-- Contenedor de campos de micrositio (oculto por defecto para free_basic) -->
           <div id="edit-microsite-fields" class="space-y-4">
-            <!-- 1. PORTADA DE LA PÁGINA INTERACTIVA -->
+            <!-- 1. PORTADA DE LA PÁGINA ESCAPARATE INDIVIDUAL -->
             <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="text-xs font-bold text-slate-200 block">1. Portada de la Página Interactiva (Hero Banner)</span>
-                  <span class="text-[11px] text-slate-400">Fotografía horizontal para el fondo superior de la página interactiva.</span>
+                  <span class="text-xs font-bold text-slate-200 block">1. Portada de la Página Escaparate Individual (Hero Banner)</span>
+                  <span class="text-[11px] text-slate-400">Fotografía horizontal para el fondo superior de la Página Escaparate Individual.</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                   <input type="file" id="edit-cover-file-input" accept="image/*" class="hidden" onchange="handleAdminCoverFile(event)">
@@ -1972,10 +1972,10 @@ Esta acción no se puede deshacer.`)) return;
             <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
               <div>
                 <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-200">2. Botón "Sitio web" (Hero de Página Interactiva)</span>
+                  <span class="text-xs font-bold text-slate-200">2. Botón "Sitio web" (Hero de Página Escaparate Individual)</span>
                   <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-500/20 text-emerald-400 font-mono">Actualizable</span>
                 </div>
-                <span class="text-[11px] text-slate-400">Enlace web externo o tienda oficial que abre el botón "Sitio web" en la página interactiva (ej. <code class="text-emerald-400">https://elchilechillon.mx</code>). Deja vacío para ocultar el botón en la página interactiva.</span>
+                <span class="text-[11px] text-slate-400">Enlace web externo o tienda oficial que abre el botón "Sitio web" en la Página Escaparate Individual (ej. <code class="text-emerald-400">https://elchilechillon.mx</code>). Deja vacío para ocultar el botón en la Página Escaparate Individual.</span>
               </div>
               <div class="relative">
                 <i data-lucide="globe" class="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
@@ -1983,11 +1983,11 @@ Esta acción no se puede deshacer.`)) return;
               </div>
             </div>
 
-            <!-- 3. HORARIO DE ATENCIÓN (HERO DE PÁGINA INTERACTIVA) -->
+            <!-- 3. HORARIO DE ATENCIÓN (HERO DE PÁGINA ESCAPARATE INDIVIDUAL) -->
             <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
               <div>
                 <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-200">3. Horario de Atención (Hero de Página Interactiva)</span>
+                  <span class="text-xs font-bold text-slate-200">3. Horario de Atención (Hero de Página Escaparate Individual)</span>
                   <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-500/20 text-emerald-400 font-mono">Actualizable</span>
                 </div>
                 <span class="text-[11px] text-slate-400">Días y horas de servicio que se sincronizan en vivo en el badge superior y en la barra rápida del Hero (ej. <code class="text-emerald-400">Lunes a Domingo · 10:00 a 20:00 hrs</code>).</span>
@@ -2124,10 +2124,10 @@ Esta acción no se puede deshacer.`)) return;
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Estatus de Pago *</label>
             <select id="edit-payment-status" onchange="handleAdminPaymentStatusChange()" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-              <option value="approved">🚀 Suscripción Anual Pagada ($770 MXN - Con Página Interactiva)</option>
-              <option value="basic_approved">⚡ Plan Directorio Pagado ($99 MXN - Sin Página Interactiva)</option>
-              <option value="free_basic">⚡ Plan Directorio / Legacy ($99 / $0 MXN)</option>
-              <option value="waived">🎁 Exento / Cupón Cortesía ($0 - Con Página Interactiva)</option>
+              <option value="approved">🚀 Suscripción Anual Pagada ($770 MXN - Con Página Escaparate Individual)</option>
+              <option value="basic_approved">⚡ Plan Esencial Pagado ($199 MXN - Sin Página Escaparate Individual)</option>
+              <option value="free_basic">⚡ Plan Esencial / Legacy ($199 / $0 MXN)</option>
+              <option value="waived">🎁 Exento / Cupón Cortesía ($0 - Con Página Escaparate Individual)</option>
               <option value="pending">⏳ Pendiente de Pago</option>
               <option value="pending_mp_payment">💳 Pendiente Mercado Pago</option>
               <option value="pending_kam_direct">👤 Pendiente Asesor KAM Directo</option>

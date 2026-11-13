@@ -140,7 +140,7 @@ class RegisterInitiateRequest(BaseModel):
     delivery_available: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
-    plan_type: Optional[str] = "microsite"  # "microsite" ($770/año) o "basic" ($99/año)
+    plan_type: Optional[str] = "microsite"  # "microsite" ($770/año) o "basic" ($199/año)
     honeypot: Optional[str] = None  # Trampa anti-bot
 
 
@@ -453,16 +453,16 @@ async def initiate_registration(
     # Generar código de WhatsApp (ej. NATURA-5819)
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
 
-    # Determinar si es Plan con Página Interactiva ($770) o Plan Directorio Comercial ($99)
-    is_basic = (payload.plan_type in ("basic", "free_basic", "directorio"))
-    initial_payment_amount = 99.0 if is_basic else 770.0
+    # Determinar si es Plan con Página Escaparate Individual ($770) o Plan Esencial ($199)
+    is_basic = (payload.plan_type in ("basic", "free_basic", "directorio", "esencial"))
+    initial_payment_amount = 199.0 if is_basic else 770.0
     initial_payment_status = "pending_basic_payment" if is_basic else (
         "pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}"
     )
     initial_moderation_notes = (
-        "Alta en Plan Directorio ($99 MXN / año: presencia verificada en directorio, llamadas y WhatsApp directo)."
+        "Alta en Plan Esencial ($199 MXN / año: presencia verificada en directorio, llamadas y WhatsApp directo)."
         if is_basic else
-        "Solicitud Plan Anual con Página Interactiva ($770 MXN / año: catálogo interactivo, fotos y pedidos a WhatsApp)."
+        "Solicitud Plan Anual con Página Escaparate Individual ($770 MXN / año: vitrina digital, fotos y pedidos a WhatsApp)."
     )
 
     # Crear o actualizar registro (email sin bloqueo de OTP para eliminar fricción a prospectos)
@@ -605,13 +605,13 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
 
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
     site_domain = os.getenv("EPIZENTRO_URL", "https://www.epizentro.com")
-    amount = float(reg.payment_amount if (reg.payment_amount is not None and reg.payment_amount > 0) else (99.0 if reg.payment_status in ("free_basic", "pending_basic_payment") else 770.0))
-    is_basic_plan = (amount <= 150.0)
-    item_title = f"Directorio Vecinal Natura: {reg.business_name} ($99 MXN/año)" if is_basic_plan else f"Página Interactiva Natura: {reg.business_name} ($770 MXN/año)"
+    amount = float(reg.payment_amount if (reg.payment_amount is not None and reg.payment_amount > 0) else (199.0 if reg.payment_status in ("free_basic", "pending_basic_payment") else 770.0))
+    is_basic_plan = (amount <= 300.0)
+    item_title = f"Plan Esencial Natura: {reg.business_name} ($199 MXN/año)" if is_basic_plan else f"Página Escaparate Individual Natura: {reg.business_name} ($770 MXN/año)"
     item_desc = (
-        "Suscripción anual $99 MXN: Presencia en Directorio Oficial + Teléfono y WhatsApp directo"
+        "Suscripción anual $199 MXN: Presencia en Directorio Oficial + Teléfono y WhatsApp directo (Plan Esencial)"
         if is_basic_plan else
-        "Suscripción anual $770 MXN: Sello Vecino Verificado + Página Interactiva con catálogo de productos y pedidos a WhatsApp"
+        "Suscripción anual $770 MXN: Sello Vecino Verificado + Página Escaparate Individual con catálogo de productos y pedidos a WhatsApp"
     )
 
     preference_data = {
@@ -678,7 +678,7 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
         raise HTTPException(status_code=500, detail=f"Error en Mercado Pago: {str(mp_err)}")
 
 
-# --- CÓDIGOS DE CORTESÍA / EXENCIÓN DE CUOTA ($99 -> $0) ---
+# --- CÓDIGOS DE CORTESÍA / EXENCIÓN DE CUOTA ---
 
 VALID_COUPON_CODES = {
     "NATURA100": "Cortesía Fundador 100% Exenta",
@@ -690,8 +690,8 @@ VALID_COUPON_CODES = {
 @router.post("/register/apply-coupon")
 def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends(get_db)):
     """
-    Aplica un código de cortesía o invitación para exonerar la cuota de $99 MXN
-    y dejar el negocio verificado y activo en el directorio comunitario.
+    Aplica un código de cortesía o invitación para exonerar la cuota de suscripción
+    y dejar el negocio verificado y activo en el directorio comunitario con Página Escaparate Individual.
     """
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
     if not reg:
@@ -896,7 +896,7 @@ async def report_kam_payment(
     reg.kam_name = kam
     method = payload.payment_method or "mercadopago_subscription"
     
-    if method not in ("mercadopago_subscription", "basic_99", "basic", "free_basic", "kam_direct"):
+    if method not in ("mercadopago_subscription", "basic_199", "esencial", "basic_99", "basic", "free_basic", "kam_direct"):
         raise HTTPException(
             status_code=400,
             detail="Por políticas de privacidad y seguridad, los pagos de suscripción se realizan en línea vía Mercado Pago o reporte oficial de KAM."
@@ -907,9 +907,9 @@ async def report_kam_payment(
     if method == "mercadopago_subscription":
         reg.payment_status = "pending_mp_payment"
         reg.payment_amount = float(payload.amount or 770.0)
-    elif method in ("basic_99", "basic"):
+    elif method in ("basic_199", "esencial", "basic_99", "basic"):
         reg.payment_status = "basic_approved" if (payload.amount and payload.amount > 0) else "pending_basic_payment"
-        reg.payment_amount = float(payload.amount or 99.0)
+        reg.payment_amount = float(payload.amount or 199.0)
     elif method == "free_basic":
         reg.payment_status = "free_basic"
         reg.payment_amount = float(payload.amount or 0.0)
@@ -930,8 +930,8 @@ async def report_kam_payment(
     folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
     if method == "mercadopago_subscription":
         folio = f"NATURA-SUB-{folio_suffix}"
-    elif method in ("basic_99", "basic"):
-        folio = f"NATURA-DIR-{folio_suffix}"
+    elif method in ("basic_199", "esencial", "basic_99", "basic"):
+        folio = f"NATURA-ESEN-{folio_suffix}"
     else:
         folio = f"NATURA-GRATIS-{folio_suffix}"
 
@@ -1118,7 +1118,7 @@ def seed_official_showcases(db: Session):
             "other_products_sections": []
         }
 
-        # 1. BOTICA SILVESTRE (Cortesía / Comercio Fundador Oficial con Página Interactiva)
+        # 1. BOTICA SILVESTRE (Cortesía / Comercio Fundador Oficial con Página Escaparate Individual)
         botica = db.query(EpicentroRegistration).filter(
             EpicentroRegistration.id == "reg-botica-silvestre"
         ).first()
@@ -1151,7 +1151,7 @@ def seed_official_showcases(db: Session):
                 payment_amount=770.0,
                 is_verified_badge=True,
                 status="active",
-                moderation_notes="Comercio fundador oficial con página interactiva activa."
+                moderation_notes="Comercio fundador oficial con Página Escaparate Individual activa."
             )
             db.add(botica)
             db.commit()
@@ -1214,7 +1214,7 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
-                moderation_notes="Cortesía oficial Hipha: página interactiva con catálogo activo."
+                moderation_notes="Cortesía oficial Hipha: Página Escaparate Individual con catálogo activo."
             )
             db.add(chillon)
             db.commit()
@@ -1245,7 +1245,7 @@ def seed_official_showcases(db: Session):
             if updated:
                 db.commit()
 
-        # 3. AMDI DISEÑO INTERIOR (Comercio Fundador Oficial con Página Interactiva)
+        # 3. AMDI DISEÑO INTERIOR (Comercio Fundador Oficial con Página Escaparate Individual)
         amdi = db.query(EpicentroRegistration).filter(
             (EpicentroRegistration.id == "ac02b6c2-624e-407f-bcfc-7d736dbcbd83") |
             (EpicentroRegistration.id == "reg-amdi") |
@@ -1282,7 +1282,7 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
-                moderation_notes="Comercio fundador oficial con página interactiva activa."
+                moderation_notes="Comercio fundador oficial con Página Escaparate Individual activa."
             )
             db.add(amdi)
             db.commit()

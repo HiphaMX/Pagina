@@ -12,8 +12,8 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Página Interactiva · Epizentro Natura</title>
-  <meta id="page-meta-desc" name="description" content="Página interactiva oficial de comercio y catálogo en Epizentro Natura.">
+  <title id="page-title">Página Escaparate Individual · Epizentro Natura</title>
+  <meta id="page-meta-desc" name="description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
 
   <!-- Favicon y Fuentes -->
   <link rel="icon" type="image/svg+xml" href="Assets/Epizentro2.svg">
@@ -259,12 +259,12 @@
         <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">BENEFICIO EXCLUSIVO EPIZENTRO NATURA</span>
         <h3 class="text-xl sm:text-2xl font-black text-white">¿Tienes un negocio o servicio en la zona?</h3>
         <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
-          Con la suscripción anual obtienes tu página interactiva en epizentro con catálogo de fotos, precios y pedidos directos a tu WhatsApp, además de botón a tu sitio web oficial.
+          Con la suscripción anual obtienes tu Página Escaparate Individual en Epizentro con catálogo de fotos, precios y pedidos directos a tu WhatsApp, además de botón a tu sitio web oficial.
         </p>
       </div>
       <a href="index.html?open_register=1" class="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
         <i data-lucide="sparkles" class="w-4 h-4"></i>
-        <span>Obtener mi página interactiva en Epizentro</span>
+        <span>Obtener mi Página Escaparate Individual en Epizentro</span>
       </a>
     </div>
 
@@ -281,7 +281,7 @@
           </span>
         </a>
         <span class="text-slate-600 hidden sm:inline">|</span>
-        <span class="text-slate-400 text-xs hidden sm:inline">Página Interactiva Oficial de Comercio Verificado · Epizentro Natura.</span>
+        <span class="text-slate-400 text-xs hidden sm:inline">Página Escaparate Individual Oficial de Comercio Verificado · Epizentro Natura.</span>
       </div>
       <div class="flex items-center gap-4 text-slate-400 text-xs">
         <a href="index.html" class="hover:text-white transition-colors">Directorio Comercial</a>
@@ -320,7 +320,7 @@
         return;
       }
 
-      // Si el comercio es un Registro Básico Gratuito ($0), no cuenta con página interactiva dedicada
+      // Si el comercio es un Plan Esencial ($199) o Registro Básico Gratuito ($0), no cuenta con Página Escaparate Individual dedicada
       const rawWeb = String(reg.website || "").trim().toLowerCase();
       const normName = String(reg.business_name || "").toLowerCase();
       const isOfficial = rawWeb.includes("botica") || rawWeb.includes("chill") || rawWeb.includes("amdi") || normName.includes("botica") || normName.includes("chill") || normName.includes("amdi");
@@ -332,7 +332,7 @@
 
       // 1. Títulos y Metadatos
       const bName = reg.business_name || "Comercio Verificado";
-      document.title = `${bName} · Página Interactiva | Epizentro Natura`;
+      document.title = `${bName} · Página Escaparate Individual | Epizentro Natura`;
       const pageTitle = document.getElementById("page-title");
       if (pageTitle) pageTitle.textContent = `${bName} · Epizentro Natura`;
       const titleEl = document.getElementById("hero-title");
@@ -404,7 +404,7 @@
       // 7. Botones de acción directa
       const waBtn = document.getElementById("hero-whatsapp-btn");
       if (waBtn) {
-        const waMsg = encodeURIComponent(`Hola ${bName}, vi su página interactiva en Epizentro Natura y me gustaría solicitar información / hacer un pedido.`);
+        const waMsg = encodeURIComponent(`Hola ${bName}, vi su Página Escaparate Individual en Epizentro Natura y me gustaría solicitar información / hacer un pedido.`);
         waBtn.href = `https://wa.me/52${cleanWa}?text=${waMsg}`;
       }
       const phoneBtn = document.getElementById("hero-phone-btn");

@@ -1371,8 +1371,8 @@
                 } catch(e) {}
               }
 
-              // Determinar si es registro básico/directorio ($99 anual / $0 legacy) o suscripción interactiva ($770 anual / cortesía)
-              const isFreeBasic = biz.payment_status === "free_basic" || biz.payment_status === "basic_approved" || (!isOfficialShowcase && biz.payment_status !== "approved" && biz.payment_status !== "waived") || (!isOfficialShowcase && (biz.payment_amount === 0 || biz.payment_amount <= 150.0 || biz.has_microsite === false));
+              // Determinar si es registro básico/directorio ($199 anual / $0 legacy) o suscripción Página Escaparate Individual ($770 anual / cortesía)
+              const isFreeBasic = biz.payment_status === "free_basic" || biz.payment_status === "basic_approved" || (!isOfficialShowcase && biz.payment_status !== "approved" && biz.payment_status !== "waived") || (!isOfficialShowcase && (biz.payment_amount === 0 || biz.payment_amount <= 300.0 || biz.has_microsite === false));
               const hasInteractive = !isFreeBasic && (isOfficialShowcase || biz.payment_status === "approved" || biz.payment_status === "waived");
 
               // Extraer fotos para la tarjeta
@@ -1584,14 +1584,14 @@
       }
       const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
-      // 2. Identificar si cuenta con Página Interactiva en Epizentro ($770 anual o Cortesía Oficial Hipha)
+      // 2. Identificar si cuenta con Página Escaparate Individual en Epizentro ($770 anual o Cortesía Oficial Hipha)
       const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
       const normName = String(b.name || "").toLowerCase();
       const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
       const isChillon = rawWeb === "chile-chillon" || b.id === "reg-chile-chillon" || normName.includes("chile chillón") || normName.includes("chile chillon");
       const isAmdi = rawWeb === "amdi" || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
       const isOfficialShowcase = isBotica || isChillon || isAmdi;
-      const isFreeBasic = b.payment_status === "free_basic" || b.payment_status === "basic_approved" || (!isOfficialShowcase && b.payment_status !== "approved" && b.payment_status !== "waived") || (!isOfficialShowcase && (b.payment_amount === 0 || b.payment_amount <= 150.0 || b.has_microsite === false));
+      const isFreeBasic = b.payment_status === "free_basic" || b.payment_status === "basic_approved" || (!isOfficialShowcase && b.payment_status !== "approved" && b.payment_status !== "waived") || (!isOfficialShowcase && (b.payment_amount === 0 || b.payment_amount <= 300.0 || b.has_microsite === false));
       const hasDedicatedMicrosite = !isFreeBasic && (isOfficialShowcase || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
@@ -1621,7 +1621,7 @@
         `;
       }
 
-      // 3. Si cuenta con enlace web externo propio (solo si NO tiene página interactiva en Epizentro)
+      // 3. Si cuenta con enlace web externo propio (solo si NO tiene Página Escaparate Individual en Epizentro)
       if (rawWeb && (rawWeb.startsWith("http://") || rawWeb.startsWith("https://") || (rawWeb.includes(".") && !rawWeb.endsWith(".html")))) {
         const extUrl = rawWeb.startsWith("http") ? rawWeb : "https://" + rawWeb;
         return `
