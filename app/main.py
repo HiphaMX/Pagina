@@ -292,10 +292,10 @@ app.include_router(jairo_dominguez_project.router, prefix="/api/projects/jairo-d
 app.include_router(epicentro_project.router, prefix="/api/epicentro", tags=["epicentro"])
 
 
-@app.get("/natura/cultura/cronica/{slug}", response_class=HTMLResponse)
-@app.get("/natura/cronica/{slug}", response_class=HTMLResponse)
+@app.api_route("/natura/cultura/cronica/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/cronica/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def render_public_cronica_entrypoint(slug: str, request: Request, db: Session = Depends(get_db)):
-    """Punto de entrada público SSR para crónicas de Cultura Natura con OpenGraph para WhatsApp."""
+    """Punto de entrada público SSR para publicaciones de Cultura Natura con OpenGraph para WhatsApp."""
     return epicentro_project.render_cultura_article(slug, request, db)
 
 
