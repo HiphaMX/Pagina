@@ -12,15 +12,15 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="meta-page-title">Crónicas de Cultura Natura · Epizentro</title>
-  <meta id="meta-page-desc" name="description" content="Crónicas, comunicados y vida comunitaria en Epizentro Natura, Zapopan.">
+  <title id="meta-page-title">Publicaciones de Cultura Natura · Epizentro</title>
+  <meta id="meta-page-desc" name="description" content="Publicaciones, eventos, comunicados y vida comunitaria en Epizentro Natura, Zapopan.">
   <meta name="robots" content="index, follow">
   <link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/cultura-natura.html">
 
   <!-- OPEN GRAPH / WHATSAPP / FACEBOOK PREVIEWS -->
   <meta property="og:type" content="article">
-  <meta id="og-title" property="og:title" content="Crónicas de Cultura Natura · Epizentro">
-  <meta id="og-desc" property="og:description" content="Difusión de eventos, crónicas y vida comunitaria en Epizentro Natura.">
+  <meta id="og-title" property="og:title" content="Publicaciones de Cultura Natura · Epizentro">
+  <meta id="og-desc" property="og:description" content="Difusión de eventos, publicaciones y vida comunitaria en Epizentro Natura.">
   <meta id="og-img" property="og:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 
   <!-- TWITTER CARDS -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta id="tw-title" name="twitter:title" content="Crónicas de Cultura Natura · Epizentro">
+  <meta id="tw-title" name="twitter:title" content="Publicaciones de Cultura Natura · Epizentro">
   <meta id="tw-desc" name="twitter:description" content="Difusión de eventos y vida cultural en Epizentro Natura.">
   <meta id="tw-img" name="twitter:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
 
@@ -239,7 +239,7 @@
       <!-- CABECERA: CATEGORÍA & FECHA -->
       <div class="space-y-4">
         <div class="flex items-center justify-between gap-3 flex-wrap">
-          <span id="art-category-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-purple-500/10 text-indigo-950 border border-purple-400/40">
+          <span id="art-category-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-500/5 text-indigo-900 border border-purple-400/60">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600"></i>
             <span id="art-category-text">PUBLICACIÓN</span>
           </span>
@@ -294,7 +294,7 @@
       <!-- FOOTER DEL ARTÍCULO: COMPARTIR Y ACCIONES -->
       <div class="pt-8 border-t border-snow-300 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-2 text-xs text-slate-600">
-          <span class="font-bold">¿Te gustó esta crónica?</span>
+          <span class="font-bold">¿Te gustó esta publicación?</span>
           <span>Compártela con tus vecinos en cotos y grupos:</span>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -369,7 +369,7 @@
     function shareArticle() {
       if (navigator.share) {
         navigator.share({
-          title: document.getElementById('art-title')?.textContent || 'Crónica Cultura Natura',
+          title: document.getElementById('art-title')?.textContent || 'Publicación Cultura Natura',
           text: document.getElementById('art-summary')?.textContent || '',
           url: currentUrl
         }).catch(() => shareToWhatsApp());
@@ -387,7 +387,7 @@
           setTimeout(() => { textSpan.textContent = prev; }, 2500);
         }
       }).catch(() => {
-        prompt('Copia el enlace de esta crónica:', currentUrl);
+        prompt('Copia el enlace de esta publicación:', currentUrl);
       });
     }
 
@@ -410,10 +410,10 @@
           document.getElementById('meta-page-desc').setAttribute('content', data.summary || '');
           titleEl.textContent = data.title;
           document.getElementById('art-summary').textContent = data.summary || '';
-          document.getElementById('art-category-text').textContent = (data.category || 'CRÓNICA').toUpperCase();
-          document.getElementById('breadcrumb-category').textContent = (data.category || 'Crónica');
-          document.getElementById('art-author-name').textContent = data.author_name || 'Autor Colaborador';
-          document.getElementById('art-author-role').textContent = data.author_role || 'Colaborador Cultural · Epizentro';
+          document.getElementById('art-category-text').textContent = (data.category || 'PUBLICACIÓN').toUpperCase();
+          document.getElementById('breadcrumb-category').textContent = (data.category || 'Publicación');
+          document.getElementById('art-author-name').textContent = data.author_name || 'Editorial Cultura Natura';
+          document.getElementById('art-author-role').textContent = data.author_role || 'Cronista Comunitario · Epizentro';
           
           if (data.cover_image_url) {
             const img = document.getElementById('art-cover-img');
@@ -432,7 +432,7 @@
 
           if (window.lucide && lucide.createIcons) lucide.createIcons();
         } catch (e) {
-          console.warn('Error cargando crónica:', e);
+          console.warn('Error cargando publicación:', e);
         }
       }
     }

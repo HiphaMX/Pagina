@@ -268,10 +268,10 @@
         </button>
       </div>
 
-      <!-- GRID DINÁMICO DE CRÓNICAS -->
+      <!-- GRID DINÁMICO DE PUBLICACIONES -->
       <div id="articles-feed-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="col-span-full py-8 text-center text-xs text-slate-400">
-          Cargando crónicas de la comunidad...
+          Cargando publicaciones de la comunidad...
         </div>
       </div>
     </section>
@@ -697,16 +697,16 @@
       const grid = document.getElementById('articles-feed-grid');
       try {
         const res = await fetch('/api/epicentro/cultura/articles?limit=30');
-        if (!res.ok) throw new Error('Error al consultar crónicas');
+        if (!res.ok) throw new Error('Error al consultar publicaciones');
         allArticles = await res.json();
         renderArticlesFeed();
       } catch (err) {
-        console.warn('Nota consultando crónicas:', err);
+        console.warn('Nota consultando publicaciones:', err);
         if (grid && allArticles.length === 0) {
           grid.innerHTML = `
             <div class="col-span-full bg-white rounded-3xl border border-snow-400 p-8 text-center">
               <i data-lucide="book-open" class="w-10 h-10 text-slate-300 mx-auto mb-2"></i>
-              <p class="text-xs text-slate-600 font-bold">Sé el primero en publicar una crónica en Natura.</p>
+              <p class="text-xs text-slate-600 font-bold">Sé el primero en publicar una nota en Natura.</p>
               <a href="editor-cultura.html" class="inline-block mt-3 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">Abrir Portal de Redacción</a>
             </div>
           `;
@@ -743,16 +743,16 @@
         const waShareMsg = encodeURIComponent(`Te comparto esta publicación de Cultura Natura: "${art.title}"\n\nhttps://www.epizentro.com${articleUrl}`);
         const waShareUrl = `https://api.whatsapp.com/send?text=${waShareMsg}`;
 
-        let catBadgeColor = 'bg-slate-950/50 backdrop-blur-md text-purple-200 border-purple-400/60';
+        let catBadgeColor = 'bg-slate-950/40 backdrop-blur-md text-purple-200 border-purple-400/80';
         let catLabel = '✨ Publicación';
         if (art.category === 'evento') {
-          catBadgeColor = 'bg-slate-950/50 backdrop-blur-md text-emerald-200 border-emerald-400/60';
+          catBadgeColor = 'bg-slate-950/40 backdrop-blur-md text-emerald-200 border-emerald-400/80';
           catLabel = '📅 Evento';
         } else if (art.category === 'comunicado') {
-          catBadgeColor = 'bg-slate-950/50 backdrop-blur-md text-sky-200 border-sky-400/60';
+          catBadgeColor = 'bg-slate-950/40 backdrop-blur-md text-sky-200 border-sky-400/80';
           catLabel = '📢 Comunicado';
         } else if (art.category === 'editorial') {
-          catBadgeColor = 'bg-slate-950/50 backdrop-blur-md text-indigo-200 border-indigo-400/60';
+          catBadgeColor = 'bg-slate-950/40 backdrop-blur-md text-indigo-200 border-indigo-400/80';
           catLabel = '✍️ Editorial';
         }
 
@@ -764,7 +764,7 @@
               <a href="${articleUrl}" class="block relative aspect-[16/9] overflow-hidden bg-slate-900">
                 <img src="${coverImg}" alt="${art.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                 <div class="absolute top-3 left-3">
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-xs ${catBadgeColor}">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-xs ${catBadgeColor}">
                     ${catLabel}
                   </span>
                 </div>

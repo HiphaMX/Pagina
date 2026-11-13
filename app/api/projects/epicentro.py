@@ -1910,7 +1910,7 @@ def render_cultura_article(slug: str, request: Request, db: Session = Depends(ge
 <div class="max-w-3xl mx-auto space-y-6">
 <a href="/natura/cultura-natura#vida-en-comunidad" class="text-indigo-400 font-bold text-xs inline-block">&larr; Volver a Cultura Natura</a>
 <span id="breadcrumb-category" class="hidden">Publicación</span>
-<span id="art-category-text" class="text-xs uppercase tracking-widest text-indigo-400 font-black">PUBLICACIÓN</span>
+<span id="art-category-text" class="text-xs uppercase tracking-widest text-indigo-400 font-bold">PUBLICACIÓN</span>
 <span id="art-date-text" class="text-xs text-slate-400">Reciente</span>
 <h1 id="art-title" class="text-3xl sm:text-5xl font-black text-white">Cargando...</h1>
 <p id="art-summary" class="text-slate-300 text-lg border-l-4 border-indigo-600 pl-4"></p>
