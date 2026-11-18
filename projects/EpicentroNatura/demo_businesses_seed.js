@@ -282,12 +282,12 @@ const DEMO_BUSINESSES_SEED = [
         description: "Medicina general familiar, control de glucosa y presión arterial, limpiezas dentales con ultrasonido, resinas estéticas y valoraciones."
       },
 
-      // 7. Fitness
+      // 7. Fitness y Cuidado personal
       {
         id: "b14",
         name: "VitalFit Studio Natura",
         category_slug: "fitness",
-        category_label: "Fitness",
+        category_label: "Fitness y Cuidado personal",
         subcategory_slug: "gimnasios-studios",
         subcategory_label: "Gimnasios y Studios",
         type_slug: "local-establecido",
@@ -317,7 +317,7 @@ const DEMO_BUSINESSES_SEED = [
         id: "b15",
         name: "Coach David - Entrenamiento Cero Emisiones",
         category_slug: "fitness",
-        category_label: "Fitness",
+        category_label: "Fitness y Cuidado personal",
         subcategory_slug: "entrenador-personal",
         subcategory_label: "Entrenador Personal",
         type_slug: "sin-punto-venta",

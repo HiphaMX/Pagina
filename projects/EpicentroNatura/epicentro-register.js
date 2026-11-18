@@ -75,7 +75,9 @@
       { slug: "yoga-pilates", label: "Yoga y Pilates" },
       { slug: "cross-training", label: "Cross Training" },
       { slug: "artes-marciales", label: "Artes Marciales" },
-      { slug: "tiendas-suplementos", label: "Tiendas de suplementos" }
+      { slug: "tiendas-suplementos", label: "Tiendas de suplementos" },
+      { slug: "cuidado-personal-spa", label: "Cuidado Personal y Spa" },
+      { slug: "barberia-estetica", label: "Barbería y Salón" }
     ]
   };
 
@@ -641,7 +643,7 @@
                 <option value="servicios-hogar">Servicios hogar</option>
                 <option value="hogar">Hogar y Decoración</option>
                 <option value="mascotas">Mascotas</option>
-                <option value="fitness">Fitness</option>
+                <option value="fitness">Fitness y Cuidado personal</option>
               </select>
             </div>
             <div>
