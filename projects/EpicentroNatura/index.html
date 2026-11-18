@@ -219,6 +219,20 @@
       background: #0f172a !important;
       color: #ffffff !important;
     }
+    .leaflet-control-attribution {
+      background: rgba(255, 255, 255, 0.75) !important;
+      backdrop-filter: blur(4px) !important;
+      font-size: 9px !important;
+      color: #94a3b8 !important;
+      border-radius: 6px !important;
+      padding: 1px 6px !important;
+      margin: 4px !important;
+      border: 1px solid rgba(226, 232, 240, 0.6) !important;
+    }
+    .leaflet-control-attribution a {
+      color: #64748b !important;
+      text-decoration: none !important;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-snow-200 text-slate-900 selection:bg-brand-vibrant selection:text-white antialiased">
@@ -1987,13 +2001,13 @@
         maxBounds: CORREDOR_BOUNDS,
         maxBoundsViscosity: 0.95,
         scrollWheelZoom: false, // Evita atrapar el scroll de la página
-        zoomControl: true
+        zoomControl: false // Sin cuadro tosco de zoom por defecto
       });
 
-      // Mosaicos CartoDB Voyager: suaves, tonos pastel idénticos a Google Maps
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://carto.com/" target="_blank">CARTO</a> contributors',
-        subdomains: "abcd",
+      // Mosaicos OSM HOT: tonos pastel limpios idénticos a Google Maps, sin marcas de agua ni bloqueos
+      L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
+        subdomains: "abc",
         maxZoom: 19
       }).addTo(corredorMap);
 
@@ -2035,9 +2049,9 @@
         const marker = L.marker(lm.coords, { icon: markerIcon }).addTo(corredorMap);
 
         const popupContent = `
-          <div class="p-3.5 space-y-2 bg-white text-slate-800">
-            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${lm.badgeBg}">
+          <div class="p-4 space-y-2.5 bg-white text-slate-800">
+            <div class="flex items-center gap-1.5 border-b border-slate-100 pb-2 pr-8">
+              <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border ${lm.badgeBg}">
                 ${lm.badge}
               </span>
               <span class="text-[10px] font-semibold text-slate-400">Punto Clave</span>
@@ -2045,15 +2059,15 @@
             <div>
               <h4 class="text-sm font-black text-slate-900 leading-snug">${lm.name}</h4>
               <p class="text-[11px] font-bold text-slate-500 flex items-center gap-1 mt-0.5">
-                <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 ${lm.coto}
               </p>
             </div>
             <p class="text-[11px] text-slate-600 leading-relaxed">${lm.desc}</p>
             <div class="pt-1">
-              <a href="https://www.google.com/maps/dir/?api=1&destination=${lm.coords[0]},${lm.coords[1]}" target="_blank" rel="noopener" class="inline-flex items-center justify-center w-full gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-extrabold transition-all active:scale-98">
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${lm.coords[0]},${lm.coords[1]}" target="_blank" rel="noopener" class="inline-flex items-center justify-center w-full gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-extrabold transition-all active:scale-98">
                 <span>Cómo llegar</span>
-                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
               </a>
             </div>
           </div>
@@ -2083,7 +2097,7 @@
         const waUrl = `https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, "")}?text=${waMsg}`;
 
         let actionBtns = `
-          <a href="${waUrl}" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold transition-all flex-1 shadow-sm active:scale-98">
+          <a href="${waUrl}" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold transition-all flex-1 shadow-sm active:scale-98">
             <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.32a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.3"/></svg>
             <span>WhatsApp</span>
           </a>
@@ -2092,19 +2106,22 @@
         if (biz.website) {
           const webUrl = biz.website.startsWith("http") ? biz.website : `/natura/${biz.website}`;
           actionBtns += `
-            <a href="${webUrl}" ${biz.website.startsWith("http") ? 'target="_blank" rel="noopener"' : ''} class="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-extrabold transition-all active:scale-98">
+            <a href="${webUrl}" ${biz.website.startsWith("http") ? 'target="_blank" rel="noopener"' : ''} class="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-extrabold transition-all active:scale-98">
               <span>${biz.websiteLabel || 'Ver Web'}</span>
             </a>
           `;
         }
 
         const popupContent = `
-          <div class="p-3.5 space-y-2 bg-white text-slate-800">
-            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5">
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+          <div class="p-4 space-y-2.5 bg-white text-slate-800">
+            <div class="flex items-center gap-1.5 border-b border-slate-100 pb-2 pr-8">
+              <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
                 ${biz.category}
               </span>
-              <span class="text-[10px] font-bold text-slate-400">Verificado</span>
+              <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Verificado
+              </span>
             </div>
             <div>
               <h4 class="text-sm font-black text-slate-900 leading-snug">${biz.name}</h4>
@@ -2119,7 +2136,7 @@
           </div>
         `;
 
-        marker.bindPopup(popupContent, { maxWidth: 280 });
+        marker.bindPopup(popupContent, { maxWidth: 285 });
         mapMarkersDict[biz.id] = marker;
       });
 
