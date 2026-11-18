@@ -314,7 +314,7 @@
             <span class="text-[10px] text-slate-400 font-semibold mt-1">Ver directorio →</span>
           </a>
 
-          <!-- 3. Fitness y Cuidado personal -->
+          <!-- 3. Fitness -->
           <a href="fitness.html" class="cat-card p-4 rounded-2xl bg-white border border-snow-400 hover:border-cyan-500 hover:shadow-rappi-hover transition-all text-center flex flex-col items-center justify-between group min-h-[128px]">
             <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-cyan-50 via-cyan-50/70 to-cyan-100/60 border border-cyan-200/70 text-cyan-600 shadow-cyan-500/10 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:shadow-md transition-all shadow-xs">
               <svg viewBox="0 0 48 48" fill="none" class="w-7 h-7 transition-transform group-hover:scale-110 duration-200" stroke-linecap="round" stroke-linejoin="round">
@@ -323,19 +323,21 @@
                 <line x1="18" y1="30" x2="30" y2="18" stroke="currentColor" stroke-width="3.2" />
               </svg>
             </div>
-            <span class="text-xs font-bold text-slate-800 group-hover:text-cyan-600 leading-tight">Fitness y Cuidado personal</span>
+            <span class="text-xs font-bold text-slate-800 group-hover:text-cyan-600 leading-tight">Fitness</span>
             <span class="text-[10px] text-slate-400 font-semibold mt-1">Ver directorio →</span>
           </a>
 
-          <!-- 4. Hogar -->
-          <a href="hogar.html" class="cat-card p-4 rounded-2xl bg-white border border-snow-400 hover:border-teal-600 hover:shadow-rappi-hover transition-all text-center flex flex-col items-center justify-between group min-h-[128px]">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-teal-50 via-teal-50/70 to-teal-100/60 border border-teal-200/70 text-teal-700 shadow-teal-500/10 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:shadow-md transition-all shadow-xs">
+          <!-- 4. Cuidado personal -->
+          <a href="cuidado-personal.html" class="cat-card p-4 rounded-2xl bg-white border border-snow-400 hover:border-rose-500 hover:shadow-rappi-hover transition-all text-center flex flex-col items-center justify-between group min-h-[128px]">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-rose-50 via-rose-50/70 to-rose-100/60 border border-rose-200/70 text-rose-600 shadow-rose-500/10 flex items-center justify-center mb-2 group-hover:scale-110 group-hover:shadow-md transition-all shadow-xs">
               <svg viewBox="0 0 48 48" fill="none" class="w-7 h-7 transition-transform group-hover:scale-110 duration-200" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10 24l14-11 14 11v13a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2.8" />
-                <path d="M20 37v-9h8v9" stroke="currentColor" stroke-width="2.6" />
+                <path d="M24 10c0 8-7 14-7 19a7 7 0 0 0 14 0c0-5-7-11-7-19z" stroke="currentColor" stroke-width="2.6" />
+                <path d="M17 29c-5-2-8-7-7-12 5 0 9 4 10 9" stroke="currentColor" stroke-width="2.4" />
+                <path d="M31 29c5-2 8-7 7-12-5 0-9 4-10 9" stroke="currentColor" stroke-width="2.4" />
+                <path d="M12 37c4-2 8-3 12-3s8 1 12 3" stroke="currentColor" stroke-width="2.4" />
               </svg>
             </div>
-            <span class="text-xs font-bold text-slate-800 group-hover:text-teal-700 leading-tight">Hogar</span>
+            <span class="text-xs font-bold text-slate-800 group-hover:text-rose-600 leading-tight">Cuidado personal</span>
             <span class="text-[10px] text-slate-400 font-semibold mt-1">Ver directorio →</span>
           </a>
 
@@ -484,9 +486,9 @@
                 <option value="educacion">Educación</option>
                 <option value="servicios-profesionales">Servicios Profesionales</option>
                 <option value="servicios-hogar">Servicios hogar</option>
-                <option value="hogar">Hogar y Decoración</option>
                 <option value="mascotas">Mascotas</option>
-                <option value="fitness">Fitness y Cuidado personal</option>
+                <option value="fitness">Fitness</option>
+                <option value="cuidado-personal">Cuidado personal</option>
               </select>
             </div>
             <div>
@@ -805,6 +807,12 @@
         <circle cx="34" cy="14" r="5.5" stroke="currentColor" stroke-width="2.8" />
         <line x1="18" y1="30" x2="30" y2="18" stroke="currentColor" stroke-width="3.2" />
       </svg>`,
+            "cuidado-personal": (cls) => `<svg viewBox="0 0 48 48" fill="none" class="${cls}" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 10c0 8-7 14-7 19a7 7 0 0 0 14 0c0-5-7-11-7-19z" stroke="currentColor" stroke-width="2.6" />
+        <path d="M17 29c-5-2-8-7-7-12 5 0 9 4 10 9" stroke="currentColor" stroke-width="2.4" />
+        <path d="M31 29c5-2 8-7 7-12-5 0-9 4-10 9" stroke="currentColor" stroke-width="2.4" />
+        <path d="M12 37c4-2 8-3 12-3s8 1 12 3" stroke="currentColor" stroke-width="2.4" />
+      </svg>`,
       "hogar": (cls) => `<svg viewBox="0 0 48 48" fill="none" class="${cls}" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 24l14-11 14 11v13a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2.8" />
         <path d="M20 37v-9h8v9" stroke="currentColor" stroke-width="2.6" />
@@ -894,6 +902,14 @@
         badge: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30 text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider",
         iconBox: "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg",
         btnPrimary: "bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-600 hover:to-teal-700 text-white shadow-cyan-500/20"
+      },
+            "cuidado-personal": {
+        heroCard: "relative overflow-hidden rounded-3xl bg-gradient-to-br from-rose-500 via-rose-600 to-pink-700 border border-rose-400/40 p-6 sm:p-10 text-white shadow-xl flex items-center justify-between gap-6",
+        glow1: "absolute -right-16 -top-16 w-64 h-64 rounded-full bg-rose-300/20 blur-3xl pointer-events-none",
+        glow2: "absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-rose-400/20 blur-3xl pointer-events-none",
+        badge: "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white border border-white/30 text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider",
+        iconBox: "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shrink-0 shadow-lg",
+        btnPrimary: "bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white shadow-rose-500/20"
       },
       "hogar": {
         heroCard: "relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-900 border border-teal-400/40 p-6 sm:p-10 text-white shadow-xl flex items-center justify-between gap-6",
@@ -992,13 +1008,13 @@
         seo: "Servicios para el hogar en Mariano Otero y cotos Natura. Plomeros, electricistas, lavado de autos a domicilio y planchaduría exprés."
       },
       {
-        slug: "hogar",
-        name: "Hogar",
-        icon: "home",
-        bg: "bg-teal-100 text-teal-800",
-        h1: "Hogar",
-        desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
-        seo: "Mejora y decora tu casa en cotos residenciales. Persianas sheer elegance, blackout, cancelería en cristal templado y viveros locales con entrega a tu puerta."
+        slug: "cuidado-personal",
+        name: "Cuidado personal",
+        icon: "sparkles",
+        bg: "bg-rose-100 text-rose-700",
+        h1: "Cuidado personal",
+        desc: "Barberías, salones de belleza, spas y bienestar personal dentro del epicentro.",
+        seo: "Encuentra barberías, salones de belleza, spas, cuidado facial y bienestar en Natura Bosque Residencial y cotos de Prolongación Mariano Otero."
       },
       {
         slug: "mascotas",
@@ -1011,10 +1027,10 @@
       },
       {
         slug: "fitness",
-        name: "Fitness y Cuidado personal",
+        name: "Fitness",
         icon: "dumbbell",
         bg: "bg-cyan-100 text-cyan-700",
-        h1: "Fitness y Cuidado personal",
+        h1: "Fitness",
         desc: "Los negocios y emprendimientos registrados ofrecen sus productos y servicios dentro del epicentro.",
         seo: "Actívate sin salir de la zona. Encuentra entrenadores personales que se trasladan en bicicleta a tu coto y gimnasios sobre Prolongación Mariano Otero."
       }
@@ -1215,6 +1231,7 @@
 
       if (catParam === "escuelas") catParam = "educacion";
       if (catParam === "postres-cafe" || catParam === "postres") catParam = "comida-delivery";
+      if (catParam === "hogar") catParam = "servicios-hogar";
       if (catParam === "atencion-medica") {
         window.location.replace("../index.html");
         return;

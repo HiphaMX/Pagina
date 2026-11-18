@@ -282,12 +282,12 @@ const DEMO_BUSINESSES_SEED = [
         description: "Medicina general familiar, control de glucosa y presión arterial, limpiezas dentales con ultrasonido, resinas estéticas y valoraciones."
       },
 
-      // 7. Fitness y Cuidado personal
+      // 7. Fitness
       {
         id: "b14",
         name: "VitalFit Studio Natura",
         category_slug: "fitness",
-        category_label: "Fitness y Cuidado personal",
+        category_label: "Fitness",
         subcategory_slug: "gimnasios-studios",
         subcategory_label: "Gimnasios y Studios",
         type_slug: "local-establecido",
@@ -317,7 +317,7 @@ const DEMO_BUSINESSES_SEED = [
         id: "b15",
         name: "Coach David - Entrenamiento Cero Emisiones",
         category_slug: "fitness",
-        category_label: "Fitness y Cuidado personal",
+        category_label: "Fitness",
         subcategory_slug: "entrenador-personal",
         subcategory_label: "Entrenador Personal",
         type_slug: "sin-punto-venta",
@@ -470,8 +470,8 @@ const DEMO_BUSINESSES_SEED = [
       {
         id: "b18",
         name: "Persianas, Toldos & Cancelería Natura",
-        category_slug: "hogar",
-        category_label: "Hogar",
+        category_slug: "servicios-hogar",
+        category_label: "Servicios hogar",
         subcategory_slug: "cortinas-persianas",
         subcategory_label: "Cortinas y Persianas",
         type_slug: "local-establecido",
@@ -500,8 +500,8 @@ const DEMO_BUSINESSES_SEED = [
       {
         id: "b19",
         name: "Vivero & Jardines Paisajismo Bosque Vivo",
-        category_slug: "hogar",
-        category_label: "Hogar",
+        category_slug: "servicios-hogar",
+        category_label: "Servicios hogar",
         subcategory_slug: "plantas-paisajismo",
         subcategory_label: "Plantas y Paisajismo",
         type_slug: "local-establecido",
@@ -525,12 +525,43 @@ const DEMO_BUSINESSES_SEED = [
         cta_type: "whatsapp_order",
         has_delivery: true,
         has_pickup: true,
-        description: "Plantas de ornato para sombra y sol, árboles nativos, macetas artesanales de barro y fibra, tierra de hoja y diseño de jardinería para cotos."
+        description: "Vivero de plantas ornamentales para casa y jardín, pasto en rollo, diseño de áreas verdes para cotos, árboles nativos de la región y fertilizantes orgánicos."
       },
-
-      // 10. Servicios Profesionales
+      // 8. Cuidado personal
       {
         id: "b20",
+        name: "Lumina Spa & Barbería Studio",
+        category_slug: "cuidado-personal",
+        category_label: "Cuidado personal",
+        subcategory_slug: "barberia-salon",
+        subcategory_label: "Barbería y Salón",
+        type_slug: "local-establecido",
+        type_label: "Punto de venta fijo",
+        space_label: "Studio & Barbería",
+        delivery_badge: "Previa cita en coto",
+        pickup_badge: "Atención en Studio",
+        address: "Av. Prolongación Mariano Otero #4320 (Plaza Olivo)",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        lat: 20.6273,
+        lng: -103.4682,
+        phone: "33 1555 0340",
+        whatsapp: "+523315550340",
+        location_url: "https://maps.google.com/?q=Prol.+Mariano+Otero+4320+Zapopan",
+        website_url: null,
+        hours: "Martes a Sábado · 10:00 a 20:00 hrs | Dom 10:00 a 16:00",
+        is_open_now: true,
+        has_km0_badge: false,
+        km0_reason: null,
+        cta_type: "call_and_whatsapp",
+        has_delivery: true,
+        has_pickup: true,
+        description: "Cortes de cabello de diseño, barbería clásica con toalla caliente, manicure, tratamientos faciales y masajes relajantes."
+      },
+
+      // 9. Servicios Profesionales
+      {
+        id: "b21",
         name: "Despacho Contable & Fiscal Natura",
         category_slug: "servicios-profesionales",
         category_label: "Servicios Profesionales",

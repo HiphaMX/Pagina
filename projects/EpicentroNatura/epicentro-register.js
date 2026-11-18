@@ -54,14 +54,12 @@
       { slug: "limpieza-especializada", label: "Limpieza especializada" },
       { slug: "mantenimiento", label: "Mantenimiento" },
       { slug: "jardineria", label: "Jardinería" },
+      { slug: "cortinas-persianas", label: "Cortinas y Persianas" },
+      { slug: "plantas-paisajismo", label: "Plantas y Paisajismo" },
+      { slug: "muebles-decoracion", label: "Muebles y Decoración" },
       { slug: "carwash", label: "Carwash" },
       { slug: "tintoreria-planchaduria", label: "Tintorería y Planchaduría" },
       { slug: "otros", label: "Otros" }
-    ],
-    "hogar": [
-      { slug: "cortinas-persianas", label: "Cortinas y Persianas" },
-      { slug: "plantas-paisajismo", label: "Plantas y Paisajismo" },
-      { slug: "muebles-decoracion", label: "Muebles y Decoración" }
     ],
     "mascotas": [
       { slug: "estetica-spa", label: "Estética y Spa Canino" },
@@ -75,9 +73,14 @@
       { slug: "yoga-pilates", label: "Yoga y Pilates" },
       { slug: "cross-training", label: "Cross Training" },
       { slug: "artes-marciales", label: "Artes Marciales" },
-      { slug: "tiendas-suplementos", label: "Tiendas de suplementos" },
-      { slug: "cuidado-personal-spa", label: "Cuidado Personal y Spa" },
-      { slug: "barberia-estetica", label: "Barbería y Salón" }
+      { slug: "tiendas-suplementos", label: "Tiendas de suplementos" }
+    ],
+    "cuidado-personal": [
+      { slug: "barberia-salon", label: "Barbería y Salón" },
+      { slug: "spa-masajes", label: "Spa y Masajes" },
+      { slug: "cuidado-piel-estetica", label: "Cuidado Facial y Estética" },
+      { slug: "unas-pestanas", label: "Uñas y Pestañas" },
+      { slug: "nutricion-bienestar", label: "Nutrición y Bienestar Holístico" }
     ]
   };
 
@@ -641,9 +644,9 @@
                 <option value="educacion">Educación</option>
                 <option value="servicios-profesionales">Servicios Profesionales</option>
                 <option value="servicios-hogar">Servicios hogar</option>
-                <option value="hogar">Hogar y Decoración</option>
                 <option value="mascotas">Mascotas</option>
-                <option value="fitness">Fitness y Cuidado personal</option>
+                <option value="fitness">Fitness</option>
+                <option value="cuidado-personal">Cuidado personal</option>
               </select>
             </div>
             <div>
