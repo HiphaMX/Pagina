@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- CSS del Dashboard -->
-    <link rel="stylesheet" href="/projects/Letrerama/dashboard/css/style.css?v=20261119-2">
+    <link rel="stylesheet" href="/projects/Letrerama/dashboard/css/style.css?v=20261119-3">
 </head>
 <body>
 
@@ -126,9 +126,9 @@
 
                         <select id="filterStatus" class="filter-select">
                             <option value="all">Todos los estatus</option>
-                            <option value="active">🟢 En Producción / Activo</option>
-                            <option value="paused">🟡 En Pausa / Espera de Anticipo</option>
-                            <option value="completed">✅ Terminado / Instalado</option>
+                            <option value="prospect">🟡 Prospectos</option>
+                            <option value="active">🟢 Clientes Activos</option>
+                            <option value="inactive">⚪ Clientes Inactivos</option>
                         </select>
 
                         <select id="filterAgenda" class="filter-select">
@@ -371,9 +371,9 @@
                     <div class="form-group">
                         <label for="projectInputStatus">Estatus General</label>
                         <select id="projectInputStatus">
-                            <option value="active" selected>🟢 En Producción / Activo</option>
-                            <option value="paused">🟡 En Pausa / Por Autorizar</option>
-                            <option value="completed">✅ Entregado / Instalado</option>
+                            <option value="prospect">🟡 Prospecto</option>
+                            <option value="active" selected>🟢 Cliente Activo</option>
+                            <option value="inactive">⚪ Cliente Inactivo</option>
                         </select>
                     </div>
                 </div>
@@ -493,7 +493,7 @@
     </div>
 
     <!-- Script de Lógica -->
-    <script src="/projects/Letrerama/dashboard/js/dashboard.js?v=20261119-2"></script>
+    <script src="/projects/Letrerama/dashboard/js/dashboard.js?v=20261119-3"></script>
 
 </body>
 </html>

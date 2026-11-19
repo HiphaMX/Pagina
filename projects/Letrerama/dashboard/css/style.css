@@ -1100,6 +1100,26 @@ body {
     box-shadow: 0 0 8px rgba(51, 241, 255, 0.25);
 }
 
+/* Estatus General de Proyectos / Clientes */
+.status-chip.prospect {
+    background: rgba(251, 191, 36, 0.14);
+    color: var(--color-review);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.status-chip.active {
+    background: rgba(145, 252, 6, 0.15);
+    color: var(--color-in-production);
+    border: 1px solid rgba(145, 252, 6, 0.4);
+    box-shadow: 0 0 8px rgba(145, 252, 6, 0.2);
+}
+
+.status-chip.inactive {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--color-pending);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
 .btn-card-edit {
     background: transparent;
     border: none;

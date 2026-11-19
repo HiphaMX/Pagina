@@ -61,7 +61,7 @@ const INITIAL_DEMO_PROJECTS = [
         deadline: getFutureDateStr(8),
         in_agenda: true,
         est_hours: 14.0,
-        status: 'active',
+        status: 'prospect',
         notes: 'Gabinete de aluminio 3.0 x 1.2m doble cara con lona translúcida e iluminación perimetral LED alto flujo.',
         created_at: new Date().toISOString()
     },
@@ -75,7 +75,7 @@ const INITIAL_DEMO_PROJECTS = [
         deadline: getFutureDateStr(14),
         in_agenda: false,
         est_hours: 20.0,
-        status: 'active',
+        status: 'inactive',
         notes: 'Forro de bastidor con panel de Alucobond color naranja corporativo y preparación eléctrica para letras.',
         created_at: new Date().toISOString()
     }
@@ -165,6 +165,18 @@ function loadStoredData() {
         const storedProjects = localStorage.getItem(STORAGE_KEY_PROJECTS);
         if (storedProjects) {
             projectsData = JSON.parse(storedProjects);
+            // Normalizar estatus anteriores si existen
+            let updated = false;
+            projectsData.forEach(p => {
+                if (p.status === 'paused') {
+                    p.status = 'prospect';
+                    updated = true;
+                } else if (p.status === 'completed') {
+                    p.status = 'active';
+                    updated = true;
+                }
+            });
+            if (updated) saveProjects();
         } else {
             projectsData = INITIAL_DEMO_PROJECTS;
             saveProjects();
@@ -329,13 +341,16 @@ function renderProjectsDirectory() {
         `;
 
         let statusClass = 'active';
-        let statusLabel = 'Activo';
-        if (p.status === 'paused') {
-            statusClass = 'paused';
-            statusLabel = 'En Pausa';
-        } else if (p.status === 'completed') {
-            statusClass = 'completed';
-            statusLabel = 'Entregado';
+        let statusLabel = 'Cliente Activo';
+        if (p.status === 'prospect' || p.status === 'paused') {
+            statusClass = 'prospect';
+            statusLabel = 'Prospecto';
+        } else if (p.status === 'inactive') {
+            statusClass = 'inactive';
+            statusLabel = 'Cliente Inactivo';
+        } else {
+            statusClass = 'active';
+            statusLabel = 'Cliente Activo';
         }
 
         return `
@@ -361,7 +376,7 @@ function renderProjectsDirectory() {
                     ${agendaToggleHtml}
                 </td>
                 <td>
-                    <span class="status-chip ${statusClass === 'completed' ? 'completed' : (statusClass === 'paused' ? 'review' : 'in_production')}">
+                    <span class="status-chip ${statusClass}">
                         ${statusLabel}
                     </span>
                 </td>
@@ -567,7 +582,7 @@ function getActiveAgendaProjects() {
     const active = [];
     if (Array.isArray(projectsData)) {
         projectsData.forEach(p => {
-            if (p.client && p.in_agenda && (p.status || 'active') !== 'completed') {
+            if (p.client && p.in_agenda && p.status !== 'inactive') {
                 active.push(p.client.trim());
             }
         });
