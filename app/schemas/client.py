@@ -17,6 +17,8 @@ class AgencyClientBase(BaseModel):
     tax_retention_rate: Optional[float] = 1.25
     start_date: Optional[str] = None
     status: Optional[str] = "active"
+    in_workflow: Optional[bool] = False
+    monthly_design_hours: Optional[float] = 0.0
     website_url: Optional[str] = None
     ga4_property_id: Optional[str] = None
     notes: Optional[str] = None
@@ -40,6 +42,8 @@ class AgencyClientUpdate(BaseModel):
     tax_retention_rate: Optional[float] = None
     start_date: Optional[str] = None
     status: Optional[str] = None
+    in_workflow: Optional[bool] = None
+    monthly_design_hours: Optional[float] = None
     website_url: Optional[str] = None
     ga4_property_id: Optional[str] = None
     notes: Optional[str] = None

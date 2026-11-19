@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- CSS Custom -->
-    <link rel="stylesheet" href="/projects/HiphaMX/dashboard/css/style.css?v=20261119-2">
+    <link rel="stylesheet" href="/projects/HiphaMX/dashboard/css/style.css?v=20261119-3">
 </head>
 <body>
 
@@ -1581,6 +1581,26 @@
                     </div>
                 </div>
 
+                <!-- Activación en Agenda de Proyectos y Cupo de Horas -->
+                <div class="client-agenda-box" style="background:rgba(6, 182, 212, 0.05); border:1px solid rgba(6, 182, 212, 0.25); border-radius:10px; padding:0.85rem; margin-top:0.2rem;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
+                        <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer; user-select:none; margin:0;">
+                            <input type="checkbox" id="clientInputInWorkflow" style="width:18px; height:18px; accent-color:var(--accent-cyan); cursor:pointer;">
+                            <div>
+                                <strong style="font-size:0.85rem; color:var(--text-main); display:flex; align-items:center; gap:0.35rem;">
+                                    <span>🗓️ Activar en Agenda de Proyectos</span>
+                                </strong>
+                                <span style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:1px;">Permite seleccionar este cliente en el flujo semanal para programar tareas y horas de diseño.</span>
+                            </div>
+                        </label>
+                        <div id="wrapperDesignHours" style="display:inline-flex; align-items:center; gap:0.4rem; padding-left:1.8rem;">
+                            <label for="clientInputDesignHours" style="font-size:0.75rem; color:var(--text-muted);">Bolsa mensual:</label>
+                            <input type="number" id="clientInputDesignHours" value="0" min="0" step="0.5" placeholder="0" style="width:70px; background:var(--bg-panel); color:var(--text-main); border:1px solid var(--border-color); padding:0.35rem 0.5rem; border-radius:6px; font-size:0.8rem; text-align:right;">
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">hrs/mes</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.8rem;">
                     <div class="form-group" style="display:flex; flex-direction:column; gap:0.35rem;">
                         <label for="clientInputStartDate" style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">Fecha de Inicio / Renovación</label>
@@ -2876,7 +2896,7 @@
     </div>
 
     <!-- Script de Lógica -->
-    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261119-2"></script>
+    <script src="/projects/HiphaMX/dashboard/js/dashboard.js?v=20261119-3"></script>
 
 </body>
 </html>

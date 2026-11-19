@@ -19,6 +19,8 @@ class AgencyClient(Base):
     tax_retention_rate = Column(Float, default=1.25, nullable=True)  # Tasa de retención de ISR (ej. 1.25% para PM en RESICO)
     start_date = Column(String(10), nullable=True)  # YYYY-MM-DD
     status = Column(String, default="active")  # "active", "paused", "inactive"
+    in_workflow = Column(Boolean, default=False, nullable=True)  # True si está activo en la agenda de proyectos
+    monthly_design_hours = Column(Float, default=0.0, nullable=True)  # Horas de diseño asignadas/contratadas al mes
     website_url = Column(String, nullable=True)
     ga4_property_id = Column(String, nullable=True)
     notes = Column(Text, nullable=True)

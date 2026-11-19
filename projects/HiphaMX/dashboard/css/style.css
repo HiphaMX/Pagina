@@ -4219,4 +4219,86 @@ select {
     border-color: rgba(255, 255, 255, 0.18);
 }
 
+/* Switch / Toggle para Activación de Clientes en Agenda */
+.switch-agenda-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.switch-agenda-toggle {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 22px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.switch-agenda-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider-agenda-round {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border-color);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 22px;
+}
+
+.slider-agenda-round:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #94a3b8;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+}
+
+.switch-agenda-toggle input:checked + .slider-agenda-round {
+    background-color: rgba(6, 182, 212, 0.25);
+    border-color: rgba(6, 182, 212, 0.6);
+}
+
+.switch-agenda-toggle input:checked + .slider-agenda-round:before {
+    transform: translateX(16px);
+    background-color: #22d3ee;
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
+}
+
+.badge-agenda-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.badge-agenda-status.active {
+    background: rgba(6, 182, 212, 0.12);
+    color: #22d3ee;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.badge-agenda-status.inactive {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
 

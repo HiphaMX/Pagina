@@ -632,6 +632,8 @@ def create_agency_client(
             tax_retention_rate=float(client_in.tax_retention_rate if client_in.tax_retention_rate is not None else 1.25),
             start_date=client_in.start_date,
             status=client_in.status or "active",
+            in_workflow=bool(client_in.in_workflow),
+            monthly_design_hours=float(client_in.monthly_design_hours or 0.0),
             website_url=client_in.website_url,
             ga4_property_id=client_in.ga4_property_id,
             notes=client_in.notes
@@ -661,6 +663,8 @@ def create_agency_client(
                 tax_retention_rate=float(client_in.tax_retention_rate if client_in.tax_retention_rate is not None else 1.25),
                 start_date=client_in.start_date,
                 status=client_in.status or "active",
+                in_workflow=bool(client_in.in_workflow),
+                monthly_design_hours=float(client_in.monthly_design_hours or 0.0),
                 website_url=client_in.website_url,
                 ga4_property_id=client_in.ga4_property_id,
                 notes=client_in.notes
@@ -715,6 +719,37 @@ def update_agency_client(
             db.rollback()
             print(f"Error fatal actualizando cliente: {e2}")
             raise HTTPException(status_code=500, detail=f"Error al actualizar cliente: {str(e2)}")
+
+
+@router.patch("/clients/directory/{client_id}/toggle-workflow", response_model=AgencyClientSchema)
+def toggle_client_workflow(
+    client_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Alterna rápidamente el estado del cliente en la agenda de proyectos."""
+    client = db.query(AgencyClient).filter(AgencyClient.id == client_id).first()
+    if not client:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    try:
+        client.in_workflow = not bool(client.in_workflow)
+        db.commit()
+        db.refresh(client)
+        return client
+    except Exception as e:
+        db.rollback()
+        print(f"Error alternando workflow del cliente: {e}")
+        try:
+            from app.core.database import ensure_db_initialized
+            ensure_db_initialized()
+            client.in_workflow = not bool(client.in_workflow)
+            db.commit()
+            db.refresh(client)
+            return client
+        except Exception as e2:
+            db.rollback()
+            raise HTTPException(status_code=500, detail=f"Error al cambiar estatus en agenda: {str(e2)}")
 
 
 @router.delete("/clients/directory/{client_id}")

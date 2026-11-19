@@ -89,6 +89,8 @@ def ensure_db_initialized():
                         "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS requires_invoice BOOLEAN DEFAULT FALSE",
                         "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS apply_tax_retention BOOLEAN DEFAULT FALSE",
                         "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS tax_retention_rate FLOAT DEFAULT 1.25",
+                        "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS in_workflow BOOLEAN DEFAULT FALSE",
+                        "ALTER TABLE agency_clients ADD COLUMN IF NOT EXISTS monthly_design_hours FLOAT DEFAULT 0.0",
                         "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS revision_hours FLOAT DEFAULT 0.0",
                         "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS revisions_count INTEGER DEFAULT 0",
                         "ALTER TABLE workflow_tasks ADD COLUMN IF NOT EXISTS actual_hours FLOAT DEFAULT NULL",
@@ -109,6 +111,7 @@ def ensure_db_initialized():
                         "ALTER TABLE bank_transactions ALTER COLUMN status_conciliacion TYPE VARCHAR(50)",
                         "ALTER TABLE quotations ADD COLUMN IF NOT EXISTS require_down_payment BOOLEAN DEFAULT TRUE",
                         "ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS website VARCHAR(255)",
+                        "UPDATE agency_clients SET in_workflow = TRUE WHERE in_workflow IS NULL OR in_workflow = FALSE AND (name ILIKE '%Tukipa%' OR name ILIKE '%Chile%' OR name ILIKE '%DAM%' OR name ILIKE '%Botica%' OR name ILIKE '%AMDI%')",
                     ]
                 else:
                     migration_stmts = [
@@ -116,6 +119,8 @@ def ensure_db_initialized():
                         "ALTER TABLE agency_clients ADD COLUMN requires_invoice BOOLEAN DEFAULT 0",
                         "ALTER TABLE agency_clients ADD COLUMN apply_tax_retention BOOLEAN DEFAULT 0",
                         "ALTER TABLE agency_clients ADD COLUMN tax_retention_rate FLOAT DEFAULT 1.25",
+                        "ALTER TABLE agency_clients ADD COLUMN in_workflow BOOLEAN DEFAULT 0",
+                        "ALTER TABLE agency_clients ADD COLUMN monthly_design_hours FLOAT DEFAULT 0.0",
                         "ALTER TABLE workflow_tasks ADD COLUMN revision_hours FLOAT DEFAULT 0.0",
                         "ALTER TABLE workflow_tasks ADD COLUMN revisions_count INTEGER DEFAULT 0",
                         "ALTER TABLE workflow_tasks ADD COLUMN actual_hours FLOAT DEFAULT NULL",
@@ -135,6 +140,7 @@ def ensure_db_initialized():
                         "ALTER TABLE bank_transactions ADD COLUMN tipo_categoria VARCHAR(50) DEFAULT NULL",
                         "ALTER TABLE quotations ADD COLUMN require_down_payment BOOLEAN DEFAULT 1",
                         "ALTER TABLE epicentro_registrations ADD COLUMN website VARCHAR(255)",
+                        "UPDATE agency_clients SET in_workflow = 1 WHERE (in_workflow IS NULL OR in_workflow = 0) AND (name LIKE '%Tukipa%' OR name LIKE '%Chile%' OR name LIKE '%DAM%' OR name LIKE '%Botica%' OR name LIKE '%AMDI%')",
                     ]
 
                 for stmt in migration_stmts:

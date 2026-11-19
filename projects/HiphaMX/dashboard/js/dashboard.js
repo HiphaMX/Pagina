@@ -1463,7 +1463,7 @@ const WORKFLOW_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const WORKFLOW_DAILY_LIMIT = 4.0; // 9:00 AM a 1:00 PM = 4 horas
 const WORKFLOW_WEEKLY_LIMIT = 20.0; // 5 días x 4 horas
 
-// Clientes exclusivos con iguala mensual para el flujo de trabajo semanal
+// Clientes base para el flujo de trabajo semanal
 const WORKFLOW_MONTHLY_RETAINER_CLIENTS = [
     'Tukipa Fitness',
     'El Chile Chillón',
@@ -1471,6 +1471,23 @@ const WORKFLOW_MONTHLY_RETAINER_CLIENTS = [
     'Botica Silvestre',
     'AMDI'
 ];
+
+// Obtiene dinámicamente todos los clientes validados y activos en la Agenda de Proyectos
+function getActiveWorkflowClients() {
+    const clients = new Set();
+    if (Array.isArray(clientsDirectoryData) && clientsDirectoryData.length > 0) {
+        clientsDirectoryData.forEach(c => {
+            if (c.name && c.in_workflow && (c.status || 'active') !== 'inactive') {
+                clients.add(c.name.trim());
+            }
+        });
+    }
+    // Si aún no hay clientes marcados en el directorio o la red está cargando, asegurar las marcas base
+    if (clients.size === 0) {
+        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => clients.add(c));
+    }
+    return Array.from(clients).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+}
 
 const CLIENT_COLOR_PALETTE = {
     'tukipa fitness': { bg: 'rgba(249, 115, 22, 0.15)', text: '#fb923c', border: 'rgba(249, 115, 22, 0.35)' },
@@ -1495,7 +1512,25 @@ const CLIENT_COLOR_PALETTE = {
 function getClientStyle(clientName) {
     if (!clientName) return { bg: 'rgba(255,255,255,0.08)', text: '#cbd5e1', border: 'rgba(255,255,255,0.15)' };
     const key = clientName.toLowerCase().trim();
-    return CLIENT_COLOR_PALETTE[key] || { bg: 'rgba(255,255,255,0.08)', text: '#cbd5e1', border: 'rgba(255,255,255,0.15)' };
+    if (CLIENT_COLOR_PALETTE[key]) return CLIENT_COLOR_PALETTE[key];
+
+    // Paleta determinista para cualquier nuevo cliente asignado a la agenda
+    const dynamicPalettes = [
+        { bg: 'rgba(56, 189, 248, 0.15)', text: '#38bdf8', border: 'rgba(56, 189, 248, 0.35)' }, // Sky
+        { bg: 'rgba(168, 85, 247, 0.15)', text: '#c084fc', border: 'rgba(168, 85, 247, 0.35)' }, // Purple
+        { bg: 'rgba(236, 72, 153, 0.15)', text: '#f472b6', border: 'rgba(236, 72, 153, 0.35)' }, // Pink
+        { bg: 'rgba(34, 197, 94, 0.15)', text: '#4ade80', border: 'rgba(34, 197, 94, 0.35)' },   // Emerald
+        { bg: 'rgba(234, 179, 8, 0.15)', text: '#facc15', border: 'rgba(234, 179, 8, 0.35)' },   // Yellow
+        { bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8', border: 'rgba(99, 102, 241, 0.35)' }, // Indigo
+        { bg: 'rgba(20, 184, 166, 0.15)', text: '#2dd4bf', border: 'rgba(20, 184, 166, 0.35)' }, // Teal
+        { bg: 'rgba(244, 63, 94, 0.15)', text: '#fb7185', border: 'rgba(244, 63, 94, 0.35)' }    // Rose
+    ];
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+        hash = key.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const idx = Math.abs(hash) % dynamicPalettes.length;
+    return dynamicPalettes[idx];
 }
 
 // Inicialización del módulo
@@ -1958,20 +1993,21 @@ function syncAllClientsDropdowns() {
 
     const sortedClients = Array.from(clientsSet).sort();
 
-    // 1. Selector en modal de nueva tarea (#taskInputClient) - Exclusivo para Igualas Mensuales
+    // 1. Selector en modal de nueva tarea (#taskInputClient) - Dinámico según clientes activos en agenda
     const taskClientSelect = document.getElementById('taskInputClient');
     if (taskClientSelect) {
         const curVal = taskClientSelect.value;
         taskClientSelect.innerHTML = '';
-        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => {
+        const workflowClients = getActiveWorkflowClients();
+        workflowClients.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c;
             opt.textContent = c;
             if (c === curVal) opt.selected = true;
             taskClientSelect.appendChild(opt);
         });
-        if (!taskClientSelect.value && WORKFLOW_MONTHLY_RETAINER_CLIENTS.length > 0) {
-            taskClientSelect.value = WORKFLOW_MONTHLY_RETAINER_CLIENTS[0];
+        if (!taskClientSelect.value && workflowClients.length > 0) {
+            taskClientSelect.value = workflowClients[0];
         }
     }
 
@@ -2499,13 +2535,14 @@ function openWorkflowTaskModal(day = 'monday') {
 
     if (clientSelect) {
         clientSelect.innerHTML = '';
-        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => {
+        const workflowClients = getActiveWorkflowClients();
+        workflowClients.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c;
             opt.textContent = c;
             clientSelect.appendChild(opt);
         });
-        clientSelect.value = WORKFLOW_MONTHLY_RETAINER_CLIENTS[0] || 'Tukipa Fitness';
+        clientSelect.value = workflowClients[0] || 'Tukipa Fitness';
     }
 
     document.getElementById('taskInputId').value = '';
@@ -2619,10 +2656,14 @@ function editWorkflowTask(taskId) {
 
     document.getElementById('taskInputId').value = String(task.id);
     
-    // Asegurar que el selector contenga las igualas mensuales
+    // Asegurar que el selector contenga los clientes activos en la agenda
     if (clientSelect) {
         clientSelect.innerHTML = '';
-        WORKFLOW_MONTHLY_RETAINER_CLIENTS.forEach(c => {
+        const workflowClients = getActiveWorkflowClients();
+        if (task.client_name && !workflowClients.some(c => c.toLowerCase() === task.client_name.toLowerCase())) {
+            workflowClients.push(task.client_name);
+        }
+        workflowClients.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c;
             opt.textContent = c;
@@ -4228,6 +4269,21 @@ function renderClientsDirectory() {
             `;
         }
 
+        const inWorkflow = Boolean(c.in_workflow);
+        const designHours = parseFloat(c.monthly_design_hours) || 0;
+        const agendaToggleHtml = `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:0.25rem;">
+                <label class="switch-agenda-toggle" title="${inWorkflow ? 'Activo en Agenda (Clic para retirar)' : 'Inactivo en Agenda (Clic para activar)'}">
+                    <input type="checkbox" ${inWorkflow ? 'checked' : ''} onchange="handleToggleClientWorkflow(${c.id}, this.checked, '${escapeHtml(c.name)}')">
+                    <span class="slider-agenda-round"></span>
+                </label>
+                <span class="badge-agenda-status ${inWorkflow ? 'active' : 'inactive'}">
+                    ${inWorkflow ? 'En Agenda' : 'No en Agenda'}
+                </span>
+                ${designHours > 0 ? `<span style="font-size:0.68rem; color:var(--accent-cyan); font-weight:600;" title="Bolsa mensual asignada">${designHours}h/mes</span>` : ''}
+            </div>
+        `;
+
         return `
             <tr>
                 <td>
@@ -4250,6 +4306,9 @@ function renderClientsDirectory() {
                 </td>
                 <td>
                     ${feeDisplayHtml}
+                </td>
+                <td style="text-align:center;">
+                    ${agendaToggleHtml}
                 </td>
                 <td>
                     <span class="badge-client-status ${statusClass}">
@@ -4280,6 +4339,7 @@ function renderClientsDirectory() {
                     <th>Servicio</th>
                     <th>Fecha de Corte / Renovación</th>
                     <th>Inversión & Modalidad</th>
+                    <th style="text-align:center;">🗓️ En Agenda</th>
                     <th>Estatus</th>
                     <th style="text-align:center;">Acciones</th>
                 </tr>
@@ -4289,6 +4349,101 @@ function renderClientsDirectory() {
             </tbody>
         </table>
     `;
+}
+
+async function handleToggleClientWorkflow(clientId, isChecked, clientName = '') {
+    const client = clientsDirectoryData.find(c => String(c.id) === String(clientId));
+    if (client) {
+        client.in_workflow = isChecked;
+    }
+    syncAllClientsDropdowns();
+    renderClientsDirectory();
+
+    try {
+        const res = await fetch(`${API_BASE}/clients/directory/${clientId}/toggle-workflow`, {
+            method: 'PATCH',
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            const updated = await res.json();
+            if (client) {
+                client.in_workflow = updated.in_workflow;
+                client.monthly_design_hours = updated.monthly_design_hours;
+            }
+            localStorage.setItem('hipha_clients_directory_cache', JSON.stringify(clientsDirectoryData));
+            syncAllClientsDropdowns();
+            renderClientsDirectory();
+            showDashboardToast(`🗓️ <strong>${escapeHtml(clientName || (client ? client.name : 'Cliente'))}</strong>: ${updated.in_workflow ? 'activado en la Agenda' : 'retirado de la Agenda'}`);
+        } else {
+            // Fallback con PUT
+            const putRes = await fetch(`${API_BASE}/clients/directory/${clientId}`, {
+                method: 'PUT',
+                headers: {
+                    ...getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ in_workflow: isChecked })
+            });
+            if (putRes.ok) {
+                const updated = await putRes.json();
+                if (client) client.in_workflow = updated.in_workflow;
+                localStorage.setItem('hipha_clients_directory_cache', JSON.stringify(clientsDirectoryData));
+                syncAllClientsDropdowns();
+                renderClientsDirectory();
+                showDashboardToast(`🗓️ <strong>${escapeHtml(clientName || (client ? client.name : 'Cliente'))}</strong>: ${updated.in_workflow ? 'activado en la Agenda' : 'retirado de la Agenda'}`);
+            } else {
+                throw new Error("Error en servidor");
+            }
+        }
+    } catch (err) {
+        console.error("Error al actualizar estatus de agenda del cliente:", err);
+        if (client) {
+            client.in_workflow = !isChecked;
+        }
+        syncAllClientsDropdowns();
+        renderClientsDirectory();
+        showDashboardToast(`❌ Error al actualizar ${escapeHtml(clientName)} en la Agenda`, 'error');
+    }
+}
+
+function showDashboardToast(message, type = 'success') {
+    let container = document.getElementById('dashboardToastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'dashboardToastContainer';
+        container.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; display:flex; flex-direction:column; gap:8px; pointer-events:none;';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    const isError = (type === 'error');
+    toast.style.cssText = `
+        background: ${isError ? 'rgba(239, 68, 68, 0.95)' : 'rgba(16, 24, 39, 0.95)'};
+        color: #fff;
+        border: 1px solid ${isError ? '#f87171' : 'rgba(6, 182, 212, 0.4)'};
+        padding: 0.65rem 1.1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transform: translateY(10px);
+        opacity: 0;
+        transition: all 0.25s ease;
+        pointer-events: auto;
+    `;
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => {
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+    });
+    setTimeout(() => {
+        toast.style.transform = 'translateY(10px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+    }, 3200);
 }
 
 function openClientModal(clientId = null) {
@@ -4349,6 +4504,12 @@ function openClientModal(clientId = null) {
                 else wrapper.classList.add('hidden');
             }
 
+            // Activación en Agenda de Proyectos y cupo de horas
+            const chkInWorkflow = document.getElementById('clientInputInWorkflow');
+            const inputDesignHours = document.getElementById('clientInputDesignHours');
+            if (chkInWorkflow) chkInWorkflow.checked = Boolean(client.in_workflow);
+            if (inputDesignHours) inputDesignHours.value = client.monthly_design_hours != null ? client.monthly_design_hours : 0;
+
             if (btnDelete) btnDelete.classList.remove('hidden');
         }
     } else {
@@ -4366,6 +4527,12 @@ function openClientModal(clientId = null) {
         selectStatus.value = 'active';
         inputWeb.value = '';
         inputNotes.value = '';
+
+        // Reset Agenda
+        const chkInWorkflow = document.getElementById('clientInputInWorkflow');
+        const inputDesignHours = document.getElementById('clientInputDesignHours');
+        if (chkInWorkflow) chkInWorkflow.checked = false;
+        if (inputDesignHours) inputDesignHours.value = 0;
 
         // Reset fiscal
         setClientInvoiceRequired(false);
@@ -4405,6 +4572,8 @@ async function handleSaveClient(e) {
     const tax_retention_rate = parseFloat(document.getElementById('clientInputTaxRetentionRate') ? document.getElementById('clientInputTaxRetentionRate').value : 1.25) || 1.25;
     const start_date = document.getElementById('clientInputStartDate').value || null;
     const status = document.getElementById('clientInputStatus').value || 'active';
+    const in_workflow = document.getElementById('clientInputInWorkflow') ? document.getElementById('clientInputInWorkflow').checked : false;
+    const monthly_design_hours = parseFloat(document.getElementById('clientInputDesignHours') ? document.getElementById('clientInputDesignHours').value : 0) || 0.0;
     const website_url = (document.getElementById('clientInputWebsite').value || '').trim();
     const notes = (document.getElementById('clientInputNotes').value || '').trim();
 
@@ -4427,6 +4596,8 @@ async function handleSaveClient(e) {
         tax_retention_rate,
         start_date: start_date || null,
         status,
+        in_workflow,
+        monthly_design_hours,
         website_url: website_url || null,
         notes: notes || null
     };
