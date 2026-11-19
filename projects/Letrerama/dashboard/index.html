@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letrerama · Panel de Operación y Taller</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS del Dashboard -->
+    <link rel="stylesheet" href="/projects/Letrerama/dashboard/css/style.css?v=20261119-1">
+</head>
+<body>
+
+    <div class="app-layout">
+        
+        <!-- Header Superior -->
+        <header class="app-header">
+            <div class="header-brand">
+                <img src="/projects/Letrerama/dashboard/assets/logo-color.svg" alt="Letrerama Logo" class="brand-logo">
+                <div class="brand-divider"></div>
+                <div class="brand-titles">
+                    <span class="brand-app-name">Panel de Operación & Taller</span>
+                    <span class="brand-tagline">Fabricación · Montaje · Entregas</span>
+                </div>
+            </div>
+
+            <!-- Navegación de Pestañas -->
+            <nav class="nav-tabs" role="tablist">
+                <button type="button" class="nav-tab active" id="btnTabProjects" onclick="switchDashboardTab('projects')">
+                    <span class="tab-icon">📋</span>
+                    <span>Directorio de Proyectos</span>
+                    <span class="tab-badge" id="badgeProjectsCount">0</span>
+                </button>
+                <button type="button" class="nav-tab" id="btnTabWorkflow" onclick="switchDashboardTab('workflow')">
+                    <span class="tab-icon">🗓️</span>
+                    <span>Agenda de Taller (Semanal)</span>
+                    <span class="tab-badge-pulse" id="badgeActiveWorkshopCount">0 en taller</span>
+                </button>
+            </nav>
+
+            <div class="header-actions">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Taller Activo</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenedor Principal -->
+        <main class="app-main">
+
+            <!-- ========================================== -->
+            <!-- VISTA 1: DIRECTORIO DE PROYECTOS          -->
+            <!-- ========================================== -->
+            <section id="sectionProjects" class="dashboard-section active">
+                
+                <!-- Tarjetas KPI -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrap cyan">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Proyectos Registrados</span>
+                            <strong class="kpi-value" id="kpiTotalProjects">0</strong>
+                            <span class="kpi-sub">Cartera total de clientes</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card highlight">
+                        <div class="kpi-icon-wrap lime">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">En Taller / Agenda</span>
+                            <strong class="kpi-value text-lime" id="kpiActiveAgendaCount">0</strong>
+                            <span class="kpi-sub">Validados en flujo de fabricación</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrap purple">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Presupuesto en Proceso</span>
+                            <strong class="kpi-value text-cyan" id="kpiTotalBudget">$0 MXN</strong>
+                            <span class="kpi-sub">Importe cotizado y activo</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrap amber">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Entregas Próximas</span>
+                            <strong class="kpi-value text-amber" id="kpiUpcomingDeadlines">0</strong>
+                            <span class="kpi-sub">En los próximos 7 días</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barra de Herramientas del Directorio -->
+                <div class="toolbar-panel">
+                    <div class="toolbar-search">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="projectSearchInput" placeholder="Buscar por cliente, tipo de anuncio, contacto o notas...">
+                    </div>
+
+                    <div class="toolbar-filters">
+                        <select id="filterWorkType" class="filter-select">
+                            <option value="all">Todos los tipos de anuncio</option>
+                            <option value="letras_3d">🔤 Letras 3D (Canal/Acrílico)</option>
+                            <option value="neon_flex">💡 Neón Flex</option>
+                            <option value="caja_luz">📦 Caja de Luz / Gabinete</option>
+                            <option value="fachada">🏢 Fachada Alucobond / Bastidor</option>
+                            <option value="rotulacion">🚗 Rotulación Vehicular / Vinil</option>
+                            <option value="gran_formato">📐 Gran Formato / Lonas</option>
+                            <option value="senaletica">🛑 Señalética Corporativa</option>
+                        </select>
+
+                        <select id="filterStatus" class="filter-select">
+                            <option value="all">Todos los estatus</option>
+                            <option value="active">🟢 En Producción / Activo</option>
+                            <option value="paused">🟡 En Pausa / Espera de Anticipo</option>
+                            <option value="completed">✅ Terminado / Instalado</option>
+                        </select>
+
+                        <select id="filterAgenda" class="filter-select">
+                            <option value="all">Todos los proyectos</option>
+                            <option value="in_agenda">🗓️ Solo en Agenda de Taller</option>
+                            <option value="not_in_agenda">🚫 Fuera de Agenda</option>
+                        </select>
+
+                        <button type="button" class="btn-primary" onclick="openProjectModal()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>+ Nuevo Proyecto</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla de Directorio de Proyectos -->
+                <div class="table-container" id="projectsTableContainer">
+                    <!-- Inyectado por JS -->
+                </div>
+
+            </section>
+
+            <!-- ========================================== -->
+            <!-- VISTA 2: AGENDA DE TALLER (FLUJO SEMANAL) -->
+            <!-- ========================================== -->
+            <section id="sectionWorkflow" class="dashboard-section">
+                
+                <!-- Barra de Navegación de la Agenda -->
+                <div class="workflow-header-panel">
+                    <div class="workflow-nav">
+                        <button type="button" class="btn-nav-week" id="btnPrevWeek" title="Semana anterior">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <button type="button" class="btn-nav-current" id="btnCurrentWeek">Semana Actual</button>
+                        <button type="button" class="btn-nav-week" id="btnNextWeek" title="Semana siguiente">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <span class="workflow-week-title" id="workflowWeekTitle">Cargando semana...</span>
+                    </div>
+
+                    <div class="workflow-controls">
+                        <!-- Filtro dinámico por Proyecto -->
+                        <div class="workflow-filter-wrap">
+                            <label for="wfProjectFilter">Filtrar Proyecto:</label>
+                            <select id="wfProjectFilter" class="filter-select">
+                                <option value="all">Todos los proyectos del taller</option>
+                            </select>
+                        </div>
+
+                        <!-- Botón Reporte WhatsApp -->
+                        <button type="button" class="btn-whatsapp" onclick="copyWorkshopWhatsAppReport()" title="Copiar reporte formateado de avance del taller para WhatsApp">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                            <span>📲 Copiar Reporte WhatsApp</span>
+                        </button>
+
+                        <!-- Botón Nueva Tarea -->
+                        <button type="button" class="btn-primary" onclick="openTaskModal('monday')">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>+ Programar Tarea</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resumen de Carga y Capacidad Semanal -->
+                <div class="capacity-summary-bar">
+                    <div class="capacity-stat">
+                        <span class="capacity-label">Capacidad Semanal del Taller:</span>
+                        <strong id="capTotalWeekHours">0.0 hrs</strong>
+                        <span class="capacity-limit">/ 48.0 hrs máx (6 días x 8h)</span>
+                    </div>
+                    <div class="capacity-progress-track">
+                        <div class="capacity-progress-bar" id="capWeekProgressBar" style="width: 0%;"></div>
+                    </div>
+                    <div class="capacity-legend">
+                        <span>💡 Haz clic en el chip de estado de cualquier tarjeta para ciclar su fase</span>
+                    </div>
+                </div>
+
+                <!-- Tablero Semanal de 6 Columnas (Lunes a Sábado) -->
+                <div class="workflow-board-grid">
+                    
+                    <!-- Lunes -->
+                    <div class="board-column" data-day="monday">
+                        <div class="column-header">
+                            <div>
+                                <span class="col-day-name">Lunes</span>
+                                <span class="col-date" id="dateMonday">--</span>
+                            </div>
+                            <div class="col-capacity">
+                                <span id="colHoursMonday">0h</span> / 8h
+                            </div>
+                        </div>
+                        <div class="col-progress-track"><div class="col-progress-fill" id="fillMonday" style="width:0%;"></div></div>
+                        <div class="task-list" id="taskListMonday"></div>
+                        <button type="button" class="btn-add-task-col" onclick="openTaskModal('monday')">+ Añadir al Lunes</button>
+                    </div>
+
+                    <!-- Martes -->
+                    <div class="board-column" data-day="tuesday">
+                        <div class="column-header">
+                            <div>
+                                <span class="col-day-name">Martes</span>
+                                <span class="col-date" id="dateTuesday">--</span>
+                            </div>
+                            <div class="col-capacity">
+                                <span id="colHoursTuesday">0h</span> / 8h
+                            </div>
+                        </div>
+                        <div class="col-progress-track"><div class="col-progress-fill" id="fillTuesday" style="width:0%;"></div></div>
+                        <div class="task-list" id="taskListTuesday"></div>
+                        <button type="button" class="btn-add-task-col" onclick="openTaskModal('tuesday')">+ Añadir al Martes</button>
+                    </div>
+
+                    <!-- Miércoles -->
+                    <div class="board-column" data-day="wednesday">
+                        <div class="column-header">
+                            <div>
+                                <span class="col-day-name">Miércoles</span>
+                                <span class="col-date" id="dateWednesday">--</span>
+                            </div>
+                            <div class="col-capacity">
+                                <span id="colHoursWednesday">0h</span> / 8h
+                            </div>
+                        </div>
+                        <div class="col-progress-track"><div class="col-progress-fill" id="fillWednesday" style="width:0%;"></div></div>
+                        <div class="task-list" id="taskListWednesday"></div>
+                        <button type="button" class="btn-add-task-col" onclick="openTaskModal('wednesday')">+ Añadir al Miércoles</button>
+                    </div>
+
+                    <!-- Jueves -->
+                    <div class="board-column" data-day="thursday">
+                        <div class="column-header">
+                            <div>
+                                <span class="col-day-name">Jueves</span>
+                                <span class="col-date" id="dateThursday">--</span>
+                            </div>
+                            <div class="col-capacity">
+                                <span id="colHoursThursday">0h</span> / 8h
+                            </div>
+                        </div>
+                        <div class="col-progress-track"><div class="col-progress-fill" id="fillThursday" style="width:0%;"></div></div>
+                        <div class="task-list" id="taskListThursday"></div>
+                        <button type="button" class="btn-add-task-col" onclick="openTaskModal('thursday')">+ Añadir al Jueves</button>
+                    </div>
+
+                    <!-- Viernes -->
+                    <div class="board-column" data-day="friday">
+                        <div class="column-header">
+                            <div>
+                                <span class="col-day-name">Viernes</span>
+                                <span class="col-date" id="dateFriday">--</span>
+                            </div>
+                            <div class="col-capacity">
+                                <span id="colHoursFriday">0h</span> / 8h
+                            </div>
+                        </div>
+                        <div class="col-progress-track"><div class="col-progress-fill" id="fillFriday" style="width:0%;"></div></div>
+                        <div class="task-list" id="taskListFriday"></div>
+                        <button type="button" class="btn-add-task-col" onclick="openTaskModal('friday')">+ Añadir al Viernes</button>
+                    </div>
+
+                    <!-- Sábado (Instalaciones y Entregas en Sitio) -->
+                    <div class="board-column saturday" data-day="saturday">
+                        <div class="column-header">
+                            <div>
+                                <span class="col-day-name text-lime">Sábado (Montaje)</span>
+                                <span class="col-date" id="dateSaturday">--</span>
+                            </div>
+                            <div class="col-capacity">
+                                <span id="colHoursSaturday">0h</span> / 8h
+                            </div>
+                        </div>
+                        <div class="col-progress-track"><div class="col-progress-fill lime" id="fillSaturday" style="width:0%;"></div></div>
+                        <div class="task-list" id="taskListSaturday"></div>
+                        <button type="button" class="btn-add-task-col" onclick="openTaskModal('saturday')">+ Añadir al Sábado</button>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: ALTA / EDICIÓN DE PROYECTO       -->
+    <!-- ========================================== -->
+    <div id="projectModal" class="modal-overlay hidden">
+        <form id="projectForm" class="modal-dialog modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalProjectHeading">+ Alta de Proyecto de Rotulación</h2>
+                    <p class="modal-sub">Registra el cliente, presupuesto y especificaciones para control de taller</p>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeProjectModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="projectInputId" value="">
+
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="projectInputClient">Cliente / Marca *</label>
+                        <input type="text" id="projectInputClient" required placeholder="Ej. Burger House 77, Farmacia San José">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectInputType">Tipo de Trabajo / Anuncio *</label>
+                        <select id="projectInputType" required>
+                            <option value="letras_3d" selected>🔤 Letras 3D (Canal/Acrílico)</option>
+                            <option value="neon_flex">💡 Neón Flex</option>
+                            <option value="caja_luz">📦 Caja de Luz / Gabinete</option>
+                            <option value="fachada">🏢 Fachada Alucobond / Bastidor</option>
+                            <option value="rotulacion">🚗 Rotulación Vehicular / Vinil</option>
+                            <option value="gran_formato">📐 Gran Formato / Lonas</option>
+                            <option value="senaletica">🛑 Señalética Corporativa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="projectInputContact">Persona de Contacto</label>
+                        <input type="text" id="projectInputContact" placeholder="Ej. Roberto Morales">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectInputPhone">WhatsApp / Teléfono *</label>
+                        <input type="tel" id="projectInputPhone" placeholder="Ej. 33 1234 5678">
+                    </div>
+                </div>
+
+                <div class="form-row three-cols">
+                    <div class="form-group">
+                        <label for="projectInputBudget">Presupuesto Acordado (MXN) *</label>
+                        <input type="number" id="projectInputBudget" min="0" step="any" placeholder="Ej. 14500" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectInputDeadline">Fecha de Entrega / Instalación *</label>
+                        <input type="date" id="projectInputDeadline" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectInputStatus">Estatus General</label>
+                        <select id="projectInputStatus">
+                            <option value="active" selected>🟢 En Producción / Activo</option>
+                            <option value="paused">🟡 En Pausa / Por Autorizar</option>
+                            <option value="completed">✅ Entregado / Instalado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Switch Interactivo: En Taller / Agenda -->
+                <div class="agenda-activation-box">
+                    <div class="activation-header">
+                        <label class="switch-agenda-toggle">
+                            <input type="checkbox" id="projectInputInAgenda" checked>
+                            <span class="slider-agenda-round"></span>
+                        </label>
+                        <div class="activation-text">
+                            <strong>🗓️ Activar en Agenda de Taller (Flujo Semanal)</strong>
+                            <span>Al activar esta casilla, el proyecto estará disponible para asignarle tareas operativas de corte, armado e instalación en el calendario semanal.</span>
+                        </div>
+                    </div>
+                    <div class="activation-metric">
+                        <label for="projectInputEstHours">Horas estimadas de fabricación:</label>
+                        <div class="input-hours-wrap">
+                            <input type="number" id="projectInputEstHours" value="6" min="0.5" step="0.5">
+                            <span>hrs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectInputNotes">Notas Técnicas de Fabricación & Montaje</label>
+                    <textarea id="projectInputNotes" rows="3" placeholder="Medidas exactas, calibre de aluminio, acrílico 3mm, color de LED 6500K, vinil de corte, dirección de montaje o requerimientos de andamios..."></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnDeleteProject" class="btn-danger hidden" onclick="handleDeleteProjectModal()">Eliminar Proyecto</button>
+                <div class="modal-actions-right">
+                    <button type="button" class="btn-secondary" onclick="closeProjectModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnSaveProject">Guardar Proyecto</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: TAREA DE TALLER OPERATIVA        -->
+    <!-- ========================================== -->
+    <div id="taskModal" class="modal-overlay hidden">
+        <form id="taskForm" class="modal-dialog">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTaskHeading">+ Programar Tarea en Taller</h2>
+                    <p class="modal-sub">Asigna actividades de fabricación o instalación a un proyecto activo</p>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeTaskModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="taskInputId" value="">
+
+                <div class="form-group">
+                    <label for="taskInputProject">Proyecto / Cliente de Taller *</label>
+                    <select id="taskInputProject" required>
+                        <!-- Dinámico: proyectos con in_agenda === true -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskInputTitle">Actividad Operativa *</label>
+                    <input type="text" id="taskInputTitle" required placeholder="Ej. Corte láser de acrílico blanco 3mm, Cableado módulos LED, Montaje en fachada...">
+                </div>
+
+                <div class="form-row three-cols">
+                    <div class="form-group">
+                        <label for="taskInputDay">Día Programado *</label>
+                        <select id="taskInputDay" required>
+                            <option value="monday">Lunes</option>
+                            <option value="tuesday">Martes</option>
+                            <option value="wednesday">Miércoles</option>
+                            <option value="thursday">Jueves</option>
+                            <option value="friday">Viernes</option>
+                            <option value="saturday">Sábado (Montaje)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskInputHours">Tiempo Estimado (Horas) *</label>
+                        <input type="number" id="taskInputHours" value="1.5" min="0.5" max="8.0" step="0.5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskInputStatus">Fase Actual *</label>
+                        <select id="taskInputStatus" required>
+                            <option value="pending">⏳ Por iniciar</option>
+                            <option value="in_progress">🎨 En proceso / Trazo</option>
+                            <option value="review">👀 Revisión técnica</option>
+                            <option value="approved">✨ Diseño autorizado</option>
+                            <option value="in_production">⚙️ En taller / Producción</option>
+                            <option value="completed">🚚 Instalado / Entregado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskInputNotes">Instrucciones de Taller / Herramientas</label>
+                    <textarea id="taskInputNotes" rows="2" placeholder="Brocas especiales, transformadores 12V 10A, silicón neutro, andamio de 2 cuerpos..."></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnDeleteTask" class="btn-danger hidden" onclick="handleDeleteTaskModal()">Eliminar Tarea</button>
+                <div class="modal-actions-right">
+                    <button type="button" class="btn-secondary" onclick="closeTaskModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btnSaveTask">Guardar Tarea</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Script de Lógica -->
+    <script src="/projects/Letrerama/dashboard/js/dashboard.js?v=20261119-1"></script>
+
+</body>
+</html>

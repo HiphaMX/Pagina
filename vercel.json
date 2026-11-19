@@ -40,7 +40,7 @@
       ]
     },
     {
-      "source": "/(dashboard|dashboard/.*|projects/HiphaMX/dashboard/.*)",
+      "source": "/(dashboard|dashboard/.*|projects/HiphaMX/dashboard/.*|letrerama/dashboard|letrerama/dashboard/.*|projects/Letrerama/dashboard/.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" },
         { "key": "Pragma", "value": "no-cache" },
@@ -456,6 +456,36 @@
       "dest": "/projects/Letrerama/web/robots.txt"
     },
     {
+      "src": "/dashboard",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.com$"
+        }
+      ],
+      "dest": "/projects/Letrerama/dashboard/index.html"
+    },
+    {
+      "src": "/dashboard/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.com$"
+        }
+      ],
+      "dest": "/projects/Letrerama/dashboard/index.html"
+    },
+    {
+      "src": "/dashboard/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?letrerama\\.com$"
+        }
+      ],
+      "dest": "/projects/Letrerama/dashboard/$1"
+    },
+    {
       "src": "/(index)(.html|)",
       "has": [
         {
@@ -801,6 +831,18 @@
       "src": "/(terminos-y-condiciones|aviso-de-privacidad)\\.html",
       "status": 308,
       "headers": { "Location": "/$1" }
+    },
+    {
+      "src": "/letrerama/dashboard",
+      "dest": "/projects/Letrerama/dashboard/index.html"
+    },
+    {
+      "src": "/letrerama/dashboard/",
+      "dest": "/projects/Letrerama/dashboard/index.html"
+    },
+    {
+      "src": "/letrerama/dashboard/(.*)",
+      "dest": "/projects/Letrerama/dashboard/$1"
     },
     {
       "src": "/letrerama",
