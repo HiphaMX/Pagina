@@ -441,6 +441,42 @@ async def submit_epizentro_contact(form_data: EpizentroContactForm):
     return {"message": "Formulario recibido correctamente"}
 
 
+def check_is_bot_submission(payload: RegisterInitiateRequest) -> tuple[bool, str]:
+    """
+    Evalúa de forma heurística si la solicitud de registro proviene de un bot automatizado:
+    1. Campo Honeypot con contenido.
+    2. Cadenas aleatorias de alta entropía (gibberish) en nombre del negocio o propietario.
+    3. Técnicas de Gmail dot-trick con múltiples puntos (típico de spam scripts).
+    4. Teléfono sin dígitos suficientes.
+    """
+    # 1. Honeypot check
+    if payload.honeypot and payload.honeypot.strip():
+        return True, "Honeypot activado"
+
+    # 2. Detección de cadenas aleatorias generadas por bots (ej. kBcUCFsnARtUHydKUAf, dSJNhaNKBCVDTTkLwb)
+    for field_val, field_name in [(payload.business_name, "nombre del negocio"), (payload.owner_name, "propietario")]:
+        clean = (field_val or "").strip()
+        if len(clean) >= 12 and " " not in clean:
+            upper_cnt = sum(1 for c in clean if c.isupper())
+            lower_cnt = sum(1 for c in clean if c.islower())
+            if upper_cnt >= 3 and lower_cnt >= 3:
+                return True, f"Patrón aleatorio en {field_name} ('{clean}')"
+
+    # 3. Detección de Gmail Dot-Trick spam (ej. r.a.dem.am.uyu.y.92@gmail.com)
+    email_clean = (payload.email or "").lower().strip()
+    if "@" in email_clean:
+        local_part, domain = email_clean.split("@", 1)
+        if domain == "gmail.com" and local_part.count(".") >= 3:
+            return True, f"Gmail dot-trick masivo ('{email_clean}')"
+
+    # 4. Longitud de teléfono mínima (10 dígitos en México)
+    phone_digits = re.sub(r'\D', '', payload.phone or "")
+    if len(phone_digits) < 10:
+        return True, f"Teléfono con dígitos insuficientes ('{payload.phone}')"
+
+    return False, ""
+
+
 @router.post("/register/initiate")
 async def initiate_registration(
     payload: RegisterInitiateRequest,
@@ -449,18 +485,19 @@ async def initiate_registration(
 ):
     """
     Paso inicial del registro:
-    1. Filtro anti-bot Honeypot.
+    1. Filtro anti-bot Honeypot y validación heurística multicapa.
     2. Creación del registro en pending_verification.
-    3. Encolamiento de OTP de 6 dígitos en BackgroundTasks (respuesta inmediata <50ms).
-    4. Generación del código y deep link para handshake de WhatsApp.
+    3. Generación del código y deep link para handshake de WhatsApp.
     """
-    # 1. Honeypot check
-    if payload.honeypot and payload.honeypot.strip():
-        logger.warning(f"Bot trap activada en registro: {payload.business_name} / {payload.email}")
+    # 1. Filtro Heurístico Anti-Bot Multicapa (Sinkhole silencioso)
+    is_bot, bot_reason = check_is_bot_submission(payload)
+    if is_bot:
+        logger.warning(f"[ANTI-BOT EPICENTRO] Registro bloqueado: {bot_reason} ({payload.business_name} / {payload.email})")
         return {
             "success": True,
             "registration_id": str(uuid.uuid4()),
-            "message": "Solicitud procesada correctamente"
+            "message": "Solicitud procesada correctamente",
+            "whatsapp_link": "https://wa.me/523336762545?text=Hola%20Natura"
         }
 
     # Generar código de WhatsApp (ej. NATURA-5819)
@@ -995,24 +1032,38 @@ def purge_test_registrations(
     is_authenticated: bool = Depends(verify_admin),
     db: Session = Depends(get_db)
 ):
-    """Elimina todos los registros de prueba creados durante desarrollo."""
+    """Elimina registros de prueba y spam de bots automatizados de la base de datos."""
     ensure_epicentro_schema(db)
     test_keywords = ["%pizzería di vico%", "%di vico%", "%tacos el roble%", "%la pizzería del bosque%", "%test%", "%prueba%"]
     deleted_count = 0
-    for kw in test_keywords:
-        rows = db.query(EpicentroRegistration).filter(
-            (EpicentroRegistration.business_name.ilike(kw)) |
-            (EpicentroRegistration.email.ilike(kw)) |
-            (EpicentroRegistration.owner_name.ilike(kw))
-        ).all()
-        for r in rows:
-            db.delete(r)
+    all_regs = db.query(EpicentroRegistration).all()
+    for reg in all_regs:
+        if reg.id in ("reg-chile-chillon", "reg-botica-silvestre", "ac02b6c2-624e-407f-bcfc-7d736dbcbd83"):
+            continue
+
+        bname = (reg.business_name or "").strip()
+        email = (reg.email or "").strip().lower()
+        owner = (reg.owner_name or "").strip()
+
+        is_test = any(kw.replace("%", "") in bname.lower() or kw.replace("%", "") in email or kw.replace("%", "") in owner.lower() for kw in test_keywords)
+
+        is_bot = False
+        if len(bname) >= 12 and " " not in bname and sum(1 for c in bname if c.isupper()) >= 3 and sum(1 for c in bname if c.islower()) >= 3:
+            is_bot = True
+        elif "@gmail.com" in email and email.split("@")[0].count(".") >= 3:
+            is_bot = True
+        elif reg.status != "active" and len(re.sub(r'\D', '', reg.phone or "")) < 10:
+            is_bot = True
+
+        if is_test or is_bot:
+            db.delete(reg)
             deleted_count += 1
+
     db.commit()
     return {
         "success": True,
         "deleted_count": deleted_count,
-        "message": f"Se eliminaron {deleted_count} registros de prueba de la base de datos."
+        "message": f"Se eliminaron {deleted_count} registros de prueba y spam de la base de datos."
     }
 
 
