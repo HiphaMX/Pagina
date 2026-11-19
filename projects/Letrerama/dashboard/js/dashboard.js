@@ -119,7 +119,7 @@ const INITIAL_DEMO_TASKS = [
         project_client: 'Café La Floresta',
         title: 'Instalación de módulos LED Samsung en fondos',
         hours: 3.5,
-        status: 'pending',
+        status: 'budget_approved',
         notes: 'Módulos 3 LEDs IP65 blanco frío.'
     },
     {
@@ -127,9 +127,9 @@ const INITIAL_DEMO_TASKS = [
         week_id: getWeekId(0),
         day: 'friday',
         project_client: 'Clínica Dental San Ángel',
-        title: 'Armado de estructura metálica para caja de luz',
+        title: 'Levantamiento técnico y cotización para fachada',
         hours: 4.5,
-        status: 'pending',
+        status: 'quote',
         notes: 'Perfil PTR 1x1 calibre 18 con pintura anticorrosiva.'
     },
     {
@@ -737,13 +737,17 @@ function createTaskCardElement(task) {
     return card;
 }
 
-// 6 Fases de Operación y Taller
+// 8 Fases de Operación y Taller
 function getTaskStatusInfo(statusKey) {
     switch (statusKey) {
         case 'pending':
-            return { key: 'pending', label: 'Por iniciar', next: 'in_progress', icon: '⏳' };
+            return { key: 'pending', label: 'Por iniciar', next: 'quote', icon: '⏳' };
+        case 'quote':
+            return { key: 'quote', label: 'Cotización', next: 'budget_approved', icon: '📝' };
+        case 'budget_approved':
+            return { key: 'budget_approved', label: 'Presupuesto autorizado', next: 'in_progress', icon: '💵' };
         case 'in_progress':
-            return { key: 'in_progress', label: 'En diseño / Trazo', next: 'review', icon: '🎨' };
+            return { key: 'in_progress', label: 'En proceso / Trazo', next: 'review', icon: '🎨' };
         case 'review':
             return { key: 'review', label: 'Revisión técnica', next: 'approved', icon: '👀' };
         case 'approved':
@@ -753,7 +757,7 @@ function getTaskStatusInfo(statusKey) {
         case 'completed':
             return { key: 'completed', label: 'Instalado / Entregado', next: 'pending', icon: '🚚' };
         default:
-            return { key: 'pending', label: 'Por iniciar', next: 'in_progress', icon: '⏳' };
+            return { key: 'pending', label: 'Por iniciar', next: 'quote', icon: '⏳' };
     }
 }
 

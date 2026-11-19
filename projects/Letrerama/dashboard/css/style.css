@@ -21,6 +21,8 @@
     --text-subtle: #64748b;
     
     --color-pending: #94a3b8;
+    --color-quote: #fb923c;
+    --color-budget-approved: #34d399;
     --color-in-progress: #38bdf8;
     --color-review: #fbbf24;
     --color-approved: #c084fc;
@@ -1052,6 +1054,18 @@ body {
     background: rgba(148, 163, 184, 0.12);
     color: var(--color-pending);
     border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.status-chip.quote {
+    background: rgba(251, 146, 60, 0.14);
+    color: var(--color-quote);
+    border: 1px solid rgba(251, 146, 60, 0.35);
+}
+
+.status-chip.budget_approved {
+    background: rgba(52, 211, 153, 0.14);
+    color: var(--color-budget-approved);
+    border: 1px solid rgba(52, 211, 153, 0.35);
 }
 
 .status-chip.in_progress {
