@@ -2,14 +2,6 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/dashboard",
-      "destination": "/dashboard/index.html"
-    },
-    {
-      "source": "/dashboard/",
-      "destination": "/dashboard/index.html"
-    },
-    {
       "source": "/api/:path*",
       "destination": "https://www.hipha.mx/api/:path*"
     }

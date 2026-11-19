@@ -463,7 +463,7 @@
           "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
-      "dest": "/projects/Letrerama/web/dashboard/index.html"
+      "dest": "/projects/Letrerama/web/dashboard"
     },
     {
       "src": "/dashboard/",
@@ -473,7 +473,7 @@
           "value": "^(www\\.)?letrerama\\.com$"
         }
       ],
-      "dest": "/projects/Letrerama/web/dashboard/index.html"
+      "dest": "/projects/Letrerama/web/dashboard"
     },
     {
       "src": "/dashboard/(.*)",
@@ -834,11 +834,11 @@
     },
     {
       "src": "/[Ll]etrerama/dashboard",
-      "dest": "/projects/Letrerama/web/dashboard/index.html"
+      "dest": "/projects/Letrerama/web/dashboard"
     },
     {
       "src": "/[Ll]etrerama/dashboard/",
-      "dest": "/projects/Letrerama/web/dashboard/index.html"
+      "dest": "/projects/Letrerama/web/dashboard"
     },
     {
       "src": "/[Ll]etrerama/dashboard/(.*)",
