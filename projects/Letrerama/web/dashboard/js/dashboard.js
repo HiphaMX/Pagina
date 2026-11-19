@@ -159,6 +159,8 @@ function initLetreramaDashboard() {
     renderProjectsDirectory();
     syncProjectDropdowns();
     renderWorkflowBoard();
+    loadQuotationsHistory();
+    updateQuotationsHistoryBadge();
 }
 
 function loadStoredData() {
@@ -214,22 +216,31 @@ function switchDashboardTab(tabName) {
     currentTab = tabName;
     const btnProjects = document.getElementById('btnTabProjects');
     const btnWorkflow = document.getElementById('btnTabWorkflow');
+    const btnQuotations = document.getElementById('btnTabQuotations');
     const secProjects = document.getElementById('sectionProjects');
     const secWorkflow = document.getElementById('sectionWorkflow');
+    const secQuotations = document.getElementById('sectionQuotations');
+
+    btnProjects?.classList.remove('active');
+    btnWorkflow?.classList.remove('active');
+    btnQuotations?.classList.remove('active');
+    secProjects?.classList.remove('active');
+    secWorkflow?.classList.remove('active');
+    secQuotations?.classList.remove('active');
 
     if (tabName === 'projects') {
-        btnProjects.classList.add('active');
-        btnWorkflow.classList.remove('active');
-        secProjects.classList.add('active');
-        secWorkflow.classList.remove('active');
+        btnProjects?.classList.add('active');
+        secProjects?.classList.add('active');
         renderProjectsDirectory();
-    } else {
-        btnProjects.classList.remove('active');
-        btnWorkflow.classList.add('active');
-        secProjects.classList.remove('active');
-        secWorkflow.classList.add('active');
+    } else if (tabName === 'workflow') {
+        btnWorkflow?.classList.add('active');
+        secWorkflow?.classList.add('active');
         syncProjectDropdowns();
         renderWorkflowBoard();
+    } else if (tabName === 'quotations') {
+        btnQuotations?.classList.add('active');
+        secQuotations?.classList.add('active');
+        initQuotationsModule();
     }
 }
 
@@ -664,13 +675,42 @@ function updateDatesAndWeek() {
     return weekId;
 }
 
+function getDayAbbr(dayKey) {
+    switch (dayKey) {
+        case 'monday': return 'Lun';
+        case 'tuesday': return 'Mar';
+        case 'wednesday': return 'Mié';
+        case 'thursday': return 'Jue';
+        case 'friday': return 'Vie';
+        case 'saturday': return 'Sáb';
+        default: return 'Lun';
+    }
+}
+
+function getDaySpanishName(dayKey) {
+    switch (dayKey) {
+        case 'monday': return 'Lunes';
+        case 'tuesday': return 'Martes';
+        case 'wednesday': return 'Miércoles';
+        case 'thursday': return 'Jueves';
+        case 'friday': return 'Viernes';
+        case 'saturday': return 'Sábado';
+        default: return 'Día';
+    }
+}
+
 function renderWorkflowBoard() {
     const currentWeekId = getWeekId(currentWeekOffset);
 
-    // Limpiar columnas
+    // Limpiar columnas y registrar zonas de drop
     WORKFLOW_DAYS.forEach(day => {
         const listEl = document.getElementById(`taskList${capitalize(day)}`);
-        if (listEl) listEl.innerHTML = '';
+        if (listEl) {
+            listEl.innerHTML = '';
+            listEl.ondragover = (e) => handleColumnDragOver(e, day);
+            listEl.ondragleave = (e) => handleColumnDragLeave(e, day);
+            listEl.ondrop = (e) => handleColumnDrop(e, day);
+        }
     });
 
     let totalWeekHours = 0;
@@ -725,15 +765,31 @@ function renderWorkflowBoard() {
 function createTaskCardElement(task) {
     const card = document.createElement('div');
     card.className = 'task-card';
+    card.id = `taskCard_${task.id}`;
+    card.setAttribute('draggable', 'true');
+    card.ondragstart = (e) => handleTaskDragStart(e, task.id);
+    card.ondragend = handleTaskDragEnd;
 
     const statusInfo = getTaskStatusInfo(task.status);
     const clientColor = getProjectBrandColor(task.project_client);
+    const dayAbbr = getDayAbbr(task.day || 'monday');
 
     card.innerHTML = `
         <div class="task-card-header">
             <span class="task-client-chip" style="background:${clientColor.bg}; color:${clientColor.text}; border:1px solid ${clientColor.border};">
                 ${escapeHtml(task.project_client || 'Proyecto')}
             </span>
+
+            <!-- Control para mover de día al dar clic -->
+            <div class="task-day-mover" onclick="event.stopPropagation()">
+                <button type="button" class="btn-day-arrow" onclick="shiftTaskDay(${task.id}, -1, event)" title="Mover a día anterior (1 clic)">◀</button>
+                <button type="button" class="btn-day-pill" onclick="toggleTaskDayPopover(${task.id}, event)" title="Clic para elegir cualquier día">
+                    <span>${dayAbbr}</span>
+                    <span class="pill-caret">▾</span>
+                </button>
+                <button type="button" class="btn-day-arrow" onclick="shiftTaskDay(${task.id}, 1, event)" title="Mover a día siguiente (1 clic)">▶</button>
+            </div>
+
             <span class="task-hours-badge">
                 ⏱️ ${task.hours || 1}h
             </span>
@@ -1334,3 +1390,859 @@ function lockTallerSession() {
         showToast("🔒 Sesión bloqueada por seguridad.");
     }
 }
+
+// ==========================================================================
+// LÓGICA DE MOVIMIENTO DE FICHAS DE TRABAJO (1 CLIC & DRAG AND DROP)
+// ==========================================================================
+
+let activePopoverTaskId = null;
+let draggedTaskId = null;
+
+function shiftTaskDay(taskId, delta, event) {
+    if (event) event.stopPropagation();
+    closeDayPickerPopover();
+
+    const task = workflowTasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const curDay = task.day || 'monday';
+    const curIdx = WORKFLOW_DAYS.indexOf(curDay);
+    if (curIdx === -1) return;
+
+    let newIdx = curIdx + delta;
+    if (newIdx < 0) newIdx = WORKFLOW_DAYS.length - 1;
+    if (newIdx >= WORKFLOW_DAYS.length) newIdx = 0;
+
+    const newDay = WORKFLOW_DAYS[newIdx];
+    task.day = newDay;
+
+    saveTasks();
+    renderWorkflowBoard();
+    showToast(`➡️ Ficha movida a <strong>${getDaySpanishName(newDay)}</strong>`);
+}
+
+function moveTaskToDay(taskId, targetDay) {
+    const task = workflowTasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    task.day = targetDay;
+    saveTasks();
+    renderWorkflowBoard();
+    showToast(`📅 Ficha asignada a <strong>${getDaySpanishName(targetDay)}</strong>`);
+}
+
+function toggleTaskDayPopover(taskId, event) {
+    if (event) event.stopPropagation();
+    const popover = document.getElementById('taskDayPickerPopover');
+    if (!popover) return;
+
+    if (activePopoverTaskId === taskId && !popover.classList.contains('hidden')) {
+        closeDayPickerPopover();
+        return;
+    }
+
+    activePopoverTaskId = taskId;
+    const task = workflowTasks.find(t => t.id === taskId);
+    const targetEl = event.currentTarget;
+    const rect = targetEl.getBoundingClientRect();
+
+    popover.style.top = `${rect.bottom + window.scrollY + 6}px`;
+    popover.style.left = `${Math.max(10, rect.left + window.scrollX - 40)}px`;
+    popover.classList.remove('hidden');
+
+    // Resaltar día actual en el popover
+    popover.querySelectorAll('.btn-popover-day').forEach(btn => {
+        if (task && btn.getAttribute('data-day') === task.day) {
+            btn.style.borderColor = 'var(--accent-cyan)';
+            btn.style.background = 'rgba(51, 241, 255, 0.2)';
+        } else {
+            btn.style.borderColor = 'var(--border-subtle)';
+            btn.style.background = 'rgba(255, 255, 255, 0.04)';
+        }
+    });
+}
+
+function selectDayFromPopover(targetDay) {
+    if (activePopoverTaskId) {
+        moveTaskToDay(activePopoverTaskId, targetDay);
+    }
+    closeDayPickerPopover();
+}
+
+function closeDayPickerPopover() {
+    const popover = document.getElementById('taskDayPickerPopover');
+    if (popover) popover.classList.add('hidden');
+    activePopoverTaskId = null;
+}
+
+// Drag & Drop nativo entre columnas de días
+function handleTaskDragStart(e, taskId) {
+    draggedTaskId = taskId;
+    e.dataTransfer.setData('text/plain', String(taskId));
+    e.dataTransfer.effectAllowed = 'move';
+    const card = e.currentTarget;
+    setTimeout(() => {
+        card.classList.add('dragging');
+    }, 10);
+}
+
+function handleTaskDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    document.querySelectorAll('.task-list').forEach(l => l.classList.remove('drag-over'));
+    draggedTaskId = null;
+}
+
+function handleColumnDragOver(e, day) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+}
+
+function handleColumnDragLeave(e, day) {
+    e.currentTarget.classList.remove('drag-over');
+}
+
+function handleColumnDrop(e, day) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    const taskIdStr = e.dataTransfer.getData('text/plain') || draggedTaskId;
+    const taskId = parseInt(taskIdStr);
+    if (taskId && day) {
+        moveTaskToDay(taskId, day);
+    }
+}
+
+// Cerrar selector flotante al hacer clic fuera
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#taskDayPickerPopover') && !e.target.closest('.btn-day-pill')) {
+        closeDayPickerPopover();
+    }
+});
+
+// ==========================================================================
+// MÓDULO COTIZADOR DE TALLER & PROPUESTAS LETRERAMA
+// ==========================================================================
+
+const STORAGE_KEY_QUOTATIONS = 'letrerama_quotations_history';
+const STORAGE_KEY_QUOTE_DRAFT = 'letrerama_quotation_draft';
+
+const LETRERAMA_CATALOG = [
+    { id: 'letras-3d', name: 'Letras Corpóreas 3D', category: 'Volumétricos', description: 'Aluminio rolado con cantos soldados y cara de acrílico traslúcido 3mm con iluminación LED interna.', price: 3500.0, unit_label: 'x pz' },
+    { id: 'caja-luz', name: 'Caja de Luz LED', category: 'Iluminados', description: 'Gabinete de aluminio extruido con lona traslúcida o acrílico e iluminación LED 6500K de alto brillo.', price: 4800.0, unit_label: 'x m²' },
+    { id: 'acrilico-backlit', name: 'Acrílico Retroiluminado Neón', category: 'Backlit', description: 'Placa de acrílico cristal pulido con halo perimetral LED Neón Flex y separadores de acero.', price: 4200.0, unit_label: 'x pz' },
+    { id: 'bastidor-fachada', name: 'Bastidor 3D y Fachada', category: 'Estructuras', description: 'Estructura en PTR y panel de aluminio acanalado/alucobond para recubrimiento comercial.', price: 6500.0, unit_label: 'x módulo' },
+    { id: 'banderola', name: 'Banderola Comercial Doble Cara', category: 'Banderolas', description: 'Letrero proyectado 2 vistas con iluminación interior LED y anclajes estructurales a muro.', price: 3800.0, unit_label: 'x pz' },
+    { id: 'impresion-3d', name: 'Impresión 3D & Aluminio', category: 'Híbridos', description: 'Modelado aditivo volumétrico con acabados automotrices de alta resistencia a intemperie.', price: 3200.0, unit_label: 'x pz' },
+    { id: 'trofeos', name: 'Trofeos Multimaterial', category: 'Especiales', description: 'Combinación de madera fina, mármol, acrílico y placa metálica grabada con corte láser.', price: 950.0, unit_label: 'x pz' },
+    { id: 'dtf-textil', name: 'DTF Textil & Vinil', category: 'Textil', description: 'Estampado digital térmico de alta durabilidad en uniformes, playeras o mandiles de taller.', price: 450.0, unit_label: 'x pz' },
+    { id: 'instalacion-altura', name: 'Montaje & Instalación en Altura', category: 'Servicio', description: 'Maniobra con andamios de 2 cuerpos o canastilla, anclajes estructurales y cableado.', price: 1800.0, unit_label: 'x jornada' },
+    { id: 'mantenimiento', name: 'Mantenimiento & Cambio LED', category: 'Servicio', description: 'Revisión y sustitución de fuentes de poder 12V, módulos LED IP67 y sellado perimetral.', price: 1200.0, unit_label: 'x servicio' }
+];
+
+let currentQuotationItems = [];
+let quotationsHistory = [];
+let quotationsModuleInitialized = false;
+
+function initQuotationsModule() {
+    loadQuotationsHistory();
+    syncQuotationsClientDropdown();
+    renderQuotationCatalog();
+
+    if (!quotationsModuleInitialized) {
+        restoreQuoteDraft();
+        quotationsModuleInitialized = true;
+    } else {
+        renderQuoteItemsList();
+        recalculateQuoteTotals();
+    }
+
+    updateQuotationsHistoryBadge();
+}
+
+function loadQuotationsHistory() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY_QUOTATIONS);
+        if (stored) {
+            quotationsHistory = JSON.parse(stored);
+        } else {
+            quotationsHistory = [
+                {
+                    id: 17090001,
+                    folio: 'LET-2026-0001',
+                    date: '2026-11-18',
+                    client_name: 'Burger House 77',
+                    client_contact: 'Lic. Javier Vega',
+                    client_phone: '33 9876 5432',
+                    client_email: 'javier@burgerhouse77.com',
+                    validity_days: 30,
+                    apply_tax: true,
+                    require_down_payment: true,
+                    notes: 'Letrero 3D en fachada principal con iluminación cálida 3000K. Entrega en 8 días hábiles.',
+                    items: [
+                        { id: 1, name: 'Letras Corpóreas 3D', description: 'Logo hamburguesa y tipografía en aluminio rolado negro mate con acrílico frontal.', quantity: 1, unit_price: 12500.0 },
+                        { id: 2, name: 'Montaje & Instalación en Altura', description: 'Instalación sobre marquesina a 4.5m con anclajes químicos.', quantity: 1, unit_price: 2000.0 }
+                    ],
+                    subtotal: 14500.0,
+                    tax: 2320.0,
+                    total: 16820.0,
+                    down_payment: 8410.0,
+                    status: 'Aprobada'
+                }
+            ];
+            saveQuotationsHistory();
+        }
+    } catch (e) {
+        quotationsHistory = [];
+    }
+}
+
+function saveQuotationsHistory() {
+    localStorage.setItem(STORAGE_KEY_QUOTATIONS, JSON.stringify(quotationsHistory));
+    updateQuotationsHistoryBadge();
+}
+
+function updateQuotationsHistoryBadge() {
+    const badge = document.getElementById('quotationsHistoryBadge');
+    if (badge) badge.textContent = quotationsHistory.length;
+    const mainBadge = document.getElementById('badgeQuotationsCount');
+    if (mainBadge) mainBadge.textContent = quotationsHistory.length;
+}
+
+function syncQuotationsClientDropdown() {
+    const select = document.getElementById('quoteClientSelect');
+    if (!select) return;
+
+    const cur = select.value;
+    select.innerHTML = '<option value="">-- O escribir cliente / prospecto nuevo --</option>';
+
+    if (Array.isArray(projectsData)) {
+        projectsData.forEach(p => {
+            if (p.client) {
+                const opt = document.createElement('option');
+                opt.value = p.client;
+                opt.textContent = `${p.client} (${p.status === 'active' ? 'Cliente Activo' : 'Prospecto'})`;
+                if (p.client === cur) opt.selected = true;
+                select.appendChild(opt);
+            }
+        });
+    }
+}
+
+function handleSelectClientForQuote(clientName) {
+    if (!clientName) return;
+    const proj = projectsData.find(p => p.client === clientName);
+    if (!proj) return;
+
+    const inputName = document.getElementById('quoteClientName');
+    const inputContact = document.getElementById('quoteClientContact');
+    const inputPhone = document.getElementById('quoteClientPhone');
+    const inputNotes = document.getElementById('quoteNotes');
+
+    if (inputName) inputName.value = proj.client;
+    if (inputContact && proj.contact_name) inputContact.value = proj.contact_name;
+    if (inputPhone && proj.phone) inputPhone.value = proj.phone;
+    if (inputNotes && proj.notes) inputNotes.value = proj.notes;
+
+    // Si tiene tipo de trabajo y no hay items, sugerir el primer item
+    if (currentQuotationItems.length === 0) {
+        const matchingCatalog = LETRERAMA_CATALOG.find(c => c.name.toLowerCase().includes(proj.work_type) || proj.work_type.includes(c.id));
+        if (matchingCatalog) {
+            addCatalogItemToQuote(matchingCatalog.id);
+        }
+    }
+
+    recalculateQuoteTotals();
+}
+
+function renderQuotationCatalog() {
+    const container = document.getElementById('catalogQuickChips');
+    if (!container) return;
+
+    container.innerHTML = '';
+    LETRERAMA_CATALOG.forEach(item => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'catalog-chip';
+        chip.innerHTML = `
+            <span>${item.name}</span>
+            <span class="chip-price">$${item.price.toLocaleString('es-MX')}</span>
+        `;
+        chip.onclick = () => addCatalogItemToQuote(item.id);
+        container.appendChild(chip);
+    });
+}
+
+function addCatalogItemToQuote(catalogId) {
+    const itemDef = LETRERAMA_CATALOG.find(c => c.id === catalogId);
+    if (!itemDef) return;
+
+    const newItem = {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        name: itemDef.name,
+        description: itemDef.description,
+        quantity: 1,
+        unit_price: itemDef.price,
+        is_custom: false
+    };
+
+    currentQuotationItems.push(newItem);
+    renderQuoteItemsList();
+    recalculateQuoteTotals();
+    showToast(`✨ Añadido <strong>${escapeHtml(itemDef.name)}</strong> al presupuesto.`);
+}
+
+function addCustomQuoteItem() {
+    const newItem = {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        name: 'Letrero / Concepto Personalizado',
+        description: 'Especificaciones técnicas de aluminio, acrílico, calibre y sistema de iluminación.',
+        quantity: 1,
+        unit_price: 2500.0,
+        is_custom: true
+    };
+
+    currentQuotationItems.push(newItem);
+    renderQuoteItemsList();
+    recalculateQuoteTotals();
+    showToast("✨ Concepto personalizado agregado.");
+}
+
+function removeQuoteItem(itemId) {
+    currentQuotationItems = currentQuotationItems.filter(it => it.id !== itemId);
+    renderQuoteItemsList();
+    recalculateQuoteTotals();
+}
+
+function renderQuoteItemsList() {
+    const container = document.getElementById('quoteItemsListContainer');
+    const emptyState = document.getElementById('quoteItemsEmptyState');
+    const countBadge = document.getElementById('quoteItemsCount');
+
+    if (countBadge) countBadge.textContent = currentQuotationItems.length;
+
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (currentQuotationItems.length === 0) {
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    } else {
+        if (emptyState) emptyState.style.display = 'none';
+    }
+
+    currentQuotationItems.forEach(it => {
+        const card = document.createElement('div');
+        card.className = 'quote-item-card';
+
+        const subtotal = (it.quantity * it.unit_price) || 0;
+
+        card.innerHTML = `
+            <div class="quote-item-info">
+                <input type="text" class="quote-item-name" value="${escapeHtml(it.name)}" placeholder="Nombre del concepto">
+                <textarea class="quote-item-desc" rows="2" placeholder="Materiales, especificaciones y dimensiones">${escapeHtml(it.description || '')}</textarea>
+            </div>
+            <div class="quote-item-field-wrap">
+                <span class="quote-item-field-label">Cantidad</span>
+                <input type="number" class="quote-item-qty" value="${it.quantity}" min="0.5" step="0.5">
+            </div>
+            <div class="quote-item-field-wrap">
+                <span class="quote-item-field-label">P. Unitario</span>
+                <input type="number" class="quote-item-unit" value="${it.unit_price}" min="0" step="any">
+            </div>
+            <div class="quote-item-field-wrap" style="align-items:flex-end;">
+                <span class="quote-item-field-label">Subtotal</span>
+                <span class="quote-item-subtotal-disp">$${subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
+            <button type="button" class="btn-delete-quote-item" title="Eliminar concepto">&times;</button>
+        `;
+
+        // Eventos reactivos
+        const inputName = card.querySelector('.quote-item-name');
+        const inputDesc = card.querySelector('.quote-item-desc');
+        const inputQty = card.querySelector('.quote-item-qty');
+        const inputUnit = card.querySelector('.quote-item-unit');
+        const btnDel = card.querySelector('.btn-delete-quote-item');
+
+        if (inputName) inputName.oninput = (e) => { it.name = e.target.value; saveQuoteDraft(); };
+        if (inputDesc) inputDesc.oninput = (e) => { it.description = e.target.value; saveQuoteDraft(); };
+        if (inputQty) inputQty.oninput = (e) => {
+            it.quantity = parseFloat(e.target.value) || 0;
+            const newSub = it.quantity * it.unit_price;
+            const disp = card.querySelector('.quote-item-subtotal-disp');
+            if (disp) disp.textContent = `$${newSub.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            recalculateQuoteTotals();
+        };
+        if (inputUnit) inputUnit.oninput = (e) => {
+            it.unit_price = parseFloat(e.target.value) || 0;
+            const newSub = it.quantity * it.unit_price;
+            const disp = card.querySelector('.quote-item-subtotal-disp');
+            if (disp) disp.textContent = `$${newSub.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            recalculateQuoteTotals();
+        };
+        if (btnDel) btnDel.onclick = () => removeQuoteItem(it.id);
+
+        container.appendChild(card);
+    });
+}
+
+function recalculateQuoteTotals() {
+    let subtotal = 0;
+    currentQuotationItems.forEach(it => {
+        subtotal += (it.quantity * it.unit_price);
+    });
+
+    const chkTax = document.getElementById('quoteApplyTax');
+    const applyTax = chkTax ? chkTax.checked : true;
+    const tax = applyTax ? (subtotal * 0.16) : 0.0;
+    const total = subtotal + tax;
+
+    const chkDown = document.getElementById('quoteRequireDownPayment');
+    const requireDown = chkDown ? chkDown.checked : true;
+    const downPayment = requireDown ? (total * 0.50) : 0.0;
+
+    const elSub = document.getElementById('quoteSummarySubtotal');
+    const rowTax = document.getElementById('quoteSummaryTaxRow');
+    const elTax = document.getElementById('quoteSummaryTax');
+    const elTot = document.getElementById('quoteSummaryTotal');
+    const rowDown = document.getElementById('quoteSummaryDownPaymentRow');
+    const elDown = document.getElementById('quoteSummaryDownPayment');
+    const badgeDown = document.getElementById('quoteDownPaymentBadge');
+
+    if (elSub) elSub.textContent = `$${subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+
+    if (rowTax) {
+        rowTax.style.display = applyTax ? 'flex' : 'none';
+        if (elTax) elTax.textContent = applyTax ? `$${tax.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN` : '';
+    }
+
+    if (elTot) elTot.textContent = `$${total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+
+    if (rowDown) {
+        rowDown.style.display = requireDown ? 'flex' : 'none';
+        if (elDown) elDown.textContent = `$${downPayment.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+    }
+
+    if (badgeDown) {
+        badgeDown.textContent = requireDown ? '50% fabricación' : 'Sin anticipo';
+    }
+
+    saveQuoteDraft();
+}
+
+function getNextQuotationFolio() {
+    const year = new Date().getFullYear();
+    const count = quotationsHistory.length + 1;
+    return `LET-${year}-${String(count).padStart(4, '0')}`;
+}
+
+function saveQuoteDraft() {
+    try {
+        const draft = {
+            clientName: document.getElementById('quoteClientName')?.value || '',
+            clientContact: document.getElementById('quoteClientContact')?.value || '',
+            clientEmail: document.getElementById('quoteClientEmail')?.value || '',
+            clientPhone: document.getElementById('quoteClientPhone')?.value || '',
+            folio: document.getElementById('quoteFolio')?.value || '',
+            validityDays: document.getElementById('quoteValidityDays')?.value || '30',
+            applyTax: document.getElementById('quoteApplyTax')?.checked ?? true,
+            requireDownPayment: document.getElementById('quoteRequireDownPayment')?.checked ?? true,
+            notes: document.getElementById('quoteNotes')?.value || '',
+            items: currentQuotationItems
+        };
+        localStorage.setItem(STORAGE_KEY_QUOTE_DRAFT, JSON.stringify(draft));
+    } catch (e) {}
+}
+
+function restoreQuoteDraft() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY_QUOTE_DRAFT);
+        if (stored) {
+            const draft = JSON.parse(stored);
+            if (document.getElementById('quoteClientName')) document.getElementById('quoteClientName').value = draft.clientName || '';
+            if (document.getElementById('quoteClientContact')) document.getElementById('quoteClientContact').value = draft.clientContact || '';
+            if (document.getElementById('quoteClientEmail')) document.getElementById('quoteClientEmail').value = draft.clientEmail || '';
+            if (document.getElementById('quoteClientPhone')) document.getElementById('quoteClientPhone').value = draft.clientPhone || '';
+            if (document.getElementById('quoteFolio')) document.getElementById('quoteFolio').value = draft.folio || getNextQuotationFolio();
+            if (document.getElementById('quoteValidityDays')) document.getElementById('quoteValidityDays').value = draft.validityDays || '30';
+            if (document.getElementById('quoteApplyTax')) document.getElementById('quoteApplyTax').checked = draft.applyTax ?? true;
+            if (document.getElementById('quoteRequireDownPayment')) document.getElementById('quoteRequireDownPayment').checked = draft.requireDownPayment ?? true;
+            if (document.getElementById('quoteNotes')) document.getElementById('quoteNotes').value = draft.notes || '';
+            currentQuotationItems = draft.items || [];
+        } else {
+            if (document.getElementById('quoteFolio')) document.getElementById('quoteFolio').value = getNextQuotationFolio();
+        }
+    } catch (e) {
+        if (document.getElementById('quoteFolio')) document.getElementById('quoteFolio').value = getNextQuotationFolio();
+    }
+
+    renderQuoteItemsList();
+    recalculateQuoteTotals();
+}
+
+function clearQuotationForm(confirmFirst = true) {
+    if (confirmFirst && !confirm("¿Deseas limpiar todos los campos y conceptos del cotizador?")) {
+        return;
+    }
+
+    if (document.getElementById('quoteClientSelect')) document.getElementById('quoteClientSelect').value = '';
+    if (document.getElementById('quoteClientName')) document.getElementById('quoteClientName').value = '';
+    if (document.getElementById('quoteClientContact')) document.getElementById('quoteClientContact').value = '';
+    if (document.getElementById('quoteClientEmail')) document.getElementById('quoteClientEmail').value = '';
+    if (document.getElementById('quoteClientPhone')) document.getElementById('quoteClientPhone').value = '';
+    if (document.getElementById('quoteFolio')) document.getElementById('quoteFolio').value = getNextQuotationFolio();
+    if (document.getElementById('quoteValidityDays')) document.getElementById('quoteValidityDays').value = '30';
+    if (document.getElementById('quoteApplyTax')) document.getElementById('quoteApplyTax').checked = true;
+    if (document.getElementById('quoteRequireDownPayment')) document.getElementById('quoteRequireDownPayment').checked = true;
+    if (document.getElementById('quoteNotes')) document.getElementById('quoteNotes').value = '';
+
+    currentQuotationItems = [];
+    localStorage.removeItem(STORAGE_KEY_QUOTE_DRAFT);
+
+    renderQuoteItemsList();
+    recalculateQuoteTotals();
+    showToast("🧹 Formulario de cotización reiniciado.");
+}
+
+function switchQuotationSubView(subView) {
+    const btnBuilder = document.getElementById('tabBtnNewQuotation');
+    const btnHistory = document.getElementById('tabBtnHistoryQuotations');
+    const viewBuilder = document.getElementById('quotationBuilderView');
+    const viewHistory = document.getElementById('quotationHistoryView');
+
+    if (subView === 'builder') {
+        btnBuilder?.classList.add('active');
+        btnHistory?.classList.remove('active');
+        viewBuilder?.classList.remove('hidden');
+        viewHistory?.classList.add('hidden');
+    } else {
+        btnBuilder?.classList.remove('active');
+        btnHistory?.classList.add('active');
+        viewBuilder?.classList.add('hidden');
+        viewHistory?.classList.remove('hidden');
+        renderQuotationHistory();
+    }
+}
+
+function saveQuotationToHistory() {
+    const clientName = (document.getElementById('quoteClientName')?.value || '').trim();
+    if (!clientName) {
+        alert("Por favor ingresa el nombre del cliente o marca antes de guardar.");
+        document.getElementById('quoteClientName')?.focus();
+        return;
+    }
+
+    if (currentQuotationItems.length === 0) {
+        alert("Agrega al menos un concepto de taller a la cotización.");
+        return;
+    }
+
+    let subtotal = 0;
+    currentQuotationItems.forEach(it => { subtotal += (it.quantity * it.unit_price); });
+
+    const applyTax = document.getElementById('quoteApplyTax')?.checked ?? true;
+    const tax = applyTax ? (subtotal * 0.16) : 0;
+    const total = subtotal + tax;
+    const requireDown = document.getElementById('quoteRequireDownPayment')?.checked ?? true;
+    const downPayment = requireDown ? (total * 0.50) : 0;
+
+    const folio = (document.getElementById('quoteFolio')?.value || '').trim() || getNextQuotationFolio();
+    const today = new Date().toISOString().split('T')[0];
+
+    const quoteRecord = {
+        id: Date.now(),
+        folio: folio,
+        date: today,
+        client_name: clientName,
+        client_contact: document.getElementById('quoteClientContact')?.value || '',
+        client_phone: document.getElementById('quoteClientPhone')?.value || '',
+        client_email: document.getElementById('quoteClientEmail')?.value || '',
+        validity_days: parseInt(document.getElementById('quoteValidityDays')?.value || '30'),
+        apply_tax: applyTax,
+        require_down_payment: requireDown,
+        notes: document.getElementById('quoteNotes')?.value || '',
+        items: JSON.parse(JSON.stringify(currentQuotationItems)),
+        subtotal: subtotal,
+        tax: tax,
+        total: total,
+        down_payment: downPayment,
+        status: 'Enviada'
+    };
+
+    // Si ya existe el folio, actualizar; si no, agregar
+    const existingIdx = quotationsHistory.findIndex(q => q.folio === folio);
+    if (existingIdx !== -1) {
+        quotationsHistory[existingIdx] = quoteRecord;
+        showToast(`💾 Cotización <strong>${folio}</strong> actualizada con éxito.`);
+    } else {
+        quotationsHistory.unshift(quoteRecord);
+        showToast(`💾 Cotización <strong>${folio}</strong> guardada en el historial.`);
+    }
+
+    saveQuotationsHistory();
+    // Preparar siguiente folio
+    document.getElementById('quoteFolio').value = getNextQuotationFolio();
+}
+
+function renderQuotationHistory(filterTerm = '') {
+    const tbody = document.getElementById('quotationHistoryTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    const term = filterTerm.toLowerCase().trim();
+
+    const filtered = quotationsHistory.filter(q => {
+        if (!term) return true;
+        return (q.folio || '').toLowerCase().includes(term) ||
+               (q.client_name || '').toLowerCase().includes(term) ||
+               (q.client_contact || '').toLowerCase().includes(term);
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">
+                    No hay cotizaciones registradas en el historial${term ? ' que coincidan con la búsqueda' : ''}.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    filtered.forEach(q => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-family:monospace; font-weight:700; color:var(--accent-cyan);">${escapeHtml(q.folio)}</td>
+            <td style="font-size:0.8rem; color:var(--text-muted);">${q.date}</td>
+            <td>
+                <strong>${escapeHtml(q.client_name)}</strong>
+                ${q.client_contact ? `<div style="font-size:0.75rem; color:var(--text-subtle);">${escapeHtml(q.client_contact)}</div>` : ''}
+            </td>
+            <td><span class="work-type-badge rotulacion">${q.items ? q.items.length : 0} conceptos</span></td>
+            <td><strong style="color:var(--text-main);">$${q.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</strong></td>
+            <td><strong style="color:var(--accent-lime);">$${q.down_payment.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</strong></td>
+            <td><span class="status-chip ${q.status === 'Aprobada' ? 'approved' : 'in_progress'}">${q.status}</span></td>
+            <td style="text-align:right;">
+                <button type="button" class="btn-table-action" onclick="loadQuotationIntoBuilder(${q.id})" title="Editar en cotizador">✏️</button>
+                <button type="button" class="btn-table-action" onclick="printQuotationFromHistory(${q.id})" title="Imprimir / PDF">🖨️</button>
+                <button type="button" class="btn-table-action danger" onclick="deleteQuotationFromHistory(${q.id})" title="Eliminar cotización">🗑️</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function filterQuotationHistory(term) {
+    renderQuotationHistory(term);
+}
+
+function loadQuotationIntoBuilder(id) {
+    const quote = quotationsHistory.find(q => q.id === id);
+    if (!quote) return;
+
+    if (document.getElementById('quoteClientName')) document.getElementById('quoteClientName').value = quote.client_name || '';
+    if (document.getElementById('quoteClientContact')) document.getElementById('quoteClientContact').value = quote.client_contact || '';
+    if (document.getElementById('quoteClientEmail')) document.getElementById('quoteClientEmail').value = quote.client_email || '';
+    if (document.getElementById('quoteClientPhone')) document.getElementById('quoteClientPhone').value = quote.client_phone || '';
+    if (document.getElementById('quoteFolio')) document.getElementById('quoteFolio').value = quote.folio || '';
+    if (document.getElementById('quoteValidityDays')) document.getElementById('quoteValidityDays').value = quote.validity_days || '30';
+    if (document.getElementById('quoteApplyTax')) document.getElementById('quoteApplyTax').checked = quote.apply_tax ?? true;
+    if (document.getElementById('quoteRequireDownPayment')) document.getElementById('quoteRequireDownPayment').checked = quote.require_down_payment ?? true;
+    if (document.getElementById('quoteNotes')) document.getElementById('quoteNotes').value = quote.notes || '';
+
+    currentQuotationItems = JSON.parse(JSON.stringify(quote.items || []));
+
+    switchQuotationSubView('builder');
+    renderQuoteItemsList();
+    recalculateQuoteTotals();
+    showToast(`📂 Cotización <strong>${quote.folio}</strong> cargada en el editor.`);
+}
+
+function deleteQuotationFromHistory(id) {
+    const quote = quotationsHistory.find(q => q.id === id);
+    if (!quote) return;
+
+    if (confirm(`¿Estás seguro de eliminar la cotización ${quote.folio} para ${quote.client_name}?`)) {
+        quotationsHistory = quotationsHistory.filter(q => q.id !== id);
+        saveQuotationsHistory();
+        renderQuotationHistory();
+        showToast("🗑️ Cotización eliminada del historial.");
+    }
+}
+
+function printQuotationFromHistory(id) {
+    const quote = quotationsHistory.find(q => q.id === id);
+    if (!quote) return;
+
+    loadQuotationIntoBuilder(id);
+    generateQuotationDocument(false);
+}
+
+function generateQuotationDocument(isPreview = false) {
+    const clientName = (document.getElementById('quoteClientName')?.value || '').trim();
+    if (!clientName) {
+        alert("Por favor ingresa el nombre del cliente o empresa.");
+        document.getElementById('quoteClientName')?.focus();
+        return;
+    }
+
+    if (currentQuotationItems.length === 0) {
+        alert("Por favor agrega al menos un concepto a cotizar.");
+        return;
+    }
+
+    const folio = document.getElementById('quoteFolio')?.value || getNextQuotationFolio();
+    const contact = document.getElementById('quoteClientContact')?.value || '';
+    const email = document.getElementById('quoteClientEmail')?.value || '';
+    const phone = document.getElementById('quoteClientPhone')?.value || '';
+    const validity = document.getElementById('quoteValidityDays')?.value || '30';
+    const notes = document.getElementById('quoteNotes')?.value || 'Tiempos de fabricación: 7 a 10 días hábiles tras recibir anticipo del 50% y vector autorizado.';
+
+    let subtotal = 0;
+    currentQuotationItems.forEach(it => { subtotal += (it.quantity * it.unit_price); });
+
+    const applyTax = document.getElementById('quoteApplyTax')?.checked ?? true;
+    const tax = applyTax ? (subtotal * 0.16) : 0.0;
+    const total = subtotal + tax;
+    const requireDown = document.getElementById('quoteRequireDownPayment')?.checked ?? true;
+    const downPayment = requireDown ? (total * 0.50) : 0.0;
+
+    const todayDate = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Construir tabla de items HTML
+    let itemsRowsHtml = '';
+    currentQuotationItems.forEach((it, idx) => {
+        const itemSub = (it.quantity * it.unit_price);
+        itemsRowsHtml += `
+            <tr>
+                <td style="width:40px; text-align:center; color:#94a3b8; font-weight:700;">${idx + 1}</td>
+                <td>
+                    <div class="sheet-item-title">${escapeHtml(it.name)}</div>
+                    ${it.description ? `<div class="sheet-item-specs">${escapeHtml(it.description)}</div>` : ''}
+                </td>
+                <td style="width:70px; text-align:center; font-weight:700;">${it.quantity}</td>
+                <td style="width:120px; text-align:right;">$${it.unit_price.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
+                <td style="width:130px; text-align:right; font-weight:800; color:#0f172a;">$${itemSub.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</td>
+            </tr>
+        `;
+    });
+
+    const sheetContainer = document.getElementById('printableQuoteSheet');
+    if (!sheetContainer) return;
+
+    sheetContainer.innerHTML = `
+        <div class="sheet-header">
+            <div class="sheet-brand-meta">
+                <div class="sheet-logo-wrap">
+                    <img src="assets/logo-color.svg" alt="Letrerama">
+                </div>
+                <div class="sheet-brand-sub">Fabricación · Montaje · Letras Corpóreas 3D · Cajas de Luz LED</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:0.2rem;">
+                    Guadalajara, Jalisco, México · WhatsApp: 33 3676 2545 · contacto@letrerama.com
+                </div>
+            </div>
+            <div class="sheet-doc-meta">
+                <h1 class="sheet-doc-title">Cotización Formal</h1>
+                <div class="sheet-doc-folio">${escapeHtml(folio)}</div>
+                <div class="sheet-doc-date">Fecha de emisión: <strong>${todayDate}</strong></div>
+                <div class="sheet-doc-date">Vigencia: <strong>${validity} días naturales</strong></div>
+            </div>
+        </div>
+
+        <div class="sheet-client-grid">
+            <div>
+                <div class="sheet-client-label">Cliente / Razón Social:</div>
+                <div class="sheet-client-name">${escapeHtml(clientName)}</div>
+                ${contact ? `<div class="sheet-client-sub"><strong>Atención:</strong> ${escapeHtml(contact)}</div>` : ''}
+            </div>
+            <div>
+                <div class="sheet-client-label">Datos de Contacto:</div>
+                ${phone ? `<div class="sheet-client-sub"><strong>Tel / WhatsApp:</strong> ${escapeHtml(phone)}</div>` : ''}
+                ${email ? `<div class="sheet-client-sub"><strong>E-mail:</strong> ${escapeHtml(email)}</div>` : ''}
+                <div class="sheet-client-sub"><strong>Validez comercial:</strong> Precios sujetos a anticipo</div>
+            </div>
+        </div>
+
+        <table class="sheet-table">
+            <thead>
+                <tr>
+                    <th style="width:40px; text-align:center;">#</th>
+                    <th>Descripción Técnica / Especificaciones</th>
+                    <th style="width:70px; text-align:center;">Cant.</th>
+                    <th style="width:120px; text-align:right;">P. Unitario</th>
+                    <th style="width:130px; text-align:right;">Importe</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${itemsRowsHtml}
+            </tbody>
+        </table>
+
+        <div class="sheet-totals-section">
+            <table class="sheet-totals-table">
+                <tr>
+                    <td>Subtotal:</td>
+                    <td>$${subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</td>
+                </tr>
+                ${applyTax ? `
+                <tr>
+                    <td>I.V.A. (16%):</td>
+                    <td>$${tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</td>
+                </tr>
+                ` : ''}
+                <tr class="total-row">
+                    <td>TOTAL:</td>
+                    <td>$${total.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</td>
+                </tr>
+                ${requireDown ? `
+                <tr class="anticipo-row">
+                    <td>Anticipo Requerido (50%):</td>
+                    <td>$${downPayment.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</td>
+                </tr>
+                ` : ''}
+            </table>
+        </div>
+
+        <div class="sheet-conditions-box">
+            <strong style="display:block; margin-bottom:0.25rem; color:#0f172a;">Condiciones de Taller, Fabricación & Garantía:</strong>
+            ${escapeHtml(notes)}
+            <div style="margin-top:0.35rem; font-size:0.72rem; color:#64748b;">
+                * La fabricación inicia formalmente al recibir comprobante del anticipo acordado y visto bueno final del trazo vectorial. Todos los letreros luminosos cuentan con garantía por escrito de 12 meses en módulos LED y fuentes de poder.
+            </div>
+        </div>
+
+        <div class="sheet-signatures-grid">
+            <div class="sheet-sig-box">
+                <strong>Ing. Alberto / Dirección de Taller</strong>
+                <span>Letrerama Rótulos & Letras 3D</span>
+            </div>
+            <div class="sheet-sig-box">
+                <strong>${escapeHtml(contact || clientName)}</strong>
+                <span>Firma de Conformidad / Aceptación</span>
+            </div>
+        </div>
+    `;
+
+    // Actualizar badge en modal
+    const badge = document.getElementById('previewModalFolioBadge');
+    if (badge) badge.textContent = folio;
+
+    // Mostrar modal
+    const modal = document.getElementById('quotationPreviewModal');
+    if (modal) modal.classList.remove('hidden');
+
+    if (!isPreview) {
+        setTimeout(() => {
+            window.print();
+        }, 300);
+    }
+}
+
+function printQuotationDocument() {
+    window.print();
+}
+
+function closeQuotationPreviewModal() {
+    const modal = document.getElementById('quotationPreviewModal');
+    if (modal) modal.classList.add('hidden');
+}
+

@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- CSS del Dashboard -->
-    <link rel="stylesheet" href="css/style.css?v=20261119-PIN">
+    <link rel="stylesheet" href="css/style.css?v=20261119-COTIZADOR">
 </head>
 <body>
 
@@ -91,6 +91,11 @@
                     <span class="tab-icon">🗓️</span>
                     <span>Agenda de Taller (Semanal)</span>
                     <span class="tab-badge-pulse" id="badgeActiveWorkshopCount">0 en taller</span>
+                </button>
+                <button type="button" class="nav-tab" id="btnTabQuotations" onclick="switchDashboardTab('quotations')">
+                    <span class="tab-icon">💼</span>
+                    <span>Cotizador & Propuestas</span>
+                    <span class="tab-badge" id="badgeQuotationsCount">0</span>
                 </button>
             </nav>
 
@@ -366,6 +371,234 @@
 
             </section>
 
+            <!-- ========================================== -->
+            <!-- VISTA 3: COTIZADOR DE TALLER & PROPUESTAS -->
+            <!-- ========================================== -->
+            <section id="sectionQuotations" class="dashboard-section">
+                
+                <!-- Barra Superior de Navegación del Cotizador -->
+                <div class="quotations-toolbar glass-panel">
+                    <div class="quotations-toolbar-left">
+                        <div class="quotations-toolbar-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="quotations-toolbar-title">
+                                Cotizador de Taller & Propuestas Comerciales
+                                <span class="badge-membrete">Letrerama Oficial</span>
+                            </h2>
+                            <p class="quotations-toolbar-desc">Elabora presupuestos técnicos para rótulos, letras corpóreas, cajas de luz y proyectos de taller con cálculo de anticipo (50%) e impresión membretada.</p>
+                        </div>
+                    </div>
+
+                    <div class="quotations-toolbar-actions">
+                        <button type="button" class="btn-quote-tab active" id="tabBtnNewQuotation" onclick="switchQuotationSubView('builder')">
+                            <span>➕ Nueva Cotización</span>
+                        </button>
+                        <button type="button" class="btn-quote-tab" id="tabBtnHistoryQuotations" onclick="switchQuotationSubView('history')">
+                            <span>📁 Historial (<span id="quotationsHistoryBadge">0</span>)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUBVISTA A: Generador / Formulario de Cotización -->
+                <div id="quotationBuilderView">
+                    
+                    <div class="quotation-builder-grid">
+                        
+                        <!-- Columna Izquierda: Datos del Cliente, Folio y Condiciones -->
+                        <div class="quote-builder-panel left-panel">
+                            <h3 class="panel-section-title">
+                                <span>👤 Datos del Cliente & Presupuesto</span>
+                            </h3>
+
+                            <!-- Autocompletar desde Directorio de Letrerama -->
+                            <div class="form-group">
+                                <label for="quoteClientSelect">Autocompletar Cliente Registrado</label>
+                                <select id="quoteClientSelect" onchange="handleSelectClientForQuote(this.value)">
+                                    <option value="">-- O escribir cliente / prospecto nuevo --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quoteClientName">Nombre del Cliente / Marca *</label>
+                                <input type="text" id="quoteClientName" placeholder="Ej. Taquería El Pastor / Burger House" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quoteClientContact">Atención a (Contacto)</label>
+                                <input type="text" id="quoteClientContact" placeholder="Ej. Lic. Salvador Gómez">
+                            </div>
+
+                            <div class="form-row two-cols">
+                                <div class="form-group">
+                                    <label for="quoteClientEmail">Correo Electrónico</label>
+                                    <input type="email" id="quoteClientEmail" placeholder="cliente@correo.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="quoteClientPhone">WhatsApp / Teléfono</label>
+                                    <input type="tel" id="quoteClientPhone" placeholder="33 1234 5678">
+                                </div>
+                            </div>
+
+                            <div class="form-row two-cols">
+                                <div class="form-group">
+                                    <label for="quoteFolio">Folio de Taller</label>
+                                    <input type="text" id="quoteFolio" placeholder="LET-2026-0001" class="font-mono">
+                                </div>
+                                <div class="form-group">
+                                    <label for="quoteValidityDays">Vigencia</label>
+                                    <select id="quoteValidityDays">
+                                        <option value="15">15 días naturales</option>
+                                        <option value="30" selected>30 días naturales</option>
+                                        <option value="60">60 días naturales</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Condiciones Fiscales y Anticipo -->
+                            <div class="quote-conditions-box">
+                                <div class="condition-row">
+                                    <label for="quoteApplyTax" class="condition-label">
+                                        <input type="checkbox" id="quoteApplyTax" checked onchange="recalculateQuoteTotals()">
+                                        <span>Aplicar I.V.A. (16%)</span>
+                                    </label>
+                                    <span class="condition-badge tax">Fiscal</span>
+                                </div>
+                                <div class="condition-row">
+                                    <label for="quoteRequireDownPayment" class="condition-label">
+                                        <input type="checkbox" id="quoteRequireDownPayment" checked onchange="recalculateQuoteTotals()">
+                                        <span>Requerir Anticipo (50%)</span>
+                                    </label>
+                                    <span class="condition-badge downpayment" id="quoteDownPaymentBadge">50% fabricación</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quoteNotes">Notas de Fabricación & Garantía</label>
+                                <textarea id="quoteNotes" rows="3" placeholder="Tiempos de entrega estimados en 7 a 10 días hábiles a partir de la recepción completa de insumos y anticipo del 50%. Incluye garantía de 12 meses en iluminación LED y transformador."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Catálogo con 1 Clic, Conceptos y Totales -->
+                        <div class="quote-builder-panel right-panel">
+                            
+                            <!-- Barra de Acceso Rápido al Catálogo Oficial de Letrerama -->
+                            <div class="catalog-quick-bar">
+                                <div class="catalog-quick-header">
+                                    <span class="catalog-quick-title">⚡ Catálogo de Taller Letrerama (1 Clic)</span>
+                                    <button type="button" class="btn-add-custom-concept" onclick="addCustomQuoteItem()">
+                                        <span>✨ + Concepto a la Medida</span>
+                                    </button>
+                                </div>
+                                <div class="catalog-chips-wrap" id="catalogQuickChips">
+                                    <!-- Chips inyectados por JS -->
+                                </div>
+                            </div>
+
+                            <!-- Desglose de Conceptos -->
+                            <div class="quote-items-section">
+                                <div class="quote-items-header">
+                                    <span class="quote-items-title">📋 Desglose de Conceptos y Manufactura (<span id="quoteItemsCount">0</span>)</span>
+                                    <span class="quote-items-hint">Edita título, materiales/medidas, cantidad y precio</span>
+                                </div>
+
+                                <div class="quote-items-list" id="quoteItemsListContainer">
+                                    <!-- Items inyectados reactivamente -->
+                                </div>
+
+                                <div class="quote-items-empty" id="quoteItemsEmptyState">
+                                    <span class="empty-icon">🏷️</span>
+                                    <p class="empty-title">No has agregado ningún concepto de taller aún</p>
+                                    <p class="empty-sub">Selecciona arriba un producto del catálogo rápido o presiona "✨ + Concepto a la Medida".</p>
+                                </div>
+
+                                <!-- Resumen Financiero y Acciones -->
+                                <div class="quote-footer-grid">
+                                    
+                                    <div class="quote-actions-wrap">
+                                        <button type="button" class="btn-quote-action primary" onclick="generateQuotationDocument(false)" title="Descargar o imprimir propuesta oficial membretada">
+                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                            <span>🖨️ Imprimir / Guardar PDF</span>
+                                        </button>
+                                        <button type="button" class="btn-quote-action secondary" onclick="generateQuotationDocument(true)" title="Previsualizar formato membretado">
+                                            <span>👁️ Vista Previa</span>
+                                        </button>
+                                        <button type="button" class="btn-quote-action secondary" onclick="saveQuotationToHistory()" title="Guardar cotización en el historial del taller">
+                                            <span>💾 Guardar</span>
+                                        </button>
+                                        <button type="button" class="btn-quote-action danger" onclick="clearQuotationForm(true)" title="Limpiar todos los campos">
+                                            <span>Limpiar</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="quote-summary-card">
+                                        <div class="summary-line">
+                                            <span>Subtotal:</span>
+                                            <strong id="quoteSummarySubtotal">$0.00 MXN</strong>
+                                        </div>
+                                        <div class="summary-line" id="quoteSummaryTaxRow">
+                                            <span>I.V.A. (16%):</span>
+                                            <strong id="quoteSummaryTax">$0.00 MXN</strong>
+                                        </div>
+                                        <div class="summary-divider"></div>
+                                        <div class="summary-line total">
+                                            <span>TOTAL:</span>
+                                            <strong id="quoteSummaryTotal" class="text-cyan">$0.00 MXN</strong>
+                                        </div>
+                                        <div class="summary-downpayment" id="quoteSummaryDownPaymentRow">
+                                            <span>Anticipo Taller (50%):</span>
+                                            <strong id="quoteSummaryDownPayment">$0.00 MXN</strong>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SUBVISTA B: Historial de Cotizaciones -->
+                <div id="quotationHistoryView" class="hidden">
+                    <div class="history-table-container glass-panel">
+                        <div class="history-table-header">
+                            <div>
+                                <h3>Historial de Cotizaciones Emitidas</h3>
+                                <p class="text-muted">Consulta, edita o vuelve a imprimir las propuestas de taller registradas.</p>
+                            </div>
+                            <div class="history-actions-bar">
+                                <input type="text" id="searchQuotationHistoryInput" placeholder="Buscar por cliente o folio..." oninput="filterQuotationHistory(this.value)">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Folio</th>
+                                        <th>Fecha</th>
+                                        <th>Cliente / Marca</th>
+                                        <th>Conceptos</th>
+                                        <th>Total</th>
+                                        <th>Anticipo 50%</th>
+                                        <th>Estatus</th>
+                                        <th style="text-align:right;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quotationHistoryTableBody">
+                                    <!-- Inyectado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
         </main>
     </div>
 
@@ -548,8 +781,50 @@
         </form>
     </div>
 
+    <!-- ========================================== -->
+    <!-- POPOVER FLOTANTE: SELECTOR DE DÍA RÁPIDO   -->
+    <!-- ========================================== -->
+    <div id="taskDayPickerPopover" class="task-day-picker-popover hidden">
+        <div class="popover-header">Mover ficha a:</div>
+        <div class="popover-days-grid">
+            <button type="button" class="btn-popover-day" data-day="monday" onclick="selectDayFromPopover('monday')">Lunes</button>
+            <button type="button" class="btn-popover-day" data-day="tuesday" onclick="selectDayFromPopover('tuesday')">Martes</button>
+            <button type="button" class="btn-popover-day" data-day="wednesday" onclick="selectDayFromPopover('wednesday')">Miércoles</button>
+            <button type="button" class="btn-popover-day" data-day="thursday" onclick="selectDayFromPopover('thursday')">Jueves</button>
+            <button type="button" class="btn-popover-day" data-day="friday" onclick="selectDayFromPopover('friday')">Viernes</button>
+            <button type="button" class="btn-popover-day saturday text-lime" data-day="saturday" onclick="selectDayFromPopover('saturday')">Sábado (Montaje)</button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 3: VISTA PREVIA Y FORMATO MEMBRETADO -->
+    <!-- ========================================== -->
+    <div id="quotationPreviewModal" class="modal-overlay hidden">
+        <div class="modal-dialog modal-xl quote-preview-dialog">
+            <div class="modal-header no-print">
+                <div class="preview-header-info">
+                    <h2>Propuesta Comercial Membretada · Letrerama</h2>
+                    <span class="preview-folio-pill" id="previewModalFolioBadge">LET-2026-0001</span>
+                </div>
+                <div class="preview-header-actions">
+                    <button type="button" class="btn-primary" onclick="printQuotationDocument()">
+                        <span>🖨️ Imprimir / Guardar en PDF</span>
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="closeQuotationPreviewModal()">
+                        <span>Cerrar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hoja Membretada Imprimible -->
+            <div class="printable-quote-sheet" id="printableQuoteSheet">
+                <!-- Inyectado dinámicamente con estilos membretados -->
+            </div>
+        </div>
+    </div>
+
     <!-- Script de Lógica -->
-    <script src="js/dashboard.js?v=20261119-PIN"></script>
+    <script src="js/dashboard.js?v=20261119-COTIZADOR"></script>
 
 </body>
 </html>
