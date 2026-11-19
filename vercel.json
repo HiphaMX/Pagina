@@ -40,7 +40,7 @@
       ]
     },
     {
-      "source": "/(dashboard|dashboard/.*|projects/HiphaMX/dashboard/.*|letrerama/dashboard|letrerama/dashboard/.*|projects/Letrerama/.*)",
+      "source": "/(dashboard|dashboard/.*|projects/HiphaMX/dashboard/.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" },
         { "key": "Pragma", "value": "no-cache" },
@@ -833,34 +833,33 @@
       "headers": { "Location": "/$1" }
     },
     {
-      "src": "/[Ll]etrerama/dashboard",
-      "dest": "/projects/Letrerama/web/dashboard"
-    },
-    {
-      "src": "/[Ll]etrerama/dashboard/",
-      "dest": "/projects/Letrerama/web/dashboard"
-    },
-    {
-      "src": "/[Ll]etrerama/dashboard/(.*)",
-      "dest": "/projects/Letrerama/web/dashboard/$1"
-    },
-    {
-      "src": "/letrerama",
+      "src": "/projects/[Ll]etrerama(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?hipha\\.mx$"
+        }
+      ],
       "status": 308,
       "headers": { "Location": "/" }
     },
     {
-      "src": "/letrerama/",
+      "src": "/[Ll]etrerama",
       "status": 308,
       "headers": { "Location": "/" }
     },
     {
-      "src": "/letrerama/(.*)",
+      "src": "/[Ll]etrerama/",
       "status": 308,
       "headers": { "Location": "/" }
     },
     {
-      "src": "/letrerama\\.html",
+      "src": "/[Ll]etrerama/(.*)",
+      "status": 308,
+      "headers": { "Location": "/" }
+    },
+    {
+      "src": "/[Ll]etrerama\\.html",
       "status": 308,
       "headers": { "Location": "/" }
     },
