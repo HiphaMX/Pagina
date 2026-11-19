@@ -2276,7 +2276,7 @@ function isLiberatedTaskStatus(status) {
 function getStatusInfo(statusKey) {
     const map = {
         'pending': { label: '⏳ Por iniciar', next: 'in_progress' },
-        'in_progress': { label: '🎨 En diseño', next: 'review' },
+        'in_progress': { label: '🎨 En proceso', next: 'review' },
         'review': { label: '👀 Revisión', next: 'approved' },
         'approved': { label: '✨ Diseño autorizado', next: 'in_production' },
         'in_production': { label: '⚙️ En producción', next: 'completed' },
