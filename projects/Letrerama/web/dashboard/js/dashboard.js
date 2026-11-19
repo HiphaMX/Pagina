@@ -152,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initLetreramaDashboard() {
+    initPinSecurity();
     loadStoredData();
     setupEventListeners();
     updateDatesAndWeek();
@@ -1164,4 +1165,172 @@ function getWeekId(offset = 0) {
     monday.setDate(target.getDate() + diffToMonday);
     const weekNum = getISOWeekNumber(monday);
     return `${monday.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+}
+
+// ==========================================
+// SEGURIDAD POR PIN (TALLER PRIVADO)
+// ==========================================
+const TALLER_PIN = '1709';
+const PIN_SESSION_KEY = 'letrerama_taller_unlocked';
+
+function initPinSecurity() {
+    const isUnlocked = sessionStorage.getItem(PIN_SESSION_KEY) === 'true';
+    const overlay = document.getElementById('pinLockOverlay');
+    if (!overlay) return;
+
+    if (isUnlocked) {
+        overlay.classList.add('unlocked');
+    } else {
+        overlay.classList.remove('unlocked');
+        setupPinInputs();
+    }
+}
+
+function setupPinInputs() {
+    const digits = [
+        document.getElementById('pinDigit1'),
+        document.getElementById('pinDigit2'),
+        document.getElementById('pinDigit3'),
+        document.getElementById('pinDigit4')
+    ];
+
+    if (!digits[0]) return;
+
+    // Focus inicial en el primer campo
+    setTimeout(() => {
+        digits[0].focus();
+    }, 150);
+
+    digits.forEach((input, idx) => {
+        // Al escribir dígito
+        input.addEventListener('input', (e) => {
+            const val = e.target.value.replace(/\D/g, '');
+            e.target.value = val ? val[0] : '';
+
+            hidePinError();
+
+            if (val && idx < 3) {
+                digits[idx + 1].focus();
+            } else if (idx === 3 && val) {
+                // Al ingresar el 4to dígito, validar automáticamente
+                checkAndUnlockPin();
+            }
+        });
+
+        // Manejo de Backspace y flechas
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && idx > 0) {
+                digits[idx - 1].focus();
+                digits[idx - 1].value = '';
+            } else if (e.key === 'ArrowLeft' && idx > 0) {
+                digits[idx - 1].focus();
+            } else if (e.key === 'ArrowRight' && idx < 3) {
+                digits[idx + 1].focus();
+            }
+        });
+
+        // Pegar (Paste) PIN de 4 dígitos
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+            if (text.length >= 4) {
+                for (let i = 0; i < 4; i++) {
+                    if (digits[i]) digits[i].value = text[i];
+                }
+                digits[3].focus();
+                checkAndUnlockPin();
+            } else if (text.length > 0) {
+                input.value = text[0];
+                if (idx < 3) digits[idx + 1].focus();
+            }
+        });
+    });
+}
+
+function handlePinSubmit(e) {
+    if (e) e.preventDefault();
+    checkAndUnlockPin();
+}
+
+function checkAndUnlockPin() {
+    const d1 = document.getElementById('pinDigit1')?.value || '';
+    const d2 = document.getElementById('pinDigit2')?.value || '';
+    const d3 = document.getElementById('pinDigit3')?.value || '';
+    const d4 = document.getElementById('pinDigit4')?.value || '';
+    const entered = `${d1}${d2}${d3}${d4}`;
+
+    const overlay = document.getElementById('pinLockOverlay');
+    const card = overlay?.querySelector('.pin-lock-card');
+    const errorMsg = document.getElementById('pinErrorMessage');
+    const digits = [
+        document.getElementById('pinDigit1'),
+        document.getElementById('pinDigit2'),
+        document.getElementById('pinDigit3'),
+        document.getElementById('pinDigit4')
+    ];
+
+    if (entered === TALLER_PIN) {
+        sessionStorage.setItem(PIN_SESSION_KEY, 'true');
+        hidePinError();
+        
+        // Animación visual de éxito
+        if (card) {
+            card.style.borderColor = 'var(--accent-lime)';
+            card.style.boxShadow = '0 0 40px rgba(145, 252, 6, 0.4)';
+        }
+
+        setTimeout(() => {
+            overlay?.classList.add('unlocked');
+            showToast("🔓 Acceso concedido al Taller Letrerama.");
+        }, 180);
+    } else {
+        // Efecto de error y shake
+        if (card) {
+            card.classList.remove('pin-card-shake');
+            void card.offsetWidth; // trigger reflow
+            card.classList.add('pin-card-shake');
+        }
+
+        digits.forEach(d => {
+            if (d) {
+                d.classList.add('error');
+                d.value = '';
+            }
+        });
+
+        if (errorMsg) errorMsg.classList.remove('hidden');
+
+        setTimeout(() => {
+            digits[0]?.focus();
+        }, 250);
+    }
+}
+
+function hidePinError() {
+    const errorMsg = document.getElementById('pinErrorMessage');
+    if (errorMsg) errorMsg.classList.add('hidden');
+    const digits = document.querySelectorAll('.pin-digit');
+    digits.forEach(d => d.classList.remove('error'));
+}
+
+function lockTallerSession() {
+    sessionStorage.removeItem(PIN_SESSION_KEY);
+    const overlay = document.getElementById('pinLockOverlay');
+    if (overlay) {
+        overlay.classList.remove('unlocked');
+        hidePinError();
+        const digits = [
+            document.getElementById('pinDigit1'),
+            document.getElementById('pinDigit2'),
+            document.getElementById('pinDigit3'),
+            document.getElementById('pinDigit4')
+        ];
+        digits.forEach(d => {
+            if (d) d.value = '';
+        });
+        setTimeout(() => {
+            digits[0]?.focus();
+        }, 200);
+        showToast("🔒 Sesión bloqueada por seguridad.");
+    }
 }

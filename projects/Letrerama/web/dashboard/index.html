@@ -3,24 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Letrerama · Panel de Operación y Taller</title>
     
+    <!-- Dynamic Base Resolver para compatibilidad letrerama.com y hipha.mx -->
+    <script>
+        (function() {
+            var p = window.location.pathname;
+            var baseHref = p.endsWith('/') ? p : (p + '/');
+            var baseEl = document.createElement('base');
+            baseEl.href = baseHref;
+            document.head.appendChild(baseEl);
+        })();
+    </script>
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- CSS del Dashboard -->
-    <link rel="stylesheet" href="/projects/Letrerama/dashboard/css/style.css?v=20261119-3">
+    <link rel="stylesheet" href="css/style.css?v=20261119-PIN">
 </head>
 <body>
+
+    <!-- ========================================== -->
+    <!-- OVERLAY: BLOQUEO POR PIN DE SEGURIDAD      -->
+    <!-- ========================================== -->
+    <div id="pinLockOverlay" class="pin-lock-overlay">
+        <div class="pin-lock-card">
+            <div class="pin-lock-brand">
+                <img src="assets/logo-color.svg" alt="Letrerama" class="pin-lock-logo">
+                <div class="pin-lock-badge">
+                    <span class="pin-lock-dot"></span>
+                    <span>Acceso Privado a Taller</span>
+                </div>
+            </div>
+            
+            <h2 class="pin-lock-title">Panel de Operación Letrerama</h2>
+            <p class="pin-lock-subtitle">Ingresa el código PIN de 4 dígitos para acceder a la agenda operativa y presupuestos</p>
+            
+            <form id="pinForm" onsubmit="handlePinSubmit(event)" class="pin-form">
+                <div class="pin-inputs-wrap" id="pinInputsWrap">
+                    <input type="password" id="pinDigit1" class="pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autofocus required>
+                    <input type="password" id="pinDigit2" class="pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" required>
+                    <input type="password" id="pinDigit3" class="pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" required>
+                    <input type="password" id="pinDigit4" class="pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" required>
+                </div>
+
+                <div id="pinErrorMessage" class="pin-error-message hidden">
+                    <span>❌ PIN incorrecto. Intenta de nuevo.</span>
+                </div>
+
+                <button type="submit" class="btn-pin-submit" id="btnPinSubmit">
+                    <span>Desbloquear Taller</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+            </form>
+            
+            <div class="pin-lock-footer">
+                <span>Fabricación · Rotulación · Montaje</span>
+            </div>
+        </div>
+    </div>
 
     <div class="app-layout">
         
         <!-- Header Superior -->
         <header class="app-header">
             <div class="header-brand">
-                <img src="/projects/Letrerama/dashboard/assets/logo-color.svg" alt="Letrerama Logo" class="brand-logo">
+                <img src="assets/logo-color.svg" alt="Letrerama Logo" class="brand-logo">
                 <div class="brand-divider"></div>
                 <div class="brand-titles">
                     <span class="brand-app-name">Panel de Operación & Taller</span>
@@ -47,6 +99,10 @@
                     <span class="status-dot"></span>
                     <span class="status-text">Taller Activo</span>
                 </div>
+                <button type="button" class="btn-lock-session" onclick="lockTallerSession()" title="Bloquear panel con PIN">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>Bloquear</span>
+                </button>
             </div>
         </header>
 
@@ -493,7 +549,7 @@
     </div>
 
     <!-- Script de Lógica -->
-    <script src="/projects/Letrerama/dashboard/js/dashboard.js?v=20261119-3"></script>
+    <script src="js/dashboard.js?v=20261119-PIN"></script>
 
 </body>
 </html>
