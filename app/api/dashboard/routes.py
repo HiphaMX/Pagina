@@ -527,7 +527,7 @@ def get_workflow_monthly_report(
                 "tasks_count": 0,
                 "completed_count": 0
             }
-        if t.status in ("review", "completed") and t.actual_hours is not None:
+        if t.status in ("review", "approved", "in_production", "completed") and t.actual_hours is not None:
             b_hours = float(t.actual_hours)
         else:
             b_hours = float(t.estimated_hours or 0.0)

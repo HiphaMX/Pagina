@@ -16,7 +16,7 @@ class WorkflowTask(Base):
     revisions_count = Column(Integer, default=0)
     month_id = Column(String, index=True, nullable=True)  # ej. "2026-09"
     task_date = Column(String(10), index=True, nullable=True)  # ej. "2026-09-29"
-    status = Column(String, default="pending")  # "pending", "in_progress", "review", "completed"
+    status = Column(String, default="pending")  # "pending", "in_progress", "review", "approved", "in_production", "completed"
     notes = Column(Text, nullable=True)
     order_index = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

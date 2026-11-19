@@ -14,7 +14,7 @@ class WorkflowTaskBase(BaseModel):
     revisions_count: int = 0
     month_id: Optional[str] = None  # e.g. "2026-09"
     task_date: Optional[str] = None  # e.g. "2026-09-29"
-    status: str = "pending"  # "pending", "in_progress", "review", "completed"
+    status: str = "pending"  # "pending", "in_progress", "review", "approved", "in_production", "completed"
     notes: Optional[str] = None
     order_index: int = 0
 

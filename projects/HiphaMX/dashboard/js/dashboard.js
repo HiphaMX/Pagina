@@ -1708,7 +1708,7 @@ function setupWorkflowElements() {
     if (taskStatusSelect && taskActualSection) {
         taskStatusSelect.addEventListener('change', () => {
             const st = taskStatusSelect.value;
-            if (st === 'review' || st === 'completed') {
+            if (isLiberatedTaskStatus(st)) {
                 taskActualSection.classList.remove('hidden');
                 const baseH = parseFloat(taskHoursSelect ? taskHoursSelect.value : 1.0) || 1.0;
                 const baseM = Math.round(baseH * 60);
@@ -2020,8 +2020,8 @@ function renderWorkflowBoard() {
         const baseH = parseFloat(task.estimated_hours) || 0;
         const revH = parseFloat(task.revision_hours) || 0;
 
-        // Liberación de tiempo: en revisión o terminado se utiliza el tiempo real si fue capturado
-        const isLiberatedStatus = (task.status === 'review' || task.status === 'completed');
+        // Liberación de tiempo: en revisión, diseño autorizado, producción o terminado se utiliza el tiempo real si fue capturado
+        const isLiberatedStatus = isLiberatedTaskStatus(task.status);
         const hasActual = (task.actual_hours !== null && task.actual_hours !== undefined && !isNaN(parseFloat(task.actual_hours)));
         const effectiveBaseH = (isLiberatedStatus && hasActual) ? Math.max(0, parseFloat(task.actual_hours)) : baseH;
         const totalH = effectiveBaseH + revH;
@@ -2119,13 +2119,13 @@ function createWorkflowTaskCard(task) {
     const baseHours = Math.max(0.0, parseFloat(task.estimated_hours) || 1.0);
     const revHours = Math.max(0.0, parseFloat(task.revision_hours) || 0.0);
     const isCompleted = task.status === 'completed';
-    const isReview = task.status === 'review';
+    const isLiberated = isLiberatedTaskStatus(task.status);
     const hasActual = (task.actual_hours !== null && task.actual_hours !== undefined && !isNaN(parseFloat(task.actual_hours)));
-    const effectiveBaseHours = ((isCompleted || isReview) && hasActual) ? Math.max(0.0, parseFloat(task.actual_hours)) : baseHours;
+    const effectiveBaseHours = ((isCompleted || isLiberated) && hasActual) ? Math.max(0.0, parseFloat(task.actual_hours)) : baseHours;
     const totalHours = effectiveBaseHours + revHours;
 
     let freedBadgeHtml = '';
-    if (isReview && hasActual && task.actual_hours < baseHours) {
+    if (isLiberated && !isCompleted && hasActual && task.actual_hours < baseHours) {
         const savedMins = Math.round((baseHours - task.actual_hours) * 60);
         const actualMins = Math.round(task.actual_hours * 60);
         freedBadgeHtml = `<span class="freed-time-badge" title="Estimado: ${baseHours.toFixed(1)}h • Real: ${actualMins}m (Liberados: ${savedMins}m)">⏱️ ${actualMins}m (-${savedMins}m)</span>`;
@@ -2140,7 +2140,7 @@ function createWorkflowTaskCard(task) {
         card.title = `${task.client_name || 'General'} - ${task.title || 'Sin título'} (${tooltipHours}) • Clic para editar`;
         card.innerHTML = `
             <div class="card-completed-row">
-                <span class="status-chip completed" title="✅ Terminado • Clic para reactivar">✓</span>
+                <span class="status-chip completed" title="✅ Terminado / Entregado • Clic para reactivar">✓</span>
                 <span class="client-badge" style="background:${clientStyle.bg}; color:${clientStyle.text}; border-color:${clientStyle.border}; flex-shrink: 0;">
                     ${escapeHtml(task.client_name || 'General')}
                 </span>
@@ -2172,11 +2172,11 @@ function createWorkflowTaskCard(task) {
             ? `<span class="hours-revision-badge" title="Horas acumuladas por cambios">+${revHours.toFixed(1)}h cambios</span>`
             : '';
 
-        const quickAddRevHtml = (task.status === 'review' || task.status === 'in_progress')
+        const quickAddRevHtml = (task.status === 'review' || task.status === 'in_progress' || task.status === 'approved' || task.status === 'in_production')
             ? `<button type="button" class="btn-quick-revision" title="Sumar +30 min por cambios solicitados por el cliente">+0.5h cambio</button>`
             : '';
 
-        const baseHoursChipHtml = (hasActual && isReview && task.actual_hours < baseHours)
+        const baseHoursChipHtml = (hasActual && isLiberated && !isCompleted && task.actual_hours < baseHours)
             ? `<span class="hours-chip" title="Estimado original: ${baseHours.toFixed(1)}h • Real invertido: ${effectiveBaseHours.toFixed(1)}h">⏱️ ${effectiveBaseHours.toFixed(1)}h</span>${freedBadgeHtml}`
             : `<span class="hours-chip">⏱️ ${baseHours.toFixed(1)}h</span>`;
 
@@ -2269,12 +2269,18 @@ function createWorkflowTaskCard(task) {
     return card;
 }
 
+function isLiberatedTaskStatus(status) {
+    return status === 'review' || status === 'approved' || status === 'in_production' || status === 'completed';
+}
+
 function getStatusInfo(statusKey) {
     const map = {
-        'pending': { label: '⏳ Por Iniciar', next: 'in_progress' },
-        'in_progress': { label: '🎨 En Diseño', next: 'review' },
-        'review': { label: '👀 Revisión', next: 'completed' },
-        'completed': { label: '✅ Terminado', next: 'pending' }
+        'pending': { label: '⏳ Por iniciar', next: 'in_progress' },
+        'in_progress': { label: '🎨 En diseño', next: 'review' },
+        'review': { label: '👀 Revisión', next: 'approved' },
+        'approved': { label: '✨ Diseño autorizado', next: 'in_production' },
+        'in_production': { label: '⚙️ En producción', next: 'completed' },
+        'completed': { label: '✅ Terminado / Entregado', next: 'pending' }
     };
     return map[statusKey] || map['pending'];
 }
@@ -2285,15 +2291,20 @@ function cycleWorkflowTaskStatus(taskId) {
     const current = getStatusInfo(task.status);
     const nextStatus = current.next;
 
-    // Si el siguiente estatus es 'review' o 'completed', abrir modal de tiempo real para liberar tiempo sobrante
-    if (nextStatus === 'review' || nextStatus === 'completed') {
+    // Si el siguiente estatus es 'review' o 'completed', y aún no se ha capturado tiempo real,
+    // abrir modal de tiempo real para liberar tiempo sobrante
+    const hasActual = (task.actual_hours !== null && task.actual_hours !== undefined && !isNaN(parseFloat(task.actual_hours)));
+    if ((nextStatus === 'review' || nextStatus === 'completed') && !hasActual) {
         openWorkflowActualTimeModal(task.id, nextStatus);
         return;
     }
 
     // Si vuelve a 'pending' o 'in_progress', se limpia actual_hours para reservar su jornada completa
+    if (nextStatus === 'pending' || nextStatus === 'in_progress') {
+        task.actual_hours = null;
+    }
+
     task.status = nextStatus;
-    task.actual_hours = null;
     saveWorkflowState();
     renderWorkflowBoard();
 
@@ -2330,7 +2341,7 @@ function openWorkflowActualTimeModal(taskId, targetStatus) {
         if (titleEl) titleEl.textContent = '👀 Pasar a Revisión con Cliente';
         if (subEl) subEl.textContent = 'Indica los minutos dedicados para liberar el tiempo restante de tu jornada diaria.';
     } else {
-        if (titleEl) titleEl.textContent = '✅ Marcar como Terminado / Aprobado';
+        if (titleEl) titleEl.textContent = '✅ Marcar como Terminado / Entregado';
         if (subEl) subEl.textContent = 'Indica los minutos dedicados para recalcular el tiempo libre de tu día.';
     }
 
@@ -2672,7 +2683,7 @@ function editWorkflowTask(taskId) {
     const statusVal = task.status || 'pending';
     const baseMinutes = Math.round(numHours * 60);
 
-    if (statusVal === 'review' || statusVal === 'completed') {
+    if (isLiberatedTaskStatus(statusVal)) {
         if (actualSection) actualSection.classList.remove('hidden');
         const curActualMin = (task.actual_hours !== null && task.actual_hours !== undefined)
             ? Math.round(parseFloat(task.actual_hours) * 60)
@@ -2717,7 +2728,7 @@ async function handleWorkflowTaskSubmit(e) {
     if (!title) return;
 
     let actualHours = null;
-    if (status === 'review' || status === 'completed') {
+    if (isLiberatedTaskStatus(status)) {
         const actualMinVal = document.getElementById('taskInputActualMinutes')?.value;
         if (actualMinVal !== '' && actualMinVal !== null && !isNaN(parseFloat(actualMinVal))) {
             const mins = parseFloat(actualMinVal);
@@ -3233,7 +3244,7 @@ function renderMonthlyReportView() {
     let completedCount = 0;
 
     tasks.forEach(t => {
-        const isLiberated = (t.status === 'review' || t.status === 'completed');
+        const isLiberated = isLiberatedTaskStatus(t.status);
         const hasActual = (t.actual_hours !== null && t.actual_hours !== undefined && !isNaN(parseFloat(t.actual_hours)));
         const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0.0);
         const r = parseFloat(t.revision_hours) || 0.0;
@@ -3269,7 +3280,7 @@ function renderMonthlyReportView() {
             if (!clientGroups[c]) {
                 clientGroups[c] = { base: 0, rev: 0, count: 0, completed: 0 };
             }
-            const isLiberated = (t.status === 'review' || t.status === 'completed');
+            const isLiberated = isLiberatedTaskStatus(t.status);
             const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
             const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0);
             clientGroups[c].base += b;
@@ -3339,7 +3350,7 @@ function renderMonthlyReportView() {
     } else {
         // Vista detallada de piezas de un cliente específico
         const rowsHtml = tasks.map(t => {
-            const isLiberated = (t.status === 'review' || t.status === 'completed');
+            const isLiberated = isLiberatedTaskStatus(t.status);
             const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
             const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0);
             const origB = parseFloat(t.estimated_hours) || 0;
@@ -3432,7 +3443,7 @@ async function copyMonthlyReportToClipboard() {
     let completedCount = 0;
 
     tasks.forEach(t => {
-        const isLiberated = (t.status === 'review' || t.status === 'completed');
+        const isLiberated = isLiberatedTaskStatus(t.status);
         const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
         const b = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0.0);
         totalBase += b;
@@ -3449,18 +3460,18 @@ async function copyMonthlyReportToClipboard() {
     text += `⏱️ Total Horas Invertidas: ${grandTotal.toFixed(1)} horas\n`;
     text += `   • Diseño Base Presupuestado: ${totalBase.toFixed(1)}h\n`;
     text += `   • Rondas de Ajustes / Cambios: +${totalRev.toFixed(1)}h\n`;
-    text += `📦 Piezas Trabajadas: ${tasks.length} (${completedCount} aprobadas/terminadas)\n`;
+    text += `📦 Piezas Trabajadas: ${tasks.length} (${completedCount} terminadas/entregadas)\n`;
     text += `--------------------------------------------------\n`;
     text += `DETALLE DE ENTREGABLES:\n`;
 
     tasks.forEach((t, idx) => {
-        const isLiberated = (t.status === 'review' || t.status === 'completed');
+        const isLiberated = isLiberatedTaskStatus(t.status);
         const hasActual = (t.actual_hours !== null && task_actual_hours_val(t));
         const bVal = (isLiberated && hasActual) ? parseFloat(t.actual_hours) : (parseFloat(t.estimated_hours) || 0);
         const b = bVal.toFixed(1);
         const r = (parseFloat(t.revision_hours) || 0).toFixed(1);
         const tot = (parseFloat(b) + parseFloat(r)).toFixed(1);
-        const st = t.status === 'completed' ? '✅ Terminado' : (t.status === 'review' ? '👀 En Revisión' : '🎨 En Proceso');
+        const st = getStatusInfo(t.status).label;
         const c = selectedClient === 'all' ? `[${t.client_name}] ` : '';
         const d = t.task_date || getTaskExactDate(t);
         const freedTxt = (isLiberated && hasActual && bVal < (parseFloat(t.estimated_hours) || 0)) ? ` [Real: ${Math.round(bVal * 60)}m]` : '';
