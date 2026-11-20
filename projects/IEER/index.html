@@ -287,19 +287,23 @@
 
         .nav-brand-link {
             display: none;
-            font-family: var(--font-future);
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--color-alabaster);
+            align-items: center;
             text-decoration: none;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
             transition: var(--transition-premium);
         }
 
-        .nav-brand-link:hover {
-            color: var(--color-bronze);
-            text-shadow: 0 0 10px var(--color-bronze-glow);
+        .nav-brand-logo {
+            height: 25px;
+            width: auto;
+            max-height: 28px;
+            object-fit: contain;
+            display: block;
+            transition: var(--transition-premium);
+        }
+
+        .nav-brand-link:hover .nav-brand-logo {
+            opacity: 0.85;
+            transform: translateY(-1px);
         }
 
         .hamburger-btn {
@@ -2650,7 +2654,8 @@
             }
             
             .nav-brand-link {
-                display: block;
+                display: flex;
+                align-items: center;
             }
 
             .hamburger-btn {
@@ -3116,7 +3121,9 @@
     <!-- Floating Navigation Bar (Capsule Style) -->
     <header id="main-header">
         <div class="nav-wrapper">
-            <a href="#inicio" class="nav-brand-link">IEER</a>
+            <a href="#inicio" class="nav-brand-link" aria-label="IEER Inicio">
+                <img src="/Assets/LogoIEER.svg" alt="IEER" class="nav-brand-logo" width="126" height="25">
+            </a>
             
             <!-- Hamburger Button -->
             <button class="hamburger-btn" aria-label="Menu" aria-expanded="false">
