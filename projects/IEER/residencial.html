@@ -27,7 +27,8 @@
     <meta property="og:image" content="https://ieer.com.mx/Assets/nature_solar.jpg">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/IEER.svg">
+    <link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/ICO.svg">
+    <link rel="apple-touch-icon" href="/Assets/Logotipo/ICO.svg">
     
     <!-- Schema.org Service Microdata -->
     <script type="application/ld+json">
@@ -624,6 +625,26 @@
             text-shadow: 0 0 15px var(--color-bronze-glow);
         }
 
+        .footer-brand-link {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            transition: var(--transition-premium);
+        }
+
+        .footer-brand-link:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .footer-brand-logo {
+            height: 40px;
+            width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            display: block;
+        }
+
         .footer-brand-text {
             font-size: 0.95rem;
             line-height: 1.7;
@@ -990,6 +1011,13 @@
                 margin: 0 auto;
                 text-align: center;
             }
+            .footer-brand-link {
+                margin: 0 auto;
+                justify-content: center;
+            }
+            .footer-brand-logo {
+                margin: 0 auto;
+            }
             .footer-brand-text {
                 text-align: center;
                 margin: 0 auto;
@@ -1211,7 +1239,9 @@
         <div class="footer-inner-content">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="/#inicio" class="footer-brand-title">IEER</a>
+                    <a href="/#inicio" class="footer-brand-link" aria-label="IEER Inicio">
+                        <img src="/Assets/LogoIEER.svg" alt="IEER - Ingeniería Especializada en Energías Renovables" class="footer-brand-logo" width="201" height="40">
+                    </a>
                     <p class="footer-brand-text">Despacho de ingeniería especializado en energías renovables y sistemas eléctricos autónomos, híbridos, interconectados, bombeo de pozo, superficie solar o híbrido y análisis de calidad de energía industrial.</p>
                 </div>
                 

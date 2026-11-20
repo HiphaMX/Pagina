@@ -4,7 +4,7 @@
 
 **Proyecto ID:** `IEER-202611`  
 **Fecha de inicio:** Noviembre 2026  
-**Última actualización:** 2026-11-09  
+**Última actualización:** 2026-11-20  
 **Responsable KAM:** KAM v2.0  
 **Estado:** `[x] Discovery` → `[x] Estrategia (BrandMind)` → `[x] Producción Web (DesignFlow)` → `[x] Modo Demo Desactivado` → `[x] Alta como Cliente en Firme` → `[ ] Validación DNS Dominio Propio`  
 
@@ -104,4 +104,7 @@
   - **Inclusión de Sector Industrial:** Adición de `<option value="Sector Industrial">Sector Industrial</option>` como primera opción de selección en el selector de sector (`#contact-sector`) del formulario de diagnóstico de la página principal (`index.html`), habilitando la recepción y canalización de proyectos industriales desde la Home. Despliegue en producción verificado.
 - **2026-11-11 (Badges Hero de Landings de Sector - Retiro de "Segmento"):**
   - **Limpieza de Nomenclatura en Badges:** Eliminación de la palabra `Segmento` en las etiquetas superiores (hero badge capsules) de las 4 landings (`industrial.html`, `agricola.html`, `comercial.html` y `residencial.html`), pasando a ser: *Industrial & Gran Escala*, *Agropecuario & Bombeo Solar*, *Comercial & Servicios* y *Residencial Luxury & Off-Grid*. Despliegue verificado en producción.
-
+- **2026-11-20 (Integración del Logotipo Oficial en Footer y Favicon del Navegador):**
+  - **Actualización de Marca en Footer:** Integración del nuevo logotipo oficial vectorizado (`LogoIEER.svg`) en la columna de marca (`.footer-brand`) del footer interactivo en las 14 páginas del ecosistema web (`index.html`, `industrial.html`, `comercial.html`, `agricola.html`, `residencial.html`, `blog.html`, `preguntas-frecuentes.html`, `aviso-de-privacidad.html` y los 6 artículos técnicos del journal).
+  - **Estilos Adaptativos y Métricas:** Implementación de `.footer-brand-link` y `.footer-brand-logo` (`height: 40px; width: auto; max-width: 220px; object-fit: contain;`) asegurando preservación de CLS con atributos nativos `width="201"` y `height="40"`, centrado automático en viewport móvil (`<= 768px`) y perfecta alineación con las columnas de Soluciones, Navegación y Contacto en desktop.
+  - **Favicon & Icono de Pestañas (`ICO.svg`):** Integración de `ICO.svg` como favicon oficial SVG y Apple Touch Icon en las 14 páginas (`<link rel="icon" type="image/svg+xml" href="/Assets/Logotipo/ICO.svg">` y `<link rel="apple-touch-icon" href="/Assets/Logotipo/ICO.svg">`), actualizando adicionalmente los esquemas semánticos Schema.org JSON-LD para referenciar el logotipo oficial vectorizado `LogoIEER.svg`.
