@@ -1244,7 +1244,17 @@
                   <span>${b.hours || b.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs"}</span>
                 </div>
 
-                
+                ${b.coto_only_delivery ? `
+                  <div class="flex items-center gap-1.5 mt-1 text-[10.5px] font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200/80">
+                    <i data-lucide="home" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
+                    <span>Solo entregas en su coto · Recoger en caseta</span>
+                  </div>
+                ` : b.delivery_available ? `
+                  <div class="flex items-center gap-1.5 mt-1 text-[10.5px] font-semibold text-emerald-800 bg-emerald-50/70 px-2.5 py-1 rounded-xl border border-emerald-100">
+                    <i data-lucide="truck" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                    <span>Servicio a domicilio en cotos</span>
+                  </div>
+                ` : ''}
               </div>
             </div>
 
@@ -1688,10 +1698,11 @@
                 community_slug: "natura-bosque-residencial",
                 community_name: "Natura Bosque Residencial",
                 delivery_available: !!biz.delivery_available,
+                coto_only_delivery: !!biz.coto_only_delivery,
                 pickup_available: true,
                 has_delivery: !!biz.delivery_available,
                 has_pickup: true,
-                delivery_badge: biz.delivery_available ? "Servicio a domicilio" : null,
+                delivery_badge: biz.coto_only_delivery ? "Solo entregas en su coto" : (biz.delivery_available ? "Servicio a domicilio" : null),
                 pickup_badge: "Recoger en local",
                 coto: biz.coto_address,
                 address: biz.coto_address,

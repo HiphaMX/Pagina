@@ -747,9 +747,38 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2 pt-1">
-            <input type="checkbox" id="reg-delivery" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-            <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
+          <!-- COBERTURA DE ENTREGAS Y SERVICIO A DOMICILIO -->
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-900 block flex items-center gap-1.5">
+                <i data-lucide="truck" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Modalidad de Entregas y Cobertura</span>
+              </span>
+              <span class="text-[10px] text-slate-400">Elige tus opciones</span>
+            </div>
+
+            <div class="space-y-2">
+              <label class="flex items-start gap-2.5 p-2 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50/80 cursor-pointer transition-all">
+                <input type="checkbox" id="reg-delivery" onchange="if(!this.checked){const co=document.getElementById('reg-coto-only');if(co)co.checked=false;}" class="w-4 h-4 mt-0.5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                <div class="text-xs">
+                  <span class="font-bold text-slate-800 block">Ofrezco servicio a domicilio en cotos de la zona</span>
+                  <span class="text-[11px] text-slate-500 block leading-tight">Llevas tus pedidos directamente a casas o casetas de cotos aledaños en Mariano Otero.</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-amber-200/90 bg-amber-50/40 hover:bg-amber-50/70 cursor-pointer transition-all">
+                <input type="checkbox" id="reg-coto-only" onchange="if(this.checked){const rd=document.getElementById('reg-delivery');if(rd)rd.checked=true;}" class="w-4 h-4 mt-0.5 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
+                <div class="text-xs">
+                  <span class="font-bold text-amber-950 flex items-center gap-1.5">
+                    <span>🏡 Solo entregas dentro de mi coto</span>
+                    <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-200 text-amber-900">Emprendedor</span>
+                  </span>
+                  <span class="text-[11px] text-amber-900/80 block mt-0.5 leading-relaxed">
+                    Ideal si emprendes desde casa: entregas a pie o caseta en <strong>tu propio coto</strong>. Los vecinos de otros cotos podrán pedirte por WhatsApp y <strong>pasar a recoger su pedido a tu coto / caseta</strong>.
+                  </span>
+                </div>
+              </label>
+            </div>
           </div>
 
           <!-- CONFIGURACIÓN DE PÁGINA ESCAPARATE INDIVIDUAL EN EPIZENTRO ($499/AÑO): PORTADA, DESTACADOS Y MENÚ -->
@@ -1191,6 +1220,7 @@
       const prefMethods = checkedBoxes.length > 0 ? checkedBoxes.join(",") : "whatsapp";
 
       const deliveryChecked = checkedBoxes.includes("delivery") || (document.getElementById("reg-delivery") ? document.getElementById("reg-delivery").checked : false);
+      const cotoOnlyChecked = document.getElementById("reg-coto-only") ? document.getElementById("reg-coto-only").checked : false;
 
       const featuredTitle = document.getElementById("reg-featured-title") ? document.getElementById("reg-featured-title").value.trim() : "Nuestra Selección Destacada";
       const featuredSubtitle = document.getElementById("reg-featured-subtitle") ? document.getElementById("reg-featured-subtitle").value.trim() : "";
@@ -1230,7 +1260,8 @@
         plan_type: currentSelectedPlan,
         preferred_contact_methods: prefMethods,
         website: website,
-        delivery_available: deliveryChecked,
+        delivery_available: deliveryChecked || cotoOnlyChecked,
+        coto_only_delivery: cotoOnlyChecked,
         honeypot: hp
       };
 

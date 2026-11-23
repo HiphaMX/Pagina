@@ -1426,11 +1426,12 @@
                 community_slug: "natura-bosque-residencial",
                 community_name: "Natura Bosque Residencial",
                 delivery_available: !!biz.delivery_available,
+                coto_only_delivery: !!biz.coto_only_delivery,
                 pickup_available: true,
                 has_delivery: !!biz.delivery_available,
                 has_pickup: true,
-                delivery_badge: biz.delivery_available ? "Servicio a domicilio" : null,
-                pickup_badge: "Recoger en local",
+                delivery_badge: biz.coto_only_delivery ? "Solo entregas en su coto" : (biz.delivery_available ? "Servicio a domicilio" : null),
+                pickup_badge: biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local",
                 coto: biz.coto_address,
                 address: biz.coto_address,
                 description: finalDesc,
@@ -1807,7 +1808,11 @@
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-snow-300 text-slate-700">
                   ${b.space_label || b.type_label}
                 </span>
-                ${b.has_delivery && b.delivery_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">${b.delivery_badge}</span>` : ''}
+                ${b.coto_only_delivery ? `
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                    <i data-lucide="home" class="w-3 h-3 text-amber-600"></i> Solo en su coto · Caseta
+                  </span>
+                ` : (b.has_delivery && b.delivery_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">${b.delivery_badge}</span>` : '')}
                 ${b.has_pickup && b.pickup_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">${b.pickup_badge}</span>` : ''}
               </div>
 

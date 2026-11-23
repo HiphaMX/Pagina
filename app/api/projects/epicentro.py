@@ -49,6 +49,7 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS cover_photo TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coto_only_delivery BOOLEAN DEFAULT FALSE"))
             db.commit()
         else:
             for col, col_type in [
@@ -60,7 +61,8 @@ def ensure_epicentro_schema(db: Session):
                 ("payment_method", "VARCHAR(50)"),
                 ("cover_photo", "TEXT"),
                 ("microsite_data", "TEXT"),
-                ("coupon_code", "VARCHAR(50)")
+                ("coupon_code", "VARCHAR(50)"),
+                ("coto_only_delivery", "BOOLEAN DEFAULT 0")
             ]:
                 try:
                     db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
@@ -156,6 +158,7 @@ class RegisterInitiateRequest(BaseModel):
     kam_name: Optional[str] = None
     payment_method: Optional[str] = None
     delivery_available: bool = False
+    coto_only_delivery: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
     plan_type: Optional[str] = "microsite"  # "microsite" ($499/año) o "basic" ($99/año)
@@ -178,6 +181,7 @@ class UpdateRegistrationAdminRequest(BaseModel):
     preferred_contact_methods: Optional[str] = None
     schedule: Optional[str] = None
     delivery_available: Optional[bool] = None
+    coto_only_delivery: Optional[bool] = None
     website: Optional[str] = None
     description: Optional[str] = None
     photos: Optional[Union[List[str], str]] = None
@@ -238,6 +242,7 @@ class BusinessPublicOut(BaseModel):
     preferred_contact_methods: Optional[str] = None
     schedule: Optional[str] = None
     delivery_available: bool = False
+    coto_only_delivery: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
     photos: Optional[str] = None
@@ -548,6 +553,7 @@ async def initiate_registration(
         kam_name=payload.kam_name.strip() if payload.kam_name else None,
         payment_method="mercadopago_subscription" if not payload.payment_method else payload.payment_method.strip(),
         delivery_available=payload.delivery_available,
+        coto_only_delivery=payload.coto_only_delivery,
         website=payload.website.strip() if payload.website else None,
         description=payload.description,
         email_otp=None,

@@ -444,6 +444,7 @@
             <td class="py-3.5 px-4">
               <div class="font-medium text-slate-200">${oName}</div>
               <div class="text-[11px] text-slate-400 font-mono">${cAddress}</div>
+              ${r.coto_only_delivery ? `<span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i data-lucide="home" class="w-3 h-3"></i> Solo en coto</span>` : (r.delivery_available ? `<span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"><i data-lucide="bike" class="w-3 h-3"></i> A domicilio</span>` : '')}
             </td>
             <td class="py-3.5 px-4">
               <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check" class="w-3.5 h-3.5"></i> Registrado</span>
@@ -1370,6 +1371,7 @@ Esta acción no se puede deshacer.`)) return;
       document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 499;
       document.getElementById("edit-is-verified-badge").checked = !!reg.is_verified_badge;
       document.getElementById("edit-delivery-available").checked = !!reg.delivery_available;
+      document.getElementById("edit-coto-only-delivery").checked = !!reg.coto_only_delivery;
       document.getElementById("edit-moderation-notes").value = reg.moderation_notes || "";
 
       // Cargar Portada y Microsite Data
@@ -1726,6 +1728,7 @@ Esta acción no se puede deshacer.`)) return;
         payment_amount: parseFloat(document.getElementById("edit-payment-amount").value) || 0.0,
         is_verified_badge: document.getElementById("edit-is-verified-badge").checked,
         delivery_available: document.getElementById("edit-delivery-available").checked,
+        coto_only_delivery: document.getElementById("edit-coto-only-delivery").checked,
         moderation_notes: document.getElementById("edit-moderation-notes").value.trim() || null
       };
 
@@ -2299,7 +2302,7 @@ Esta acción no se puede deshacer.`)) return;
           </div>
         </div>
 
-        <div class="flex items-center gap-4 py-1">
+        <div class="flex flex-wrap items-center gap-4 py-1">
           <label class="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" id="edit-is-verified-badge" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
             <span class="text-xs font-bold text-emerald-400">Sello Vecino Verificado Oficial</span>
@@ -2307,6 +2310,10 @@ Esta acción no se puede deshacer.`)) return;
           <label class="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" id="edit-delivery-available" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
             <span class="text-xs font-medium text-slate-300">Ofrece entrega a domicilio</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="edit-coto-only-delivery" class="w-4 h-4 text-amber-500 rounded border-slate-700 bg-slate-950">
+            <span class="text-xs font-bold text-amber-400">🏡 Solo en su coto (Recoger en caseta)</span>
           </label>
         </div>
 

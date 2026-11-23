@@ -112,6 +112,7 @@ def ensure_db_initialized():
                         "ALTER TABLE quotations ADD COLUMN IF NOT EXISTS require_down_payment BOOLEAN DEFAULT TRUE",
                         "ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS website VARCHAR(255)",
                         "ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)",
+                        "ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coto_only_delivery BOOLEAN DEFAULT FALSE",
                         "UPDATE agency_clients SET in_workflow = TRUE WHERE in_workflow IS NULL OR in_workflow = FALSE AND (name ILIKE '%Tukipa%' OR name ILIKE '%Chile%' OR name ILIKE '%DAM%' OR name ILIKE '%Botica%' OR name ILIKE '%AMDI%')",
                     ]
                 else:
@@ -142,6 +143,7 @@ def ensure_db_initialized():
                         "ALTER TABLE quotations ADD COLUMN require_down_payment BOOLEAN DEFAULT 1",
                         "ALTER TABLE epicentro_registrations ADD COLUMN website VARCHAR(255)",
                         "ALTER TABLE epicentro_registrations ADD COLUMN coupon_code VARCHAR(50)",
+                        "ALTER TABLE epicentro_registrations ADD COLUMN coto_only_delivery BOOLEAN DEFAULT 0",
                         "UPDATE agency_clients SET in_workflow = 1 WHERE (in_workflow IS NULL OR in_workflow = 0) AND (name LIKE '%Tukipa%' OR name LIKE '%Chile%' OR name LIKE '%DAM%' OR name LIKE '%Botica%' OR name LIKE '%AMDI%')",
                     ]
 
