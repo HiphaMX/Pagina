@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|AMDI-preview|urologia-avanzada|GrupoGari|uro-oncology|Pumpapa|JessicaMendoza|Dr\\. Jairo Dominguez)/'",
+  "ignoreCommand": "! git diff HEAD^ HEAD --name-only | grep -qvE '^projects/(HealthyIce|BoticaSilvestre|ValenciaServicios|ChileChillon|WhiteClean|AMDI|AMDI-preview|urologia-avanzada|GrupoGari|uro-oncology|Pumpapa|JessicaMendoza|Dr\\. Jairo Dominguez|TukipaFitness)/'",
   "functions": {
     "api/**/*.py": {
       "excludeFiles": "{projects/**,scratch/**,tests/**,venv/**,venv_pdf/**,prompts_imagenes/**,Hipha Projects/**}",
@@ -90,7 +90,7 @@
       }
     },
     {
-      "src": "/(llms\\.txt|robots\\.txt)",
+      "src": "/(llms\\.txt|robots\\.txt|favicon\\.ico|favicon\\.svg)",
       "has": [
         {
           "type": "host",
@@ -1030,6 +1030,19 @@
     {
       "src": "/epicentro/(.*)",
       "dest": "/projects/Epicentro/$1"
+    },
+    {
+      "src": "/(tukipa|tukipa-fitness)",
+      "status": 308,
+      "headers": { "Location": "/tukipa/" }
+    },
+    {
+      "src": "/tukipa/",
+      "dest": "/projects/TukipaFitness/web/"
+    },
+    {
+      "src": "/tukipa/(.*)",
+      "dest": "/projects/TukipaFitness/web/$1"
     },
     {
       "handle": "filesystem"
