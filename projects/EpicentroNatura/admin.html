@@ -137,6 +137,10 @@
         </div>
 
         <div class="w-full sm:w-auto flex items-center gap-2">
+          <button onclick="openCouponsModal()" class="w-full sm:w-auto px-3.5 py-1.5 rounded-xl bg-purple-900/50 hover:bg-purple-800/80 text-purple-200 border border-purple-700/60 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Ver y gestionar 30 cupones oficiales de cortesía 100%">
+            <i data-lucide="tag" class="w-3.5 h-3.5 text-purple-400"></i>
+            <span>Cupones Cortesía (<span id="stat-coupons-avail">30</span> disp.)</span>
+          </button>
           <button onclick="loadRegistrations()" class="w-full sm:w-auto px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
             <span>Actualizar</span>
@@ -353,6 +357,7 @@
         document.getElementById("admin-dashboard-view").classList.remove("hidden");
         updateStats();
         renderTable();
+        loadCouponsData(false);
         checkAutoOpenEdit();
       } catch (err) {
         console.error("Error al cargar registros administrativos:", err);
@@ -1789,6 +1794,141 @@ Esta acción no se puede deshacer.`)) return;
         }, 350);
       }
     });
+
+    // --- GESTIÓN DE CUPONES DE CORTESÍA (30 CÓDIGOS OFICIALES) ---
+    let couponsCache = null;
+
+    async function loadCouponsData(openModalAfter = false) {
+      const token = getToken();
+      if (!token) return;
+
+      try {
+        const res = await fetch("/api/epicentro/admin/coupons", {
+          headers: { "X-Admin-Token": token }
+        });
+        if (!res.ok) return;
+
+        couponsCache = await res.json();
+        const availBadge = document.getElementById("stat-coupons-avail");
+        if (availBadge) {
+          availBadge.textContent = couponsCache.available;
+        }
+
+        const modalAvailBadge = document.getElementById("coupons-modal-available");
+        const modalUsedBadge = document.getElementById("coupons-modal-used");
+        const modalTotalBadge = document.getElementById("coupons-modal-total");
+        if (modalAvailBadge) modalAvailBadge.textContent = couponsCache.available;
+        if (modalUsedBadge) modalUsedBadge.textContent = couponsCache.used;
+        if (modalTotalBadge) modalTotalBadge.textContent = couponsCache.total;
+
+        renderCouponsList(couponsCache.coupons || []);
+
+        if (openModalAfter) {
+          const modal = document.getElementById("coupons-manager-modal");
+          if (modal) {
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+          }
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+        }
+      } catch (err) {
+        console.error("Error al cargar cupones de cortesía:", err);
+      }
+    }
+
+    function openCouponsModal() {
+      loadCouponsData(true);
+    }
+
+    function closeCouponsModal() {
+      const modal = document.getElementById("coupons-manager-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function renderCouponsList(coupons) {
+      const container = document.getElementById("coupons-list-container");
+      if (!container) return;
+
+      if (!coupons || coupons.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs">No hay cupones registrados.</div>`;
+        return;
+      }
+
+      container.innerHTML = coupons.map((c, idx) => {
+        const isAvail = c.is_active;
+        const codeEsc = escapeHtml(c.code);
+        const bNameEsc = escapeHtml(c.business_name || "");
+        const usedDate = c.used_at ? new Date(c.used_at).toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" }) : "";
+
+        return `
+          <div class="flex items-center justify-between p-3 rounded-2xl ${isAvail ? 'bg-slate-950/70 border border-slate-800/80 hover:border-emerald-500/40' : 'bg-slate-950/30 border border-slate-900 opacity-60'} transition-all">
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono text-slate-500 w-5 text-right font-bold">${String(idx + 1).padStart(2, '0')}</span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-mono font-black text-sm ${isAvail ? 'text-emerald-400' : 'text-slate-400 line-through'}">${codeEsc}</span>
+                  ${isAvail 
+                    ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">DISPONIBLE</span>` 
+                    : `<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30">CANJEADO</span>`}
+                </div>
+                ${!isAvail && bNameEsc ? `<div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1.5"><i data-lucide="store" class="w-3 h-3 text-purple-400 shrink-0"></i> <span>${bNameEsc}</span> <span class="text-slate-600">·</span> <span>${usedDate}</span></div>` : ''}
+              </div>
+            </div>
+            <div>
+              ${isAvail ? `
+                <button type="button" onclick="copySingleCoupon('${codeEsc}', this)" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white font-bold text-xs flex items-center gap-1 transition-all cursor-pointer">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Copiar</span>
+                </button>
+              ` : `
+                <span class="text-[10px] text-slate-500 font-mono">1 uso máx.</span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function copySingleCoupon(code, btn) {
+      navigator.clipboard.writeText(code).then(() => {
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-300"></i><span class="text-emerald-300">¡Copiado!</span>`;
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+          setTimeout(() => {
+            btn.innerHTML = original;
+            if (window.lucide && lucide.createIcons) lucide.createIcons();
+          }, 1500);
+        }
+      });
+    }
+
+    function copyAllAvailableCoupons() {
+      if (!couponsCache || !couponsCache.coupons) return;
+      const avail = couponsCache.coupons.filter(c => c.is_active).map(c => c.code);
+      if (avail.length === 0) {
+        alert("No hay cupones disponibles en este momento.");
+        return;
+      }
+      const textToCopy = avail.join("\n");
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const btn = document.getElementById("btn-copy-all-coupons");
+        if (btn) {
+          const orig = btn.innerHTML;
+          btn.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-300"></i><span>¡${avail.length} Códigos Copiados!</span>`;
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+          setTimeout(() => {
+            btn.innerHTML = orig;
+            if (window.lucide && lucide.createIcons) lucide.createIcons();
+          }, 2000);
+        }
+      });
+    }
   </script>
 
   <!-- MODAL DE EDICIÓN DE FICHA COMERCIAL (MODERADOR / KAM) -->
@@ -2251,6 +2391,72 @@ Esta acción no se puede deshacer.`)) return;
             Cerrar
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE GESTIÓN DE CUPONES DE CORTESÍA (30 CÓDIGOS OFICIALES) -->
+  <div id="coupons-manager-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
+    <div class="relative w-full max-w-2xl rounded-3xl bg-slate-900 border border-slate-800 text-white p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <button onclick="closeCouponsModal()" class="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-6 pr-8">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          <i data-lucide="gift" class="w-3 h-3"></i>
+          <span>Exención Oficial al 100% · Un Solo Uso</span>
+        </div>
+        <h3 class="text-xl sm:text-2xl font-black text-white mt-1">Cupones Oficiales de Cortesía</h3>
+        <p class="text-xs text-slate-400 mt-1">
+          Cada código exonera al 100% la cuota anual ($499 MXN) y activa la Página Escaparate Individual con Sello Verificado. Cada código solo puede ser utilizado una única vez.
+        </p>
+      </div>
+
+      <!-- Métricas Resumen -->
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total</span>
+          <span id="coupons-modal-total" class="text-xl font-black text-white font-mono mt-0.5 block">30</span>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">Disponibles</span>
+          <span id="coupons-modal-available" class="text-xl font-black text-emerald-400 font-mono mt-0.5 block">30</span>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400 block">Canjeados</span>
+          <span id="coupons-modal-used" class="text-xl font-black text-purple-400 font-mono mt-0.5 block">0</span>
+        </div>
+      </div>
+
+      <!-- Barra de Acción: Copiar Disponibles -->
+      <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-emerald-950/30 border border-emerald-900/40 mb-4">
+        <div class="text-xs text-emerald-200">
+          <strong class="text-emerald-300">¿Vas a enviar códigos a prospectos o por WhatsApp?</strong>
+          <p class="text-[11px] text-emerald-400/80">Copia la lista limpia de los códigos que aún no han sido canjeados.</p>
+        </div>
+        <button type="button" id="btn-copy-all-coupons" onclick="copyAllAvailableCoupons()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+          <span>Copiar Disponibles</span>
+        </button>
+      </div>
+
+      <!-- Listado de Códigos -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-300">Catálogo de 30 Códigos Oficiales</span>
+          <span class="text-[10px] font-mono text-slate-400">Control de redención en tiempo real</span>
+        </div>
+
+        <div id="coupons-list-container" class="space-y-1.5 max-h-80 overflow-y-auto pr-1">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+
+      <div class="pt-4 mt-4 border-t border-slate-800 flex justify-end">
+        <button type="button" onclick="closeCouponsModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors">
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

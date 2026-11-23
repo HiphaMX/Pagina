@@ -48,6 +48,7 @@ class EpicentroRegistration(Base):
     payment_status = Column(String(30), default="pending", index=True)  # pending, approved, rejected
     payment_amount = Column(Float, default=499.0)
     is_verified_badge = Column(Boolean, default=False)
+    coupon_code = Column(String(50), nullable=True)
 
     # Flujo de Moderación:
     # pending_verification -> pending_approval -> active / rejected

@@ -10,6 +10,7 @@ from app.models.reconciliation import CFDIInvoice, BankTransaction
 from app.models.epicentro_registration import EpicentroRegistration
 from app.models.epicentro_article import EpicentroArticle
 from app.models.epicentro_media import EpicentroMedia
+from app.models.epicentro_coupon import EpicentroCoupon
 
 __all__ = [
     "User",
@@ -28,6 +29,7 @@ __all__ = [
     "EpicentroRegistration",
     "EpicentroArticle",
     "EpicentroMedia",
+    "EpicentroCoupon",
 ]
 
 

@@ -11,6 +11,7 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, EmailStr
 from fastapi import APIRouter, Depends, HTTPException, Header, Query, status, Request, BackgroundTasks
 from fastapi.responses import HTMLResponse, Response
+from sqlalchemy import func, text
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -19,6 +20,7 @@ from app.core.mailer import _prepare_project_email, _send_smtp
 from app.models.epicentro_registration import EpicentroRegistration
 from app.models.epicentro_article import EpicentroArticle
 from app.models.epicentro_media import EpicentroMedia
+from app.models.epicentro_coupon import EpicentroCoupon
 from app.api.mercadopago import get_sdk_for_store
 
 router = APIRouter()
@@ -46,6 +48,7 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS cover_photo TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)"))
             db.commit()
         else:
             for col, col_type in [
@@ -56,7 +59,8 @@ def ensure_epicentro_schema(db: Session):
                 ("kam_name", "VARCHAR(100)"),
                 ("payment_method", "VARCHAR(50)"),
                 ("cover_photo", "TEXT"),
-                ("microsite_data", "TEXT")
+                ("microsite_data", "TEXT"),
+                ("coupon_code", "VARCHAR(50)")
             ]:
                 try:
                     db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
@@ -65,10 +69,11 @@ def ensure_epicentro_schema(db: Session):
                     pass
             db.commit()
 
-        # Asegurar tablas de Crónicas y Medios de Cultura Natura
+        # Asegurar tablas de Crónicas, Medios y Cupones de Epizentro
         try:
             EpicentroArticle.__table__.create(db.bind, checkfirst=True)
             EpicentroMedia.__table__.create(db.bind, checkfirst=True)
+            EpicentroCoupon.__table__.create(db.bind, checkfirst=True)
         except Exception:
             pass
 
@@ -730,6 +735,40 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
 
 # --- CÓDIGOS DE CORTESÍA / EXENCIÓN DE CUOTA ---
 
+# 30 Códigos Oficiales de Cortesía de Lanzamiento al 100% (Estrictamente de un solo uso)
+OFFICIAL_COURTESY_COUPONS = [
+    "NATURA100-23MF",
+    "NATURA100-24U6",
+    "NATURA100-59D7",
+    "NATURA100-5W9H",
+    "NATURA100-836Y",
+    "NATURA100-8MMW",
+    "NATURA100-98PE",
+    "NATURA100-9H5C",
+    "NATURA100-A8A4",
+    "NATURA100-DFYC",
+    "NATURA100-DNXP",
+    "NATURA100-DZ2M",
+    "NATURA100-EVN3",
+    "NATURA100-GK2W",
+    "NATURA100-GPX9",
+    "NATURA100-J9AU",
+    "NATURA100-JENQ",
+    "NATURA100-KH7T",
+    "NATURA100-NZRB",
+    "NATURA100-PK88",
+    "NATURA100-Q4YG",
+    "NATURA100-S6SP",
+    "NATURA100-SV8E",
+    "NATURA100-TJXV",
+    "NATURA100-TUGD",
+    "NATURA100-UVSA",
+    "NATURA100-YZFJ",
+    "NATURA100-Z577",
+    "NATURA100-Z9TQ",
+    "NATURA100-ZDXX",
+]
+
 VALID_COUPON_CODES = {
     "NATURA100": "Cortesía Fundador 100% Exenta",
     "FUNDADOR": "Cortesía de Lanzamiento Fundadores Natura",
@@ -737,28 +776,80 @@ VALID_COUPON_CODES = {
     "HIPHA": "Cortesía Especial Agencia Hipha",
 }
 
+
+def seed_courtesy_coupons(db: Session):
+    """Garantiza que los 30 códigos oficiales de cortesía 100% de un solo uso existan en la base de datos."""
+    try:
+        ensure_epicentro_schema(db)
+        existing = {c[0].upper() for c in db.query(EpicentroCoupon.code).all()}
+        new_coupons = []
+        for code in OFFICIAL_COURTESY_COUPONS:
+            if code not in existing:
+                new_coupons.append(
+                    EpicentroCoupon(
+                        code=code,
+                        description="Cortesía 100% Exenta Oficial Epizentro (Un solo uso)",
+                        discount_percent=100.0,
+                        max_uses=1,
+                        times_used=0,
+                        is_active=True,
+                    )
+                )
+        if new_coupons:
+            db.bulk_save_objects(new_coupons)
+            db.commit()
+    except Exception as e:
+        logger.warning(f"Nota al sembrar cupones de cortesía ({e})")
+        try:
+            db.rollback()
+        except Exception:
+            pass
+
+
 @router.post("/register/apply-coupon")
 def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends(get_db)):
     """
     Aplica un código de cortesía o invitación para exonerar la cuota de suscripción
     y dejar el negocio verificado y activo en el directorio comunitario con Página Escaparate Individual.
+    Garantiza que los códigos de cortesía individuales sean estrictamente de un solo uso.
     """
+    seed_courtesy_coupons(db)
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
     if not reg:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
 
     code = payload.coupon_code.strip().upper()
-    env_codes = [c.strip().upper() for c in os.getenv("EPICENTRO_COUPONS", "").split(",") if c.strip()]
-
-    if code not in VALID_COUPON_CODES and code not in env_codes:
-        raise HTTPException(status_code=400, detail="Código de cortesía inválido o no reconocido.")
-
     now = datetime.now(timezone.utc)
+
+    # 1. Buscar en la tabla de cupones controlados (Un solo uso)
+    coupon = db.query(EpicentroCoupon).filter(func.upper(EpicentroCoupon.code) == code).first()
+    if coupon:
+        if not coupon.is_active or coupon.times_used >= coupon.max_uses:
+            used_date = coupon.used_at.strftime('%d/%m/%Y') if coupon.used_at else "anteriormente"
+            by_whom = f" por '{coupon.business_name}'" if coupon.business_name else ""
+            raise HTTPException(
+                status_code=400,
+                detail=f"Este código de cortesía ({code}) ya fue utilizado{by_whom} el {used_date} y no es válido para otro registro."
+            )
+        # Marcar cupón como consumido
+        coupon.times_used += 1
+        coupon.is_active = False
+        coupon.used_at = now
+        coupon.used_by_registration_id = reg.id
+        coupon.business_name = reg.business_name
+        code_desc = coupon.description
+    else:
+        # 2. Códigos institucionales permanentes de agencia o env
+        env_codes = [c.strip().upper() for c in os.getenv("EPICENTRO_COUPONS", "").split(",") if c.strip()]
+        if code not in VALID_COUPON_CODES and code not in env_codes:
+            raise HTTPException(status_code=400, detail="Código de cortesía inválido o no reconocido.")
+        code_desc = VALID_COUPON_CODES.get(code, "Cupón de Cortesía Institucional")
+
     reg.payment_status = "waived"
     reg.payment_amount = 0.0
     reg.is_verified_badge = True
     reg.status = "pending_approval"
-    code_desc = VALID_COUPON_CODES.get(code, "Cupón de Cortesía Válido")
+    reg.coupon_code = code
     reg.moderation_notes = f"Exención con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC. En espera de aprobación final de moderador."
     db.commit()
     db.refresh(reg)
@@ -768,11 +859,45 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
 
     return {
         "success": True,
-        "message": f"¡Código {code} aplicado con éxito! Tu cuota ha sido exonerada. Tu comercio está en cola de moderación prioritaria con Sello Oficial.",
+        "message": f"¡Código {code} aplicado con éxito! Tu cuota anual ha sido exonerada al 100%. Tu comercio está en cola de moderación prioritaria con Sello Oficial.",
         "folio": folio,
         "business_name": reg.business_name,
         "is_verified_badge": True,
-        "status": "pending_approval"
+        "status": "pending_approval",
+        "coupon_code": code
+    }
+
+
+@router.get("/admin/coupons")
+def list_admin_coupons(
+    is_authenticated: bool = Depends(verify_admin),
+    db: Session = Depends(get_db)
+):
+    """Lista todos los cupones de cortesía y su estatus de uso para control interno."""
+    seed_courtesy_coupons(db)
+    coupons = db.query(EpicentroCoupon).order_by(EpicentroCoupon.created_at.asc(), EpicentroCoupon.code.asc()).all()
+    total = len(coupons)
+    used = sum(1 for c in coupons if c.times_used >= c.max_uses or not c.is_active)
+    available = total - used
+
+    return {
+        "total": total,
+        "available": available,
+        "used": used,
+        "coupons": [
+            {
+                "id": c.id,
+                "code": c.code,
+                "description": c.description,
+                "is_active": c.is_active and c.times_used < c.max_uses,
+                "times_used": c.times_used,
+                "max_uses": c.max_uses,
+                "business_name": c.business_name,
+                "used_at": c.used_at.isoformat() if c.used_at else None,
+                "used_by_registration_id": c.used_by_registration_id,
+            }
+            for c in coupons
+        ]
     }
 
 
@@ -1071,6 +1196,7 @@ def purge_test_registrations(
 def seed_official_showcases(db: Session):
     """Garantiza que Botica Silvestre y Chile Chillón existan como comercios verificados y activos con sus micrositios oficiales."""
     try:
+        seed_courtesy_coupons(db)
         BOTICA_DATA = {
             "cover_photo": "Assets/botica/ethereal_botanical_hero.webp",
             "website_url": "https://boticasilvestre.com.mx",
