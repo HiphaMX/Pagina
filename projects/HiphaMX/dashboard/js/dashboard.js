@@ -1654,20 +1654,32 @@ function setupWorkflowElements() {
     const lblModalWeek = document.getElementById('lblTaskModalWeek');
 
     if (btnModalPrevWeek) {
-        btnModalPrevWeek.addEventListener('click', () => {
+        btnModalPrevWeek.addEventListener('click', async () => {
+            const taskId = document.getElementById('taskInputId')?.value;
             const cur = (inputModalWeek && inputModalWeek.value) ? inputModalWeek.value : currentWeekId;
             const prev = getPreviousIsoWeekId(cur);
             if (inputModalWeek) inputModalWeek.value = prev;
             if (lblModalWeek) lblModalWeek.textContent = formatIsoWeekLabel(prev);
+
+            if (taskId) {
+                await moveTaskToPrevMonday(taskId);
+                closeWorkflowTaskModal();
+            }
         });
     }
 
     if (btnModalNextWeek) {
-        btnModalNextWeek.addEventListener('click', () => {
+        btnModalNextWeek.addEventListener('click', async () => {
+            const taskId = document.getElementById('taskInputId')?.value;
             const cur = (inputModalWeek && inputModalWeek.value) ? inputModalWeek.value : currentWeekId;
             const next = getNextIsoWeekId(cur);
             if (inputModalWeek) inputModalWeek.value = next;
             if (lblModalWeek) lblModalWeek.textContent = formatIsoWeekLabel(next);
+
+            if (taskId) {
+                await moveTaskToNextMonday(taskId);
+                closeWorkflowTaskModal();
+            }
         });
     }
 
@@ -2303,13 +2315,7 @@ function createWorkflowTaskCard(task) {
                     ${revBadgeHtml}
                 </div>
                 <div style="display:flex; align-items:center; gap:0.35rem;">
-                    <button class="btn-card-prev-monday" type="button" title="Regresar entrega a la semana anterior (Lunes)" aria-label="Regresar al lunes anterior">
-                        <span>⏮️<span class="btn-card-nav-text"> Lunes</span></span>
-                    </button>
-                    <button class="btn-card-next-monday" type="button" title="Mover entrega al próximo lunes" aria-label="Mover al próximo lunes">
-                        <span>⏭️<span class="btn-card-nav-text"> Lunes</span></span>
-                    </button>
-                    <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
+                    <button class="card-actions-btn" type="button" title="Editar entrega o cambiar semana" aria-label="Editar entrega">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                     </button>
                 </div>
@@ -2339,24 +2345,6 @@ function createWorkflowTaskCard(task) {
         });
     }
 
-    // Click específico en botón rápido de semana anterior (lunes)
-    const prevMondayBtn = card.querySelector('.btn-card-prev-monday');
-    if (prevMondayBtn) {
-        prevMondayBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            moveTaskToPrevMonday(task.id);
-        });
-    }
-
-    // Click específico en botón rápido de próximo lunes
-    const nextMondayBtn = card.querySelector('.btn-card-next-monday');
-    if (nextMondayBtn) {
-        nextMondayBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            moveTaskToNextMonday(task.id);
-        });
-    }
-
     // Click específico en chip de estatus (avanza ciclo)
     const statusChip = card.querySelector('.status-chip');
     if (statusChip) {
@@ -2377,7 +2365,7 @@ function createWorkflowTaskCard(task) {
 
     // Click en cualquier otra área de la tarjeta abre el editor
     card.addEventListener('click', (e) => {
-        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision') || e.target.closest('.btn-card-next-monday') || e.target.closest('.btn-card-prev-monday')) return;
+        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision')) return;
         editWorkflowTask(task.id);
     });
 

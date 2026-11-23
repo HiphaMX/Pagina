@@ -919,7 +919,7 @@ select {
     background: rgba(255, 255, 255, 0.08);
     color: var(--text-main);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 120px;
+    max-width: 180px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
