@@ -1063,7 +1063,7 @@
       }
       const waUrl = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
-      // 2. Identificar si cuenta con Página Escaparate Individual en Epizentro ($770 anual o Cortesía Oficial Hipha)
+      // 2. Identificar si cuenta con Página Escaparate Individual en Epizentro ($499 anual o Cortesía Oficial Hipha)
       const rawWeb = String(b.website || b.website_url || b.microsite_url || "").trim();
       const normName = String(b.name || "").toLowerCase();
       const isBotica = rawWeb === "botica-silvestre" || b.id === "reg-botica-silvestre" || normName.includes("botica silvestre");
@@ -1650,7 +1650,7 @@
                 } catch(e) {}
               }
 
-              // Determinar si es Plan Esencial ($199 anual / $0 legacy) o Página Escaparate Individual ($770 anual / cortesía)
+              // Determinar si es Plan Esencial ($99 anual / $0 legacy) o Página Escaparate Individual ($499 anual / cortesía)
               const isFreeBasic = biz.payment_status === "free_basic" || biz.payment_status === "basic_approved" || (!isOfficialShowcase && biz.payment_status !== "approved" && biz.payment_status !== "waived") || (!isOfficialShowcase && (biz.payment_amount === 0 || biz.payment_amount <= 300.0 || biz.has_microsite === false));
               const hasInteractive = !isFreeBasic && (isOfficialShowcase || biz.payment_status === "approved" || biz.payment_status === "waived");
 

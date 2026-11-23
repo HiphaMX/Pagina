@@ -320,7 +320,7 @@
         return;
       }
 
-      // Si el comercio es un Plan Esencial ($199) o Registro Básico Gratuito ($0), no cuenta con Página Escaparate Individual dedicada
+      // Si el comercio es un Plan Esencial ($99) o Registro Básico Gratuito ($0), no cuenta con Página Escaparate Individual dedicada
       const rawWeb = String(reg.website || "").trim().toLowerCase();
       const normName = String(reg.business_name || "").toLowerCase();
       const isOfficial = rawWeb.includes("botica") || rawWeb.includes("chill") || rawWeb.includes("amdi") || normName.includes("botica") || normName.includes("chill") || normName.includes("amdi");

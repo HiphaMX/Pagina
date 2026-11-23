@@ -153,7 +153,7 @@ class RegisterInitiateRequest(BaseModel):
     delivery_available: bool = False
     website: Optional[str] = None
     description: Optional[str] = None
-    plan_type: Optional[str] = "microsite"  # "microsite" ($770/año) o "basic" ($199/año)
+    plan_type: Optional[str] = "microsite"  # "microsite" ($499/año) o "basic" ($99/año)
     honeypot: Optional[str] = None  # Trampa anti-bot
 
 
@@ -191,7 +191,7 @@ class KamPaymentReportRequest(BaseModel):
     registration_id: str
     kam_name: str
     payment_method: Optional[str] = "kam_direct"
-    amount: Optional[float] = 770.0
+    amount: Optional[float] = 499.0
     notes: Optional[str] = None
 
 
@@ -503,16 +503,16 @@ async def initiate_registration(
     # Generar código de WhatsApp (ej. NATURA-5819)
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
 
-    # Determinar si es Plan con Página Escaparate Individual ($770) o Plan Esencial ($199)
+    # Determinar si es Plan con Página Escaparate Individual ($499) o Plan Esencial ($99)
     is_basic = (payload.plan_type in ("basic", "free_basic", "directorio", "esencial"))
-    initial_payment_amount = 199.0 if is_basic else 770.0
+    initial_payment_amount = 99.0 if is_basic else 499.0
     initial_payment_status = "pending_basic_payment" if is_basic else (
         "pending" if not payload.payment_method or payload.payment_method == "mercadopago" else f"pending_{payload.payment_method}"
     )
     initial_moderation_notes = (
-        "Alta en Plan Esencial ($199 MXN / año: presencia verificada en directorio, llamadas y WhatsApp directo)."
+        "Alta en Plan Esencial ($99 MXN / año: presencia verificada en directorio, llamadas y WhatsApp directo)."
         if is_basic else
-        "Solicitud Plan Anual con Página Escaparate Individual ($770 MXN / año: vitrina digital, fotos y pedidos a WhatsApp)."
+        "Solicitud Plan Anual con Página Escaparate Individual ($499 MXN / año: vitrina digital, fotos y pedidos a WhatsApp)."
     )
 
     # Crear o actualizar registro (email sin bloqueo de OTP para eliminar fricción a prospectos)
@@ -655,13 +655,13 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
 
     backend_url = os.getenv("BACKEND_URL", "https://hipha-mx-fastapi.vercel.app")
     site_domain = os.getenv("EPIZENTRO_URL", "https://www.epizentro.com")
-    amount = float(reg.payment_amount if (reg.payment_amount is not None and reg.payment_amount > 0) else (199.0 if reg.payment_status in ("free_basic", "pending_basic_payment") else 770.0))
-    is_basic_plan = (amount <= 300.0)
-    item_title = f"Plan Esencial Natura: {reg.business_name} ($199 MXN/año)" if is_basic_plan else f"Página Escaparate Individual Natura: {reg.business_name} ($770 MXN/año)"
+    amount = float(reg.payment_amount if (reg.payment_amount is not None and reg.payment_amount > 0) else (99.0 if reg.payment_status in ("free_basic", "pending_basic_payment") else 499.0))
+    is_basic_plan = (amount <= 200.0)
+    item_title = f"Plan Esencial Natura: {reg.business_name} ($99 MXN/año)" if is_basic_plan else f"Página Escaparate Individual Natura: {reg.business_name} ($499 MXN/año)"
     item_desc = (
-        "Suscripción anual $199 MXN: Presencia en Directorio Oficial + Teléfono y WhatsApp directo (Plan Esencial)"
+        "Suscripción anual $99 MXN: Presencia en Directorio Oficial + Teléfono y WhatsApp directo (Plan Esencial)"
         if is_basic_plan else
-        "Suscripción anual $770 MXN: Sello Vecino Verificado + Página Escaparate Individual con catálogo de productos y pedidos a WhatsApp"
+        "Suscripción anual $499 MXN: Sello Vecino Verificado + Página Escaparate Individual con catálogo de productos y pedidos a WhatsApp"
     )
 
     preference_data = {
@@ -956,16 +956,16 @@ async def report_kam_payment(
     
     if method == "mercadopago_subscription":
         reg.payment_status = "pending_mp_payment"
-        reg.payment_amount = float(payload.amount or 770.0)
-    elif method in ("basic_199", "esencial", "basic_99", "basic"):
+        reg.payment_amount = float(payload.amount or 499.0)
+    elif method in ("basic_99", "basic_199", "esencial", "basic"):
         reg.payment_status = "basic_approved" if (payload.amount and payload.amount > 0) else "pending_basic_payment"
-        reg.payment_amount = float(payload.amount or 199.0)
+        reg.payment_amount = float(payload.amount or 99.0)
     elif method == "free_basic":
         reg.payment_status = "free_basic"
         reg.payment_amount = float(payload.amount or 0.0)
     else:
-        reg.payment_status = "approved" if (payload.amount and payload.amount >= 500.0) else "basic_approved"
-        reg.payment_amount = float(payload.amount or 770.0)
+        reg.payment_status = "approved" if (payload.amount and payload.amount >= 300.0) else "basic_approved"
+        reg.payment_amount = float(payload.amount or 499.0)
 
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     note_line = f"Registro de pago '{method}' con '{kam}' ({now_str} UTC)"
@@ -1212,7 +1212,7 @@ def seed_official_showcases(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="approved",
-                payment_amount=770.0,
+                payment_amount=499.0,
                 is_verified_badge=True,
                 status="active",
                 moderation_notes="Comercio fundador oficial con Página Escaparate Individual activa."
@@ -1273,7 +1273,7 @@ def seed_official_showcases(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="waived",
-                payment_amount=770.0,
+                payment_amount=499.0,
                 kam_name="Cortesía Hipha",
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
@@ -1341,7 +1341,7 @@ def seed_official_showcases(db: Session):
                 email_verified=True,
                 whatsapp_verified=True,
                 payment_status="waived",
-                payment_amount=770.0,
+                payment_amount=499.0,
                 kam_name="Chizko",
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,

@@ -88,9 +88,9 @@
   let currentBusinessName = "";
   let waVerified = false;
   let currentPaymentMode = "mp";
-  let currentSelectedPlan = "microsite"; // "microsite" ($770/año) o "basic" ($199/año)
+  let currentSelectedPlan = "microsite"; // "microsite" ($499/año) o "basic" ($99/año)
 
-  // Configuración del Micrositio Oficial ($770/año)
+  // Configuración del Micrositio Oficial ($499/año)
   let registerCoverPhoto = "";
   let registerFeaturedProducts = []; // Array of { name, price, description, photo }
   let registerMenuSections = []; // Array of { title, subtitle, description, items: [{ name, price, description }] }
@@ -383,15 +383,17 @@
     if (window.lucide && lucide.createIcons) lucide.createIcons();
   }
 
-  // --- GESTIÓN DE OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 2 SECCIONES) ---
+  // --- GESTIÓN DE OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 4 SECCIONES) ---
   function addRegisterMenuSection() {
-    if (registerMenuSections.length >= 2) {
-      alert("Puedes agregar un máximo de 2 secciones tipo menú para complementos.");
+    if (registerMenuSections.length >= 4) {
+      alert("Puedes agregar un máximo de 4 secciones tipo menú para complementos.");
       return;
     }
     const defaultTitles = [
       { title: "Presentaciones por Litro", subtitle: "Para familias y eventos", desc: "Precios especiales en presentaciones grandes." },
-      { title: "Botanas y Complementos", subtitle: "Acompañamientos frescos", desc: "El complemento perfecto para compartir." }
+      { title: "Botanas y Complementos", subtitle: "Acompañamientos frescos", desc: "El complemento perfecto para compartir." },
+      { title: "Paquetes y Especiales", subtitle: "Opciones para compartir", desc: "Combinaciones especiales para tu mesa o reunión." },
+      { title: "Bebidas y Postres", subtitle: "El toque final", desc: "Bebidas refrescantes y repostería artesanal." }
     ];
     const def = defaultTitles[registerMenuSections.length] || { title: "Otros Productos", subtitle: "Complementos", desc: "" };
     registerMenuSections.push({
@@ -451,8 +453,8 @@
     const badge = document.getElementById("reg-menu-sec-counter-badge");
     const addBtn = document.getElementById("btn-add-menu-section");
 
-    if (badge) badge.textContent = `${registerMenuSections.length} / 2 secciones`;
-    if (addBtn) addBtn.style.display = registerMenuSections.length >= 2 ? "none" : "inline-flex";
+    if (badge) badge.textContent = `${registerMenuSections.length} / 4 secciones`;
+    if (addBtn) addBtn.style.display = registerMenuSections.length >= 4 ? "none" : "inline-flex";
 
     if (!container) return;
     if (registerMenuSections.length === 0) {
@@ -595,34 +597,34 @@
 
       <!-- FASE 1: DATOS DEL COMERCIO Y CONTACTO -->
       <div id="reg-step-1">
-        <!-- SELECTOR DE PLAN: PÁGINA ESCAPARATE INDIVIDUAL ($770/AÑO) VS PLAN ESENCIAL ($199/AÑO) -->
+        <!-- SELECTOR DE PLAN: PÁGINA ESCAPARATE INDIVIDUAL ($499/AÑO) VS PLAN ESENCIAL ($99/AÑO) -->
         <div class="mb-4 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button type="button" id="plan-btn-microsite" onclick="selectRegistrationPlan('microsite')" class="p-3 rounded-2xl text-left transition-all bg-white shadow-xs border-2 border-emerald-600 flex items-center justify-between cursor-pointer">
             <span class="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-1.5">
               <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> Página Escaparate Individual
             </span>
-            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-emerald-100 text-emerald-800 font-mono">$770 / año</span>
+            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-emerald-100 text-emerald-800 font-mono">$499 / año</span>
           </button>
 
           <button type="button" id="plan-btn-free" onclick="selectRegistrationPlan('basic')" class="p-3 rounded-2xl text-left transition-all hover:bg-white/70 border-2 border-transparent flex items-center justify-between opacity-80 hover:opacity-100 cursor-pointer">
             <span class="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-1.5">
               <i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i> Plan Esencial
             </span>
-            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-slate-200 text-slate-800 font-mono">$199 / año</span>
+            <span class="px-2.5 py-1 text-[11px] font-black uppercase rounded-lg bg-slate-200 text-slate-800 font-mono">$99 / año</span>
           </button>
         </div>
 
         <div id="reg-pro-notice" class="mb-4 p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 flex items-start gap-2.5 text-left">
           <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
           <p class="text-[11px] text-emerald-950 leading-relaxed font-medium">
-            <strong>Página Escaparate Individual oficial</strong> ($770 MXN/año · ~$64/mes): Vitrina digital en Epizentro con portada, hasta 10 fotos de productos o servicios, precios, pedidos directos por WhatsApp, Sello Vecino Verificado y botón a tu sitio web externo.
+            <strong>Página Escaparate Individual oficial</strong> ($499 MXN/año · ~$41.50/mes): Vitrina digital en Epizentro con portada, hasta 10 fotos de productos o servicios, precios, pedidos directos por WhatsApp, Sello Vecino Verificado y botón a tu sitio web externo.
           </p>
         </div>
 
         <div id="reg-free-notice" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-2.5 text-left">
           <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
           <p class="text-[11px] text-amber-900 leading-relaxed font-medium">
-            <strong>Plan Esencial</strong> ($199 MXN/año · ~$16.50/mes): Tu negocio publicado en el directorio comunitario con llamadas y WhatsApp directo, ubicación y horarios. <em>(Sin Página Escaparate Individual ni fotos de catálogo)</em>.
+            <strong>Plan Esencial</strong> ($99 MXN/año · ~$8.25/mes): Tu negocio publicado en el directorio comunitario con llamadas y WhatsApp directo, ubicación y horarios. <em>(Sin Página Escaparate Individual ni fotos de catálogo)</em>.
           </p>
         </div>
 
@@ -750,7 +752,7 @@
             <label for="reg-delivery" class="text-xs text-slate-700">Ofrezco servicio a domicilio en cotos de la zona</label>
           </div>
 
-          <!-- CONFIGURACIÓN DE PÁGINA ESCAPARATE INDIVIDUAL EN EPIZENTRO ($770/AÑO): PORTADA, DESTACADOS Y MENÚ -->
+          <!-- CONFIGURACIÓN DE PÁGINA ESCAPARATE INDIVIDUAL EN EPIZENTRO ($499/AÑO): PORTADA, DESTACADOS Y MENÚ -->
           <div id="reg-photos-section" class="border-t border-slate-100 pt-3 space-y-4">
             <!-- 1. PORTADA DE TU PÁGINA ESCAPARATE INDIVIDUAL -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
@@ -859,17 +861,17 @@
               </div>
             </div>
 
-            <!-- 3. OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 2 SECCIONES) -->
+            <!-- 3. OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 4 SECCIONES) -->
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
               <div class="flex items-center justify-between">
                 <div>
                   <div class="flex items-center gap-1.5">
                     <span class="text-xs font-bold text-slate-900">3. Otros Productos / Menú sin Foto</span>
-                    <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-slate-200 text-slate-700 font-mono">Máx. 2 secciones</span>
+                    <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-slate-200 text-slate-700 font-mono">Máx. 4 secciones</span>
                   </div>
                   <span class="text-[11px] text-slate-500">Para renglones tipo menú, presentaciones por litro, botanas o complementos sin foto.</span>
                 </div>
-                <span id="reg-menu-sec-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-slate-200 text-slate-700 font-mono">0 / 2 secciones</span>
+                <span id="reg-menu-sec-counter-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-slate-200 text-slate-700 font-mono">0 / 4 secciones</span>
               </div>
 
               <div class="flex items-center justify-end">
@@ -950,8 +952,8 @@
           </p>
 
           <div class="py-2">
-            <span class="text-3xl font-black text-slate-950 font-mono">$770.00</span>
-            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$64/mes)</span>
+            <span class="text-3xl font-black text-slate-950 font-mono">$499.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$41.50/mes)</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
@@ -965,7 +967,7 @@
         <div class="space-y-3 p-4 rounded-2xl bg-white border border-slate-200 text-center shadow-xs">
           <button type="button" id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
-            <span>Pagar Suscripción Anual con Mercado Pago ($770 MXN / año)</span>
+            <span>Pagar Suscripción Anual con Mercado Pago ($499 MXN / año)</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
           <p class="text-[11px] text-center text-slate-500 leading-relaxed">
@@ -1000,13 +1002,13 @@
               <i data-lucide="info" class="w-4 h-4"></i>
             </div>
             <div>
-              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo presencia en directorio con Plan Esencial por $199 MXN/año?</h5>
+              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo presencia en directorio con Plan Esencial por $99 MXN/año?</h5>
               <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                El <strong>Plan Esencial</strong> (~$16.50/mes) incluye únicamente tus datos de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(Sin Página Escaparate Individual ni catálogo)</em>.
+                El <strong>Plan Esencial</strong> (~$8.25/mes) incluye únicamente tus datos de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(Sin Página Escaparate Individual ni catálogo)</em>.
               </p>
               <div class="pt-2">
                 <button type="button" onclick="selectRegistrationPlan('basic'); updateStep3PaymentUI();" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors cursor-pointer">
-                  Cambiar a Plan Esencial ($199 MXN / año) &rarr;
+                  Cambiar a Plan Esencial ($99 MXN / año) &rarr;
                 </button>
               </div>
             </div>
@@ -1348,9 +1350,9 @@
     btn.disabled = false;
     btn.className = "w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer";
     if (currentSelectedPlan === "basic" || currentSelectedPlan === "free_basic") {
-      btn.innerHTML = `<span>Continuar a Pago de Plan Esencial ($199 MXN)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      btn.innerHTML = `<span>Continuar a Pago de Plan Esencial ($99 MXN)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
     } else {
-      btn.innerHTML = `<span>Continuar a Pago de Página Escaparate Individual ($770 MXN)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      btn.innerHTML = `<span>Continuar a Pago de Página Escaparate Individual ($499 MXN)</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
     }
     btn.onclick = goToStep3;
     if (window.lucide && lucide.createIcons) lucide.createIcons();
@@ -1371,8 +1373,8 @@
           </p>
 
           <div class="py-2">
-            <span class="text-3xl font-black text-slate-950 font-mono">$199.00</span>
-            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$16.50/mes)</span>
+            <span class="text-3xl font-black text-slate-950 font-mono">$99.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$8.25/mes)</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
@@ -1392,8 +1394,8 @@
           </p>
 
           <div class="py-2">
-            <span class="text-3xl font-black text-slate-950 font-mono">$770.00</span>
-            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$64/mes)</span>
+            <span class="text-3xl font-black text-slate-950 font-mono">$499.00</span>
+            <span class="text-xs font-bold text-slate-500 uppercase ml-1">MXN / Suscripción Anual (~$41.50/mes)</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left text-[11px] text-slate-700 bg-white/80 p-3 rounded-xl border border-slate-200">
@@ -1407,7 +1409,7 @@
 
     const payBtn = document.getElementById("btn-pay-mp");
     if (payBtn) {
-      const amtStr = isBasic ? "$199 MXN / año" : "$770 MXN / año";
+      const amtStr = isBasic ? "$99 MXN / año" : "$499 MXN / año";
       payBtn.innerHTML = `
         <i data-lucide="shield-check" class="w-5 h-5"></i>
         <span>Pagar Suscripción Anual con Mercado Pago (${amtStr})</span>
@@ -1426,11 +1428,11 @@
             <div>
               <h5 class="text-xs font-bold text-slate-900">¿Quieres tu Página Escaparate Individual con catálogo?</h5>
               <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                Por <strong>$770 MXN al año</strong> (~$64/mes) obtienes tu Página Escaparate Individual en Epizentro con fotos, lista de precios y pedidos directos a tu WhatsApp.
+                Por <strong>$499 MXN al año</strong> (~$41.50/mes) obtienes tu Página Escaparate Individual en Epizentro con fotos, lista de precios y pedidos directos a tu WhatsApp.
               </p>
               <div class="pt-2">
                 <button type="button" onclick="selectRegistrationPlan('microsite'); updateStep3PaymentUI();" class="text-xs font-bold text-emerald-700 hover:text-emerald-900 underline transition-colors cursor-pointer">
-                  Ascender a Página Escaparate Individual ($770 MXN/año) &rarr;
+                  Ascender a Página Escaparate Individual ($499 MXN/año) &rarr;
                 </button>
               </div>
             </div>
@@ -1443,13 +1445,13 @@
               <i data-lucide="info" class="w-4 h-4"></i>
             </div>
             <div>
-              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo presencia en directorio por $199 MXN/año?</h5>
+              <h5 class="text-xs font-bold text-slate-900">¿Prefieres solo presencia en directorio por $99 MXN/año?</h5>
               <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                El <strong>Plan Esencial</strong> (~$16.50/mes) incluye únicamente tus datos de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(Sin Página Escaparate Individual ni catálogo)</em>.
+                El <strong>Plan Esencial</strong> (~$8.25/mes) incluye únicamente tus datos de contacto: <strong>teléfono, WhatsApp, ubicación y horarios</strong> en el directorio. <em>(Sin Página Escaparate Individual ni catálogo)</em>.
               </p>
               <div class="pt-2">
                 <button type="button" onclick="selectRegistrationPlan('basic'); updateStep3PaymentUI();" class="text-xs font-bold text-slate-600 hover:text-emerald-700 underline transition-colors cursor-pointer">
-                  Cambiar a Plan Esencial ($199 MXN / año) &rarr;
+                  Cambiar a Plan Esencial ($99 MXN / año) &rarr;
                 </button>
               </div>
             </div>
@@ -1656,7 +1658,7 @@
           <h4 class="text-xl font-black text-slate-950">${(customTexts && customTexts.title) ? customTexts.title : "¡Completando Pago en Mercado Pago!"}</h4>
           
           <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>Página Escaparate Individual en Epizentro con catálogo</strong>, completa tu suscripción anual de <strong>$770 MXN</strong> (o <strong>$199 MXN</strong> para Plan Esencial) en Mercado Pago.`}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : `Hemos registrado tu solicitud para <strong class="text-slate-900">${bName}</strong>. Para activar tu <strong>Página Escaparate Individual en Epizentro con catálogo</strong>, completa tu suscripción anual de <strong>$499 MXN</strong> (o <strong>$99 MXN</strong> para Plan Esencial) en Mercado Pago.`}
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto space-y-1">
@@ -1715,7 +1717,7 @@
           </div>
 
           <p class="text-xs text-slate-500 max-w-xs mx-auto">
-            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu Página Escaparate Individual en Epizentro con catálogo con la suscripción anual ($770 MXN) en cualquier momento."}
+            ${(customTexts && customTexts.desc) ? customTexts.desc : "Podrás activar tu Página Escaparate Individual en Epizentro con catálogo con la suscripción anual ($499 MXN) en cualquier momento."}
           </p>
 
           <button onclick="closeRegisterModal(); location.reload();" class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm">
