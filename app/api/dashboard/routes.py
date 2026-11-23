@@ -65,6 +65,24 @@ def _get_next_iso_week_id(week_id: Optional[str]) -> str:
     return f"{iso_year}-W{iso_week:02d}"
 
 
+def _get_prev_iso_week_id(week_id: Optional[str]) -> str:
+    if week_id and "-W" in week_id:
+        try:
+            parts = week_id.split("-W")
+            year = int(parts[0])
+            week = int(parts[1])
+            monday = datetime.date.fromisocalendar(year, week, 1)
+            prev_monday = monday - datetime.timedelta(days=7)
+            iso_year, iso_week, _ = prev_monday.isocalendar()
+            return f"{iso_year}-W{iso_week:02d}"
+        except Exception:
+            pass
+    today = datetime.date.today()
+    prev_day = today - datetime.timedelta(days=7)
+    iso_year, iso_week, _ = prev_day.isocalendar()
+    return f"{iso_year}-W{iso_week:02d}"
+
+
 def _derive_month_id(week_id: Optional[str]) -> str:
     if week_id and "-W" in week_id:
         try:
@@ -324,12 +342,13 @@ def update_workflow_task(
     if not task:
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
     
-    for field, val in task_in.model_dump(exclude_unset=True).items():
+    updated_fields = task_in.model_dump(exclude_unset=True)
+    for field, val in updated_fields.items():
         setattr(task, field, val)
         
-    if not task.month_id and task.week_id:
+    if "week_id" in updated_fields or "day" in updated_fields or not task.month_id:
         task.month_id = _derive_month_id(task.week_id)
-    if not task.task_date and task.week_id:
+    if "week_id" in updated_fields or "day" in updated_fields or not task.task_date:
         task.task_date = _derive_task_date(task.week_id, task.day)
 
     db.commit()
@@ -439,6 +458,29 @@ def move_task_to_next_monday(
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
 
     target_week = _get_next_iso_week_id(task.week_id)
+    task.week_id = target_week
+    task.day = "monday"
+    task.task_date = _derive_task_date(target_week, "monday")
+    task.month_id = _derive_month_id(target_week)
+
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.patch("/workflow/tasks/{task_id}/move-to-prev-monday", response_model=WorkflowTaskSchema)
+@router.patch("/workflow/tasks/{task_id}/move-to-previous-monday", response_model=WorkflowTaskSchema)
+def move_task_to_prev_monday(
+    task_id: int,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_active_user)
+):
+    """Mueve una tarea de diseño específica directamente al Lunes de la semana anterior."""
+    task = db.query(WorkflowTask).filter(WorkflowTask.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarea no encontrada")
+
+    target_week = _get_prev_iso_week_id(task.week_id)
     task.week_id = target_week
     task.day = "monday"
     task.task_date = _derive_task_date(target_week, "monday")

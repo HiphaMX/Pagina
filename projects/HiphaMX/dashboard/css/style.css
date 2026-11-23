@@ -1119,6 +1119,33 @@ select {
     transform: scale(1.04);
 }
 
+.btn-card-prev-monday {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.18rem 0.45rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
+}
+.btn-card-prev-monday:hover {
+    background: rgba(245, 158, 11, 0.25);
+    border-color: #f59e0b;
+    color: #ffffff;
+    transform: scale(1.04);
+}
+
+@media (max-width: 1280px) {
+    .btn-card-nav-text {
+        display: none;
+    }
+}
+
 /* Tarjeta Minimizada para Tareas Terminadas */
 .workflow-card.is-completed {
     min-height: 40px !important;

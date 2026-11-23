@@ -1647,6 +1647,30 @@ function setupWorkflowElements() {
         taskInputHours.addEventListener('change', updateModalRevisionSummary);
     }
 
+    // Botones de cambio de semana en modal de tarea
+    const btnModalPrevWeek = document.getElementById('btnModalPrevWeek');
+    const btnModalNextWeek = document.getElementById('btnModalNextWeek');
+    const inputModalWeek = document.getElementById('taskInputWeekId');
+    const lblModalWeek = document.getElementById('lblTaskModalWeek');
+
+    if (btnModalPrevWeek) {
+        btnModalPrevWeek.addEventListener('click', () => {
+            const cur = (inputModalWeek && inputModalWeek.value) ? inputModalWeek.value : currentWeekId;
+            const prev = getPreviousIsoWeekId(cur);
+            if (inputModalWeek) inputModalWeek.value = prev;
+            if (lblModalWeek) lblModalWeek.textContent = formatIsoWeekLabel(prev);
+        });
+    }
+
+    if (btnModalNextWeek) {
+        btnModalNextWeek.addEventListener('click', () => {
+            const cur = (inputModalWeek && inputModalWeek.value) ? inputModalWeek.value : currentWeekId;
+            const next = getNextIsoWeekId(cur);
+            if (inputModalWeek) inputModalWeek.value = next;
+            if (lblModalWeek) lblModalWeek.textContent = formatIsoWeekLabel(next);
+        });
+    }
+
     // Modal de Reporte Mensual / Por Rango de Fechas
     const btnOpenMonthlyReport = document.getElementById('btnOpenMonthlyReport');
     const btnCloseMonthlyReport = document.getElementById('btnCloseMonthlyReport');
@@ -1884,6 +1908,59 @@ function getIsoWeekNumber(d) {
     date.setUTCDate(date.getUTCDate() + 4 - dayNum);
     const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
     return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+}
+
+function getIsoMondayDate(year, week) {
+    const jan4 = new Date(year, 0, 4);
+    const day = jan4.getDay() || 7;
+    const mon1 = new Date(year, 0, 4 - (day - 1));
+    return new Date(mon1.getTime() + (week - 1) * 7 * 86400000);
+}
+
+function getPreviousIsoWeekId(weekId) {
+    if (weekId && weekId.includes('-W')) {
+        const parts = weekId.split('-W');
+        const year = parseInt(parts[0], 10);
+        const week = parseInt(parts[1], 10);
+        const mon = getIsoMondayDate(year, week);
+        mon.setDate(mon.getDate() - 7);
+        const thu = new Date(mon.getTime() + 3 * 86400000);
+        const isoYear = thu.getFullYear();
+        const isoWeek = getIsoWeekNumber(mon);
+        return `${isoYear}-W${String(isoWeek).padStart(2, '0')}`;
+    }
+    const d = new Date(currentWeekMonday || new Date());
+    d.setDate(d.getDate() - 7);
+    const thu = new Date(d.getTime() + 3 * 86400000);
+    const isoYear = thu.getFullYear();
+    const isoWeek = getIsoWeekNumber(d);
+    return `${isoYear}-W${String(isoWeek).padStart(2, '0')}`;
+}
+
+function getNextIsoWeekId(weekId) {
+    if (weekId && weekId.includes('-W')) {
+        const parts = weekId.split('-W');
+        const year = parseInt(parts[0], 10);
+        const week = parseInt(parts[1], 10);
+        const mon = getIsoMondayDate(year, week);
+        mon.setDate(mon.getDate() + 7);
+        const thu = new Date(mon.getTime() + 3 * 86400000);
+        const isoYear = thu.getFullYear();
+        const isoWeek = getIsoWeekNumber(mon);
+        return `${isoYear}-W${String(isoWeek).padStart(2, '0')}`;
+    }
+    const d = new Date(currentWeekMonday || new Date());
+    d.setDate(d.getDate() + 7);
+    const thu = new Date(d.getTime() + 3 * 86400000);
+    const isoYear = thu.getFullYear();
+    const isoWeek = getIsoWeekNumber(d);
+    return `${isoYear}-W${String(isoWeek).padStart(2, '0')}`;
+}
+
+function formatIsoWeekLabel(weekId) {
+    if (!weekId) return 'Semana Actual';
+    if (weekId === currentWeekId) return `🗓️ ${weekId} (Semana en vista)`;
+    return `🗓️ ${weekId}`;
 }
 
 // Carga de tareas (Dual persistence: API + LocalStorage)
@@ -2226,8 +2303,11 @@ function createWorkflowTaskCard(task) {
                     ${revBadgeHtml}
                 </div>
                 <div style="display:flex; align-items:center; gap:0.35rem;">
+                    <button class="btn-card-prev-monday" type="button" title="Regresar entrega a la semana anterior (Lunes)" aria-label="Regresar al lunes anterior">
+                        <span>⏮️<span class="btn-card-nav-text"> Lunes</span></span>
+                    </button>
                     <button class="btn-card-next-monday" type="button" title="Mover entrega al próximo lunes" aria-label="Mover al próximo lunes">
-                        <span>⏭️ Lunes</span>
+                        <span>⏭️<span class="btn-card-nav-text"> Lunes</span></span>
                     </button>
                     <button class="card-actions-btn" type="button" title="Editar entrega" aria-label="Editar entrega">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -2256,6 +2336,15 @@ function createWorkflowTaskCard(task) {
         editBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             editWorkflowTask(task.id);
+        });
+    }
+
+    // Click específico en botón rápido de semana anterior (lunes)
+    const prevMondayBtn = card.querySelector('.btn-card-prev-monday');
+    if (prevMondayBtn) {
+        prevMondayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            moveTaskToPrevMonday(task.id);
         });
     }
 
@@ -2288,7 +2377,7 @@ function createWorkflowTaskCard(task) {
 
     // Click en cualquier otra área de la tarjeta abre el editor
     card.addEventListener('click', (e) => {
-        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision') || e.target.closest('.btn-card-next-monday')) return;
+        if (e.target.closest('.status-chip') || e.target.closest('.card-actions-btn') || e.target.closest('.btn-quick-revision') || e.target.closest('.btn-card-next-monday') || e.target.closest('.btn-card-prev-monday')) return;
         editWorkflowTask(task.id);
     });
 
@@ -2546,6 +2635,11 @@ function openWorkflowTaskModal(day = 'monday') {
     }
 
     document.getElementById('taskInputId').value = '';
+    const inputWeek = document.getElementById('taskInputWeekId');
+    if (inputWeek) inputWeek.value = currentWeekId;
+    const lblWeek = document.getElementById('lblTaskModalWeek');
+    if (lblWeek) lblWeek.textContent = formatIsoWeekLabel(currentWeekId);
+
     document.getElementById('taskCustomClientGroup').classList.add('hidden');
     document.getElementById('taskInputCustomClient').value = '';
     document.getElementById('taskInputTitle').value = '';
@@ -2655,6 +2749,11 @@ function editWorkflowTask(taskId) {
     const customInput = document.getElementById('taskInputCustomClient');
 
     document.getElementById('taskInputId').value = String(task.id);
+    const taskWeek = task.week_id || currentWeekId;
+    const inputWeek = document.getElementById('taskInputWeekId');
+    if (inputWeek) inputWeek.value = taskWeek;
+    const lblWeek = document.getElementById('lblTaskModalWeek');
+    if (lblWeek) lblWeek.textContent = formatIsoWeekLabel(taskWeek);
     
     // Asegurar que el selector contenga los clientes activos en la agenda
     if (clientSelect) {
@@ -2777,10 +2876,14 @@ async function handleWorkflowTaskSubmit(e) {
         }
     }
 
+    const targetWeekId = document.getElementById('taskInputWeekId')?.value || currentWeekId;
+
     if (idVal) {
         // Actualizar tarea existente
         const task = workflowTasks.find(t => String(t.id) === String(idVal));
         if (task) {
+            const oldWeek = task.week_id;
+            task.week_id = targetWeekId;
             task.client_name = finalClient;
             task.title = title;
             task.day = day;
@@ -2792,12 +2895,28 @@ async function handleWorkflowTaskSubmit(e) {
             task.notes = notes;
             task.task_date = getTaskExactDate(task);
             syncTaskWithApi(task, 'PUT');
+
+            if (oldWeek && oldWeek !== targetWeekId) {
+                const targetStorageKey = `hipha_wf_tasks_${targetWeekId}`;
+                let targetList = [];
+                try {
+                    const ex = localStorage.getItem(targetStorageKey);
+                    if (ex) targetList = JSON.parse(ex);
+                } catch (e) {}
+                targetList = targetList.filter(t => String(t.id) !== String(task.id));
+                targetList.push(task);
+                localStorage.setItem(targetStorageKey, JSON.stringify(targetList));
+
+                if (targetWeekId !== currentWeekId) {
+                    workflowTasks = workflowTasks.filter(t => String(t.id) !== String(task.id));
+                }
+            }
         }
     } else {
         // Crear nueva tarea
         const newTask = {
             id: Date.now(),
-            week_id: currentWeekId,
+            week_id: targetWeekId,
             day: day,
             client_name: finalClient,
             title: title,
@@ -2807,9 +2926,20 @@ async function handleWorkflowTaskSubmit(e) {
             revisions_count: revCount,
             status: status,
             notes: notes,
-            task_date: getTaskExactDate({ week_id: currentWeekId, day: day })
+            task_date: getTaskExactDate({ week_id: targetWeekId, day: day })
         };
-        workflowTasks.push(newTask);
+        if (targetWeekId === currentWeekId) {
+            workflowTasks.push(newTask);
+        } else {
+            const targetStorageKey = `hipha_wf_tasks_${targetWeekId}`;
+            let targetList = [];
+            try {
+                const ex = localStorage.getItem(targetStorageKey);
+                if (ex) targetList = JSON.parse(ex);
+            } catch (e) {}
+            targetList.push(newTask);
+            localStorage.setItem(targetStorageKey, JSON.stringify(targetList));
+        }
         syncTaskWithApi(newTask, 'POST');
     }
 
@@ -2975,10 +3105,7 @@ async function moveTaskToNextMonday(taskId) {
     const task = (workflowTasks || []).find(t => String(t.id) === String(taskId));
     if (!task) return;
 
-    const nextMonday = new Date(currentWeekMonday);
-    nextMonday.setDate(currentWeekMonday.getDate() + 7);
-    const nextWeekNum = getIsoWeekNumber(nextMonday);
-    const nextWeekId = `${nextMonday.getFullYear()}-W${String(nextWeekNum).padStart(2, '0')}`;
+    const nextWeekId = getNextIsoWeekId(task.week_id || currentWeekId);
 
     try {
         const token = localStorage.getItem('dashboard_token');
@@ -2991,6 +3118,9 @@ async function moveTaskToNextMonday(taskId) {
                 workflowTasks = workflowTasks.filter(t => String(t.id) !== String(taskId));
                 saveWorkflowState();
                 renderWorkflowBoard();
+                if (typeof showDashboardToast === 'function') {
+                    showDashboardToast(`⏭️ Entrega adelantada al próximo lunes (${nextWeekId})`);
+                }
                 return;
             }
         }
@@ -3015,6 +3145,58 @@ async function moveTaskToNextMonday(taskId) {
     workflowTasks = workflowTasks.filter(t => String(t.id) !== String(taskId));
     saveWorkflowState();
     renderWorkflowBoard();
+    if (typeof showDashboardToast === 'function') {
+        showDashboardToast(`⏭️ Entrega adelantada al próximo lunes (${nextWeekId})`);
+    }
+}
+
+async function moveTaskToPrevMonday(taskId) {
+    const task = (workflowTasks || []).find(t => String(t.id) === String(taskId));
+    if (!task) return;
+
+    const prevWeekId = getPreviousIsoWeekId(task.week_id || currentWeekId);
+
+    try {
+        const token = localStorage.getItem('dashboard_token');
+        if (token) {
+            const res = await fetch(`${API_BASE}/workflow/tasks/${taskId}/move-to-prev-monday`, {
+                method: 'PATCH',
+                headers: getAuthHeaders()
+            });
+            if (res.ok) {
+                workflowTasks = workflowTasks.filter(t => String(t.id) !== String(taskId));
+                saveWorkflowState();
+                renderWorkflowBoard();
+                if (typeof showDashboardToast === 'function') {
+                    showDashboardToast(`⏮️ Entrega regresada a la semana anterior (${prevWeekId})`);
+                }
+                return;
+            }
+        }
+    } catch (err) {
+        console.warn("Fallo al mover tarea en API, aplicando localmente:", err);
+    }
+
+    // Fallback local
+    task.week_id = prevWeekId;
+    task.day = 'monday';
+    task.task_date = getTaskExactDate({ week_id: prevWeekId, day: 'monday' });
+
+    const prevStorageKey = `hipha_wf_tasks_${prevWeekId}`;
+    let prevWeekTasks = [];
+    try {
+        const existingPrev = localStorage.getItem(prevStorageKey);
+        if (existingPrev) prevWeekTasks = JSON.parse(existingPrev);
+    } catch (e) {}
+    prevWeekTasks.push(task);
+    localStorage.setItem(prevStorageKey, JSON.stringify(prevWeekTasks));
+
+    workflowTasks = workflowTasks.filter(t => String(t.id) !== String(taskId));
+    saveWorkflowState();
+    renderWorkflowBoard();
+    if (typeof showDashboardToast === 'function') {
+        showDashboardToast(`⏮️ Entrega regresada a la semana anterior (${prevWeekId})`);
+    }
 }
 
 function capitalize(s) {
@@ -5329,6 +5511,8 @@ window.confirmWorkflowActualTimeModal = confirmWorkflowActualTimeModal;
 window.skipWorkflowActualTimeModal = skipWorkflowActualTimeModal;
 window.openMonthlyReportModal = openMonthlyReportModal;
 window.closeMonthlyReportModal = closeMonthlyReportModal;
+window.moveTaskToPrevMonday = moveTaskToPrevMonday;
+window.moveTaskToNextMonday = moveTaskToNextMonday;
 window.addTaskRevision = addTaskRevision;
 window.openClientModal = openClientModal;
 window.closeClientModal = closeClientModal;

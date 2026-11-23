@@ -89,6 +89,13 @@ def test_rollover_workflow_tasks():
     assert moved_data["week_id"] == "2026-W40"
     assert moved_data["day"] == "monday"
 
+    # 4. Probar regresar tarea individual a la semana anterior (de W40 a W39)
+    prev_resp = client.patch(f"/api/dashboard/workflow/tasks/{task_pending.id}/move-to-prev-monday")
+    assert prev_resp.status_code == 200, prev_resp.text
+    prev_data = prev_resp.json()
+    assert prev_data["week_id"] == "2026-W39"
+    assert prev_data["day"] == "monday"
+
     # Cleanup
     db.query(WorkflowTask).filter(WorkflowTask.week_id.in_(["2026-W38", "2026-W39", "2026-W40"])).delete(synchronize_session=False)
     db.commit()
