@@ -71,7 +71,7 @@
             id: 5,
             codigo: "JM1126-02",
             slug: "casa-en-venta-en-los-robles-coto-encinos",
-            title: "Casa en Venta en Los Robles Residencial (Coto Encinos)",
+            title: "Casa en Venta en Los Robles Residencial",
             municipio: "Zapopan",
             zona: "Los Robles Residencial",
             operacion: "Venta",
