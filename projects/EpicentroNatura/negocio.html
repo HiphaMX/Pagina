@@ -375,6 +375,7 @@
 
       // 6. Ubicación y Horario
       const cleanWa = (reg.whatsapp || "3336762545").replace(/\D/g, "");
+      const cleanPhone = (reg.phone || reg.whatsapp || "3336762545").replace(/\D/g, "");
       const locText = document.getElementById("hero-location-text");
       if (locText && reg.coto_address) {
         if (reg.coto_only_delivery) {
@@ -494,9 +495,39 @@
         `;
         }).join("");
       } else {
-        // Si no subió productos destacados, ocultar sección de destacados
-        const container = document.getElementById("featured-section-container");
-        if (container) container.classList.add("hidden");
+        if (siteUrl && featGrid) {
+          if (featTitle) featTitle.textContent = "Catálogo y Servicios Oficiales";
+          if (featSubtitle) featSubtitle.textContent = "PORTAL WEB OFICIAL";
+          if (featDesc) featDesc.textContent = `Explora el catálogo completo, opciones y atención personalizada directamente en el portal oficial de ${bName}.`;
+          if (featCountText) featCountText.textContent = "Sitio Oficial";
+          featGrid.className = "w-full";
+          featGrid.innerHTML = `
+            <div class="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl text-center space-y-5">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
+                <i data-lucide="globe" class="w-7 h-7"></i>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-xl sm:text-2xl font-black font-brand-title">Conoce todas nuestras opciones y servicios</h3>
+                <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+                  Visita el portal web oficial de <strong class="text-white">${bName}</strong> para consultar información en tiempo real, catálogo y atención directa.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
+                <a href="${siteUrl.startsWith('http') ? siteUrl : 'https://' + siteUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95">
+                  <span>Visitar Sitio Web Oficial</span>
+                  <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </a>
+                <a href="https://wa.me/52${cleanWa}?text=Hola%20${encodeURIComponent(bName)},%20vi%20su%20escaparate%20en%20Epizentro%20Natura%20y%20deseo%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition-all border border-white/15 active:scale-95">
+                  <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+                  <span>Contactar por WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          `;
+        } else {
+          const container = document.getElementById("featured-section-container");
+          if (container) container.classList.add("hidden");
+        }
       }
 
       // 9. Otras Secciones de Servicios o Menú

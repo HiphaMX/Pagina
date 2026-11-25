@@ -1720,6 +1720,86 @@ def seed_official_showcases(db: Session):
             if updated:
                 db.commit()
 
+        # 4. JESSICA MENDOZA BIENES RAÍCES (Cliente Oficial Hipha con Sitio Propio y Escaparate Verificado)
+        JESSICA_DATA = {
+            "cover_photo": "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+            "website_url": "https://www.jessicamendozabienesraices.com/",
+            "schedule": "Lunes a Viernes · 09:00 a 19:00 hrs",
+            "featured_section": {
+                "title": "Propiedades Destacadas en Cotos",
+                "subtitle": "VENTA & RENTA RESIDENCIAL DE ALTA GAMA",
+                "description": "Propiedades de autor en Los Robles Residencial y cotos de la zona Mariano Otero con amenidades de primer nivel y seguridad 24/7.",
+                "products": [
+                    {
+                        "name": "Casa en Renta en Los Robles Residencial",
+                        "price": 32000.0,
+                        "description": "Exclusiva residencia en Coto Helechos. 3 recámaras (una en planta baja con baño y vestidor), 3.5 baños, sala comedor con doble altura, cocina con parota y granito, paneles solares y mantenimiento incluido.",
+                        "photo": "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+                        "badge": "Coto Helechos · Renta"
+                    }
+                ]
+            },
+            "other_products_sections": []
+        }
+
+        jessica = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.id == "18315325-717f-4072-86b0-cab5300e0d3f") |
+            (EpicentroRegistration.business_name.ilike("%jessica mendoza%"))
+        ).first()
+
+        if not jessica:
+            jessica = EpicentroRegistration(
+                id="18315325-717f-4072-86b0-cab5300e0d3f",
+                business_name="Jessica Mendoza Bienes Raíces",
+                category_slug="servicios-profesionales",
+                category_label="Servicios Profesionales",
+                subcategory_slug="inmobiliario",
+                subcategory_label="Inmobiliario",
+                coto_address="Los Robles",
+                business_type="local-establecido",
+                space_label="Punto de venta & A domicilio",
+                owner_name="Jessica Mendoza",
+                email="contacto@jessicamendozabienesraices.com",
+                phone="33 3956 4830",
+                whatsapp="33 3956 4830",
+                delivery_available=True,
+                preferred_contact_methods="whatsapp,llamada",
+                schedule="Lunes a Viernes · 09:00 a 19:00 hrs",
+                website="https://www.jessicamendozabienesraices.com/",
+                description="Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7 y amenidades de primer nivel.",
+                cover_photo=JESSICA_DATA["cover_photo"],
+                microsite_data=json.dumps(JESSICA_DATA),
+                email_verified=True,
+                whatsapp_verified=True,
+                payment_status="waived",
+                payment_amount=499.0,
+                kam_name="Chizko",
+                payment_method="courtesy_hipha",
+                is_verified_badge=True,
+                status="active",
+                moderation_notes="Cliente oficial de Hipha con sitio propio y escaparate verificado."
+            )
+            db.add(jessica)
+            db.commit()
+            db.refresh(jessica)
+        else:
+            jessica.business_name = "Jessica Mendoza Bienes Raíces"
+            jessica.category_slug = "servicios-profesionales"
+            jessica.category_label = "Servicios Profesionales"
+            jessica.subcategory_slug = "inmobiliario"
+            jessica.subcategory_label = "Inmobiliario"
+            jessica.coto_address = "Los Robles"
+            jessica.website = "https://www.jessicamendozabienesraices.com/"
+            jessica.phone = "33 3956 4830"
+            jessica.whatsapp = "33 3956 4830"
+            jessica.cover_photo = JESSICA_DATA["cover_photo"]
+            jessica.description = "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7."
+            jessica.microsite_data = json.dumps(JESSICA_DATA)
+            jessica.is_verified_badge = True
+            jessica.payment_status = "waived"
+            jessica.status = "active"
+            db.commit()
+
     except Exception as e:
         logger.warning(f"Error seeding official showcases: {e}")
         try:
