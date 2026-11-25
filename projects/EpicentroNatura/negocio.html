@@ -534,6 +534,18 @@
         }
       }
 
+      // Botón flotante de edición si el dueño visita con su token
+      const urlParams = new URLSearchParams(window.location.search);
+      const editToken = urlParams.get("token") || sessionStorage.getItem("last_epicentro_edit_token");
+      if (editToken) {
+        try { sessionStorage.setItem("last_epicentro_edit_token", editToken); } catch(e){}
+        const floatingEdit = document.createElement("a");
+        floatingEdit.href = `/natura/editar?token=${encodeURIComponent(editToken)}`;
+        floatingEdit.className = "fixed bottom-5 right-5 z-40 px-4 py-2.5 rounded-full bg-slate-950 text-white border border-emerald-500/50 shadow-2xl text-xs font-bold flex items-center gap-2 hover:bg-emerald-600 transition-all";
+        floatingEdit.innerHTML = '<i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i><span>Editar mi Escaparate</span>';
+        document.body.appendChild(floatingEdit);
+      }
+
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 

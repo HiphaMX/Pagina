@@ -50,6 +50,8 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coto_only_delivery BOOLEAN DEFAULT FALSE"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token VARCHAR(64)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token_expires_at TIMESTAMP"))
             db.commit()
         else:
             for col, col_type in [
@@ -62,7 +64,9 @@ def ensure_epicentro_schema(db: Session):
                 ("cover_photo", "TEXT"),
                 ("microsite_data", "TEXT"),
                 ("coupon_code", "VARCHAR(50)"),
-                ("coto_only_delivery", "BOOLEAN DEFAULT 0")
+                ("coto_only_delivery", "BOOLEAN DEFAULT 0"),
+                ("edit_token", "VARCHAR(64)"),
+                ("edit_token_expires_at", "TIMESTAMP")
             ]:
                 try:
                     db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
@@ -146,9 +150,9 @@ class RegisterInitiateRequest(BaseModel):
     coto_address: str
     business_type: str = "local-establecido"
     space_label: Optional[str] = None
-    owner_name: str
-    email: EmailStr
-    phone: str
+    owner_name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
     whatsapp: str
     preferred_contact_methods: Optional[str] = None
     schedule: Optional[str] = None
@@ -163,6 +167,19 @@ class RegisterInitiateRequest(BaseModel):
     description: Optional[str] = None
     plan_type: Optional[str] = "microsite"  # "microsite" ($499/año) o "basic" ($99/año)
     honeypot: Optional[str] = None  # Trampa anti-bot
+
+
+class SelfServiceUpdateRequest(BaseModel):
+    cover_photo: Optional[str] = None
+    photos: Optional[Union[List[str], str]] = None
+    microsite_data: Optional[Union[dict, str]] = None
+    description: Optional[str] = None
+    schedule: Optional[str] = None
+    whatsapp: Optional[str] = None
+    coto_address: Optional[str] = None
+    delivery_available: Optional[bool] = None
+    coto_only_delivery: Optional[bool] = None
+    website: Optional[str] = None
 
 
 class UpdateRegistrationAdminRequest(BaseModel):
@@ -480,11 +497,25 @@ def check_is_bot_submission(payload: RegisterInitiateRequest) -> tuple[bool, str
             return True, f"Gmail dot-trick masivo ('{email_clean}')"
 
     # 4. Longitud de teléfono mínima (10 dígitos en México)
-    phone_digits = re.sub(r'\D', '', payload.phone or "")
+    phone_digits = re.sub(r'\D', '', payload.phone or payload.whatsapp or "")
     if len(phone_digits) < 10:
-        return True, f"Teléfono con dígitos insuficientes ('{payload.phone}')"
+        return True, f"Teléfono con dígitos insuficientes ('{payload.phone or payload.whatsapp}')"
 
     return False, ""
+
+
+# Portadas Curadas Oficiales por Categoría para Efecto WOW Inmediato
+CURATED_COVERS_BY_CATEGORY = {
+    "comida-delivery": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=80",
+    "productos-artesanales": "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1600&q=80",
+    "educacion": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1600&q=80",
+    "servicios-profesionales": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80",
+    "servicios-hogar": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1600&q=80",
+    "mascotas": "https://images.unsplash.com/photo-1548767797-d8c844163c4c?auto=format&fit=crop&w=1600&q=80",
+    "fitness": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80",
+    "cuidado-personal": "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1600&q=80"
+}
+DEFAULT_CURATED_COVER = "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1600&q=80"
 
 
 @router.post("/register/initiate")
@@ -494,11 +525,14 @@ async def initiate_registration(
     db: Session = Depends(get_db)
 ):
     """
-    Paso inicial del registro:
-    1. Filtro anti-bot Honeypot y validación heurística multicapa.
-    2. Creación del registro en pending_verification.
-    3. Generación del código y deep link para handshake de WhatsApp.
+    Paso inicial del registro ultraligero (30 segundos):
+    1. Filtro anti-bot Honeypot y validación heurística.
+    2. Creación del registro en pending_verification (invisible en el directorio público).
+    3. Asignación automática de portada curada por giro y token seguro de edición.
+    4. Generación de preview interactivo para el Efecto WOW previo al pago.
     """
+    ensure_epicentro_schema(db)
+
     # 1. Filtro Heurístico Anti-Bot Multicapa (Sinkhole silencioso)
     is_bot, bot_reason = check_is_bot_submission(payload)
     if is_bot:
@@ -510,8 +544,9 @@ async def initiate_registration(
             "whatsapp_link": "https://wa.me/523336762545?text=Hola%20Natura"
         }
 
-    # Generar código de WhatsApp (ej. NATURA-5819)
+    # Generar código de WhatsApp (ej. NATURA-5819) y token de autoservicio
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
+    edit_token = secrets.token_urlsafe(32)
 
     # Determinar si es Plan con Página Escaparate Individual ($499) o Plan Esencial ($99)
     is_basic = (payload.plan_type in ("basic", "free_basic", "directorio", "esencial"))
@@ -525,7 +560,14 @@ async def initiate_registration(
         "Solicitud Plan Anual con Página Escaparate Individual ($499 MXN / año: vitrina digital, fotos y pedidos a WhatsApp)."
     )
 
-    # Crear o actualizar registro (email sin bloqueo de OTP para eliminar fricción a prospectos)
+    clean_owner = (payload.owner_name or payload.business_name).strip()
+    clean_phone = (payload.phone or payload.whatsapp).strip()
+    clean_email = (payload.email or f"contacto+{uuid.uuid4().hex[:8]}@epizentro.com").lower().strip()
+    
+    # Portada asignada: la provista o la curada oficial por giro
+    selected_cover = (payload.cover_photo.strip() if payload.cover_photo else None) or CURATED_COVERS_BY_CATEGORY.get(payload.category_slug, DEFAULT_CURATED_COVER)
+
+    # Crear registro con estado pending_verification (NO publicado en /businesses/active)
     new_reg = EpicentroRegistration(
         business_name=payload.business_name.strip(),
         category_slug=payload.category_slug.strip(),
@@ -535,17 +577,17 @@ async def initiate_registration(
         coto_address=payload.coto_address.strip(),
         business_type=payload.business_type,
         space_label=payload.space_label,
-        owner_name=payload.owner_name.strip(),
-        email=payload.email.lower().strip(),
-        phone=payload.phone.strip(),
+        owner_name=clean_owner,
+        email=clean_email,
+        phone=clean_phone,
         whatsapp=payload.whatsapp.strip(),
-        preferred_contact_methods=payload.preferred_contact_methods.strip() if payload.preferred_contact_methods else None,
-        schedule=payload.schedule.strip() if payload.schedule else None,
+        preferred_contact_methods=payload.preferred_contact_methods.strip() if payload.preferred_contact_methods else "whatsapp,llamada",
+        schedule=payload.schedule.strip() if payload.schedule else "Lunes a Sábado · 09:00 a 19:00 hrs",
         photos=None if is_basic else (
             json.dumps(payload.photos) if isinstance(payload.photos, list)
             else (payload.photos.strip() if payload.photos else None)
         ),
-        cover_photo=None if is_basic else (payload.cover_photo.strip() if payload.cover_photo else None),
+        cover_photo=selected_cover,
         microsite_data=None if is_basic else (
             json.dumps(payload.microsite_data) if isinstance(payload.microsite_data, (dict, list))
             else (payload.microsite_data.strip() if payload.microsite_data else None)
@@ -555,12 +597,14 @@ async def initiate_registration(
         delivery_available=payload.delivery_available,
         coto_only_delivery=payload.coto_only_delivery,
         website=payload.website.strip() if payload.website else None,
-        description=payload.description,
+        description=payload.description or f"Comercio de {payload.category_label or payload.category_slug} en {payload.coto_address}.",
         email_otp=None,
         email_otp_expires_at=None,
         email_verified=True,
         whatsapp_code=wa_code,
-        whatsapp_verified=False,
+        whatsapp_verified=True,
+        edit_token=edit_token,
+        edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=90),
         payment_status=initial_payment_status,
         payment_amount=initial_payment_amount,
         status="pending_verification",
@@ -576,10 +620,21 @@ async def initiate_registration(
     wa_text = f"Hola Epicentro Natura, verifico la solicitud de mi negocio '{new_reg.business_name}' con el código {wa_code}."
     import urllib.parse
     wa_url = f"https://wa.me/{agency_phone}?text={urllib.parse.quote(wa_text)}"
+    edit_url = f"/natura/editar?token={edit_token}"
 
     return {
         "success": True,
         "registration_id": new_reg.id,
+        "business_name": new_reg.business_name,
+        "category_slug": new_reg.category_slug,
+        "category_label": new_reg.category_label,
+        "subcategory_slug": new_reg.subcategory_slug,
+        "subcategory_label": new_reg.subcategory_label,
+        "coto_address": new_reg.coto_address,
+        "whatsapp": new_reg.whatsapp,
+        "cover_photo": selected_cover,
+        "edit_token": edit_token,
+        "edit_url": edit_url,
         "email_masked": mask_email(new_reg.email),
         "whatsapp_code": wa_code,
         "whatsapp_link": wa_url,
@@ -851,12 +906,16 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
             raise HTTPException(status_code=400, detail="Código de cortesía inválido o no reconocido.")
         code_desc = VALID_COUPON_CODES.get(code, "Cupón de Cortesía Institucional")
 
+    if not reg.edit_token:
+        reg.edit_token = secrets.token_urlsafe(32)
+        reg.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=90)
+
     reg.payment_status = "waived"
     reg.payment_amount = 0.0
     reg.is_verified_badge = True
-    reg.status = "pending_approval"
+    reg.status = "active"
     reg.coupon_code = code
-    reg.moderation_notes = f"Exención con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC. En espera de aprobación final de moderador."
+    reg.moderation_notes = f"Activación con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC."
     db.commit()
     db.refresh(reg)
 
@@ -865,12 +924,15 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
 
     return {
         "success": True,
-        "message": f"¡Código {code} aplicado con éxito! Tu cuota anual ha sido exonerada al 100%. Tu comercio está en cola de moderación prioritaria con Sello Oficial.",
+        "message": f"¡Código {code} aplicado con éxito! Tu cuota anual ha sido exonerada al 100%. Tu comercio está verificado y activo con Sello Oficial.",
         "folio": folio,
+        "registration_id": reg.id,
         "business_name": reg.business_name,
         "is_verified_badge": True,
-        "status": "pending_approval",
-        "coupon_code": code
+        "status": "active",
+        "coupon_code": code,
+        "edit_token": reg.edit_token,
+        "edit_url": f"/natura/editar?token={reg.edit_token}"
     }
 
 
@@ -1154,7 +1216,133 @@ def get_registration_status(registration_id: str, db: Session = Depends(get_db))
         "is_verified_badge": bool(reg.is_verified_badge),
         "whatsapp_verified": bool(reg.whatsapp_verified),
         "folio": folio,
-        "is_active_in_directory": (reg.status == "active")
+        "is_active_in_directory": (reg.status == "active"),
+        "edit_token": reg.edit_token,
+        "edit_url": f"/natura/editar?token={reg.edit_token}" if reg.edit_token else None
+    }
+
+
+# --- ENDPOINTS DE AUTOSERVICIO (SELF-SERVICE POR TOKEN PRIVADO) ---
+
+@router.get("/self-service/{token}")
+def get_self_service_business(token: str, db: Session = Depends(get_db)):
+    """
+    Retorna los datos de un comercio para su edición en el portal de autoservicio
+    validando su token privado. Solo negocios con token válido pueden acceder.
+    """
+    ensure_epicentro_schema(db)
+    token_clean = token.strip()
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.edit_token == token_clean).first()
+    if not reg:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Enlace de edición inválido o token no encontrado."
+        )
+
+    # Parsear microsite_data
+    md = None
+    if reg.microsite_data:
+        try:
+            md = json.loads(reg.microsite_data) if isinstance(reg.microsite_data, str) else reg.microsite_data
+        except Exception:
+            md = None
+
+    photos_list = []
+    if reg.photos:
+        try:
+            photos_list = json.loads(reg.photos) if isinstance(reg.photos, str) else reg.photos
+        except Exception:
+            photos_list = []
+
+    plan_type = "basic" if (reg.payment_amount and reg.payment_amount <= 200.0) else "microsite"
+
+    return {
+        "success": True,
+        "id": reg.id,
+        "business_name": reg.business_name,
+        "category_slug": reg.category_slug,
+        "category_label": reg.category_label,
+        "subcategory_slug": reg.subcategory_slug,
+        "subcategory_label": reg.subcategory_label,
+        "coto_address": reg.coto_address,
+        "business_type": reg.business_type,
+        "owner_name": reg.owner_name,
+        "phone": reg.phone,
+        "whatsapp": reg.whatsapp,
+        "schedule": reg.schedule,
+        "delivery_available": bool(reg.delivery_available),
+        "coto_only_delivery": bool(reg.coto_only_delivery),
+        "website": reg.website,
+        "description": reg.description,
+        "cover_photo": reg.cover_photo,
+        "photos": photos_list,
+        "microsite_data": md,
+        "status": reg.status,
+        "payment_status": reg.payment_status,
+        "is_verified_badge": bool(reg.is_verified_badge),
+        "plan_type": plan_type,
+        "curated_covers": CURATED_COVERS_BY_CATEGORY
+    }
+
+
+@router.put("/self-service/{token}")
+def update_self_service_business(
+    token: str,
+    payload: SelfServiceUpdateRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Permite al comerciante actualizar su portada, hasta 10 fotos de productos,
+    precios, descripción y horarios mediante su token privado seguro.
+    """
+    ensure_epicentro_schema(db)
+    token_clean = token.strip()
+    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.edit_token == token_clean).first()
+    if not reg:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Enlace de edición inválido o token no encontrado."
+        )
+
+    # Actualizar portada
+    if payload.cover_photo is not None:
+        reg.cover_photo = payload.cover_photo.strip() if payload.cover_photo else None
+
+    # Actualizar fotos (máximo 10)
+    if payload.photos is not None:
+        if isinstance(payload.photos, list):
+            reg.photos = json.dumps(payload.photos[:10])
+        elif isinstance(payload.photos, str):
+            reg.photos = payload.photos.strip()
+
+    # Actualizar microsite_data (productos destacados, precios, etc.)
+    if payload.microsite_data is not None:
+        if isinstance(payload.microsite_data, (dict, list)):
+            reg.microsite_data = json.dumps(payload.microsite_data)
+        elif isinstance(payload.microsite_data, str):
+            reg.microsite_data = payload.microsite_data.strip()
+
+    if payload.description is not None:
+        reg.description = payload.description.strip()
+    if payload.schedule is not None:
+        reg.schedule = payload.schedule.strip()
+    if payload.whatsapp is not None:
+        reg.whatsapp = payload.whatsapp.strip()
+    if payload.coto_address is not None:
+        reg.coto_address = payload.coto_address.strip()
+    if payload.delivery_available is not None:
+        reg.delivery_available = payload.delivery_available
+    if payload.coto_only_delivery is not None:
+        reg.coto_only_delivery = payload.coto_only_delivery
+    if payload.website is not None:
+        reg.website = payload.website.strip()
+
+    db.commit()
+    db.refresh(reg)
+
+    return {
+        "success": True,
+        "message": "¡Cambios guardados con éxito! Tu escaparate en Epizentro Natura ha sido actualizado."
     }
 
 

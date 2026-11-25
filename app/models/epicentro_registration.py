@@ -51,6 +51,10 @@ class EpicentroRegistration(Base):
     is_verified_badge = Column(Boolean, default=False)
     coupon_code = Column(String(50), nullable=True)
 
+    # Token Seguro para Autoservicio de Fotos y Catálogo
+    edit_token = Column(String(64), nullable=True, index=True)
+    edit_token_expires_at = Column(DateTime(timezone=True), nullable=True)
+
     # Flujo de Moderación:
     # pending_verification -> pending_approval -> active / rejected
     status = Column(String(30), default="pending_verification", index=True)

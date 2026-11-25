@@ -3677,10 +3677,11 @@ async def send_epizentro_onboarding_email_merchant(reg, total: float, payment_id
             </div>
           </div>
 
+          {f'<a href="https://www.epizentro.com/natura/editar?token={reg.edit_token}" class="btn" style="background:#0f172a;margin-bottom:12px;color:#ffffff;">📸 Subir / Modificar mis Fotos y Catálogo</a>' if getattr(reg, 'edit_token', None) else ''}
           <a href="https://www.epizentro.com/natura/" class="btn" style="color:#ffffff;">Explorar Directorio en Vivo</a>
 
           <p style="font-size: 12px; color: #64748b; margin-top: 18px;">
-            Si deseas actualizar tus fotografías, horarios o números de contacto en cualquier momento, solo respóndenos a este correo (<a href="mailto:hola@epizentro.com" style="color:#059669;text-decoration:none;">hola@epizentro.com</a>) o escríbenos al canal de WhatsApp de soporte.
+            Si deseas actualizar tus fotografías, horarios o números de contacto en cualquier momento, puedes usar tu enlace directo de autoservicio o escribirnos al canal de WhatsApp de soporte.
           </p>
         </div>
         <div class="footer">
