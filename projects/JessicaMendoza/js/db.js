@@ -66,7 +66,60 @@
                 "Cancel de Cristal Templado"
             ]
         },
-        // 2. RESIDENCIA VALLE IMPERIAL (ZMG) [EJEMPLO]
+        // 2. PROPIEDAD REAL: CASA EN VENTA LOS ROBLES RESIDENCIAL (COTO ENCINOS)
+        {
+            id: 5,
+            codigo: "JM1126-02",
+            slug: "casa-en-venta-en-los-robles-coto-encinos",
+            title: "Casa en Venta en Los Robles Residencial (Coto Encinos)",
+            municipio: "Zapopan",
+            zona: "Los Robles Residencial",
+            operacion: "Venta",
+            tipo: "Casa",
+            precio: 8170000,
+            habitaciones: 3,
+            banos: 4.5,
+            estacionamientos: 3,
+            terreno: 210,
+            construccion: 256,
+            condicion: "Residencial Seminueva",
+            isPlaya: false,
+            descripcion: "Hermosa y amplia residencia en venta dentro del exclusivo Fraccionamiento Los Robles Residencial, Coto Encinos, Zapopan. Un entorno privado, seguro y familiar rodeado de naturaleza que ofrece acceso controlado, vigilancia 24/7 y circuito cerrado. El coto cuenta con un agradable parque central con juegos infantiles y terraza para eventos. Distribuida en 3 niveles con acabados de primera: en Planta Baja ofrece espaciosa sala y comedor con excelente iluminación, hermosa cocina integral equipada con estufa, horno, campana extractora, lavavajillas y barra desayunadora de granito, medio baño para visitas, amplio jardín privado ideal para convivencia y patio de servicio. En Segunda Planta cuenta con 3 amplias habitaciones, cada una con su propio baño completo, clóset, aire acondicionado minisplit y balcón privado; la recámara principal incluye un elegante vestidor (walk-in closet). En Tercera Planta / Roof Top dispone de un amplio espacio al aire libre con vistas panorámicas y una habitación techada de usos múltiples con baño completo, ideal para gimnasio, estudio, oficina ejecutiva, salón de juegos o cuarta recámara. Equipada con paneles solares, bomba hidroneumática, cisterna, bóiler, cortinas y lámparas LED. Cochera para 2 a 3 autos.",
+            image: "/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp",
+            imagenes: [
+                "/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp",
+                "/Assets/Propiedades/CotoEncinos/02-sala-comedor-cocina.webp",
+                "/Assets/Propiedades/CotoEncinos/03-cocina-integral-desayunador.webp",
+                "/Assets/Propiedades/CotoEncinos/04-estancia-comedor-area-social.webp",
+                "/Assets/Propiedades/CotoEncinos/05-jardin-posterior-verde.webp",
+                "/Assets/Propiedades/CotoEncinos/06-rooftop-salon-multiusos-gym.webp",
+                "/Assets/Propiedades/CotoEncinos/07-rooftop-area-ejercicio-estudio.webp",
+                "/Assets/Propiedades/CotoEncinos/08-vestidor-recamara-principal.webp",
+                "/Assets/Propiedades/CotoEncinos/09-bano-principal-vanity-granito.webp",
+                "/Assets/Propiedades/CotoEncinos/10-bano-cancel-cristal.webp",
+                "/Assets/Propiedades/CotoEncinos/11-fachada-angulo-lateral.webp",
+                "/Assets/Propiedades/CotoEncinos/12-fachada-arquitectonica-balcon.webp",
+                "/Assets/Propiedades/CotoEncinos/13-panoramica-calle-coto-montana.webp",
+                "/Assets/Propiedades/CotoEncinos/14-entorno-residencial-coto-encinos.webp"
+            ],
+            amenidades: [
+                "Coto Privado Encinos",
+                "Seguridad 24/7 y Circuito Cerrado",
+                "Paneles Solares",
+                "Roof Top con Habitación Flex / Gym",
+                "Jardín Privado",
+                "Cocina Equipada con Granito y Lavavajillas",
+                "Todas las Recámaras con Baño y Balcón",
+                "Vestidor en Recámara Principal",
+                "Aire Acondicionado Minisplit",
+                "Cochera 3 Autos",
+                "Parque Central y Terraza con Juegos",
+                "Bomba Hidroneumática y Cisterna",
+                "Iluminación LED y Cortinas",
+                "Pet Friendly"
+            ]
+        },
+        // 3. RESIDENCIA VALLE IMPERIAL (ZMG) [EJEMPLO]
         {
             id: 2,
             slug: "residencia-de-autor-valle-imperial",
