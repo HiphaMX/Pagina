@@ -1357,7 +1357,7 @@ def purge_test_registrations(
     deleted_count = 0
     all_regs = db.query(EpicentroRegistration).all()
     for reg in all_regs:
-        if reg.id in ("reg-chile-chillon", "reg-botica-silvestre", "ac02b6c2-624e-407f-bcfc-7d736dbcbd83"):
+        if reg.id in ("reg-chile-chillon", "reg-botica-silvestre", "ac02b6c2-624e-407f-bcfc-7d736dbcbd83", "18315325-717f-4072-86b0-cab5300e0d3f"):
             continue
 
         bname = (reg.business_name or "").strip()
@@ -1803,25 +1803,54 @@ def seed_official_showcases(db: Session):
             db.commit()
             db.refresh(jessica)
         else:
-            jessica.business_name = "Jessica Mendoza Bienes Raíces"
-            jessica.category_slug = "servicios-profesionales"
-            jessica.category_label = "Servicios Profesionales"
-            jessica.subcategory_slug = "inmobiliario"
-            jessica.subcategory_label = "Inmobiliario"
-            jessica.coto_address = "Los Robles"
-            jessica.website = "https://www.jessicamendozabienesraices.com/"
-            jessica.phone = "33 3956 4830"
-            jessica.whatsapp = "33 3956 4830"
-            jessica.cover_photo = JESSICA_DATA["cover_photo"]
-            jessica.description = "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7."
-            jessica.microsite_data = json.dumps(JESSICA_DATA)
-            jessica.is_verified_badge = True
-            jessica.payment_status = "waived"
-            jessica.status = "active"
+            updated = False
+            if not jessica.business_name:
+                jessica.business_name = "Jessica Mendoza Bienes Raíces"
+                updated = True
+            if not jessica.category_slug:
+                jessica.category_slug = "servicios-profesionales"
+                jessica.category_label = "Servicios Profesionales"
+                updated = True
+            if not jessica.subcategory_slug:
+                jessica.subcategory_slug = "inmobiliario"
+                jessica.subcategory_label = "Inmobiliario"
+                updated = True
+            if not jessica.coto_address:
+                jessica.coto_address = "Los Robles"
+                updated = True
+            if not jessica.website:
+                jessica.website = "https://www.jessicamendozabienesraices.com/"
+                updated = True
+            if not jessica.phone:
+                jessica.phone = "33 3956 4830"
+                updated = True
+            if not jessica.whatsapp:
+                jessica.whatsapp = "33 3956 4830"
+                updated = True
+            if not jessica.cover_photo:
+                jessica.cover_photo = JESSICA_DATA["cover_photo"]
+                updated = True
+            if not jessica.description:
+                jessica.description = "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7."
+                updated = True
+            if not jessica.microsite_data:
+                jessica.microsite_data = json.dumps(JESSICA_DATA)
+                updated = True
+            if not jessica.is_verified_badge:
+                jessica.is_verified_badge = True
+                updated = True
+            if jessica.payment_status != "waived":
+                jessica.payment_status = "waived"
+                updated = True
+            if jessica.status != "active":
+                jessica.status = "active"
+                updated = True
             if not jessica.edit_token:
                 jessica.edit_token = "jessica-mendoza-natura-717f"
                 jessica.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
-            db.commit()
+                updated = True
+            if updated:
+                db.commit()
 
     except Exception as e:
         logger.warning(f"Error seeding official showcases: {e}")

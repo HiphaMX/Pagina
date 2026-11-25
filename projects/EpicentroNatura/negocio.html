@@ -306,7 +306,9 @@
 
       let reg = null;
       try {
-        const res = await fetch(`/api/epicentro/businesses/${encodeURIComponent(queryParam)}`);
+        const res = await fetch(`/api/epicentro/businesses/${encodeURIComponent(queryParam)}?_t=${Date.now()}`, {
+          cache: "no-store"
+        });
         if (res.ok) {
           reg = await res.json();
         }

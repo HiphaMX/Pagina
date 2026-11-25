@@ -290,7 +290,9 @@
       // 2. Cargar datos del backend
       async function loadBusinessData() {
         try {
-          const res = await fetch(`/api/epicentro/self-service/${encodeURIComponent(currentToken)}`);
+          const res = await fetch(`/api/epicentro/self-service/${encodeURIComponent(currentToken)}?_t=${Date.now()}`, {
+            cache: "no-store"
+          });
           if (!res.ok) {
             throw new Error("Token no válido");
           }
@@ -546,6 +548,9 @@
         if (btn) btn.disabled = true;
         if (btnText) btnText.textContent = "Guardando...";
 
+        const existingMd = (currentBiz && currentBiz.microsite_data) || {};
+        const existingFeat = existingMd.featured_section || {};
+
         const payload = {
           cover_photo: currentCover,
           schedule: document.getElementById("edit-schedule").value.trim(),
@@ -556,10 +561,12 @@
           coto_only_delivery: document.getElementById("edit-coto-only").checked,
           photos: productsList.map(p => p.photo).filter(Boolean),
           microsite_data: {
+            ...existingMd,
             featured_section: {
-              title: "Nuestra Selección Destacada",
-              subtitle: "Hecho a mano en pequeños lotes",
-              description: "Elaborados con ingredientes seleccionados y recetas tradicionales.",
+              ...existingFeat,
+              title: existingFeat.title || "Propiedades y Servicios Destacados",
+              subtitle: existingFeat.subtitle || "CATÁLOGO ACTIVO",
+              description: existingFeat.description || "",
               products: productsList
             },
             featured_products: productsList
@@ -576,6 +583,17 @@
           if (!res.ok) {
             const err = await res.json().catch(() => ({}));
             throw new Error(err.detail || "Error al guardar cambios");
+          }
+
+          if (currentBiz) {
+            currentBiz.cover_photo = payload.cover_photo;
+            currentBiz.schedule = payload.schedule;
+            currentBiz.whatsapp = payload.whatsapp;
+            currentBiz.coto_address = payload.coto_address;
+            currentBiz.description = payload.description;
+            currentBiz.delivery_available = payload.delivery_available;
+            currentBiz.coto_only_delivery = payload.coto_only_delivery;
+            currentBiz.microsite_data = payload.microsite_data;
           }
 
           showToast("✓ ¡Cambios guardados con éxito en tu escaparate!", "success");
