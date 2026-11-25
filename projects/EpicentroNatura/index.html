@@ -29,6 +29,8 @@
   
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Epicentro Register Modal Script -->
+  <script src="epicentro-register.js" defer></script>
   
   <script>
     tailwind.config = {
@@ -1753,38 +1755,12 @@
         .catch(() => {});
 
       // Apertura de modal de registro por parámetro URL
-      if (urlParams.get("open_register") === "1") {
-        openRegisterModal();
-        if (urlParams.get("test_submit") === "1") {
-          document.getElementById("reg-name").value = "Pizzería Di Vico";
-          document.getElementById("reg-address").value = "Coto Ceiba 12";
-          document.getElementById("reg-owner").value = "Carlos Méndez";
-          document.getElementById("reg-email").value = "carlos@test.com";
-          document.getElementById("reg-wa").value = "3312345678";
-          submitStep1();
-        }
-        const step = parseInt(urlParams.get("step") || "1");
-        if (step > 1) {
-          currentRegId = "mock-12345";
-          currentBusinessName = "Pizzería Di Vico";
-          const emailMaskedEl = document.getElementById("step2-email-masked");
-          if (emailMaskedEl) emailMaskedEl.textContent = "c******o@pizzeria.mx";
-          const waCodeEl = document.getElementById("step2-wa-code-display");
-          if (waCodeEl) waCodeEl.textContent = "NATURA-8321";
-          if (step >= 3) {
-            emailVerified = true;
-            waVerified = true;
-            markWaAsVerified();
-          }
-          if (step === 4) {
-            showStep4Success("NATURA-VERIFIED-8321");
-          } else {
-            setWizardStep(step);
-          }
+      if (urlParams.get("open_register") === "1" || urlParams.get("registro") === "1") {
+        if (typeof openRegisterModal === "function") {
+          openRegisterModal(urlParams.get("cat"));
         }
       }
     });
   </script>
-  <script src="epicentro-register.js"></script>
 </body>
 </html>

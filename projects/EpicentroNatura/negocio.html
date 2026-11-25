@@ -264,7 +264,7 @@
           Con la suscripción anual obtienes tu Página Escaparate Individual en Epizentro con catálogo de fotos, precios y pedidos directos a tu WhatsApp, además de botón a tu sitio web oficial.
         </p>
       </div>
-      <a href="index.html?open_register=1" class="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
+      <a href="index.html?open_register=1" onclick="if(typeof openRegisterModal==='function'){openRegisterModal();return false;}" class="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
         <i data-lucide="sparkles" class="w-4 h-4"></i>
         <span>Obtener mi Página Escaparate Individual en Epizentro</span>
       </a>
@@ -288,7 +288,7 @@
       <div class="flex items-center gap-4 text-slate-400 text-xs">
         <a href="index.html" class="hover:text-white transition-colors">Directorio Comercial</a>
         <a id="footer-cat-link" href="index.html" class="hover:text-white transition-colors">Categorías</a>
-        <a href="index.html?open_register=1" class="hover:text-emerald-400 transition-colors">Registra tu negocio</a>
+        <a href="index.html?open_register=1" onclick="if(typeof openRegisterModal==='function'){openRegisterModal();return false;}" class="hover:text-emerald-400 transition-colors">Registra tu negocio</a>
       </div>
     </div>
   </footer>
@@ -553,5 +553,6 @@
       loadDynamicBusiness();
     });
   </script>
+  <script src="epicentro-register.js"></script>
 </body>
 </html>

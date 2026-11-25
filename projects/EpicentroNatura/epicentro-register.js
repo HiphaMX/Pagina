@@ -153,14 +153,24 @@
 
   // --- MONTAJE DEL MODAL EN EL DOM ---
   function mountRegisterModal() {
-    if (document.getElementById("register-modal")) return;
+    let modal = document.getElementById("register-modal");
 
-    const modal = document.createElement("div");
-    modal.id = "register-modal";
+    // Si ya existe y está actualizado a la versión v2, retornarlo
+    if (modal && modal.dataset.onboardingVersion === "v2") {
+      return modal;
+    }
+
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "register-modal";
+      document.body.appendChild(modal);
+    }
+
+    modal.dataset.onboardingVersion = "v2";
     modal.className = "fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto";
 
     modal.innerHTML = `
-    <div class="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto">
+    <div class="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto" onclick="event.stopPropagation()">
       
       <!-- HEADER CON INDICADOR DE PROGRESO -->
       <div class="p-5 sm:p-6 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
@@ -447,8 +457,15 @@
     </div>
     `;
 
-    document.body.appendChild(modal);
+    // Cerrar al hacer clic en el backdrop oscuro
+    modal.onclick = function(e) {
+      if (e.target === modal) {
+        closeRegisterModal();
+      }
+    };
+
     if (window.lucide) lucide.createIcons();
+    return modal;
   }
 
   // --- CONTROL DEL WIZARD STEPPER ---
@@ -750,8 +767,7 @@
 
   // --- API PÚBLICA DEL MODAL ---
   function openRegisterModal(preselectedCat) {
-    mountRegisterModal();
-    const modal = document.getElementById("register-modal");
+    const modal = mountRegisterModal();
     if (!modal) return;
 
     if (preselectedCat) {
@@ -765,6 +781,7 @@
 
     modal.classList.remove("hidden");
     modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
     if (window.lucide) lucide.createIcons();
   }
 
@@ -774,6 +791,7 @@
       modal.classList.add("hidden");
       modal.classList.remove("flex");
     }
+    document.body.style.overflow = "";
   }
 
   // Exponer a window
@@ -784,16 +802,32 @@
   window.submitMicroRegister = submitMicroRegister;
   window.triggerMercadoPagoPayment = triggerMercadoPagoPayment;
   window.handleApplyCoupon = handleApplyCoupon;
+  window.setWizardStep = setWizardStep;
 
-  // Auto-mount on load
-  document.addEventListener("DOMContentLoaded", function () {
+  // Auto-mount and URL query handling
+  function initRegister() {
     mountRegisterModal();
 
-    // Comprobar parámetros de URL (ej. ?open_register=1)
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("open_register") === "1" || urlParams.get("registro") === "1") {
       const cat = urlParams.get("cat");
-      setTimeout(() => openRegisterModal(cat), 300);
+      setTimeout(() => openRegisterModal(cat), 200);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initRegister);
+  } else {
+    initRegister();
+  }
+
+  // Cerrar con Escape
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      const modal = document.getElementById("register-modal");
+      if (modal && !modal.classList.contains("hidden")) {
+        closeRegisterModal();
+      }
     }
   });
 
