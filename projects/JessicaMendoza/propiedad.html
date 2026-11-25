@@ -20,16 +20,17 @@
     <meta property="og:site_name" content="Jessica Mendoza Bienes Raíces">
     <meta property="og:title" id="og-title" content="Casa en Renta en Los Robles Residencial | Jessica Mendoza Bienes Raíces">
     <meta property="og:description" id="og-desc" content="Exclusiva residencia en renta dentro de Coto Helechos, Los Robles Residencial, Zapopan. 3 recámaras, paneles solares, cocina con parota y granito.">
-    <meta property="og:image" id="og-image" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp">
-    <meta property="og:image:secure_url" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp">
-    <meta property="og:image:type" content="image/webp">
-    <meta property="og:image:width" content="1024">
-    <meta property="og:image:height" content="768">
-    <meta property="og:image:alt" content="Casa en Renta en Los Robles Residencial">
+    <meta property="og:image" id="og-image" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/preview-los-robles.jpg">
+    <meta property="og:image:secure_url" id="og-image-secure" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/preview-los-robles.jpg">
+    <meta property="og:image:type" id="og-image-type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" id="og-image-alt" content="Casa en Renta en Los Robles Residencial">
+    <meta property="og:url" id="og-url" content="https://www.jessicamendozabienesraices.com/propiedad.html?id=1&nombre=casa-en-renta-en-los-robles-residencial">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" id="twitter-title" content="Casa en Renta en Los Robles Residencial | Jessica Mendoza Bienes Raíces">
     <meta name="twitter:description" id="twitter-desc" content="Exclusiva residencia en renta dentro de Coto Helechos, Los Robles Residencial, Zapopan. 3 recámaras, paneles solares, cocina con parota y granito.">
-    <meta name="twitter:image" id="twitter-image" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp">
+    <meta name="twitter:image" id="twitter-image" content="https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/preview-los-robles.jpg">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1584,10 +1585,14 @@
             if (ogDesc) ogDesc.content = currentProperty.descripcion ? currentProperty.descripcion.slice(0, 160) + '...' : '';
             if (twitterDesc) twitterDesc.content = currentProperty.descripcion ? currentProperty.descripcion.slice(0, 160) + '...' : '';
 
-            const primaryPhoto = (currentProperty.imagenes && currentProperty.imagenes.length > 0) ? currentProperty.imagenes[0] : currentProperty.image;
+            const primaryPhoto = currentProperty.og_image || ((currentProperty.imagenes && currentProperty.imagenes.length > 0) ? currentProperty.imagenes[0] : currentProperty.image);
             const fullPhotoUrl = primaryPhoto.startsWith('http') ? primaryPhoto : (window.location.origin + primaryPhoto);
             if (ogImage) ogImage.content = fullPhotoUrl;
             if (twitterImage) twitterImage.content = fullPhotoUrl;
+            const ogImageSecure = document.getElementById('og-image-secure');
+            if (ogImageSecure) ogImageSecure.content = fullPhotoUrl;
+            const ogUrl = document.getElementById('og-url');
+            if (ogUrl) ogUrl.content = propertyFullUrl;
 
             // Ajustar el enlace del botón de regreso según si es un terreno de playa o propiedad ZMG
             if (currentProperty.isPlaya) {

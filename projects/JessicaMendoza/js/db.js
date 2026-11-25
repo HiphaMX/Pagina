@@ -21,6 +21,7 @@
             condicion: "Residencial Usado",
             isPlaya: false,
             descripcion: "Hermosa y amplia residencia en renta dentro del exclusivo Coto Helechos en Los Robles Residencial, Zapopan. Cuenta con acceso controlado y seguridad 24/7 con cuota de mantenimiento incluida. Diseñada con acabados de autor, ofrece sala y comedor con impresionante doble altura, candiles, lámparas y sistema inteligente de iluminación regulable. Cocina integral con madera de parota y encimeras de granito equipada con estufa con horno y campana. Destaca por contar con una habitación en planta baja con baño completo, vestidor y aire acondicionado, además de medio baño para visitas. Equipada con paneles solares para un ahorro sustancial en consumo eléctrico. En planta alta dispone de dos habitaciones con baño completo y vestidor cada una, aire acondicionado en recámara principal y ventiladores de techo. Cochera para 3 autos, jardín privado, bodega y cuarto de servicio en un entorno natural privilegiado.",
+            og_image: "/Assets/Propiedades/LosRobles/preview-los-robles.jpg",
             image: "/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
             imagenes: [
                 "/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
@@ -85,6 +86,7 @@
             condicion: "Residencial Seminueva",
             isPlaya: false,
             descripcion: "Hermosa y amplia residencia en venta dentro del exclusivo Fraccionamiento Los Robles Residencial, Coto Encinos, Zapopan. Un entorno privado, seguro y familiar rodeado de naturaleza que ofrece acceso controlado, vigilancia 24/7 y circuito cerrado. El coto cuenta con un agradable parque central con juegos infantiles y terraza para eventos. Distribuida en 3 niveles con acabados de primera: en Planta Baja ofrece espaciosa sala y comedor con excelente iluminación, hermosa cocina integral equipada con estufa, horno, campana extractora, lavavajillas y barra desayunadora de granito, medio baño para visitas, amplio jardín privado ideal para convivencia y patio de servicio. En Segunda Planta cuenta con 3 amplias habitaciones, cada una con su propio baño completo, clóset, aire acondicionado minisplit y balcón privado; la recámara principal incluye un elegante vestidor (walk-in closet). En Tercera Planta / Roof Top dispone de un amplio espacio al aire libre con vistas panorámicas y una habitación techada de usos múltiples con baño completo, ideal para gimnasio, estudio, oficina ejecutiva, salón de juegos o cuarta recámara. Equipada con paneles solares, bomba hidroneumática, cisterna, bóiler, cortinas y lámparas LED. Cochera para 2 a 3 autos.",
+            og_image: "/Assets/Propiedades/CotoEncinos/preview-coto-encinos.jpg",
             image: "/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp",
             imagenes: [
                 "/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp",
@@ -137,6 +139,7 @@
             condicion: "Listo para estrenar",
             isPlaya: false,
             descripcion: "Residencia contemporánea a estrenar dentro de coto privado en Valle Imperial. Diseñada con un concepto abierto que integra la estancia, el comedor y una cocina equipada premium con barra de cuarzo. Cuenta con jardín posterior y acabados residenciales de primer nivel en todas sus áreas.",
+            og_image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&h=630&q=80",
             image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
             imagenes: [
                 "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
@@ -164,6 +167,7 @@
             condicion: "Listo para estrenar",
             isPlaya: false,
             descripcion: "Loft de estilo industrial-chic en Providencia. Cuenta con acabados de concreto pulido, ladrillo aparente y ventanales de piso a techo que otorgan una iluminación inigualable. Ubicado a unos pasos de los mejores restaurantes y parques del norte de Guadalajara.",
+            og_image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1200&h=630&q=80",
             image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
             imagenes: [
                 "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
@@ -189,6 +193,7 @@
             condicion: "N/A",
             isPlaya: true,
             descripcion: "Terreno totalmente plano y regular a solo 200 metros de la orilla de playa en la zona de mayor crecimiento y plusvalía de Telchac. Listo para escriturar y comenzar un proyecto residencial costero privado con certeza legal garantizada.",
+            og_image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&h=630&q=80",
             image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",
             imagenes: [
                 "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",

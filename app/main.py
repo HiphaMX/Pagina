@@ -10,6 +10,7 @@ from app.api.projects import botica as botica_project
 from app.api.projects import oncologia_robotica as oncologia_robotica_project
 from app.api.projects import jairo_dominguez as jairo_dominguez_project
 from app.api.projects import epicentro as epicentro_project
+from app.api.projects import jessica_mendoza as jessica_mendoza_project
 from app.api.dashboard import routes as dashboard_routes
 from app.api.dashboard import reconciliation_routes
 from app.api.dashboard import web_health_routes
@@ -297,6 +298,13 @@ app.include_router(epicentro_project.router, prefix="/api/epicentro", tags=["epi
 def render_public_cronica_entrypoint(slug: str, request: Request, db: Session = Depends(get_db)):
     """Punto de entrada público SSR para publicaciones de Cultura Natura con OpenGraph para WhatsApp."""
     return epicentro_project.render_cultura_article(slug, request, db)
+
+
+@app.api_route("/propiedad", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/propiedad.html", methods=["GET", "HEAD"], response_class=HTMLResponse)
+def render_jessica_mendoza_propiedad(request: Request):
+    """Punto de entrada público SSR para propiedades de Jessica Mendoza con OpenGraph dinámico para WhatsApp y redes sociales."""
+    return jessica_mendoza_project.render_propiedad_page(request)
 
 
 

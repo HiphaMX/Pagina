@@ -317,7 +317,17 @@
       "dest": "/projects/JessicaMendoza/$1/$2"
     },
     {
-      "src": "/(catalogo|propiedad|terrenos-playa|aviso-de-privacidad|terminos-y-condiciones|index)(.html|)",
+      "src": "/propiedad(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        }
+      ],
+      "dest": "/api"
+    },
+    {
+      "src": "/(catalogo|terrenos-playa|aviso-de-privacidad|terminos-y-condiciones|index)(.html|)",
       "has": [
         {
           "type": "host",
