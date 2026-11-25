@@ -1535,6 +1535,8 @@ def seed_official_showcases(db: Session):
                 payment_amount=499.0,
                 is_verified_badge=True,
                 status="active",
+                edit_token="botica-silvestre-natura-vip",
+                edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Comercio fundador oficial con Página Escaparate Individual activa."
             )
             db.add(botica)
@@ -1559,6 +1561,10 @@ def seed_official_showcases(db: Session):
                 updated = True
             if not botica.description:
                 botica.description = "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos."
+                updated = True
+            if not botica.edit_token:
+                botica.edit_token = "botica-silvestre-natura-vip"
+                botica.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
                 updated = True
             if updated:
                 db.commit()
@@ -1598,6 +1604,8 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
+                edit_token="chile-chillon-natura-vip",
+                edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Cortesía oficial Hipha: Página Escaparate Individual con catálogo activo."
             )
             db.add(chillon)
@@ -1625,6 +1633,10 @@ def seed_official_showcases(db: Session):
                 updated = True
             if not chillon.whatsapp:
                 chillon.whatsapp = "3921097809"
+                updated = True
+            if not chillon.edit_token:
+                chillon.edit_token = "chile-chillon-natura-vip"
+                chillon.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
                 updated = True
             if updated:
                 db.commit()
@@ -1666,6 +1678,8 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
+                edit_token="amdi-diseno-natura-vip",
+                edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Comercio fundador oficial con Página Escaparate Individual activa."
             )
             db.add(amdi)
@@ -1716,6 +1730,10 @@ def seed_official_showcases(db: Session):
                 updated = True
             if not amdi.whatsapp:
                 amdi.whatsapp = "3313111147"
+                updated = True
+            if not amdi.edit_token:
+                amdi.edit_token = "amdi-diseno-natura-vip"
+                amdi.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
                 updated = True
             if updated:
                 db.commit()
@@ -1777,6 +1795,8 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
+                edit_token="jessica-mendoza-natura-717f",
+                edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Cliente oficial de Hipha con sitio propio y escaparate verificado."
             )
             db.add(jessica)
@@ -1798,6 +1818,9 @@ def seed_official_showcases(db: Session):
             jessica.is_verified_badge = True
             jessica.payment_status = "waived"
             jessica.status = "active"
+            if not jessica.edit_token:
+                jessica.edit_token = "jessica-mendoza-natura-717f"
+                jessica.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
             db.commit()
 
     except Exception as e:
