@@ -320,7 +320,7 @@
         document.getElementById("biz-title").textContent = currentBiz.business_name || "Tu Negocio";
         document.getElementById("biz-coto-text").textContent = currentBiz.coto_address || "Natura Bosque";
 
-        const liveUrl = `/natura/negocio?id=${currentBiz.id}`;
+        const liveUrl = `/natura/negocio?id=${currentBiz.id}&token=${encodeURIComponent(currentToken)}`;
         document.getElementById("btn-view-live").href = liveUrl;
         document.getElementById("btn-floating-view").href = liveUrl;
 
@@ -331,7 +331,10 @@
 
         // Productos
         const md = currentBiz.microsite_data || {};
-        productsList = (md.featured_products || []).slice(0, 10);
+        const feat = md.featured_section || {};
+        productsList = (feat.products && Array.isArray(feat.products) && feat.products.length > 0)
+          ? [...feat.products]
+          : (Array.isArray(md.featured_products) ? [...md.featured_products] : []);
         renderProducts();
 
         // Contacto y Horarios
@@ -556,7 +559,8 @@
             featured_section: {
               title: "Nuestra Selección Destacada",
               subtitle: "Hecho a mano en pequeños lotes",
-              description: "Elaborados con ingredientes seleccionados y recetas tradicionales."
+              description: "Elaborados con ingredientes seleccionados y recetas tradicionales.",
+              products: productsList
             },
             featured_products: productsList
           }

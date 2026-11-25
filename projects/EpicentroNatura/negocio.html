@@ -565,16 +565,41 @@
         }
       }
 
-      // Botón flotante de edición si el dueño visita con su token
+      // Banner y botón flotante de edición si el dueño visita con su token
       const urlParams = new URLSearchParams(window.location.search);
       const editToken = urlParams.get("token") || sessionStorage.getItem("last_epicentro_edit_token");
       if (editToken) {
         try { sessionStorage.setItem("last_epicentro_edit_token", editToken); } catch(e){}
-        const floatingEdit = document.createElement("a");
-        floatingEdit.href = `/natura/editar?token=${encodeURIComponent(editToken)}`;
-        floatingEdit.className = "fixed bottom-5 right-5 z-40 px-4 py-2.5 rounded-full bg-slate-950 text-white border border-emerald-500/50 shadow-2xl text-xs font-bold flex items-center gap-2 hover:bg-emerald-600 transition-all";
-        floatingEdit.innerHTML = '<i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i><span>Editar mi Escaparate</span>';
-        document.body.appendChild(floatingEdit);
+        
+        // 1. Barra superior para el dueño
+        if (!document.getElementById("owner-welcome-bar")) {
+          const ownerBar = document.createElement("div");
+          ownerBar.id = "owner-welcome-bar";
+          ownerBar.className = "bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 text-white px-4 py-3 text-xs font-semibold border-b border-purple-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 sticky top-0 z-50 shadow-xl backdrop-blur-md";
+          ownerBar.innerHTML = `
+            <div class="flex items-center gap-2.5 text-center sm:text-left">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+              <span class="text-slate-200">
+                ¡Hola! Estás viendo tu <strong class="text-white">Página Escaparate en vivo</strong>. Para personalizar tus fotos, catálogo y precios:
+              </span>
+            </div>
+            <a href="/natura/editar?token=${encodeURIComponent(editToken)}" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md transition-all active:scale-95 shrink-0 whitespace-nowrap">
+              <i data-lucide="camera" class="w-4 h-4 text-emerald-200"></i>
+              <span>Subir Fotos & Catálogo</span>
+            </a>
+          `;
+          document.body.prepend(ownerBar);
+        }
+
+        // 2. Botón flotante inferior
+        if (!document.getElementById("floating-edit-btn")) {
+          const floatingEdit = document.createElement("a");
+          floatingEdit.id = "floating-edit-btn";
+          floatingEdit.href = `/natura/editar?token=${encodeURIComponent(editToken)}`;
+          floatingEdit.className = "fixed bottom-5 right-5 z-40 px-4 py-2.5 rounded-full bg-slate-950 text-white border border-emerald-500/50 shadow-2xl text-xs font-bold flex items-center gap-2 hover:bg-emerald-600 transition-all cursor-pointer";
+          floatingEdit.innerHTML = '<i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i><span>Editar mi Escaparate</span>';
+          document.body.appendChild(floatingEdit);
+        }
       }
 
       if (window.lucide && lucide.createIcons) lucide.createIcons();

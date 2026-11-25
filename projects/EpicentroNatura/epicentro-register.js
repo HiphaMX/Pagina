@@ -579,6 +579,11 @@
       currentEditToken = data.edit_token || "";
       currentPreviewData = data;
 
+      try {
+        if (currentEditToken) sessionStorage.setItem("last_epicentro_edit_token", currentEditToken);
+        if (currentRegId) sessionStorage.setItem("last_epicentro_reg_id", currentRegId);
+      } catch (e) {}
+
       // Actualizar tarjeta Live Preview
       renderLivePreviewCard(data);
 
@@ -733,8 +738,15 @@
     if (folioEl) folioEl.textContent = folio;
 
     const tokenToUse = editToken || currentEditToken;
+    try {
+      if (tokenToUse) sessionStorage.setItem("last_epicentro_edit_token", tokenToUse);
+      if (currentRegId) sessionStorage.setItem("last_epicentro_reg_id", currentRegId);
+    } catch (e) {}
+
     const editUrl = tokenToUse ? `/natura/editar?token=${encodeURIComponent(tokenToUse)}` : "#";
-    const publicUrl = `/natura/negocio?id=${currentRegId}`;
+    const publicUrl = tokenToUse 
+      ? `/natura/negocio?id=${encodeURIComponent(currentRegId)}&token=${encodeURIComponent(tokenToUse)}`
+      : `/natura/negocio?id=${encodeURIComponent(currentRegId)}`;
 
     if (btnSelfService) btnSelfService.href = editUrl;
     if (btnPublic) btnPublic.href = publicUrl;
