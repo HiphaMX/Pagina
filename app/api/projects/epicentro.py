@@ -1646,12 +1646,29 @@ def seed_official_showcases(db: Session):
             if botica.slug != "boticasilvestre":
                 botica.slug = "boticasilvestre"
                 updated = True
+            if botica.schedule != "Lunes a Sábado · 09:00 a 19:00 hrs":
+                botica.schedule = "Lunes a Sábado · 09:00 a 19:00 hrs"
+                updated = True
+            if botica.description != "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.":
+                botica.description = "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos."
+                updated = True
+            if botica.coto_address != "Natura Bosque Residencial":
+                botica.coto_address = "Natura Bosque Residencial"
+                updated = True
+            if not botica.is_verified_badge:
+                botica.is_verified_badge = True
+                updated = True
+            if botica.status != "active":
+                botica.status = "active"
+                updated = True
             if updated:
                 db.commit()
 
         # 2. CHILE CHILLÓN (Registro Oficial Único)
         chillon = db.query(EpicentroRegistration).filter(
-            EpicentroRegistration.id == "reg-chile-chillon"
+            (EpicentroRegistration.id == "reg-chile-chillon") |
+            (EpicentroRegistration.id == "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97") |
+            (EpicentroRegistration.business_name.ilike("%chill%"))
         ).first()
 
         if not chillon:
@@ -1659,10 +1676,10 @@ def seed_official_showcases(db: Session):
                 id="reg-chile-chillon",
                 business_name="Chile Chillón",
                 category_slug="comida-delivery",
-                category_label="Comida y Delivery",
-                subcategory_slug="salsas-artesanales",
-                subcategory_label="Salsas Picantes 100% Naturales",
-                coto_address="Zona Mariano Otero (Envíos directos a caseta en cotos Natura)",
+                category_label="Comida & Delivery",
+                subcategory_slug="salsas-picantes",
+                subcategory_label="Salsas Picantes",
+                coto_address="Natura Bosque Residencial",
                 business_type="emprendimiento",
                 space_label="Punto de venta & A domicilio",
                 owner_name="Chile Chillón",
@@ -1671,9 +1688,9 @@ def seed_official_showcases(db: Session):
                 whatsapp="3921097809",
                 delivery_available=True,
                 preferred_contact_methods="whatsapp,delivery,llamada",
-                schedule="Lunes a Domingo · 10:00 a 20:00 hrs",
+                schedule="Lunes a viernes · 10:00 a 17:00 hrs",
                 website="https://elchilechillon.mx",
-                description="Salsas picantes artesanales 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos.",
+                description="Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.",
                 cover_photo=CHILLON_DATA["cover_photo"],
                 microsite_data=json.dumps(CHILLON_DATA),
                 email_verified=True,
@@ -1694,33 +1711,58 @@ def seed_official_showcases(db: Session):
             db.refresh(chillon)
         else:
             updated = False
+            if chillon.id != "reg-chile-chillon":
+                chillon.id = "reg-chile-chillon"
+                updated = True
+            if chillon.business_name != "Chile Chillón":
+                chillon.business_name = "Chile Chillón"
+                updated = True
             if chillon.slug != "elchilechillon":
                 chillon.slug = "elchilechillon"
                 updated = True
-            if not chillon.cover_photo:
+            if chillon.category_slug != "comida-delivery":
+                chillon.category_slug = "comida-delivery"
+                chillon.category_label = "Comida & Delivery"
+                updated = True
+            if chillon.subcategory_slug != "salsas-picantes":
+                chillon.subcategory_slug = "salsas-picantes"
+                chillon.subcategory_label = "Salsas Picantes"
+                updated = True
+            if chillon.space_label != "Punto de venta & A domicilio":
+                chillon.space_label = "Punto de venta & A domicilio"
+                updated = True
+            if chillon.coto_address != "Natura Bosque Residencial":
+                chillon.coto_address = "Natura Bosque Residencial"
+                updated = True
+            if chillon.phone != "3921097809":
+                chillon.phone = "3921097809"
+                updated = True
+            if chillon.whatsapp != "3921097809":
+                chillon.whatsapp = "3921097809"
+                updated = True
+            if chillon.schedule != "Lunes a viernes · 10:00 a 17:00 hrs":
+                chillon.schedule = "Lunes a viernes · 10:00 a 17:00 hrs"
+                updated = True
+            if chillon.description != "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.":
+                chillon.description = "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella."
+                updated = True
+            if chillon.website != "https://elchilechillon.mx":
+                chillon.website = "https://elchilechillon.mx"
+                updated = True
+            if chillon.cover_photo != CHILLON_DATA["cover_photo"]:
                 chillon.cover_photo = CHILLON_DATA["cover_photo"]
                 updated = True
             if not chillon.microsite_data:
                 chillon.microsite_data = json.dumps(CHILLON_DATA)
                 updated = True
-            if not chillon.website:
-                chillon.website = "https://elchilechillon.mx"
+            if not chillon.is_verified_badge:
+                chillon.is_verified_badge = True
                 updated = True
-            if not chillon.schedule:
-                chillon.schedule = "Lunes a Domingo · 10:00 a 20:00 hrs"
+            if chillon.status != "active":
+                chillon.status = "active"
                 updated = True
-            if not chillon.description:
-                chillon.description = "Salsas picantes artesanales 100% naturales, elaboradas con aceite vegetal comestible sin conservadores ni colorantes artificiales. 10 años de trayectoria gastronómica. Envíos directos a cotos."
-                updated = True
-            if not chillon.phone:
-                chillon.phone = "3921097809"
-                updated = True
-            if not chillon.whatsapp:
-                chillon.whatsapp = "3921097809"
-                updated = True
-            if not chillon.edit_token:
-                chillon.edit_token = "chile-chillon-natura-vip"
-                chillon.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
+            if chillon.payment_status != "waived":
+                chillon.payment_status = "waived"
                 updated = True
             if updated:
                 db.commit()
@@ -1973,6 +2015,70 @@ def seed_official_showcases(db: Session):
             if not jessica.edit_token:
                 jessica.edit_token = "jessica-mendoza-natura-717f"
                 jessica.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
+                updated = True
+            if updated:
+                db.commit()
+
+        # 5. VALENCIA SERVICIOS (Cliente Oficial Hipha - Servicios Hogar)
+        valencia = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.id == "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322") |
+            (EpicentroRegistration.slug == "valenciaservicios") |
+            (EpicentroRegistration.business_name.ilike("%valencia%"))
+        ).first()
+
+        if not valencia:
+            valencia = EpicentroRegistration(
+                id="be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+                business_name="Valencia Servicios",
+                slug="valenciaservicios",
+                category_slug="servicios-hogar",
+                category_label="Servicios hogar",
+                subcategory_slug="fontaneria-y-electricidad",
+                subcategory_label="Fontanería y Electricidad",
+                coto_address="Natura Bosque Residencial",
+                business_type="sin-punto-venta",
+                space_label="A domicilio en cotos",
+                owner_name="Valencia Servicios",
+                email="contacto@valenciaservicios.mx",
+                phone="3315848420",
+                whatsapp="3315848420",
+                delivery_available=True,
+                schedule="Lunes a Viernes 9:00 a 16:00 hrs",
+                website="valenciaservicios",
+                description="Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
+                status="active",
+                is_verified_badge=True,
+                payment_status="approved",
+                payment_amount=499.0
+            )
+            db.add(valencia)
+            db.commit()
+            db.refresh(valencia)
+        else:
+            updated = False
+            if valencia.slug != "valenciaservicios":
+                valencia.slug = "valenciaservicios"
+                updated = True
+            if valencia.description != "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.":
+                valencia.description = "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona."
+                updated = True
+            if valencia.schedule != "Lunes a Viernes 9:00 a 16:00 hrs":
+                valencia.schedule = "Lunes a Viernes 9:00 a 16:00 hrs"
+                updated = True
+            if valencia.space_label != "A domicilio en cotos":
+                valencia.space_label = "A domicilio en cotos"
+                updated = True
+            if valencia.phone != "3315848420":
+                valencia.phone = "3315848420"
+                updated = True
+            if valencia.whatsapp != "3315848420":
+                valencia.whatsapp = "3315848420"
+                updated = True
+            if not valencia.is_verified_badge:
+                valencia.is_verified_badge = True
+                updated = True
+            if valencia.status != "active":
+                valencia.status = "active"
                 updated = True
             if updated:
                 db.commit()
