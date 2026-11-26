@@ -96,6 +96,10 @@ def ensure_epicentro_schema(db: Session):
                 db.commit()
         except Exception as e:
             logger.warning(f"Nota en verificación de slugs: {e}")
+            try:
+                db.rollback()
+            except Exception:
+                pass
 
     except Exception as e:
         logger.warning(f"Nota en verificación de esquema epicentro: {e}")
@@ -754,6 +758,7 @@ def create_verification_payment(payload: CreatePaymentRequest, db: Session = Dep
     Crea la preferencia en Mercado Pago (reutilizando las credenciales de Botica Silvestre)
     solo si el registro ya validó WhatsApp.
     """
+    ensure_epicentro_schema(db)
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
     if not reg:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
