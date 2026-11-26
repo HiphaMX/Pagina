@@ -1042,7 +1042,46 @@
     ];
 
     // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO EN APERTURA)
-    const ALL_BUSINESSES = [];
+    const ALL_BUSINESSES = [
+      {
+        id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+        name: "Valencia Servicios",
+        slug: "valenciaservicios",
+        category_slug: "servicios-hogar",
+        category_label: "Servicios hogar",
+        subcategory_slug: "fontaneria-y-electricidad",
+        subcategory_label: "Fontanería y Electricidad",
+        type: "servicio",
+        type_slug: "sin-punto-venta",
+        type_label: "A domicilio en cotos",
+        space_label: "A domicilio en cotos",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        coto_only_delivery: false,
+        pickup_available: false,
+        has_delivery: true,
+        has_pickup: false,
+        delivery_badge: "Servicio a domicilio",
+        coto: "Natura Bosque Residencial",
+        address: "Natura Bosque Residencial",
+        description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
+        phone: "3315848420",
+        whatsapp: "3315848420",
+        website: "valenciaservicios",
+        schedule: "Lunes a Viernes 9:00 a 16:00 hrs",
+        hours: "Lunes a Viernes 9:00 a 16:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia"],
+        has_badge: true,
+        badge_text: "Vecino Verificado",
+        rating: 5.0,
+        reviews: 12,
+        has_photos: false,
+        has_microsite: false,
+        photos: []
+      }
+    ];
 
     // COORDENADAS GPS DE LAS 10 ZONAS GEOGRÁFICAS
     const ZONE_COORDINATES = {
@@ -1240,10 +1279,13 @@
       populateRegisterCategoryOptions();
 
             // Cargar dinámicamente comercios aprobados y activos desde el backend
-      fetch("/api/epicentro/businesses/active")
+      fetch(`/api/epicentro/businesses/active?_t=${Date.now()}`, { cache: "no-store" })
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
+            try { sessionStorage.setItem("epizentro_active_businesses", JSON.stringify(activeBizList)); } catch(e){}
+            const prevSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+
             activeBizList.forEach(biz => {
               const normName = (biz.business_name || "").trim().toLowerCase();
               const existingIdx = ALL_BUSINESSES.findIndex(b =>
@@ -1297,7 +1339,11 @@
                 ALL_BUSINESSES.unshift(bizObj);
               }
             });
-            renderCategoryView();
+
+            const newSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            if (prevSig !== newSig) {
+              renderCategoryView();
+            }
           }
         })
         .catch(() => {});

@@ -79,6 +79,10 @@
       parts.push("herbolaria adaptogenos tinturas extractos salud bienestar melena de leon hongo hongos relajacion insomnio estres concentracion gotas naturales medicina alternativa");
     } else if (normName.includes("amdi")) {
       parts.push("arquitectura arquitecto arquitecta planos render renders 3d diseno interior interiores interiorismo remodelacion consultoria residencial");
+    } else if (normName.includes("jessica") || normName.includes("mendoza")) {
+      parts.push("bienes raices inmobiliaria inmobiliario casas departamentos residencia residencial renta venta propiedades terrenos asesor asesoria cotos los robles coto ceiba");
+    } else if (normName.includes("valencia")) {
+      parts.push("fontaneria fontanero plomero plomeria electricidad electricista mantenimiento reparaciones fugas instalaciones hogar");
     }
 
     return normalizeSearchText(parts.filter(Boolean).join(" "));
@@ -139,6 +143,16 @@
     }
     if (norm.includes("amdi") || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83") {
       return isEpizentroHost ? "/natura/amdi" : `${prefix}amdi.html`;
+    }
+    if (norm.includes("jessica") || b.id === "18315325-717f-4072-86b0-cab5300e0d3f") {
+      return isEpizentroHost ? "/natura/jessicamendozabienesraices" : `${prefix}negocio.html?slug=jessicamendozabienesraices`;
+    }
+    if (norm.includes("valencia") || b.id === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322") {
+      return isEpizentroHost ? "/natura/valenciaservicios" : `${prefix}negocio.html?slug=valenciaservicios`;
+    }
+
+    if (b.slug) {
+      return isEpizentroHost ? `/natura/${b.slug}` : `${prefix}negocio.html?slug=${b.slug}`;
     }
 
     if (b.website && !b.website.startsWith("http")) {

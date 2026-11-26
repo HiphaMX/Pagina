@@ -1164,6 +1164,109 @@
         photos: [
           "Assets/amdi/producto_1.webp"
         ]
+      },
+      {
+        id: "18315325-717f-4072-86b0-cab5300e0d3f",
+        name: "Jessica Mendoza Bienes Raíces",
+        slug: "jessicamendozabienesraices",
+        category_slug: "servicios-profesionales",
+        category_label: "Servicios Profesionales",
+        subcategory_slug: "inmobiliario",
+        subcategory_label: "Inmobiliario",
+        type: "servicio",
+        type_slug: "sin-punto-venta",
+        type_label: "Atención y citas en cotos",
+        space_label: "Atención en cotos & Previa cita",
+        community_slug: "los-robles",
+        community_name: "Los Robles",
+        delivery_available: true,
+        coto_only_delivery: false,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Cita en domicilio",
+        pickup_badge: "Atención coordinada",
+        coto: "Los Robles",
+        address: "Los Robles",
+        description: "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7.",
+        phone: "3336762545",
+        whatsapp: "3336762545",
+        website: "jessicamendozabienesraices",
+        schedule: "Lunes a Viernes · 09:00 a 19:00 hrs",
+        hours: "Lunes a Viernes · 09:00 a 19:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
+        has_badge: true,
+        badge_text: "Vecino Verificado",
+        rating: 5.0,
+        reviews: 18,
+        has_photos: true,
+        has_microsite: true,
+        photos: [
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85"
+        ],
+        microsite_data: {
+          featured_section: {
+            title: "Propiedades Destacadas en Cotos",
+            subtitle: "Venta & Renta Residencial de Alta Gama",
+            description: "Opciones exclusivas para vivir o invertir en cotos con seguridad privada y alta plusvalía.",
+            products: [
+              {
+                name: "Casa en Renta Los Robles",
+                price: 32000,
+                description: "3 recámaras con baño completo, cocina integral con barra de granito, jardín privado y roof garden con vista panorámica al bosque.",
+                photo: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+                tag: "Renta"
+              },
+              {
+                name: "Casa en Venta Natura Coto Ceiba",
+                price: 8170000,
+                description: "Residencia contemporánea con acabados de autor, paneles solares, cochera para 3 autos y casa club con alberca climatizada.",
+                photo: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+                tag: "Venta"
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+        name: "Valencia Servicios",
+        slug: "valenciaservicios",
+        category_slug: "servicios-hogar",
+        category_label: "Servicios hogar",
+        subcategory_slug: "fontaneria-y-electricidad",
+        subcategory_label: "Fontanería y Electricidad",
+        type: "servicio",
+        type_slug: "sin-punto-venta",
+        type_label: "A domicilio en cotos",
+        space_label: "A domicilio en cotos",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        coto_only_delivery: false,
+        pickup_available: false,
+        has_delivery: true,
+        has_pickup: false,
+        delivery_badge: "Servicio a domicilio",
+        coto: "Natura Bosque Residencial",
+        address: "Natura Bosque Residencial",
+        description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
+        phone: "3315848420",
+        whatsapp: "3315848420",
+        website: "valenciaservicios",
+        schedule: "Lunes a Viernes 9:00 a 16:00 hrs",
+        hours: "Lunes a Viernes 9:00 a 16:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia"],
+        has_badge: true,
+        badge_text: "Vecino Verificado",
+        rating: 5.0,
+        reviews: 12,
+        has_photos: false,
+        has_microsite: false,
+        photos: []
       }
     ];
 
@@ -1367,6 +1470,9 @@
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
+            try { sessionStorage.setItem("epizentro_active_businesses", JSON.stringify(activeBizList)); } catch(e){}
+            const prevSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+
             activeBizList.forEach(biz => {
               const normName = (biz.business_name || "").trim().toLowerCase();
               const cleanNorm = normName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/^el\s+/, "");
@@ -1379,6 +1485,7 @@
                 if (cleanNorm.includes("botica") && (bNorm.includes("botica") || b.id === "reg-botica-silvestre" || b.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e")) return true;
                 if (cleanNorm.includes("amdi") && (bNorm.includes("amdi") || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || b.id === "reg-amdi")) return true;
                 if ((cleanNorm.includes("jessica mendoza") || cleanNorm.includes("jessica")) && (bNorm.includes("jessica") || b.id === "18315325-717f-4072-86b0-cab5300e0d3f")) return true;
+                if ((cleanNorm.includes("valencia servicios") || cleanNorm.includes("valencia")) && (bNorm.includes("valencia") || b.id === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322")) return true;
                 return false;
               });
 
@@ -1386,7 +1493,8 @@
               const isBotica = normName.includes("botica") || biz.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || biz.id === "reg-botica-silvestre";
               const isAmdi = biz.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
               const isJessica = biz.id === "18315325-717f-4072-86b0-cab5300e0d3f" || normName.includes("jessica mendoza") || normName.includes("jessica");
-              const isOfficialShowcase = isChillon || isBotica || isAmdi || isJessica;
+              const isValencia = biz.id === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322" || normName.includes("valencia servicios") || normName.includes("valencia");
+              const isOfficialShowcase = isChillon || isBotica || isAmdi || isJessica || isValencia;
 
               let mdata = null;
               if (biz.microsite_data) {
@@ -1477,7 +1585,10 @@
               }
             }
 
-            renderCategoryView();
+            const newSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            if (prevSig !== newSig) {
+              renderCategoryView();
+            }
           }
         })
         .catch(() => {});
