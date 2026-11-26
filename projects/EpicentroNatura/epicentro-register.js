@@ -385,7 +385,7 @@
             </button>
             <div id="coupon-container" class="hidden mt-2 p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex gap-2">
-                <input type="text" id="reg-coupon-code" placeholder="Ej. NATURA100-XXXX" class="w-full px-3 py-2 text-xs uppercase font-mono tracking-wider font-bold rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500">
+                <input type="text" id="reg-coupon-code" placeholder="Ej. ACCESOFITNESS o NATURA100" class="w-full px-3 py-2 text-xs uppercase font-mono tracking-wider font-bold rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500">
                 <button type="button" onclick="handleApplyCoupon()" id="btn-apply-coupon" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors cursor-pointer">
                   Aplicar
                 </button>
@@ -785,10 +785,25 @@
     const modal = mountRegisterModal();
     if (!modal) return;
 
-    if (preselectedCat) {
+    let targetCat = preselectedCat;
+    if (!targetCat) {
+      if (typeof currentCategorySlug !== "undefined" && currentCategorySlug && currentCategorySlug !== "all") {
+        targetCat = currentCategorySlug;
+      } else {
+        const path = (window.location.pathname || "").toLowerCase();
+        for (const k of Object.keys(SUBCATEGORIES_MAP)) {
+          if (path.includes(k)) {
+            targetCat = k;
+            break;
+          }
+        }
+      }
+    }
+
+    if (targetCat) {
       const catSelect = document.getElementById("reg-category");
       if (catSelect) {
-        catSelect.value = preselectedCat;
+        catSelect.value = targetCat;
       }
     }
     syncSubcategoriesDropdown();
