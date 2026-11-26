@@ -98,6 +98,7 @@
   };
 
   let currentRegId = null;
+  let currentRegSlug = null;
   let currentBusinessName = "";
   let currentSelectedPlan = "microsite"; // "microsite" ($499/año) o "basic" ($99/año)
   let currentEditToken = "";
@@ -576,6 +577,7 @@
 
       const data = await res.json();
       currentRegId = data.registration_id;
+      currentRegSlug = data.slug || "";
       currentEditToken = data.edit_token || "";
       currentPreviewData = data;
 
@@ -744,9 +746,10 @@
     } catch (e) {}
 
     const editUrl = tokenToUse ? `/natura/editar?token=${encodeURIComponent(tokenToUse)}` : "#";
+    const bizRoute = currentRegSlug || currentRegId;
     const publicUrl = tokenToUse 
-      ? `/natura/negocio?id=${encodeURIComponent(currentRegId)}&token=${encodeURIComponent(tokenToUse)}`
-      : `/natura/negocio?id=${encodeURIComponent(currentRegId)}`;
+      ? `/natura/${encodeURIComponent(bizRoute)}?token=${encodeURIComponent(tokenToUse)}`
+      : `/natura/${encodeURIComponent(bizRoute)}`;
 
     if (btnSelfService) btnSelfService.href = editUrl;
     if (btnPublic) btnPublic.href = publicUrl;

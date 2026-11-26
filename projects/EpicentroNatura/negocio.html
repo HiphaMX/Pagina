@@ -294,9 +294,44 @@
   </footer>
 
   <script>
+    function isQuotePrice(val) {
+      if (val === null || val === undefined || val === "" || val === false) return true;
+      const str = String(val).trim().toLowerCase();
+      if (str === "0" || str === "0.0" || str === "0.00" || str === "cotizar" || str.includes("cotiz")) return true;
+      const num = parseFloat(str.replace(/[^0-9.-]+/g, ""));
+      return isNaN(num) || num <= 0;
+    }
+
+    function formatMoney(val) {
+      if (isQuotePrice(val)) return "Cotizar";
+      const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+      return "$" + num.toLocaleString("es-MX", {
+        minimumFractionDigits: (num % 1 === 0 ? 0 : 2),
+        maximumFractionDigits: 2
+      });
+    }
+
+    function renderPriceTag(val, sizeClasses = "text-base font-extrabold text-emerald-700") {
+      if (isQuotePrice(val)) {
+        return `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 text-xs font-black tracking-wider uppercase font-mono shadow-xs">Cotizar</span>`;
+      }
+      return `<span class="${sizeClasses}">${formatMoney(val)}</span>`;
+    }
+
     async function loadDynamicBusiness() {
       const urlParams = new URLSearchParams(window.location.search);
-      const queryParam = urlParams.get("id") || urlParams.get("slug") || urlParams.get("b") || "";
+      let queryParam = urlParams.get("id") || urlParams.get("slug") || urlParams.get("b") || "";
+
+      if (!queryParam) {
+        const pathParts = window.location.pathname.split("/").filter(Boolean);
+        const naturaIdx = pathParts.indexOf("natura");
+        if (naturaIdx !== -1 && pathParts.length > naturaIdx + 1) {
+          const candidate = pathParts[naturaIdx + 1].replace(/\.html$/, "");
+          if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura"].includes(candidate)) {
+            queryParam = candidate;
+          }
+        }
+      }
 
       if (!queryParam) {
         // Redirigir al inicio si no se especificó un negocio
@@ -487,9 +522,17 @@
         featGrid.innerHTML = productsList.map(prod => {
           const prodTag = prod.tag || prod.badge || reg.subcategory_label || "Comercio Verificado";
           const isContain = prod.fit === "contain" || prod.photo_fit === "contain" || (prod.fit !== "cover" && (reg.category_slug === "comida" || reg.category_slug === "abarrotes" || (reg.subcategory_slug || "").includes("salsa") || (reg.subcategory_slug || "").includes("remedio")));
-          const ctaMsg = isProfessionalOrService
-            ? `Hola%20${encodeURIComponent(bName)},%20me%20interesa%20informaci%C3%B3n%20sobre%20${encodeURIComponent(prod.name)}`
-            : `Hola%20${encodeURIComponent(bName)},%20quiero%20ordenar%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto`;
+          
+          const isQuote = isQuotePrice(prod.price);
+          const ctaBtnText = isQuote
+            ? "Cotizar por WhatsApp"
+            : (isProfessionalOrService ? "Consultar por WhatsApp" : "Pedir por WhatsApp");
+
+          const ctaMsg = isQuote
+            ? `Hola%20${encodeURIComponent(bName)},%20me%20interesa%20cotizar%20${encodeURIComponent(prod.name)}`
+            : (isProfessionalOrService
+                ? `Hola%20${encodeURIComponent(bName)},%20me%20interesa%20informaci%C3%B3n%20sobre%20${encodeURIComponent(prod.name)}`
+                : `Hola%20${encodeURIComponent(bName)},%20quiero%20ordenar%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto`);
 
           return `
           <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
@@ -504,7 +547,7 @@
               <div class="space-y-2">
                 <div class="flex items-start justify-between gap-2">
                   <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">${prod.name}</h3>
-                  <span class="text-base font-extrabold text-emerald-700">$${prod.price || 0}</span>
+                  ${renderPriceTag(prod.price, "text-base font-extrabold text-emerald-700")}
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed">
                   ${prod.description || ''}
@@ -573,7 +616,7 @@
                     <div class="pt-3 first:pt-0 space-y-1">
                       <div class="flex items-center justify-between gap-3">
                         <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
-                        <span class="text-sm font-black text-emerald-700 shrink-0">$${item.price || 0}</span>
+                        ${renderPriceTag(item.price, "text-sm font-black text-emerald-700 shrink-0")}
                       </div>
                       ${item.description ? `<p class="text-xs text-slate-500 leading-relaxed">${item.description}</p>` : ''}
                     </div>

@@ -52,6 +52,7 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coto_only_delivery BOOLEAN DEFAULT FALSE"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token VARCHAR(64)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token_expires_at TIMESTAMP"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS slug VARCHAR(150)"))
             db.commit()
         else:
             for col, col_type in [
@@ -66,7 +67,8 @@ def ensure_epicentro_schema(db: Session):
                 ("coupon_code", "VARCHAR(50)"),
                 ("coto_only_delivery", "BOOLEAN DEFAULT 0"),
                 ("edit_token", "VARCHAR(64)"),
-                ("edit_token_expires_at", "TIMESTAMP")
+                ("edit_token_expires_at", "TIMESTAMP"),
+                ("slug", "VARCHAR(150)")
             ]:
                 try:
                     db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
@@ -83,12 +85,59 @@ def ensure_epicentro_schema(db: Session):
         except Exception:
             pass
 
+        # Migración automática de slugs para comercios existentes sin slug
+        try:
+            unslugged = db.query(EpicentroRegistration).filter(
+                (EpicentroRegistration.slug == None) | (EpicentroRegistration.slug == "")
+            ).all()
+            if unslugged:
+                for reg_item in unslugged:
+                    reg_item.slug = generate_business_slug(reg_item.business_name, db, current_id=reg_item.id)
+                db.commit()
+        except Exception as e:
+            logger.warning(f"Nota en verificación de slugs: {e}")
+
     except Exception as e:
         logger.warning(f"Nota en verificación de esquema epicentro: {e}")
         try:
             db.rollback()
         except Exception:
             pass
+
+
+def generate_business_slug(business_name: str, db: Session, current_id: Optional[str] = None) -> str:
+    """
+    Genera un slug limpio y amigable a partir del nombre del negocio,
+    desambiguando con sufijo numérico (2, 3, etc.) si ya existe otro comercio con el mismo nombre.
+    Ejemplo: 'Jessica Mendoza Bienes Raíces' -> 'jessicamendozabienesraices'
+    Si se duplica -> 'jessicamendozabienesraices2'
+    """
+    import unicodedata, re
+    if not business_name:
+        business_name = "negocio"
+    nfkd = unicodedata.normalize('NFKD', str(business_name))
+    clean = "".join(c for c in nfkd if not unicodedata.combining(c)).lower()
+    base_slug = re.sub(r'[^a-z0-9]', '', clean)
+    if not base_slug:
+        base_slug = "negocio"
+
+    # Verificar si el slug base está disponible
+    q = db.query(EpicentroRegistration).filter(EpicentroRegistration.slug == base_slug)
+    if current_id:
+        q = q.filter(EpicentroRegistration.id != current_id)
+    if not q.first():
+        return base_slug
+
+    # Desambiguación con número correlativo (2, 3, etc.)
+    counter = 2
+    while True:
+        candidate = f"{base_slug}{counter}"
+        q2 = db.query(EpicentroRegistration).filter(EpicentroRegistration.slug == candidate)
+        if current_id:
+            q2 = q2.filter(EpicentroRegistration.id != current_id)
+        if not q2.first():
+            return candidate
+        counter += 1
 
 
 def verify_admin(
@@ -247,6 +296,7 @@ class ModerationActionRequest(BaseModel):
 class BusinessPublicOut(BaseModel):
     id: str
     business_name: str
+    slug: Optional[str] = None
     category_slug: str
     category_label: Optional[str] = None
     subcategory_slug: Optional[str] = None
@@ -570,6 +620,7 @@ async def initiate_registration(
     # Crear registro con estado pending_verification (NO publicado en /businesses/active)
     new_reg = EpicentroRegistration(
         business_name=payload.business_name.strip(),
+        slug=generate_business_slug(payload.business_name, db),
         category_slug=payload.category_slug.strip(),
         category_label=payload.category_label,
         subcategory_slug=payload.subcategory_slug,
@@ -625,6 +676,7 @@ async def initiate_registration(
     return {
         "success": True,
         "registration_id": new_reg.id,
+        "slug": new_reg.slug,
         "business_name": new_reg.business_name,
         "category_slug": new_reg.category_slug,
         "category_label": new_reg.category_label,
@@ -1208,6 +1260,7 @@ def get_registration_status(registration_id: str, db: Session = Depends(get_db))
     return {
         "success": True,
         "registration_id": reg.id,
+        "slug": reg.slug,
         "business_name": reg.business_name,
         "status": reg.status,
         "payment_status": reg.payment_status,
@@ -1259,6 +1312,7 @@ def get_self_service_business(token: str, db: Session = Depends(get_db)):
     return {
         "success": True,
         "id": reg.id,
+        "slug": reg.slug or generate_business_slug(reg.business_name, db, current_id=reg.id),
         "business_name": reg.business_name,
         "category_slug": reg.category_slug,
         "category_label": reg.category_label,
@@ -1356,11 +1410,15 @@ def update_self_service_business(
     if payload.website is not None:
         reg.website = payload.website.strip()
 
+    if not reg.slug:
+        reg.slug = generate_business_slug(reg.business_name, db, current_id=reg.id)
+
     db.commit()
     db.refresh(reg)
 
     return {
         "success": True,
+        "slug": reg.slug,
         "message": "¡Cambios guardados con éxito! Tu escaparate en Epizentro Natura ha sido actualizado."
     }
 
@@ -1585,6 +1643,9 @@ def seed_official_showcases(db: Session):
                 botica.edit_token = "botica-silvestre-natura-vip"
                 botica.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
                 updated = True
+            if botica.slug != "boticasilvestre":
+                botica.slug = "boticasilvestre"
+                updated = True
             if updated:
                 db.commit()
 
@@ -1623,6 +1684,7 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
+                slug="elchilechillon",
                 edit_token="chile-chillon-natura-vip",
                 edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Cortesía oficial Hipha: Página Escaparate Individual con catálogo activo."
@@ -1632,6 +1694,9 @@ def seed_official_showcases(db: Session):
             db.refresh(chillon)
         else:
             updated = False
+            if chillon.slug != "elchilechillon":
+                chillon.slug = "elchilechillon"
+                updated = True
             if not chillon.cover_photo:
                 chillon.cover_photo = CHILLON_DATA["cover_photo"]
                 updated = True
@@ -1697,6 +1762,7 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
+                slug="amdi",
                 edit_token="amdi-diseno-natura-vip",
                 edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Comercio fundador oficial con Página Escaparate Individual activa."
@@ -1706,6 +1772,9 @@ def seed_official_showcases(db: Session):
             db.refresh(amdi)
         else:
             updated = False
+            if amdi.slug != "amdi":
+                amdi.slug = "amdi"
+                updated = True
             if not amdi.cover_photo or "unsplash.com" in (amdi.cover_photo or ""):
                 amdi.cover_photo = AMDI_DATA["cover_photo"]
                 updated = True
@@ -1814,6 +1883,7 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
+                slug="jessicamendozabienesraices",
                 edit_token="jessica-mendoza-natura-717f",
                 edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Cliente oficial de Hipha con sitio propio y escaparate verificado."
@@ -1823,6 +1893,9 @@ def seed_official_showcases(db: Session):
             db.refresh(jessica)
         else:
             updated = False
+            if jessica.slug != "jessicamendozabienesraices":
+                jessica.slug = "jessicamendozabienesraices"
+                updated = True
             if not jessica.business_name:
                 jessica.business_name = "Jessica Mendoza Bienes Raíces"
                 updated = True
@@ -1922,11 +1995,19 @@ def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
     ensure_epicentro_schema(db)
     seed_official_showcases(db)
     slug_clean = slug_or_id.strip().lower()
+    slug_compact = slug_clean.replace("-", "").replace("_", "")
 
-    # 1. Búsqueda por ID exacto
-    reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == slug_or_id).first()
+    # 1. Búsqueda directa por slug o slug compactado
+    reg = db.query(EpicentroRegistration).filter(
+        (EpicentroRegistration.slug == slug_clean) |
+        (EpicentroRegistration.slug == slug_compact)
+    ).first()
+
+    # 2. Búsqueda por ID exacto
     if not reg:
-        # 2. Búsqueda por ID con prefijo 'reg-'
+        reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == slug_or_id).first()
+    if not reg:
+        # 3. Búsqueda por ID con prefijo 'reg-'
         reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == f"reg-{slug_clean}").first()
 
     # 3. Aliases directos para comercios fundadores y micrositios oficiales

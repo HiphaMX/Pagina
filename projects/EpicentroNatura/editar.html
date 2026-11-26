@@ -322,9 +322,10 @@
         document.getElementById("biz-title").textContent = currentBiz.business_name || "Tu Negocio";
         document.getElementById("biz-coto-text").textContent = currentBiz.coto_address || "Natura Bosque";
 
+        const bizSlug = currentBiz.slug || currentBiz.id;
         const liveUrl = (window.location.protocol === "file:")
           ? `negocio.html?id=${currentBiz.id}`
-          : `/natura/negocio?id=${currentBiz.id}`;
+          : `/natura/${bizSlug}`;
         document.getElementById("btn-view-live").href = liveUrl;
         document.getElementById("btn-floating-view").href = liveUrl;
 
@@ -431,6 +432,29 @@
         e.target.value = "";
       };
 
+      function isQuotePrice(val) {
+        if (val === null || val === undefined || val === "" || val === false) return true;
+        const str = String(val).trim().toLowerCase();
+        if (str === "0" || str === "0.0" || str === "0.00" || str === "cotizar" || str.includes("cotiz")) return true;
+        const num = parseFloat(str.replace(/[^0-9.-]+/g, ""));
+        return isNaN(num) || num <= 0;
+      }
+
+      function formatMoney(val) {
+        if (isQuotePrice(val)) return "Cotizar";
+        const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+        return "$" + num.toLocaleString("es-MX", {
+          minimumFractionDigits: (num % 1 === 0 ? 0 : 2),
+          maximumFractionDigits: 2
+        });
+      }
+
+      window.toggleQuotePrice = function(idx, isQuote) {
+        if (!productsList[idx]) return;
+        productsList[idx].price = isQuote ? 0 : 100.0;
+        renderProducts();
+      };
+
       // --- GESTIÓN DE PRODUCTOS ---
       function renderProducts() {
         const list = document.getElementById("products-list");
@@ -465,17 +489,33 @@
             <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-12 gap-2">
               <div class="sm:col-span-5">
                 <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Nombre del Producto / Servicio *</label>
-                <input type="text" value="${escapeHtml(p.name || '')}" oninput="updateProductField(${idx}, 'name', this.value)" placeholder="Ej. 1 Litro Salsa Macha" class="w-full px-2.5 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" value="${escapeHtml(p.name || '')}" oninput="updateProductField(${idx}, 'name', this.value)" placeholder="Ej. Casa en Renta / 1 Litro Salsa Macha" class="w-full px-2.5 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
               </div>
 
               <div class="sm:col-span-3">
-                <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Precio ($ MXN) *</label>
-                <input type="number" step="0.5" value="${parseFloat(p.price || 0)}" oninput="updateProductField(${idx}, 'price', this.value)" placeholder="120" class="w-full px-2.5 py-1.5 text-xs font-bold font-mono rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <div class="flex items-center justify-between mb-0.5">
+                  <label class="block text-[10px] font-bold text-slate-500">Precio ($ MXN) *</label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer select-none">
+                    <input type="checkbox" ${isQuotePrice(p.price) ? 'checked' : ''} onchange="toggleQuotePrice(${idx}, this.checked)" class="w-3.5 h-3.5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
+                    <span class="text-[10px] font-bold text-emerald-700">Cotizar</span>
+                  </label>
+                </div>
+                ${isQuotePrice(p.price) ? `
+                  <div class="w-full px-2.5 py-1.5 text-xs font-bold rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 flex items-center justify-between">
+                    <span>A Cotizar</span>
+                    <span class="text-[9px] font-medium text-emerald-600 font-mono">Sin precio fijo</span>
+                  </div>
+                ` : `
+                  <div>
+                    <input type="number" step="0.5" value="${parseFloat(p.price || 0)}" oninput="updateProductField(${idx}, 'price', this.value)" placeholder="120" class="w-full px-2.5 py-1.5 text-xs font-bold font-mono rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <span id="price-preview-${idx}" class="block text-[9px] font-mono text-emerald-700 font-bold mt-0.5">Formato: ${formatMoney(p.price)}</span>
+                  </div>
+                `}
               </div>
 
               <div class="sm:col-span-4">
                 <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Etiqueta Destacada (Opcional)</label>
-                <input type="text" value="${escapeHtml(p.tag || '')}" oninput="updateProductField(${idx}, 'tag', this.value)" placeholder="Ej. Especialidad / Más Vendido" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" value="${escapeHtml(p.tag || '')}" oninput="updateProductField(${idx}, 'tag', this.value)" placeholder="Ej. Especialidad / Coto Helechos · Renta" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
               </div>
 
               <div class="sm:col-span-12">
@@ -500,8 +540,8 @@
         }
 
         productsList.push({
-          name: "Nuevo Producto",
-          price: 99.0,
+          name: "Nuevo Producto o Servicio",
+          price: 0,
           description: "Descripción breve del producto o servicio.",
           photo: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
           tag: "Destacado"
@@ -513,7 +553,14 @@
 
       window.updateProductField = function(idx, field, value) {
         if (!productsList[idx]) return;
-        productsList[idx][field] = (field === 'price') ? parseFloat(value || 0) : value;
+        if (field === 'price') {
+          const num = parseFloat(value || 0);
+          productsList[idx].price = isNaN(num) ? 0 : num;
+          const hint = document.getElementById(`price-preview-${idx}`);
+          if (hint) hint.textContent = "Formato: " + formatMoney(productsList[idx].price);
+        } else {
+          productsList[idx][field] = value;
+        }
       };
 
       window.handleProductPhotoUpload = async function(idx, e) {
@@ -612,9 +659,10 @@
             currentBiz.microsite_data = payload.microsite_data;
           }
 
+          const bizSlug = (currentBiz && (currentBiz.slug || currentBiz.id)) || "";
           const liveUrl = (window.location.protocol === "file:")
-            ? `negocio.html?id=${currentBiz.id}`
-            : `/natura/negocio?id=${currentBiz.id}`;
+            ? `negocio.html?id=${currentBiz ? currentBiz.id : ''}`
+            : `/natura/${bizSlug}`;
 
           showToast(`<span>✓ ¡Cambios guardados con éxito!</span> <a href="${liveUrl}" target="_blank" class="underline font-black text-amber-300 hover:text-white ml-2 inline-flex items-center gap-1">Ver Escaparate en Vivo ↗</a>`, "success", 6000);
         } catch (err) {

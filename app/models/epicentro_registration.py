@@ -9,6 +9,7 @@ class EpicentroRegistration(Base):
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
     business_name = Column(String(150), nullable=False, index=True)
+    slug = Column(String(150), nullable=True, index=True)
     category_slug = Column(String(80), nullable=False, index=True)
     category_label = Column(String(100), nullable=True)
     subcategory_slug = Column(String(100), nullable=True, index=True)

@@ -1515,7 +1515,8 @@
 
       // Prioridad 1: Jessica Mendoza Bienes Raíces (Cliente Oficial con Página Escaparate Verificada)
       if (isJessica) {
-        let jessicaUrl = "/natura/negocio?id=" + encodeURIComponent(b.id || "18315325-717f-4072-86b0-cab5300e0d3f");
+        const jessicaSlug = b.slug || "jessicamendozabienesraices";
+        let jessicaUrl = "/natura/" + encodeURIComponent(jessicaSlug);
         if (window.location.protocol === "file:") {
           jessicaUrl = (isSubfolder ? "../" : "") + "negocio.html?id=" + encodeURIComponent(b.id || "18315325-717f-4072-86b0-cab5300e0d3f");
         }
@@ -1581,7 +1582,8 @@
       const hasDedicatedMicrosite = !isFreeBasic && (hasCatalogProducts || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
-        let micrositeUrl = "/natura/negocio?id=" + encodeURIComponent(b.id);
+        const targetSlug = b.slug || b.id;
+        let micrositeUrl = "/natura/" + encodeURIComponent(targetSlug);
         if (window.location.protocol === "file:") {
           micrositeUrl = (isSubfolder ? "../" : "") + "negocio.html?id=" + encodeURIComponent(b.id);
         }
