@@ -1690,8 +1690,8 @@
         }, 500);
       }
 
-            // Cargar dinámicamente comercios aprobados y activos desde el backend
-      fetch("/api/epicentro/businesses/active")
+      // Cargar dinámicamente comercios aprobados y activos desde el backend (sin cache del navegador)
+      fetch(`/api/epicentro/businesses/active?_t=${Date.now()}`, { cache: "no-store" })
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
@@ -1706,13 +1706,15 @@
                     (bNorm.includes("chile chillon") || bNorm.includes("chillon") || b.id === "reg-chile-chillon" || b.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97")) return true;
                 if (cleanNorm.includes("botica") && (bNorm.includes("botica") || b.id === "reg-botica-silvestre" || b.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e")) return true;
                 if (cleanNorm.includes("amdi") && (bNorm.includes("amdi") || b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || b.id === "reg-amdi")) return true;
+                if ((cleanNorm.includes("jessica mendoza") || cleanNorm.includes("jessica")) && (bNorm.includes("jessica") || b.id === "18315325-717f-4072-86b0-cab5300e0d3f")) return true;
                 return false;
               });
 
               const isChillon = normName.includes("chill") || biz.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || biz.id === "reg-chile-chillon";
               const isBotica = normName.includes("botica") || biz.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || biz.id === "reg-botica-silvestre";
               const isAmdi = biz.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
-              const isOfficialShowcase = isChillon || isBotica || isAmdi;
+              const isJessica = biz.id === "18315325-717f-4072-86b0-cab5300e0d3f" || normName.includes("jessica mendoza") || normName.includes("jessica");
+              const isOfficialShowcase = isChillon || isBotica || isAmdi || isJessica;
 
               let mdata = null;
               if (biz.microsite_data) {

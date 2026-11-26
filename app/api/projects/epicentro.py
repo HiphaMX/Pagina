@@ -1317,7 +1317,26 @@ def update_self_service_business(
 
     # Actualizar microsite_data (productos destacados, precios, etc.)
     if payload.microsite_data is not None:
-        if isinstance(payload.microsite_data, (dict, list)):
+        md = payload.microsite_data
+        if isinstance(md, str):
+            try:
+                md = json.loads(md)
+            except Exception:
+                pass
+        if isinstance(md, dict):
+            feat = md.get("featured_section", {})
+            if isinstance(feat, dict):
+                # Sanitizar textos culinarios accidentales en comercios que no son de comida
+                is_service = (reg.category_slug in ["servicios-profesionales", "servicios-hogar", "educacion"]) or ("inmob" in (reg.subcategory_slug or "").lower())
+                if "ingredientes" in (feat.get("description") or "").lower():
+                    feat["description"] = payload.description or ""
+                if is_service and ("lotes" in (feat.get("subtitle") or "").lower() or "artesanales" in (feat.get("subtitle") or "").lower()):
+                    feat["subtitle"] = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA" if "inmob" in (reg.subcategory_slug or "").lower() else "SERVICIOS DESTACADOS"
+                if is_service and "selección destacada" in (feat.get("title") or "").lower():
+                    feat["title"] = "Propiedades Destacadas en Cotos" if "inmob" in (reg.subcategory_slug or "").lower() else "Servicios Destacados"
+                md["featured_section"] = feat
+            reg.microsite_data = json.dumps(md)
+        elif isinstance(payload.microsite_data, list):
             reg.microsite_data = json.dumps(payload.microsite_data)
         elif isinstance(payload.microsite_data, str):
             reg.microsite_data = payload.microsite_data.strip()
@@ -1836,6 +1855,26 @@ def seed_official_showcases(db: Session):
             if not jessica.microsite_data:
                 jessica.microsite_data = json.dumps(JESSICA_DATA)
                 updated = True
+            else:
+                try:
+                    jm = json.loads(jessica.microsite_data) if isinstance(jessica.microsite_data, str) else jessica.microsite_data
+                    feat = jm.get("featured_section", {})
+                    dirty = False
+                    if "lotes" in (feat.get("subtitle") or "").lower() or "artesanales" in (feat.get("subtitle") or "").lower():
+                        feat["subtitle"] = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA"
+                        dirty = True
+                    if "ingredientes" in (feat.get("description") or "").lower():
+                        feat["description"] = "Propiedades de autor en Los Robles Residencial y cotos de la zona Mariano Otero con amenidades de primer nivel y seguridad 24/7."
+                        dirty = True
+                    if "nuestra selección destacada" in (feat.get("title") or "").lower():
+                        feat["title"] = "Propiedades Destacadas en Cotos"
+                        dirty = True
+                    if dirty:
+                        jm["featured_section"] = feat
+                        jessica.microsite_data = json.dumps(jm)
+                        updated = True
+                except Exception:
+                    pass
             if not jessica.is_verified_badge:
                 jessica.is_verified_badge = True
                 updated = True

@@ -352,9 +352,9 @@
 
       // 3. Descripción
       const descEl = document.getElementById("hero-business-description");
-      const defaultDesc = (mdata && mdata.featured_section && mdata.featured_section.description) 
-        ? mdata.featured_section.description 
-        : (reg.description || `Comercio Vecino Verificado en ${reg.coto_address || "Natura Bosque Residencial"}.`);
+      const defaultDesc = reg.description || 
+        (mdata && mdata.featured_section && mdata.featured_section.description) || 
+        `Comercio Vecino Verificado en ${reg.coto_address || "Natura Bosque Residencial"}.`;
       if (descEl) descEl.textContent = defaultDesc;
 
       // 4. Categoría y Topbar back link
@@ -459,16 +459,38 @@
         : [];
 
       if (featSection) {
-        if (featSection.title && featTitle) featTitle.textContent = featSection.title;
-        if (featSection.subtitle && featSubtitle) featSubtitle.textContent = featSection.subtitle;
-        if (featSection.description && featDesc) featDesc.textContent = featSection.description;
+        let stitle = featSection.title || "Catálogo de Productos & Servicios";
+        let ssubtitle = featSection.subtitle || "CATÁLOGO ACTIVO";
+        let sdesc = featSection.description || "";
+        const isProfessionalOrService = reg.category_slug === "servicios-profesionales" || reg.category_slug === "servicios-hogar" || (reg.subcategory_slug || "").includes("inmobiliario");
+        if (isProfessionalOrService) {
+          if (ssubtitle.toLowerCase().includes("lotes") || ssubtitle.toLowerCase().includes("mano")) {
+            ssubtitle = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA";
+          }
+          if (sdesc.toLowerCase().includes("ingredientes")) {
+            sdesc = "Propiedades de autor en Los Robles Residencial y cotos de la zona Mariano Otero.";
+          }
+          if (stitle.toLowerCase().includes("selección destacada")) {
+            stitle = "Propiedades Destacadas en Cotos";
+          }
+        }
+        if (featTitle) featTitle.textContent = stitle;
+        if (featSubtitle) featSubtitle.textContent = ssubtitle;
+        if (featDesc) featDesc.textContent = sdesc;
       }
 
       if (productsList.length > 0 && featGrid) {
         if (featCountText) featCountText.textContent = `${productsList.length} Opciones Activas`;
+        const isProfessionalOrService = reg.category_slug === "servicios-profesionales" || reg.category_slug === "servicios-hogar" || (reg.subcategory_slug || "").includes("inmobiliario");
+        const ctaBtnText = isProfessionalOrService ? "Consultar por WhatsApp" : "Pedir por WhatsApp";
+
         featGrid.innerHTML = productsList.map(prod => {
           const prodTag = prod.tag || prod.badge || reg.subcategory_label || "Comercio Verificado";
           const isContain = prod.fit === "contain" || prod.photo_fit === "contain" || (prod.fit !== "cover" && (reg.category_slug === "comida" || reg.category_slug === "abarrotes" || (reg.subcategory_slug || "").includes("salsa") || (reg.subcategory_slug || "").includes("remedio")));
+          const ctaMsg = isProfessionalOrService
+            ? `Hola%20${encodeURIComponent(bName)},%20me%20interesa%20informaci%C3%B3n%20sobre%20${encodeURIComponent(prod.name)}`
+            : `Hola%20${encodeURIComponent(bName)},%20quiero%20ordenar%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto`;
+
           return `
           <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
             <div class="relative h-52 sm:h-56 w-full overflow-hidden bg-white border-b border-slate-100 ${isContain ? 'flex items-center justify-center p-3' : ''}">
@@ -488,9 +510,9 @@
                   ${prod.description || ''}
                 </p>
               </div>
-              <a href="https://wa.me/52${cleanWa}?text=Hola%20${encodeURIComponent(bName)},%20quiero%20ordenar%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              <a href="https://wa.me/52${cleanWa}?text=${ctaMsg}" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
                 <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                <span>Pedir por WhatsApp</span>
+                <span>${ctaBtnText}</span>
               </a>
             </div>
           </div>

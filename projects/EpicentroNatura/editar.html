@@ -322,7 +322,9 @@
         document.getElementById("biz-title").textContent = currentBiz.business_name || "Tu Negocio";
         document.getElementById("biz-coto-text").textContent = currentBiz.coto_address || "Natura Bosque";
 
-        const liveUrl = `/natura/negocio?id=${currentBiz.id}&token=${encodeURIComponent(currentToken)}`;
+        const liveUrl = (window.location.protocol === "file:")
+          ? `negocio.html?id=${currentBiz.id}`
+          : `/natura/negocio?id=${currentBiz.id}`;
         document.getElementById("btn-view-live").href = liveUrl;
         document.getElementById("btn-floating-view").href = liveUrl;
 
@@ -551,6 +553,20 @@
         const existingMd = (currentBiz && currentBiz.microsite_data) || {};
         const existingFeat = existingMd.featured_section || {};
 
+        // Limpiar placeholders residuales de cocina/artesanales
+        let featSubtitle = existingFeat.subtitle || "CATÁLOGO ACTIVO";
+        if (featSubtitle.toLowerCase().includes("lotes") || featSubtitle.toLowerCase().includes("mano")) {
+          featSubtitle = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA";
+        }
+        let featTitle = existingFeat.title || "Propiedades y Servicios Destacados";
+        if (featTitle.toLowerCase().includes("selección destacada")) {
+          featTitle = "Propiedades Destacadas en Cotos";
+        }
+        let featDesc = existingFeat.description || "";
+        if (featDesc.toLowerCase().includes("ingredientes")) {
+          featDesc = "";
+        }
+
         const payload = {
           cover_photo: currentCover,
           schedule: document.getElementById("edit-schedule").value.trim(),
@@ -564,9 +580,9 @@
             ...existingMd,
             featured_section: {
               ...existingFeat,
-              title: existingFeat.title || "Propiedades y Servicios Destacados",
-              subtitle: existingFeat.subtitle || "CATÁLOGO ACTIVO",
-              description: existingFeat.description || "",
+              title: featTitle,
+              subtitle: featSubtitle,
+              description: featDesc,
               products: productsList
             },
             featured_products: productsList
@@ -596,7 +612,11 @@
             currentBiz.microsite_data = payload.microsite_data;
           }
 
-          showToast("✓ ¡Cambios guardados con éxito en tu escaparate!", "success");
+          const liveUrl = (window.location.protocol === "file:")
+            ? `negocio.html?id=${currentBiz.id}`
+            : `/natura/negocio?id=${currentBiz.id}`;
+
+          showToast(`<span>✓ ¡Cambios guardados con éxito!</span> <a href="${liveUrl}" target="_blank" class="underline font-black text-amber-300 hover:text-white ml-2 inline-flex items-center gap-1">Ver Escaparate en Vivo ↗</a>`, "success", 6000);
         } catch (err) {
           console.error(err);
           showToast("Error al guardar: " + err.message, "error");
@@ -607,7 +627,7 @@
         }
       };
 
-      function showToast(msg, type = "info") {
+      function showToast(msg, type = "info", duration = 3500) {
         const toast = document.getElementById("toast");
         if (!toast) return;
 
@@ -615,12 +635,13 @@
         if (type === "success") bg = "bg-emerald-600 text-white";
         if (type === "error") bg = "bg-rose-600 text-white";
 
-        toast.className = `fixed top-5 right-5 z-50 transform translate-y-0 opacity-100 transition-all duration-300 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold ${bg}`;
-        toast.innerHTML = `<span>${msg}</span>`;
+        toast.className = `fixed top-5 right-5 z-50 transform translate-y-0 opacity-100 transition-all duration-300 pointer-events-auto px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold ${bg}`;
+        toast.innerHTML = msg;
 
-        setTimeout(() => {
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
           toast.className = "fixed top-5 right-5 z-50 transform -translate-y-16 opacity-0 transition-all duration-300 pointer-events-none px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold";
-        }, 3200);
+        }, duration);
       }
 
       function escapeHtml(str) {

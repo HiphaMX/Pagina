@@ -1279,8 +1279,8 @@
       renderCategoryView();
       populateRegisterCategoryOptions();
 
-            // Cargar dinámicamente comercios aprobados y activos desde el backend
-      fetch("/api/epicentro/businesses/active")
+      // Cargar dinámicamente comercios aprobados y activos desde el backend (sin cache del navegador)
+      fetch(`/api/epicentro/businesses/active?_t=${Date.now()}`, { cache: "no-store" })
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
@@ -1289,12 +1289,14 @@
               const existingIdx = ALL_BUSINESSES.findIndex(b =>
                 b.id === biz.id ||
                 (b.name && b.name.trim().toLowerCase() === normName) ||
-                (normName.includes("amdi") && (b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || b.id === "reg-amdi" || (b.name && b.name.toLowerCase().includes("amdi"))))
+                (normName.includes("amdi") && (b.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || b.id === "reg-amdi" || (b.name && b.name.toLowerCase().includes("amdi")))) ||
+                ((normName.includes("jessica mendoza") || normName.includes("jessica")) && (b.id === "18315325-717f-4072-86b0-cab5300e0d3f" || (b.name && b.name.toLowerCase().includes("jessica"))))
               );
 
               const isChillon = normName.includes("chill") || biz.id === "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97" || biz.id === "reg-chile-chillon";
               const isBotica = normName.includes("botica") || biz.id === "0a595ddc-4d7f-450b-81de-45d098c9e74e" || biz.id === "reg-botica-silvestre";
               const isAmdi = biz.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
+              const isJessica = biz.id === "18315325-717f-4072-86b0-cab5300e0d3f" || normName.includes("jessica mendoza") || normName.includes("jessica");
 
               let mdata = null;
               if (biz.microsite_data) {
@@ -1303,7 +1305,7 @@
                 } catch(e) {}
               }
 
-              const hasInteractive = isChillon || isBotica || isAmdi || biz.payment_status === "approved" || biz.payment_status === "waived" || !!(mdata && (mdata.featured_section || mdata.featured_products));
+              const hasInteractive = isChillon || isBotica || isAmdi || isJessica || biz.payment_status === "approved" || biz.payment_status === "waived" || !!(mdata && (mdata.featured_section || mdata.featured_products));
 
               let bizPhotos = [];
               if (typeof biz.photos === 'string' && biz.photos.startsWith('[')) {
