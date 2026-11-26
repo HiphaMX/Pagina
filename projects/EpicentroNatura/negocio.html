@@ -137,7 +137,7 @@
             <span id="hero-schedule-info">Horario: Lunes a Sábado · 09:00 a 19:00 hrs</span>
           </div>
           <div id="hero-service-info-row" class="flex items-center gap-2">
-            <i data-lucide="truck" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <i id="hero-service-icon" data-lucide="truck" class="w-4 h-4 text-emerald-400 shrink-0"></i>
             <span id="hero-service-info">Envíos y servicio en cotos de la zona</span>
           </div>
         </div>
@@ -413,10 +413,38 @@
       // 6. Ubicación y Horario
       const cleanWa = (reg.whatsapp || "3336762545").replace(/\D/g, "");
       const cleanPhone = (reg.phone || reg.whatsapp || "3336762545").replace(/\D/g, "");
+
+      const catSlugNorm = (reg.category_slug || "").toLowerCase();
+      const catLabel = (reg.category_label || "").toLowerCase();
+      const subSlug = (reg.subcategory_slug || "").toLowerCase();
+      const subLabel = (reg.subcategory_label || "").toLowerCase();
+      const bizType = (reg.business_type || "").toLowerCase();
+      const isServiceCategory = (
+        catSlugNorm === "servicios-profesionales" ||
+        catSlugNorm === "servicios-hogar" ||
+        catSlugNorm === "educacion" ||
+        catSlugNorm.includes("servicio") ||
+        catLabel.includes("servicio") ||
+        subSlug.includes("inmob") ||
+        subSlug.includes("diseno") ||
+        subSlug.includes("asesor") ||
+        subSlug.includes("consultor") ||
+        subSlug.includes("abogad") ||
+        subSlug.includes("arquitect") ||
+        subSlug.includes("fisioter") ||
+        subSlug.includes("clase") ||
+        subLabel.includes("inmob") ||
+        subLabel.includes("asesor") ||
+        subLabel.includes("consultor") ||
+        bizType === "servicio"
+      );
+
       const locText = document.getElementById("hero-location-text");
       if (locText && reg.coto_address) {
         if (reg.coto_only_delivery) {
           locText.textContent = `${reg.coto_address} (Entregas solo en coto · Recoger en caseta)`;
+        } else if (isServiceCategory) {
+          locText.textContent = `${reg.coto_address} (Atención y citas en cotos de la zona)`;
         } else {
           locText.textContent = `${reg.coto_address} (Envíos y atención en cotos de la zona)`;
         }
@@ -427,32 +455,64 @@
       const schedDesc = document.getElementById("section-schedule-desc");
       const schedHours = document.getElementById("hero-schedule-hours");
       if (schedInfo) schedInfo.textContent = `Horario: ${scheduleStr}`;
-      if (schedDesc) schedDesc.textContent = `${scheduleStr} (Pedidos por WhatsApp activos todo el día).`;
+      if (schedDesc) {
+        schedDesc.textContent = isServiceCategory
+          ? `${scheduleStr} (Citas y consultas por WhatsApp activas todo el día).`
+          : `${scheduleStr} (Pedidos por WhatsApp activos todo el día).`;
+      }
       if (schedHours) {
         const parts = scheduleStr.split("·");
         schedHours.textContent = parts.length > 1 ? ` · ${parts[1].trim()}` : ` · ${scheduleStr}`;
       }
 
       const serviceInfoEl = document.getElementById("hero-service-info");
+      const serviceIconRow = document.getElementById("hero-service-info-row");
       if (serviceInfoEl) {
-        if (reg.coto_only_delivery) {
+        let chosenIcon = "truck";
+        if (isServiceCategory) {
+          serviceInfoEl.textContent = "Posibilidad de concretar una cita en tu domicilio o ubicación convenida.";
+          chosenIcon = "calendar-check";
+        } else if (reg.coto_only_delivery) {
           serviceInfoEl.textContent = `🏡 Entregas a domicilio exclusivamente dentro de ${reg.coto_address || "su coto"} · Vecinos de otros cotos recogen en caseta`;
+          chosenIcon = "home";
         } else if (reg.service_type === "delivery" || reg.delivery_available) {
           serviceInfoEl.textContent = "Envíos directos a domicilio en cotos de la zona";
+          chosenIcon = "truck";
         } else if (reg.service_type === "pickup") {
           serviceInfoEl.textContent = "Punto de recolección y venta en la zona";
+          chosenIcon = "store";
         } else {
           serviceInfoEl.textContent = "Envíos a domicilio y atención en cotos de la zona";
+          chosenIcon = "truck";
+        }
+
+        if (serviceIconRow) {
+          const currentIcon = serviceIconRow.querySelector("[data-lucide]") || document.getElementById("hero-service-icon");
+          if (currentIcon) {
+            const newIcon = document.createElement("i");
+            newIcon.id = "hero-service-icon";
+            newIcon.className = "w-4 h-4 text-emerald-400 shrink-0";
+            newIcon.setAttribute("data-lucide", chosenIcon);
+            currentIcon.replaceWith(newIcon);
+          }
         }
       }
 
       const secCobEl = document.getElementById("section-cobertura-text");
-      if (secCobEl && reg.coto_only_delivery) {
-        secCobEl.textContent = `Entregas directas a domicilio únicamente dentro de ${reg.coto_address || "su coto"}. Vecinos de otros cotos o fraccionamientos pueden hacer pedido para recoger en caseta de acceso.`;
+      if (secCobEl) {
+        if (reg.coto_only_delivery) {
+          secCobEl.textContent = `Entregas directas a domicilio únicamente dentro de ${reg.coto_address || "su coto"}. Vecinos de otros cotos o fraccionamientos pueden hacer pedido para recoger en caseta de acceso.`;
+        } else if (isServiceCategory) {
+          secCobEl.textContent = "Atención, asesoría y citas en Natura Bosque Residencial, Los Robles, El Fortín y cotos de la zona Mariano Otero.";
+        }
       }
       const secModEl = document.getElementById("section-modalidad-text");
-      if (secModEl && reg.coto_only_delivery) {
-        secModEl.textContent = "Entregas en coto local o recolección programada en caseta de entrada mediante pedido por WhatsApp.";
+      if (secModEl) {
+        if (reg.coto_only_delivery) {
+          secModEl.textContent = "Entregas en coto local o recolección programada en caseta de entrada mediante pedido por WhatsApp.";
+        } else if (isServiceCategory) {
+          secModEl.textContent = "Posibilidad de concretar una cita en tu domicilio o ubicación convenida previa coordinación por WhatsApp.";
+        }
       }
 
       // 7. Botones de acción directa
