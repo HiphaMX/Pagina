@@ -322,6 +322,8 @@ class BusinessPublicOut(BaseModel):
     payment_status: Optional[str] = "free_basic"
     payment_amount: Optional[float] = 0.0
     is_verified_badge: bool = False
+    delivery_badge: Optional[str] = None
+    pickup_badge: Optional[str] = None
     status: str = "active"
 
     class Config:
@@ -1839,6 +1841,15 @@ def seed_official_showcases(db: Session):
             if amdi.slug != "amdi":
                 amdi.slug = "amdi"
                 updated = True
+            if amdi.space_label != "Atención en cotos & Previa cita":
+                amdi.space_label = "Atención en cotos & Previa cita"
+                updated = True
+            if amdi.schedule != "Lunes a Viernes · 09:00 a 17:00 hrs":
+                amdi.schedule = "Lunes a Viernes · 09:00 a 17:00 hrs"
+                updated = True
+            if amdi.business_type != "local-establecido":
+                amdi.business_type = "local-establecido"
+                updated = True
             if not amdi.cover_photo or "unsplash.com" in (amdi.cover_photo or ""):
                 amdi.cover_photo = AMDI_DATA["cover_photo"]
                 updated = True
@@ -1868,7 +1879,7 @@ def seed_official_showcases(db: Session):
             if not amdi.preferred_contact_methods:
                 amdi.preferred_contact_methods = "whatsapp,llamada,visita"
                 updated = True
-            if not amdi.schedule:
+            if amdi.schedule != "Lunes a Viernes · 09:00 a 17:00 hrs":
                 amdi.schedule = "Lunes a Viernes · 09:00 a 17:00 hrs"
                 updated = True
             if not amdi.website:
@@ -1935,8 +1946,8 @@ def seed_official_showcases(db: Session):
                 subcategory_slug="inmobiliario",
                 subcategory_label="Inmobiliario",
                 coto_address="Los Robles",
-                business_type="local-establecido",
-                space_label="Punto de venta & A domicilio",
+                business_type="sin-punto-venta",
+                space_label="Atención en cotos & Previa cita",
                 owner_name="Jessica Mendoza",
                 email="contacto@jessicamendozabienesraices.com",
                 phone="33 3956 4830",
@@ -1945,7 +1956,7 @@ def seed_official_showcases(db: Session):
                 preferred_contact_methods="whatsapp,llamada",
                 schedule="Lunes a Viernes · 09:00 a 19:00 hrs",
                 website="https://www.jessicamendozabienesraices.com/",
-                description="Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7 y amenidades de primer nivel.",
+                description="Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7.",
                 cover_photo=JESSICA_DATA["cover_photo"],
                 microsite_data=json.dumps(JESSICA_DATA),
                 email_verified=True,
@@ -1969,34 +1980,43 @@ def seed_official_showcases(db: Session):
             if jessica.slug != "jessicamendozabienesraices":
                 jessica.slug = "jessicamendozabienesraices"
                 updated = True
-            if not jessica.business_name:
+            if jessica.business_name != "Jessica Mendoza Bienes Raíces":
                 jessica.business_name = "Jessica Mendoza Bienes Raíces"
                 updated = True
-            if not jessica.category_slug:
+            if jessica.category_slug != "servicios-profesionales":
                 jessica.category_slug = "servicios-profesionales"
                 jessica.category_label = "Servicios Profesionales"
                 updated = True
-            if not jessica.subcategory_slug:
+            if jessica.subcategory_slug != "inmobiliario":
                 jessica.subcategory_slug = "inmobiliario"
                 jessica.subcategory_label = "Inmobiliario"
                 updated = True
-            if not jessica.coto_address:
+            if jessica.business_type != "sin-punto-venta":
+                jessica.business_type = "sin-punto-venta"
+                updated = True
+            if jessica.space_label != "Atención en cotos & Previa cita":
+                jessica.space_label = "Atención en cotos & Previa cita"
+                updated = True
+            if jessica.coto_address != "Los Robles":
                 jessica.coto_address = "Los Robles"
                 updated = True
-            if not jessica.website:
+            if jessica.website != "https://www.jessicamendozabienesraices.com/":
                 jessica.website = "https://www.jessicamendozabienesraices.com/"
                 updated = True
-            if not jessica.phone:
+            if jessica.phone != "33 3956 4830":
                 jessica.phone = "33 3956 4830"
                 updated = True
-            if not jessica.whatsapp:
+            if jessica.whatsapp != "33 3956 4830":
                 jessica.whatsapp = "33 3956 4830"
                 updated = True
-            if not jessica.cover_photo:
+            if jessica.cover_photo != JESSICA_DATA["cover_photo"]:
                 jessica.cover_photo = JESSICA_DATA["cover_photo"]
                 updated = True
-            if not jessica.description:
+            if jessica.description != "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7.":
                 jessica.description = "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7."
+                updated = True
+            if jessica.schedule != "Lunes a Viernes · 09:00 a 19:00 hrs":
+                jessica.schedule = "Lunes a Viernes · 09:00 a 19:00 hrs"
                 updated = True
             if not jessica.microsite_data:
                 jessica.microsite_data = json.dumps(JESSICA_DATA)

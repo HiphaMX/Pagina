@@ -1,4 +1,5 @@
 import uuid
+from typing import Optional
 from sqlalchemy import Column, DateTime, Float, String, Boolean, Text
 from sqlalchemy.sql import func
 from app.core.database import Base
@@ -63,3 +64,33 @@ class EpicentroRegistration(Base):
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    @property
+    def delivery_badge(self) -> Optional[str]:
+        name_l = (self.business_name or "").lower()
+        if "amdi" in name_l:
+            return "Visitas en cotos"
+        if "jessica" in name_l:
+            return "Cita en domicilio"
+        if "valencia" in name_l:
+            return "Servicio a domicilio"
+        if self.coto_only_delivery:
+            return "Solo entregas en su coto"
+        if self.delivery_available:
+            return "Servicio a domicilio"
+        return None
+
+    @property
+    def pickup_badge(self) -> Optional[str]:
+        name_l = (self.business_name or "").lower()
+        if "amdi" in name_l:
+            return "Cita previa"
+        if "jessica" in name_l:
+            return "Atención coordinada"
+        if "valencia" in name_l:
+            return "Atención en coto"
+        if self.category_slug in ("servicios-profesionales", "servicios-hogar"):
+            return "Previa cita"
+        if self.coto_only_delivery:
+            return "Recoger en caseta"
+        return "Recoger en local"

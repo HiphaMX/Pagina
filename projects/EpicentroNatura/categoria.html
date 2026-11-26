@@ -1162,6 +1162,7 @@
         reviews: 14,
         has_photos: true,
         has_microsite: true,
+        cover_photo: "Assets/amdi/portada.webp",
         photos: [
           "Assets/amdi/producto_1.webp"
         ]
@@ -1203,6 +1204,7 @@
         reviews: 18,
         has_photos: true,
         has_microsite: true,
+        cover_photo: "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
         photos: [
           "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
           "https://www.jessicamendozabienesraices.com/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp"
@@ -1472,7 +1474,8 @@
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
             try { sessionStorage.setItem("epizentro_active_businesses", JSON.stringify(activeBizList)); } catch(e){}
-            const prevSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.description}:${b.schedule}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            const makeSig = (list) => list.map(b => `${b.id}:${b.name}:${b.description || ""}:${b.schedule || ""}:${b.space_label || ""}:${b.delivery_badge || ""}:${b.pickup_badge || ""}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            const prevSig = makeSig(ALL_BUSINESSES);
 
             activeBizList.forEach(biz => {
               const normName = (biz.business_name || "").trim().toLowerCase();
@@ -1546,8 +1549,8 @@
                 pickup_available: true,
                 has_delivery: !!biz.delivery_available,
                 has_pickup: true,
-                delivery_badge: biz.coto_only_delivery ? "Solo entregas en su coto" : (biz.delivery_available ? "Servicio a domicilio" : null),
-                pickup_badge: biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local",
+                delivery_badge: biz.delivery_badge || (biz.coto_only_delivery ? "Solo entregas en su coto" : (biz.delivery_available ? "Servicio a domicilio" : null)),
+                pickup_badge: biz.pickup_badge || (biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local"),
                 coto: biz.coto_address,
                 address: biz.coto_address,
                 description: finalDesc,
@@ -1572,7 +1575,19 @@
               };
 
               if (existingIdx >= 0) {
-                ALL_BUSINESSES[existingIdx] = { ...ALL_BUSINESSES[existingIdx], ...bizObj };
+                const existing = ALL_BUSINESSES[existingIdx];
+                ALL_BUSINESSES[existingIdx] = {
+                  ...existing,
+                  ...bizObj,
+                  space_label: biz.space_label || existing.space_label || bizObj.space_label,
+                  delivery_badge: biz.delivery_badge || existing.delivery_badge || bizObj.delivery_badge,
+                  pickup_badge: biz.pickup_badge || existing.pickup_badge || bizObj.pickup_badge,
+                  type_label: existing.type_label || bizObj.type_label,
+                  schedule: (existing.schedule && existing.schedule.includes("·") && !biz.schedule?.includes("·")) ? existing.schedule : (biz.schedule || existing.schedule),
+                  hours: (existing.hours && existing.hours.includes("·") && !biz.schedule?.includes("·")) ? existing.hours : (biz.schedule || existing.hours),
+                  photos: (existing.photos && existing.photos.length > 0 && (!bizPhotos || bizPhotos.length === 0)) ? existing.photos : (bizPhotos.length > 0 ? bizPhotos : existing.photos),
+                  cover_photo: existing.cover_photo || bizObj.cover_photo
+                };
               } else {
                 ALL_BUSINESSES.unshift(bizObj);
               }
@@ -1586,7 +1601,7 @@
               }
             }
 
-            const newSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.description}:${b.schedule}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            const newSig = makeSig(ALL_BUSINESSES);
             if (prevSig !== newSig) {
               renderCategoryView();
             }
