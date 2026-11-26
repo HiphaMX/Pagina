@@ -181,7 +181,7 @@
           "value": "^(www\\.)?epizentro\\.com$"
         }
       ],
-      "dest": "/projects/EpicentroNatura/negocio.html?slug=$1"
+      "dest": "/projects/EpicentroNatura/negocio"
     },
     {
       "src": "/natura/(.*)",
