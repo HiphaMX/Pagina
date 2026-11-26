@@ -25,8 +25,8 @@
     <meta property="og:image:type" id="og-image-type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" id="og-image-alt" content="Casa en Renta en Los Robles Residencial">
-    <meta property="og:url" id="og-url" content="https://www.jessicamendozabienesraices.com/propiedad.html?id=1&nombre=casa-en-renta-en-los-robles-residencial">
+    <meta property="og:image:alt" id="og-image-alt" content="Casa en Renta en Los Robles Residencial | Jessica Mendoza Bienes Raíces">
+    <meta property="og:url" id="og-url" content="https://www.jessicamendozabienesraices.com/propiedad-1?id=1&nombre=casa-en-renta-en-los-robles-residencial">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" id="twitter-title" content="Casa en Renta en Los Robles Residencial | Jessica Mendoza Bienes Raíces">
     <meta name="twitter:description" id="twitter-desc" content="Exclusiva residencia en renta dentro de Coto Helechos, Los Robles Residencial, Zapopan. 3 recámaras, paneles solares, cocina con parota y granito.">
@@ -1253,7 +1253,7 @@
             color: #ffffff;
         }
     </style>
-    <link rel="canonical" href="https://www.jessicamendozabienesraices.com/propiedad.html?id=1&nombre=casa-en-renta-en-los-robles-residencial">
+    <link rel="canonical" href="https://www.jessicamendozabienesraices.com/propiedad-1?id=1&nombre=casa-en-renta-en-los-robles-residencial">
 </head>
 <body>
 
@@ -1545,7 +1545,7 @@
             currentProperty = window.PROPERTIES_DB.find(item => item.slug === propertySlug);
         }
         if (!currentProperty && window.PROPERTIES_DB && window.PROPERTIES_DB.length > 0 && !urlParams.has('id')) {
-            currentProperty = window.PROPERTIES_DB[0];
+            (currentProperty = window.PROPERTIES_DB.find(item => item.id === 1) || window.PROPERTIES_DB[0]);
         }
 
         // Variables de estado de la galería
@@ -1556,13 +1556,13 @@
             const cleanSlug = currentProperty.slug || currentProperty.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
             // Construir la URL completa y limpia de la propiedad
-            const cleanPath = window.location.pathname.replace(/\/$/, '') || '/propiedad';
+            const cleanPath = `/propiedad-${currentProperty.id}`;
             const propertyFullUrl = `${window.location.origin}${cleanPath}?id=${currentProperty.id}&nombre=${cleanSlug}`;
 
             // Ajustar la URL del navegador sin recargar para que incluya siempre el nombre amigable
             const currentSearch = window.location.search;
             const expectedSearch = `?id=${currentProperty.id}&nombre=${cleanSlug}`;
-            if (currentSearch !== expectedSearch) {
+            if (window.location.pathname !== cleanPath || currentSearch !== expectedSearch) {
                 window.history.replaceState({ id: currentProperty.id, slug: cleanSlug }, currentProperty.title, `${cleanPath}${expectedSearch}`);
             }
 
@@ -1956,9 +1956,9 @@
         // ==========================================
         window.copyLink = async function() {
             const currentSlug = currentProperty ? (currentProperty.slug || 'propiedad') : 'propiedad';
-            const cleanPath = window.location.pathname.replace(/\/$/, '') || '/propiedad';
+            const dedicatedPath = currentProperty ? `/propiedad-${currentProperty.id}` : (window.location.pathname.replace(/\/$/, '') || '/propiedad');
             const shareUrl = currentProperty 
-                ? `${window.location.origin}${cleanPath}?id=${currentProperty.id}&nombre=${currentSlug}`
+                ? `${window.location.origin}${dedicatedPath}?id=${currentProperty.id}&nombre=${currentSlug}`
                 : window.location.href;
 
             if (navigator.share) {
@@ -2039,7 +2039,7 @@
             }
 
             alternativesGrid.innerHTML = itemsToShow.map(item => `
-                <a href="propiedad.html?id=${item.id}&nombre=${item.slug || ''}" class="collection-card">
+                <a href="propiedad-${item.id}?id=${item.id}&nombre=${item.slug || ''}" class="collection-card">
                     <div class="collection-card-img-wrap">
                         <span class="collection-card-tag">${item.operacion}</span>
                         <span class="collection-card-tag-type">${item.tipo}</span>
