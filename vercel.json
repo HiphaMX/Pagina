@@ -332,12 +332,47 @@
         {
           "type": "host",
           "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        },
+        {
+          "type": "query",
+          "key": "id",
+          "value": "5"
         }
       ],
-      "dest": "/api"
+      "dest": "/projects/JessicaMendoza/propiedad-5.html"
     },
     {
-      "src": "/(catalogo|terrenos-playa|aviso-de-privacidad|terminos-y-condiciones|index)(.html|)",
+      "src": "/propiedad(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        },
+        {
+          "type": "query",
+          "key": "nombre",
+          "value": ".*encinos.*"
+        }
+      ],
+      "dest": "/projects/JessicaMendoza/propiedad-5.html"
+    },
+    {
+      "src": "/propiedad(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?jessicamendozabienesraices\\.com$"
+        },
+        {
+          "type": "query",
+          "key": "id",
+          "value": "1"
+        }
+      ],
+      "dest": "/projects/JessicaMendoza/propiedad-1.html"
+    },
+    {
+      "src": "/(catalogo|propiedad|terrenos-playa|aviso-de-privacidad|terminos-y-condiciones|index)(.html|)",
       "has": [
         {
           "type": "host",

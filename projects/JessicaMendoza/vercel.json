@@ -1,9 +1,129 @@
 {
   "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)\\.(html|)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/Assets/(.*)\\.(webp|jpg|jpeg|png|svg|ico)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
       "destination": "https://www.hipha.mx/api/:path*"
+    },
+    {
+      "source": "/propiedad",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "5"
+        }
+      ],
+      "destination": "/propiedad-5.html"
+    },
+    {
+      "source": "/propiedad",
+      "has": [
+        {
+          "type": "query",
+          "key": "nombre",
+          "value": ".*encinos.*"
+        }
+      ],
+      "destination": "/propiedad-5.html"
+    },
+    {
+      "source": "/propiedad.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "5"
+        }
+      ],
+      "destination": "/propiedad-5.html"
+    },
+    {
+      "source": "/propiedad.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "nombre",
+          "value": ".*encinos.*"
+        }
+      ],
+      "destination": "/propiedad-5.html"
+    },
+    {
+      "source": "/propiedad",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "1"
+        }
+      ],
+      "destination": "/propiedad-1.html"
+    },
+    {
+      "source": "/propiedad",
+      "has": [
+        {
+          "type": "query",
+          "key": "nombre",
+          "value": ".*helechos.*"
+        }
+      ],
+      "destination": "/propiedad-1.html"
+    },
+    {
+      "source": "/propiedad.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "1"
+        }
+      ],
+      "destination": "/propiedad-1.html"
+    },
+    {
+      "source": "/propiedad.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "nombre",
+          "value": ".*helechos.*"
+        }
+      ],
+      "destination": "/propiedad-1.html"
+    },
+    {
+      "source": "/casa-en-venta-en-los-robles-coto-encinos",
+      "destination": "/propiedad-5.html"
+    },
+    {
+      "source": "/casa-en-renta-en-los-robles-residencial",
+      "destination": "/propiedad-1.html"
+    },
+    {
+      "source": "/propiedad",
+      "destination": "/propiedad.html"
     }
   ],
   "ignoreCommand": "git diff HEAD^ HEAD --quiet ."
