@@ -94,7 +94,7 @@ def startup_db_setup():
                     {"name": "Letrerama", "service_type": "web_design", "billing_day": 22, "monthly_fee": 6500.0, "start_date": "2024-01-15", "contact_email": "contacto@letrerama.com"},
                     {"name": "Grupo Gari", "service_type": "complete", "billing_day": 28, "monthly_fee": 12000.0, "start_date": "2023-11-01", "contact_email": "contacto@grupo-gari.com"},
                     {"name": "AMDI", "service_type": "web_design", "billing_day": 15, "monthly_fee": 5500.0, "start_date": "2024-03-01", "contact_email": "adrianamedina@amdi.mx"},
-                    {"name": "Jessica Mendoza", "service_type": "web_design", "billing_day": 10, "monthly_fee": 6000.0, "start_date": "2024-01-10", "contact_email": "jessica@jessicamendozabienesraices.com"},
+                    {"name": "Jessica Mendoza", "service_type": "web_design", "billing_day": 10, "monthly_fee": 6000.0, "start_date": "2024-01-10", "contact_email": "jessbienesraices@gmail.com"},
                     {"name": "El Chile Chillón", "service_type": "web_design", "billing_day": 5, "monthly_fee": 5000.0, "start_date": "2024-04-01", "contact_email": "contacto@chilechillon.com"},
                     {"name": "Valencia Servicios", "service_type": "complete", "billing_day": 20, "monthly_fee": 8500.0, "start_date": "2023-09-15", "contact_email": "contacto@valenciaservicios.com"},
                     {"name": "White Clean", "service_type": "web_design", "billing_day": 3, "monthly_fee": 5500.0, "start_date": "2024-02-15", "contact_email": "contacto@whiteclean.mx"},

@@ -109,8 +109,8 @@ class Settings(BaseSettings):
     JESSICAMENDOZA_SMTP_PORT: Union[int, str] = 587
     JESSICAMENDOZA_SMTP_USER: str = ""
     JESSICAMENDOZA_SMTP_PASSWORD: str = ""
-    JESSICAMENDOZA_EMAILS_FROM_EMAIL: str = ""
-    JESSICAMENDOZA_EMAILS_FROM_NAME: str = ""
+    JESSICAMENDOZA_EMAILS_FROM_EMAIL: str = "jessbienesraices@gmail.com"
+    JESSICAMENDOZA_EMAILS_FROM_NAME: str = "Jessica Mendoza Real Estate"
     JESSICAMENDOZA_RECAPTCHA_SECRET_KEY: str = ""
 
     # LETRERAMA Specific SMTP settings (Pendiente de credenciales)

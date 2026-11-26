@@ -2005,7 +2005,7 @@ async def send_jessica_mendoza_confirmation_email(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío de confirmación a Jessica Mendoza: {form_data.email}")
         return True
 
-    from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "hola@jessicamendozabienesraices.com"
+    from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "jessbienesraices@gmail.com"
     to_email = form_data.email
 
     html_content = f"""
@@ -2072,8 +2072,8 @@ async def send_jessica_mendoza_notification_team(form_data):
         logger.warning(f"SMTP no configurado. Simulando envío de notificación de Jessica Mendoza al equipo: {form_data.email}")
         return True
 
-    from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "hola@jessicamendozabienesraices.com"
-    to_email = settings.JESSICAMENDOZA_SMTP_USER if jessica_configured else ("j.mendoza@hipha.mx" if not settings.SMTP_USER else f"j.mendoza@hipha.mx, {settings.SMTP_USER}")
+    from_email = settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL if settings.JESSICAMENDOZA_EMAILS_FROM_EMAIL else "jessbienesraices@gmail.com"
+    to_email = "jessbienesraices@gmail.com" if not settings.SMTP_USER else f"jessbienesraices@gmail.com, {settings.SMTP_USER}"
 
     html_content = f"""
     <html>

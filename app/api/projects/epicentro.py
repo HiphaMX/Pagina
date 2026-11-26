@@ -1949,7 +1949,7 @@ def seed_official_showcases(db: Session):
                 business_type="sin-punto-venta",
                 space_label="Atención en cotos & Previa cita",
                 owner_name="Jessica Mendoza",
-                email="contacto@jessicamendozabienesraices.com",
+                email="jessbienesraices@gmail.com",
                 phone="33 3956 4830",
                 whatsapp="33 3956 4830",
                 delivery_available=True,
@@ -2002,6 +2002,9 @@ def seed_official_showcases(db: Session):
                 updated = True
             if jessica.website != "https://www.jessicamendozabienesraices.com/":
                 jessica.website = "https://www.jessicamendozabienesraices.com/"
+                updated = True
+            if jessica.email != "jessbienesraices@gmail.com":
+                jessica.email = "jessbienesraices@gmail.com"
                 updated = True
             if jessica.phone != "33 3956 4830":
                 jessica.phone = "33 3956 4830"
