@@ -1802,7 +1802,7 @@
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
             try { sessionStorage.setItem("epizentro_active_businesses", JSON.stringify(activeBizList)); } catch(e){}
-            const prevSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            const prevSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.description}:${b.schedule}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
 
             activeBizList.forEach(biz => {
               const normName = (biz.business_name || "").trim().toLowerCase();
@@ -1916,7 +1916,7 @@
               }
             }
 
-            const newSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            const newSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.description}:${b.schedule}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
             if (prevSig !== newSig) {
               renderDirectory();
             }

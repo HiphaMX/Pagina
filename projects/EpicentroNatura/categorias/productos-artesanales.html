@@ -1281,6 +1281,7 @@
       populateRegisterCategoryOptions();
 
             // Cargar dinámicamente comercios aprobados y activos desde el backend
+      const prevSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.description}:${b.schedule}`).join("|");
       fetch("/api/epicentro/businesses/active")
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
@@ -1335,7 +1336,11 @@
                 ALL_BUSINESSES.unshift(bizObj);
               }
             });
-            renderCategoryView();
+
+            const newSig = ALL_BUSINESSES.map(b => `${b.id}:${b.name}:${b.description}:${b.schedule}`).join("|");
+            if (prevSig !== newSig) {
+              renderCategoryView();
+            }
           }
         })
         .catch(() => {});
