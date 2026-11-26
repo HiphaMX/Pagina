@@ -80,7 +80,7 @@
     } else if (normName.includes("amdi")) {
       parts.push("arquitectura arquitecto arquitecta planos render renders 3d diseno interior interiores interiorismo remodelacion consultoria residencial");
     } else if (normName.includes("jessica") || normName.includes("mendoza")) {
-      parts.push("bienes raices inmobiliaria inmobiliario casas departamentos residencia residencial renta venta propiedades terrenos asesor asesoria cotos los robles coto ceiba");
+      parts.push("bienes raices inmobiliaria inmobiliario casas departamentos residencia residencial renta venta propiedades terrenos asesor asesoria cotos los robles coto helechos coto encinos coto ceiba natura zapopan");
     } else if (normName.includes("valencia")) {
       parts.push("fontaneria fontanero plomero plomeria electricidad electricista mantenimiento reparaciones fugas instalaciones hogar");
     }

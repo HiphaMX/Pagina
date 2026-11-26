@@ -1839,9 +1839,18 @@ def seed_official_showcases(db: Session):
                     {
                         "name": "Casa en Renta en Los Robles Residencial",
                         "price": 32000.0,
-                        "description": "Exclusiva residencia en Coto Helechos. 3 recámaras (una en planta baja con baño y vestidor), 3.5 baños, sala comedor con doble altura, cocina con parota y granito, paneles solares y mantenimiento incluido.",
+                        "description": "Exclusiva residencia en Coto Helechos. 3 recámaras (una en planta baja con baño y vestidor), 3.5 baños, cocina con parota y granito, paneles solares y mantenimiento incluido.",
                         "photo": "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
-                        "badge": "Coto Helechos · Renta"
+                        "badge": "Coto Helechos · Renta",
+                        "tag": "Renta"
+                    },
+                    {
+                        "name": "Casa en Venta en Los Robles Residencial",
+                        "price": 8170000.0,
+                        "description": "Hermosa residencia en Fraccionamiento Los Robles, Coto Encinos. 3 niveles, 3 habitaciones con baño y balcón, rooftop con salón flex/gimnasio, paneles solares y cochera para 3 autos.",
+                        "photo": "https://www.jessicamendozabienesraices.com/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp",
+                        "badge": "Coto Encinos · Venta",
+                        "tag": "Venta"
                     }
                 ]
             },
@@ -1932,7 +1941,11 @@ def seed_official_showcases(db: Session):
                 try:
                     jm = json.loads(jessica.microsite_data) if isinstance(jessica.microsite_data, str) else jessica.microsite_data
                     feat = jm.get("featured_section", {})
+                    prods = feat.get("products", [])
                     dirty = False
+                    if len(prods) < 2 or any("ceiba" in (p.get("name") or "").lower() for p in prods):
+                        feat["products"] = JESSICA_DATA["featured_section"]["products"]
+                        dirty = True
                     if "lotes" in (feat.get("subtitle") or "").lower() or "artesanales" in (feat.get("subtitle") or "").lower():
                         feat["subtitle"] = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA"
                         dirty = True
