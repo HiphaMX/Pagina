@@ -162,7 +162,7 @@
 
         <!-- Botonera de Acción Directa -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 pt-2">
-          <a id="hero-whatsapp-btn" href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior%2C%20vi%20su%20P%C3%A1gina%20Escaparate%20Individual%20en%20Epizentro%20Natura%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95 shrink-0">
+          <a id="hero-whatsapp-btn" href="https://wa.me/523313111147?text=Hola%20AMDI%20Dise%C3%B1o%20Interior%2C%20vi%20su%20p%C3%A1gina%20en%20Epizentro%20Natura%20y%20me%20gustar%C3%ADa%20cotizar%20un%20proyecto" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95 shrink-0">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
             <span>Enviar WhatsApp</span>
           </a>
@@ -391,7 +391,7 @@
       // 4. Actualizar botones directos de contacto en Hero
       const heroWaBtn = document.getElementById("hero-whatsapp-btn");
       if (heroWaBtn) {
-        heroWaBtn.href = `https://wa.me/52${cleanWa}?text=${encodeURIComponent(`Hola ${bizName}, vi su Página Escaparate Individual en Epizentro Natura y me gustaría cotizar un proyecto`)}`;
+        heroWaBtn.href = `https://wa.me/52${cleanWa}?text=${encodeURIComponent(`Hola ${bizName}, vi su página en Epizentro Natura y me gustaría cotizar un proyecto`)}`;
       }
       if (reg.phone) {
         const phoneBtn = document.getElementById("hero-phone-btn");

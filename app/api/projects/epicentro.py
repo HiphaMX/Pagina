@@ -2793,6 +2793,7 @@ def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover
     el link en WhatsApp, Facebook, iMessage o Twitter luzca TOP con tarjeta panorámica y foto de portada.
     """
     import html as html_lib
+    import urllib.parse
 
     bname = (reg.business_name or "Comercio Vecino").strip()
     bname_escaped = html_lib.escape(bname)
@@ -2897,6 +2898,16 @@ def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover
     res = re.sub(
         r'<img id="hero-showcase-img".*?>',
         f'<img id="hero-showcase-img" src="{cover_img}" alt="{bname_escaped}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out" loading="eager" onerror="this.style.display=\'none\'">',
+        res
+    )
+
+    # 6. Pre-hidratación del botón de WhatsApp (Cero retardo al dar tap)
+    clean_wa = re.sub(r'\D', '', reg.whatsapp or '3336762545')
+    wa_msg = f"Hola {bname}, vi su página en Epizentro Natura y me gustaría solicitar información / hacer un pedido."
+    wa_href = f"https://wa.me/52{clean_wa}?text={urllib.parse.quote(wa_msg)}"
+    res = re.sub(
+        r'<a id="hero-whatsapp-btn" href=".*?"',
+        f'<a id="hero-whatsapp-btn" href="{wa_href}"',
         res
     )
 
