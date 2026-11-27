@@ -309,7 +309,7 @@
         document.getElementById("editor-container").classList.add("hidden");
         document.getElementById("error-state").classList.remove("hidden");
         document.getElementById("sticky-save-bar").classList.add("hidden");
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
 
       // 3. Renderizar vista de edición
@@ -383,7 +383,7 @@
           }
         }
 
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
 
       function updateCoverPreview(url) {
@@ -563,7 +563,7 @@
           </div>
         `).join("");
 
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
 
       window.addNewProductCard = function() {

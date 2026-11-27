@@ -820,11 +820,21 @@
         }
       }
 
-      // Banner y botón flotante de edición si el dueño visita con su token
+      // Banner y botón flotante de edición persistente para el dueño
       const urlParams = new URLSearchParams(window.location.search);
-      const editToken = urlParams.get("token") || (function(){ try { return sessionStorage.getItem("last_epicentro_edit_token"); }catch(e){ return null; } })();
+      const editToken = urlParams.get("token") || (function(){
+        try {
+          return localStorage.getItem("last_epicentro_edit_token_" + (reg.slug || reg.id)) ||
+                 localStorage.getItem("last_epicentro_edit_token") ||
+                 sessionStorage.getItem("last_epicentro_edit_token");
+        } catch(e) { return null; }
+      })();
       if (editToken) {
-        try { sessionStorage.setItem("last_epicentro_edit_token", editToken); } catch(e){}
+        try {
+          if (reg.slug) localStorage.setItem("last_epicentro_edit_token_" + reg.slug, editToken);
+          if (reg.id) localStorage.setItem("last_epicentro_edit_token_" + reg.id, editToken);
+          localStorage.setItem("last_epicentro_edit_token", editToken);
+        } catch(e){}
         
         // 1. Barra superior para el dueño
         if (!document.getElementById("owner-welcome-bar")) {

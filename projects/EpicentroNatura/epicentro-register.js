@@ -449,12 +449,17 @@
             </a>
           </div>
 
-          <!-- AVISO DE WHATSAPP -->
-          <div class="p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-left flex items-start gap-2.5 mt-3">
-            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <p class="text-[11px] text-emerald-950 leading-relaxed">
-              <strong>Guardamos tu enlace:</strong> También enviamos tu enlace de edición privada a tu WhatsApp para que agregues fotos y precios en cualquier momento desde tu celular o computadora.
-            </p>
+          <!-- GUARDAR ENLACE EN WHATSAPP Y PORTAPAPELES -->
+          <div class="space-y-2 mt-3 pt-2 border-t border-slate-100">
+            <a id="btn-wa-magic-link" href="#" target="_blank" class="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-xs flex items-center justify-center gap-2 no-underline transition-colors">
+              <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i>
+              <span>Guardar mi Enlace Privado en mi WhatsApp</span>
+            </a>
+
+            <button type="button" onclick="copyRegisterMagicLink()" id="btn-copy-magic-link" class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+              <i data-lucide="copy" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span id="btn-copy-magic-text">Copiar enlace de edición</span>
+            </button>
           </div>
 
           <div class="pt-2">
@@ -768,8 +773,16 @@
 
     const tokenToUse = editToken || currentEditToken;
     try {
-      if (tokenToUse) sessionStorage.setItem("last_epicentro_edit_token", tokenToUse);
-      if (currentRegId) sessionStorage.setItem("last_epicentro_reg_id", currentRegId);
+      if (tokenToUse) {
+        sessionStorage.setItem("last_epicentro_edit_token", tokenToUse);
+        localStorage.setItem("last_epicentro_edit_token", tokenToUse);
+        if (currentRegSlug) localStorage.setItem("last_epicentro_edit_token_" + currentRegSlug, tokenToUse);
+        if (currentRegId) localStorage.setItem("last_epicentro_edit_token_" + currentRegId, tokenToUse);
+      }
+      if (currentRegId) {
+        sessionStorage.setItem("last_epicentro_reg_id", currentRegId);
+        localStorage.setItem("last_epicentro_reg_id", currentRegId);
+      }
     } catch (e) {}
 
     const editUrl = tokenToUse ? `/natura/editar?token=${encodeURIComponent(tokenToUse)}` : "#";
@@ -781,8 +794,31 @@
     if (btnSelfService) btnSelfService.href = editUrl;
     if (btnPublic) btnPublic.href = publicUrl;
 
+    // Configurar enlace directo para enviárselo a su propio WhatsApp
+    const btnWaMagic = document.getElementById("btn-wa-magic-link");
+    if (btnWaMagic && tokenToUse) {
+      const cleanWa = (currentBusinessWhatsApp || "").replace(/\D/g, "");
+      const fullEditUrl = `${window.location.origin}/natura/editar?token=${encodeURIComponent(tokenToUse)}`;
+      const waMsg = encodeURIComponent(`Hola, este es mi enlace privado para editar mi negocio (${currentBusinessName || 'mi escaparate'}) en Epizentro Natura:\n${fullEditUrl}\n\nGuarda este mensaje para actualizar fotos y precios cuando lo desees.`);
+      btnWaMagic.href = cleanWa ? `https://wa.me/52${cleanWa}?text=${waMsg}` : `https://wa.me/?text=${waMsg}`;
+    }
+
     setWizardStep(3);
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
   }
+
+  window.copyRegisterMagicLink = function() {
+    const token = currentEditToken || sessionStorage.getItem("last_epicentro_edit_token") || localStorage.getItem("last_epicentro_edit_token");
+    if (!token) return;
+    const url = `${window.location.origin}/natura/editar?token=${encodeURIComponent(token)}`;
+    navigator.clipboard.writeText(url).then(() => {
+      const txt = document.getElementById("btn-copy-magic-text");
+      if (txt) txt.textContent = "✓ ¡Enlace copiado al portapapeles!";
+      setTimeout(() => { if (txt) txt.textContent = "Copiar enlace de edición"; }, 3000);
+    }).catch(() => {
+      prompt("Copia tu enlace privado de edición:", url);
+    });
+  };
 
   // --- TOGGLES DE UI ---
   window.toggleOptionalFields = function() {
