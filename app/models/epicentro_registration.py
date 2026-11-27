@@ -35,8 +35,8 @@ class EpicentroRegistration(Base):
     cover_photo = Column(Text, nullable=True)  # URL de foto de portada del hero
     microsite_data = Column(Text, nullable=True)  # JSON estructurado: productos destacados y hasta 4 secciones de menú sin foto
     kam_name = Column(String(100), nullable=True)
-    payment_method = Column(String(50), nullable=True)
-    coverage_zone = Column(String(150), nullable=True)
+    payment_method = Column(String(255), nullable=True)
+    coverage_zone = Column(String(255), nullable=True)
 
     # Paso 1 de Validación: Correo Electrónico
     email_otp = Column(String(10), nullable=True)

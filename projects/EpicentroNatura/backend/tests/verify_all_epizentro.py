@@ -532,6 +532,128 @@ def test_8_self_service_autoservicio():
         report_result("Pruebas E2E de API de autoservicio", False, str(err))
 
 
+def test_9_cotizar_and_mercado_pago_freedom():
+    print(f"\n{BOLD}=== 9. VERIFICACIÓN DE COTIZAR (CERO $0) Y LIBERTAD MERCADO PAGO ==={RESET}")
+    
+    # 1. Verificar escaparates: ausencia de interpolación peligrosa $${prod.price || 0}
+    amdi_path = os.path.join(EPIZENTRO_DIR, "amdi.html")
+    chillon_path = os.path.join(EPIZENTRO_DIR, "chile-chillon.html")
+    botica_path = os.path.join(EPIZENTRO_DIR, "botica-silvestre.html")
+    
+    with open(amdi_path, "r", encoding="utf-8") as f:
+        amdi_html = f.read()
+    with open(chillon_path, "r", encoding="utf-8") as f:
+        chillon_html = f.read()
+    with open(botica_path, "r", encoding="utf-8") as f:
+        botica_html = f.read()
+        
+    amdi_no_zero = "$${prod.price || 0}" not in amdi_html and "$${item.price || 0}" not in amdi_html and "renderPriceTag(prod.price)" in amdi_html
+    report_result(
+        "amdi.html implementa renderPriceTag y elimina $0 en servicios a cotizar",
+        amdi_no_zero,
+        "renderPriceTag y renderMenuPrice activos"
+    )
+    
+    chillon_no_zero = "$${prod.price || 0}" not in chillon_html and "$${item.price || 0}" not in chillon_html and "renderPriceTag(prod.price)" in chillon_html
+    report_result(
+        "chile-chillon.html implementa renderPriceTag y elimina $0 en productos a cotizar",
+        chillon_no_zero,
+        "renderPriceTag y renderMenuPrice activos"
+    )
+    
+    botica_no_zero = "$${prod.price || 0}" not in botica_html and "$${item.price || 0}" not in botica_html and "renderPriceTag(prod.price)" in botica_html
+    report_result(
+        "botica-silvestre.html implementa renderPriceTag y elimina $0 en fórmulas a cotizar",
+        botica_no_zero,
+        "renderPriceTag y renderMenuPrice activos"
+    )
+    
+    # 2. Verificar libertad para desmarcar Mercado Pago en editar.html
+    editar_path = os.path.join(EPIZENTRO_DIR, "editar.html")
+    with open(editar_path, "r", encoding="utf-8") as f:
+        editar_html = f.read()
+        
+    mp_freedom_ok = (
+        'data-chip="mercadopago"' in editar_html and
+        'PAYMENT_CHIP_CONFIG' in editar_html and
+        'cleanPaymentMethodText' in editar_html and
+        'mercadopago_subscription' in editar_html
+    )
+    report_result(
+        "editar.html cuenta con arquitectura reactiva para desmarcar libremente Mercado Pago",
+        mp_freedom_ok,
+        "PAYMENT_CHIP_CONFIG y cleanPaymentMethodText presentes"
+    )
+    
+    # 3. Prueba con FastAPI TestClient: desmarcar Mercado Pago y verificar que get_self_service no filtre mercadopago_subscription como customer method
+    try:
+        from fastapi.testclient import TestClient
+        from app.main import app
+        from app.core.database import SessionLocal
+        from app.models.epicentro_registration import EpicentroRegistration
+        
+        client = TestClient(app)
+        db = SessionLocal()
+        try:
+            # Crear o buscar un registro de prueba con suscripción a mercado pago
+            test_biz = db.query(EpicentroRegistration).filter(EpicentroRegistration.edit_token == "test-token-autoservicio-vergotas").first()
+            if test_biz:
+                test_biz.payment_method = "mercadopago_subscription"
+                # Limpiar métodos de cara al cliente en microsite_data
+                md = json.loads(test_biz.microsite_data) if isinstance(test_biz.microsite_data, str) else (test_biz.microsite_data or {})
+                md.pop("payment_methods", None)
+                test_biz.microsite_data = json.dumps(md)
+                db.commit()
+                
+                # 3a. GET no debe retornar mercadopago_subscription como payment_method
+                res_get = client.get(f"/api/epicentro/self-service/{test_biz.edit_token}")
+                data_get = res_get.json()
+                get_isolated = data_get.get("payment_method") is None or "subscription" not in str(data_get.get("payment_method"))
+                report_result(
+                    "GET /self-service aísla la suscripción de Epizentro y no impone Mercado Pago en métodos de cliente",
+                    get_isolated,
+                    f"Customer PM: {data_get.get('payment_method')}"
+                )
+                
+                # 3b. Guardar SOLO Efectivo y SPEI (desmarcando Mercado Pago)
+                put_no_mp = {
+                    "payment_method": "Efectivo contra entrega, Transferencia bancaria SPEI",
+                    "microsite_data": {
+                        "featured_section": {
+                            "title": "Diseño & Planos",
+                            "products": [
+                                {
+                                    "name": "Consultoría en diseño de interiores",
+                                    "price": "Cotizar",
+                                    "description": "Consultoría de 60 minutos en diseño y decoración"
+                                }
+                            ]
+                        }
+                    }
+                }
+                res_put = client.put(f"/api/epicentro/self-service/{test_biz.edit_token}", json=put_no_mp)
+                db.refresh(test_biz)
+                
+                saved_md = json.loads(test_biz.microsite_data) if isinstance(test_biz.microsite_data, str) else test_biz.microsite_data
+                saved_pm = saved_md.get("payment_methods", "")
+                
+                mp_unmarked_ok = (
+                    res_put.status_code == 200 and
+                    "mercado" not in saved_pm.lower() and
+                    "efectivo" in saved_pm.lower() and
+                    saved_md.get("featured_section", {}).get("products", [{}])[0].get("price") == "Cotizar"
+                )
+                report_result(
+                    "Persistencia de métodos de pago sin Mercado Pago y producto con precio 'Cotizar'",
+                    mp_unmarked_ok,
+                    f"Saved PM: {saved_pm}"
+                )
+        finally:
+            db.close()
+    except Exception as err:
+        report_result("Prueba de integración para desmarcar Mercado Pago y precio 'Cotizar'", False, str(err))
+
+
 def main():
     print(f"\n{BOLD}{'=' * 75}{RESET}")
     print(f"{BOLD}   SUITE AUTOMATIZADA DE VERIFICACIÓN KAM - EPIZENTRO NATURA{RESET}")
@@ -546,6 +668,7 @@ def main():
     test_6_search_engine_and_indexing()
     test_7_fastapi_endpoints()
     test_8_self_service_autoservicio()
+    test_9_cotizar_and_mercado_pago_freedom()
     
     total = passed_tests + failed_tests
     rate = (passed_tests / total * 100) if total > 0 else 0

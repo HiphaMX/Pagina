@@ -45,7 +45,7 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS schedule VARCHAR(150)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS photos TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS kam_name VARCHAR(100)"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method VARCHAR(255)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS cover_photo TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)"))
@@ -61,7 +61,7 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS ai_moderated_at TIMESTAMP"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted BOOLEAN DEFAULT TRUE"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coverage_zone VARCHAR(150)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coverage_zone VARCHAR(255)"))
             db.commit()
         else:
             for col, col_type in [
@@ -70,8 +70,8 @@ def ensure_epicentro_schema(db: Session):
                 ("schedule", "VARCHAR(150)"),
                 ("photos", "TEXT"),
                 ("kam_name", "VARCHAR(100)"),
-                ("payment_method", "VARCHAR(50)"),
-                ("coverage_zone", "VARCHAR(150)"),
+                ("payment_method", "VARCHAR(255)"),
+                ("coverage_zone", "VARCHAR(255)"),
                 ("cover_photo", "TEXT"),
                 ("microsite_data", "TEXT"),
                 ("coupon_code", "VARCHAR(50)"),
@@ -1390,6 +1390,14 @@ def get_self_service_business(token: str, db: Session = Depends(get_db)):
 
     plan_type = "basic" if (reg.payment_amount and reg.payment_amount <= 200.0) else "microsite"
 
+    # Distinguir métodos de pago que el comercio acepta de sus clientes vs la suscripción interna a Epizentro
+    SUBSCRIPTION_SYSTEM_CODES = ("mercadopago_subscription", "mercadopago", "kam_direct", "courtesy_hipha", "free_basic")
+    customer_pm = None
+    if md and md.get("payment_methods"):
+        customer_pm = md.get("payment_methods")
+    elif reg.payment_method and reg.payment_method not in SUBSCRIPTION_SYSTEM_CODES:
+        customer_pm = reg.payment_method
+
     return {
         "success": True,
         "id": reg.id,
@@ -1410,7 +1418,8 @@ def get_self_service_business(token: str, db: Session = Depends(get_db)):
         "coto_only_delivery": bool(reg.coto_only_delivery),
         "pickup_available": bool(reg.pickup_available) if reg.pickup_available is not None else True,
         "pickup_badge": reg.pickup_badge,
-        "payment_method": reg.payment_method,
+        "payment_method": customer_pm,
+        "subscription_payment_method": reg.payment_method,
         "coverage_zone": reg.coverage_zone,
         "website": reg.website,
         "description": reg.description,
@@ -2350,6 +2359,16 @@ def get_business_microsite(slug_or_id: str, response: Response, db: Session = De
 
     if not reg:
         raise HTTPException(status_code=404, detail="Comercio no encontrado")
+
+    # Si reg.payment_method contiene un código de suscripción del sistema, priorizar los métodos de pago de cara al cliente de microsite_data
+    if reg.microsite_data:
+        try:
+            md = json.loads(reg.microsite_data) if isinstance(reg.microsite_data, str) else reg.microsite_data
+            if md and md.get("payment_methods"):
+                reg.payment_method = md["payment_methods"]
+        except Exception:
+            pass
+
     return reg
 
 

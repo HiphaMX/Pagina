@@ -553,7 +553,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Zona de Cobertura & Entrega</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Zona de cobertura hasta 3 km de la zona del epicentro, confirmar directo con el negocio.</p>
+            <p id="section-cobertura-text" class="text-xs text-slate-500 mt-0.5">Zona de cobertura hasta 3 km de la zona del epicentro, confirmar directo con el negocio.</p>
           </div>
         </div>
       </div>
@@ -579,7 +579,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Métodos de Pago Aceptados</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Efectivo contra entrega, transferencia SPEI, tarjetas y Mercado Pago.</p>
+            <p id="section-payment-text" class="text-xs text-slate-500 mt-0.5">Efectivo contra entrega, transferencia SPEI, tarjetas y Mercado Pago.</p>
           </div>
         </div>
       </div>
@@ -803,11 +803,51 @@
         if (feat.subtitle && featSubEl) featSubEl.textContent = feat.subtitle;
         if (feat.description && featDescEl) featDescEl.textContent = feat.description;
 
+        // Helper functions para precios y cotizaciones (estándar Hipha: cero "$0" en Cotizar)
+        function isQuotePrice(val) {
+          if (val === null || val === undefined || val === "" || val === false) return true;
+          const str = String(val).trim().toLowerCase();
+          if (str === "0" || str === "0.0" || str === "0.00" || str === "cotizar" || str.includes("cotiz") || str.includes("proyecto")) return true;
+          const num = parseFloat(str.replace(/[^0-9.-]+/g, ""));
+          return isNaN(num) || num <= 0;
+        }
+
+        function renderPriceTag(val, sizeClasses = "text-base font-extrabold text-emerald-700") {
+          if (isQuotePrice(val)) {
+            return `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 text-xs font-black tracking-wider uppercase font-mono shadow-xs">Cotizar</span>`;
+          }
+          const str = String(val).trim();
+          const num = parseFloat(str.replace(/[^0-9.-]+/g, ""));
+          const formatted = "$" + num.toLocaleString("es-MX", {
+            minimumFractionDigits: (num % 1 === 0 ? 0 : 2),
+            maximumFractionDigits: 2
+          });
+          return `<span class="${sizeClasses}">${formatted}</span>`;
+        }
+
+        function renderMenuPrice(val) {
+          if (isQuotePrice(val)) {
+            return `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-black uppercase font-mono shadow-xs">Cotizar</span>`;
+          }
+          const str = String(val).trim();
+          if (str.startsWith("$") || str.toLowerCase().includes("desde")) {
+            return `<span class="text-sm font-black text-emerald-700 shrink-0 font-mono">${str}</span>`;
+          }
+          const num = parseFloat(str.replace(/[^0-9.-]+/g, ""));
+          return `<span class="text-sm font-black text-emerald-700 shrink-0 font-mono">$${num.toLocaleString("es-MX", { minimumFractionDigits: (num % 1 === 0 ? 0 : 2), maximumFractionDigits: 2 })}</span>`;
+        }
+
         if (Array.isArray(feat.products) && feat.products.length > 0 && featGrid) {
           if (varietyCountEl) varietyCountEl.textContent = `${feat.products.length} Fórmulas Activas`;
           featGrid.innerHTML = feat.products.map(prod => {
             const prodTag = prod.tag || prod.badge || "Tintura / Oleato 30ml";
             const isCover = prod.fit === "cover" || prod.photo_fit === "cover";
+            const isQuote = isQuotePrice(prod.price);
+            const ctaBtnText = isQuote ? "Cotizar por WhatsApp" : "Pedir por WhatsApp";
+            const ctaMsg = isQuote
+              ? `Hola%20Botica%20Silvestre,%20quiero%20cotizar%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto`
+              : `Hola%20Botica%20Silvestre,%20quiero%20ordenar%20el%20extracto%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto`;
+
             return `
             <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
               <div class="relative h-52 sm:h-56 w-full overflow-hidden bg-white border-b border-slate-100 ${isCover ? '' : 'flex items-center justify-center p-3'}">
@@ -821,15 +861,15 @@
                 <div class="space-y-2">
                   <div class="flex items-start justify-between gap-2">
                     <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">${prod.name}</h3>
-                    <span class="text-base font-extrabold text-emerald-700">$${prod.price || 0}</span>
+                    ${renderPriceTag(prod.price)}
                   </div>
                   <p class="text-xs text-slate-600 leading-relaxed">
                     ${prod.description || ''}
                   </p>
                 </div>
-                <a href="https://wa.me/52${cleanWa}?text=Hola%20Botica%20Silvestre,%20quiero%20ordenar%20el%20extracto%20${encodeURIComponent(prod.name)}%20($${prod.price || 0})%20para%20entrega%20en%20mi%20coto" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                  <span>Pedir por WhatsApp</span>
+                <a href="https://wa.me/52${cleanWa}?text=${ctaMsg}" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                  <i data-lucide="${isQuote ? 'message-circle' : 'plus'}" class="w-3.5 h-3.5"></i>
+                  <span>${ctaBtnText}</span>
                 </a>
               </div>
             </div>
@@ -866,7 +906,7 @@
                       <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
                       ${item.description ? `<p class="text-xs text-slate-500">${item.description}</p>` : ''}
                     </div>
-                    <span class="text-sm font-black text-emerald-700 shrink-0">$${item.price || 0}</span>
+                    ${renderMenuPrice(item.price)}
                   </div>
                 `).join("")}
               </div>
@@ -878,6 +918,19 @@
             </div>
           `).join("");
         }
+      }
+
+      // 8. Actualizar información operativa (cobertura y métodos de pago)
+      const cobText = reg.coverage_zone || (mdata && mdata.coverage_zone);
+      const cobEl = document.getElementById("section-cobertura-text");
+      if (cobEl && cobText && cobEl.textContent !== cobText) {
+        cobEl.textContent = cobText;
+      }
+
+      const payText = (mdata && mdata.payment_methods) || (reg.payment_method && !/^(mercadopago(_subscription)?|kam_direct|courtesy_hipha|free_basic)$/i.test(reg.payment_method) ? reg.payment_method : null);
+      const payEl = document.getElementById("section-payment-text");
+      if (payEl && payText && payEl.textContent !== payText) {
+        payEl.textContent = payText;
       }
 
       if (window.lucide && lucide.createIcons) lucide.createIcons();

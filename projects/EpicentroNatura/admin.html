@@ -849,7 +849,9 @@ Esta acción no se puede deshacer.`)) return;
                 ${p.tag ? `<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-wider shrink-0">${p.tag}</span>` : ''}
                 <span class="px-1.5 py-0.5 rounded-md ${p.fit === 'cover' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-400'} text-[9px] font-mono shrink-0">${p.fit === 'cover' ? 'Rellenar' : 'Altura'}</span>
               </div>
-              <div class="text-[11px] font-mono font-bold text-emerald-400">$${parseFloat(p.price || 0).toFixed(2)} MXN</div>
+              <div class="text-[11px] font-mono font-bold text-emerald-400">
+                ${(!p.price || p.price === 'Cotizar' || String(p.price).toLowerCase().includes('cotiz') || parseFloat(p.price) <= 0) ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">Cotizar</span>' : `$${parseFloat(p.price).toFixed(2)} MXN`}
+              </div>
               ${p.description ? `<p class="text-[10px] text-slate-400 truncate max-w-[200px] sm:max-w-xs">${p.description}</p>` : ''}
             </div>
           </div>
@@ -1018,7 +1020,9 @@ Esta acción no se puede deshacer.`)) return;
                   <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
                     <div class="min-w-0 pr-2">
                       <span class="font-bold text-white">${escapeHtml(item.name)}</span>
-                      <span class="font-mono text-emerald-400 font-bold ml-1.5">$${parseFloat(item.price || 0).toFixed(2)}</span>
+                      <span class="font-mono text-emerald-400 font-bold ml-1.5">
+                        ${(!item.price || item.price === 'Cotizar' || String(item.price).toLowerCase().includes('cotiz') || parseFloat(item.price) <= 0) ? '<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-wider">Cotizar</span>' : `$${parseFloat(item.price).toFixed(2)}`}
+                      </span>
                       ${item.description ? `<p class="text-[10px] text-slate-400 truncate">${escapeHtml(item.description)}</p>` : ''}
                     </div>
                     <button type="button" onclick="removeAdminMenuItem(${secIdx}, ${itemIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5">✕</button>

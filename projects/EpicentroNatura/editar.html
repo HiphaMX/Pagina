@@ -311,26 +311,26 @@
 
           <!-- Chips interactivos de selección rápida -->
           <div class="flex flex-wrap gap-1.5 select-none" id="payment-chips-container">
-            <button type="button" onclick="togglePaymentChip('Efectivo contra entrega', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+            <button type="button" onclick="togglePaymentChip('efectivo')" data-chip="efectivo" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
               💵 Efectivo
             </button>
-            <button type="button" onclick="togglePaymentChip('Transferencia bancaria SPEI', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+            <button type="button" onclick="togglePaymentChip('spei')" data-chip="spei" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
               🏦 Transferencia SPEI
             </button>
-            <button type="button" onclick="togglePaymentChip('Tarjetas de Débito y Crédito', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+            <button type="button" onclick="togglePaymentChip('tarjetas')" data-chip="tarjetas" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
               💳 Tarjetas Débito / Crédito
             </button>
-            <button type="button" onclick="togglePaymentChip('Mercado Pago', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+            <button type="button" onclick="togglePaymentChip('mercadopago')" data-chip="mercadopago" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
               📱 Mercado Pago / QR
             </button>
-            <button type="button" onclick="togglePaymentChip('Terminal móvil en entrega', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+            <button type="button" onclick="togglePaymentChip('terminal')" data-chip="terminal" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
               📟 Terminal en Entrega
             </button>
           </div>
 
           <!-- Input editable consolidado -->
-          <input type="text" id="edit-payment-method" placeholder="Ej. Efectivo contra entrega, transferencia bancaria SPEI, tarjetas y Mercado Pago." class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-          <span class="text-[10px] text-slate-400 block">Toca los botones para agregar opciones o edita el texto directamente si tienes condiciones especiales.</span>
+          <input type="text" id="edit-payment-method" oninput="updatePaymentChipsHighlight()" placeholder="Ej. Efectivo contra entrega, transferencia bancaria SPEI, tarjetas de débito/crédito." class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <span class="text-[10px] text-slate-400 block">Toca los botones para agregar o quitar opciones con libertad, o edita el texto directamente si tienes condiciones especiales.</span>
         </div>
 
         <!-- 3.6 ZONA DE COBERTURA -->
@@ -518,7 +518,9 @@
 
         // 5. Métodos de Pago
         if (document.getElementById("edit-payment-method")) {
-          document.getElementById("edit-payment-method").value = currentBiz.payment_method || md.payment_methods || "";
+          let pmVal = currentBiz.payment_method || (md && md.payment_methods) || "";
+          pmVal = cleanPaymentMethodText(pmVal);
+          document.getElementById("edit-payment-method").value = pmVal;
           updatePaymentChipsHighlight();
         }
 
@@ -667,7 +669,7 @@
 
       window.toggleQuotePrice = function(idx, isQuote) {
         if (!productsList[idx]) return;
-        productsList[idx].price = isQuote ? 0 : 100.0;
+        productsList[idx].price = isQuote ? "Cotizar" : 100.0;
         renderProducts();
       };
 
@@ -1001,42 +1003,90 @@
       };
 
       // --- HELPERS PARA MÉTODOS DE PAGO Y ZONA DE COBERTURA ---
-      window.togglePaymentChip = function(methodText, btnEl) {
+      const PAYMENT_CHIP_CONFIG = {
+        efectivo: {
+          label: "Efectivo contra entrega",
+          detect: /\befectivo\b/i,
+          strip: /\b(y\s+)?efectivo(\s+contra\s+entrega)?\b/gi
+        },
+        spei: {
+          label: "Transferencia bancaria SPEI",
+          detect: /\b(spei|transferencia)\b/i,
+          strip: /\b(y\s+)?(transferencia(\s+bancaria)?(\s+spei)?|spei)\b/gi
+        },
+        tarjetas: {
+          label: "Tarjetas de Débito y Crédito",
+          detect: /\b(tarjetas?|d[eé]bito|cr[eé]dito)\b/i,
+          strip: /\b(y\s+)?tarjetas?(\s+de)?(\s+d[eé]bito)?(\s+y)?(\s+cr[eé]dito)?\b/gi
+        },
+        mercadopago: {
+          label: "Mercado Pago",
+          detect: /\b(mercado\s*pago|qr)\b/i,
+          strip: /\b(y\s+)?(mercado\s*pago(\s*\/\s*qr)?|mercadopago(_subscription)?|qr)\b/gi
+        },
+        terminal: {
+          label: "Terminal móvil en entrega",
+          detect: /\bterminal\b/i,
+          strip: /\b(y\s+)?terminal(\s+m[oó]vil)?(\s+en\s+entrega)?\b/gi
+        }
+      };
+
+      function cleanPaymentMethodText(text) {
+        if (!text) return "";
+        return String(text)
+          .replace(/mercadopago_subscription/gi, "")
+          .replace(/courtesy_hipha/gi, "")
+          .replace(/kam_direct/gi, "")
+          .replace(/free_basic/gi, "")
+          .replace(/\s*,\s*,+/g, ",")
+          .replace(/^\s*,\s*|\s*,\s*$/g, "")
+          .replace(/\s+/g, " ")
+          .replace(/\s+y\s*$/i, "")
+          .replace(/[.,;]+$/, "")
+          .trim();
+      }
+
+      window.togglePaymentChip = function(key) {
         const input = document.getElementById("edit-payment-method");
         if (!input) return;
-        let current = input.value.trim();
-        let methods = current ? current.split(",").map(m => m.trim()).filter(Boolean) : [];
+        const cfg = PAYMENT_CHIP_CONFIG[key];
+        if (!cfg) return;
 
-        const idx = methods.findIndex(m => m.toLowerCase() === methodText.toLowerCase() || m.toLowerCase().includes(methodText.toLowerCase().slice(0, 8)));
-        if (idx >= 0) {
-          methods.splice(idx, 1);
+        let current = cleanPaymentMethodText(input.value);
+        const isPresent = cfg.detect.test(current);
+
+        if (isPresent) {
+          // Desmarcar / Remover con libertad absoluta
+          current = current.replace(cfg.strip, "");
+          input.value = cleanPaymentMethodText(current);
         } else {
-          methods.push(methodText);
+          // Marcar / Agregar limpiamente
+          if (!current) {
+            input.value = cfg.label;
+          } else {
+            input.value = current + ", " + cfg.label;
+          }
         }
-        input.value = methods.join(", ");
         updatePaymentChipsHighlight();
       };
 
-      function updatePaymentChipsHighlight() {
+      window.updatePaymentChipsHighlight = function() {
         const input = document.getElementById("edit-payment-method");
         if (!input) return;
-        const val = (input.value || "").toLowerCase();
+        const val = cleanPaymentMethodText(input.value);
+
         document.querySelectorAll(".payment-chip").forEach(btn => {
-          const text = btn.textContent.toLowerCase();
-          const isMatched = (
-            (text.includes("efectivo") && val.includes("efectivo")) ||
-            (text.includes("spei") && (val.includes("spei") || val.includes("transferencia"))) ||
-            (text.includes("tarjeta") && (val.includes("tarjeta") || val.includes("débito") || val.includes("crédito"))) ||
-            (text.includes("mercado") && (val.includes("mercado") || val.includes("qr"))) ||
-            (text.includes("terminal") && val.includes("terminal"))
-          );
+          const key = btn.getAttribute("data-chip");
+          const cfg = PAYMENT_CHIP_CONFIG[key];
+          const isMatched = (cfg && val) ? cfg.detect.test(val) : false;
+
           if (isMatched) {
             btn.className = "payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-emerald-500 bg-emerald-50 text-emerald-800 transition-colors cursor-pointer shadow-xs";
           } else {
             btn.className = "payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer";
           }
         });
-      }
+      };
 
       window.selectCoveragePreset = function(presetText) {
         const input = document.getElementById("edit-coverage-zone");
