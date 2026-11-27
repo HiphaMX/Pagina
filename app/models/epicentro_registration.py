@@ -22,21 +22,21 @@ class EpicentroRegistration(Base):
     email = Column(String(150), nullable=False, index=True)
     phone = Column(String(30), nullable=False)
     whatsapp = Column(String(30), nullable=False)
-    preferred_contact_methods = Column(String(255), nullable=True)
-    schedule = Column(String(150), nullable=True)
+    preferred_contact_methods = Column(Text, nullable=True)
+    schedule = Column(Text, nullable=True)
     delivery_available = Column(Boolean, default=False)
     coto_only_delivery = Column(Boolean, default=False)
-    delivery_badge = Column(String(100), nullable=True)
+    delivery_badge = Column(Text, nullable=True)
     pickup_available = Column(Boolean, default=True)
-    pickup_badge = Column(String(100), nullable=True)
+    pickup_badge = Column(Text, nullable=True)
     website = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
     photos = Column(Text, nullable=True)  # JSON array de hasta 10 fotos para micrositios
     cover_photo = Column(Text, nullable=True)  # URL de foto de portada del hero
     microsite_data = Column(Text, nullable=True)  # JSON estructurado: productos destacados y hasta 4 secciones de menú sin foto
     kam_name = Column(String(100), nullable=True)
-    payment_method = Column(String(255), nullable=True)
-    coverage_zone = Column(String(255), nullable=True)
+    payment_method = Column(Text, nullable=True)
+    coverage_zone = Column(Text, nullable=True)
 
     # Paso 1 de Validación: Correo Electrónico
     email_otp = Column(String(10), nullable=True)

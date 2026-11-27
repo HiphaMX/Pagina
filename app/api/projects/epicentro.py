@@ -41,18 +41,18 @@ def ensure_epicentro_schema(db: Session):
         engine_str = str(db.bind.url).lower() if (db and db.bind) else ""
         if "postgres" in engine_str:
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS website VARCHAR(255)"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS preferred_contact_methods VARCHAR(255)"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS schedule VARCHAR(150)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS preferred_contact_methods TEXT"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS schedule TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS photos TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS kam_name VARCHAR(100)"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method VARCHAR(255)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS payment_method TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS cover_photo TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coto_only_delivery BOOLEAN DEFAULT FALSE"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS delivery_badge VARCHAR(100)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS delivery_badge TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS pickup_available BOOLEAN DEFAULT TRUE"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS pickup_badge VARCHAR(100)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS pickup_badge TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token VARCHAR(64)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token_expires_at TIMESTAMP"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS slug VARCHAR(150)"))
@@ -61,8 +61,27 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS ai_moderated_at TIMESTAMP"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted BOOLEAN DEFAULT TRUE"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP"))
-            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coverage_zone VARCHAR(255)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coverage_zone TEXT"))
             db.commit()
+
+            # Migración defensiva: ampliar columnas existentes a TEXT para prevenir StringDataRightTruncation
+            alter_type_stmts = [
+                "ALTER TABLE epicentro_registrations ALTER COLUMN payment_method TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN coverage_zone TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN delivery_badge TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN pickup_badge TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN schedule TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN preferred_contact_methods TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN photos TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN cover_photo TYPE TEXT",
+                "ALTER TABLE epicentro_registrations ALTER COLUMN microsite_data TYPE TEXT",
+            ]
+            for stmt in alter_type_stmts:
+                try:
+                    db.execute(text(stmt))
+                    db.commit()
+                except Exception:
+                    db.rollback()
         else:
             for col, col_type in [
                 ("website", "VARCHAR(255)"),

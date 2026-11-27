@@ -615,9 +615,10 @@ def test_9_cotizar_and_mercado_pago_freedom():
                     f"Customer PM: {data_get.get('payment_method')}"
                 )
                 
-                # 3b. Guardar SOLO Efectivo y SPEI (desmarcando Mercado Pago)
+                # 3b. Guardar SOLO Efectivo, SPEI y Tarjetas (cadena real de 77 caracteres, desmarcando Mercado Pago)
                 put_no_mp = {
-                    "payment_method": "Efectivo contra entrega, Transferencia bancaria SPEI",
+                    "payment_method": "Efectivo contra entrega, Transferencia bancaria SPEI, Tarjetas de Débito y Crédito",
+                    "coverage_zone": "Zona Mariano Otero y cotos cercanos (hasta 3 km)",
                     "microsite_data": {
                         "featured_section": {
                             "title": "Diseño & Planos",
@@ -641,12 +642,15 @@ def test_9_cotizar_and_mercado_pago_freedom():
                     res_put.status_code == 200 and
                     "mercado" not in saved_pm.lower() and
                     "efectivo" in saved_pm.lower() and
-                    saved_md.get("featured_section", {}).get("products", [{}])[0].get("price") == "Cotizar"
+                    "tarjetas" in saved_pm.lower() and
+                    saved_md.get("featured_section", {}).get("products", [{}])[0].get("price") == "Cotizar" and
+                    test_biz.payment_method == "Efectivo contra entrega, Transferencia bancaria SPEI, Tarjetas de Débito y Crédito" and
+                    test_biz.coverage_zone == "Zona Mariano Otero y cotos cercanos (hasta 3 km)"
                 )
                 report_result(
-                    "Persistencia de métodos de pago sin Mercado Pago y producto con precio 'Cotizar'",
+                    "Persistencia de métodos de pago (77 caracteres sin truncar), zona de cobertura y 'Cotizar'",
                     mp_unmarked_ok,
-                    f"Saved PM: {saved_pm}"
+                    f"Saved PM: {saved_pm} | Zone: {test_biz.coverage_zone}"
                 )
         finally:
             db.close()
