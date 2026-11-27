@@ -667,6 +667,12 @@ def test_10_moderator_and_magic_link_specialization():
         editar_html = f.read()
         
     has_website_input = 'id="edit-website"' in editar_html and 'name="website"' in editar_html
+    has_locked_phone_wa = (
+        'id="edit-wa"' in editar_html and
+        'id="edit-phone"' in editar_html and
+        'readonly' in editar_html and
+        'contacta con administración' in editar_html.lower()
+    )
     has_product_dnd = (
         'handleProductDragStart' in editar_html and
         'handleProductDragOver' in editar_html and
@@ -683,11 +689,11 @@ def test_10_moderator_and_magic_link_specialization():
     )
     has_grip_handles = 'grip-vertical' in editar_html
     
-    editar_specialization_ok = has_website_input and has_product_dnd and has_menu_dnd and has_grip_handles
+    editar_specialization_ok = has_website_input and has_locked_phone_wa and has_product_dnd and has_menu_dnd and has_grip_handles
     report_result(
-        "editar.html: Link a Sitio Web oficial, Drag & Drop de Productos y Menú sin foto con handles y controles móviles",
+        "editar.html: Link a Sitio Web, Teléfono/WA protegidos (readonly) con aviso y Drag & Drop con handles",
         editar_specialization_ok,
-        "Sitio web, D&D Productos y D&D Menú verificados 100%"
+        "Sitio web, teléfonos protegidos, D&D Productos y D&D Menú verificados 100%"
     )
     
     # 2. Validar especialización de admin.html (Consola de Moderación y Gobernanza Comercial)
@@ -830,6 +836,17 @@ def test_10_moderator_and_magic_link_specialization():
                 "Reordenamiento Drag & Drop persistido y reflejado fidedignamente tras mutación de orden",
                 step2_ok,
                 f"Nuevo primer Prod: {reordered_products[0]['name']} | Nuevo primer Menú: {reordered_menu_sections[0]['items'][0]['name']}"
+            )
+
+            # 4. Verificar que intento de mutar whatsapp en autoservicio sea ignorado (permanezca inmutable)
+            orig_wa = reg.whatsapp or "3336762545"
+            res_put_tamper = client.put(f"/api/epicentro/self-service/{token}", json={"whatsapp": "9999999999"})
+            db.refresh(reg)
+            wa_protected = (res_put_tamper.status_code == 200 and reg.whatsapp == orig_wa and reg.whatsapp != "9999999999")
+            report_result(
+                "Protección de Teléfono y WhatsApp: inmutables vía autoservicio y modificables solo por administración",
+                wa_protected,
+                f"WhatsApp verificado preservado: {reg.whatsapp}"
             )
         finally:
             db.close()

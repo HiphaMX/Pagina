@@ -1519,8 +1519,9 @@ def update_self_service_business(
         reg.description = payload.description.strip()
     if payload.schedule is not None:
         reg.schedule = payload.schedule.strip()
-    if payload.whatsapp is not None:
-        reg.whatsapp = payload.whatsapp.strip()
+    # Teléfono y WhatsApp son credenciales de contacto protegidas: solo se modifican desde la consola de administración
+    # para evitar mal uso o suplantación de identidad en el autoservicio.
+    # reg.whatsapp y reg.phone permanecen inmutables vía autoservicio.
     if payload.coto_address is not None:
         reg.coto_address = payload.coto_address.strip()
     if payload.delivery_available is not None:
