@@ -2870,17 +2870,17 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
     ensure_epicentro_schema(db)
     seed_official_showcases(db)
 
-    # Identificar negocio: slug de path, o ?id=, o ?slug=, o ?b=
+    # Identificar negocio: querystrings ?id= o ?slug= o ?b= prioritarios, o slug de path
     target_id = ""
-    if slug:
-        target_id = slug.strip()
-    if not target_id and request:
+    if request:
         target_id = (
             request.query_params.get("id") or
             request.query_params.get("slug") or
             request.query_params.get("b") or
             ""
         ).strip()
+    if not target_id and slug and slug.strip() not in ("negocio", "negocio.html", "escaparate", "comercio"):
+        target_id = slug.strip()
 
     # Redirigir si coincide con una página del sistema que no es comercio
     if target_id in ("tu-negocio", "categoria", "admin", "editar", "editor-cultura", "articulo", "cultura-natura", "index"):
