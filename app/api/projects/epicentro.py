@@ -2786,7 +2786,7 @@ def render_cultura_article(slug: str, request: Request, db: Session = Depends(ge
     )
 
 
-def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover_absolute: str, canonical_url: str) -> str:
+def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover_img: str, cover_og: str, canonical_url: str) -> str:
     """
     Inyecta dinámicamente metadatos OpenGraph panorámicos, Twitter Cards, Schema.org
     y títulos personalizados en el HTML de la Página Escaparate Individual para que al compartir
@@ -2833,7 +2833,7 @@ def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover
   <meta property="og:site_name" content="Epizentro Natura">
   <meta id="og-title" property="og:title" content="{title_escaped}">
   <meta id="og-desc" property="og:description" content="{desc_escaped}">
-  <meta id="og-img" property="og:image" content="{cover_absolute}">
+  <meta id="og-img" property="og:image" content="{cover_og}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="{bname_escaped} en Epizentro Natura">
@@ -2843,16 +2843,16 @@ def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover
   <meta name="twitter:card" content="summary_large_image">
   <meta id="tw-title" name="twitter:title" content="{title_escaped}">
   <meta id="tw-desc" name="twitter:description" content="{desc_escaped}">
-  <meta id="tw-img" name="twitter:image" content="{cover_absolute}">'''
+  <meta id="tw-img" name="twitter:image" content="{cover_og}">'''
 
     if '<meta id="og-title"' in res:
         res = re.sub(r'<meta id="og-title".*?>', f'<meta id="og-title" property="og:title" content="{title_escaped}">', res)
         res = re.sub(r'<meta id="og-desc".*?>', f'<meta id="og-desc" property="og:description" content="{desc_escaped}">', res)
-        res = re.sub(r'<meta id="og-img".*?>', f'<meta id="og-img" property="og:image" content="{cover_absolute}">', res)
+        res = re.sub(r'<meta id="og-img".*?>', f'<meta id="og-img" property="og:image" content="{cover_og}">', res)
         res = re.sub(r'<meta id="og-url".*?>', f'<meta id="og-url" property="og:url" content="{canonical_url}">', res)
         res = re.sub(r'<meta id="tw-title".*?>', f'<meta id="tw-title" name="twitter:title" content="{title_escaped}">', res)
         res = re.sub(r'<meta id="tw-desc".*?>', f'<meta id="tw-desc" name="twitter:description" content="{desc_escaped}">', res)
-        res = re.sub(r'<meta id="tw-img".*?>', f'<meta id="tw-img" name="twitter:image" content="{cover_absolute}">', res)
+        res = re.sub(r'<meta id="tw-img".*?>', f'<meta id="tw-img" name="twitter:image" content="{cover_og}">', res)
     else:
         res = res.replace('</head>', f'{og_meta_tags}\n</head>')
 
@@ -2867,7 +2867,7 @@ def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover
     "@type": "LocalBusiness",
     "name": "{schema_bname}",
     "description": "{schema_desc}",
-    "image": ["{cover_absolute}"],
+    "image": ["{cover_og}"],
     "telephone": "{schema_phone}",
     "address": {{
       "@type": "PostalAddress",
@@ -2896,7 +2896,7 @@ def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover
     )
     res = re.sub(
         r'<img id="hero-showcase-img".*?>',
-        f'<img id="hero-showcase-img" src="{cover_absolute}" alt="{bname_escaped}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out" loading="eager">',
+        f'<img id="hero-showcase-img" src="{cover_img}" alt="{bname_escaped}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out" loading="eager" onerror="this.style.display=\'none\'">',
         res
     )
 
@@ -3000,14 +3000,21 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
     if not cover:
         cover = CURATED_COVERS_BY_CATEGORY.get(reg.category_slug, DEFAULT_CURATED_COVER)
 
-    if cover.startswith("/"):
-        cover = f"https://www.epizentro.com{cover}"
+    cover_for_img = cover
+    cover_for_og = cover
+    if cover.startswith("data:image/"):
+        cover_for_img = cover
+        cover_for_og = CURATED_COVERS_BY_CATEGORY.get(reg.category_slug, DEFAULT_CURATED_COVER)
+    elif cover.startswith("/"):
+        cover_for_img = f"https://www.epizentro.com{cover}"
+        cover_for_og = cover_for_img
     elif not cover.startswith("http"):
-        cover = f"https://www.epizentro.com/{cover}"
+        cover_for_img = f"https://www.epizentro.com/{cover}"
+        cover_for_og = cover_for_img
 
     canonical_url = f"https://www.epizentro.com/natura/{reg.slug}" if reg.slug else f"https://www.epizentro.com/natura/negocio?id={reg.id}"
 
-    rendered = render_escaparate_html(html_raw, reg, cover, canonical_url)
+    rendered = render_escaparate_html(html_raw, reg, cover_for_img, cover_for_og, canonical_url)
 
     return HTMLResponse(
         content=rendered,

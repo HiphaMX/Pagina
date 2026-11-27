@@ -141,7 +141,7 @@
   <header class="relative bg-slate-950 text-white">
     <!-- 1. BANNER PANORÁMICO DE BORDE A BORDE -->
     <div class="relative w-full h-64 sm:h-80 md:h-96 lg:h-[420px] overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 group">
-      <img id="hero-showcase-img" src="" alt="Portada" class="w-full h-full object-cover opacity-0 group-hover:scale-105 transition-all duration-700 ease-out" loading="eager">
+      <img id="hero-showcase-img" src="" alt="Portada" class="w-full h-full object-cover opacity-0 group-hover:scale-105 transition-all duration-700 ease-out" loading="eager" onerror="this.style.display='none'">
       <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-black/30 pointer-events-none"></div>
 
       <!-- Badges flotantes sobre el banner -->
@@ -531,7 +531,7 @@
           showcaseImg.src = coverPhoto;
           showcaseImg.classList.remove("opacity-0");
         }
-        const absCover = coverPhoto.startsWith("http") ? coverPhoto : `https://www.epizentro.com${coverPhoto.startsWith('/') ? '' : '/'}${coverPhoto}`;
+        const absCover = coverPhoto.startsWith("http") || coverPhoto.startsWith("data:image/") ? coverPhoto : `https://www.epizentro.com${coverPhoto.startsWith('/') ? '' : '/'}${coverPhoto}`;
         const ogImg = document.getElementById("og-img");
         if (ogImg) ogImg.setAttribute("content", absCover);
         const twImg = document.getElementById("tw-img");
@@ -543,7 +543,7 @@
       const cleanPhone = (reg.phone || reg.whatsapp || "3336762545").replace(/\D/g, "");
 
       const catSlugNorm = (reg.category_slug || "").toLowerCase();
-      const catLabel = (reg.category_label || "").toLowerCase();
+      const catLabelNorm = (reg.category_label || "").toLowerCase();
       const subSlug = (reg.subcategory_slug || "").toLowerCase();
       const subLabel = (reg.subcategory_label || "").toLowerCase();
       const bizType = (reg.business_type || "").toLowerCase();
@@ -552,7 +552,7 @@
         catSlugNorm === "servicios-hogar" ||
         catSlugNorm === "educacion" ||
         catSlugNorm.includes("servicio") ||
-        catLabel.includes("servicio") ||
+        catLabelNorm.includes("servicio") ||
         subSlug.includes("inmob") ||
         subSlug.includes("diseno") ||
         subSlug.includes("asesor") ||
@@ -821,7 +821,8 @@
       }
 
       // Banner y botón flotante de edición si el dueño visita con su token
-      const editToken = urlParams.get("token") || sessionStorage.getItem("last_epicentro_edit_token");
+      const urlParams = new URLSearchParams(window.location.search);
+      const editToken = urlParams.get("token") || (function(){ try { return sessionStorage.getItem("last_epicentro_edit_token"); }catch(e){ return null; } })();
       if (editToken) {
         try { sessionStorage.setItem("last_epicentro_edit_token", editToken); } catch(e){}
         
@@ -856,7 +857,7 @@
         }
       }
 
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
     }
 
     async function loadDynamicBusiness() {
@@ -911,7 +912,7 @@
         const descEl = document.getElementById("hero-business-description");
         if (titleEl) titleEl.textContent = "Comercio no encontrado";
         if (descEl) descEl.textContent = "No fue posible localizar este comercio o aún se encuentra en proceso de validación comunitaria.";
-        if (window.lucide && lucide.createIcons) lucide.createIcons();
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
     }
 
@@ -949,7 +950,7 @@
       toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-2xl border border-emerald-500/50 flex items-center gap-2 animate-bounce";
       toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span>¡Enlace copiado para compartir en WhatsApp!</span>`;
       document.body.appendChild(toast);
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3500);
     }
 
