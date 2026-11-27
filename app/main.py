@@ -307,6 +307,8 @@ def render_public_cronica_entrypoint(slug: str, request: Request, db: Session = 
 @app.api_route("/natura/comercio/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
 @app.api_route("/natura/escaparate", methods=["GET", "HEAD"], response_class=HTMLResponse)
 @app.api_route("/natura/comercio", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/{slug}.html", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def render_public_escaparate_entrypoint(request: Request, slug: Optional[str] = None, db: Session = Depends(get_db)):
     """Punto de entrada público SSR para Páginas Escaparate con OpenGraph dinámico para WhatsApp y redes sociales."""
     return epicentro_project.render_escaparate_page(slug, request, db)

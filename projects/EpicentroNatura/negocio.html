@@ -53,7 +53,7 @@
       const naturaIdx = pathParts.indexOf("natura");
       if (naturaIdx !== -1 && pathParts.length > naturaIdx + 1) {
         const candidate = pathParts[naturaIdx + 1].replace(/\.html$/, "");
-        if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura"].includes(candidate)) {
+        if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura", "terminos"].includes(candidate)) {
           queryParam = candidate;
         }
       }
@@ -868,7 +868,7 @@
           const naturaIdx = pathParts.indexOf("natura");
           if (naturaIdx !== -1 && pathParts.length > naturaIdx + 1) {
             const candidate = pathParts[naturaIdx + 1].replace(/\.html$/, "");
-            if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura"].includes(candidate)) {
+            if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura", "terminos"].includes(candidate)) {
               q = candidate;
             }
           }

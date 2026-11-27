@@ -2919,7 +2919,7 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
             ""
         ).strip()
     if not target_id and slug and slug.strip() not in ("negocio", "negocio.html", "escaparate", "comercio"):
-        target_id = slug.strip()
+        target_id = slug.strip().replace(".html", "")
 
     # Redirigir si coincide con una página del sistema que no es comercio
     if target_id in ("tu-negocio", "categoria", "admin", "editar", "editor-cultura", "articulo", "cultura-natura", "index", "terminos"):
@@ -3005,7 +3005,7 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
     elif not cover.startswith("http"):
         cover = f"https://www.epizentro.com/{cover}"
 
-    canonical_url = f"https://www.epizentro.com/natura/negocio?id={reg.id}"
+    canonical_url = f"https://www.epizentro.com/natura/{reg.slug}" if reg.slug else f"https://www.epizentro.com/natura/negocio?id={reg.id}"
 
     rendered = render_escaparate_html(html_raw, reg, cover, canonical_url)
 
