@@ -1262,9 +1262,9 @@
         `;
       }
 
-      // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo)
-      const isFreeBasic = b.payment_status === "free_basic" || b.payment_status === "basic_approved" || (b.payment_status !== "approved" && b.payment_status !== "waived") || (b.payment_amount === 0 || b.payment_amount <= 300.0 || b.has_microsite === false);
-      const hasDedicatedMicrosite = !isFreeBasic && (hasCatalogProducts || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
+      // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo / membresía aprobada o cortesía)
+      const isExplicitBasic = (b.payment_status === "free_basic" || b.payment_status === "basic_approved") && !hasCatalogProducts && !b.slug;
+      const hasDedicatedMicrosite = !isExplicitBasic && (hasCatalogProducts || Boolean(b.slug) || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
         const targetSlug = b.slug || b.id;
@@ -1837,9 +1837,10 @@
                 } catch(e) {}
               }
 
-              // Determinar si es Plan Esencial ($99 anual / $0 legacy) o Página Escaparate Individual ($499 anual / cortesía)
-              const isFreeBasic = biz.payment_status === "free_basic" || biz.payment_status === "basic_approved" || (!isOfficialShowcase && biz.payment_status !== "approved" && biz.payment_status !== "waived") || (!isOfficialShowcase && (biz.payment_amount === 0 || biz.payment_amount <= 300.0 || biz.has_microsite === false));
-              const hasInteractive = !isFreeBasic && (isOfficialShowcase || biz.payment_status === "approved" || biz.payment_status === "waived");
+              // Determinar si cuenta con escaparate dedicado en Epizentro (por catálogo, slug, o membresía aprobada/cortesía)
+              const hasCatalog = !!(mdata && ((Array.isArray(mdata.featured_products) && mdata.featured_products.length > 0) || (mdata.featured_section && Array.isArray(mdata.featured_section.products) && mdata.featured_section.products.length > 0)));
+              const isExplicitBasic = (biz.payment_status === "free_basic" || biz.payment_status === "basic_approved") && !hasCatalog && !biz.slug;
+              const hasInteractive = !isExplicitBasic && (isOfficialShowcase || hasCatalog || Boolean(biz.slug) || biz.has_microsite === true || biz.payment_status === "approved" || biz.payment_status === "waived");
 
               // Extraer fotos para la tarjeta
               let bizPhotos = [];
@@ -1864,6 +1865,7 @@
 
               const bizObj = {
                 id: biz.id,
+                slug: biz.slug || "",
                 name: biz.business_name,
                 category_slug: biz.category_slug,
                 category_label: biz.category_label || (biz.category_slug ? biz.category_slug.toUpperCase() : "COMERCIO"),

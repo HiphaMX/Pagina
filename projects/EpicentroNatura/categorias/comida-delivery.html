@@ -1316,7 +1316,9 @@
                 } catch(e) {}
               }
 
-              const hasInteractive = isChillon || isBotica || isAmdi || biz.payment_status === "approved" || biz.payment_status === "waived" || !!(mdata && (mdata.featured_section || mdata.featured_products));
+              const hasCatalog = !!(mdata && ((Array.isArray(mdata.featured_products) && mdata.featured_products.length > 0) || (mdata.featured_section && Array.isArray(mdata.featured_section.products) && mdata.featured_section.products.length > 0)));
+              const isExplicitBasic = (biz.payment_status === "free_basic" || biz.payment_status === "basic_approved") && !hasCatalog && !biz.slug;
+              const hasInteractive = !isExplicitBasic && (isChillon || isBotica || isAmdi || hasCatalog || Boolean(biz.slug) || biz.payment_status === "approved" || biz.payment_status === "waived");
 
               let bizPhotos = [];
               if (typeof biz.photos === 'string' && biz.photos.startsWith('[')) {
@@ -1339,6 +1341,7 @@
 
               const bizObj = {
                 id: biz.id,
+                slug: biz.slug || "",
                 name: biz.business_name,
                 category_slug: biz.category_slug,
                 category_label: biz.category_label || (biz.category_slug ? biz.category_slug.toUpperCase() : "COMERCIO"),
@@ -1362,6 +1365,8 @@
                 phone: biz.phone,
                 whatsapp: biz.whatsapp,
                 website: isChillon ? "https://elchilechillon.mx" : (isBotica ? "botica-silvestre" : (isAmdi ? "amdi" : (biz.website || null))),
+                payment_status: biz.payment_status || "waived",
+                payment_amount: biz.payment_amount !== null && biz.payment_amount !== undefined ? biz.payment_amount : 0.0,
                 has_microsite: hasInteractive,
                 microsite_data: mdata,
                 cover_photo: biz.cover_photo || (mdata ? mdata.cover_photo : null),
@@ -1611,12 +1616,13 @@
         `;
       }
 
-      // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo)
-      const isFreeBasic = b.payment_status === "free_basic" || b.payment_status === "basic_approved" || (b.payment_status !== "approved" && b.payment_status !== "waived") || (b.payment_amount === 0 || b.payment_amount <= 300.0 || b.has_microsite === false);
-      const hasDedicatedMicrosite = !isFreeBasic && (hasCatalogProducts || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
+      // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo / membresía aprobada o cortesía)
+      const isExplicitBasic = (b.payment_status === "free_basic" || b.payment_status === "basic_approved") && !hasCatalogProducts && !b.slug;
+      const hasDedicatedMicrosite = !isExplicitBasic && (hasCatalogProducts || Boolean(b.slug) || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
-        let micrositeUrl = "/natura/negocio?id=" + encodeURIComponent(b.id);
+        const targetSlug = b.slug || b.id;
+        let micrositeUrl = "/natura/" + encodeURIComponent(targetSlug);
         if (window.location.protocol === "file:") {
           micrositeUrl = (isSubfolder ? "../" : "") + "negocio.html?id=" + encodeURIComponent(b.id);
         }

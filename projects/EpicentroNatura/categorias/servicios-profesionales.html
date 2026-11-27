@@ -1070,6 +1070,9 @@
         phone: "33 3956 4830",
         whatsapp: "33 3956 4830",
         website: "https://www.jessicamendozabienesraices.com/",
+                payment_status: biz.payment_status || "waived",
+                payment_amount: biz.payment_amount !== null && biz.payment_amount !== undefined ? biz.payment_amount : 0.0,
+                microsite_data: biz.microsite_data,
         schedule: "Lunes a Viernes · 09:00 a 19:00 hrs",
         hours: "Lunes a Viernes · 09:00 a 19:00 hrs",
         is_open_now: true,
@@ -1399,6 +1402,7 @@
 
               const bizObj = {
                 id: biz.id,
+                slug: biz.slug || "",
                 name: biz.business_name,
                 category_slug: biz.category_slug,
                 category_label: biz.category_label || (biz.category_slug ? biz.category_slug.toUpperCase() : "COMERCIO"),
@@ -1664,9 +1668,9 @@
         `;
       }
 
-      // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo)
-      const isFreeBasic = b.payment_status === "free_basic" || b.payment_status === "basic_approved" || (b.payment_status !== "approved" && b.payment_status !== "waived") || (b.payment_amount === 0 || b.payment_amount <= 300.0 || b.has_microsite === false);
-      const hasDedicatedMicrosite = !isFreeBasic && (hasCatalogProducts || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
+      // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo / membresía aprobada o cortesía)
+      const isExplicitBasic = (b.payment_status === "free_basic" || b.payment_status === "basic_approved") && !hasCatalogProducts && !b.slug;
+      const hasDedicatedMicrosite = !isExplicitBasic && (hasCatalogProducts || Boolean(b.slug) || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
         const targetSlug = b.slug || b.id;
