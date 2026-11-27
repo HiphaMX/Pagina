@@ -427,6 +427,16 @@
         const subcatLabel = escapeHtml(r.subcategory_label || "");
         const sched = escapeHtml(r.schedule || "");
         const email = escapeHtml(r.email || "");
+        const dupes = allRegistrations.filter(other => 
+          other.id !== r.id && (
+            (other.phone && r.phone && other.phone.replace(/\D/g, '') === r.phone.replace(/\D/g, '')) ||
+            (other.whatsapp && r.whatsapp && other.whatsapp.replace(/\D/g, '') === r.whatsapp.replace(/\D/g, '')) ||
+            (other.email && r.email && other.email.toLowerCase().trim() === r.email.toLowerCase().trim()) ||
+            (other.business_name && r.business_name && other.business_name.toLowerCase().trim() === r.business_name.toLowerCase().trim())
+          )
+        );
+        const isDuplicate = dupes.length > 0;
+
         const waNum = (r.whatsapp || "").replace(/\D/g, "");
         const rawWa = escapeHtml(r.whatsapp || "");
         const waCode = escapeHtml(r.whatsapp_code || "");
@@ -440,8 +450,9 @@
         return `
           <tr class="hover:bg-slate-900/50 transition-colors">
             <td class="py-3.5 px-4">
-              <div class="font-bold text-white text-sm flex items-center gap-1.5">
+              <div class="font-bold text-white text-sm flex items-center gap-1.5 flex-wrap">
                 <span>${bName}</span>
+                ${isDuplicate ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1 shrink-0" title="Posible registro duplicado (${dupes.length} coincidencia${dupes.length > 1 ? 's' : ''})"><i data-lucide="alert-triangle" class="w-2.5 h-2.5"></i> Duplicado</span>` : ''}
                 ${safeWebsite ? `<a href="${safeWebsite}" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 text-[11px] font-normal" title="Visitar sitio web oficial"><i data-lucide="globe" class="w-3.5 h-3.5"></i></a>` : ''}
               </div>
               <div class="text-[11px] text-slate-400">${catLabel} · <span class="text-emerald-400">${subcatLabel}</span></div>
@@ -474,6 +485,8 @@
                 : isPaid
                 ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> $${r.payment_amount || 499} MXN Pagado</span>`
                 : `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400"><i data-lucide="slash" class="w-3.5 h-3.5"></i> Pendiente</span>`}
+              ${r.coupon_code ? `<div class="mt-1"><span class="inline-flex items-center gap-1 text-[9.5px] font-mono font-bold text-purple-300 bg-purple-500/15 border border-purple-500/25 px-1.5 py-0.5 rounded"><i data-lucide="gift" class="w-3 h-3 text-purple-400"></i> ${escapeHtml(r.coupon_code)}</span></div>` : ''}
+              ${r.payment_method ? `<div class="text-[9.5px] text-slate-400 font-mono mt-0.5">${escapeHtml(r.payment_method)}</div>` : ''}
               ${kamName ? `<div class="text-[10px] text-amber-300 font-medium mt-0.5">KAM: ${kamName}</div>` : ''}
             </td>
             <td class="py-3.5 px-4">
@@ -612,12 +625,24 @@ Esta acción no se puede deshacer.`)) return;
       loadRegistrations();
     }
 
-    // --- GESTIÓN DE MICROSITIO EN ADMIN: PORTADA, DESTACADOS Y MENÚ ---
-    let adminCoverPhoto = "";
-    let adminFeaturedProducts = []; // [{ photo, name, price, description }]
-    let adminMenuSections = []; // [{ title, subtitle, description, items: [{ name, price, description }] }]
-    let tempAdminProdPhoto = "";
-    let adminEditPhotos = []; // compatibilidad
+    // --- ESTADO Y ACCIONES DE MODERACIÓN Y ESCAPARATE ---
+    let currentModalEditToken = "";
+    let currentModalBizName = "";
+
+    function copyCurrentModalMagicLink() {
+      if (!currentModalEditToken) {
+        alert("Este comercio no cuenta con un Magic Link generado.");
+        return;
+      }
+      copyAdminMagicLink(currentModalEditToken, currentModalBizName);
+    }
+
+    function handleDeleteRegistrationFromModal() {
+      const id = document.getElementById("edit-reg-id").value;
+      if (!id) return;
+      closeEditModal();
+      handleDeleteRegistration(id);
+    }
 
     function checkAutoOpenEdit() {
       try {
@@ -628,428 +653,6 @@ Esta acción no se puede deshacer.`)) return;
         }
       } catch (e) {}
     }
-
-    function compressImageFile(file, maxWidth = 1000, quality = 0.80) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
-            let width = img.width;
-            let height = img.height;
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, width, height);
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL("image/webp", quality));
-          };
-          img.onerror = reject;
-          img.src = e.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // --- GESTIÓN DE PORTADA ---
-    async function handleAdminCoverFile(e) {
-      const file = (e.target.files || [])[0];
-      if (!file) return;
-      try {
-        adminCoverPhoto = await compressImageFile(file, 1200, 0.80);
-        renderAdminCoverPreview();
-      } catch (err) {
-        console.warn("Error comprimiendo portada:", err);
-      }
-      e.target.value = "";
-    }
-
-    function promptAdminCoverUrl() {
-      const url = prompt("Ingresa la URL pública de la portada:");
-      if (url && url.trim().startsWith("http")) {
-        adminCoverPhoto = url.trim();
-        renderAdminCoverPreview();
-      }
-    }
-
-    function removeAdminCoverPhoto() {
-      adminCoverPhoto = "";
-      renderAdminCoverPreview();
-    }
-
-    function renderAdminCoverPreview() {
-      const preview = document.getElementById("edit-cover-preview");
-      if (!preview) return;
-      if (adminCoverPhoto) {
-        preview.innerHTML = `
-          <div class="relative w-full h-28 rounded-xl bg-slate-950 overflow-hidden shadow-xs border border-slate-700 group">
-            <img src="${adminCoverPhoto}" alt="Portada" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end justify-between p-2.5">
-              <span class="text-[11px] font-bold text-white flex items-center gap-1"><i data-lucide="image" class="w-3.5 h-3.5 text-emerald-400"></i> Portada seleccionada</span>
-              <button type="button" onclick="removeAdminCoverPhoto()" class="px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold shadow-xs transition-colors">
-                ✕ Quitar
-              </button>
-            </div>
-          </div>
-        `;
-      } else {
-        preview.innerHTML = `
-          <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
-            Sin portada seleccionada (se utilizará la portada por defecto del sitio).
-          </div>
-        `;
-      }
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    // --- GESTIÓN DE PRODUCTOS DESTACADOS ---
-    async function handleAdminNewProdPhotoFile(e) {
-      const file = (e.target.files || [])[0];
-      if (!file) return;
-      try {
-        tempAdminProdPhoto = await compressImageFile(file, 650, 0.80);
-        renderAdminNewProdPhotoPreview();
-      } catch (err) {
-        console.warn("Error comprimiendo foto:", err);
-      }
-      e.target.value = "";
-    }
-
-    function promptAdminNewProdPhotoUrl() {
-      const url = prompt("Ingresa la URL pública de la foto del producto:");
-      if (url && url.trim().startsWith("http")) {
-        tempAdminProdPhoto = url.trim();
-        renderAdminNewProdPhotoPreview();
-      }
-    }
-
-    function removeAdminNewProdPhoto() {
-      tempAdminProdPhoto = "";
-      renderAdminNewProdPhotoPreview();
-    }
-
-    function renderAdminNewProdPhotoPreview() {
-      const box = document.getElementById("edit-new-prod-photo-preview");
-      if (!box) return;
-      if (tempAdminProdPhoto) {
-        box.innerHTML = `
-          <div class="relative w-12 h-12 rounded-xl bg-white border border-slate-700 overflow-hidden shadow-xs flex items-center justify-center p-0.5 group">
-            <img src="${tempAdminProdPhoto}" alt="Miniatura" class="w-full h-full object-contain bg-white">
-            <button type="button" onclick="removeAdminNewProdPhoto()" class="absolute inset-0 bg-slate-900/70 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-          </div>
-        `;
-      } else {
-        box.innerHTML = `
-          <div class="w-12 h-12 rounded-xl bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center text-slate-500">
-            <i data-lucide="image" class="w-5 h-5"></i>
-          </div>
-        `;
-      }
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    function addAdminFeaturedProduct() {
-      if (adminFeaturedProducts.length >= 10) {
-        alert("Ya alcanzaste el máximo de 10 productos destacados.");
-        return;
-      }
-      const nameInput = document.getElementById("edit-new-prod-name");
-      const priceInput = document.getElementById("edit-new-prod-price");
-      const descInput = document.getElementById("edit-new-prod-desc");
-      const tagInput = document.getElementById("edit-new-prod-tag");
-      const fitInput = document.getElementById("edit-new-prod-fit");
-
-      const name = nameInput ? nameInput.value.trim() : "";
-      if (!name) {
-        alert("Indica el nombre del producto.");
-        if (nameInput) nameInput.focus();
-        return;
-      }
-      const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
-      const desc = descInput ? descInput.value.trim() : "";
-      const tag = tagInput ? tagInput.value.trim() : "";
-      const fit = fitInput ? fitInput.value : "contain";
-
-      adminFeaturedProducts.push({
-        name: name,
-        price: price,
-        description: desc,
-        photo: tempAdminProdPhoto || "",
-        tag: tag,
-        fit: fit
-      });
-
-      if (nameInput) nameInput.value = "";
-      if (priceInput) priceInput.value = "";
-      if (descInput) descInput.value = "";
-      if (tagInput) tagInput.value = "";
-      tempAdminProdPhoto = "";
-      renderAdminNewProdPhotoPreview();
-      renderAdminFeaturedGrid();
-    }
-
-    function removeAdminFeaturedProduct(idx) {
-      adminFeaturedProducts.splice(idx, 1);
-      renderAdminFeaturedGrid();
-    }
-
-    window.editAdminProductTag = function(idx) {
-      if (idx < 0 || idx >= adminFeaturedProducts.length) return;
-      const current = adminFeaturedProducts[idx].tag || "";
-      const newTag = prompt("Ingresa la etiqueta para la foto de este producto (ej. Asesoría Profesional, Especialidad, Más Vendido, Promoción):", current);
-      if (newTag !== null) {
-        adminFeaturedProducts[idx].tag = newTag.trim();
-        renderAdminFeaturedGrid();
-      }
-    };
-
-    window.toggleAdminProductFit = function(idx) {
-      if (idx < 0 || idx >= adminFeaturedProducts.length) return;
-      const currentFit = adminFeaturedProducts[idx].fit || "contain";
-      adminFeaturedProducts[idx].fit = (currentFit === "cover") ? "contain" : "cover";
-      renderAdminFeaturedGrid();
-    };
-
-    function renderAdminFeaturedGrid() {
-      const grid = document.getElementById("edit-featured-grid");
-      const badge = document.getElementById("edit-featured-badge");
-      if (badge) badge.textContent = `${adminFeaturedProducts.length} / 10`;
-
-      // Sync retrocompatibilidad
-      adminEditPhotos = adminFeaturedProducts.map(p => p.photo).filter(Boolean);
-
-      if (!grid) return;
-      if (adminFeaturedProducts.length === 0) {
-        grid.innerHTML = `
-          <div class="py-3 text-center text-[11px] text-slate-500">
-            No hay productos destacados cargados. (Hasta 10 productos con foto, precio y descripción).
-          </div>
-        `;
-        return;
-      }
-
-      grid.innerHTML = adminFeaturedProducts.map((p, idx) => `
-        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3 group">
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="relative w-12 h-12 rounded-lg bg-white border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
-              ${p.photo
-                ? `<img src="${p.photo}" alt="${p.name}" class="w-full h-full ${p.fit === 'cover' ? 'object-cover' : 'object-contain p-1'}">`
-                : `<span class="text-xs font-mono font-bold text-slate-600">#${idx + 1}</span>`}
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-xs font-bold text-white truncate">${p.name}</span>
-                ${p.tag ? `<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-wider shrink-0">${p.tag}</span>` : ''}
-                <span class="px-1.5 py-0.5 rounded-md ${p.fit === 'cover' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-400'} text-[9px] font-mono shrink-0">${p.fit === 'cover' ? 'Rellenar' : 'Altura'}</span>
-              </div>
-              <div class="text-[11px] font-mono font-bold text-emerald-400">
-                ${(!p.price || p.price === 'Cotizar' || String(p.price).toLowerCase().includes('cotiz') || parseFloat(p.price) <= 0) ? '<span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">Cotizar</span>' : `$${parseFloat(p.price).toFixed(2)} MXN`}
-              </div>
-              ${p.description ? `<p class="text-[10px] text-slate-400 truncate max-w-[200px] sm:max-w-xs">${p.description}</p>` : ''}
-            </div>
-          </div>
-          <div class="flex items-center gap-1 shrink-0">
-            <button type="button" onclick="toggleAdminProductFit(${idx})" title="Alternar ajuste: Altura o Rellenar" class="px-2 py-1 rounded-lg ${p.fit === 'cover' ? 'bg-indigo-950/60 text-indigo-300 border border-indigo-500/30' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'} text-[10px] font-bold flex items-center gap-1 transition-colors">
-              <span>${p.fit === 'cover' ? '🖼️ Rellenar' : '📐 Altura'}</span>
-            </button>
-            <button type="button" onclick="editAdminProductTag(${idx})" title="Cambiar etiqueta" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold flex items-center gap-1 transition-colors">
-              <i data-lucide="tag" class="w-3 h-3 text-emerald-400"></i>
-              <span>${p.tag ? p.tag : '+ Etiqueta'}</span>
-            </button>
-            <button type="button" onclick="removeAdminFeaturedProduct(${idx})" title="Eliminar producto" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors shrink-0">
-              ✕
-            </button>
-          </div>
-        </div>
-      `).join("");
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    // --- GESTIÓN DE MENÚ / COMPLEMENTOS ---
-    function syncAdminMenuSectionsFromDOM() {
-      adminMenuSections.forEach((sec, idx) => {
-        const tIn = document.getElementById(`admin-sec-${idx}-title-input`);
-        const sIn = document.getElementById(`admin-sec-${idx}-subtitle-input`);
-        const dIn = document.getElementById(`admin-sec-${idx}-desc-input`);
-        if (tIn) sec.title = tIn.value.trim();
-        if (sIn) sec.subtitle = sIn.value.trim();
-        if (dIn) sec.description = dIn.value.trim();
-
-        // Si el usuario dejó un ítem a medio escribir en los inputs de renglón, añadirlo automáticamente
-        const nInput = document.getElementById(`admin-sec-${idx}-new-item-name`) || document.getElementById(`admin-sec-${idx}-item-name`);
-        const pInput = document.getElementById(`admin-sec-${idx}-new-item-price`) || document.getElementById(`admin-sec-${idx}-item-price`);
-        const descIn = document.getElementById(`admin-sec-${idx}-new-item-desc`) || document.getElementById(`admin-sec-${idx}-item-desc`);
-        if (nInput && nInput.value.trim()) {
-          if (!sec.items) sec.items = [];
-          sec.items.push({
-            name: nInput.value.trim(),
-            price: pInput ? parseFloat(pInput.value) || 0.0 : 0.0,
-            description: descIn ? descIn.value.trim() : ""
-          });
-          nInput.value = "";
-          if (pInput) pInput.value = "";
-          if (descIn) descIn.value = "";
-        }
-      });
-    }
-
-    function addAdminMenuSection() {
-      if (adminMenuSections.length >= 4) {
-        alert("Máximo 4 secciones de menú permitidas.");
-        return;
-      }
-      syncAdminMenuSectionsFromDOM();
-
-      const defaultTitles = [
-        { title: "Presentaciones por Litro", subtitle: "Para familias y eventos", desc: "Precios especiales en presentaciones grandes." },
-        { title: "Botanas y Complementos", subtitle: "Acompañamientos frescos", desc: "El complemento perfecto para compartir." },
-        { title: "Paquetes y Especiales", subtitle: "Opciones para compartir", desc: "Combinaciones especiales para tu mesa o reunión." },
-        { title: "Bebidas y Postres", subtitle: "El toque final", desc: "Bebidas refrescantes y repostería artesanal." }
-      ];
-      const def = defaultTitles[adminMenuSections.length] || { title: "Otros Productos", subtitle: "Complementos", desc: "" };
-      adminMenuSections.push({
-        title: def.title,
-        subtitle: def.subtitle,
-        description: def.desc,
-        items: []
-      });
-      renderAdminMenuSections();
-    }
-
-    function removeAdminMenuSection(secIdx) {
-      syncAdminMenuSectionsFromDOM();
-      adminMenuSections.splice(secIdx, 1);
-      renderAdminMenuSections();
-    }
-
-    function updateAdminMenuSecMeta(secIdx, field, val) {
-      if (adminMenuSections[secIdx]) {
-        adminMenuSections[secIdx][field] = val;
-      }
-    }
-
-    function addAdminMenuItem(secIdx) {
-      const sec = adminMenuSections[secIdx];
-      if (!sec) return;
-      const nameInput = document.getElementById(`admin-sec-${secIdx}-new-item-name`) || document.getElementById(`admin-sec-${secIdx}-item-name`);
-      const priceInput = document.getElementById(`admin-sec-${secIdx}-new-item-price`) || document.getElementById(`admin-sec-${secIdx}-item-price`);
-      const descInput = document.getElementById(`admin-sec-${secIdx}-new-item-desc`) || document.getElementById(`admin-sec-${secIdx}-item-desc`);
-
-      const name = nameInput ? nameInput.value.trim() : "";
-      if (!name) {
-        alert("Indica el nombre del ítem.");
-        if (nameInput) nameInput.focus();
-        return;
-      }
-      const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
-      const desc = descInput ? descInput.value.trim() : "";
-
-      if (!sec.items) sec.items = [];
-      sec.items.push({ name, price, description: desc });
-
-      if (nameInput) nameInput.value = "";
-      if (priceInput) priceInput.value = "";
-      if (descInput) descInput.value = "";
-
-      renderAdminMenuSections();
-    }
-
-    function removeAdminMenuItem(secIdx, itemIdx) {
-      syncAdminMenuSectionsFromDOM();
-      if (adminMenuSections[secIdx] && adminMenuSections[secIdx].items) {
-        adminMenuSections[secIdx].items.splice(itemIdx, 1);
-        renderAdminMenuSections();
-      }
-    }
-
-    function renderAdminMenuSections() {
-      const container = document.getElementById("edit-menu-sections-container");
-      const badge = document.getElementById("edit-menu-sec-badge");
-      const addBtn = document.getElementById("btn-add-admin-menu-sec");
-
-      if (badge) badge.textContent = `${adminMenuSections.length} / 4 secciones`;
-      if (addBtn) addBtn.style.display = adminMenuSections.length >= 4 ? "none" : "inline-flex";
-
-      if (!container) return;
-      if (adminMenuSections.length === 0) {
-        container.innerHTML = `
-          <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
-            No hay secciones tipo menú configuradas. (Hasta 4 secciones para complementos o renglones sin foto).
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = adminMenuSections.map((sec, secIdx) => `
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-emerald-400 tracking-wider">Sección Menú #${secIdx + 1}</span>
-            <button type="button" onclick="removeAdminMenuSection(${secIdx})" class="text-[11px] font-bold text-rose-400 hover:text-rose-300 transition-colors">
-              ✕ Eliminar Sección
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Título de Sección *</label>
-              <input type="text" id="admin-sec-${secIdx}-title-input" value="${escapeHtml(sec.title || '')}" oninput="updateAdminMenuSecMeta(${secIdx}, 'title', this.value)" placeholder="Ej. Presentaciones por Litro" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Subtítulo</label>
-              <input type="text" id="admin-sec-${secIdx}-subtitle-input" value="${escapeHtml(sec.subtitle || '')}" oninput="updateAdminMenuSecMeta(${secIdx}, 'subtitle', this.value)" placeholder="Ej. Para reuniones o familias" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Descripción de la Sección</label>
-            <input type="text" id="admin-sec-${secIdx}-desc-input" value="${escapeHtml(sec.description || '')}" oninput="updateAdminMenuSecMeta(${secIdx}, 'description', this.value)" placeholder="Ej. Presentaciones especiales en volumen..." class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-          </div>
-
-          <div class="pt-2 border-t border-slate-800">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Renglones de Menú (${sec.items ? sec.items.length : 0})</span>
-            ${(!sec.items || sec.items.length === 0) ? `<p class="text-[10px] text-slate-500 italic mb-2">No has agregado renglones a esta sección.</p>` : `
-              <div class="space-y-1 mb-2">
-                ${sec.items.map((item, itemIdx) => `
-                  <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
-                    <div class="min-w-0 pr-2">
-                      <span class="font-bold text-white">${escapeHtml(item.name)}</span>
-                      <span class="font-mono text-emerald-400 font-bold ml-1.5">
-                        ${(!item.price || item.price === 'Cotizar' || String(item.price).toLowerCase().includes('cotiz') || parseFloat(item.price) <= 0) ? '<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase tracking-wider">Cotizar</span>' : `$${parseFloat(item.price).toFixed(2)}`}
-                      </span>
-                      ${item.description ? `<p class="text-[10px] text-slate-400 truncate">${escapeHtml(item.description)}</p>` : ''}
-                    </div>
-                    <button type="button" onclick="removeAdminMenuItem(${secIdx}, ${itemIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5">✕</button>
-                  </div>
-                `).join("")}
-              </div>
-            `}
-
-            <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center">
-              <input type="text" id="admin-sec-${secIdx}-new-item-name" placeholder="Nombre (ej. 1 Litro Salsa Macha)" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminMenuItem(${secIdx});}" class="sm:col-span-5 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
-              <input type="number" step="0.5" id="admin-sec-${secIdx}-new-item-price" placeholder="Precio ($)" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminMenuItem(${secIdx});}" class="sm:col-span-3 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none font-mono">
-              <input type="text" id="admin-sec-${secIdx}-new-item-desc" placeholder="Desc. breve" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminMenuItem(${secIdx});}" class="sm:col-span-4 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
-              <button type="button" onclick="addAdminMenuItem(${secIdx})" class="sm:col-span-12 py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                <span>+ Añadir Renglón al Menú</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join("");
-      if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    // Compatibilidad
-    function handleAdminPhotoFiles(e) { handleAdminNewProdPhotoFile(e); }
-    function promptAdminPhotoUrl() { promptAdminNewProdPhotoUrl(); }
-    function removeAdminPhoto(idx) { removeAdminFeaturedProduct(idx); }
-    function renderAdminPhotosGrid() { renderAdminFeaturedGrid(); }
 
     // --- GESTIÓN INTEGRAL DE SUBCATEGORÍAS EN ADMIN ---
     const BASE_SUBCATEGORIES_MAP = {
@@ -1428,12 +1031,55 @@ Esta acción no se puede deshacer.`)) return;
       document.getElementById("edit-pickup-badge").value = reg.pickup_badge || "";
       document.getElementById("edit-moderation-notes").value = reg.moderation_notes || "";
 
-      // Cargar Portada y Microsite Data
-      adminCoverPhoto = reg.cover_photo || "";
-      adminFeaturedProducts = [];
-      adminMenuSections = [];
-      tempAdminProdPhoto = "";
+      // 1. Detección y Alerta de Duplicados
+      const dupes = allRegistrations.filter(r => 
+        r.id !== reg.id && (
+          (r.phone && reg.phone && r.phone.replace(/\D/g, '') === reg.phone.replace(/\D/g, '')) ||
+          (r.whatsapp && reg.whatsapp && r.whatsapp.replace(/\D/g, '') === reg.whatsapp.replace(/\D/g, '')) ||
+          (r.email && reg.email && r.email.toLowerCase().trim() === reg.email.toLowerCase().trim()) ||
+          (r.business_name && reg.business_name && r.business_name.toLowerCase().trim() === reg.business_name.toLowerCase().trim())
+        )
+      );
+      const dupeWarnEl = document.getElementById("modal-duplicate-warning");
+      if (dupeWarnEl) {
+        if (dupes.length > 0) {
+          dupeWarnEl.classList.remove("hidden");
+          dupeWarnEl.innerHTML = `
+            <div class="p-3.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 text-xs text-rose-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold text-rose-300">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+                  <span>⚠️ Posible Registro Duplicado (${dupes.length} coincidencia${dupes.length > 1 ? 's' : ''})</span>
+                </div>
+                <button type="button" onclick="handleDeleteRegistration('${escapeHtml(reg.id)}')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer">
+                  <i data-lucide="trash-2" class="w-3 h-3"></i>
+                  <span>Eliminar este registro</span>
+                </button>
+              </div>
+              <p class="text-[11px] text-rose-300/90 leading-tight">
+                Se detectaron otros registros con el mismo teléfono, WhatsApp, correo o nombre comercial:
+              </p>
+              <div class="space-y-1">
+                ${dupes.map(d => `
+                  <div class="p-2 rounded-xl bg-slate-950/70 border border-rose-900/50 flex items-center justify-between text-[11px]">
+                    <div>
+                      <strong class="text-white">${escapeHtml(d.business_name || 'Sin nombre')}</strong>
+                      <span class="text-slate-400">· Tel: ${escapeHtml(d.phone || d.whatsapp || '-')}</span>
+                      <span class="text-slate-500">· Estado: ${escapeHtml(d.status || '-')}</span>
+                    </div>
+                    <button type="button" onclick="openEditModal('${escapeHtml(d.id)}')" class="text-emerald-400 hover:underline font-mono text-[10px] cursor-pointer">Ver registro</button>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+        } else {
+          dupeWarnEl.classList.add("hidden");
+          dupeWarnEl.innerHTML = "";
+        }
+      }
 
+      // 2. Resumen de Escaparate y Acceso al Magic Link
       let mdata = null;
       if (reg.microsite_data) {
         if (typeof reg.microsite_data === "string" && reg.microsite_data.trim().startsWith("{")) {
@@ -1443,99 +1089,81 @@ Esta acción no se puede deshacer.`)) return;
         }
       }
 
-      if (mdata) {
-        if (!adminCoverPhoto && mdata.cover_photo) adminCoverPhoto = mdata.cover_photo;
-        const feat = mdata.featured_section || {};
-        const titleEl = document.getElementById("edit-featured-title");
-        const subEl = document.getElementById("edit-featured-subtitle");
-        const descEl = document.getElementById("edit-featured-desc");
-        if (titleEl) titleEl.value = feat.title || "Nuestra Selección Destacada";
-        if (subEl) subEl.value = feat.subtitle || "";
-        if (descEl) descEl.value = feat.description || "";
-        adminFeaturedProducts = Array.isArray(feat.products) ? [...feat.products] : [];
-        adminMenuSections = Array.isArray(mdata.other_products_sections) ? [...mdata.other_products_sections] : [];
-      } else {
-        const titleEl = document.getElementById("edit-featured-title");
-        const subEl = document.getElementById("edit-featured-subtitle");
-        const descEl = document.getElementById("edit-featured-desc");
-        if (titleEl) titleEl.value = "Nuestra Selección Destacada";
-        if (subEl) subEl.value = "";
-        if (descEl) descEl.value = "";
-
-        // Fallback a photos si existían
-        if (reg.photos) {
-          let pList = [];
-          if (typeof reg.photos === "string" && reg.photos.trim().startsWith("[")) {
-            try { pList = JSON.parse(reg.photos); } catch (e) { pList = [reg.photos]; }
-          } else if (Array.isArray(reg.photos)) {
-            pList = [...reg.photos];
-          } else if (typeof reg.photos === "string" && reg.photos.trim()) {
-            pList = [reg.photos.trim()];
-          }
-          adminFeaturedProducts = pList.map((ph, idx) => ({
-            name: `Producto Destacado ${idx + 1}`,
-            price: 0,
-            description: "",
-            photo: ph
-          }));
-        }
+      const prodCount = (mdata && mdata.featured_section && Array.isArray(mdata.featured_section.products)) ? mdata.featured_section.products.length : 0;
+      const secCount = (mdata && Array.isArray(mdata.other_products_sections)) ? mdata.other_products_sections.length : 0;
+      const summaryBadge = document.getElementById("modal-catalog-summary-badge");
+      if (summaryBadge) {
+        summaryBadge.textContent = `${prodCount} producto${prodCount !== 1 ? 's' : ''} destacado${prodCount !== 1 ? 's' : ''} · ${secCount} sección${secCount !== 1 ? 'es' : ''} de menú sin foto`;
       }
 
-      renderAdminCoverPreview();
-      renderAdminNewProdPhotoPreview();
-      renderAdminFeaturedGrid();
-      renderAdminMenuSections();
-
-      // Cargar sitio web del botón de Hero1
-      let heroWebsite = "";
-      if (mdata && mdata.website_url !== undefined && mdata.website_url !== null) {
-        heroWebsite = mdata.website_url;
-      } else if (reg.website) {
-        heroWebsite = reg.website;
-      } else if (reg.id === "reg-chile-chillon") {
-        heroWebsite = "https://elchilechillon.mx";
-      } else if (reg.id === "reg-botica-silvestre") {
-        heroWebsite = "https://boticasilvestre.com.mx";
-      } else if (reg.id === "reg-amdi" || reg.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83") {
-        heroWebsite = "https://www.amdi.mx";
-      }
-      const editMicroWebEl = document.getElementById("edit-microsite-website");
-      if (editMicroWebEl) editMicroWebEl.value = heroWebsite;
-      const heroScheduleVal = reg.schedule || (mdata && mdata.schedule) || "Lunes a Sábado · 09:00 a 19:00 hrs";
-      document.getElementById("edit-schedule").value = heroScheduleVal;
-      const editMicroSchedEl = document.getElementById("edit-microsite-schedule");
-      if (editMicroSchedEl) editMicroSchedEl.value = heroScheduleVal;
-
-      adminMicrositeInputsExpanded = false;
-      syncAdminPlanUi(targetPay, reg.business_name || "");
-
-      // Mostrar Magic Link de Autoservicio
       const editToken = reg.edit_token;
-      const selfServiceContainer = document.getElementById("edit-self-service-box");
-      if (selfServiceContainer) {
+      currentModalEditToken = editToken || "";
+      currentModalBizName = reg.business_name || "";
+
+      const btnOpenMagic = document.getElementById("btn-open-magic-link");
+      const btnViewLive = document.getElementById("btn-view-live-escaparate");
+
+      if (btnOpenMagic) {
         if (editToken) {
-          const selfServiceUrl = `${window.location.origin}/natura/editar?token=${encodeURIComponent(editToken)}`;
-          selfServiceContainer.innerHTML = `
-            <div class="p-3.5 rounded-2xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-between gap-3 text-xs shadow-xs">
-              <div class="flex items-center gap-2.5 overflow-hidden">
-                <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center justify-center shrink-0">
-                  <i data-lucide="key" class="w-4 h-4"></i>
-                </div>
-                <div class="truncate">
-                  <span class="text-purple-300 font-bold block text-xs">Magic Link de Autoservicio (Enlace para el cliente):</span>
-                  <a href="${selfServiceUrl}" target="_blank" class="text-[11px] text-slate-300 hover:text-white underline truncate block font-mono">${selfServiceUrl}</a>
-                </div>
-              </div>
-              <button type="button" onclick="copyAdminMagicLink('${escapeHtml(editToken)}', '${escapeHtml(reg.business_name)}')" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs transition-all">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                <span>Copiar</span>
-              </button>
-            </div>
-          `;
+          btnOpenMagic.href = `/natura/editar?token=${encodeURIComponent(editToken)}`;
+          btnOpenMagic.classList.remove("opacity-50", "pointer-events-none");
         } else {
-          selfServiceContainer.innerHTML = "";
+          btnOpenMagic.href = "#";
+          btnOpenMagic.classList.add("opacity-50", "pointer-events-none");
         }
       }
+
+      if (btnViewLive) {
+        const hasEscaparate = reg.payment_status !== "free_basic" && reg.payment_status !== "basic_approved";
+        btnViewLive.href = hasEscaparate ? `/natura/negocio?id=${encodeURIComponent(reg.slug || reg.id)}` : `/natura/directorio`;
+      }
+
+      // 3. Cupón de Cortesía Redimido
+      const couponBadge = document.getElementById("edit-coupon-code-badge");
+      if (couponBadge) {
+        if (reg.coupon_code) {
+          couponBadge.textContent = reg.coupon_code;
+          couponBadge.className = "text-xs font-mono font-bold text-emerald-300";
+        } else if (reg.payment_status === "waived") {
+          couponBadge.textContent = "Exento Oficial ($0)";
+          couponBadge.className = "text-xs font-mono font-bold text-purple-300";
+        } else {
+          couponBadge.textContent = "Ninguno";
+          couponBadge.className = "text-xs font-mono text-slate-500";
+        }
+      }
+
+      // 4. Verificaciones y Auditoría
+      const waAudit = document.getElementById("audit-wa-status");
+      if (waAudit) {
+        if (reg.whatsapp_verified) {
+          waAudit.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="text-emerald-300 font-bold">WhatsApp Validado</span> <span class="text-slate-500 font-mono text-[10px]">(${escapeHtml(reg.whatsapp_code || 'OTP OK')})</span>`;
+        } else {
+          waAudit.innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i> <span class="text-amber-300">WhatsApp Pendiente</span>`;
+        }
+      }
+      const emailAudit = document.getElementById("audit-email-status");
+      if (emailAudit) {
+        if (reg.email_verified) {
+          emailAudit.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="text-emerald-300 font-bold">Correo Verificado</span>`;
+        } else {
+          emailAudit.innerHTML = `<i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i> <span class="text-slate-300">Correo Registrado</span>`;
+        }
+      }
+      const termsAudit = document.getElementById("audit-terms-status");
+      if (termsAudit) {
+        if (reg.terms_accepted_at) {
+          const tDate = new Date(reg.terms_accepted_at).toLocaleString("es-MX");
+          termsAudit.textContent = `Términos aceptados el: ${tDate}`;
+        } else if (reg.created_at) {
+          const cDate = new Date(reg.created_at).toLocaleString("es-MX");
+          termsAudit.textContent = `Registrado el: ${cDate}`;
+        } else {
+          termsAudit.textContent = "Términos aceptados en alta";
+        }
+      }
+
+      syncAdminPlanUi(targetPay, reg.business_name || "");
 
       const modal = document.getElementById("edit-business-modal");
       modal.classList.remove("hidden");
@@ -1543,31 +1171,22 @@ Esta acción no se puede deshacer.`)) return;
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
-    function copyAdminMagicLink(token, name) {
-      const url = `${window.location.origin}/natura/editar?token=${encodeURIComponent(token)}`;
-      navigator.clipboard.writeText(url).then(() => {
-        alert(`¡Magic Link de autoservicio para '${name}' copiado al portapapeles!\n\nPuedes enviarlo por WhatsApp al cliente:\n${url}`);
-      }).catch(() => {
-        prompt("Copia este enlace de autoservicio:", url);
-      });
-    }
-
-    let adminMicrositeInputsExpanded = false;
-
     function syncAdminPlanUi(paymentStatus, businessName) {
       const bannerContainer = document.getElementById("modal-plan-banner");
-      const lockedBanner = document.getElementById("microsite-plan-locked-banner");
-      const activeBanner = document.getElementById("microsite-plan-active-banner");
-      const fieldsContainer = document.getElementById("edit-microsite-fields");
-      const prefillNotice = document.getElementById("microsite-prefill-notice");
-      const toggleText = document.getElementById("toggle-microsite-text");
-
+      const planBadge = document.getElementById("modal-catalog-plan-badge");
       const status = paymentStatus || "free_basic";
       const isFreeBasic = status === "free_basic";
       const isPaid = status === "approved";
       const isWaived = status === "waived";
 
-      // 1. Header Banner Dinámico
+      if (planBadge) {
+        const isEssential = status === "free_basic" || status === "basic_approved";
+        planBadge.textContent = isEssential ? "Plan Esencial ($99)" : (isWaived ? "Cortesía ($0)" : "Plan Anual ($499)");
+        planBadge.className = isEssential 
+          ? "px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300"
+          : "px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300";
+      }
+
       if (bannerContainer) {
         if (isFreeBasic) {
           bannerContainer.innerHTML = `
@@ -1579,10 +1198,10 @@ Esta acción no se puede deshacer.`)) return;
                 <div>
                   <div class="flex items-center gap-2">
                     <span class="text-xs font-black text-amber-300 uppercase tracking-wide">Modalidad: Plan Esencial ($99 MXN/año)</span>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Plan Esencial</span>
+                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Directorio</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
-                    Este comercio cuenta con presencia en el directorio con botones de contacto directo (<strong class="text-white">Llamar</strong> y <strong class="text-white">WhatsApp</strong>). <span class="text-amber-200">No incluye Página Escaparate Individual dedicada (/natura/negocio) ni catálogo web activo.</span>
+                    Este comercio cuenta con presencia en el directorio con botones directos (Llamar y WhatsApp). No incluye Página Escaparate Individual ni catálogo web.
                   </p>
                 </div>
               </div>
@@ -1604,10 +1223,10 @@ Esta acción no se puede deshacer.`)) return;
                 <div>
                   <div class="flex items-center gap-2">
                     <span class="text-xs font-black text-emerald-300 uppercase tracking-wide">Modalidad: Suscripción Anual Activa ($499 MXN/año)</span>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-300 font-mono">Página Escaparate Individual</span>
+                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-300 font-mono">Página Escaparate</span>
                   </div>
                   <p class="text-xs text-slate-300 mt-0.5">
-                    Ficha completa en directorio + Página Escaparate Individual dedicada en <code class="text-emerald-300">/natura/negocio?id=...</code> con botón "Ver más", portada hero, hasta 10 productos destacados con foto y 4 secciones de menú.
+                    Ficha completa en directorio + Página Escaparate Individual dedicada (/natura/negocio), catálogo web de productos y menú sin foto gestionados vía Magic Link.
                   </p>
                 </div>
               </div>
@@ -1670,36 +1289,7 @@ Esta acción no se puede deshacer.`)) return;
         }
       }
 
-      // 2. Control de la sección del microsite
-      if (isFreeBasic) {
-        if (lockedBanner) lockedBanner.classList.remove("hidden");
-        if (activeBanner) activeBanner.classList.add("hidden");
-        if (fieldsContainer) {
-          if (adminMicrositeInputsExpanded) {
-            fieldsContainer.classList.remove("hidden");
-            if (prefillNotice) prefillNotice.classList.remove("hidden");
-            if (toggleText) toggleText.textContent = "Ocultar Catálogo ▴";
-          } else {
-            fieldsContainer.classList.add("hidden");
-            if (prefillNotice) prefillNotice.classList.add("hidden");
-            if (toggleText) toggleText.textContent = "Editar Catálogo (Opcional) ▾";
-          }
-        }
-      } else {
-        if (lockedBanner) lockedBanner.classList.add("hidden");
-        if (activeBanner) activeBanner.classList.remove("hidden");
-        if (fieldsContainer) fieldsContainer.classList.remove("hidden");
-        if (prefillNotice) prefillNotice.classList.add("hidden");
-      }
-
       if (window.lucide && lucide.createIcons) lucide.createIcons();
-    }
-
-    function toggleAdvancedMicrositeInputs() {
-      adminMicrositeInputsExpanded = !adminMicrositeInputsExpanded;
-      const curPay = document.getElementById("edit-payment-status").value;
-      const bName = document.getElementById("edit-business-name").value;
-      syncAdminPlanUi(curPay, bName);
     }
 
     function upgradeToPlan(targetPlan) {
@@ -1739,7 +1329,6 @@ Esta acción no se puede deshacer.`)) return;
         }
       }
 
-      adminMicrositeInputsExpanded = false;
       const bName = document.getElementById("edit-business-name").value || "";
       syncAdminPlanUi(val, bName);
     }
@@ -1768,34 +1357,29 @@ Esta acción no se puede deshacer.`)) return;
       const catSelect = document.getElementById("edit-category-slug");
       const catLabel = catSelect.options[catSelect.selectedIndex] ? catSelect.options[catSelect.selectedIndex].text : "";
 
-      const featTitle = document.getElementById("edit-featured-title") ? document.getElementById("edit-featured-title").value.trim() : "Nuestra Selección Destacada";
-      const featSub = document.getElementById("edit-featured-subtitle") ? document.getElementById("edit-featured-subtitle").value.trim() : "";
-      const featDesc = document.getElementById("edit-featured-desc") ? document.getElementById("edit-featured-desc").value.trim() : "";
-      const heroWebUrl = document.getElementById("edit-microsite-website") ? document.getElementById("edit-microsite-website").value.trim() : "";
-      const heroSchedule = (document.getElementById("edit-microsite-schedule") && document.getElementById("edit-microsite-schedule").value.trim()) || (document.getElementById("edit-schedule") ? document.getElementById("edit-schedule").value.trim() : "");
-
-      // Sincronizar secciones de menú y recoger renglones pendientes
-      syncAdminMenuSectionsFromDOM();
-
-      const micrositeData = {
-        cover_photo: adminCoverPhoto || null,
-        website_url: heroWebUrl || null,
-        schedule: heroSchedule || null,
-        featured_section: {
-          title: featTitle || "Nuestra Selección Destacada",
-          subtitle: featSub,
-          description: featDesc,
-          products: adminFeaturedProducts
-        },
-        other_products_sections: adminMenuSections
-      };
-
       const subcatLabel = document.getElementById("edit-subcategory-label").value.trim();
       const subcatSlug = subcatLabel ? slugify(subcatLabel) : null;
 
       if (subcatLabel && catSelect.value) {
         registerCustomSubcategory(catSelect.value, subcatLabel, subcatSlug);
       }
+
+      // Preservar microsite_data, fotos y portada existentes sin pisarlos
+      const existingReg = allRegistrations.find(r => r.id === id);
+      let existingMdata = null;
+      if (existingReg && existingReg.microsite_data) {
+        if (typeof existingReg.microsite_data === "string" && existingReg.microsite_data.trim().startsWith("{")) {
+          try { existingMdata = JSON.parse(existingReg.microsite_data); } catch(e){}
+        } else if (typeof existingReg.microsite_data === "object") {
+          existingMdata = { ...existingReg.microsite_data };
+        }
+      }
+      if (!existingMdata) existingMdata = {};
+
+      const schedVal = document.getElementById("edit-schedule").value.trim();
+      const webVal = document.getElementById("edit-website").value.trim();
+      existingMdata.schedule = schedVal || existingMdata.schedule || null;
+      existingMdata.website_url = webVal || existingMdata.website_url || null;
 
       const payload = {
         business_name: document.getElementById("edit-business-name").value.trim(),
@@ -1804,17 +1388,17 @@ Esta acción no se puede deshacer.`)) return;
         subcategory_label: subcatLabel || null,
         subcategory_slug: subcatSlug,
         coto_address: document.getElementById("edit-coto-address").value.trim(),
-        schedule: heroSchedule,
+        schedule: schedVal,
         owner_name: document.getElementById("edit-owner-name").value.trim(),
         phone: document.getElementById("edit-phone").value.trim(),
         whatsapp: document.getElementById("edit-whatsapp").value.trim(),
         email: document.getElementById("edit-email").value.trim(),
-        website: heroWebUrl || document.getElementById("edit-website").value.trim() || null,
+        website: webVal || null,
         preferred_contact_methods: document.getElementById("edit-preferred-contact-methods").value.trim() || null,
         description: document.getElementById("edit-description").value.trim() || null,
-        cover_photo: adminCoverPhoto || null,
-        microsite_data: micrositeData,
-        photos: adminFeaturedProducts.length > 0 ? JSON.stringify(adminFeaturedProducts.map(p => p.photo).filter(Boolean)) : null,
+        cover_photo: existingReg ? existingReg.cover_photo : null,
+        microsite_data: existingMdata,
+        photos: existingReg ? existingReg.photos : null,
         status: document.getElementById("edit-status").value,
         payment_status: document.getElementById("edit-payment-status").value,
         kam_name: document.getElementById("edit-kam-name").value.trim() || null,
@@ -1856,7 +1440,7 @@ Esta acción no se puede deshacer.`)) return;
           allRegistrations[idx] = {
             ...allRegistrations[idx],
             ...savedReg,
-            microsite_data: typeof savedReg.microsite_data === "string" ? savedReg.microsite_data : JSON.stringify(micrositeData)
+            microsite_data: typeof savedReg.microsite_data === "string" ? savedReg.microsite_data : JSON.stringify(existingMdata)
           };
         }
         try { sessionStorage.removeItem("epizentro_active_businesses"); } catch(e){}
@@ -1879,14 +1463,6 @@ Esta acción no se puede deshacer.`)) return;
       const urlParams = new URLSearchParams(window.location.search);
       loadRegistrations();
       if (window.lucide && lucide.createIcons) lucide.createIcons();
-
-      // Sincronización en vivo entre campos de horario (Información General y Micrositio)
-      const topSchedInput = document.getElementById("edit-schedule");
-      const microSchedInput = document.getElementById("edit-microsite-schedule");
-      if (topSchedInput && microSchedInput) {
-        topSchedInput.addEventListener("input", () => { microSchedInput.value = topSchedInput.value; });
-        microSchedInput.addEventListener("input", () => { topSchedInput.value = microSchedInput.value; });
-      }
 
       const openEditId = urlParams.get("open_edit");
       if (openEditId) {
@@ -2045,9 +1621,50 @@ Esta acción no se puede deshacer.`)) return;
         <p class="text-xs text-slate-400 mt-1">Actualiza datos comerciales, horarios, fotos, estatus de moderación y asignación de KAM.</p>
       </div>
 
+      <!-- ALERTA DE DUPLICADOS (SI SE DETECTA COINCIDENCIA) -->
+      <div id="modal-duplicate-warning" class="mb-4 hidden"></div>
+
       <!-- BANNER DINÁMICO DE PLAN Y ALCANCE DE LA FICHA COMERCIAL -->
       <div id="modal-plan-banner" class="mb-4 transition-all"></div>
-      <div id="edit-self-service-box" class="mb-4"></div>
+
+      <!-- CAJA EJECUTIVA DE ESCAPARATE Y CATÁLOGO DEL COMERCIO -->
+      <div id="modal-escaparate-card" class="mb-4 p-4 rounded-2xl bg-slate-950/90 border border-emerald-500/30 space-y-3 shadow-lg">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black uppercase text-white tracking-wider">Escaparate y Catálogo del Comercio</span>
+                <span id="modal-catalog-plan-badge" class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300">Plan Anual ($499)</span>
+              </div>
+              <span id="modal-catalog-summary-badge" class="text-[11px] text-slate-400">0 productos destacados · 0 secciones de menú sin foto</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 self-start sm:self-center">
+            <a id="btn-view-live-escaparate" href="#" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition-colors flex items-center gap-1.5 shadow-xs">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span>Ver en Vivo</span>
+            </a>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-400 leading-relaxed">
+          La gestión de fotografías, precios, productos destacados y menú sin foto se administra de forma especializada e interactiva desde el <strong>Magic Link de Autoservicio</strong> (con soporte Drag & Drop, recorte de fotos y enlaces oficiales).
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80">
+          <a id="btn-open-magic-link" href="#" target="_blank" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span>Abrir Magic Link como Moderador</span>
+          </a>
+          <button type="button" id="btn-copy-magic-link" onclick="copyCurrentModalMagicLink()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Copiar Enlace para WhatsApp</span>
+          </button>
+        </div>
+      </div>
 
       <form onsubmit="handleSaveEdit(event)" class="space-y-4">
         <input type="hidden" id="edit-reg-id">
@@ -2122,8 +1739,8 @@ Esta acción no se puede deshacer.`)) return;
             <input type="email" id="edit-email" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Sitio Web / Slug en Epizentro</label>
-            <input type="text" id="edit-website" placeholder="https://... o botica-silvestre" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+            <label class="block text-xs font-bold text-slate-300 mb-1">Sitio Web / Perfil Oficial</label>
+            <input type="text" id="edit-website" placeholder="https://... o elchilechillon.mx" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
           </div>
         </div>
 
@@ -2139,312 +1756,136 @@ Esta acción no se puede deshacer.`)) return;
           <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Descripción breve del comercio..."></textarea>
         </div>
 
-        <!-- CONFIGURACIÓN DE PÁGINA ESCAPARATE INDIVIDUAL EN EPIZENTRO ($499/AÑO): PORTADA, DESTACADOS Y MENÚ -->
-        <div id="edit-microsite-section-wrapper" class="border-t border-slate-800 pt-3 space-y-4">
-          <!-- Banner cuando el plan es Plan Esencial ($99) o Básico ($0) -->
-          <div id="microsite-plan-locked-banner" class="hidden p-4 rounded-2xl bg-slate-950/90 border border-amber-500/30">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                  <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i>
-                </div>
-                <div>
-                  <div class="flex items-center gap-2">
-                    <h4 class="text-sm font-bold text-white">Página Escaparate Individual No Incluida en Plan Esencial</h4>
-                    <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-amber-500/20 text-amber-300 font-mono">Plan Esencial ($99)</span>
-                  </div>
-                  <p class="text-xs text-slate-400 mt-1 max-w-xl">
-                    Este comercio cuenta únicamente con presencia en el directorio (botones directos de <strong>Llamar</strong> y <strong>WhatsApp</strong>). La Página Escaparate Individual dedicada (<code class="text-emerald-400">/natura/negocio?id=...</code>) y el catálogo web no están activos para este registro.
-                  </p>
-                </div>
-              </div>
-              <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 w-full sm:w-auto">
-                <button type="button" onclick="upgradeToPlan('approved')" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap">
-                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                  <span>Activar Página Escaparate Individual ($499)</span>
-                </button>
-                <button type="button" onclick="toggleAdvancedMicrositeInputs()" id="btn-toggle-microsite-inputs" class="w-full sm:w-auto px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
-                  <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-                  <span id="toggle-microsite-text">Editar Catálogo (Opcional) ▾</span>
-                </button>
-              </div>
+        <!-- MODERACIÓN, FINANZAS Y GOBIERNO COMERCIAL -->
+        <div class="border-t border-slate-800 pt-3 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Estatus del Registro *</label>
+              <select id="edit-status" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+                <option value="active">Activo (Visible en Directorio)</option>
+                <option value="pending_verification">En Verificación</option>
+                <option value="pending_approval">Pendiente de Aprobación</option>
+                <option value="rejected">Rechazado / Suspendido</option>
+              </select>
             </div>
-            <div id="microsite-prefill-notice" class="hidden mt-3 pt-3 border-t border-slate-800/80 text-[11px] text-amber-300/80 flex items-center gap-1.5">
-              <i data-lucide="info" class="w-3.5 h-3.5 shrink-0 text-amber-400"></i>
-              <span>Modo de precarga: Los datos de portada y catálogo que edites abajo se guardarán, pero no se publicarán en el directorio hasta que el comercio active su suscripción.</span>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Estatus de Pago *</label>
+              <select id="edit-payment-status" onchange="handleAdminPaymentStatusChange()" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+                <option value="approved">🚀 Suscripción Anual Pagada ($499 MXN - Con Escaparate)</option>
+                <option value="basic_approved">⚡ Plan Esencial Pagado ($99 MXN - Sin Escaparate)</option>
+                <option value="free_basic">⚡ Plan Esencial / Legacy ($99 / $0 MXN)</option>
+                <option value="waived">🎁 Exento / Cupón Cortesía ($0 - Con Escaparate)</option>
+                <option value="pending">⏳ Pendiente de Pago</option>
+                <option value="pending_mp_payment">💳 Pendiente Mercado Pago</option>
+                <option value="pending_kam_direct">👤 Pendiente Asesor KAM Directo</option>
+                <option value="pending_kam_verification">🔍 Pendiente Verificación KAM</option>
+                <option value="rejected">❌ Pago Rechazado</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Asesor KAM Asignado</label>
+              <input type="text" id="edit-kam-name" placeholder="Ej. Carlos Méndez" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
             </div>
           </div>
 
-          <!-- Banner cuando el plan es Suscripción ($499) o Cortesía ($0) -->
-          <div id="microsite-plan-active-banner" class="hidden p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-bold text-emerald-300">Página Escaparate Individual Habilitada</span>
-                  <span class="px-2 py-0.2 text-[9px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-400 font-mono">En Vivo</span>
-                </div>
-                <span class="text-[11px] text-slate-400">Portada en alta resolución, hasta 10 productos destacados con fotos y 2 secciones de menú.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contenedor de campos de micrositio (oculto por defecto para free_basic) -->
-          <div id="edit-microsite-fields" class="space-y-4">
-            <!-- 1. PORTADA DE LA PÁGINA ESCAPARATE INDIVIDUAL -->
-            <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-              <div class="flex items-center justify-between">
-                <div>
-                  <span class="text-xs font-bold text-slate-200 block">1. Portada de la Página Escaparate Individual (Hero Banner)</span>
-                  <span class="text-[11px] text-slate-400">Fotografía horizontal para el fondo superior de la Página Escaparate Individual.</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <input type="file" id="edit-cover-file-input" accept="image/*" class="hidden" onchange="handleAdminCoverFile(event)">
-                  <button type="button" onclick="document.getElementById('edit-cover-file-input').click()" class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] font-bold border border-slate-700 flex items-center gap-1 shadow-xs">
-                    <i data-lucide="camera" class="w-3 h-3 text-emerald-400"></i> Subir
-                  </button>
-                  <button type="button" onclick="promptAdminCoverUrl()" class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-[11px] font-bold border border-slate-700 flex items-center gap-1 shadow-xs">
-                    <i data-lucide="link" class="w-3 h-3 text-emerald-400"></i> URL
-                  </button>
-                </div>
-              </div>
-              <div id="edit-cover-preview">
-                <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
-                  Sin portada seleccionada (se utilizará la portada por defecto del sitio).
-                </div>
-              </div>
-            </div>
-
-            <!-- 2. BOTÓN "SITIO WEB" DEL HERO1 -->
-            <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-200">2. Botón "Sitio web" (Hero de Página Escaparate Individual)</span>
-                  <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-500/20 text-emerald-400 font-mono">Actualizable</span>
-                </div>
-                <span class="text-[11px] text-slate-400">Enlace web externo o tienda oficial que abre el botón "Sitio web" en la Página Escaparate Individual (ej. <code class="text-emerald-400">https://elchilechillon.mx</code>). Deja vacío para ocultar el botón en la Página Escaparate Individual.</span>
-              </div>
-              <div class="relative">
-                <i data-lucide="globe" class="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                <input type="url" id="edit-microsite-website" placeholder="https://elchilechillon.mx" class="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none">
-              </div>
-            </div>
-
-            <!-- 3. HORARIO DE ATENCIÓN (HERO DE PÁGINA ESCAPARATE INDIVIDUAL) -->
-            <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-200">3. Horario de Atención (Hero de Página Escaparate Individual)</span>
-                  <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-500/20 text-emerald-400 font-mono">Actualizable</span>
-                </div>
-                <span class="text-[11px] text-slate-400">Días y horas de servicio que se sincronizan en vivo en el badge superior y en la barra rápida del Hero (ej. <code class="text-emerald-400">Lunes a Domingo · 10:00 a 20:00 hrs</code>).</span>
-              </div>
-              <div class="relative">
-                <i data-lucide="clock" class="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                <input type="text" id="edit-microsite-schedule" placeholder="Lunes a Domingo · 10:00 a 20:00 hrs" class="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none">
-              </div>
-            </div>
-
-            <!-- 4. PRODUCTOS DESTACADOS (MÁX. 10) -->
-            <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-              <div class="flex items-center justify-between">
-                <div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-bold text-slate-200">4. Productos Destacados</span>
-                    <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-emerald-500/20 text-emerald-400 font-mono">Máx. 10</span>
-                  </div>
-                  <span class="text-[11px] text-slate-400">Foto, nombre, precio y descripción con CTA "Pedir por WhatsApp".</span>
-                </div>
-                <span id="edit-featured-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-emerald-500/20 text-emerald-400 font-mono">0 / 10</span>
-              </div>
-
-              <!-- Encabezados de la sección de destacados -->
-              <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Encabezados de la Sección Destacados</span>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Título General *</label>
-                    <input type="text" id="edit-featured-title" value="Nuestra Selección Destacada" placeholder="Ej. Nuestra Selección Destacada" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-                  </div>
-                  <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Subtítulo</label>
-                    <input type="text" id="edit-featured-subtitle" value="Hecho a mano en pequeños lotes" placeholder="Ej. Hecho a mano en pequeños lotes" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Descripción General</label>
-                  <textarea id="edit-featured-desc" rows="1" placeholder="Descripción general de la línea destacada..." class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">Elaborados artesanalmente con ingredientes seleccionados.</textarea>
-                </div>
-              </div>
-
-              <!-- Mini formulario para añadir un producto destacado -->
-              <div class="p-3 rounded-xl bg-slate-900 border border-emerald-500/30 shadow-xs space-y-2">
-                <span class="text-[11px] font-bold text-emerald-400 block">+ Añadir Producto Destacado</span>
-                <div class="flex items-center gap-2">
-                  <div id="edit-new-prod-photo-preview" class="shrink-0">
-                    <div class="w-12 h-12 rounded-xl bg-slate-950 border border-dashed border-slate-700 flex items-center justify-center text-slate-500">
-                      <i data-lucide="image" class="w-5 h-5"></i>
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <input type="file" id="edit-new-prod-file-input" accept="image/*" class="hidden" onchange="handleAdminNewProdPhotoFile(event)">
-                    <button type="button" onclick="document.getElementById('edit-new-prod-file-input').click()" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold border border-slate-700 flex items-center gap-1">
-                      <i data-lucide="camera" class="w-3 h-3 text-emerald-400"></i> Cargar Foto
-                    </button>
-                    <button type="button" onclick="promptAdminNewProdPhotoUrl()" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold border border-slate-700 flex items-center gap-1">
-                      <i data-lucide="link" class="w-3 h-3 text-emerald-400"></i> URL Foto
-                    </button>
-                  </div>
-                  <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                    <input type="text" id="edit-new-prod-name" placeholder="Nombre (ej. Salsa Macha Cacahuate)" class="px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-                    <input type="number" step="0.5" id="edit-new-prod-price" placeholder="Precio ($ ej. 95)" class="px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none font-mono">
-                  </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-1.5">
-                  <div class="sm:col-span-2">
-                    <input type="text" id="edit-new-prod-desc" placeholder="Descripción breve (ej. Chile tostado artesanal con cacahuate)" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-                  </div>
-                  <div>
-                    <input type="text" id="edit-new-prod-tag" placeholder="Etiqueta (ej. Salsa picante)" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-                  </div>
-                  <div>
-                    <select id="edit-new-prod-fit" class="w-full px-2 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
-                      <option value="contain">📐 Altura (Fondo blanco)</option>
-                      <option value="cover">🖼️ Rellenar campo (Foto)</option>
-                    </select>
-                  </div>
-                </div>
-                <button type="button" onclick="addAdminFeaturedProduct()" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5">
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                  <span>Agregar a Productos Destacados</span>
-                </button>
-              </div>
-
-              <!-- Grid de productos añadidos -->
-              <div id="edit-featured-grid" class="space-y-2">
-                <div class="py-3 text-center text-[11px] text-slate-500">
-                  No hay productos destacados cargados. (Hasta 10 con foto, precio y descripción).
-                </div>
-              </div>
-            </div>
-
-            <!-- 5. OTROS PRODUCTOS (ESTILO MENÚ SIN FOTO, MÁX. 4 SECCIONES) -->
-            <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-              <div class="flex items-center justify-between">
-                <div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-bold text-slate-200">5. Otros Productos / Menú sin Foto</span>
-                    <span class="px-1.5 py-0.2 text-[9px] font-black uppercase rounded-md bg-slate-800 text-slate-300 font-mono">Máx. 4 secciones</span>
-                  </div>
-                  <span class="text-[11px] text-slate-400">Para complementos, presentaciones por litro, botanas o servicios sin foto.</span>
-                </div>
-                <span id="edit-menu-sec-badge" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-slate-800 text-slate-300 font-mono">0 / 4 secciones</span>
-              </div>
-
-              <div class="flex items-center justify-end">
-                <button type="button" id="btn-add-admin-menu-sec" onclick="addAdminMenuSection()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 transition-colors flex items-center gap-1 shadow-xs">
-                  <i data-lucide="plus" class="w-3.5 h-3.5 text-emerald-400"></i>
-                  <span>+ Añadir Sección de Menú</span>
-                </button>
-              </div>
-
-              <div id="edit-menu-sections-container" class="space-y-3">
-                <div class="p-3 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-center text-[11px] text-slate-500">
-                  No hay secciones tipo menú configuradas. (Opcional, útil para complementos o presentaciones sin foto).
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Moderación y Asignación KAM -->
-        <div class="border-t border-slate-800 pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Estatus del Registro *</label>
-            <select id="edit-status" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-              <option value="active">Activo (Visible en Directorio)</option>
-              <option value="pending_verification">En Verificación</option>
-              <option value="pending_approval">Pendiente de Aprobación</option>
-              <option value="rejected">Rechazado / Suspendido</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Estatus de Pago *</label>
-            <select id="edit-payment-status" onchange="handleAdminPaymentStatusChange()" class="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-              <option value="approved">🚀 Suscripción Anual Pagada ($499 MXN - Con Página Escaparate Individual)</option>
-              <option value="basic_approved">⚡ Plan Esencial Pagado ($99 MXN - Sin Página Escaparate Individual)</option>
-              <option value="free_basic">⚡ Plan Esencial / Legacy ($99 / $0 MXN)</option>
-              <option value="waived">🎁 Exento / Cupón Cortesía ($0 - Con Página Escaparate Individual)</option>
-              <option value="pending">⏳ Pendiente de Pago</option>
-              <option value="pending_mp_payment">💳 Pendiente Mercado Pago</option>
-              <option value="pending_kam_direct">👤 Pendiente Asesor KAM Directo</option>
-              <option value="pending_kam_verification">🔍 Pendiente Verificación KAM</option>
-              <option value="rejected">❌ Pago Rechazado</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Asesor KAM Asignado</label>
-            <input type="text" id="edit-kam-name" placeholder="Ej. Carlos Méndez" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Método de Pago</label>
-            <input type="text" id="edit-payment-method" placeholder="mercadopago / kam_transfer / efectivo" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Monto de Pago (MXN)</label>
-            <input type="number" step="0.5" id="edit-payment-amount" placeholder="499.00" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none font-mono">
-          </div>
-        </div>
-
-        <div class="space-y-3 py-2 border-y border-slate-800">
-          <span class="block text-xs font-bold text-slate-300">Modalidades de Servicio, Entrega y Presencial</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="edit-delivery-available" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
-                <span class="text-xs font-bold text-emerald-400">Entrega / Servicio a Domicilio</span>
-              </label>
-              <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio en cotos" class="w-full px-3 py-1.5 text-[11px] rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-              <label class="flex items-center gap-2 cursor-pointer pt-1">
-                <input type="checkbox" id="edit-coto-only-delivery" class="w-4 h-4 text-amber-500 rounded border-slate-700 bg-slate-950">
-                <span class="text-[11px] font-bold text-amber-400">🏡 Solo en su coto (Recoger en caseta)</span>
-              </label>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Método de Pago</label>
+              <input type="text" id="edit-payment-method" placeholder="mercadopago / kam_transfer / efectivo" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
             </div>
-
-            <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="edit-pickup-available" class="w-4 h-4 text-blue-500 rounded border-slate-700 bg-slate-950">
-                <span class="text-xs font-bold text-blue-400">Punto de Venta Físico / Retiro</span>
-              </label>
-              <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-[11px] rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none">
-              <span class="text-[10px] text-slate-500 block leading-tight">Desmarcar para servicios a domicilio, reparaciones o home service (como Valencia Servicios).</span>
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-1">Monto de Pago (MXN)</label>
+              <input type="number" step="0.5" id="edit-payment-amount" placeholder="499.00" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none font-mono">
             </div>
           </div>
 
-          <label class="flex items-center gap-2 cursor-pointer pt-1">
-            <input type="checkbox" id="edit-is-verified-badge" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
-            <span class="text-xs font-bold text-emerald-400">Sello Vecino Verificado Oficial</span>
-          </label>
+          <!-- Cupón de Cortesía y Auditoría de Identidad -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div id="modal-coupon-info-card" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center justify-center shrink-0">
+                  <i data-lucide="gift" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Cupón Cortesía Aplicado</span>
+                  <span id="edit-coupon-code-badge" class="text-xs font-mono font-bold text-purple-300">Ninguno</span>
+                </div>
+              </div>
+              <button type="button" onclick="openCouponsModal()" class="px-2.5 py-1.5 rounded-lg bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 border border-purple-700/50 text-[11px] font-bold transition-colors cursor-pointer">
+                Ver Cupones
+              </button>
+            </div>
+
+            <div id="modal-audit-card" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Validación y Verificación</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div id="audit-wa-status" class="flex items-center gap-1.5 text-slate-300">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>WhatsApp Pendiente</span>
+                </div>
+                <div id="audit-email-status" class="flex items-center gap-1.5 text-slate-300">
+                  <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
+                  <span>Correo Registrado</span>
+                </div>
+              </div>
+              <div id="audit-terms-status" class="text-[10px] text-slate-400 pt-1 border-t border-slate-800/60 font-mono">
+                Términos y condiciones aceptados
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3 py-2 border-y border-slate-800">
+            <span class="block text-xs font-bold text-slate-300">Modalidades de Servicio, Entrega y Presencial</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="edit-delivery-available" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
+                  <span class="text-xs font-bold text-emerald-400">Entrega / Servicio a Domicilio</span>
+                </label>
+                <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio en cotos" class="w-full px-3 py-1.5 text-[11px] rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+                <label class="flex items-center gap-2 cursor-pointer pt-1">
+                  <input type="checkbox" id="edit-coto-only-delivery" class="w-4 h-4 text-amber-500 rounded border-slate-700 bg-slate-950">
+                  <span class="text-[11px] font-bold text-amber-400">🏡 Solo en su coto (Recoger en caseta)</span>
+                </label>
+              </div>
+
+              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="edit-pickup-available" class="w-4 h-4 text-blue-500 rounded border-slate-700 bg-slate-950">
+                  <span class="text-xs font-bold text-blue-400">Punto de Venta Físico / Retiro</span>
+                </label>
+                <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-[11px] rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none">
+                <span class="text-[10px] text-slate-500 block leading-tight">Desmarcar para servicios a domicilio, reparaciones o home service (como Valencia Servicios).</span>
+              </div>
+            </div>
+
+            <label class="flex items-center gap-2 cursor-pointer pt-1">
+              <input type="checkbox" id="edit-is-verified-badge" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
+              <span class="text-xs font-bold text-emerald-400">Sello Vecino Verificado Oficial</span>
+            </label>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Notas de Moderación / Bitácora Interna</label>
+            <textarea id="edit-moderation-notes" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Bitácora interna del moderador o KAM..."></textarea>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">Notas de Moderación / Bitácora Interna</label>
-          <textarea id="edit-moderation-notes" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Bitácora interna del moderador o KAM..."></textarea>
-        </div>
-
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeEditModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors">
-            Cancelar
+        <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-800">
+          <button type="button" onclick="handleDeleteRegistrationFromModal()" class="px-3.5 py-2.5 rounded-xl bg-rose-950/50 hover:bg-rose-900/70 text-rose-300 border border-rose-800/50 font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Eliminar / Descartar Duplicado</span>
+            <span class="sm:hidden">Eliminar</span>
           </button>
-          <button type="submit" id="btn-save-edit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all active:scale-98 flex items-center gap-2">
-            <i data-lucide="check" class="w-4 h-4"></i>
-            <span>Guardar Cambios</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeEditModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" id="btn-save-edit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all active:scale-98 flex items-center gap-2 cursor-pointer">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Guardar Cambios</span>
+            </button>
+          </div>
         </div>
       </form>
     </div>

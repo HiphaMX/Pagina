@@ -658,6 +658,182 @@ def test_9_cotizar_and_mercado_pago_freedom():
         report_result("Prueba de integración para desmarcar Mercado Pago y precio 'Cotizar'", False, str(err))
 
 
+def test_10_moderator_and_magic_link_specialization():
+    print(f"\n{BLUE}=== 10. ESPECIALIZACIÓN DE MODERACIÓN Y LINK MÁGICO CON DRAG & DROP ==={RESET}")
+    
+    # 1. Validar controles de editar.html (Link Mágico del Comerciante)
+    editar_path = os.path.join(EPIZENTRO_DIR, "editar.html")
+    with open(editar_path, "r", encoding="utf-8") as f:
+        editar_html = f.read()
+        
+    has_website_input = 'id="edit-website"' in editar_html and 'name="website"' in editar_html
+    has_product_dnd = (
+        'handleProductDragStart' in editar_html and
+        'handleProductDragOver' in editar_html and
+        'handleProductDrop' in editar_html and
+        'moveProductItem' in editar_html and
+        'product-drag-item' in editar_html
+    )
+    has_menu_dnd = (
+        'handleMenuItemDragStart' in editar_html and
+        'handleMenuItemDragOver' in editar_html and
+        'handleMenuItemDrop' in editar_html and
+        'moveMenuItem' in editar_html and
+        'menu-drag-item' in editar_html
+    )
+    has_grip_handles = 'grip-vertical' in editar_html
+    
+    editar_specialization_ok = has_website_input and has_product_dnd and has_menu_dnd and has_grip_handles
+    report_result(
+        "editar.html: Link a Sitio Web oficial, Drag & Drop de Productos y Menú sin foto con handles y controles móviles",
+        editar_specialization_ok,
+        "Sitio web, D&D Productos y D&D Menú verificados 100%"
+    )
+    
+    # 2. Validar especialización de admin.html (Consola de Moderación y Gobernanza Comercial)
+    admin_path = os.path.join(EPIZENTRO_DIR, "admin.html")
+    with open(admin_path, "r", encoding="utf-8") as f:
+        admin_html = f.read()
+        
+    has_magic_link_actions = (
+        'id="btn-open-magic-link"' in admin_html and
+        'id="btn-copy-magic-link"' in admin_html and
+        'id="btn-view-live-escaparate"' in admin_html
+    )
+    has_duplicate_detection = (
+        'modal-duplicate-warning' in admin_html and
+        'handleDeleteRegistrationFromModal' in admin_html and
+        'handleDeleteRegistration' in admin_html
+    )
+    has_commercial_governance = (
+        'modal-coupon-info-card' in admin_html and
+        'modal-audit-card' in admin_html and
+        'edit-coupon-code-badge' in admin_html
+    )
+    # Verificar que el editor redundante de microcatálogos fue desacoplado de admin.html
+    decoupled_microcatalog = (
+        'edit-new-prod-file-input' not in admin_html and
+        'addAdminFeaturedProduct' not in admin_html and
+        'handleAdminCoverFile' not in admin_html
+    )
+    
+    admin_specialization_ok = (
+        has_magic_link_actions and
+        has_duplicate_detection and
+        has_commercial_governance and
+        decoupled_microcatalog
+    )
+    report_result(
+        "admin.html: Gobernanza comercial, detección/eliminación de duplicados, tracking de cupones y desacoplamiento de catálogo",
+        admin_specialization_ok,
+        "Gobernanza, auditoría, cupones, duplicados y catálogo desacoplado verificados 100%"
+    )
+    
+    # 3. Prueba E2E de persistencia de Sitio Web y reordenamiento Drag & Drop en API
+    try:
+        from fastapi.testclient import TestClient
+        from app.main import app
+        from app.core.database import SessionLocal
+        from app.models.epicentro_registration import EpicentroRegistration
+        
+        client = TestClient(app)
+        db = SessionLocal()
+        try:
+            reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.edit_token == "test-token-autoservicio-vergotas").first()
+            if not reg:
+                reg = db.query(EpicentroRegistration).first()
+                if not reg.edit_token:
+                    reg.edit_token = "test-token-autoservicio-vergotas"
+                    db.commit()
+            token = reg.edit_token
+            
+            # Orden inicial
+            initial_products = [
+                {"name": "Producto A (Primero)", "price": 120, "description": "Primer item"},
+                {"name": "Producto B (Segundo)", "price": 250, "description": "Segundo item"}
+            ]
+            initial_menu_sections = [
+                {
+                    "title": "Bebidas Especiales",
+                    "items": [
+                        {"name": "Bebida X (Primera)", "price": 45, "description": "Refrescante"},
+                        {"name": "Bebida Y (Segunda)", "price": 55, "description": "Artesanal"}
+                    ]
+                }
+            ]
+            
+            payload_step1 = {
+                "website": "https://mi-negocio-natura.com",
+                "microsite_data": {
+                    "website_url": "https://mi-negocio-natura.com",
+                    "featured_section": {
+                        "title": "Destacados",
+                        "products": initial_products
+                    },
+                    "other_products_sections": initial_menu_sections
+                }
+            }
+            res_put1 = client.put(f"/api/epicentro/self-service/{token}", json=payload_step1)
+            res_get1 = client.get(f"/api/epicentro/self-service/{token}")
+            data1 = res_get1.json() if res_get1.status_code == 200 else {}
+            
+            step1_ok = (
+                res_put1.status_code == 200 and
+                data1.get("website") == "https://mi-negocio-natura.com" and
+                data1.get("microsite_data", {}).get("website_url") == "https://mi-negocio-natura.com" and
+                data1.get("microsite_data", {}).get("featured_section", {}).get("products", [{}])[0].get("name") == "Producto A (Primero)" and
+                data1.get("microsite_data", {}).get("other_products_sections", [{}])[0].get("items", [{}])[0].get("name") == "Bebida X (Primera)"
+            )
+            report_result(
+                "Persistencia de Sitio Web oficial y orden inicial de productos y menú vía API",
+                step1_ok,
+                f"Website: {data1.get('website')} | Primer Prod: {initial_products[0]['name']}"
+            )
+            
+            # Simular Drag & Drop / Nudge reordenando los productos y los items del menú
+            reordered_products = [
+                {"name": "Producto B (Segundo)", "price": 250, "description": "Segundo item"},
+                {"name": "Producto A (Primero)", "price": 120, "description": "Primer item"}
+            ]
+            reordered_menu_sections = [
+                {
+                    "title": "Bebidas Especiales",
+                    "items": [
+                        {"name": "Bebida Y (Segunda)", "price": 55, "description": "Artesanal"},
+                        {"name": "Bebida X (Primera)", "price": 45, "description": "Refrescante"}
+                    ]
+                }
+            ]
+            payload_step2 = {
+                "microsite_data": {
+                    "website_url": "https://mi-negocio-natura.com",
+                    "featured_section": {
+                        "title": "Destacados",
+                        "products": reordered_products
+                    },
+                    "other_products_sections": reordered_menu_sections
+                }
+            }
+            res_put2 = client.put(f"/api/epicentro/self-service/{token}", json=payload_step2)
+            res_get2 = client.get(f"/api/epicentro/self-service/{token}")
+            data2 = res_get2.json() if res_get2.status_code == 200 else {}
+            
+            step2_ok = (
+                res_put2.status_code == 200 and
+                data2.get("microsite_data", {}).get("featured_section", {}).get("products", [{}])[0].get("name") == "Producto B (Segundo)" and
+                data2.get("microsite_data", {}).get("other_products_sections", [{}])[0].get("items", [{}])[0].get("name") == "Bebida Y (Segunda)"
+            )
+            report_result(
+                "Reordenamiento Drag & Drop persistido y reflejado fidedignamente tras mutación de orden",
+                step2_ok,
+                f"Nuevo primer Prod: {reordered_products[0]['name']} | Nuevo primer Menú: {reordered_menu_sections[0]['items'][0]['name']}"
+            )
+        finally:
+            db.close()
+    except Exception as err:
+        report_result("Prueba de integración E2E de reordenamiento y web oficial", False, str(err))
+
+
 def main():
     print(f"\n{BOLD}{'=' * 75}{RESET}")
     print(f"{BOLD}   SUITE AUTOMATIZADA DE VERIFICACIÓN KAM - EPIZENTRO NATURA{RESET}")
@@ -673,6 +849,7 @@ def main():
     test_7_fastapi_endpoints()
     test_8_self_service_autoservicio()
     test_9_cotizar_and_mercado_pago_freedom()
+    test_10_moderator_and_magic_link_specialization()
     
     total = passed_tests + failed_tests
     rate = (passed_tests / total * 100) if total > 0 else 0
