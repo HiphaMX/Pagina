@@ -122,6 +122,14 @@
     {
       "source": "/propiedad",
       "destination": "/propiedad.html"
+    },
+    {
+      "source": "/aviso-de-privacidad",
+      "destination": "/aviso-de-privacidad.html"
+    },
+    {
+      "source": "/terminos-y-condiciones",
+      "destination": "/terminos-y-condiciones.html"
     }
   ],
   "ignoreCommand": "git diff HEAD^ HEAD --quiet ."
