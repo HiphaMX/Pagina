@@ -864,15 +864,15 @@
         has_delivery: true,
         has_pickup: true,
         delivery_badge: "Servicio a domicilio",
-        pickup_badge: "Recoger en local",
+        pickup_badge: "Recoger en coto",
         coto: "Natura Bosque Residencial",
-        address: "Natura Bosque Residencial",
+        address: "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
         description: "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.",
         phone: "3336762545",
         whatsapp: "3336762545",
         website: "https://elchilechillon.mx",
-        schedule: "Lunes a viernes · 10:00 a 17:00 hrs",
-        hours: "Lunes a viernes · 10:00 a 17:00 hrs",
+        schedule: "Lunes a Domingo · 10:00 a 20:00 hrs",
+        hours: "Lunes a Domingo · 10:00 a 20:00 hrs",
         is_open_now: true,
         payment_methods: ["Efectivo", "Transferencia", "Mercado Pago"],
         has_badge: true,
@@ -1045,6 +1045,7 @@
         subcategory_label: "Fontanería y Electricidad",
         type: "servicio",
         type_slug: "sin-punto-venta",
+        business_type: "sin-punto-venta",
         type_label: "A domicilio en cotos",
         space_label: "A domicilio en cotos",
         community_slug: "natura-bosque-residencial",
@@ -1055,6 +1056,7 @@
         has_delivery: true,
         has_pickup: false,
         delivery_badge: "Servicio a domicilio",
+        pickup_badge: null,
         coto: "Natura Bosque Residencial",
         address: "Natura Bosque Residencial",
         description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
@@ -1076,6 +1078,8 @@
         photos: []
       }
     ];
+
+    window.ALL_BUSINESSES = ALL_BUSINESSES;
 
     // CASA DE LA CULTURA NATURA (OFERTA CULTURAL Y CLASES REALES)
     const CULTURAL_OFFERINGS = [
@@ -1866,6 +1870,10 @@
                 (mdata && mdata.featured_section && mdata.featured_section.description) || 
                 (isAmdi ? "Proyectos integrales de diseño de interiores, planos arquitectónicos, renders 3D y consultoría para tu hogar en cotos de la zona." : `Comercio Vecino Verificado en ${biz.coto_address || "Natura Bosque Residencial"}.`);
 
+              const isSinPuntoVenta = biz.business_type === 'sin-punto-venta' || isValencia;
+              const pickupAvailable = isSinPuntoVenta ? false : (biz.pickup_available !== undefined && biz.pickup_available !== null ? Boolean(biz.pickup_available) : true);
+              const pickupBadge = isSinPuntoVenta ? null : (biz.pickup_badge || (biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local"));
+
               const bizObj = {
                 id: biz.id,
                 slug: biz.slug || "",
@@ -1876,16 +1884,17 @@
                 subcategory_label: biz.subcategory_label || "",
                 type: biz.business_type || "local-establecido",
                 type_slug: biz.business_type || "local-establecido",
+                business_type: biz.business_type || "local-establecido",
                 space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio en coto / Con previa cita"),
                 community_slug: "natura-bosque-residencial",
                 community_name: "Natura Bosque Residencial",
                 delivery_available: !!biz.delivery_available,
                 coto_only_delivery: !!biz.coto_only_delivery,
-                pickup_available: true,
+                pickup_available: pickupAvailable,
                 has_delivery: !!biz.delivery_available,
-                has_pickup: true,
+                has_pickup: pickupAvailable,
                 delivery_badge: biz.delivery_badge || (biz.coto_only_delivery ? "Solo entregas en su coto" : (biz.delivery_available ? "Servicio a domicilio" : null)),
-                pickup_badge: biz.pickup_badge || (biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local"),
+                pickup_badge: pickupBadge,
                 coto: biz.coto_address,
                 address: biz.coto_address,
                 description: finalDesc,
@@ -1914,9 +1923,12 @@
                 ALL_BUSINESSES[existingIdx] = {
                   ...existing,
                   ...bizObj,
+                  business_type: biz.business_type || existing.business_type || bizObj.business_type,
                   space_label: biz.space_label || existing.space_label || bizObj.space_label,
                   delivery_badge: biz.delivery_badge || existing.delivery_badge || bizObj.delivery_badge,
-                  pickup_badge: biz.pickup_badge || existing.pickup_badge || bizObj.pickup_badge,
+                  pickup_available: isSinPuntoVenta ? false : (biz.pickup_available !== undefined && biz.pickup_available !== null ? Boolean(biz.pickup_available) : existing.pickup_available),
+                  has_pickup: isSinPuntoVenta ? false : (biz.pickup_available !== undefined && biz.pickup_available !== null ? Boolean(biz.pickup_available) : existing.has_pickup),
+                  pickup_badge: isSinPuntoVenta ? null : (biz.pickup_badge || existing.pickup_badge || bizObj.pickup_badge),
                   type_label: existing.type_label || bizObj.type_label,
                   schedule: (existing.schedule && existing.schedule.includes("·") && !biz.schedule?.includes("·")) ? existing.schedule : (biz.schedule || existing.schedule),
                   hours: (existing.hours && existing.hours.includes("·") && !biz.schedule?.includes("·")) ? existing.hours : (biz.schedule || existing.hours),
@@ -1925,7 +1937,7 @@
                   cover_photo: bizObj.cover_photo || existing.cover_photo
                 };
               } else {
-                ALL_BUSINESSES.unshift(bizObj);
+                ALL_BUSINESSES.push(bizObj);
               }
             });
 
@@ -1937,6 +1949,7 @@
               }
             }
 
+            window.ALL_BUSINESSES = ALL_BUSINESSES;
             const newSig = makeSig(ALL_BUSINESSES);
             if (prevSig !== newSig) {
               renderDirectory();

@@ -50,6 +50,9 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS microsite_data TEXT"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(50)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coto_only_delivery BOOLEAN DEFAULT FALSE"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS delivery_badge VARCHAR(100)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS pickup_available BOOLEAN DEFAULT TRUE"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS pickup_badge VARCHAR(100)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token VARCHAR(64)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token_expires_at TIMESTAMP"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS slug VARCHAR(150)"))
@@ -71,6 +74,9 @@ def ensure_epicentro_schema(db: Session):
                 ("microsite_data", "TEXT"),
                 ("coupon_code", "VARCHAR(50)"),
                 ("coto_only_delivery", "BOOLEAN DEFAULT 0"),
+                ("delivery_badge", "VARCHAR(100)"),
+                ("pickup_available", "BOOLEAN DEFAULT 1"),
+                ("pickup_badge", "VARCHAR(100)"),
                 ("edit_token", "VARCHAR(64)"),
                 ("edit_token_expires_at", "TIMESTAMP"),
                 ("slug", "VARCHAR(150)"),
@@ -243,6 +249,9 @@ class SelfServiceUpdateRequest(BaseModel):
     coto_address: Optional[str] = None
     delivery_available: Optional[bool] = None
     coto_only_delivery: Optional[bool] = None
+    delivery_badge: Optional[str] = None
+    pickup_available: Optional[bool] = None
+    pickup_badge: Optional[str] = None
     website: Optional[str] = None
 
 
@@ -263,6 +272,9 @@ class UpdateRegistrationAdminRequest(BaseModel):
     schedule: Optional[str] = None
     delivery_available: Optional[bool] = None
     coto_only_delivery: Optional[bool] = None
+    delivery_badge: Optional[str] = None
+    pickup_available: Optional[bool] = None
+    pickup_badge: Optional[str] = None
     website: Optional[str] = None
     description: Optional[str] = None
     photos: Optional[Union[List[str], str]] = None
@@ -325,6 +337,9 @@ class BusinessPublicOut(BaseModel):
     schedule: Optional[str] = None
     delivery_available: bool = False
     coto_only_delivery: bool = False
+    pickup_available: bool = True
+    delivery_badge: Optional[str] = None
+    pickup_badge: Optional[str] = None
     website: Optional[str] = None
     description: Optional[str] = None
     photos: Optional[str] = None
@@ -333,8 +348,6 @@ class BusinessPublicOut(BaseModel):
     payment_status: Optional[str] = "free_basic"
     payment_amount: Optional[float] = 0.0
     is_verified_badge: bool = False
-    delivery_badge: Optional[str] = None
-    pickup_badge: Optional[str] = None
     status: str = "active"
 
     class Config:
@@ -1468,6 +1481,12 @@ def update_self_service_business(
         reg.delivery_available = payload.delivery_available
     if payload.coto_only_delivery is not None:
         reg.coto_only_delivery = payload.coto_only_delivery
+    if payload.delivery_badge is not None:
+        reg.delivery_badge = payload.delivery_badge.strip() if payload.delivery_badge else None
+    if payload.pickup_available is not None:
+        reg.pickup_available = payload.pickup_available
+    if payload.pickup_badge is not None:
+        reg.pickup_badge = payload.pickup_badge.strip() if payload.pickup_badge else None
     if payload.website is not None:
         reg.website = payload.website.strip()
 
@@ -1726,6 +1745,10 @@ def seed_official_showcases(db: Session):
             (EpicentroRegistration.business_name.ilike("%chill%"))
         ).first()
 
+        canonical_chillon_desc = "Salsas picantes artesanales 100% naturales, elaboradas con receta tradicional y aceite vegetal comestible de primera calidad. Sin conservadores ni colorantes artificiales. Más de 10 años de trayectoria gastronómica maximizando el sazón de tus carnes, botanas, asados, mariscos y platillos diarios."
+        canonical_chillon_sched = "Lunes a Domingo · 10:00 a 20:00 hrs"
+        canonical_chillon_loc = "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)"
+
         if not chillon:
             chillon = EpicentroRegistration(
                 id="reg-chile-chillon",
@@ -1734,7 +1757,7 @@ def seed_official_showcases(db: Session):
                 category_label="Comida & Delivery",
                 subcategory_slug="salsas-picantes",
                 subcategory_label="Salsas Picantes",
-                coto_address="Natura Bosque Residencial",
+                coto_address=canonical_chillon_loc,
                 business_type="emprendimiento",
                 space_label="Punto de venta & A domicilio",
                 owner_name="Chile Chillón",
@@ -1742,10 +1765,13 @@ def seed_official_showcases(db: Session):
                 phone="3336762545",
                 whatsapp="3336762545",
                 delivery_available=True,
+                delivery_badge="Servicio a domicilio",
+                pickup_available=True,
+                pickup_badge="Recoger en coto",
                 preferred_contact_methods="whatsapp,delivery,llamada",
-                schedule="Lunes a viernes · 10:00 a 17:00 hrs",
+                schedule=canonical_chillon_sched,
                 website="https://elchilechillon.mx",
-                description="Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.",
+                description=canonical_chillon_desc,
                 cover_photo=CHILLON_DATA["cover_photo"],
                 microsite_data=json.dumps(CHILLON_DATA),
                 email_verified=True,
@@ -1783,8 +1809,8 @@ def seed_official_showcases(db: Session):
             if not chillon.space_label:
                 chillon.space_label = "Punto de venta & A domicilio"
                 updated = True
-            if not chillon.coto_address:
-                chillon.coto_address = "Natura Bosque Residencial"
+            if chillon.coto_address != canonical_chillon_loc:
+                chillon.coto_address = canonical_chillon_loc
                 updated = True
             if chillon.phone != "3336762545":
                 chillon.phone = "3336762545"
@@ -1792,11 +1818,45 @@ def seed_official_showcases(db: Session):
             if chillon.whatsapp != "3336762545":
                 chillon.whatsapp = "3336762545"
                 updated = True
-            if not chillon.schedule:
-                chillon.schedule = "Lunes a viernes · 10:00 a 17:00 hrs"
+            if chillon.schedule != canonical_chillon_sched:
+                chillon.schedule = canonical_chillon_sched
                 updated = True
-            if not chillon.description:
-                chillon.description = "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella."
+            if chillon.description != canonical_chillon_desc:
+                chillon.description = canonical_chillon_desc
+                updated = True
+            if chillon.delivery_badge != "Servicio a domicilio":
+                chillon.delivery_badge = "Servicio a domicilio"
+                updated = True
+            if chillon.pickup_badge != "Recoger en coto":
+                chillon.pickup_badge = "Recoger en coto"
+                updated = True
+            if not chillon.delivery_available:
+                chillon.delivery_available = True
+                updated = True
+            if not chillon.pickup_available:
+                chillon.pickup_available = True
+                updated = True
+            if not chillon.website:
+                chillon.website = "https://elchilechillon.mx"
+                updated = True
+            if not chillon.cover_photo:
+                chillon.cover_photo = CHILLON_DATA["cover_photo"]
+                updated = True
+            if not chillon.microsite_data:
+                chillon.microsite_data = json.dumps(CHILLON_DATA)
+                updated = True
+            if not chillon.edit_token:
+                chillon.edit_token = "chile-chillon-natura-vip"
+                chillon.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
+                updated = True
+            if not chillon.is_verified_badge:
+                chillon.is_verified_badge = True
+                updated = True
+            if chillon.status != "active":
+                chillon.status = "active"
+                updated = True
+            if chillon.payment_status != "waived":
+                chillon.payment_status = "waived"
                 updated = True
             if not chillon.website:
                 chillon.website = "https://elchilechillon.mx"
@@ -2087,6 +2147,9 @@ def seed_official_showcases(db: Session):
                 phone="3315848420",
                 whatsapp="3315848420",
                 delivery_available=True,
+                delivery_badge="Servicio a domicilio en cotos",
+                pickup_available=False,
+                pickup_badge=None,
                 schedule="Lunes a Viernes 9:00 a 16:00 hrs",
                 website="https://valenciaservicios.mx",
                 description="Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
@@ -2124,6 +2187,21 @@ def seed_official_showcases(db: Session):
                 updated = True
             if not valencia.space_label:
                 valencia.space_label = "A domicilio en cotos"
+                updated = True
+            if valencia.business_type != "sin-punto-venta":
+                valencia.business_type = "sin-punto-venta"
+                updated = True
+            if not valencia.delivery_available:
+                valencia.delivery_available = True
+                updated = True
+            if valencia.delivery_badge != "Servicio a domicilio en cotos":
+                valencia.delivery_badge = "Servicio a domicilio en cotos"
+                updated = True
+            if valencia.pickup_available != False:
+                valencia.pickup_available = False
+                updated = True
+            if valencia.pickup_badge is not None:
+                valencia.pickup_badge = None
                 updated = True
             if not valencia.phone:
                 valencia.phone = "3315848420"

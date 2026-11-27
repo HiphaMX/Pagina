@@ -90,24 +90,25 @@
       <img id="hero-showcase-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1920&q=85" alt="Tu Negocio - Portada" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" loading="eager">
       <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-black/30 pointer-events-none"></div>
 
-      <!-- Badges flotantes sobre el banner -->
-      <div class="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2">
-        <span class="px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-emerald-500/40 text-emerald-300 text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-1.5">
-          <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span>Verificado</span>
-        </span>
-      </div>
+      <!-- Badges flotantes sobre el banner removidos para diseño limpio -->
     </div>
 
     <!-- 2. FICHA FLOTANTE SUPERPUESTA (OVERLAP CARD) -->
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16 md:-mt-20 z-10 pb-6 sm:pb-8">
       <div class="bg-slate-950/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80 space-y-6">
         
-        <!-- Fila Superior: Título -->
+        <!-- Fila Superior: Título y Sello Verificado -->
         <div>
           <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title">
             Tu Negocio
           </h1>
+          <div class="flex items-center gap-2 mt-2.5">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold tracking-wide">
+              <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>Verificado</span>
+            </span>
+            <span class="text-[11px] text-slate-400 font-medium">· Demostración de Escaparate Oficial</span>
+          </div>
         </div>
 
         <!-- Descripción -->

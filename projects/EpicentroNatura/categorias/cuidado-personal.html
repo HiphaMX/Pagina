@@ -1041,8 +1041,230 @@
       }
     ];
 
-    // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO EN APERTURA)
-    const ALL_BUSINESSES = [];
+    // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO OFICIAL)
+    const ALL_BUSINESSES = [
+      {
+        id: "reg-chile-chillon",
+        name: "Chile Chillón",
+        slug: "elchilechillon",
+        category_slug: "comida-delivery",
+        category_label: "Comida & Delivery",
+        subcategory_slug: "salsas-picantes",
+        subcategory_label: "Salsas Picantes",
+        type: "emprendimiento",
+        type_slug: "emprendimiento",
+        type_label: "Punto de venta & A domicilio",
+        space_label: "Punto de venta & A domicilio",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: "Recoger en coto",
+        coto: "Natura Bosque Residencial",
+        address: "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
+        description: "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.",
+        phone: "3336762545",
+        whatsapp: "3336762545",
+        website: "https://elchilechillon.mx",
+        payment_status: "approved",
+        payment_amount: 499.0,
+        schedule: "Lunes a Domingo · 10:00 a 20:00 hrs",
+        hours: "Lunes a Domingo · 10:00 a 20:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Mercado Pago"],
+        has_badge: true,
+        badge_text: "Epicentro",
+        rating: 5.0,
+        reviews: 28,
+        has_photos: true,
+        has_microsite: true,
+        photos: [
+          "../Assets/chillon/Salsas/de_arbol.jpg",
+          "../Assets/chillon/Salsas/habanero.jpg",
+          "../Assets/chillon/Salsas/tatemado.jpg",
+          "../Assets/chillon/Salsas/negra.jpg",
+          "../Assets/chillon/Salsas/semillas_enchiladas.jpg"
+        ]
+      },
+      {
+        id: "reg-botica-silvestre",
+        name: "Botica Silvestre",
+        slug: "botica-silvestre",
+        category_slug: "productos-artesanales",
+        category_label: "Productos Artesanales",
+        subcategory_slug: "herbolaria-cuidado-natural",
+        subcategory_label: "Herbolaria & Adaptógenos",
+        type: "emprendimiento",
+        type_slug: "emprendimiento",
+        type_label: "Emprendimiento Artesanal",
+        space_label: "Punto de venta & A domicilio",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Envíos a caseta",
+        pickup_badge: "Recoger en coto",
+        coto: "Ingreso Natura",
+        address: "Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial)",
+        description: "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
+        phone: "3336762545",
+        whatsapp: "3336762545",
+        website: "botica-silvestre",
+        payment_status: "approved",
+        payment_amount: 499.0,
+        schedule: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Mercado Pago"],
+        has_badge: true,
+        badge_text: "Vecino Verificado · Fundador",
+        rating: 5.0,
+        reviews: 32,
+        has_photos: true,
+        has_microsite: true,
+        photos: [
+          "../Assets/botica/products/Mindii 01.webp",
+          "../Assets/botica/products/Focus 01.webp"
+        ]
+      },
+      {
+        id: "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
+        name: "AMDI Diseño Interior",
+        slug: "amdi",
+        category_slug: "servicios-profesionales",
+        category_label: "Servicios Profesionales",
+        subcategory_slug: "diseno-interiores",
+        subcategory_label: "Diseño de Interiores",
+        type: "servicio",
+        type_slug: "sin-punto-venta",
+        type_label: "Atención en cotos & Previa cita",
+        space_label: "Atención en cotos & Previa cita",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        pickup_available: false,
+        has_delivery: true,
+        has_pickup: false,
+        delivery_badge: "Cita en domicilio",
+        pickup_badge: null,
+        coto: "Natura Bosque Residencial",
+        address: "Natura Bosque Residencial",
+        description: "Proyectos integrales de diseño de interiores, planos arquitectónicos, renders 3D y consultoría para tu hogar en cotos de la zona.",
+        phone: "3336762545",
+        whatsapp: "3336762545",
+        website: "amdi",
+        payment_status: "approved",
+        payment_amount: 499.0,
+        schedule: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        hours: "Lunes a Sábado · 09:00 a 19:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
+        has_badge: true,
+        badge_text: "Epicentro",
+        rating: 5.0,
+        reviews: 24,
+        has_photos: true,
+        has_microsite: true,
+        photos: [
+          "../Assets/amdi/01.webp",
+          "../Assets/amdi/02.webp"
+        ]
+      },
+      {
+        id: "18315325-717f-4072-86b0-cab5300e0d3f",
+        name: "Jessica Mendoza Bienes Raíces",
+        slug: "jessicamendoza",
+        category_slug: "servicios-profesionales",
+        category_label: "Servicios Profesionales",
+        subcategory_slug: "inmobiliario",
+        subcategory_label: "Inmobiliario",
+        type: "servicio",
+        type_slug: "sin-punto-venta",
+        type_label: "Atención y citas en cotos",
+        space_label: "Atención en cotos & Previa cita",
+        community_slug: "los-robles",
+        community_name: "Los Robles",
+        delivery_available: true,
+        pickup_available: true,
+        has_delivery: true,
+        has_pickup: true,
+        delivery_badge: "Cita en domicilio",
+        pickup_badge: "Atención coordinada",
+        coto: "Los Robles",
+        address: "Los Robles",
+        description: "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7.",
+        phone: "33 3956 4830",
+        whatsapp: "33 3956 4830",
+        website: "https://www.jessicamendozabienesraices.com/",
+        payment_status: "waived",
+        payment_amount: 0.0,
+        schedule: "Lunes a Viernes · 09:00 a 19:00 hrs",
+        hours: "Lunes a Viernes · 09:00 a 19:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia", "Tarjeta"],
+        has_badge: true,
+        badge_text: "Vecino Verificado",
+        rating: 5.0,
+        reviews: 18,
+        has_photos: true,
+        has_microsite: true,
+        cover_photo: "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+        photos: [
+          "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+          "https://www.jessicamendozabienesraices.com/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp"
+        ]
+      },
+      {
+        id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+        name: "Valencia Servicios",
+        slug: null,
+        category_slug: "servicios-hogar",
+        category_label: "Servicios hogar",
+        subcategory_slug: "fontaneria-y-electricidad",
+        subcategory_label: "Fontanería y Electricidad",
+        type: "servicio",
+        type_slug: "sin-punto-venta",
+        business_type: "sin-punto-venta",
+        type_label: "A domicilio en cotos",
+        space_label: "A domicilio en cotos",
+        community_slug: "natura-bosque-residencial",
+        community_name: "Natura Bosque Residencial",
+        delivery_available: true,
+        coto_only_delivery: false,
+        pickup_available: false,
+        has_delivery: true,
+        has_pickup: false,
+        delivery_badge: "Servicio a domicilio",
+        pickup_badge: null,
+        coto: "Natura Bosque Residencial",
+        address: "Natura Bosque Residencial",
+        description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
+        phone: "3315848420",
+        whatsapp: "3315848420",
+        website: "https://valenciaservicios.mx",
+        schedule: "Lunes a Viernes · 09:00 a 16:00 hrs",
+        hours: "Lunes a Viernes · 09:00 a 16:00 hrs",
+        is_open_now: true,
+        payment_methods: ["Efectivo", "Transferencia"],
+        has_badge: true,
+        badge_text: "Vecino Verificado",
+        rating: 5.0,
+        reviews: 12,
+        has_photos: false,
+        has_microsite: false,
+        payment_status: "basic_approved",
+        payment_amount: 99.0,
+        photos: []
+      }
+    ];
+
+    window.ALL_BUSINESSES = ALL_BUSINESSES;
+    window.ALL_CATEGORIES = ALL_CATEGORIES;
 
     // COORDENADAS GPS DE LAS 10 ZONAS GEOGRÁFICAS
     const ZONE_COORDINATES = {
@@ -1187,10 +1409,10 @@
     }
 
     // INICIALIZACIÓN
-    window.addEventListener("DOMContentLoaded", () => {
+    function initCategoryPage() {
       // 1. Leer parámetro ?cat=slug de la URL
       const urlParams = new URLSearchParams(window.location.search);
-      const catParam = urlParams.get("cat");
+      let catParam = urlParams.get("cat") || "cuidado-personal";
       const qParam = urlParams.get("q");
       const cotoParam = urlParams.get("coto");
 
@@ -1239,19 +1461,52 @@
       renderCategoryView();
       populateRegisterCategoryOptions();
 
-            // Cargar dinámicamente comercios aprobados y activos desde el backend (sin cache del navegador)
-      const makeSig = (list) => list.map(b => `${b.id}:${b.name}:${b.description || ""}:${b.schedule || ""}:${b.space_label || ""}:${b.delivery_badge || ""}:${b.pickup_badge || ""}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
-      const prevSig = makeSig(ALL_BUSINESSES);
+      // Cargar dinámicamente comercios aprobados y activos desde el backend (sin CLS)
       fetch(`/api/epicentro/businesses/active?_t=${Date.now()}`, { cache: "no-store" })
         .then(r => r.ok ? r.json() : [])
         .then(activeBizList => {
           if (Array.isArray(activeBizList) && activeBizList.length > 0) {
+            try { sessionStorage.setItem("epizentro_active_businesses", JSON.stringify(activeBizList)); } catch(e){}
+            const makeSig = (list) => list.map(b => `${b.id}:${b.name}:${b.description || ""}:${b.schedule || ""}:${b.space_label || ""}:${b.delivery_badge || ""}:${b.pickup_badge || ""}:${b.cover_photo || ""}:${(b.photos && b.photos[0]) || ""}`).join("|");
+            const prevSig = makeSig(ALL_BUSINESSES);
+
             activeBizList.forEach(biz => {
               const normName = (biz.business_name || "").trim().toLowerCase();
               const existingIdx = ALL_BUSINESSES.findIndex(b =>
                 b.id === biz.id ||
                 (b.name && b.name.trim().toLowerCase() === normName)
               );
+
+              const isSinPuntoVenta = (biz.business_type === "sin-punto-venta" || biz.business_type === "servicio");
+              const pickupAvailable = (biz.pickup_available !== undefined && biz.pickup_available !== null)
+                ? Boolean(biz.pickup_available)
+                : (!isSinPuntoVenta);
+              const hasPickup = pickupAvailable && !isSinPuntoVenta;
+              const pickupBadge = hasPickup
+                ? (biz.pickup_badge || (biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local"))
+                : null;
+
+              const deliveryAvailable = (biz.delivery_available !== undefined && biz.delivery_available !== null)
+                ? Boolean(biz.delivery_available)
+                : true;
+              const hasDelivery = deliveryAvailable;
+              const deliveryBadge = hasDelivery
+                ? (biz.delivery_badge || (biz.coto_only_delivery ? "Solo entregas en su coto" : "Servicio a domicilio"))
+                : null;
+
+              let mdata = null;
+              if (biz.microsite_data) {
+                try {
+                  mdata = typeof biz.microsite_data === "string" ? JSON.parse(biz.microsite_data) : biz.microsite_data;
+                } catch(e) {}
+              }
+
+              let bizPhotos = [];
+              if (typeof biz.photos === 'string' && biz.photos.startsWith('[')) {
+                try { bizPhotos = JSON.parse(biz.photos); } catch(e) {}
+              } else if (Array.isArray(biz.photos)) {
+                bizPhotos = biz.photos;
+              }
 
               const bizObj = {
                 id: biz.id,
@@ -1263,25 +1518,23 @@
                 subcategory_label: biz.subcategory_label || "",
                 type: biz.business_type || "local-establecido",
                 type_slug: biz.business_type || "local-establecido",
+                business_type: biz.business_type || "local-establecido",
                 space_label: biz.space_label || (biz.business_type === "local-establecido" ? "Punto de venta fijo" : "A domicilio / Cita"),
                 community_slug: "natura-bosque-residencial",
                 community_name: "Natura Bosque Residencial",
-                delivery_available: !!biz.delivery_available,
+                delivery_available: deliveryAvailable,
                 coto_only_delivery: !!biz.coto_only_delivery,
-                pickup_available: true,
-                has_delivery: !!biz.delivery_available,
-                has_pickup: true,
-                delivery_badge: biz.delivery_badge || (biz.coto_only_delivery ? "Solo entregas en su coto" : (biz.delivery_available ? "Servicio a domicilio" : null)),
-                pickup_badge: biz.pickup_badge || (biz.coto_only_delivery ? "Recoger en caseta" : "Recoger en local"),
+                pickup_available: pickupAvailable,
+                has_delivery: hasDelivery,
+                has_pickup: hasPickup,
+                delivery_badge: deliveryBadge,
+                pickup_badge: pickupBadge,
                 coto: biz.coto_address,
                 address: biz.coto_address,
                 description: biz.description || `Comercio Vecino Verificado en ${biz.coto_address}.`,
                 phone: biz.phone,
                 whatsapp: biz.whatsapp,
                 website: biz.website || null,
-                payment_status: biz.payment_status || "waived",
-                payment_amount: biz.payment_amount !== null && biz.payment_amount !== undefined ? biz.payment_amount : 0.0,
-                microsite_data: biz.microsite_data,
                 cover_photo: biz.cover_photo || (mdata ? mdata.cover_photo : null) || null,
                 schedule: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 hours: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
@@ -1291,8 +1544,8 @@
                 badge_text: "Vecino Verificado",
                 rating: 5.0,
                 reviews: 1,
-                has_photos: !!(biz.photos && biz.photos.length > 5),
-                photos: (typeof biz.photos === 'string' && biz.photos.startsWith('[')) ? JSON.parse(biz.photos) : (biz.photos || [])
+                has_photos: bizPhotos.length > 0,
+                photos: bizPhotos
               };
 
               if (existingIdx >= 0) {
@@ -1300,21 +1553,25 @@
                 ALL_BUSINESSES[existingIdx] = {
                   ...existing,
                   ...bizObj,
+                  business_type: biz.business_type || existing.business_type || bizObj.business_type,
                   space_label: biz.space_label || existing.space_label || bizObj.space_label,
-                  delivery_badge: biz.delivery_badge || existing.delivery_badge || bizObj.delivery_badge,
-                  pickup_badge: biz.pickup_badge || existing.pickup_badge || bizObj.pickup_badge,
+                  delivery_badge: (biz.delivery_available === false) ? null : (biz.delivery_badge || existing.delivery_badge || bizObj.delivery_badge),
+                  pickup_badge: (biz.pickup_available === false || isSinPuntoVenta) ? null : (biz.pickup_badge || existing.pickup_badge || bizObj.pickup_badge),
+                  has_pickup: (biz.pickup_available === false || isSinPuntoVenta) ? false : (existing.has_pickup !== undefined ? existing.has_pickup : hasPickup),
+                  pickup_available: (biz.pickup_available !== undefined && biz.pickup_available !== null) ? Boolean(biz.pickup_available) : (existing.pickup_available !== undefined ? existing.pickup_available : !isSinPuntoVenta),
                   type_label: existing.type_label || bizObj.type_label,
                   schedule: (existing.schedule && existing.schedule.includes("·") && !biz.schedule?.includes("·")) ? existing.schedule : (biz.schedule || existing.schedule),
                   hours: (existing.hours && existing.hours.includes("·") && !biz.schedule?.includes("·")) ? existing.hours : (biz.schedule || existing.hours),
-                  photos: (existing.photos && existing.photos.length > 0 && (!biz.photos || biz.photos.length === 0)) ? existing.photos : (bizObj.photos || existing.photos),
+                  photos: (existing.photos && existing.photos.length > 0 && (!bizPhotos || bizPhotos.length === 0)) ? existing.photos : (bizPhotos.length > 0 ? bizPhotos : existing.photos),
                   description: biz.description || existing.description || bizObj.description,
                   cover_photo: bizObj.cover_photo || existing.cover_photo
                 };
               } else {
-                ALL_BUSINESSES.unshift(bizObj);
+                ALL_BUSINESSES.push(bizObj);
               }
             });
 
+            window.ALL_BUSINESSES = ALL_BUSINESSES;
             const newSig = makeSig(ALL_BUSINESSES);
             if (prevSig !== newSig) {
               renderCategoryView();
@@ -1322,7 +1579,13 @@
           }
         })
         .catch(() => {});
-    });
+    }
+
+    if (document.readyState === "loading") {
+      window.addEventListener("DOMContentLoaded", initCategoryPage);
+    } else {
+      initCategoryPage();
+    }
 
     // POBLAR SELECTOR DEL MODAL DE REGISTRO
     function populateRegisterCategoryOptions() {
@@ -1703,7 +1966,7 @@
                     <i data-lucide="home" class="w-3 h-3 text-amber-600"></i> Solo en su coto · Caseta
                   </span>
                 ` : (b.has_delivery && b.delivery_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">${b.delivery_badge}</span>` : '')}
-                ${b.has_pickup && b.pickup_badge ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">${b.pickup_badge}</span>` : ''}
+                ${b.has_pickup && b.pickup_badge && b.pickup_available !== false && b.business_type !== 'sin-punto-venta' && b.type_slug !== 'sin-punto-venta' ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">${b.pickup_badge}</span>` : ''}
               </div>
 
               <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">

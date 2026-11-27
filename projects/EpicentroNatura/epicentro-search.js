@@ -12,6 +12,199 @@
 (function (window, document) {
   "use strict";
 
+  // Categorías canónicas del directorio para sugerencias y navegación
+  const FALLBACK_CATEGORIES = [
+    { slug: "comida-delivery", name: "Comida & Delivery", icon: "utensils" },
+    { slug: "productos-artesanales", name: "Productos artesanales", icon: "sparkles" },
+    { slug: "educacion", name: "Educación", icon: "graduation-cap" },
+    { slug: "servicios-profesionales", name: "Servicios Profesionales", icon: "briefcase" },
+    { slug: "servicios-hogar", name: "Servicios hogar", icon: "wrench" },
+    { slug: "cuidado-personal", name: "Cuidado personal", icon: "sparkles" },
+    { slug: "mascotas", name: "Mascotas", icon: "dog" },
+    { slug: "fitness", name: "Fitness", icon: "dumbbell" }
+  ];
+
+  // Comercios oficiales canónicos del directorio para disponibilidad inmediata en búsquedas
+  const FALLBACK_CANONICAL_BUSINESSES = [
+    {
+      id: "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97",
+      name: "Chile Chillón",
+      slug: "elchilechillon",
+      category_slug: "comida-delivery",
+      category_label: "Comida & Delivery",
+      subcategory_slug: "salsas-picantes",
+      subcategory_label: "Salsas Picantes",
+      community_slug: "natura-bosque-residencial",
+      community_name: "Natura Bosque Residencial",
+      delivery_badge: "Servicio a domicilio",
+      pickup_badge: "Recoger en coto",
+      has_delivery: true,
+      has_pickup: true,
+      has_badge: true,
+      badge_text: "Epicentro",
+      coto: "Natura Bosque Residencial",
+      address: "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
+      description: "Salsas picantes artesanales de autor elaboradas con chiles seleccionados y recetas tradicionales. Envíos directos a caseta de cotos.",
+      phone: "3336762545",
+      whatsapp: "3336762545",
+      website: "https://elchilechillon.mx",
+      has_microsite: true,
+      photos: ["../Assets/chillon/Salsas/de_arbol.jpg"]
+    },
+    {
+      id: "0a595ddc-4d7f-450b-81de-45d098c9e74e",
+      name: "Botica Silvestre",
+      slug: "botica-silvestre",
+      category_slug: "productos-artesanales",
+      category_label: "Productos Artesanales",
+      subcategory_slug: "herbolaria-cuidado-natural",
+      subcategory_label: "Herbolaria & Adaptógenos",
+      community_slug: "natura-bosque-residencial",
+      community_name: "Natura Bosque Residencial",
+      delivery_badge: "Envíos a caseta",
+      pickup_badge: "Recoger en coto",
+      has_delivery: true,
+      has_pickup: true,
+      has_badge: true,
+      badge_text: "Vecino Verificado",
+      coto: "Ingreso Natura",
+      address: "Prol. Mariano Otero (Ingreso a cotos Natura Bosque Residencial)",
+      description: "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.",
+      phone: "3336762545",
+      whatsapp: "3336762545",
+      website: "botica-silvestre",
+      has_microsite: true,
+      photos: ["../Assets/botica/products/Mindii 01.webp"]
+    },
+    {
+      id: "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
+      name: "AMDI Diseño Interior",
+      slug: "amdi",
+      category_slug: "servicios-profesionales",
+      category_label: "Servicios Profesionales",
+      subcategory_slug: "diseno-interiores",
+      subcategory_label: "Diseño de Interiores",
+      community_slug: "natura-bosque-residencial",
+      community_name: "Natura Bosque Residencial",
+      delivery_badge: "Cita en domicilio",
+      pickup_badge: null,
+      has_delivery: true,
+      has_pickup: false,
+      has_badge: true,
+      badge_text: "Epicentro",
+      coto: "Natura Bosque Residencial",
+      address: "Natura Bosque Residencial",
+      description: "Proyectos integrales de arquitectura y diseño de interiores, arquitecto, planos arquitectónicos, renders 3D y consultoría para tu hogar en cotos de la zona.",
+      phone: "3336762545",
+      whatsapp: "3336762545",
+      website: "amdi",
+      has_microsite: true,
+      photos: ["../Assets/amdi/01.webp"]
+    },
+    {
+      id: "18315325-717f-4072-86b0-cab5300e0d3f",
+      name: "Jessica Mendoza Bienes Raíces",
+      slug: "jessicamendoza",
+      category_slug: "servicios-profesionales",
+      category_label: "Servicios Profesionales",
+      subcategory_slug: "inmobiliario",
+      subcategory_label: "Inmobiliario",
+      community_slug: "los-robles",
+      community_name: "Los Robles",
+      delivery_badge: "Cita en domicilio",
+      pickup_badge: "Atención coordinada",
+      has_delivery: true,
+      has_pickup: true,
+      has_badge: true,
+      badge_text: "Vecino Verificado",
+      coto: "Los Robles",
+      address: "Los Robles",
+      description: "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor.",
+      phone: "33 3956 4830",
+      whatsapp: "33 3956 4830",
+      website: "https://www.jessicamendozabienesraices.com/",
+      has_microsite: true,
+      photos: ["https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp"]
+    },
+    {
+      id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+      name: "Valencia Servicios",
+      slug: null,
+      category_slug: "servicios-hogar",
+      category_label: "Servicios hogar",
+      subcategory_slug: "fontaneria-y-electricidad",
+      subcategory_label: "Fontanería y Electricidad",
+      community_slug: "natura-bosque-residencial",
+      community_name: "Natura Bosque Residencial",
+      delivery_badge: "Servicio a domicilio",
+      pickup_badge: null,
+      has_delivery: true,
+      has_pickup: false,
+      has_badge: true,
+      badge_text: "Vecino Verificado",
+      coto: "Natura Bosque Residencial",
+      address: "Natura Bosque Residencial",
+      description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, plomería y plomero, mantenimiento preventivo y reparaciones en cotos de la zona.",
+      phone: "3315848420",
+      whatsapp: "3315848420",
+      website: "https://valenciaservicios.mx",
+      has_microsite: false,
+      photos: []
+    }
+  ];
+
+  function getDirectoryBusinesses() {
+    if (Array.isArray(window.ALL_BUSINESSES) && window.ALL_BUSINESSES.length > 0) {
+      return window.ALL_BUSINESSES;
+    }
+    try {
+      const cached = sessionStorage.getItem("epizentro_active_businesses");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          window.ALL_BUSINESSES = parsed;
+          return parsed;
+        }
+      }
+    } catch (e) {}
+    return FALLBACK_CANONICAL_BUSINESSES;
+  }
+
+  function getDirectoryCategories() {
+    if (Array.isArray(window.ALL_CATEGORIES) && window.ALL_CATEGORIES.length > 0) {
+      return window.ALL_CATEGORIES;
+    }
+    return FALLBACK_CATEGORIES;
+  }
+
+  // Pre-carga asíncrona de comercios en segundo plano
+  function prefetchDirectoryData() {
+    if (Array.isArray(window.ALL_BUSINESSES) && window.ALL_BUSINESSES.length > 0) return;
+    try {
+      const cached = sessionStorage.getItem("epizentro_active_businesses");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          window.ALL_BUSINESSES = parsed;
+          return;
+        }
+      }
+    } catch(e) {}
+
+    fetch(`/api/epicentro/businesses/active?_t=${Date.now()}`, { cache: "no-store" })
+      .then(r => r.ok ? r.json() : [])
+      .then(list => {
+        if (Array.isArray(list) && list.length > 0) {
+          try { sessionStorage.setItem("epizentro_active_businesses", JSON.stringify(list)); } catch(e){}
+          if (!Array.isArray(window.ALL_BUSINESSES) || window.ALL_BUSINESSES.length === 0) {
+            window.ALL_BUSINESSES = list;
+          }
+        }
+      })
+      .catch(() => {});
+  }
+  prefetchDirectoryData();
+
   // 1. NORMALIZACIÓN FONÉTICA Y DIACRÍTICA ROBUSTA
   function normalizeSearchText(str) {
     if (!str && str !== 0) return "";
@@ -226,8 +419,8 @@
         return;
       }
 
-      const allBiz = Array.isArray(window.ALL_BUSINESSES) ? window.ALL_BUSINESSES : [];
-      const allCats = Array.isArray(window.ALL_CATEGORIES) ? window.ALL_CATEGORIES : [];
+      const allBiz = getDirectoryBusinesses();
+      const allCats = getDirectoryCategories();
       const cotoSelect = document.getElementById("coto-select");
       const coto = cotoSelect ? cotoSelect.value : "all";
 
@@ -364,20 +557,39 @@
       }
     });
 
+    function executeSearchAction() {
+      closeDropdown();
+      const q = input.value.trim();
+      const cotoSelect = document.getElementById("coto-select");
+      const coto = cotoSelect ? cotoSelect.value : "all";
+      const path = window.location.pathname;
+      const isMainCategoryPage = path.endsWith("/categoria.html") || 
+                                 path === "/natura/categoria" || 
+                                 (path.endsWith("/categoria") && !path.includes("/categorias/"));
+
+      if (isMainCategoryPage && typeof window.applyAllFilters === "function") {
+        window.applyAllFilters();
+      } else {
+        window.location.href = getCategoryPageUrl("all", q, coto);
+      }
+    }
+
     // Cerrar al presionar Escape o dar Enter
     input.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeDropdown();
       } else if (e.key === "Enter") {
-        closeDropdown();
-        // Si no estamos en categoria.html, redirigir
-        if (!window.location.pathname.includes("categoria")) {
-          const q = input.value.trim();
-          const cotoSelect = document.getElementById("coto-select");
-          const coto = cotoSelect ? cotoSelect.value : "all";
-          window.location.href = getCategoryPageUrl("all", q, coto);
-        }
+        executeSearchAction();
       }
+    });
+
+    // Conectar botón de búsqueda si existe en el contenedor
+    const searchBtns = searchBarContainer.querySelectorAll("button[title='Buscar'], button[onclick*='Search'], button[onclick*='trigger']");
+    searchBtns.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        executeSearchAction();
+      });
     });
 
     // Cerrar si se hace clic fuera del buscador

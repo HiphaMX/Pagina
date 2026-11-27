@@ -223,15 +223,30 @@
           <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
         </div>
 
-        <div class="pt-2 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white cursor-pointer transition-all flex-1">
-            <input type="checkbox" id="edit-delivery" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-            <span id="label-delivery-text" class="text-xs font-semibold text-slate-800">Ofrezco servicio a domicilio en cotos de la zona</span>
-          </label>
-          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 cursor-pointer transition-all flex-1">
-            <input type="checkbox" id="edit-coto-only" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
-            <span class="text-xs font-semibold text-amber-950">Solo entregas dentro de mi coto (Emprendedor en casa)</span>
-          </label>
+        <div class="pt-3 border-t border-slate-100 space-y-3">
+          <span class="block text-xs font-bold text-slate-700">Modalidades de Atención y Retiro</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="edit-delivery" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                <span id="label-delivery-text" class="text-xs font-bold text-slate-800">Servicio / Entrega a domicilio</span>
+              </label>
+              <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <label class="flex items-center gap-2 cursor-pointer pt-1">
+                <input type="checkbox" id="edit-coto-only" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
+                <span class="text-[11px] font-semibold text-amber-950">Solo entregas en mi coto</span>
+              </label>
+            </div>
+
+            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="edit-pickup" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                <span class="text-xs font-bold text-slate-800">Punto de venta físico / Retiro en local</span>
+              </label>
+              <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <span class="text-[10px] text-slate-500 block leading-tight">Desmarca esta opción si tus servicios se realizan únicamente en el domicilio del cliente.</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -348,7 +363,10 @@
         document.getElementById("edit-address").value = currentBiz.coto_address || "";
         document.getElementById("edit-description").value = currentBiz.description || "";
         document.getElementById("edit-delivery").checked = !!currentBiz.delivery_available;
+        if (document.getElementById("edit-delivery-badge")) document.getElementById("edit-delivery-badge").value = currentBiz.delivery_badge || "";
         document.getElementById("edit-coto-only").checked = !!currentBiz.coto_only_delivery;
+        if (document.getElementById("edit-pickup")) document.getElementById("edit-pickup").checked = currentBiz.pickup_available !== false;
+        if (document.getElementById("edit-pickup-badge")) document.getElementById("edit-pickup-badge").value = currentBiz.pickup_badge || "";
 
         const catSlug = (currentBiz.category_slug || "").toLowerCase();
         const catLabel = (currentBiz.category_label || "").toLowerCase();
@@ -654,7 +672,10 @@
           coto_address: document.getElementById("edit-address").value.trim(),
           description: document.getElementById("edit-description").value.trim(),
           delivery_available: document.getElementById("edit-delivery").checked,
+          delivery_badge: document.getElementById("edit-delivery-badge") ? document.getElementById("edit-delivery-badge").value.trim() || null : null,
           coto_only_delivery: document.getElementById("edit-coto-only").checked,
+          pickup_available: document.getElementById("edit-pickup") ? document.getElementById("edit-pickup").checked : true,
+          pickup_badge: document.getElementById("edit-pickup-badge") ? document.getElementById("edit-pickup-badge").value.trim() || null : null,
           photos: productsList.map(p => p.photo).filter(Boolean),
           microsite_data: {
             ...existingMd,

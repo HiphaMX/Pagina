@@ -26,6 +26,9 @@ class EpicentroRegistration(Base):
     schedule = Column(String(150), nullable=True)
     delivery_available = Column(Boolean, default=False)
     coto_only_delivery = Column(Boolean, default=False)
+    delivery_badge = Column(String(100), nullable=True)
+    pickup_available = Column(Boolean, default=True)
+    pickup_badge = Column(String(100), nullable=True)
     website = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
     photos = Column(Text, nullable=True)  # JSON array de hasta 10 fotos para micrositios
