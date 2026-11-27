@@ -1319,8 +1319,8 @@
                             <option value="Zapopan">Zapopan</option>
                             <option value="Guadalajara">Guadalajara</option>
                             <option value="Tlajomulco">Tlajomulco</option>
-                            <option value="Chapala">Chapala</option>
-                            <option value="Telchac">Telchac (Yucatán)</option>
+                            <option value="Chapala">Chapala / Ribera</option>
+                            <option value="Telchac">Costa / Yucatán</option>
                         </select>
                     </div>
                     <div class="search-group">
@@ -1380,7 +1380,7 @@
                                 <option value="all">Cualquiera</option>
                                 <option value="Preventa">Preventa</option>
                                 <option value="Listo para estrenar">Estreno</option>
-                                <option value="Residencial Usado">Residencial Usado</option>
+                                <option value="Residencial Usado">Seminueva / Usada</option>
                             </select>
                         </div>
                     </div>
@@ -1738,9 +1738,41 @@
             }, 2800);
         }
 
+        // Normalización de texto (elimina acentos, diacríticos y caracteres especiales para búsqueda tolerante)
+        function normalizeText(str) {
+            if (!str) return '';
+            return str.toString()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+        }
+
+        // Genera un corpus textual enriquecido para búsqueda multi-campo de cada propiedad
+        function getItemSearchCorpus(item) {
+            const parts = [
+                item.title || '',
+                item.slug || '',
+                (item.slug || '').replace(/-/g, ' '),
+                item.zona || '',
+                item.municipio || '',
+                item.codigo || '',
+                item.operacion || '',
+                (item.operacion === 'Compra' ? 'Venta' : (item.operacion === 'Venta' ? 'Compra' : '')),
+                item.tipo || '',
+                item.condicion || '',
+                item.descripcion || '',
+                Array.isArray(item.amenidades) ? item.amenidades.join(' ') : '',
+                item.isPlaya ? 'playa costa mar yucatan telchac lote terreno' : '',
+                item.habitaciones ? `${item.habitaciones} recamaras ${item.habitaciones} recamara ${item.habitaciones} habitaciones ${item.habitaciones} cuartos ${item.habitaciones} hab` : ''
+            ];
+            return normalizeText(parts.join(' '));
+        }
+
         // Renderizado y filtrado dinámico del catálogo
         function renderCatalog() {
-            const textValue = searchText.value.toLowerCase().trim();
+            const rawText = searchText.value.trim();
+            const textTokens = normalizeText(rawText).split(/\s+/).filter(Boolean);
             const zoneValue = searchZone.value;
             const opValue = searchOperation.value;
             const tipoValue = searchType.value;
@@ -1757,50 +1789,87 @@
                     return false;
                 }
 
-                // Filtro por Texto libre (título, zona, municipio, código ID)
-                const matchesText = !textValue || 
-                    item.title.toLowerCase().includes(textValue) || 
-                    item.zona.toLowerCase().includes(textValue) || 
-                    item.municipio.toLowerCase().includes(textValue) ||
-                    (item.codigo && item.codigo.toLowerCase().includes(textValue));
+                // 1. Filtro por Texto libre multi-palabra (todas las palabras deben coincidir)
+                if (textTokens.length > 0) {
+                    const corpus = getItemSearchCorpus(item);
+                    const allMatch = textTokens.every(token => corpus.includes(token));
+                    if (!allMatch) return false;
+                }
                 
-                // Filtro por Municipio
-                const matchesZone = zoneValue === 'all' || item.municipio === zoneValue;
-                
-                // Filtro por Operación (homologando Compra/Venta)
-                const matchesOp = opValue === 'all' || 
-                                  item.operacion === opValue ||
-                                  (opValue === 'Venta' && item.operacion === 'Compra') ||
-                                  (opValue === 'Compra' && item.operacion === 'Venta');
-                
-                // Filtro por Tipo de Propiedad
-                const matchesTipo = tipoValue === 'all' || item.tipo === tipoValue;
-                
-                // Filtro por Habitaciones (solo Casa y Departamento)
-                let matchesBeds = true;
-                if (bedsValue !== 'all' && (item.tipo === 'Casa' || item.tipo === 'Departamento')) {
-                    if (bedsValue === '4') {
-                        matchesBeds = item.habitaciones >= 4;
+                // 2. Filtro por Zona / Municipio
+                if (zoneValue !== 'all') {
+                    const normZone = normalizeText(zoneValue);
+                    if (zoneValue === 'Telchac' || zoneValue === 'Yucatán' || normZone.includes('yucatan') || normZone.includes('costa') || normZone.includes('playa')) {
+                        const isCostera = item.isPlaya || 
+                                          normalizeText(item.municipio).includes('telchac') || 
+                                          normalizeText(item.zona).includes('telchac') ||
+                                          normalizeText(item.municipio).includes('yucatan') ||
+                                          normalizeText(item.zona).includes('yucatan');
+                        if (!isCostera) return false;
+                    } else if (zoneValue === 'Chapala' || normZone.includes('chapala') || normZone.includes('ribera')) {
+                        const isChapala = normalizeText(item.municipio).includes('chapala') ||
+                                          normalizeText(item.zona).includes('chapala') ||
+                                          normalizeText(item.zona).includes('ribera');
+                        if (!isChapala) return false;
                     } else {
-                        matchesBeds = item.habitaciones === parseInt(bedsValue);
+                        const normItemMuni = normalizeText(item.municipio);
+                        const normItemZona = normalizeText(item.zona);
+                        if (!normItemMuni.includes(normZone) && !normItemZona.includes(normZone)) {
+                            return false;
+                        }
+                    }
+                }
+                
+                // 3. Filtro por Operación (Venta / Compra homologadas y Renta)
+                if (opValue !== 'all') {
+                    if (opValue === 'Venta' || opValue === 'Compra') {
+                        if (item.operacion !== 'Venta' && item.operacion !== 'Compra') return false;
+                    } else if (opValue === 'Renta') {
+                        if (item.operacion !== 'Renta') return false;
+                    }
+                }
+                
+                // 4. Filtro por Tipo de Propiedad
+                if (tipoValue !== 'all') {
+                    if (item.tipo !== tipoValue) return false;
+                }
+                
+                // 5. Filtro por Habitaciones (1+, 2+, 3+, 4+)
+                if (bedsValue !== 'all') {
+                    if (item.tipo === 'Terreno') return false;
+                    const minBeds = parseInt(bedsValue, 10);
+                    if (!isNaN(minBeds) && (item.habitaciones || 0) < minBeds) {
+                        return false;
                     }
                 }
 
-                // Filtro por Condición (Nuevo - Habitado)
-                let matchesCondition = true;
-                if (conditionValue !== 'all' && (item.tipo === 'Casa' || item.tipo === 'Departamento')) {
-                    matchesCondition = item.condicion === conditionValue;
+                // 6. Filtro por Condición
+                if (conditionValue !== 'all') {
+                    if (item.tipo === 'Terreno') return false;
+                    const itemCond = normalizeText(item.condicion || '');
+                    const filterCond = normalizeText(conditionValue);
+                    if (filterCond.includes('usad') || filterCond.includes('seminuev')) {
+                        if (!itemCond.includes('usad') && !itemCond.includes('seminuev')) return false;
+                    } else if (filterCond.includes('estrenar') || filterCond.includes('estreno')) {
+                        if (!itemCond.includes('estrenar') && !itemCond.includes('estreno')) return false;
+                    } else if (filterCond.includes('preventa')) {
+                        if (!itemCond.includes('preventa')) return false;
+                    } else {
+                        if (!itemCond.includes(filterCond)) return false;
+                    }
                 }
 
-                // Filtro por Rango de Precios (Si es Renta en modo "Todas", se muestra siempre por la escala de precios)
-                let matchesPrice = false;
-                if (opValue === 'all' && item.operacion === 'Renta') {
-                    matchesPrice = true;
+                // 7. Filtro por Rango de Precios
+                if (opValue === 'all') {
+                    // En vista general, las rentas no se excluyen por el slider de venta
+                    if (item.operacion !== 'Renta') {
+                        if (item.precio < priceMinVal || item.precio > priceMaxVal) return false;
+                    }
                 } else {
-                    matchesPrice = item.precio >= priceMinVal && item.precio <= priceMaxVal;
+                    if (item.precio < priceMinVal || item.precio > priceMaxVal) return false;
                 }
 
-                return matchesText && matchesZone && matchesOp && matchesTipo && matchesBeds && matchesCondition && matchesPrice;
+                return true;
             });
 
             // Limpiar Grid
@@ -1821,7 +1890,7 @@
                         <div class="empty-state">
                             <i data-lucide="compass" style="width: 64px; height: 64px; stroke-width: 1; color: var(--color-text-muted); margin: 0 auto 1rem auto;"></i>
                             <h3>Sin resultados</h3>
-                            <p>No encontramos propiedades que coincidan con la combinación de filtros seleccionada. Intenta con otros parámetros.</p>
+                            <p>No encontramos propiedades que coincidan con "${escapeHTML(rawText || 'los filtros seleccionados')}". Intenta con palabras clave como "Los Robles", "Encinos", "Zapopan", "Casa", etc.</p>
                             <button class="btn-clear-filters" onclick="clearFilters()">Restablecer Filtros</button>
                         </div>
                     `;
@@ -1895,6 +1964,25 @@
             lucide.createIcons();
         }
 
+        // Función de escape para renderizado seguro en empty state
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Ejecutar búsqueda con opción de desplazamiento en móviles
+        function executeSearch(scrollToResults = false) {
+            renderCatalog();
+            if (scrollToResults && window.innerWidth <= 968) {
+                const grid = document.getElementById('catalog-grid');
+                if (grid) {
+                    const topOffset = grid.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({ top: topOffset, behavior: 'smooth' });
+                }
+            }
+        }
+
         // Restablecer filtros
         window.clearFilters = function() {
             searchText.value = '';
@@ -1903,9 +1991,19 @@
             searchType.value = 'all';
             searchBeds.value = 'all';
             searchCondition.value = 'all';
+            filterFavoritesOnly = false;
             
+            const btnFav = document.getElementById('btn-toggle-favorites');
+            const iconFav = document.getElementById('fav-filter-icon');
+            if (btnFav) btnFav.classList.remove('active');
+            if (iconFav) {
+                iconFav.style.fill = 'none';
+                iconFav.style.color = 'currentColor';
+            }
+
             toggleAdvancedFields('all');
             calibratePriceRange();
+            renderCatalog();
         };
 
         // Listeners de los Sliders
@@ -1917,14 +2015,30 @@
         inputMax.addEventListener('change', updateSliderValuesFromInputs);
 
         // Listeners del Formulario
-        searchText.addEventListener('input', renderCatalog);
-        searchZone.addEventListener('change', renderCatalog);
+        searchText.addEventListener('input', () => executeSearch(false));
+        searchZone.addEventListener('change', () => executeSearch(false));
         searchOperation.addEventListener('change', () => {
             calibratePriceRange();
         });
-        searchBeds.addEventListener('change', renderCatalog);
-        searchCondition.addEventListener('change', renderCatalog);
-        btnSearchTrigger.addEventListener('click', renderCatalog);
+        searchType.addEventListener('change', (e) => {
+            toggleAdvancedFields(e.target.value);
+        });
+        searchBeds.addEventListener('change', () => executeSearch(false));
+        searchCondition.addEventListener('change', () => executeSearch(false));
+        
+        btnSearchTrigger.addEventListener('click', () => {
+            executeSearch(true);
+        });
+
+        // Soporte completo para tecla Enter y teclado móvil
+        const catalogSearchForm = document.getElementById('catalog-search-form');
+        if (catalogSearchForm) {
+            catalogSearchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                searchText.blur();
+                executeSearch(true);
+            });
+        }
 
         // Menú Móvil
         const menuToggle = document.getElementById('menu-toggle');
@@ -1995,13 +2109,25 @@
             const urlCondicion = urlParams.get('condicion');
             const urlFavoritos = urlParams.get('favoritos') === 'true' || urlParams.get('filtro') === 'favoritos';
             const urlCodigo = urlParams.get('codigo') || urlParams.get('id_propiedad');
+            const urlId = urlParams.get('id');
+            const urlBuscar = urlParams.get('buscar') || urlParams.get('q') || urlParams.get('search') || urlParams.get('nombre');
 
             let hasPreFilters = false;
 
-            if (urlCodigo) {
+            if (urlBuscar) {
+                searchText.value = urlBuscar.replace(/-/g, ' ');
+                hasPreFilters = true;
+            } else if (urlCodigo) {
                 searchText.value = urlCodigo;
                 hasPreFilters = true;
+            } else if (urlId) {
+                const prop = PROPERTIES_DB.find(p => p.id === parseInt(urlId, 10));
+                if (prop && prop.codigo) {
+                    searchText.value = prop.codigo;
+                    hasPreFilters = true;
+                }
             }
+
             if (urlFavoritos) {
                 filterFavoritesOnly = true;
                 const btn = document.getElementById('btn-toggle-favorites');

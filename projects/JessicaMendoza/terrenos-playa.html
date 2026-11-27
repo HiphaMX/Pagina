@@ -1469,24 +1469,54 @@
             renderCatalog();
         }
 
+        function normalizeText(str) {
+            if (!str) return '';
+            return str.toString()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+        }
+
+        function getItemSearchCorpus(item) {
+            const parts = [
+                item.title || '',
+                item.slug || '',
+                (item.slug || '').replace(/-/g, ' '),
+                item.zona || '',
+                item.municipio || '',
+                item.operacion || '',
+                item.descripcion || '',
+                Array.isArray(item.amenidades) ? item.amenidades.join(' ') : '',
+                'playa costa mar terreno lote yucatan telchac'
+            ];
+            return normalizeText(parts.join(' '));
+        }
+
         function renderCatalog() {
-            const textValue = searchText.value.toLowerCase().trim();
+            const rawText = searchText.value.trim();
+            const textTokens = normalizeText(rawText).split(/\s+/).filter(Boolean);
             const zoneValue = searchZone.value;
             const opValue = searchOperation.value;
             const priceMinVal = parseFloat(sliderMin.value);
             const priceMaxVal = parseFloat(sliderMax.value);
 
             const filtered = PLAYA_DB.filter(item => {
-                const matchesText = !textValue || 
-                    item.title.toLowerCase().includes(textValue) || 
-                    item.zona.toLowerCase().includes(textValue) || 
-                    item.municipio.toLowerCase().includes(textValue);
+                if (textTokens.length > 0) {
+                    const corpus = getItemSearchCorpus(item);
+                    const allMatch = textTokens.every(token => corpus.includes(token));
+                    if (!allMatch) return false;
+                }
                 
-                const matchesZone = zoneValue === 'all' || item.municipio === zoneValue;
-                const matchesOp = opValue === 'all' || item.operacion === opValue;
+                const matchesZone = zoneValue === 'all' || 
+                                    normalizeText(item.municipio).includes(normalizeText(zoneValue)) ||
+                                    normalizeText(item.zona).includes(normalizeText(zoneValue));
+                const matchesOp = opValue === 'all' || item.operacion === opValue || 
+                                  (opValue === 'Compra' && item.operacion === 'Venta') ||
+                                  (opValue === 'Venta' && item.operacion === 'Compra');
                 const matchesPrice = item.precio >= priceMinVal && item.precio <= priceMaxVal;
 
-                return matchesText && matchesZone && matchesOp && matchesPrice;
+                return matchesZone && matchesOp && matchesPrice;
             });
 
             catalogGrid.innerHTML = '';
@@ -1570,10 +1600,36 @@
         sliderMax.addEventListener('input', updateSliderValues);
         inputMin.addEventListener('change', updateSliderValuesFromInputs);
         inputMax.addEventListener('change', updateSliderValuesFromInputs);
-        searchText.addEventListener('input', renderCatalog);
-        searchZone.addEventListener('change', renderCatalog);
-        searchOperation.addEventListener('change', renderCatalog);
-        btnSearchTrigger.addEventListener('click', renderCatalog);
+        searchText.addEventListener('input', () => renderCatalog());
+        searchZone.addEventListener('change', () => renderCatalog());
+        searchOperation.addEventListener('change', () => renderCatalog());
+        
+        btnSearchTrigger.addEventListener('click', () => {
+            renderCatalog();
+            if (window.innerWidth <= 968) {
+                const grid = document.getElementById('catalog-grid');
+                if (grid) {
+                    const topOffset = grid.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({ top: topOffset, behavior: 'smooth' });
+                }
+            }
+        });
+
+        const beachForm = document.getElementById('beach-search-form');
+        if (beachForm) {
+            beachForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                searchText.blur();
+                renderCatalog();
+                if (window.innerWidth <= 968) {
+                    const grid = document.getElementById('catalog-grid');
+                    if (grid) {
+                        const topOffset = grid.getBoundingClientRect().top + window.pageYOffset - 80;
+                        window.scrollTo({ top: topOffset, behavior: 'smooth' });
+                    }
+                }
+            });
+        }
 
         // Menú Móvil
         const menuToggle = document.getElementById('menu-toggle');
