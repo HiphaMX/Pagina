@@ -480,7 +480,7 @@
       }
     };
 
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
     return modal;
   }
 
@@ -519,7 +519,7 @@
       if (desc) desc.textContent = "Tu negocio ya forma parte de Epizentro Natura";
     }
 
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
   }
 
   // --- ENVÍO DEL MICRO-REGISTRO (PASO 1) ---
@@ -561,7 +561,7 @@
       origHtml = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Generando Ficha en Vivo...</span>`;
-      if (window.lucide) lucide.createIcons();
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
     }
 
     const payload = {
@@ -623,7 +623,7 @@
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = origHtml;
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
     }
   }
@@ -639,7 +639,7 @@
     if (cotoEl) cotoEl.textContent = data.coto_address || "Natura Bosque";
     if (coverEl) coverEl.src = data.cover_photo || CURATED_COVERS_FALLBACK["comida-delivery"];
 
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
   }
 
   // --- ACTIVACIÓN CON MERCADO PAGO ---
@@ -656,7 +656,7 @@
       origHtml = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Abriendo Checkout Seguro...</span>`;
-      if (window.lucide) lucide.createIcons();
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
     }
 
     try {
@@ -688,7 +688,7 @@
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = origHtml;
-        if (window.lucide) lucide.createIcons();
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
     }
   }
@@ -830,7 +830,7 @@
     container.classList.toggle("hidden", !isHidden);
     if (chevron) chevron.style.transform = isHidden ? "rotate(180deg)" : "rotate(0deg)";
     if (label) label.textContent = isHidden ? "- Ocultar datos adicionales" : "+ Datos adicionales (Opcional: Titular y correo)";
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
   };
 
   window.toggleCouponBox = function() {
@@ -840,7 +840,7 @@
     const isHidden = container.classList.contains("hidden");
     container.classList.toggle("hidden", !isHidden);
     if (chevron) chevron.style.transform = isHidden ? "rotate(180deg)" : "rotate(0deg)";
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
   };
 
   // --- API PÚBLICA DEL MODAL ---
@@ -875,7 +875,7 @@
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     document.body.style.overflow = "hidden";
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
   }
 
   function closeRegisterModal() {
