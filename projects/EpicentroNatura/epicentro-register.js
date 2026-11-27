@@ -367,7 +367,7 @@
             <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
               <input type="checkbox" id="reg-terms-check" checked class="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 shrink-0">
               <span class="leading-relaxed">
-                He leído y acepto los <a href="/natura/terminos" target="_blank" class="font-bold text-emerald-700 hover:underline">Términos y Condiciones</a> y Normas Comunitarias de Epizentro Natura.
+                He leído y acepto los <a href="/terminos" target="_blank" class="font-bold text-emerald-700 hover:underline">Términos y Condiciones</a> y Normas Comunitarias de Epizentro.
               </span>
             </label>
           </div>

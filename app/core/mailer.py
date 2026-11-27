@@ -3765,11 +3765,11 @@ async def send_epizentro_suspension_email_merchant(reg, reason: str, refund_issu
           {refund_html}
 
           <p style="font-size: 13px; color: #475569;">
-            Epizentro Natura es un directorio de convivencia vecinal orientado exclusivamente a comercios formales, gastronomía y servicios aptos para entornos residenciales. De acuerdo a la Cláusula 4 de nuestros Términos y Condiciones, los perfiles que promuevan giros restringidos, armas, sustancias ilícitas, servicios para adultos o contenidos sensibles son cancelados de forma inmediata.
+            Epizentro es una red comercial orientada exclusivamente a actividades comerciales formales, servicios profesionales y consumo familiar afines a comunidades vecinales. De conformidad con la Cláusula 4 de nuestros Términos y Condiciones, los perfiles que promuevan giros restringidos o contenidos no compatibles con las normas de convivencia son suspendidos de forma inmediata.
           </p>
 
           <p style="font-size: 12px; color: #64748b; margin-top: 20px;">
-            Puedes consultar el texto íntegro de nuestros lineamientos en: <a href="https://www.epizentro.com/natura/terminos" style="color: #059669; font-weight: 700;">Términos y Condiciones de Epizentro Natura</a>.
+            Puedes consultar el texto íntegro de nuestros lineamientos en: <a href="https://www.epizentro.com/terminos" style="color: #06b6d4; font-weight: 700;">Términos y Condiciones de Epizentro</a>.
           </p>
         </div>
         <div class="footer">

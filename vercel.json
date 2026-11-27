@@ -235,6 +235,16 @@
       "dest": "/projects/Epicentro/"
     },
     {
+      "src": "/(terminos)(\\.html|)",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?epizentro\\.com$"
+        }
+      ],
+      "dest": "/projects/Epicentro/terminos.html"
+    },
+    {
       "src": "/(llms\\.txt|robots\\.txt)",
       "has": [
         {
