@@ -48,5 +48,16 @@
   - Al renderizar fotos de producto de cualquier cliente o comercio (en micrositios, catálogos, menús o galerías de e-commerce), el contenedor de la fotografía DEBE tener fondo blanco puro (`bg-white` / `#ffffff`) y la imagen debe configurarse con fondo blanco o `object-contain bg-white`.
   - Queda estrictamente prohibido utilizar fondos tintados o grisáceos (como `bg-emerald-950/5`, `bg-slate-100`, etc.) detrás de fotografías de producto con fondo blanco, para evitar que se marquen los recuadros o bordes cuadrados ("los cuadros") de las imágenes de los clientes y asegurar una integración visual limpia y profesional.
 
+- **Estándar de Persistencia y Sincronización en Tiempo Real (Epizentro Natura y Plataformas)**:
+  - **Idempotencia Estricta en Semillas (`seed_*`)**: Las funciones de siembra de base de datos NUNCA deben sobrescribir registros que ya cuenten con información en SQLite o PostgreSQL. Cualquier mutación debe condicionarse estrictamente a campos vacíos o nulos (`if not obj.field:`). Queda prohibido comparar por desigualdad (`!=`) para forzar textos iniciales.
+  - **Prioridad de Base de Datos sobre Plantillas Estáticas**: Los valores editados por clientes o administradores guardados en la base de datos tienen prelación absoluta sobre cualquier copia estática hardcodeada en HTML. El frontend tiene estrictamente prohibido rechazar o descartar campos guardados mediante filtros o formateos arbitrarios (ej. exigir `·` en horarios).
+  - **Políticas Anti-Caché en APIs y Clientes**: Todo endpoint de consulta de datos en vivo debe retornar cabeceras `Cache-Control: no-cache, no-store, must-revalidate`, `Pragma: no-cache` y `Expires: 0`. El frontend debe consumir estos recursos con `?_t=${Date.now()}` y `{ cache: "no-store" }`.
+  - **Invalidación Forzada de Sesión**: Toda acción de guardado, aprobación o suspensión en consolas administrativas o de autoservicio (`editar.html`, `admin.html`) debe invalidar activamente cachés en memoria local (`sessionStorage.removeItem(...)`).
+
+- **Protocolo de Liderazgo KAM y Auditoría Implacable ('El Vergotas' / Gold Fish)**:
+  - **Responsabilidad Integral del KAM**: El Key Account Manager asume la responsabilidad total de los resultados técnicos y la experiencia de usuario del cliente. No se aceptan excusas teóricas ni entregas parciales.
+  - **Certificación Obligatoria Cero Defectos**: Antes de dar por resuelto cualquier requerimiento o corrección, es obligatorio ejecutar la suite automatizada completa (`projects/EpicentroNatura/backend/tests/verify_all_epizentro.py`) y lograr el 100% de pruebas aprobadas (0 fallos).
+  - **Prueba End-to-End en Base de Datos**: Es mandatorio simular la mutación real en base de datos mediante la API y verificar que llamadas repetidas mantengan la persistencia sin reversiones automáticas.
+
 
 
