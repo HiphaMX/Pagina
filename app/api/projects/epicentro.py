@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.config import settings
 from app.core.mailer import _prepare_project_email, _send_smtp
-from app.models.epicentro_registration import EpicentroRegistration
+from app.models.epicentro_registration import EpicentroRegistration, EpicentroBlacklist
 from app.models.epicentro_article import EpicentroArticle
 from app.models.epicentro_media import EpicentroMedia
 from app.models.epicentro_coupon import EpicentroCoupon
@@ -53,6 +53,11 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token VARCHAR(64)"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS edit_token_expires_at TIMESTAMP"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS slug VARCHAR(150)"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS ai_moderation_status VARCHAR(30) DEFAULT 'pending'"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS ai_moderation_notes TEXT"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS ai_moderated_at TIMESTAMP"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted BOOLEAN DEFAULT TRUE"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP"))
             db.commit()
         else:
             for col, col_type in [
@@ -68,7 +73,12 @@ def ensure_epicentro_schema(db: Session):
                 ("coto_only_delivery", "BOOLEAN DEFAULT 0"),
                 ("edit_token", "VARCHAR(64)"),
                 ("edit_token_expires_at", "TIMESTAMP"),
-                ("slug", "VARCHAR(150)")
+                ("slug", "VARCHAR(150)"),
+                ("ai_moderation_status", "VARCHAR(30) DEFAULT 'pending'"),
+                ("ai_moderation_notes", "TEXT"),
+                ("ai_moderated_at", "TIMESTAMP"),
+                ("terms_accepted", "BOOLEAN DEFAULT 1"),
+                ("terms_accepted_at", "TIMESTAMP")
             ]:
                 try:
                     db.execute(text(f"ALTER TABLE epicentro_registrations ADD COLUMN {col} {col_type}"))
@@ -77,11 +87,12 @@ def ensure_epicentro_schema(db: Session):
                     pass
             db.commit()
 
-        # Asegurar tablas de Crónicas, Medios y Cupones de Epizentro
+        # Asegurar tablas de Crónicas, Medios, Cupones y Lista Negra de Epizentro
         try:
             EpicentroArticle.__table__.create(db.bind, checkfirst=True)
             EpicentroMedia.__table__.create(db.bind, checkfirst=True)
             EpicentroCoupon.__table__.create(db.bind, checkfirst=True)
+            EpicentroBlacklist.__table__.create(db.bind, checkfirst=True)
         except Exception:
             pass
 
@@ -600,6 +611,16 @@ async def initiate_registration(
             "whatsapp_link": "https://wa.me/523336762545?text=Hola%20Natura"
         }
 
+    # 2. Validación de Lista Negra (Términos y Condiciones / Centinela)
+    from app.services.epicentro_sentinel import check_is_blacklisted
+    bl = check_is_blacklisted(db, phone=payload.whatsapp or payload.phone, email=payload.email)
+    if bl:
+        logger.warning(f"[SENTINEL] Intento de registro bloqueado por Blacklist: {payload.business_name} / {payload.whatsapp}")
+        raise HTTPException(
+            status_code=403,
+            detail="Tu número telefónico o correo se encuentra restringido por violación previa de los Términos y Condiciones de Epizentro Natura."
+        )
+
     # Generar código de WhatsApp (ej. NATURA-5819) y token de autoservicio
     wa_code = f"NATURA-{random.randint(1000, 9999)}"
     edit_token = secrets.token_urlsafe(32)
@@ -935,16 +956,25 @@ def seed_courtesy_coupons(db: Session):
 
 
 @router.post("/register/apply-coupon")
-def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends(get_db)):
+async def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends(get_db)):
     """
     Aplica un código de cortesía oficial de lanzamiento (30 códigos únicos de un solo uso)
-    para exonerar la cuota anual al 100%. El comercio queda con pago cubierto y en estatus
-    'pending_approval' para validación y moderación de calidad en el panel de administración.
+    para exonerar la cuota anual al 100%. El comercio se publica de inmediato en el directorio (Opción 3)
+    y el Agente Centinela IA ejecuta la auditoría de seguridad en segundo plano con Kill-Switch.
     """
     seed_courtesy_coupons(db)
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
     if not reg:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
+
+    # Validación contra Lista Negra
+    from app.services.epicentro_sentinel import check_is_blacklisted, run_sentinel_audit
+    bl = check_is_blacklisted(db, phone=reg.whatsapp or reg.phone, email=reg.email)
+    if bl:
+        raise HTTPException(
+            status_code=403,
+            detail="Tu número o correo se encuentra restringido por violación previa de los Términos y Condiciones de Epizentro Natura."
+        )
 
     code = payload.coupon_code.strip().upper()
     now = datetime.now(timezone.utc)
@@ -980,33 +1010,42 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
         reg.edit_token = secrets.token_urlsafe(32)
         reg.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=90)
 
-    # Opción 1: Moderación Previa Obligatoria por Administrador
+    # Opción 3: Publicación Inmediata con Sello y Auditoría Centinela en Tiempo Real
     reg.payment_status = "waived"
     reg.payment_amount = 0.0
-    reg.is_verified_badge = False
-    reg.status = "pending_approval"
+    reg.is_verified_badge = True
+    reg.status = "active"
     reg.coupon_code = code
+    reg.terms_accepted = True
+    reg.terms_accepted_at = now
     reg.moderation_notes = (
         (reg.moderation_notes + "\n" if reg.moderation_notes else "") +
-        f"Canje de cortesía oficial '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC. Pendiente de aprobación administrativa."
+        f"Canje de cortesía oficial '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC. Publicado con auditoría Centinela IA."
     )
     db.commit()
     db.refresh(reg)
 
+    # Ejecutar auditoría automatizada del Agente Centinela
+    try:
+        await run_sentinel_audit(reg.id, db, refund_on_violation=False)
+    except Exception as sentinel_err:
+        logger.error(f"[SENTINEL] Error en auditoría de cortesía: {sentinel_err}")
+
     folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
-    folio = f"NATURA-SOLICITUD-{folio_suffix}"
+    folio = f"NATURA-VERIFIED-{folio_suffix}"
 
     return {
         "success": True,
-        "message": f"¡Código de cortesía {code} aplicado con éxito! Tu cuota ha sido exonerada al 100%. Tu registro ha sido enviado a revisión y quedará visible en el directorio una vez aprobado por la administración.",
+        "message": f"¡Código de cortesía {code} aplicado con éxito! Tu cuota ha sido exonerada al 100%. Tu negocio ya está publicado en Epizentro Natura.",
         "folio": folio,
         "registration_id": reg.id,
         "business_name": reg.business_name,
-        "is_verified_badge": False,
-        "status": "pending_approval",
+        "is_verified_badge": reg.is_verified_badge,
+        "status": reg.status,
         "coupon_code": code,
         "edit_token": reg.edit_token,
-        "edit_url": f"/natura/editar?token={reg.edit_token}"
+        "edit_url": f"/natura/editar?token={reg.edit_token}",
+        "slug": reg.slug
     }
 
 
@@ -2883,7 +2922,7 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
         target_id = slug.strip()
 
     # Redirigir si coincide con una página del sistema que no es comercio
-    if target_id in ("tu-negocio", "categoria", "admin", "editar", "editor-cultura", "articulo", "cultura-natura", "index"):
+    if target_id in ("tu-negocio", "categoria", "admin", "editar", "editor-cultura", "articulo", "cultura-natura", "index", "terminos"):
         clean_target = f"/natura/{target_id}.html" if not target_id.endswith(".html") else f"/natura/{target_id}"
         return RedirectResponse(url=clean_target)
 

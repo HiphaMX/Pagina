@@ -126,7 +126,7 @@
       "dest": "/api"
     },
     {
-      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|cultura-natura|categoria|admin|editor-cultura|articulo|editar|index)(.html|)",
+      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|cultura-natura|categoria|admin|editor-cultura|articulo|editar|index|terminos)(.html|)",
       "has": [
         {
           "type": "host",

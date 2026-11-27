@@ -362,6 +362,16 @@
             </div>
           </div>
 
+          <!-- TÉRMINOS Y CONDICIONES CHECKBOX -->
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
+              <input type="checkbox" id="reg-terms-check" checked class="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 shrink-0">
+              <span class="leading-relaxed">
+                He leído y acepto los <a href="/natura/terminos" target="_blank" class="font-bold text-emerald-700 hover:underline">Términos y Condiciones</a> y Normas Comunitarias de Epizentro Natura.
+              </span>
+            </label>
+          </div>
+
           <!-- BOTÓN DE COBRO MERCADO PAGO -->
           <div class="space-y-2 pt-1">
             <button type="button" id="btn-pay-mp" onclick="triggerMercadoPagoPayment()" class="w-full py-4 px-4 rounded-xl bg-[#009ee3] hover:bg-[#0082ba] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
@@ -404,38 +414,38 @@
 
         <!-- FASE 3: ÉXITO Y AUTOSERVICIO -->
         <div id="reg-step-3" class="hidden text-center py-4 space-y-4 max-w-md mx-auto">
-          <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
             <i data-lucide="check-circle-2" class="w-9 h-9"></i>
           </div>
 
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-bold">
-            <i data-lucide="clock" class="w-3.5 h-3.5 text-blue-600"></i>
-            <span>Solicitud Acreditada · En Moderación</span>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-[11px] font-bold">
+            <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Negocio Activo · Publicado en el Directorio</span>
           </div>
 
           <h4 id="success-title" class="text-xl font-black text-slate-950">
-            ¡Registro y Pago Confirmados!
+            ¡Felicidades, tu negocio ya está publicado!
           </h4>
           
           <p id="success-desc" class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            Tu negocio <strong id="success-bname" class="text-slate-900"></strong> ha sido recibido con éxito. Tu ficha está en revisión de calidad editorial y quedará visible públicamente en el directorio una vez aprobada por la administración de Epizentro.
+            Tu negocio <strong id="success-bname" class="text-slate-900"></strong> ya es visible para los vecinos de la comunidad. Nuestro sistema inteligente audita continuamente la red para garantizar un directorio confiable y seguro.
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Solicitud</span>
-            <span id="success-folio" class="text-base font-mono font-black text-blue-700">NATURA-SOLICITUD-100</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Verificación</span>
+            <span id="success-folio" class="text-base font-mono font-black text-emerald-700">NATURA-VERIFIED-100</span>
           </div>
 
           <!-- BOTONERA DE ACCIÓN -->
           <div class="space-y-2 pt-2">
-            <a id="btn-to-self-service" href="#" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 no-underline">
-              <i data-lucide="camera" class="w-4 h-4"></i>
-              <span>Personalizar Fotos y Catálogo Ahora</span>
+            <a id="btn-to-public-showcase" href="#" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 no-underline">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              <span>Ver mi Página Escaparate en Vivo</span>
             </a>
 
-            <a id="btn-to-public-showcase" href="#" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 no-underline transition-colors">
-              <span>Ver cómo lucirá mi Página Escaparate</span>
-              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            <a id="btn-to-self-service" href="#" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 no-underline transition-colors">
+              <i data-lucide="camera" class="w-4 h-4 text-emerald-600"></i>
+              <span>Personalizar Fotos y Catálogo Ahora</span>
             </a>
           </div>
 
@@ -629,6 +639,12 @@
 
   // --- ACTIVACIÓN CON MERCADO PAGO ---
   async function triggerMercadoPagoPayment() {
+    const termsCheck = document.getElementById("reg-terms-check");
+    if (termsCheck && !termsCheck.checked) {
+      alert("Para continuar y publicar tu negocio, debes aceptar los Términos y Condiciones y Normas Comunitarias de Epizentro Natura.");
+      return;
+    }
+
     const btn = document.getElementById("btn-pay-mp");
     let origHtml = "";
     if (btn) {
@@ -674,9 +690,20 @@
 
   // --- CANJE DE CUPÓN DE CORTESÍA ---
   async function handleApplyCoupon() {
+    const termsCheck = document.getElementById("reg-terms-check");
+    const feedback = document.getElementById("coupon-feedback");
+    if (termsCheck && !termsCheck.checked) {
+      if (feedback) {
+        feedback.className = "text-[11px] font-bold text-rose-600 block";
+        feedback.textContent = "Debes aceptar los Términos y Condiciones para activar tu registro.";
+      } else {
+        alert("Debes aceptar los Términos y Condiciones para activar tu registro.");
+      }
+      return;
+    }
+
     const input = document.getElementById("reg-coupon-code");
     const btn = document.getElementById("btn-apply-coupon");
-    const feedback = document.getElementById("coupon-feedback");
     const codeVal = input ? input.value.trim().toUpperCase() : "";
 
     if (!codeVal) {

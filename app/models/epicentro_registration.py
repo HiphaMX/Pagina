@@ -58,12 +58,30 @@ class EpicentroRegistration(Base):
     edit_token_expires_at = Column(DateTime(timezone=True), nullable=True)
 
     # Flujo de Moderación:
-    # pending_verification -> pending_approval -> active / rejected
+    # pending_verification -> pending_approval -> active / rejected / suspended
     status = Column(String(30), default="pending_verification", index=True)
     moderation_notes = Column(Text, nullable=True)
 
+    # Agente Centinela IA y Términos y Condiciones
+    ai_moderation_status = Column(String(30), default="pending", index=True)  # pending, passed, flagged, violation
+    ai_moderation_notes = Column(Text, nullable=True)
+    ai_moderated_at = Column(DateTime(timezone=True), nullable=True)
+    terms_accepted = Column(Boolean, default=True)
+    terms_accepted_at = Column(DateTime(timezone=True), nullable=True)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class EpicentroBlacklist(Base):
+    __tablename__ = "epicentro_blacklist"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    phone = Column(String(30), nullable=True, index=True)
+    email = Column(String(150), nullable=True, index=True)
+    business_name = Column(String(150), nullable=True)
+    reason = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     @property
     def delivery_badge(self) -> Optional[str]:

@@ -3712,6 +3712,191 @@ async def send_epizentro_onboarding_email_merchant(reg, total: float, payment_id
         return False
 
 
+async def send_epizentro_suspension_email_merchant(reg, reason: str, refund_issued: bool = False) -> bool:
+    """Notifica al comercio la rescisión unilateral y suspensión de su ficha por violación a los Términos y Condiciones."""
+    if not reg.email:
+        logger.warning(f"[EPIZENTRO] No se pudo enviar correo de suspensión porque el comercio {reg.business_name} no tiene email.")
+        return False
+
+    refund_html = ""
+    if refund_issued:
+        refund_html = """
+        <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 12px; padding: 16px; margin: 18px 0;">
+          <strong style="color: #065f46; font-size: 13px; display: block; margin-bottom: 4px;">✓ Reembolso Total Procesado (100%)</strong>
+          <span style="font-size: 12px; color: #047857; line-height: 1.5; display: block;">
+            Conforme a nuestra política de rescisión unilateral estipulada en la Cláusula 4 de los Términos y Condiciones, se ha ejecutado la devolución automática del 100% del importe cobrado a través de Mercado Pago. El reflejo bancario depende de tu institución financiera emisora (normalmente de 1 a 5 días hábiles).
+          </span>
+        </div>
+        """
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; }}
+        .card {{ max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border: 1px solid #fee2e2; }}
+        .header {{ background: #991b1b; padding: 32px 28px; text-align: center; color: #ffffff; border-bottom: 3px solid #ef4444; }}
+        .header h1 {{ margin: 0; font-size: 22px; font-weight: 800; }}
+        .header p {{ margin: 6px 0 0; font-size: 13px; color: #fecaca; }}
+        .content {{ padding: 28px; color: #1e293b; font-size: 14px; line-height: 1.6; }}
+        .alert-box {{ background: #fef2f2; border: 1px solid #fca5a5; border-radius: 12px; padding: 16px; margin: 18px 0; }}
+        .label {{ font-size: 11px; font-weight: 800; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }}
+        .reason {{ font-size: 13px; font-weight: 700; color: #7f1d1d; }}
+        .footer {{ padding: 20px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; text-align: center; }}
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="header">
+          <h1>Aviso de Suspensión de Publicación</h1>
+          <p>Epizentro Natura · Red Comercial Comunitaria de Zapopan</p>
+        </div>
+        <div class="content">
+          <p>Estimado titular de <strong>{reg.business_name}</strong>,</p>
+          <p>Te informamos que, tras una auditoría automatizada de seguridad y cumplimiento normativo, la publicación de tu negocio en <strong>Epizentro Natura</strong> ha sido <strong>suspendida y retirada de la vista pública</strong> por contravenir nuestras normas comunitarias y lineamientos de publicación.</p>
+          
+          <div class="alert-box">
+            <span class="label">Motivo de la Suspensión:</span>
+            <div class="reason">{reason}</div>
+          </div>
+
+          {refund_html}
+
+          <p style="font-size: 13px; color: #475569;">
+            Epizentro Natura es un directorio de convivencia vecinal orientado exclusivamente a comercios formales, gastronomía y servicios aptos para entornos residenciales. De acuerdo a la Cláusula 4 de nuestros Términos y Condiciones, los perfiles que promuevan giros restringidos, armas, sustancias ilícitas, servicios para adultos o contenidos sensibles son cancelados de forma inmediata.
+          </p>
+
+          <p style="font-size: 12px; color: #64748b; margin-top: 20px;">
+            Puedes consultar el texto íntegro de nuestros lineamientos en: <a href="https://www.epizentro.com/natura/terminos" style="color: #059669; font-weight: 700;">Términos y Condiciones de Epizentro Natura</a>.
+          </p>
+        </div>
+        <div class="footer">
+          Epizentro · Hipha Marketing Digital · Notificación Oficial de Moderación y Seguridad
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="EPIZENTRO",
+        from_name="Epizentro Natura · Seguridad",
+        from_email="seguridad@epizentro.com",
+        to_email=reg.email,
+        subject=f"⚠️ Aviso de Suspensión de Ficha: {reg.business_name} | Epizentro Natura",
+        html_content=html_content,
+        domain="epizentro.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"[EPIZENTRO] Notificación de suspensión enviada al comercio {reg.email} ({reg.business_name})")
+        return True
+    except Exception as e:
+        logger.error(f"[EPIZENTRO] Error enviando correo de suspensión a {reg.email}: {e}")
+        return False
+
+
+async def send_epizentro_sentinel_alert_team(reg, violation_details: dict, level: str = "critical") -> bool:
+    """Envía una alerta operativa de alta prioridad al equipo de Hipha / Epizentro cuando el Centinela detecta una infracción."""
+    to_email = getattr(settings, "EPIZENTRO_NOTIFICATION_EMAIL", "") or "hola@hipha.mx"
+    is_critical = (level.lower() == "critical")
+    header_color = "#991b1b" if is_critical else "#d97706"
+    badge_color = "#ef4444" if is_critical else "#f59e0b"
+    title_text = "🚨 ALERTA CENTINELA: Infracción Crítica y Kill-Switch Activado" if is_critical else "⚠️ AVISO CENTINELA: Contenido Sospechoso Requiere Revisión"
+
+    reasons_list = violation_details.get("reasons", [])
+    reasons_html = "".join([f"<li style='margin-bottom:4px;'>{r}</li>" for r in reasons_list]) or f"<li>{violation_details.get('notes', 'Revisión preventiva')}</li>"
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0f172a; margin: 0; padding: 24px; }}
+        .card {{ max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }}
+        .header {{ background: {header_color}; padding: 28px; text-align: center; color: #ffffff; border-bottom: 4px solid {badge_color}; }}
+        .header h2 {{ margin: 0; font-size: 19px; font-weight: 800; }}
+        .header p {{ margin: 6px 0 0; font-size: 12px; color: #ffffff; opacity: 0.9; }}
+        .content {{ padding: 28px; color: #1e293b; font-size: 13px; line-height: 1.6; }}
+        .info-grid {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin: 16px 0; }}
+        .info-row {{ margin-bottom: 8px; }}
+        .info-row:last-child {{ margin-bottom: 0; }}
+        .label {{ font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }}
+        .val {{ font-size: 13px; font-weight: 600; color: #0f172a; }}
+        .violation-box {{ background: #fef2f2; border: 1.5px solid #f87171; border-radius: 12px; padding: 14px 18px; margin: 16px 0; }}
+        .action-taken {{ background: #f1f5f9; border-left: 4px solid #0f172a; padding: 12px 16px; margin: 16px 0; font-size: 12px; }}
+        .btn {{ display: inline-block; background: #0f172a; color: #ffffff; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 13px; }}
+        .footer {{ padding: 16px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }}
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="header">
+          <h2>{title_text}</h2>
+          <p>Auditoría Automatizada de Seguridad Epizentro Natura</p>
+        </div>
+        <div class="content">
+          <p>El <strong>Agente Centinela IA</strong> ha evaluado un comercio registrado y disparado una acción de moderación:</p>
+          
+          <div class="info-grid">
+            <div class="info-row"><span class="label">Comercio:</span> <span class="val">{reg.business_name}</span></div>
+            <div class="info-row"><span class="label">Responsable:</span> <span class="val">{reg.owner_name}</span></div>
+            <div class="info-row"><span class="label">WhatsApp:</span> <span class="val">{reg.whatsapp}</span></div>
+            <div class="info-row"><span class="label">Correo:</span> <span class="val">{reg.email}</span></div>
+            <div class="info-row"><span class="label">ID Registro:</span> <span class="val" style="font-family: monospace;">{reg.id}</span></div>
+            <div class="info-row"><span class="label">Estatus Asignado:</span> <span class="val" style="color: {header_color}; font-weight: 800;">{reg.status}</span></div>
+          </div>
+
+          <div class="violation-box">
+            <strong style="color: #991b1b; display: block; margin-bottom: 6px;">Banderas Rojas Detectadas:</strong>
+            <ul style="margin: 0; padding-left: 20px; color: #7f1d1d;">
+              {reasons_html}
+            </ul>
+          </div>
+
+          <div class="action-taken">
+            <strong>Acciones Ejecutadas por el Sistema:</strong><br>
+            • Estado del negocio cambiado a <code>{reg.status}</code>.<br>
+            • {'Reembolso 100% Mercado Pago ejecutado y teléfono/correo añadidos a Lista Negra.' if is_critical else 'Ficha marcada con bandera ámbar para supervisión humana.'}
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="https://www.epizentro.com/natura/admin" class="btn" style="color:#ffffff;">Supervisar en Panel de Administración</a>
+          </div>
+        </div>
+        <div class="footer">
+          Epizentro · Hipha Marketing Digital · Agente Centinela IA
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    subject_prefix = "🚨 [CRÍTICO]" if is_critical else "⚠️ [REVISIÓN]"
+    message, smtp_host, smtp_port, smtp_user, smtp_password = _prepare_project_email(
+        project_prefix="EPIZENTRO",
+        from_name="Centinela Epizentro IA",
+        from_email="seguridad@epizentro.com",
+        to_email=to_email,
+        subject=f"{subject_prefix} Infracción en Epizentro: {reg.business_name}",
+        html_content=html_content,
+        domain="epizentro.com"
+    )
+
+    try:
+        await _send_smtp(message, smtp_host=smtp_host, smtp_port=smtp_port, smtp_user=smtp_user, smtp_password=smtp_password)
+        logger.info(f"[EPIZENTRO] Alerta de centinela enviada al equipo ({to_email}) para {reg.business_name}")
+        return True
+    except Exception as e:
+        logger.error(f"[EPIZENTRO] Error enviando alerta de centinela al equipo: {e}")
+        return False
+
+
+
 
 
 

@@ -23,6 +23,49 @@ def get_sdk_for_store(store: str = "botica"):
         raise HTTPException(status_code=500, detail=f"Mercado Pago token is not configured for store '{store}'")
     return mercadopago.SDK(token)
 
+
+def refund_mercadopago_payment(payment_id: str, store: str = "botica") -> dict:
+    """Ejecuta la devolución total (100%) de un cobro en Mercado Pago."""
+    if not payment_id:
+        return {"success": False, "error": "No payment_id provided"}
+
+    if store == "healthyice":
+        token = os.getenv("HEALTHYICE_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+    elif store == "chilechillon":
+        token = os.getenv("CHILECHILLON_MERCADOPAGO_ACCESS_TOKEN", "") or os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+    else:
+        token = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
+
+    if not token:
+        return {"success": False, "error": "Mercado Pago Access Token no configurado"}
+
+    # 1. Intentar vía SDK oficial
+    try:
+        sdk = mercadopago.SDK(token)
+        refund_response = sdk.refund().create(payment_id)
+        res_data = refund_response.get("response", {})
+        if refund_response.get("status") in (200, 201) and res_data.get("id"):
+            return {"success": True, "refund_id": res_data.get("id"), "data": res_data}
+    except Exception as sdk_err:
+        print(f"[MERCADOPAGO] SDK refund falló, intentando HTTP directo: {sdk_err}")
+
+    # 2. Fallback HTTP directo con httpx
+    try:
+        import httpx
+        url = f"https://api.mercadopago.com/v1/payments/{payment_id}/refunds"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        resp = httpx.post(url, headers=headers, timeout=15.0)
+        if resp.status_code in (200, 201):
+            return {"success": True, "refund_id": resp.json().get("id"), "data": resp.json()}
+        else:
+            return {"success": False, "error": f"HTTP {resp.status_code}: {resp.text}"}
+    except Exception as http_err:
+        return {"success": False, "error": str(http_err)}
+
+
 class CartItem(BaseModel):
     name: str
     price: float
@@ -265,9 +308,16 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                                     if reg:
                                         reg.payment_status = "approved"
                                         reg.mercadopago_payment_id = str(payment_id)
-                                        reg.is_verified_badge = False
-                                        reg.status = "pending_approval"
+                                        reg.is_verified_badge = True
+                                        reg.status = "active"
                                         db.commit()
+
+                                        # 0. Disparar auditoría automatizada del Agente Centinela IA (Kill Switch y Reembolso 100%)
+                                        try:
+                                            from app.services.epicentro_sentinel import run_sentinel_audit
+                                            await run_sentinel_audit(reg.id, db, refund_on_violation=True)
+                                        except Exception as sentinel_err:
+                                            print(f"Error en auditoría Centinela webhook: {sentinel_err}")
 
                                         # 1. Notificar al equipo de Hipha / Epizentro (hola@hipha.mx)
                                         try:
