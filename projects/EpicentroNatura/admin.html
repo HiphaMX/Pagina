@@ -1006,15 +1006,11 @@ Esta acción no se puede deshacer.`)) return;
       document.getElementById("edit-category-slug").value = reg.category_slug || "comida-delivery";
       syncAdminSubcategoriesDropdown(reg.category_slug || "comida-delivery", reg.subcategory_label || "");
       document.getElementById("edit-subcategory-label").value = reg.subcategory_label || "";
-      document.getElementById("edit-coto-address").value = reg.coto_address || "";
-      document.getElementById("edit-schedule").value = reg.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs";
       document.getElementById("edit-owner-name").value = reg.owner_name || "";
       document.getElementById("edit-phone").value = reg.phone || "";
       document.getElementById("edit-whatsapp").value = reg.whatsapp || "";
       document.getElementById("edit-email").value = reg.email || "";
       document.getElementById("edit-website").value = reg.website || "";
-      document.getElementById("edit-preferred-contact-methods").value = reg.preferred_contact_methods || "whatsapp";
-      document.getElementById("edit-description").value = reg.description || "";
       document.getElementById("edit-status").value = reg.status || "pending_verification";
       const paySelect = document.getElementById("edit-payment-status");
       const targetPay = reg.payment_status || "pending";
@@ -1024,11 +1020,6 @@ Esta acción no se puede deshacer.`)) return;
       document.getElementById("edit-payment-method").value = reg.payment_method || "mercadopago";
       document.getElementById("edit-payment-amount").value = reg.payment_amount !== null && reg.payment_amount !== undefined ? reg.payment_amount : 499;
       document.getElementById("edit-is-verified-badge").checked = !!reg.is_verified_badge;
-      document.getElementById("edit-delivery-available").checked = !!reg.delivery_available;
-      document.getElementById("edit-delivery-badge").value = reg.delivery_badge || "";
-      document.getElementById("edit-coto-only-delivery").checked = !!reg.coto_only_delivery;
-      document.getElementById("edit-pickup-available").checked = reg.pickup_available !== false;
-      document.getElementById("edit-pickup-badge").value = reg.pickup_badge || "";
       document.getElementById("edit-moderation-notes").value = reg.moderation_notes || "";
 
       // 1. Detección y Alerta de Duplicados
@@ -1376,10 +1367,9 @@ Esta acción no se puede deshacer.`)) return;
       }
       if (!existingMdata) existingMdata = {};
 
-      const schedVal = document.getElementById("edit-schedule").value.trim();
-      const webVal = document.getElementById("edit-website").value.trim();
-      existingMdata.schedule = schedVal || existingMdata.schedule || null;
-      existingMdata.website_url = webVal || existingMdata.website_url || null;
+      const webInput = document.getElementById("edit-website");
+      const webVal = webInput ? webInput.value.trim() : (existingReg ? existingReg.website : null);
+      if (webVal) existingMdata.website_url = webVal;
 
       const payload = {
         business_name: document.getElementById("edit-business-name").value.trim(),
@@ -1387,15 +1377,15 @@ Esta acción no se puede deshacer.`)) return;
         category_label: catLabel,
         subcategory_label: subcatLabel || null,
         subcategory_slug: subcatSlug,
-        coto_address: document.getElementById("edit-coto-address").value.trim(),
-        schedule: schedVal,
+        coto_address: existingReg ? existingReg.coto_address : null,
+        schedule: existingReg ? existingReg.schedule : null,
         owner_name: document.getElementById("edit-owner-name").value.trim(),
         phone: document.getElementById("edit-phone").value.trim(),
         whatsapp: document.getElementById("edit-whatsapp").value.trim(),
         email: document.getElementById("edit-email").value.trim(),
         website: webVal || null,
-        preferred_contact_methods: document.getElementById("edit-preferred-contact-methods").value.trim() || null,
-        description: document.getElementById("edit-description").value.trim() || null,
+        preferred_contact_methods: existingReg ? existingReg.preferred_contact_methods : null,
+        description: existingReg ? existingReg.description : null,
         cover_photo: existingReg ? existingReg.cover_photo : null,
         microsite_data: existingMdata,
         photos: existingReg ? existingReg.photos : null,
@@ -1405,11 +1395,11 @@ Esta acción no se puede deshacer.`)) return;
         payment_method: document.getElementById("edit-payment-method").value.trim() || null,
         payment_amount: parseFloat(document.getElementById("edit-payment-amount").value) || 0.0,
         is_verified_badge: document.getElementById("edit-is-verified-badge").checked,
-        delivery_available: document.getElementById("edit-delivery-available").checked,
-        delivery_badge: document.getElementById("edit-delivery-badge").value.trim() || null,
-        coto_only_delivery: document.getElementById("edit-coto-only-delivery").checked,
-        pickup_available: document.getElementById("edit-pickup-available").checked,
-        pickup_badge: document.getElementById("edit-pickup-badge").value.trim() || null,
+        delivery_available: existingReg && existingReg.delivery_available !== undefined ? existingReg.delivery_available : true,
+        delivery_badge: existingReg ? existingReg.delivery_badge : null,
+        coto_only_delivery: existingReg && existingReg.coto_only_delivery !== undefined ? existingReg.coto_only_delivery : false,
+        pickup_available: existingReg && existingReg.pickup_available !== undefined ? existingReg.pickup_available : true,
+        pickup_badge: existingReg ? existingReg.pickup_badge : null,
         moderation_notes: document.getElementById("edit-moderation-notes").value.trim() || null
       };
 
@@ -1443,7 +1433,12 @@ Esta acción no se puede deshacer.`)) return;
             microsite_data: typeof savedReg.microsite_data === "string" ? savedReg.microsite_data : JSON.stringify(existingMdata)
           };
         }
-        try { sessionStorage.removeItem("epizentro_active_businesses"); } catch(e){}
+        try {
+          sessionStorage.removeItem("epizentro_active_businesses");
+          Object.keys(sessionStorage).forEach(k => {
+            if (k.startsWith("biz_")) sessionStorage.removeItem(k);
+          });
+        } catch(e){}
         alert(`¡Ficha de '${payload.business_name}' guardada y sincronizada correctamente!`);
         closeEditModal();
         renderTable();
@@ -1703,21 +1698,7 @@ Esta acción no se puede deshacer.`)) return;
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-300 mb-1">Ubicación / Coto / Local *</label>
-            <input type="text" id="edit-coto-address" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-          </div>
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="block text-xs font-bold text-slate-300">Horario de Atención *</label>
-              <span class="text-[10px] text-emerald-400 font-mono">Hero1 & Ficha</span>
-            </div>
-            <input type="text" id="edit-schedule" placeholder="Ej. Lunes a Sábado · 09:00 a 19:00 hrs" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-          </div>
-        </div>
-
-        <!-- Contacto -->
+        <!-- Contacto e Identidad Registrante -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-slate-800 pt-3">
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Responsable *</label>
@@ -1725,11 +1706,11 @@ Esta acción no se puede deshacer.`)) return;
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">Teléfono</label>
-            <input type="tel" id="edit-phone" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+            <input type="tel" id="edit-phone" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-300 mb-1">WhatsApp</label>
-            <input type="tel" id="edit-whatsapp" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
+            <input type="tel" id="edit-whatsapp" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
           </div>
         </div>
 
@@ -1742,18 +1723,6 @@ Esta acción no se puede deshacer.`)) return;
             <label class="block text-xs font-bold text-slate-300 mb-1">Sitio Web / Perfil Oficial</label>
             <input type="text" id="edit-website" placeholder="https://... o elchilechillon.mx" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
           </div>
-        </div>
-
-        <!-- Métodos de Contacto Preferidos -->
-        <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">Métodos de Contacto Preferidos</label>
-          <input type="text" id="edit-preferred-contact-methods" placeholder="whatsapp,llamada,punto-venta,delivery" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-          <span class="text-[10px] text-slate-500">Valores separados por coma: whatsapp, llamada, punto-venta, delivery, cita-previa</span>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-300 mb-1">Descripción Comercial</label>
-          <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none" placeholder="Descripción breve del comercio..."></textarea>
         </div>
 
         <!-- MODERACIÓN, FINANZAS Y GOBIERNO COMERCIAL -->
@@ -1834,32 +1803,8 @@ Esta acción no se puede deshacer.`)) return;
             </div>
           </div>
 
-          <div class="space-y-3 py-2 border-y border-slate-800">
-            <span class="block text-xs font-bold text-slate-300">Modalidades de Servicio, Entrega y Presencial</span>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" id="edit-delivery-available" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
-                  <span class="text-xs font-bold text-emerald-400">Entrega / Servicio a Domicilio</span>
-                </label>
-                <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio en cotos" class="w-full px-3 py-1.5 text-[11px] rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-emerald-500 focus:outline-none">
-                <label class="flex items-center gap-2 cursor-pointer pt-1">
-                  <input type="checkbox" id="edit-coto-only-delivery" class="w-4 h-4 text-amber-500 rounded border-slate-700 bg-slate-950">
-                  <span class="text-[11px] font-bold text-amber-400">🏡 Solo en su coto (Recoger en caseta)</span>
-                </label>
-              </div>
-
-              <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" id="edit-pickup-available" class="w-4 h-4 text-blue-500 rounded border-slate-700 bg-slate-950">
-                  <span class="text-xs font-bold text-blue-400">Punto de Venta Físico / Retiro</span>
-                </label>
-                <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-[11px] rounded-lg bg-slate-900 border border-slate-700 text-white focus:border-blue-500 focus:outline-none">
-                <span class="text-[10px] text-slate-500 block leading-tight">Desmarcar para servicios a domicilio, reparaciones o home service (como Valencia Servicios).</span>
-              </div>
-            </div>
-
-            <label class="flex items-center gap-2 cursor-pointer pt-1">
+          <div class="pt-1">
+            <label class="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" id="edit-is-verified-badge" class="w-4 h-4 text-emerald-500 rounded border-slate-700 bg-slate-950">
               <span class="text-xs font-bold text-emerald-400">Sello Vecino Verificado Oficial</span>
             </label>

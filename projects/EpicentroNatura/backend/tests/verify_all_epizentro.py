@@ -239,15 +239,15 @@ def test_4_essential_cards_and_valencia_pickup():
         "Validado en categoria.html, index.html y servicios-hogar.html"
     )
 
-    # 4.3 Controles en admin.html y editar.html
+    # 4.3 Controles en editar.html (Link Mágico) y acceso ejecutivo desde admin.html
     admin_c = open(EPIZENTRO_DIR / "admin.html", "r", encoding="utf-8").read()
     editar_c = open(EPIZENTRO_DIR / "editar.html", "r", encoding="utf-8").read()
-    admin_has_ctrls = "edit-pickup-available" in admin_c and "edit-delivery-badge" in admin_c
+    admin_has_access = "btn-open-magic-link" in admin_c and "edit-pickup-available" not in admin_c
     editar_has_ctrls = "edit-pickup" in editar_c and "edit-delivery-badge" in editar_c
     report_result(
-        "Controles de pickup/delivery en admin.html y editar.html (Link Mágico)",
-        admin_has_ctrls and editar_has_ctrls,
-        "Checkboxes y campos de texto para badges presentes en consola y autoservicio"
+        "Controles de pickup/delivery en editar.html (Link Mágico) y acceso ejecutivo desde admin.html",
+        admin_has_access and editar_has_ctrls,
+        "Controles operativos en autoservicio y acceso administrativo verificado 100%"
     )
 
 
@@ -710,11 +710,14 @@ def test_10_moderator_and_magic_link_specialization():
         'modal-audit-card' in admin_html and
         'edit-coupon-code-badge' in admin_html
     )
-    # Verificar que el editor redundante de microcatálogos fue desacoplado de admin.html
+    # Verificar que el editor redundante de microcatálogos y campos operativos fueron desacoplados de admin.html
     decoupled_microcatalog = (
         'edit-new-prod-file-input' not in admin_html and
         'addAdminFeaturedProduct' not in admin_html and
-        'handleAdminCoverFile' not in admin_html
+        'handleAdminCoverFile' not in admin_html and
+        'id="edit-schedule"' not in admin_html and
+        'id="edit-coto-address"' not in admin_html and
+        'id="edit-delivery-available"' not in admin_html
     )
     
     admin_specialization_ok = (

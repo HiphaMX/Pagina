@@ -1341,6 +1341,9 @@
 
           try {
             sessionStorage.removeItem("epizentro_active_businesses");
+            Object.keys(sessionStorage).forEach(k => {
+              if (k.startsWith("biz_")) sessionStorage.removeItem(k);
+            });
           } catch(e){}
 
           if (currentBiz) {
