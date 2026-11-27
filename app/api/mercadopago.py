@@ -265,8 +265,8 @@ async def mercadopago_webhook(request: Request, store: str = "botica", db: Sessi
                                     if reg:
                                         reg.payment_status = "approved"
                                         reg.mercadopago_payment_id = str(payment_id)
-                                        reg.is_verified_badge = True
-                                        reg.status = "active"
+                                        reg.is_verified_badge = False
+                                        reg.status = "pending_approval"
                                         db.commit()
 
                                         # 1. Notificar al equipo de Hipha / Epizentro (hola@hipha.mx)

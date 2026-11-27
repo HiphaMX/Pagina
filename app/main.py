@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from typing import Optional
 import os
 
 from app.api import contact, mercadopago, auth, sat, qa, visual_generator, social_tracker
@@ -298,6 +299,18 @@ app.include_router(epicentro_project.router, prefix="/api/epicentro", tags=["epi
 def render_public_cronica_entrypoint(slug: str, request: Request, db: Session = Depends(get_db)):
     """Punto de entrada público SSR para publicaciones de Cultura Natura con OpenGraph para WhatsApp."""
     return epicentro_project.render_cultura_article(slug, request, db)
+
+
+@app.api_route("/natura/negocio", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/negocio.html", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/escaparate/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/comercio/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/escaparate", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/natura/comercio", methods=["GET", "HEAD"], response_class=HTMLResponse)
+def render_public_escaparate_entrypoint(request: Request, slug: Optional[str] = None, db: Session = Depends(get_db)):
+    """Punto de entrada público SSR para Páginas Escaparate con OpenGraph dinámico para WhatsApp y redes sociales."""
+    return epicentro_project.render_escaparate_page(slug, request, db)
+
 
 
 @app.api_route("/propiedad", methods=["GET", "HEAD"], response_class=HTMLResponse)

@@ -14,6 +14,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">Página Escaparate Individual · Epizentro Natura</title>
   <meta id="page-meta-desc" name="description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
+  <link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/negocio">
+
+  <!-- Open Graph / WhatsApp / Facebook Dinámicos -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Epizentro Natura">
+  <meta id="og-title" property="og:title" content="Página Escaparate Individual · Epizentro Natura">
+  <meta id="og-desc" property="og:description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
+  <meta id="og-img" property="og:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta id="og-url" property="og:url" content="https://www.epizentro.com/natura/negocio">
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="tw-title" name="twitter:title" content="Página Escaparate Individual · Epizentro Natura">
+  <meta id="tw-desc" name="twitter:description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
+  <meta id="tw-img" name="twitter:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
 
   <!-- Favicon y Fuentes -->
   <link rel="icon" type="image/svg+xml" href="Assets/ICO.svg">
@@ -107,8 +124,12 @@
         <i data-lucide="arrow-left" class="w-4 h-4 shrink-0"></i>
         <span id="topbar-back-text" class="truncate">Volver al Directorio</span>
       </a>
-      <div class="flex items-center gap-2 shrink-0">
-        <span class="text-[11px] font-mono text-slate-400">Epicentro</span>
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button id="btn-share-topbar" onclick="shareStorefront()" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all active:scale-95 shadow-sm cursor-pointer" title="Compartir escaparate en WhatsApp">
+          <i data-lucide="share-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Compartir</span>
+        </button>
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Epicentro</span>
         <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
           natura
         </span>
@@ -454,11 +475,13 @@
         return;
       }
 
-      // 1. Títulos y Metadatos
+      // 1. Títulos y Metadatos Dinámicos
       const bName = reg.business_name || "Comercio Verificado";
-      document.title = `${bName} · Página Escaparate Individual | Epizentro Natura`;
+      const catLabel = reg.subcategory_label || reg.category_label || "Comercio & Catálogo";
+      const pageTitleText = `${bName} · ${catLabel} | Epizentro Natura`;
+      document.title = pageTitleText;
       const pageTitle = document.getElementById("page-title");
-      if (pageTitle) pageTitle.textContent = `${bName} · Epizentro Natura`;
+      if (pageTitle) pageTitle.textContent = pageTitleText;
       const titleEl = document.getElementById("hero-title");
       if (titleEl) titleEl.textContent = bName;
 
@@ -470,12 +493,24 @@
         } catch (e) {}
       }
 
-      // 3. Descripción
+      // 3. Descripción y Redes Sociales
       const descEl = document.getElementById("hero-business-description");
       const defaultDesc = reg.description || 
         (mdata && mdata.featured_section && mdata.featured_section.description) || 
         `Comercio Vecino Verificado en ${reg.coto_address || "Natura Bosque Residencial"}.`;
       if (descEl) descEl.textContent = defaultDesc;
+
+      const shareDescText = `${defaultDesc} 📍 ${reg.coto_address || "Natura Bosque Residencial"}. Catálogo y WhatsApp directo.`;
+      const metaDesc = document.getElementById("page-meta-desc");
+      if (metaDesc) metaDesc.setAttribute("content", shareDescText);
+      const ogTitle = document.getElementById("og-title");
+      if (ogTitle) ogTitle.setAttribute("content", pageTitleText);
+      const ogDesc = document.getElementById("og-desc");
+      if (ogDesc) ogDesc.setAttribute("content", shareDescText);
+      const twTitle = document.getElementById("tw-title");
+      if (twTitle) twTitle.setAttribute("content", pageTitleText);
+      const twDesc = document.getElementById("tw-desc");
+      if (twDesc) twDesc.setAttribute("content", shareDescText);
 
       // 4. Categoría y Topbar back link
       const catSlug = reg.category_slug || "comida-delivery";
@@ -496,6 +531,11 @@
           showcaseImg.src = coverPhoto;
           showcaseImg.classList.remove("opacity-0");
         }
+        const absCover = coverPhoto.startsWith("http") ? coverPhoto : `https://www.epizentro.com${coverPhoto.startsWith('/') ? '' : '/'}${coverPhoto}`;
+        const ogImg = document.getElementById("og-img");
+        if (ogImg) ogImg.setAttribute("content", absCover);
+        const twImg = document.getElementById("tw-img");
+        if (twImg) twImg.setAttribute("content", absCover);
       }
 
       // 6. Ubicación y Horario
@@ -873,6 +913,44 @@
         if (descEl) descEl.textContent = "No fue posible localizar este comercio o aún se encuentra en proceso de validación comunitaria.";
         if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
+    }
+
+    // --- FUNCIÓN OFICIAL PARA COMPARTIR ESCAPARATE ---
+    window.shareStorefront = function() {
+      const bName = document.getElementById("hero-title")?.textContent || "Página Escaparate";
+      const desc = document.getElementById("hero-business-description")?.textContent || "";
+      const canonicalLink = document.getElementById("canonical-link")?.getAttribute("href") || window.location.href;
+      const shareUrl = canonicalLink.startsWith("http") ? canonicalLink : `https://www.epizentro.com${canonicalLink.startsWith('/') ? '' : '/'}${canonicalLink}`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: `${bName} · Epizentro Natura`,
+          text: `Conoce la oferta oficial de ${bName} en Epizentro Natura:`,
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            showShareToast();
+          }).catch(() => {
+            prompt("Copia el siguiente enlace para compartir:", shareUrl);
+          });
+        } else {
+          prompt("Copia el siguiente enlace para compartir:", shareUrl);
+        }
+      }
+    };
+
+    function showShareToast() {
+      const existing = document.getElementById("share-toast-msg");
+      if (existing) existing.remove();
+      const toast = document.createElement("div");
+      toast.id = "share-toast-msg";
+      toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-2xl border border-emerald-500/50 flex items-center gap-2 animate-bounce";
+      toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span>¡Enlace copiado para compartir en WhatsApp!</span>`;
+      document.body.appendChild(toast);
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+      setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3500);
     }
 
     document.addEventListener("DOMContentLoaded", () => {

@@ -385,7 +385,7 @@
             </button>
             <div id="coupon-container" class="hidden mt-2 p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex gap-2">
-                <input type="text" id="reg-coupon-code" placeholder="Ej. ACCESOFITNESS o NATURA100" class="w-full px-3 py-2 text-xs uppercase font-mono tracking-wider font-bold rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500">
+                <input type="text" id="reg-coupon-code" placeholder="Ej. NATURA100-24U6" class="w-full px-3 py-2 text-xs uppercase font-mono tracking-wider font-bold rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500">
                 <button type="button" onclick="handleApplyCoupon()" id="btn-apply-coupon" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shrink-0 transition-colors cursor-pointer">
                   Aplicar
                 </button>
@@ -404,37 +404,37 @@
 
         <!-- FASE 3: ÉXITO Y AUTOSERVICIO -->
         <div id="reg-step-3" class="hidden text-center py-4 space-y-4 max-w-md mx-auto">
-          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+          <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
             <i data-lucide="check-circle-2" class="w-9 h-9"></i>
           </div>
 
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
-            Comercio Verificado y Activo
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-[11px] font-bold">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>Solicitud Acreditada · En Moderación</span>
           </div>
 
           <h4 id="success-title" class="text-xl font-black text-slate-950">
-            ¡Tu Negocio ya está Activo!
+            ¡Registro y Pago Confirmados!
           </h4>
           
           <p id="success-desc" class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-            Tu negocio <strong id="success-bname" class="text-slate-900"></strong> ha sido publicado con su Sello Oficial en Epizentro Natura. Ahora puedes subir tus fotos y catálogo cuando lo desees.
+            Tu negocio <strong id="success-bname" class="text-slate-900"></strong> ha sido recibido con éxito. Tu ficha está en revisión de calidad editorial y quedará visible públicamente en el directorio una vez aprobada por la administración de Epizentro.
           </p>
 
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 max-w-xs mx-auto">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Verificación</span>
-            <span id="success-folio" class="text-base font-mono font-black text-emerald-600">NATURA-VERIFIED-100</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Folio de Solicitud</span>
+            <span id="success-folio" class="text-base font-mono font-black text-blue-700">NATURA-SOLICITUD-100</span>
           </div>
 
           <!-- BOTONERA DE ACCIÓN -->
           <div class="space-y-2 pt-2">
             <a id="btn-to-self-service" href="#" class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 no-underline">
               <i data-lucide="camera" class="w-4 h-4"></i>
-              <span>Subir mis Fotos y Catálogo Ahora</span>
+              <span>Personalizar Fotos y Catálogo Ahora</span>
             </a>
 
             <a id="btn-to-public-showcase" href="#" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 no-underline transition-colors">
-              <span>Ver mi Ficha en el Directorio</span>
+              <span>Ver cómo lucirá mi Página Escaparate</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </a>
           </div>

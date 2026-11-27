@@ -118,7 +118,15 @@
       "dest": "/api"
     },
     {
-      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|negocio|cultura-natura|categoria|admin|editor-cultura|articulo|editar|index)(.html|)",
+      "src": "/natura/(negocio|escaparate|comercio)(\\.html)?",
+      "dest": "/api"
+    },
+    {
+      "src": "/natura/(escaparate|comercio)/([^/]+)",
+      "dest": "/api"
+    },
+    {
+      "src": "/natura/(tu-negocio|chile-chillon|botica-silvestre|amdi|cultura-natura|categoria|admin|editor-cultura|articulo|editar|index)(.html|)",
       "has": [
         {
           "type": "host",
@@ -181,7 +189,7 @@
           "value": "^(www\\.)?epizentro\\.com$"
         }
       ],
-      "dest": "/projects/EpicentroNatura/negocio"
+      "dest": "/api"
     },
     {
       "src": "/natura/(.*)",

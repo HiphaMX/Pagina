@@ -901,17 +901,8 @@ OFFICIAL_COURTESY_COUPONS = [
     "NATURA100-ZDXX",
 ]
 
-VALID_COUPON_CODES = {
-    "NATURA100": "Cortesía Fundador 100% Exenta",
-    "FUNDADOR": "Cortesía de Lanzamiento Fundadores Natura",
-    "EPICENTRO2026": "Pase Especial Epicentro Hipha 2026",
-    "HIPHA": "Cortesía Especial Agencia Hipha",
-    "ACCESOFITNESS": "Cortesía Lanzamiento Fitness Natura 100% Exenta",
-    "FITNESS100": "Pase Gratuito Fitness Natura",
-    "GRATIS": "Acceso Promocional 100% Exento Epizentro",
-    "VENTASHOY": "Acceso Comercial de Lanzamiento Hipha",
-    "PRUEBA": "Acceso de Validación Técnica y Calidad",
-}
+# Diccionario de códigos institucionales de prueba vacío (únicamente 30 cortesías oficiales de lanzamiento activas)
+VALID_COUPON_CODES = {}
 
 
 def seed_courtesy_coupons(db: Session):
@@ -946,9 +937,9 @@ def seed_courtesy_coupons(db: Session):
 @router.post("/register/apply-coupon")
 def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends(get_db)):
     """
-    Aplica un código de cortesía o invitación para exonerar la cuota de suscripción
-    y dejar el negocio verificado y activo en el directorio comunitario con Página Escaparate Individual.
-    Garantiza que los códigos de cortesía individuales sean estrictamente de un solo uso.
+    Aplica un código de cortesía oficial de lanzamiento (30 códigos únicos de un solo uso)
+    para exonerar la cuota anual al 100%. El comercio queda con pago cubierto y en estatus
+    'pending_approval' para validación y moderación de calidad en el panel de administración.
     """
     seed_courtesy_coupons(db)
     reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.id == payload.registration_id).first()
@@ -958,7 +949,7 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
     code = payload.coupon_code.strip().upper()
     now = datetime.now(timezone.utc)
 
-    # 1. Buscar en la tabla de cupones controlados (Un solo uso)
+    # 1. Buscar en la tabla de cupones controlados oficiales (Un solo uso)
     coupon = db.query(EpicentroCoupon).filter(func.upper(EpicentroCoupon.code) == code).first()
     if coupon:
         if not coupon.is_active or coupon.times_used >= coupon.max_uses:
@@ -976,36 +967,43 @@ def apply_verification_coupon(payload: ApplyCouponRequest, db: Session = Depends
         coupon.business_name = reg.business_name
         code_desc = coupon.description
     else:
-        # 2. Códigos institucionales permanentes de agencia o env
+        # 2. Códigos institucionales por variable de entorno si existiesen
         env_codes = [c.strip().upper() for c in os.getenv("EPICENTRO_COUPONS", "").split(",") if c.strip()]
-        if code not in VALID_COUPON_CODES and code not in env_codes:
-            raise HTTPException(status_code=400, detail="Código de cortesía inválido o no reconocido.")
-        code_desc = VALID_COUPON_CODES.get(code, "Cupón de Cortesía Institucional")
+        if code not in env_codes:
+            raise HTTPException(
+                status_code=400,
+                detail="Código de cortesía inválido o no reconocido. Solo se admiten cupones oficiales de lanzamiento."
+            )
+        code_desc = "Cupón Oficial de Lanzamiento"
 
     if not reg.edit_token:
         reg.edit_token = secrets.token_urlsafe(32)
         reg.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=90)
 
+    # Opción 1: Moderación Previa Obligatoria por Administrador
     reg.payment_status = "waived"
     reg.payment_amount = 0.0
-    reg.is_verified_badge = True
-    reg.status = "active"
+    reg.is_verified_badge = False
+    reg.status = "pending_approval"
     reg.coupon_code = code
-    reg.moderation_notes = f"Activación con cupón '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC."
+    reg.moderation_notes = (
+        (reg.moderation_notes + "\n" if reg.moderation_notes else "") +
+        f"Canje de cortesía oficial '{code}': {code_desc} el {now.strftime('%Y-%m-%d %H:%M:%S')} UTC. Pendiente de aprobación administrativa."
+    )
     db.commit()
     db.refresh(reg)
 
     folio_suffix = reg.whatsapp_code.split("-")[-1] if reg.whatsapp_code else reg.id[:4].upper()
-    folio = f"NATURA-VERIFIED-{folio_suffix}"
+    folio = f"NATURA-SOLICITUD-{folio_suffix}"
 
     return {
         "success": True,
-        "message": f"¡Código {code} aplicado con éxito! Tu cuota anual ha sido exonerada al 100%. Tu comercio está verificado y activo con Sello Oficial.",
+        "message": f"¡Código de cortesía {code} aplicado con éxito! Tu cuota ha sido exonerada al 100%. Tu registro ha sido enviado a revisión y quedará visible en el directorio una vez aprobado por la administración.",
         "folio": folio,
         "registration_id": reg.id,
         "business_name": reg.business_name,
-        "is_verified_badge": True,
-        "status": "active",
+        "is_verified_badge": False,
+        "status": "pending_approval",
         "coupon_code": code,
         "edit_token": reg.edit_token,
         "edit_url": f"/natura/editar?token={reg.edit_token}"
@@ -2104,6 +2102,10 @@ def seed_official_showcases(db: Session):
             if valencia.slug != "valenciaservicios":
                 valencia.slug = "valenciaservicios"
                 updated = True
+            valencia_cover = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1600&q=80"
+            if valencia.cover_photo != valencia_cover:
+                valencia.cover_photo = valencia_cover
+                updated = True
             if valencia.description != "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.":
                 valencia.description = "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona."
                 updated = True
@@ -2743,6 +2745,237 @@ def render_cultura_article(slug: str, request: Request, db: Session = Depends(ge
             "Access-Control-Allow-Origin": "*"
         }
     )
+
+
+def render_escaparate_html(html_template: str, reg: EpicentroRegistration, cover_absolute: str, canonical_url: str) -> str:
+    """
+    Inyecta dinámicamente metadatos OpenGraph panorámicos, Twitter Cards, Schema.org
+    y títulos personalizados en el HTML de la Página Escaparate Individual para que al compartir
+    el link en WhatsApp, Facebook, iMessage o Twitter luzca TOP con tarjeta panorámica y foto de portada.
+    """
+    import html as html_lib
+
+    bname = (reg.business_name or "Comercio Vecino").strip()
+    bname_escaped = html_lib.escape(bname)
+
+    # Giro o Subcategoría limpia
+    cat_label = reg.subcategory_label or reg.category_label or "Comercio & Catálogo"
+    page_title = f"{bname} · {cat_label} | Epizentro Natura"
+    title_escaped = html_lib.escape(page_title)
+
+    # Redacción persuasiva y limpia para la vista previa de WhatsApp
+    raw_desc = (reg.description or "").strip()
+    coto = (reg.coto_address or "Natura Bosque Residencial").strip()
+    if not raw_desc:
+        raw_desc = f"Conoce la oferta oficial y productos de {bname} en {coto}."
+
+    clean_desc = re.sub(r'\s+', ' ', raw_desc)
+    if len(clean_desc) > 135:
+        clean_desc = clean_desc[:132].rsplit(' ', 1)[0] + '...'
+
+    share_desc = f"{clean_desc} 📍 {coto}. Catálogo, horarios y WhatsApp directo."
+    desc_escaped = html_lib.escape(share_desc)
+
+    res = html_template
+
+    # 1. Title y Meta Description estándar
+    res = re.sub(r'<title id="page-title">.*?</title>', f'<title id="page-title">{title_escaped}</title>', res, flags=re.DOTALL)
+    res = re.sub(r'<meta id="page-meta-desc" name="description" content=".*?">', f'<meta id="page-meta-desc" name="description" content="{desc_escaped}">', res)
+
+    # 2. Canonical Link
+    if '<link id="canonical-link"' in res:
+        res = re.sub(r'<link id="canonical-link" rel="canonical" href=".*?">', f'<link id="canonical-link" rel="canonical" href="{canonical_url}">', res)
+    else:
+        res = res.replace('</head>', f'  <link id="canonical-link" rel="canonical" href="{canonical_url}">\n</head>')
+
+    # 3. OpenGraph y Twitter Cards
+    og_meta_tags = f'''  <!-- Metadatos Open Graph / WhatsApp / Facebook Dinámicos -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Epizentro Natura">
+  <meta id="og-title" property="og:title" content="{title_escaped}">
+  <meta id="og-desc" property="og:description" content="{desc_escaped}">
+  <meta id="og-img" property="og:image" content="{cover_absolute}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{bname_escaped} en Epizentro Natura">
+  <meta id="og-url" property="og:url" content="{canonical_url}">
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="tw-title" name="twitter:title" content="{title_escaped}">
+  <meta id="tw-desc" name="twitter:description" content="{desc_escaped}">
+  <meta id="tw-img" name="twitter:image" content="{cover_absolute}">'''
+
+    if '<meta id="og-title"' in res:
+        res = re.sub(r'<meta id="og-title".*?>', f'<meta id="og-title" property="og:title" content="{title_escaped}">', res)
+        res = re.sub(r'<meta id="og-desc".*?>', f'<meta id="og-desc" property="og:description" content="{desc_escaped}">', res)
+        res = re.sub(r'<meta id="og-img".*?>', f'<meta id="og-img" property="og:image" content="{cover_absolute}">', res)
+        res = re.sub(r'<meta id="og-url".*?>', f'<meta id="og-url" property="og:url" content="{canonical_url}">', res)
+        res = re.sub(r'<meta id="tw-title".*?>', f'<meta id="tw-title" name="twitter:title" content="{title_escaped}">', res)
+        res = re.sub(r'<meta id="tw-desc".*?>', f'<meta id="tw-desc" name="twitter:description" content="{desc_escaped}">', res)
+        res = re.sub(r'<meta id="tw-img".*?>', f'<meta id="tw-img" name="twitter:image" content="{cover_absolute}">', res)
+    else:
+        res = res.replace('</head>', f'{og_meta_tags}\n</head>')
+
+    # 4. Schema.org JSON-LD LocalBusiness
+    schema_bname = bname.replace('"', '\\"')
+    schema_desc = clean_desc.replace('"', '\\"')
+    schema_coto = coto.replace('"', '\\"')
+    schema_phone = (reg.whatsapp or reg.phone or "").replace('"', '\\"')
+    schema_block = f'''  <script type="application/ld+json" id="business-jsonld">
+  {{
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "{schema_bname}",
+    "description": "{schema_desc}",
+    "image": ["{cover_absolute}"],
+    "telephone": "{schema_phone}",
+    "address": {{
+      "@type": "PostalAddress",
+      "streetAddress": "{schema_coto}",
+      "addressLocality": "Zapopan",
+      "addressRegion": "Jalisco",
+      "addressCountry": "MX"
+    }},
+    "url": "{canonical_url}"
+  }}
+  </script>'''
+    res = res.replace('</head>', f'{schema_block}\n</head>')
+
+    # 5. Pre-hidratación del DOM para Cero FOUC (visualización inmediata en navegador)
+    res = re.sub(
+        r'<h1 id="hero-title".*?>.*?</h1>',
+        f'<h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title min-h-[1.2em]">{bname_escaped}</h1>',
+        res,
+        flags=re.DOTALL
+    )
+    res = re.sub(
+        r'<p id="hero-business-description".*?>.*?</p>',
+        f'<p id="hero-business-description" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-4xl min-h-[2.5em]">{html_lib.escape(clean_desc)}</p>',
+        res,
+        flags=re.DOTALL
+    )
+    res = re.sub(
+        r'<img id="hero-showcase-img".*?>',
+        f'<img id="hero-showcase-img" src="{cover_absolute}" alt="{bname_escaped}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out" loading="eager">',
+        res
+    )
+
+    return res
+
+
+@router.api_route("/escaparate/render/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse)
+def render_escaparate_page(slug: Optional[str] = None, request: Request = None, db: Session = Depends(get_db)):
+    """Micro-render SSR que inyecta los OpenGraph meta tags dinámicos y portada para WhatsApp en Páginas Escaparate."""
+    ensure_epicentro_schema(db)
+    seed_official_showcases(db)
+
+    # Identificar negocio: slug de path, o ?id=, o ?slug=, o ?b=
+    target_id = ""
+    if slug:
+        target_id = slug.strip()
+    if not target_id and request:
+        target_id = (
+            request.query_params.get("id") or
+            request.query_params.get("slug") or
+            request.query_params.get("b") or
+            ""
+        ).strip()
+
+    # Redirigir si coincide con una página del sistema que no es comercio
+    if target_id in ("tu-negocio", "categoria", "admin", "editar", "editor-cultura", "articulo", "cultura-natura", "index"):
+        clean_target = f"/natura/{target_id}.html" if not target_id.endswith(".html") else f"/natura/{target_id}"
+        return RedirectResponse(url=clean_target)
+
+    # Aliases de showcase para compatibilidad con guiones y rutas amigables
+    showcase_alias_map = {
+        "chile-chillon": "reg-chile-chillon",
+        "chilechillon": "reg-chile-chillon",
+        "elchilechillon": "reg-chile-chillon",
+        "botica-silvestre": "reg-botica-silvestre",
+        "boticasilvestre": "reg-botica-silvestre",
+        "jessica-mendoza": "18315325-717f-4072-86b0-cab5300e0d3f",
+        "jessicamendoza": "18315325-717f-4072-86b0-cab5300e0d3f",
+        "amdi": "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
+        "amdi-interior": "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
+        "valencia-servicios": "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+        "valenciaservicios": "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322"
+    }
+    lookup_id = showcase_alias_map.get(target_id.lower(), target_id)
+
+    reg = None
+    if lookup_id:
+        reg = db.query(EpicentroRegistration).filter(
+            (EpicentroRegistration.id == lookup_id) |
+            (func.lower(EpicentroRegistration.slug) == lookup_id.lower()) |
+            (func.lower(EpicentroRegistration.business_name) == lookup_id.lower())
+        ).first()
+
+    template_candidates = [
+        os.path.join(os.getcwd(), "projects", "EpicentroNatura", "negocio.html"),
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "projects", "EpicentroNatura", "negocio.html"),
+        os.path.join("projects", "EpicentroNatura", "negocio.html")
+    ]
+    html_raw = None
+    for cand in template_candidates:
+        if cand and os.path.exists(cand):
+            try:
+                with open(cand, "r", encoding="utf-8") as f:
+                    html_raw = f.read()
+                if html_raw:
+                    break
+            except Exception:
+                continue
+
+    if not html_raw:
+        return HTMLResponse("<h1>Error cargando plantilla de Escaparate</h1>", status_code=500)
+
+    if not reg:
+        # Fallback genérico para escaparate sin parámetro
+        return HTMLResponse(
+            content=html_raw,
+            headers={
+                "Cache-Control": "public, max-age=0, must-revalidate",
+                "Access-Control-Allow-Origin": "*"
+            }
+        )
+
+    # Determinar imagen de portada de alta resolución
+    cover = (reg.cover_photo or "").strip()
+    if not cover and reg.microsite_data:
+        try:
+            mdata = json.loads(reg.microsite_data) if isinstance(reg.microsite_data, str) else reg.microsite_data
+            if isinstance(mdata, dict):
+                cover = (mdata.get("cover_photo") or "").strip()
+        except Exception:
+            pass
+    if not cover and reg.photos:
+        try:
+            photos_list = json.loads(reg.photos) if isinstance(reg.photos, str) else reg.photos
+            if isinstance(photos_list, list) and len(photos_list) > 0 and photos_list[0]:
+                cover = photos_list[0].strip()
+        except Exception:
+            pass
+    if not cover:
+        cover = CURATED_COVERS_BY_CATEGORY.get(reg.category_slug, DEFAULT_CURATED_COVER)
+
+    if cover.startswith("/"):
+        cover = f"https://www.epizentro.com{cover}"
+    elif not cover.startswith("http"):
+        cover = f"https://www.epizentro.com/{cover}"
+
+    canonical_url = f"https://www.epizentro.com/natura/negocio?id={reg.id}"
+
+    rendered = render_escaparate_html(html_raw, reg, cover, canonical_url)
+
+    return HTMLResponse(
+        content=rendered,
+        headers={
+            "Cache-Control": "public, max-age=0, must-revalidate",
+            "Access-Control-Allow-Origin": "*"
+        }
+    )
+
 
 
 
