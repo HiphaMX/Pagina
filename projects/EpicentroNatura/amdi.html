@@ -418,7 +418,7 @@
       }
 
       // 6. Actualizar portada
-      if (reg.cover_photo && !reg.cover_photo.includes("unsplash.com")) {
+      if (reg.cover_photo) {
         const coverEl = document.getElementById("hero-cover-bg");
         if (coverEl) coverEl.style.backgroundImage = `url('${reg.cover_photo}')`;
         const showcaseImg = document.getElementById("hero-showcase-img");

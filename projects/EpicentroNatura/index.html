@@ -1918,7 +1918,8 @@
                   schedule: (existing.schedule && existing.schedule.includes("·") && !biz.schedule?.includes("·")) ? existing.schedule : (biz.schedule || existing.schedule),
                   hours: (existing.hours && existing.hours.includes("·") && !biz.schedule?.includes("·")) ? existing.hours : (biz.schedule || existing.hours),
                   photos: (existing.photos && existing.photos.length > 0 && (!bizPhotos || bizPhotos.length === 0)) ? existing.photos : (bizPhotos.length > 0 ? bizPhotos : existing.photos),
-                  cover_photo: existing.cover_photo || bizObj.cover_photo
+                  description: biz.description || existing.description || bizObj.description,
+                  cover_photo: bizObj.cover_photo || existing.cover_photo
                 };
               } else {
                 ALL_BUSINESSES.unshift(bizObj);

@@ -1323,6 +1323,7 @@
                 payment_status: biz.payment_status || "free_basic",
                 payment_amount: biz.payment_amount !== null && biz.payment_amount !== undefined ? biz.payment_amount : 0.0,
                 has_microsite: biz.payment_status === "approved" || biz.payment_status === "waived",
+                cover_photo: biz.cover_photo || (mdata ? mdata.cover_photo : null) || null,
                 schedule: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 hours: biz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs",
                 is_open_now: true,
@@ -1347,7 +1348,8 @@
                   schedule: (existing.schedule && existing.schedule.includes("·") && !biz.schedule?.includes("·")) ? existing.schedule : (biz.schedule || existing.schedule),
                   hours: (existing.hours && existing.hours.includes("·") && !biz.schedule?.includes("·")) ? existing.hours : (biz.schedule || existing.hours),
                   photos: (existing.photos && existing.photos.length > 0 && (!biz.photos || biz.photos.length === 0)) ? existing.photos : (bizObj.photos || existing.photos),
-                  cover_photo: existing.cover_photo || bizObj.cover_photo
+                  description: biz.description || existing.description || bizObj.description,
+                  cover_photo: bizObj.cover_photo || existing.cover_photo
                 };
               } else {
                 ALL_BUSINESSES.unshift(bizObj);

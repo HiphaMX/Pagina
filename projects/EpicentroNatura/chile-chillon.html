@@ -633,12 +633,13 @@
         }
       }
 
-      // 2. Actualizar Portada si fue modificada por el moderador
-      if (reg.cover_photo) {
+      // 2. Actualizar Portada si fue modificada por el moderador o autoservicio
+      const coverPhoto = reg.cover_photo || (mdata && mdata.cover_photo);
+      if (coverPhoto) {
         const coverEl = document.getElementById("hero-cover-bg");
-        if (coverEl) coverEl.style.backgroundImage = `url('${reg.cover_photo}')`;
+        if (coverEl) coverEl.style.backgroundImage = `url('${coverPhoto}')`;
         const showcaseImg = document.getElementById("hero-showcase-img");
-        if (showcaseImg) showcaseImg.src = reg.cover_photo;
+        if (showcaseImg) showcaseImg.src = coverPhoto;
       }
 
       // 3. Actualizar WhatsApp o Teléfono si fueron modificados

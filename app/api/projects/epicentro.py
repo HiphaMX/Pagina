@@ -1704,16 +1704,10 @@ def seed_official_showcases(db: Session):
                 botica.edit_token = "botica-silvestre-natura-vip"
                 botica.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
                 updated = True
-            if botica.slug != "boticasilvestre":
+            if not botica.slug:
                 botica.slug = "boticasilvestre"
                 updated = True
-            if botica.schedule != "Lunes a Sábado · 09:00 a 19:00 hrs":
-                botica.schedule = "Lunes a Sábado · 09:00 a 19:00 hrs"
-                updated = True
-            if botica.description != "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos.":
-                botica.description = "Herbolaria sagrada, adaptógenos y tinturas botánicas en pequeños lotes para equilibrar cuerpo, mente y alma. Envíos directos a caseta de cotos."
-                updated = True
-            if botica.coto_address != "Natura Bosque Residencial":
+            if not botica.coto_address:
                 botica.coto_address = "Natura Bosque Residencial"
                 updated = True
             if not botica.is_verified_badge:
@@ -1775,46 +1769,47 @@ def seed_official_showcases(db: Session):
             if chillon.id != "reg-chile-chillon":
                 chillon.id = "reg-chile-chillon"
                 updated = True
-            if chillon.business_name != "Chile Chillón":
-                chillon.business_name = "Chile Chillón"
-                updated = True
-            if chillon.slug != "elchilechillon":
+            if not chillon.slug:
                 chillon.slug = "elchilechillon"
                 updated = True
-            if chillon.category_slug != "comida-delivery":
+            if not chillon.category_slug:
                 chillon.category_slug = "comida-delivery"
                 chillon.category_label = "Comida & Delivery"
                 updated = True
-            if chillon.subcategory_slug != "salsas-picantes":
+            if not chillon.subcategory_slug:
                 chillon.subcategory_slug = "salsas-picantes"
                 chillon.subcategory_label = "Salsas Picantes"
                 updated = True
-            if chillon.space_label != "Punto de venta & A domicilio":
+            if not chillon.space_label:
                 chillon.space_label = "Punto de venta & A domicilio"
                 updated = True
-            if chillon.coto_address != "Natura Bosque Residencial":
+            if not chillon.coto_address:
                 chillon.coto_address = "Natura Bosque Residencial"
                 updated = True
-            if chillon.phone != "3921097809":
+            if not chillon.phone:
                 chillon.phone = "3921097809"
                 updated = True
-            if chillon.whatsapp != "3921097809":
+            if not chillon.whatsapp:
                 chillon.whatsapp = "3921097809"
                 updated = True
-            if chillon.schedule != "Lunes a viernes · 10:00 a 17:00 hrs":
+            if not chillon.schedule:
                 chillon.schedule = "Lunes a viernes · 10:00 a 17:00 hrs"
                 updated = True
-            if chillon.description != "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.":
+            if not chillon.description:
                 chillon.description = "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella."
                 updated = True
-            if chillon.website != "https://elchilechillon.mx":
+            if not chillon.website:
                 chillon.website = "https://elchilechillon.mx"
                 updated = True
-            if chillon.cover_photo != CHILLON_DATA["cover_photo"]:
+            if not chillon.cover_photo:
                 chillon.cover_photo = CHILLON_DATA["cover_photo"]
                 updated = True
             if not chillon.microsite_data:
                 chillon.microsite_data = json.dumps(CHILLON_DATA)
+                updated = True
+            if not chillon.edit_token:
+                chillon.edit_token = "chile-chillon-natura-vip"
+                chillon.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
                 updated = True
             if not chillon.is_verified_badge:
                 chillon.is_verified_badge = True
@@ -1875,49 +1870,37 @@ def seed_official_showcases(db: Session):
             db.refresh(amdi)
         else:
             updated = False
-            if amdi.slug != "amdi":
+            if amdi.id != "ac02b6c2-624e-407f-bcfc-7d736dbcbd83":
+                amdi.id = "ac02b6c2-624e-407f-bcfc-7d736dbcbd83"
+                updated = True
+            if not amdi.slug:
                 amdi.slug = "amdi"
                 updated = True
-            if amdi.space_label != "Atención en cotos & Previa cita":
+            if not amdi.category_slug:
+                amdi.category_slug = "servicios-profesionales"
+                amdi.category_label = "Servicios Profesionales"
+                updated = True
+            if not amdi.subcategory_slug:
+                amdi.subcategory_slug = "diseno-interiores"
+                amdi.subcategory_label = "Diseño de Interiores"
+                updated = True
+            if not amdi.space_label:
                 amdi.space_label = "Atención en cotos & Previa cita"
                 updated = True
-            if amdi.schedule != "Lunes a Viernes · 09:00 a 17:00 hrs":
+            if not amdi.schedule:
                 amdi.schedule = "Lunes a Viernes · 09:00 a 17:00 hrs"
                 updated = True
-            if amdi.business_type != "local-establecido":
+            if not amdi.business_type:
                 amdi.business_type = "local-establecido"
                 updated = True
-            if not amdi.cover_photo or "unsplash.com" in (amdi.cover_photo or ""):
+            if not amdi.cover_photo:
                 amdi.cover_photo = AMDI_DATA["cover_photo"]
                 updated = True
             if not amdi.microsite_data:
                 amdi.microsite_data = json.dumps(AMDI_DATA)
                 updated = True
-            else:
-                try:
-                    m = json.loads(amdi.microsite_data) if isinstance(amdi.microsite_data, str) else amdi.microsite_data
-                    m_mod = False
-                    if "other_products_sections" in m and len(m.get("other_products_sections") or []) > 0:
-                        m["other_products_sections"] = []
-                        m_mod = True
-                    if "cover_photo" in m and "unsplash.com" in (m.get("cover_photo") or ""):
-                        m["cover_photo"] = AMDI_DATA["cover_photo"]
-                        m_mod = True
-                    if "featured_section" in m and isinstance(m.get("featured_section"), dict):
-                        for p in m["featured_section"].get("products", []):
-                            if "unsplash.com" in (p.get("photo") or ""):
-                                p["photo"] = "Assets/amdi/producto_1.webp"
-                                m_mod = True
-                    if m_mod:
-                        amdi.microsite_data = json.dumps(m)
-                        updated = True
-                except Exception:
-                    pass
             if not amdi.preferred_contact_methods:
                 amdi.preferred_contact_methods = "whatsapp,llamada,visita"
-                updated = True
-            if amdi.schedule != "Lunes a Viernes · 09:00 a 17:00 hrs":
-                amdi.schedule = "Lunes a Viernes · 09:00 a 17:00 hrs"
                 updated = True
             if not amdi.website:
                 amdi.website = "https://www.amdi.mx"
@@ -1934,6 +1917,12 @@ def seed_official_showcases(db: Session):
             if not amdi.edit_token:
                 amdi.edit_token = "amdi-diseno-natura-vip"
                 amdi.edit_token_expires_at = datetime.now(timezone.utc) + timedelta(days=365)
+                updated = True
+            if not amdi.is_verified_badge:
+                amdi.is_verified_badge = True
+                updated = True
+            if amdi.status != "active":
+                amdi.status = "active"
                 updated = True
             if updated:
                 db.commit()
@@ -2014,77 +2003,50 @@ def seed_official_showcases(db: Session):
             db.refresh(jessica)
         else:
             updated = False
-            if jessica.slug != "jessicamendozabienesraices":
+            if not jessica.slug:
                 jessica.slug = "jessicamendozabienesraices"
                 updated = True
-            if jessica.business_name != "Jessica Mendoza Bienes Raíces":
-                jessica.business_name = "Jessica Mendoza Bienes Raíces"
-                updated = True
-            if jessica.category_slug != "servicios-profesionales":
+            if not jessica.category_slug:
                 jessica.category_slug = "servicios-profesionales"
                 jessica.category_label = "Servicios Profesionales"
                 updated = True
-            if jessica.subcategory_slug != "inmobiliario":
+            if not jessica.subcategory_slug:
                 jessica.subcategory_slug = "inmobiliario"
                 jessica.subcategory_label = "Inmobiliario"
                 updated = True
-            if jessica.business_type != "sin-punto-venta":
+            if not jessica.business_type:
                 jessica.business_type = "sin-punto-venta"
                 updated = True
-            if jessica.space_label != "Atención en cotos & Previa cita":
+            if not jessica.space_label:
                 jessica.space_label = "Atención en cotos & Previa cita"
                 updated = True
-            if jessica.coto_address != "Los Robles":
+            if not jessica.coto_address:
                 jessica.coto_address = "Los Robles"
                 updated = True
-            if jessica.website != "https://www.jessicamendozabienesraices.com/":
+            if not jessica.website:
                 jessica.website = "https://www.jessicamendozabienesraices.com/"
                 updated = True
-            if jessica.email != "jessbienesraices@gmail.com":
+            if not jessica.email:
                 jessica.email = "jessbienesraices@gmail.com"
                 updated = True
-            if jessica.phone != "33 3956 4830":
+            if not jessica.phone:
                 jessica.phone = "33 3956 4830"
                 updated = True
-            if jessica.whatsapp != "33 3956 4830":
+            if not jessica.whatsapp:
                 jessica.whatsapp = "33 3956 4830"
                 updated = True
-            if jessica.cover_photo != JESSICA_DATA["cover_photo"]:
+            if not jessica.cover_photo:
                 jessica.cover_photo = JESSICA_DATA["cover_photo"]
                 updated = True
-            if jessica.description != "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7.":
+            if not jessica.description:
                 jessica.description = "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7."
                 updated = True
-            if jessica.schedule != "Lunes a Viernes · 09:00 a 19:00 hrs":
+            if not jessica.schedule:
                 jessica.schedule = "Lunes a Viernes · 09:00 a 19:00 hrs"
                 updated = True
             if not jessica.microsite_data:
                 jessica.microsite_data = json.dumps(JESSICA_DATA)
                 updated = True
-            else:
-                try:
-                    jm = json.loads(jessica.microsite_data) if isinstance(jessica.microsite_data, str) else jessica.microsite_data
-                    feat = jm.get("featured_section", {})
-                    prods = feat.get("products", [])
-                    dirty = False
-                    if len(prods) < 2 or any("ceiba" in (p.get("name") or "").lower() for p in prods):
-                        feat["products"] = JESSICA_DATA["featured_section"]["products"]
-                        dirty = True
-                    if "lotes" in (feat.get("subtitle") or "").lower() or "artesanales" in (feat.get("subtitle") or "").lower():
-                        feat["subtitle"] = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA"
-                        dirty = True
-                    if "ingredientes" in (feat.get("description") or "").lower():
-                        feat["description"] = "Propiedades de autor en Los Robles Residencial y cotos de la zona Mariano Otero con amenidades de primer nivel y seguridad 24/7."
-                        dirty = True
-                    if "nuestra selección destacada" in (feat.get("title") or "").lower():
-                        feat["title"] = "Propiedades Destacadas en Cotos"
-                        dirty = True
-                    if dirty:
-                        jm["featured_section"] = feat
-                        jessica.microsite_data = json.dumps(jm)
-                        updated = True
-                except Exception:
-                    pass
             if not jessica.is_verified_badge:
                 jessica.is_verified_badge = True
                 updated = True
@@ -2138,26 +2100,26 @@ def seed_official_showcases(db: Session):
             db.refresh(valencia)
         else:
             updated = False
-            if valencia.slug != "valenciaservicios":
+            if not valencia.slug:
                 valencia.slug = "valenciaservicios"
                 updated = True
             valencia_cover = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1600&q=80"
-            if valencia.cover_photo != valencia_cover:
+            if not valencia.cover_photo:
                 valencia.cover_photo = valencia_cover
                 updated = True
-            if valencia.description != "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.":
+            if not valencia.description:
                 valencia.description = "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona."
                 updated = True
-            if valencia.schedule != "Lunes a Viernes 9:00 a 16:00 hrs":
+            if not valencia.schedule:
                 valencia.schedule = "Lunes a Viernes 9:00 a 16:00 hrs"
                 updated = True
-            if valencia.space_label != "A domicilio en cotos":
+            if not valencia.space_label:
                 valencia.space_label = "A domicilio en cotos"
                 updated = True
-            if valencia.phone != "3315848420":
+            if not valencia.phone:
                 valencia.phone = "3315848420"
                 updated = True
-            if valencia.whatsapp != "3315848420":
+            if not valencia.whatsapp:
                 valencia.whatsapp = "3315848420"
                 updated = True
             if not valencia.is_verified_badge:
