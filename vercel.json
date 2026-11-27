@@ -235,7 +235,7 @@
       "dest": "/projects/Epicentro/"
     },
     {
-      "src": "/(terminos)(\\.html|)",
+      "src": "/(terminos)(.html|)",
       "has": [
         {
           "type": "host",
