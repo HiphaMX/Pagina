@@ -165,7 +165,7 @@ def test_3_chile_chillon_synchronization():
     # 3.1 Consulta en database.db
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT business_name, schedule, coto_address, whatsapp FROM epicentro_registrations WHERE slug = 'elchilechillon'")
+    cursor.execute("SELECT business_name, schedule, coto_address, whatsapp FROM epicentro_registrations WHERE slug IN ('chile-chillon', 'elchilechillon') OR id = 'reg-chile-chillon'")
     chillon_db = cursor.fetchone()
     conn.close()
     

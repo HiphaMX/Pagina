@@ -532,6 +532,7 @@
           }
         });
         if (!res.ok) throw new Error("Error en la petición de aprobación");
+        try { sessionStorage.removeItem("epizentro_active_businesses"); } catch(e){}
         alert(`¡Comercio '${name}' aprobado y activado con éxito!`);
       } catch (err) {
         alert(err.message || "Error al aprobar comercio.");
@@ -555,6 +556,7 @@
           }
         });
         if (!res.ok) throw new Error("Error al rechazar");
+        try { sessionStorage.removeItem("epizentro_active_businesses"); } catch(e){}
       } catch (err) {
         alert(err.message || "Error al rechazar solicitud.");
       }
@@ -580,6 +582,7 @@ Esta acción no se puede deshacer.`)) return;
           }
         });
         if (!res.ok) throw new Error("Error al eliminar el registro.");
+        try { sessionStorage.removeItem("epizentro_active_businesses"); } catch(e){}
         alert(`Registro '${name}' eliminado permanentemente de la base de datos.`);
       } catch (err) {
         alert(err.message || "Error al eliminar.");
@@ -1852,6 +1855,7 @@ Esta acción no se puede deshacer.`)) return;
             microsite_data: typeof savedReg.microsite_data === "string" ? savedReg.microsite_data : JSON.stringify(micrositeData)
           };
         }
+        try { sessionStorage.removeItem("epizentro_active_businesses"); } catch(e){}
         alert(`¡Ficha de '${payload.business_name}' guardada y sincronizada correctamente!`);
         closeEditModal();
         renderTable();

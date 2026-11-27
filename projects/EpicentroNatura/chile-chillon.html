@@ -579,7 +579,7 @@
     async function syncChileChillonMicrosite() {
       let reg = null;
       try {
-        const res = await fetch("/api/epicentro/businesses/chile-chillon");
+        const res = await fetch("/api/epicentro/businesses/chile-chillon?_t=" + Date.now(), { cache: "no-store" });
         if (res.ok) reg = await res.json();
       } catch (e) {}
 

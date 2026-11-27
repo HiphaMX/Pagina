@@ -647,7 +647,7 @@
     async function syncBoticaSilvestreMicrosite() {
       let reg = null;
       try {
-        const res = await fetch("/api/epicentro/businesses/botica-silvestre");
+        const res = await fetch("/api/epicentro/businesses/botica-silvestre?_t=" + Date.now(), { cache: "no-store" });
         if (res.ok) reg = await res.json();
       } catch (e) {}
 

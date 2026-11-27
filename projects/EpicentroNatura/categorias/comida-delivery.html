@@ -1588,10 +1588,10 @@
                   has_pickup: (biz.pickup_available === false || isSinPuntoVenta) ? false : (existing.has_pickup !== undefined ? existing.has_pickup : hasPickup),
                   pickup_available: (biz.pickup_available !== undefined && biz.pickup_available !== null) ? Boolean(biz.pickup_available) : (existing.pickup_available !== undefined ? existing.pickup_available : !isSinPuntoVenta),
                   type_label: existing.type_label || bizObj.type_label,
-                  schedule: (existing.schedule && existing.schedule.includes("·") && !biz.schedule?.includes("·")) ? existing.schedule : (biz.schedule || existing.schedule),
-                  hours: (existing.hours && existing.hours.includes("·") && !biz.schedule?.includes("·")) ? existing.hours : (biz.schedule || existing.hours),
+                  schedule: (biz.schedule && biz.schedule.trim()) ? biz.schedule.trim() : existing.schedule,
+                  hours: (biz.schedule && biz.schedule.trim()) ? biz.schedule.trim() : (existing.hours || existing.schedule),
                   photos: (existing.photos && existing.photos.length > 0 && (!bizPhotos || bizPhotos.length === 0)) ? existing.photos : (bizPhotos.length > 0 ? bizPhotos : existing.photos),
-                  description: biz.description || existing.description || bizObj.description,
+                  description: (biz.description && biz.description.trim()) ? biz.description.trim() : (existing.description || bizObj.description),
                   cover_photo: bizObj.cover_photo || existing.cover_photo
                 };
               } else {

@@ -334,7 +334,7 @@
     async function syncAmdiMicrosite() {
       let reg = null;
       try {
-        const res = await fetch("/api/epicentro/businesses/amdi");
+        const res = await fetch("/api/epicentro/businesses/amdi?_t=" + Date.now(), { cache: "no-store" });
         if (res.ok) reg = await res.json();
       } catch (e) {}
 

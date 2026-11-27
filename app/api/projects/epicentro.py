@@ -10,7 +10,7 @@ from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Union
 from pydantic import BaseModel, EmailStr
 from fastapi import APIRouter, Depends, HTTPException, Header, Query, status, Request, BackgroundTasks
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, Response, RedirectResponse
 from sqlalchemy import func, text
 from sqlalchemy.orm import Session
 
@@ -1782,7 +1782,7 @@ def seed_official_showcases(db: Session):
                 payment_method="courtesy_hipha",
                 is_verified_badge=True,
                 status="active",
-                slug="elchilechillon",
+                slug="chile-chillon",
                 edit_token="chile-chillon-natura-vip",
                 edit_token_expires_at=datetime.now(timezone.utc) + timedelta(days=365),
                 moderation_notes="Cortesía oficial Hipha: Página Escaparate Individual con catálogo activo."
@@ -1795,8 +1795,8 @@ def seed_official_showcases(db: Session):
             if chillon.id != "reg-chile-chillon":
                 chillon.id = "reg-chile-chillon"
                 updated = True
-            if not chillon.slug:
-                chillon.slug = "elchilechillon"
+            if not chillon.slug or chillon.slug == "elchilechillon":
+                chillon.slug = "chile-chillon"
                 updated = True
             if not chillon.category_slug:
                 chillon.category_slug = "comida-delivery"
@@ -1809,25 +1809,25 @@ def seed_official_showcases(db: Session):
             if not chillon.space_label:
                 chillon.space_label = "Punto de venta & A domicilio"
                 updated = True
-            if chillon.coto_address != canonical_chillon_loc:
+            if not chillon.coto_address:
                 chillon.coto_address = canonical_chillon_loc
                 updated = True
-            if chillon.phone != "3336762545":
+            if not chillon.phone:
                 chillon.phone = "3336762545"
                 updated = True
-            if chillon.whatsapp != "3336762545":
+            if not chillon.whatsapp:
                 chillon.whatsapp = "3336762545"
                 updated = True
-            if chillon.schedule != canonical_chillon_sched:
+            if not chillon.schedule:
                 chillon.schedule = canonical_chillon_sched
                 updated = True
-            if chillon.description != canonical_chillon_desc:
+            if not chillon.description:
                 chillon.description = canonical_chillon_desc
                 updated = True
-            if chillon.delivery_badge != "Servicio a domicilio":
+            if chillon.delivery_badge is None:
                 chillon.delivery_badge = "Servicio a domicilio"
                 updated = True
-            if chillon.pickup_badge != "Recoger en coto":
+            if chillon.pickup_badge is None:
                 chillon.pickup_badge = "Recoger en coto"
                 updated = True
             if not chillon.delivery_available:
@@ -2229,8 +2229,11 @@ seed_botica_silvestre_if_missing = seed_official_showcases
 
 
 @router.get("/businesses/active", response_model=List[BusinessPublicOut])
-def list_active_verified_businesses(db: Session = Depends(get_db)):
+def list_active_verified_businesses(response: Response, db: Session = Depends(get_db)):
     """Retorna los comercios reales que ya están activos y verificados para el directorio público."""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
     ensure_epicentro_schema(db)
     seed_official_showcases(db)
     results = (
@@ -2243,8 +2246,11 @@ def list_active_verified_businesses(db: Session = Depends(get_db)):
 
 
 @router.get("/businesses/{slug_or_id}", response_model=BusinessPublicOut)
-def get_business_microsite(slug_or_id: str, db: Session = Depends(get_db)):
+def get_business_microsite(slug_or_id: str, response: Response, db: Session = Depends(get_db)):
     """Retorna los datos de un comercio o micrositio por ID o slug para sincronización en vivo."""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
     import unicodedata
     ensure_epicentro_schema(db)
     seed_official_showcases(db)
@@ -2989,6 +2995,14 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
     # Valencia Servicios es Plan Esencial ($99 MXN): Redirigir a su categoría en directorio
     if target_id.lower() in ("valenciaservicios", "valencia-servicios", "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322"):
         return RedirectResponse(url="/natura/categorias/servicios-hogar.html")
+
+    # Comercios fundadores con páginas de escaparate dedicadas (.html)
+    if target_id.lower() in ("chile-chillon", "chilechillon", "elchilechillon", "reg-chile-chillon"):
+        return RedirectResponse(url="/natura/chile-chillon.html")
+    if target_id.lower() in ("botica-silvestre", "boticasilvestre", "reg-botica-silvestre"):
+        return RedirectResponse(url="/natura/botica-silvestre.html")
+    if target_id.lower() in ("amdi", "amdi-interior", "amdi-diseno-interior", "amdidiseniointerior", "reg-amdi"):
+        return RedirectResponse(url="/natura/amdi.html")
 
     # Aliases de showcase para compatibilidad con guiones y rutas amigables
     showcase_alias_map = {

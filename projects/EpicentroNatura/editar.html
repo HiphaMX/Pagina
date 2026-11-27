@@ -679,6 +679,9 @@
           photos: productsList.map(p => p.photo).filter(Boolean),
           microsite_data: {
             ...existingMd,
+            schedule: payload.schedule,
+            description: payload.description,
+            cover_photo: payload.cover_photo,
             featured_section: {
               ...existingFeat,
               title: featTitle,
@@ -702,6 +705,10 @@
             throw new Error(err.detail || "Error al guardar cambios");
           }
 
+          try {
+            sessionStorage.removeItem("epizentro_active_businesses");
+          } catch(e){}
+
           if (currentBiz) {
             currentBiz.cover_photo = payload.cover_photo;
             currentBiz.schedule = payload.schedule;
@@ -713,10 +720,29 @@
             currentBiz.microsite_data = payload.microsite_data;
           }
 
-          const bizSlug = (currentBiz && (currentBiz.slug || currentBiz.id)) || "";
-          const liveUrl = (window.location.protocol === "file:")
-            ? `negocio.html?id=${currentBiz ? currentBiz.id : ''}`
-            : `/natura/${bizSlug}`;
+          let liveUrl = "";
+          const bizSlug = ((currentBiz && (currentBiz.slug || currentBiz.id)) || "").toLowerCase();
+          if (window.location.protocol === "file:") {
+            if (bizSlug === "chile-chillon" || bizSlug === "elchilechillon" || bizSlug === "reg-chile-chillon") {
+              liveUrl = "chile-chillon.html";
+            } else if (bizSlug === "botica-silvestre" || bizSlug === "boticasilvestre" || bizSlug === "reg-botica-silvestre") {
+              liveUrl = "botica-silvestre.html";
+            } else if (bizSlug === "amdi" || bizSlug === "amdi-interior" || bizSlug === "reg-amdi") {
+              liveUrl = "amdi.html";
+            } else {
+              liveUrl = `negocio.html?id=${currentBiz ? currentBiz.id : ''}`;
+            }
+          } else {
+            if (bizSlug === "chile-chillon" || bizSlug === "elchilechillon" || bizSlug === "reg-chile-chillon") {
+              liveUrl = "/natura/chile-chillon.html";
+            } else if (bizSlug === "botica-silvestre" || bizSlug === "boticasilvestre" || bizSlug === "reg-botica-silvestre") {
+              liveUrl = "/natura/botica-silvestre.html";
+            } else if (bizSlug === "amdi" || bizSlug === "amdi-interior" || bizSlug === "reg-amdi") {
+              liveUrl = "/natura/amdi.html";
+            } else {
+              liveUrl = `/natura/${bizSlug}`;
+            }
+          }
 
           showToast(`<span>✓ ¡Cambios guardados con éxito!</span> <a href="${liveUrl}" target="_blank" class="underline font-black text-amber-300 hover:text-white ml-2 inline-flex items-center gap-1">Ver Escaparate en Vivo ↗</a>`, "success", 6000);
         } catch (err) {
