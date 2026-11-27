@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLV1NVTMQM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-QLV1NVTMQM");
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Página Escaparate Individual · Epizentro Natura</title>
+  <meta id="page-meta-desc" name="description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
+  <link id="canonical-link" rel="canonical" href="https://www.epizentro.com/natura/negocio">
+
+  <!-- Open Graph / WhatsApp / Facebook Dinámicos -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Epizentro Natura">
+  <meta id="og-title" property="og:title" content="Página Escaparate Individual · Epizentro Natura">
+  <meta id="og-desc" property="og:description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
+  <meta id="og-img" property="og:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta id="og-url" property="og:url" content="https://www.epizentro.com/natura/negocio">
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="tw-title" name="twitter:title" content="Página Escaparate Individual · Epizentro Natura">
+  <meta id="tw-desc" name="twitter:description" content="Página Escaparate Individual oficial de comercio y catálogo en Epizentro Natura.">
+  <meta id="tw-img" name="twitter:image" content="https://www.epizentro.com/projects/EpicentroNatura/Assets/Epizentro2.svg">
+
+  <!-- Favicon y Fuentes -->
+  <link rel="icon" type="image/svg+xml" href="Assets/ICO.svg">
+  <link rel="alternate icon" type="image/png" sizes="32x32" href="Assets/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="Assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Pre-fetch y resolución inmediata de negocio (Cero FOUC) -->
+  <script>
+    (function() {
+      let queryParam = "";
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      const naturaIdx = pathParts.indexOf("natura");
+      if (naturaIdx !== -1 && pathParts.length > naturaIdx + 1) {
+        const candidate = pathParts[naturaIdx + 1].replace(/\.html$/, "");
+        if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura"].includes(candidate)) {
+          queryParam = candidate;
+        }
+      }
+      if (!queryParam) {
+        const urlParams = new URLSearchParams(window.location.search);
+        queryParam = urlParams.get("id") || urlParams.get("slug") || urlParams.get("b") || "";
+      }
+      window.__epicentroQuery = queryParam;
+
+      if (queryParam) {
+        // Disparar fetch inmediatamente mientras se parsea el HTML
+        window.__bizFetchPromise = fetch(`/api/epicentro/businesses/${encodeURIComponent(queryParam)}?_t=${Date.now()}`, { cache: "no-store" })
+          .then(r => r.ok ? r.json() : null)
+          .catch(() => null);
+      }
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            serif: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              black: "#050810",
+              slate: "#0f172a",
+              forest: "#064e3b",
+              emerald: "#059669",
+              vibrant: "#10b981",
+              mint: "#6ee7b7",
+              softMint: "#ecfdf5",
+              gold: "#d97706",
+              softGold: "#fef3c7"
+            },
+            snow: {
+              100: "#ffffff",
+              200: "#fbfcfd",
+              300: "#f1f3f7",
+              400: "#e2e6ed",
+              500: "#c7cdd8"
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    .font-brand-title {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-emerald-600 selection:text-white antialiased">
+
+  <!-- TOP BAR NAVEGACIÓN -->
+  <aside class="bg-slate-950 text-white text-xs py-2.5 px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <a id="topbar-back-link" href="index.html" class="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-400 transition-colors text-xs font-semibold truncate">
+        <i data-lucide="arrow-left" class="w-4 h-4 shrink-0"></i>
+        <span id="topbar-back-text" class="truncate">Volver al Directorio</span>
+      </a>
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button id="btn-share-topbar" onclick="shareStorefront()" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all active:scale-95 shadow-sm cursor-pointer" title="Compartir escaparate en WhatsApp">
+          <i data-lucide="share-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Compartir</span>
+        </button>
+        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Epicentro</span>
+        <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+          natura
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HEADER / HERO DEL COMERCIO (OPCIÓN 2: BANNER PANORÁMICO + FICHA FLOTANTE) -->
+  <header class="relative bg-slate-950 text-white">
+    <!-- 1. BANNER PANORÁMICO DE BORDE A BORDE -->
+    <div class="relative w-full h-64 sm:h-80 md:h-96 lg:h-[420px] overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 group">
+      <img id="hero-showcase-img" src="" alt="Portada" class="w-full h-full object-cover opacity-0 group-hover:scale-105 transition-all duration-700 ease-out" loading="eager">
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-black/30 pointer-events-none"></div>
+
+      <!-- Badges flotantes sobre el banner -->
+      <div class="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2">
+        <span class="px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-emerald-500/40 text-emerald-300 text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+          <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Verificado</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- 2. FICHA FLOTANTE SUPERPUESTA (OVERLAP CARD) -->
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16 md:-mt-20 z-10 pb-6 sm:pb-8">
+      <div class="bg-slate-950/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80 space-y-6">
+        
+        <!-- Fila Superior: Avatar + Título -->
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
+            <i id="hero-category-icon" data-lucide="store" class="w-7 h-7 sm:w-8 sm:h-8"></i>
+          </div>
+          <div>
+            <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title min-h-[1.2em]"></h1>
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <p id="hero-business-description" class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-4xl min-h-[2.5em]"></p>
+
+        <!-- Ubicación, Horario y Servicio -->
+        <div class="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-slate-400 pt-2 border-t border-slate-800/80">
+          <div id="hero-location-row" class="flex items-center gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span id="hero-location-text"></span>
+          </div>
+          <div id="hero-schedule-info-row" class="flex items-center gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span id="hero-schedule-info"></span>
+          </div>
+          <div id="hero-service-info-row" class="flex items-center gap-2">
+            <i id="hero-service-icon" data-lucide="truck" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span id="hero-service-info"></span>
+          </div>
+        </div>
+
+        <!-- Botonera de Acción Directa -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 pt-2">
+          <a id="hero-whatsapp-btn" href="#" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-95 shrink-0">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>Enviar WhatsApp</span>
+          </a>
+          <div class="flex items-center gap-2 w-full sm:w-auto [&>*]:flex-1 sm:[&>*]:flex-initial">
+            <a id="hero-phone-btn" href="#" class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-3 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition-all active:scale-95 whitespace-nowrap">
+              <i data-lucide="phone" class="w-4 h-4 text-slate-300"></i>
+              <span>Llamar</span>
+            </a>
+            <a href="#info-cobertura" class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-3 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition-all active:scale-95 whitespace-nowrap">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-300"></i>
+              <span>Cobertura</span>
+            </a>
+            <a id="hero-website-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden items-center justify-center gap-1.5 px-3 sm:px-4 py-3 sm:py-3.5 rounded-2xl bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 font-bold text-xs sm:text-sm border border-emerald-500/30 transition-all active:scale-95 whitespace-nowrap">
+              <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
+              <span>Sitio web</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL: CATÁLOGO Y MENÚ DE PRODUCTOS -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    
+    <!-- SECCIÓN 1: PRODUCTOS O SERVICIOS DESTACADOS (CATÁLOGO FOTOGRÁFICO) -->
+    <section id="featured-section-container" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <span id="featured-section-subtitle" class="text-xs font-black uppercase tracking-widest text-emerald-700">CATÁLOGO DESTACADO</span>
+          <h2 id="featured-section-title" class="text-2xl font-black text-slate-950 mt-1 font-brand-title">Catálogo de Productos & Servicios</h2>
+          <p id="featured-section-desc" class="text-xs sm:text-sm text-slate-500 mt-1">Conoce las opciones disponibles y solicita tu pedido o cotización directamente por WhatsApp.</p>
+        </div>
+        <span id="featured-variety-count" class="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 self-start sm:self-auto flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span id="featured-count-text">Catálogo Activo</span>
+        </span>
+      </div>
+
+      <!-- GRID DE PRODUCTOS DESTACADOS -->
+      <div id="featured-products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-3xl border border-slate-200 p-4 h-80 animate-pulse flex flex-col justify-between">
+          <div class="w-full h-48 bg-slate-100 rounded-2xl"></div>
+          <div class="space-y-2 pt-3">
+            <div class="w-2/3 h-5 bg-slate-200 rounded"></div>
+            <div class="w-1/3 h-4 bg-slate-100 rounded"></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-3xl border border-slate-200 p-4 h-80 animate-pulse flex flex-col justify-between">
+          <div class="w-full h-48 bg-slate-100 rounded-2xl"></div>
+          <div class="space-y-2 pt-3">
+            <div class="w-2/3 h-5 bg-slate-200 rounded"></div>
+            <div class="w-1/3 h-4 bg-slate-100 rounded"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: OTRAS SECCIONES DE MENÚ / PRODUCTOS / SERVICIOS -->
+    <div id="other-products-sections-wrapper" class="space-y-8 hidden">
+      <div id="other-products-sections-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Renderizado dinámicamente -->
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: INFORMACIÓN OPERATIVA, ENVÍOS Y PAGOS -->
+    <div id="info-operativa" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Zona de cobertura / Entrega -->
+      <div id="info-cobertura" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 scroll-mt-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+            <i data-lucide="bike" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Zona de Cobertura en Cotos</h3>
+            <p id="section-cobertura-text" class="text-xs text-slate-500 mt-0.5">Atención y entregas en Natura Bosque Residencial, Los Robles, Luna Bosque, El Fortín y zona Mariano Otero.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Punto de venta y pickup -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+            <i data-lucide="store" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Modalidad de Atención</h3>
+            <p id="section-modalidad-text" class="text-xs text-slate-500 mt-0.5">Pedidos por WhatsApp o atención acordada previamente sin complicaciones.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métodos de pago -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+            <i data-lucide="credit-card" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Métodos de Pago Aceptados</h3>
+            <p id="section-payment-text" class="text-xs text-slate-500 mt-0.5">Efectivo contra entrega, transferencia bancaria SPEI, tarjetas y Mercado Pago.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horario de atención -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">Horario de Atención</h3>
+            <p id="section-schedule-desc" class="text-xs text-slate-500 mt-0.5">Lunes a Sábado · 09:00 a 19:00 hrs (Pedidos por WhatsApp activos todo el día).</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BANNER COMERCIAL -->
+    <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center md:text-left">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">BENEFICIO EXCLUSIVO EPIZENTRO NATURA</span>
+        <h3 class="text-xl sm:text-2xl font-black text-white">¿Tienes un negocio o servicio en la zona?</h3>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
+          Con la suscripción anual obtienes tu Página Escaparate Individual en Epizentro con catálogo de fotos, precios y pedidos directos a tu WhatsApp, además de botón a tu sitio web oficial.
+        </p>
+      </div>
+      <a href="index.html?open_register=1" onclick="if(typeof openRegisterModal==='function'){openRegisterModal();return false;}" class="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all active:scale-95 shrink-0 inline-flex items-center gap-2">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>Obtener mi Página Escaparate Individual en Epizentro</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER EPIZENTRO NATURA -->
+  <footer class="bg-slate-950 text-white text-xs py-8 px-4 border-t border-slate-800 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 group">
+          <img src="Assets/Epizentro.svg" alt="Epizentro" class="h-6 w-auto object-contain">
+          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            natura
+          </span>
+        </a>
+        <span class="text-slate-600 hidden sm:inline">|</span>
+        <span class="text-slate-400 text-xs hidden sm:inline">Página Escaparate Individual Oficial de Comercio Verificado · Epizentro Natura.</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400 text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">Directorio Comercial</a>
+        <a id="footer-cat-link" href="index.html" class="hover:text-white transition-colors">Categorías</a>
+        <a href="index.html?open_register=1" onclick="if(typeof openRegisterModal==='function'){openRegisterModal();return false;}" class="hover:text-emerald-400 transition-colors">Registra tu negocio</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function isQuotePrice(val) {
+      if (val === null || val === undefined || val === "" || val === false) return true;
+      const str = String(val).trim().toLowerCase();
+      if (str === "0" || str === "0.0" || str === "0.00" || str === "cotizar" || str.includes("cotiz")) return true;
+      const num = parseFloat(str.replace(/[^0-9.-]+/g, ""));
+      return isNaN(num) || num <= 0;
+    }
+
+    function formatMoney(val) {
+      if (isQuotePrice(val)) return "Cotizar";
+      const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+      return "$" + num.toLocaleString("es-MX", {
+        minimumFractionDigits: (num % 1 === 0 ? 0 : 2),
+        maximumFractionDigits: 2
+      });
+    }
+
+    function renderPriceTag(val, sizeClasses = "text-base font-extrabold text-emerald-700") {
+      if (isQuotePrice(val)) {
+        return `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 text-xs font-black tracking-wider uppercase font-mono shadow-xs">Cotizar</span>`;
+      }
+      return `<span class="${sizeClasses}">${formatMoney(val)}</span>`;
+    }
+
+    const KNOWN_OFFICIAL_BUSINESSES = {
+      "jessicamendozabienesraices": {
+        id: "18315325-717f-4072-86b0-cab5300e0d3f",
+        business_name: "Jessica Mendoza Bienes Raíces",
+        slug: "jessicamendozabienesraices",
+        category_slug: "servicios-profesionales",
+        category_label: "Servicios Profesionales",
+        subcategory_slug: "inmobiliario",
+        subcategory_label: "Inmobiliario",
+        business_type: "servicio",
+        coto_address: "Los Robles",
+        phone: "33 3956 4830",
+        whatsapp: "33 3956 4830",
+        schedule: "Lunes a Viernes · 09:00 a 19:00 hrs",
+        delivery_available: true,
+        coto_only_delivery: false,
+        website: "https://www.jessicamendozabienesraices.com/",
+        description: "Asesoría inmobiliaria residencial de alta gama en Los Robles y cotos de la zona Mariano Otero. Venta, renta y administración de propiedades de autor con seguridad 24/7.",
+        cover_photo: "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+        photos: JSON.stringify([
+          "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+          "https://www.jessicamendozabienesraices.com/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp"
+        ]),
+        microsite_data: JSON.stringify({
+          featured_section: {
+            title: "Propiedades Destacadas en Cotos",
+            subtitle: "Venta & Renta Residencial de Alta Gama",
+            description: "Propiedades de autor en Los Robles Residencial y cotos de la zona Mariano Otero con amenidades de primer nivel y seguridad 24/7.",
+            products: [
+              {
+                name: "Casa en Renta en Los Robles Residencial",
+                price: 32000,
+                description: "Exclusiva residencia en Coto Helechos. 3 recámaras (una en planta baja con baño y vestidor), 3.5 baños, cocina con parota y granito, paneles solares y mantenimiento incluido.",
+                photo: "https://www.jessicamendozabienesraices.com/Assets/Propiedades/LosRobles/01-fachada-principal.webp",
+                tag: "Renta"
+              },
+              {
+                name: "Casa en Venta en Los Robles Residencial",
+                price: 8170000,
+                description: "Hermosa residencia en Fraccionamiento Los Robles, Coto Encinos. 3 niveles, 3 habitaciones con baño y balcón, rooftop con salón flex/gimnasio, paneles solares y cochera para 3 autos.",
+                photo: "https://www.jessicamendozabienesraices.com/Assets/Propiedades/CotoEncinos/01-fachada-principal.webp",
+                tag: "Venta"
+              }
+            ]
+          }
+        }),
+        payment_status: "waived",
+        is_verified_badge: true,
+        status: "active"
+      },
+      "valenciaservicios": {
+        id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
+        business_name: "Valencia Servicios",
+        slug: "valenciaservicios",
+        category_slug: "servicios-hogar",
+        category_label: "Servicios hogar",
+        subcategory_slug: "fontaneria-y-electricidad",
+        subcategory_label: "Fontanería y Electricidad",
+        business_type: "servicio",
+        coto_address: "Natura Bosque Residencial",
+        phone: "3315848420",
+        whatsapp: "3315848420",
+        schedule: "Lunes a Viernes 9:00 a 16:00 hrs",
+        delivery_available: true,
+        coto_only_delivery: false,
+        website: "valenciaservicios",
+        description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
+        payment_status: "approved",
+        is_verified_badge: true,
+        status: "active"
+      }
+    };
+    KNOWN_OFFICIAL_BUSINESSES["18315325-717f-4072-86b0-cab5300e0d3f"] = KNOWN_OFFICIAL_BUSINESSES["jessicamendozabienesraices"];
+    KNOWN_OFFICIAL_BUSINESSES["be9eb029-1bb2-4a50-a9fa-d3de2f9e9322"] = KNOWN_OFFICIAL_BUSINESSES["valenciaservicios"];
+
+    function getPreloadedBusiness(q) {
+      if (!q) return null;
+      const cleanQ = q.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (KNOWN_OFFICIAL_BUSINESSES[cleanQ]) return KNOWN_OFFICIAL_BUSINESSES[cleanQ];
+      if (KNOWN_OFFICIAL_BUSINESSES[q]) return KNOWN_OFFICIAL_BUSINESSES[q];
+      try {
+        const cached = sessionStorage.getItem("biz_" + q) || sessionStorage.getItem("biz_" + cleanQ);
+        if (cached) return JSON.parse(cached);
+      } catch(e){}
+      return null;
+    }
+
+    function applyBusinessData(reg) {
+      if (!reg) return;
+
+      // Si el comercio es un Plan Esencial ($99) o Registro Básico Gratuito ($0), no cuenta con Página Escaparate Individual dedicada
+      const rawWeb = String(reg.website || "").trim().toLowerCase();
+      const normName = String(reg.business_name || "").toLowerCase();
+      const isOfficial = rawWeb.includes("botica") || rawWeb.includes("chill") || rawWeb.includes("amdi") || normName.includes("botica") || normName.includes("chill") || normName.includes("amdi");
+      if (reg.payment_status === "free_basic" && !isOfficial) {
+        const targetCat = reg.category_slug || "servicios-hogar";
+        window.location.replace(`categoria.html?cat=${encodeURIComponent(targetCat)}`);
+        return;
+      }
+
+      // 1. Títulos y Metadatos Dinámicos
+      const bName = reg.business_name || "Comercio Verificado";
+      const catLabel = reg.subcategory_label || reg.category_label || "Comercio & Catálogo";
+      const pageTitleText = `${bName} · ${catLabel} | Epizentro Natura`;
+      document.title = pageTitleText;
+      const pageTitle = document.getElementById("page-title");
+      if (pageTitle) pageTitle.textContent = pageTitleText;
+      const titleEl = document.getElementById("hero-title");
+      if (titleEl) titleEl.textContent = bName;
+
+      // 2. Parsear microsite_data
+      let mdata = null;
+      if (reg.microsite_data) {
+        try {
+          mdata = typeof reg.microsite_data === "string" ? JSON.parse(reg.microsite_data) : reg.microsite_data;
+        } catch (e) {}
+      }
+
+      // 3. Descripción y Redes Sociales
+      const descEl = document.getElementById("hero-business-description");
+      const defaultDesc = reg.description || 
+        (mdata && mdata.featured_section && mdata.featured_section.description) || 
+        `Comercio Vecino Verificado en ${reg.coto_address || "Natura Bosque Residencial"}.`;
+      if (descEl) descEl.textContent = defaultDesc;
+
+      const shareDescText = `${defaultDesc} 📍 ${reg.coto_address || "Natura Bosque Residencial"}. Catálogo y WhatsApp directo.`;
+      const metaDesc = document.getElementById("page-meta-desc");
+      if (metaDesc) metaDesc.setAttribute("content", shareDescText);
+      const ogTitle = document.getElementById("og-title");
+      if (ogTitle) ogTitle.setAttribute("content", pageTitleText);
+      const ogDesc = document.getElementById("og-desc");
+      if (ogDesc) ogDesc.setAttribute("content", shareDescText);
+      const twTitle = document.getElementById("tw-title");
+      if (twTitle) twTitle.setAttribute("content", pageTitleText);
+      const twDesc = document.getElementById("tw-desc");
+      if (twDesc) twDesc.setAttribute("content", shareDescText);
+
+      // 4. Categoría y Topbar back link
+      const catSlug = reg.category_slug || "comida-delivery";
+      const backLink = document.getElementById("topbar-back-link");
+      const backText = document.getElementById("topbar-back-text");
+      const footerCat = document.getElementById("footer-cat-link");
+      if (backLink) backLink.href = `categoria.html?cat=${catSlug}`;
+      if (footerCat) footerCat.href = `categoria.html?cat=${catSlug}`;
+      if (backText) backText.textContent = `Volver a ${reg.category_label || "Categoría"}`;
+
+      // 5. Portada / Cover
+      const coverPhoto = reg.cover_photo || (mdata && mdata.cover_photo);
+      if (coverPhoto) {
+        const coverEl = document.getElementById("hero-cover-bg");
+        if (coverEl) coverEl.style.backgroundImage = `url('${coverPhoto}')`;
+        const showcaseImg = document.getElementById("hero-showcase-img");
+        if (showcaseImg) {
+          showcaseImg.src = coverPhoto;
+          showcaseImg.classList.remove("opacity-0");
+        }
+        const absCover = coverPhoto.startsWith("http") ? coverPhoto : `https://www.epizentro.com${coverPhoto.startsWith('/') ? '' : '/'}${coverPhoto}`;
+        const ogImg = document.getElementById("og-img");
+        if (ogImg) ogImg.setAttribute("content", absCover);
+        const twImg = document.getElementById("tw-img");
+        if (twImg) twImg.setAttribute("content", absCover);
+      }
+
+      // 6. Ubicación y Horario
+      const cleanWa = (reg.whatsapp || "3336762545").replace(/\D/g, "");
+      const cleanPhone = (reg.phone || reg.whatsapp || "3336762545").replace(/\D/g, "");
+
+      const catSlugNorm = (reg.category_slug || "").toLowerCase();
+      const catLabel = (reg.category_label || "").toLowerCase();
+      const subSlug = (reg.subcategory_slug || "").toLowerCase();
+      const subLabel = (reg.subcategory_label || "").toLowerCase();
+      const bizType = (reg.business_type || "").toLowerCase();
+      const isServiceCategory = (
+        catSlugNorm === "servicios-profesionales" ||
+        catSlugNorm === "servicios-hogar" ||
+        catSlugNorm === "educacion" ||
+        catSlugNorm.includes("servicio") ||
+        catLabel.includes("servicio") ||
+        subSlug.includes("inmob") ||
+        subSlug.includes("diseno") ||
+        subSlug.includes("asesor") ||
+        subSlug.includes("consultor") ||
+        subSlug.includes("abogad") ||
+        subSlug.includes("arquitect") ||
+        subSlug.includes("fisioter") ||
+        subSlug.includes("clase") ||
+        subLabel.includes("inmob") ||
+        subLabel.includes("asesor") ||
+        subLabel.includes("consultor") ||
+        bizType === "servicio"
+      );
+
+      const locText = document.getElementById("hero-location-text");
+      if (locText && reg.coto_address) {
+        if (reg.coto_only_delivery) {
+          locText.textContent = `${reg.coto_address} (Entregas solo en coto · Recoger en caseta)`;
+        } else if (isServiceCategory) {
+          locText.textContent = `${reg.coto_address} (Atención y citas en cotos de la zona)`;
+        } else {
+          locText.textContent = `${reg.coto_address} (Envíos y atención en cotos de la zona)`;
+        }
+      }
+
+      const scheduleStr = reg.schedule || (mdata && mdata.schedule) || "Lunes a Sábado · 09:00 a 19:00 hrs";
+      const schedInfo = document.getElementById("hero-schedule-info");
+      const schedDesc = document.getElementById("section-schedule-desc");
+      const schedHours = document.getElementById("hero-schedule-hours");
+      if (schedInfo) schedInfo.textContent = `Horario: ${scheduleStr}`;
+      if (schedDesc) {
+        schedDesc.textContent = isServiceCategory
+          ? `${scheduleStr} (Citas y consultas por WhatsApp activas todo el día).`
+          : `${scheduleStr} (Pedidos por WhatsApp activos todo el día).`;
+      }
+      if (schedHours) {
+        const parts = scheduleStr.split("·");
+        schedHours.textContent = parts.length > 1 ? ` · ${parts[1].trim()}` : ` · ${scheduleStr}`;
+      }
+
+      const serviceInfoEl = document.getElementById("hero-service-info");
+      const serviceIconRow = document.getElementById("hero-service-info-row");
+      if (serviceInfoEl) {
+        let chosenIcon = "truck";
+        if (isServiceCategory) {
+          serviceInfoEl.textContent = "Posibilidad de concretar una cita en tu domicilio o ubicación convenida.";
+          chosenIcon = "calendar-check";
+        } else if (reg.coto_only_delivery) {
+          serviceInfoEl.textContent = `🏡 Entregas a domicilio exclusivamente dentro de ${reg.coto_address || "su coto"} · Vecinos de otros cotos recogen en caseta`;
+          chosenIcon = "home";
+        } else if (reg.service_type === "delivery" || reg.delivery_available) {
+          serviceInfoEl.textContent = "Envíos directos a domicilio en cotos de la zona";
+          chosenIcon = "truck";
+        } else if (reg.service_type === "pickup") {
+          serviceInfoEl.textContent = "Punto de recolección y venta en la zona";
+          chosenIcon = "store";
+        } else {
+          serviceInfoEl.textContent = "Envíos a domicilio y atención en cotos de la zona";
+          chosenIcon = "truck";
+        }
+
+        if (serviceIconRow) {
+          const currentIcon = serviceIconRow.querySelector("[data-lucide]") || document.getElementById("hero-service-icon");
+          if (currentIcon) {
+            const newIcon = document.createElement("i");
+            newIcon.id = "hero-service-icon";
+            newIcon.className = "w-4 h-4 text-emerald-400 shrink-0";
+            newIcon.setAttribute("data-lucide", chosenIcon);
+            currentIcon.replaceWith(newIcon);
+          }
+        }
+      }
+
+      const secCobEl = document.getElementById("section-cobertura-text");
+      if (secCobEl) {
+        if (reg.coto_only_delivery) {
+          secCobEl.textContent = `Entregas directas a domicilio únicamente dentro de ${reg.coto_address || "su coto"}. Vecinos de otros cotos o fraccionamientos pueden hacer pedido para recoger en caseta de acceso.`;
+        } else if (isServiceCategory) {
+          secCobEl.textContent = "Atención, asesoría y citas en Natura Bosque Residencial, Los Robles, El Fortín y cotos de la zona Mariano Otero.";
+        }
+      }
+      const secModEl = document.getElementById("section-modalidad-text");
+      if (secModEl) {
+        if (reg.coto_only_delivery) {
+          secModEl.textContent = "Entregas en coto local o recolección programada en caseta de entrada mediante pedido por WhatsApp.";
+        } else if (isServiceCategory) {
+          secModEl.textContent = "Posibilidad de concretar una cita en tu domicilio o ubicación convenida previa coordinación por WhatsApp.";
+        }
+      }
+
+      // 7. Botones de acción directa
+      const waBtn = document.getElementById("hero-whatsapp-btn");
+      if (waBtn) {
+        const waMsg = encodeURIComponent(`Hola ${bName}, vi su Página Escaparate Individual en Epizentro Natura y me gustaría solicitar información / hacer un pedido.`);
+        waBtn.href = `https://wa.me/52${cleanWa}?text=${waMsg}`;
+      }
+      const phoneBtn = document.getElementById("hero-phone-btn");
+      if (phoneBtn) {
+        phoneBtn.href = `tel:${cleanPhone}`;
+      }
+
+      let siteUrl = "";
+      if (mdata && mdata.website_url) {
+        siteUrl = String(mdata.website_url).trim();
+      } else if (reg.website && (reg.website.startsWith("http://") || reg.website.startsWith("https://") || (reg.website.includes(".") && !reg.website.endsWith(".html")))) {
+        siteUrl = String(reg.website).trim();
+      }
+      const webBtn = document.getElementById("hero-website-btn");
+      if (webBtn && siteUrl) {
+        webBtn.href = siteUrl.startsWith("http") ? siteUrl : "https://" + siteUrl;
+        webBtn.classList.remove("hidden");
+        webBtn.classList.add("inline-flex");
+      }
+
+      // 8. Catálogo Destacado (Productos con Fotos con contenedor de fondo blanco puro)
+      const featSection = mdata ? mdata.featured_section : null;
+      const featTitle = document.getElementById("featured-section-title");
+      const featSubtitle = document.getElementById("featured-section-subtitle");
+      const featDesc = document.getElementById("featured-section-desc");
+      const featGrid = document.getElementById("featured-products-grid");
+      const featCountText = document.getElementById("featured-count-text");
+
+      const productsList = (featSection && Array.isArray(featSection.products) && featSection.products.length > 0)
+        ? featSection.products
+        : (mdata && Array.isArray(mdata.featured_products) && mdata.featured_products.length > 0)
+        ? mdata.featured_products
+        : [];
+
+      if (featSection) {
+        let stitle = featSection.title || "Catálogo de Productos & Servicios";
+        let ssubtitle = featSection.subtitle || "CATÁLOGO ACTIVO";
+        let sdesc = featSection.description || "";
+        const isProfessionalOrService = reg.category_slug === "servicios-profesionales" || reg.category_slug === "servicios-hogar" || (reg.subcategory_slug || "").includes("inmobiliario");
+        if (isProfessionalOrService) {
+          if (ssubtitle.toLowerCase().includes("lotes") || ssubtitle.toLowerCase().includes("mano")) {
+            ssubtitle = "VENTA & RENTA RESIDENCIAL DE ALTA GAMA";
+          }
+          if (sdesc.toLowerCase().includes("ingredientes")) {
+            sdesc = "Propiedades de autor en Los Robles Residencial y cotos de la zona Mariano Otero.";
+          }
+          if (stitle.toLowerCase().includes("selección destacada")) {
+            stitle = "Propiedades Destacadas en Cotos";
+          }
+        }
+        if (featTitle) featTitle.textContent = stitle;
+        if (featSubtitle) featSubtitle.textContent = ssubtitle;
+        if (featDesc) featDesc.textContent = sdesc;
+      }
+
+      if (productsList.length > 0 && featGrid) {
+        if (featCountText) featCountText.textContent = `${productsList.length} Opciones Activas`;
+        const isProfessionalOrService = reg.category_slug === "servicios-profesionales" || reg.category_slug === "servicios-hogar" || (reg.subcategory_slug || "").includes("inmobiliario");
+        const ctaBtnText = isProfessionalOrService ? "Consultar por WhatsApp" : "Pedir por WhatsApp";
+
+        featGrid.innerHTML = productsList.map(prod => {
+          const prodTag = prod.tag || prod.badge || reg.subcategory_label || "Comercio Verificado";
+          const isContain = prod.fit === "contain" || prod.photo_fit === "contain" || (prod.fit !== "cover" && (reg.category_slug === "comida" || reg.category_slug === "abarrotes" || (reg.subcategory_slug || "").includes("salsa") || (reg.subcategory_slug || "").includes("remedio")));
+          
+          const isQuote = isQuotePrice(prod.price);
+          const ctaBtnText = isQuote
+            ? "Cotizar por WhatsApp"
+            : (isProfessionalOrService ? "Consultar por WhatsApp" : "Pedir por WhatsApp");
+
+          const ctaMsg = isQuote
+            ? `Hola%20${encodeURIComponent(bName)},%20me%20interesa%20cotizar%20${encodeURIComponent(prod.name)}`
+            : (isProfessionalOrService
+                ? `Hola%20${encodeURIComponent(bName)},%20me%20interesa%20informaci%C3%B3n%20sobre%20${encodeURIComponent(prod.name)}`
+                : `Hola%20${encodeURIComponent(bName)},%20quiero%20ordenar%20${encodeURIComponent(prod.name)}%20para%20entrega%20en%20mi%20coto`);
+
+          return `
+          <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition-all group">
+            <div class="relative h-52 sm:h-56 w-full overflow-hidden bg-white border-b border-slate-100 ${isContain ? 'flex items-center justify-center p-3' : ''}">
+              <img src="${prod.photo || 'Assets/Epizentro.svg'}" alt="${prod.name}" class="${isContain ? 'h-full w-auto max-w-full object-contain bg-white group-hover:scale-105 transition-transform duration-300' : 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500'}" loading="lazy">
+              ${prodTag ? `
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-emerald-950/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs border border-emerald-500/20 shadow-xs">
+                ${prodTag}
+              </span>` : ''}
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div class="space-y-2">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors">${prod.name}</h3>
+                  ${renderPriceTag(prod.price, "text-base font-extrabold text-emerald-700")}
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  ${prod.description || ''}
+                </p>
+              </div>
+              <a href="https://wa.me/52${cleanWa}?text=${ctaMsg}" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>${ctaBtnText}</span>
+              </a>
+            </div>
+          </div>
+        `;
+        }).join("");
+      } else {
+        if (siteUrl && featGrid) {
+          if (featTitle) featTitle.textContent = "Catálogo y Servicios Oficiales";
+          if (featSubtitle) featSubtitle.textContent = "PORTAL WEB OFICIAL";
+          if (featDesc) featDesc.textContent = `Explora el catálogo completo, opciones y atención personalizada directamente en el portal oficial de ${bName}.`;
+          if (featCountText) featCountText.textContent = "Sitio Oficial";
+          featGrid.className = "w-full";
+          featGrid.innerHTML = `
+            <div class="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-8 sm:p-10 border border-slate-800 shadow-xl text-center space-y-5">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
+                <i data-lucide="globe" class="w-7 h-7"></i>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-xl sm:text-2xl font-black font-brand-title">Conoce todas nuestras opciones y servicios</h3>
+                <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+                  Visita el portal web oficial de <strong class="text-white">${bName}</strong> para consultar información en tiempo real, catálogo y atención directa.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
+                <a href="${siteUrl.startsWith('http') ? siteUrl : 'https://' + siteUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95">
+                  <span>Visitar Sitio Web Oficial</span>
+                  <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </a>
+                <a href="https://wa.me/52${cleanWa}?text=Hola%20${encodeURIComponent(bName)},%20vi%20su%20escaparate%20en%20Epizentro%20Natura%20y%20deseo%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition-all border border-white/15 active:scale-95">
+                  <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+                  <span>Contactar por WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          `;
+        } else {
+          const container = document.getElementById("featured-section-container");
+          if (container) container.classList.add("hidden");
+        }
+      }
+
+      // 9. Otras Secciones de Servicios o Menú
+      const otherSecWrapper = document.getElementById("other-products-sections-wrapper");
+      const otherSecGrid = document.getElementById("other-products-sections-grid");
+      if (mdata && Array.isArray(mdata.other_products_sections) && mdata.other_products_sections.length > 0) {
+        if (otherSecWrapper) otherSecWrapper.classList.remove("hidden");
+        if (otherSecGrid) {
+          otherSecGrid.innerHTML = mdata.other_products_sections.map(sec => `
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between">
+              <div class="space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                  ${sec.subtitle ? `<span class="text-[11px] font-black uppercase tracking-wider text-emerald-700">${sec.subtitle}</span>` : ''}
+                  <h3 class="text-xl font-black text-slate-950 mt-1 font-brand-title">${sec.title}</h3>
+                  ${sec.description ? `<p class="text-xs text-slate-500 mt-1">${sec.description}</p>` : ''}
+                </div>
+                <div class="space-y-3 divide-y divide-slate-100">
+                  ${(sec.items || []).map(item => `
+                    <div class="pt-3 first:pt-0 space-y-1">
+                      <div class="flex items-center justify-between gap-3">
+                        <h4 class="text-sm font-bold text-slate-900">${item.name}</h4>
+                        ${renderPriceTag(item.price, "text-sm font-black text-emerald-700 shrink-0")}
+                      </div>
+                      ${item.description ? `<p class="text-xs text-slate-500 leading-relaxed">${item.description}</p>` : ''}
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+              <a href="https://wa.me/52${cleanWa}?text=Hola%20${encodeURIComponent(bName)},%20solicito%20informaci%C3%B3n%20sobre%20${encodeURIComponent(sec.title)}" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                <span>Solicitar por WhatsApp</span>
+              </a>
+            </div>
+          `).join("");
+        }
+      }
+
+      // Banner y botón flotante de edición si el dueño visita con su token
+      const editToken = urlParams.get("token") || sessionStorage.getItem("last_epicentro_edit_token");
+      if (editToken) {
+        try { sessionStorage.setItem("last_epicentro_edit_token", editToken); } catch(e){}
+        
+        // 1. Barra superior para el dueño
+        if (!document.getElementById("owner-welcome-bar")) {
+          const ownerBar = document.createElement("div");
+          ownerBar.id = "owner-welcome-bar";
+          ownerBar.className = "bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 text-white px-4 py-3 text-xs font-semibold border-b border-purple-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 sticky top-0 z-50 shadow-xl backdrop-blur-md";
+          ownerBar.innerHTML = `
+            <div class="flex items-center gap-2.5 text-center sm:text-left">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+              <span class="text-slate-200">
+                ¡Hola! Estás viendo tu <strong class="text-white">Página Escaparate en vivo</strong>. Para personalizar tus fotos, catálogo y precios:
+              </span>
+            </div>
+            <a href="/natura/editar?token=${encodeURIComponent(editToken)}" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md transition-all active:scale-95 shrink-0 whitespace-nowrap">
+              <i data-lucide="camera" class="w-4 h-4 text-emerald-200"></i>
+              <span>Subir Fotos & Catálogo</span>
+            </a>
+          `;
+          document.body.prepend(ownerBar);
+        }
+
+        // 2. Botón flotante inferior
+        if (!document.getElementById("floating-edit-btn")) {
+          const floatingEdit = document.createElement("a");
+          floatingEdit.id = "floating-edit-btn";
+          floatingEdit.href = `/natura/editar?token=${encodeURIComponent(editToken)}`;
+          floatingEdit.className = "fixed bottom-5 right-5 z-40 px-4 py-2.5 rounded-full bg-slate-950 text-white border border-emerald-500/50 shadow-2xl text-xs font-bold flex items-center gap-2 hover:bg-emerald-600 transition-all cursor-pointer";
+          floatingEdit.innerHTML = '<i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i><span>Editar mi Escaparate</span>';
+          document.body.appendChild(floatingEdit);
+        }
+      }
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    async function loadDynamicBusiness() {
+      const queryParam = window.__epicentroQuery || (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let q = urlParams.get("id") || urlParams.get("slug") || urlParams.get("b") || "";
+        if (!q) {
+          const pathParts = window.location.pathname.split("/").filter(Boolean);
+          const naturaIdx = pathParts.indexOf("natura");
+          if (naturaIdx !== -1 && pathParts.length > naturaIdx + 1) {
+            const candidate = pathParts[naturaIdx + 1].replace(/\.html$/, "");
+            if (!["negocio", "tu-negocio", "index", "admin", "editar", "categoria", "articulo", "editor-cultura", "cultura-natura"].includes(candidate)) {
+              q = candidate;
+            }
+          }
+        }
+        return q;
+      })();
+
+      if (!queryParam) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      // 1. Pre-hidratación inmediata (0ms sin FOUC)
+      const initialData = getPreloadedBusiness(queryParam);
+      if (initialData) {
+        applyBusinessData(initialData);
+      }
+
+      // 2. Fetch en segundo plano para sincronizar cambios recientes
+      let reg = null;
+      try {
+        if (window.__bizFetchPromise) {
+          reg = await window.__bizFetchPromise;
+        } else {
+          const res = await fetch(`/api/epicentro/businesses/${encodeURIComponent(queryParam)}?_t=${Date.now()}`, { cache: "no-store" });
+          if (res.ok) reg = await res.json();
+        }
+      } catch(e) {
+        console.warn("Aviso fetch business:", e);
+      }
+
+      if (reg) {
+        try {
+          sessionStorage.setItem("biz_" + queryParam, JSON.stringify(reg));
+          if (reg.slug) sessionStorage.setItem("biz_" + reg.slug, JSON.stringify(reg));
+        } catch(e){}
+        applyBusinessData(reg);
+      } else if (!initialData) {
+        const titleEl = document.getElementById("hero-title");
+        const descEl = document.getElementById("hero-business-description");
+        if (titleEl) titleEl.textContent = "Comercio no encontrado";
+        if (descEl) descEl.textContent = "No fue posible localizar este comercio o aún se encuentra en proceso de validación comunitaria.";
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
+    }
+
+    // --- FUNCIÓN OFICIAL PARA COMPARTIR ESCAPARATE ---
+    window.shareStorefront = function() {
+      const bName = document.getElementById("hero-title")?.textContent || "Página Escaparate";
+      const desc = document.getElementById("hero-business-description")?.textContent || "";
+      const canonicalLink = document.getElementById("canonical-link")?.getAttribute("href") || window.location.href;
+      const shareUrl = canonicalLink.startsWith("http") ? canonicalLink : `https://www.epizentro.com${canonicalLink.startsWith('/') ? '' : '/'}${canonicalLink}`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: `${bName} · Epizentro Natura`,
+          text: `Conoce la oferta oficial de ${bName} en Epizentro Natura:`,
+          url: shareUrl
+        }).catch(() => {});
+      } else {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            showShareToast();
+          }).catch(() => {
+            prompt("Copia el siguiente enlace para compartir:", shareUrl);
+          });
+        } else {
+          prompt("Copia el siguiente enlace para compartir:", shareUrl);
+        }
+      }
+    };
+
+    function showShareToast() {
+      const existing = document.getElementById("share-toast-msg");
+      if (existing) existing.remove();
+      const toast = document.createElement("div");
+      toast.id = "share-toast-msg";
+      toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-2xl border border-emerald-500/50 flex items-center gap-2 animate-bounce";
+      toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span>¡Enlace copiado para compartir en WhatsApp!</span>`;
+      document.body.appendChild(toast);
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+      setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3500);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDynamicBusiness();
+    });
+  </script>
+  <script src="epicentro-register.js"></script>
+</body>
+</html>

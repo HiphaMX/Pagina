@@ -2912,8 +2912,10 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
         ).first()
 
     template_candidates = [
+        os.path.join(os.path.dirname(__file__), "..", "..", "templates", "negocio.html"),
+        os.path.join(os.getcwd(), "app", "templates", "negocio.html"),
+        os.path.join("app", "templates", "negocio.html"),
         os.path.join(os.getcwd(), "projects", "EpicentroNatura", "negocio.html"),
-        os.path.join(os.path.dirname(__file__), "..", "..", "..", "projects", "EpicentroNatura", "negocio.html"),
         os.path.join("projects", "EpicentroNatura", "negocio.html")
     ]
     html_raw = None
