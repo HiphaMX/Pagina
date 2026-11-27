@@ -398,6 +398,140 @@ def test_7_fastapi_endpoints():
         report_result("Ejecución de TestClient de FastAPI", False, str(err))
 
 
+def test_8_self_service_autoservicio():
+    print(f"\n{BLUE}=== 8. VALIDACIÓN DE AUTOSERVICIO (EDITAR.HTML), MENÚ SIN FOTO Y SECCIÓN 3 ==={RESET}")
+    editar_path = EPIZENTRO_DIR / "editar.html"
+    if not editar_path.exists():
+        report_result("Archivo editar.html existe", False)
+        return
+    
+    html = open(editar_path, "r", encoding="utf-8").read()
+    
+    has_menu_sections = (
+        "menu-sections-container" in html and
+        "btn-add-menu-section" in html and
+        "other_products_sections" in html and
+        "renderMenuSections" in html
+    )
+    report_result(
+        "editar.html cuenta con módulo de Secciones Tipo Menú Sin Foto (Sección 2.1)",
+        has_menu_sections,
+        "Contenedor dinámico y funciones de gestión presentes"
+    )
+
+    has_ordered_section_3 = (
+        "edit-delivery" in html and
+        "edit-pickup" in html and
+        "edit-schedule" in html and
+        "edit-address" in html and
+        "edit-description" in html and
+        "edit-payment-method" in html and
+        "edit-coverage-zone" in html and
+        "edit-wa" in html and
+        "edit-phone" in html
+    )
+    pos_delivery = html.find('id="edit-delivery"')
+    pos_schedule = html.find('id="edit-schedule"')
+    pos_address = html.find('id="edit-address"')
+    pos_desc = html.find('id="edit-description"')
+    pos_payment = html.find('id="edit-payment-method"')
+    pos_coverage = html.find('id="edit-coverage-zone"')
+    
+    order_ok = (
+        has_ordered_section_3 and
+        pos_delivery < pos_schedule < pos_address < pos_desc < pos_payment < pos_coverage
+    )
+    report_result(
+        "Sección 3 en editar.html ordenada estrictamente (Modalidades -> Horario -> Ubicación -> Descripción -> Pagos -> Cobertura)",
+        order_ok,
+        "Orden y controles de Sección 3 verificados 100%"
+    )
+
+    try:
+        from fastapi.testclient import TestClient
+        from app.main import app
+        from app.core.database import SessionLocal
+        from app.models.epicentro_registration import EpicentroRegistration
+        
+        client = TestClient(app)
+        db = SessionLocal()
+        try:
+            reg = db.query(EpicentroRegistration).filter(EpicentroRegistration.business_name.ilike("%chill%")).first()
+            if not reg:
+                reg = db.query(EpicentroRegistration).first()
+            if not reg.edit_token:
+                reg.edit_token = "test-token-autoservicio-vergotas"
+                db.commit()
+            
+            token = reg.edit_token
+            
+            res_get = client.get(f"/api/epicentro/self-service/{token}")
+            get_data = res_get.json() if res_get.status_code == 200 else {}
+            get_ok = (
+                res_get.status_code == 200 and
+                "delivery_badge" in get_data and
+                "pickup_available" in get_data and
+                "payment_method" in get_data and
+                "coverage_zone" in get_data
+            )
+            report_result(
+                "GET /api/epicentro/self-service/{token} retorna campos operativos completos",
+                get_ok,
+                f"Status: {res_get.status_code}"
+            )
+            
+            test_menu_sections = [
+                {
+                    "title": "Presentaciones por Litro",
+                    "subtitle": "Para familias y eventos",
+                    "description": "Precios especiales en presentaciones grandes",
+                    "items": [
+                        {"name": "1 Litro Salsa Macha", "price": 280.0, "description": "Presentación familiar"},
+                        {"name": "1 Litro Salsa Habanera", "price": 260.0, "description": "Picante medio"}
+                    ]
+                }
+            ]
+            put_payload = {
+                "schedule": "Lunes a Domingo · 10:00 a 20:00 hrs",
+                "payment_method": "Efectivo contra entrega, transferencia SPEI, tarjetas y Mercado Pago",
+                "coverage_zone": "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
+                "delivery_available": True,
+                "delivery_badge": "Servicio a domicilio en cotos",
+                "pickup_available": True,
+                "pickup_badge": "Recoger en local",
+                "microsite_data": {
+                    "other_products_sections": test_menu_sections
+                }
+            }
+            res_put = client.put(f"/api/epicentro/self-service/{token}", json=put_payload)
+            put_ok = res_put.status_code == 200 and res_put.json().get("success") is True
+            report_result(
+                "PUT /api/epicentro/self-service/{token} guarda cambios operativos y secciones de menú",
+                put_ok,
+                f"Status: {res_put.status_code}"
+            )
+            
+            db.refresh(reg)
+            md_persisted = json.loads(reg.microsite_data) if isinstance(reg.microsite_data, str) else (reg.microsite_data or {})
+            persist_ok = (
+                reg.payment_method == put_payload["payment_method"] and
+                reg.coverage_zone == put_payload["coverage_zone"] and
+                "other_products_sections" in md_persisted and
+                len(md_persisted["other_products_sections"]) >= 1
+            )
+            report_result(
+                "Persistencia SQLite de secciones de menú, métodos de pago y zona de cobertura",
+                persist_ok,
+                f"Menu sections: {len(md_persisted.get('other_products_sections', []))}"
+            )
+            
+        finally:
+            db.close()
+            
+    except Exception as err:
+        report_result("Pruebas E2E de API de autoservicio", False, str(err))
+
+
 def main():
     print(f"\n{BOLD}{'=' * 75}{RESET}")
     print(f"{BOLD}   SUITE AUTOMATIZADA DE VERIFICACIÓN KAM - EPIZENTRO NATURA{RESET}")
@@ -411,6 +545,7 @@ def main():
     test_5_verified_badge_placement()
     test_6_search_engine_and_indexing()
     test_7_fastapi_endpoints()
+    test_8_self_service_autoservicio()
     
     total = passed_tests + failed_tests
     rate = (passed_tests / total * 100) if total > 0 else 0

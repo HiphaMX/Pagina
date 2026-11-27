@@ -61,6 +61,7 @@ def ensure_epicentro_schema(db: Session):
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS ai_moderated_at TIMESTAMP"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted BOOLEAN DEFAULT TRUE"))
             db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP"))
+            db.execute(text("ALTER TABLE epicentro_registrations ADD COLUMN IF NOT EXISTS coverage_zone VARCHAR(150)"))
             db.commit()
         else:
             for col, col_type in [
@@ -70,6 +71,7 @@ def ensure_epicentro_schema(db: Session):
                 ("photos", "TEXT"),
                 ("kam_name", "VARCHAR(100)"),
                 ("payment_method", "VARCHAR(50)"),
+                ("coverage_zone", "VARCHAR(150)"),
                 ("cover_photo", "TEXT"),
                 ("microsite_data", "TEXT"),
                 ("coupon_code", "VARCHAR(50)"),
@@ -252,6 +254,8 @@ class SelfServiceUpdateRequest(BaseModel):
     delivery_badge: Optional[str] = None
     pickup_available: Optional[bool] = None
     pickup_badge: Optional[str] = None
+    payment_method: Optional[str] = None
+    coverage_zone: Optional[str] = None
     website: Optional[str] = None
 
 
@@ -282,6 +286,7 @@ class UpdateRegistrationAdminRequest(BaseModel):
     microsite_data: Optional[Union[dict, str]] = None
     kam_name: Optional[str] = None
     payment_method: Optional[str] = None
+    coverage_zone: Optional[str] = None
     payment_status: Optional[str] = None
     payment_amount: Optional[float] = None
     is_verified_badge: Optional[bool] = None
@@ -345,6 +350,8 @@ class BusinessPublicOut(BaseModel):
     photos: Optional[str] = None
     cover_photo: Optional[str] = None
     microsite_data: Optional[str] = None
+    payment_method: Optional[str] = None
+    coverage_zone: Optional[str] = None
     payment_status: Optional[str] = "free_basic"
     payment_amount: Optional[float] = 0.0
     is_verified_badge: bool = False
@@ -1399,7 +1406,12 @@ def get_self_service_business(token: str, db: Session = Depends(get_db)):
         "whatsapp": reg.whatsapp,
         "schedule": reg.schedule,
         "delivery_available": bool(reg.delivery_available),
+        "delivery_badge": reg.delivery_badge,
         "coto_only_delivery": bool(reg.coto_only_delivery),
+        "pickup_available": bool(reg.pickup_available) if reg.pickup_available is not None else True,
+        "pickup_badge": reg.pickup_badge,
+        "payment_method": reg.payment_method,
+        "coverage_zone": reg.coverage_zone,
         "website": reg.website,
         "description": reg.description,
         "cover_photo": reg.cover_photo,
@@ -1421,7 +1433,8 @@ def update_self_service_business(
 ):
     """
     Permite al comerciante actualizar su portada, hasta 10 fotos de productos,
-    precios, descripción y horarios mediante su token privado seguro.
+    secciones de menú sin foto, precios, modalidades, horarios, ubicación, métodos
+    de pago y zona de cobertura mediante su token privado seguro.
     """
     ensure_epicentro_schema(db)
     token_clean = token.strip()
@@ -1443,7 +1456,7 @@ def update_self_service_business(
         elif isinstance(payload.photos, str):
             reg.photos = payload.photos.strip()
 
-    # Actualizar microsite_data (productos destacados, precios, etc.)
+    # Actualizar microsite_data (productos destacados, secciones de menú sin foto, precios, etc.)
     if payload.microsite_data is not None:
         md = payload.microsite_data
         if isinstance(md, str):
@@ -1463,6 +1476,11 @@ def update_self_service_business(
                 if is_service and "selección destacada" in (feat.get("title") or "").lower():
                     feat["title"] = "Propiedades Destacadas en Cotos" if "inmob" in (reg.subcategory_slug or "").lower() else "Servicios Destacados"
                 md["featured_section"] = feat
+
+            if payload.payment_method is not None:
+                md["payment_methods"] = payload.payment_method.strip() if payload.payment_method else None
+            if payload.coverage_zone is not None:
+                md["coverage_zone"] = payload.coverage_zone.strip() if payload.coverage_zone else None
             reg.microsite_data = json.dumps(md)
         elif isinstance(payload.microsite_data, list):
             reg.microsite_data = json.dumps(payload.microsite_data)
@@ -1487,6 +1505,10 @@ def update_self_service_business(
         reg.pickup_available = payload.pickup_available
     if payload.pickup_badge is not None:
         reg.pickup_badge = payload.pickup_badge.strip() if payload.pickup_badge else None
+    if payload.payment_method is not None:
+        reg.payment_method = payload.payment_method.strip() if payload.payment_method else None
+    if payload.coverage_zone is not None:
+        reg.coverage_zone = payload.coverage_zone.strip() if payload.coverage_zone else None
     if payload.website is not None:
         reg.website = payload.website.strip()
 

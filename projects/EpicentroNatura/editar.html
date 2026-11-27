@@ -192,62 +192,197 @@
         </div>
       </section>
 
-      <!-- SECCIÓN 3: DATOS DE CONTACTO Y HORARIOS -->
-      <section class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
-        <h2 class="text-base font-black text-slate-900 font-display flex items-center gap-2">
-          <i data-lucide="clock" class="w-5 h-5 text-emerald-600"></i>
-          <span>3. Horario de Atención y Contacto de Pedidos</span>
-        </h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- SECCIÓN 2.1: SECCIONES TIPO MENÚ / CATÁLOGO SIN FOTO (HASTA 4 SECCIONES) -->
+      <section class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp de Pedidos *</label>
-            <input type="tel" id="edit-wa" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            <span class="text-[10px] text-slate-400 mt-0.5 block">10 dígitos a donde llegarán los mensajes de compra.</span>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base font-black text-slate-900 font-display flex items-center gap-2">
+                <i data-lucide="list-plus" class="w-5 h-5 text-emerald-600"></i>
+                <span>Menú y Presentaciones sin Foto (Complementos y Precios)</span>
+              </h2>
+              <span id="menu-sections-counter" class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black font-mono">
+                0 / 4 secciones
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Ideal para presentaciones por litro, botanas, complementos, postres o servicios con precio que no requieren fotografía.
+            </p>
           </div>
 
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Horario Comercial *</label>
-            <input type="text" id="edit-schedule" placeholder="Ej. Lunes a Sábado · 09:00 a 19:00 hrs" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            <span class="text-[10px] text-slate-400 mt-0.5 block">Calcula en vivo si apareces como Abierto o Cerrado en el directorio.</span>
+          <button type="button" id="btn-add-menu-section" onclick="addNewMenuSection()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-md transition-all active:scale-95 shrink-0 cursor-pointer">
+            <i data-lucide="plus" class="w-4 h-4 text-emerald-400"></i>
+            <span>Añadir Sección de Menú</span>
+          </button>
+        </div>
+
+        <!-- CONTENEDOR DE SECCIONES DE MENÚ -->
+        <div id="menu-sections-container" class="space-y-4">
+          <!-- Renderizado dinámicamente -->
+        </div>
+
+        <div id="empty-menu-sections-msg" class="p-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-slate-400 text-xs">
+          No tienes secciones tipo menú configuradas. Toca <strong>"+ Añadir Sección de Menú"</strong> si ofreces presentaciones o renglones adicionales sin foto.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: INFORMACIÓN OPERATIVA, MODALIDADES Y CONTACTO DE PEDIDOS -->
+      <section class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-base font-black text-slate-900 font-display flex items-center gap-2">
+            <i data-lucide="settings-2" class="w-5 h-5 text-emerald-600"></i>
+            <span>3. Horario de Atención y Contacto de Pedidos</span>
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Configura en orden tus modalidades de servicio, horarios, ubicación física, métodos de cobro y área de entrega para tus clientes vecinos.
+          </p>
+        </div>
+
+        <!-- 3.1 MODALIDADES DE ATENCIÓN Y RETIRO -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">1</span>
+            <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider">Modalidades de Atención y Retiro</h3>
           </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Ubicación / Coto / Local *</label>
-          <input type="text" id="edit-address" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Descripción Breve del Negocio</label>
-          <textarea id="edit-description" rows="2" class="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
-        </div>
-
-        <div class="pt-3 border-t border-slate-100 space-y-3">
-          <span class="block text-xs font-bold text-slate-700">Modalidades de Atención y Retiro</span>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <!-- Servicio a Domicilio -->
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" id="edit-delivery" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                <span id="label-delivery-text" class="text-xs font-bold text-slate-800">Servicio / Entrega a domicilio</span>
+                <span id="label-delivery-text" class="text-xs font-bold text-slate-900">Servicio / Entrega a domicilio</span>
               </label>
-              <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-              <label class="flex items-center gap-2 cursor-pointer pt-1">
+              <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio en cotos" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              
+              <label class="flex items-center gap-2 cursor-pointer pt-1 border-t border-slate-100">
                 <input type="checkbox" id="edit-coto-only" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
-                <span class="text-[11px] font-semibold text-amber-950">Solo entregas en mi coto</span>
+                <span class="text-[11px] font-semibold text-amber-950">Solo entregas dentro de mi coto</span>
               </label>
             </div>
 
-            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+            <!-- Punto de Venta Físico / Retiro -->
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" id="edit-pickup" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
-                <span class="text-xs font-bold text-slate-800">Punto de venta físico / Retiro en local</span>
+                <span class="text-xs font-bold text-slate-900">Punto de venta físico / Retiro en local / Cita previa</span>
               </label>
-              <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <span class="text-[10px] text-slate-500 block leading-tight">Desmarca esta opción si tus servicios se realizan únicamente en el domicilio del cliente.</span>
+              <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <span class="text-[10px] text-slate-500 block leading-tight">Desmarca esta opción si trabajas únicamente a domicilio del cliente sin atención física en tu dirección.</span>
             </div>
           </div>
         </div>
+
+        <!-- 3.2 HORARIO COMERCIAL -->
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">2</span>
+            <label class="text-xs font-black uppercase text-slate-800 tracking-wider">Horario Comercial *</label>
+          </div>
+          <input type="text" id="edit-schedule" placeholder="Ej. Lunes a Domingo · 10:00 a 20:00 hrs" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+          <span class="text-[10px] text-slate-400 block">Calcula en vivo si apareces como <strong>Abierto</strong> o <strong>Cerrado</strong> en el directorio. Usa formato <em>Días · Horas</em>.</span>
+        </div>
+
+        <!-- 3.3 UBICACIÓN / COTO / LOCAL -->
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">3</span>
+            <label class="text-xs font-black uppercase text-slate-800 tracking-wider">Ubicación / Coto / Local *</label>
+          </div>
+          <input type="text" id="edit-address" placeholder="Ej. Coto Ceiba · Prolongación Mariano Otero (o Plaza / Local)" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+          <span class="text-[10px] text-slate-400 block">Indica tu coto, calle o local de referencia para guiar a los vecinos de la zona.</span>
+        </div>
+
+        <!-- 3.4 DESCRIPCIÓN BREVE DEL NEGOCIO -->
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">4</span>
+            <label class="text-xs font-black uppercase text-slate-800 tracking-wider">Descripción Breve del Negocio</label>
+          </div>
+          <textarea id="edit-description" rows="3" placeholder="Describe brevemente tus productos, especialidades o servicios estrella para las familias de los cotos..." class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none text-slate-700 leading-relaxed"></textarea>
+          <span class="text-[10px] text-slate-400 block">Aparece en tu tarjeta del directorio de comercios y en la cabecera de tu página escaparate.</span>
+        </div>
+
+        <!-- 3.5 MÉTODOS DE PAGO ACEPTADOS -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">5</span>
+            <label class="text-xs font-black uppercase text-slate-800 tracking-wider">Métodos de Pago Aceptados</label>
+          </div>
+
+          <!-- Chips interactivos de selección rápida -->
+          <div class="flex flex-wrap gap-1.5 select-none" id="payment-chips-container">
+            <button type="button" onclick="togglePaymentChip('Efectivo contra entrega', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+              💵 Efectivo
+            </button>
+            <button type="button" onclick="togglePaymentChip('Transferencia bancaria SPEI', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+              🏦 Transferencia SPEI
+            </button>
+            <button type="button" onclick="togglePaymentChip('Tarjetas de Débito y Crédito', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+              💳 Tarjetas Débito / Crédito
+            </button>
+            <button type="button" onclick="togglePaymentChip('Mercado Pago', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+              📱 Mercado Pago / QR
+            </button>
+            <button type="button" onclick="togglePaymentChip('Terminal móvil en entrega', this)" class="payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+              📟 Terminal en Entrega
+            </button>
+          </div>
+
+          <!-- Input editable consolidado -->
+          <input type="text" id="edit-payment-method" placeholder="Ej. Efectivo contra entrega, transferencia bancaria SPEI, tarjetas y Mercado Pago." class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <span class="text-[10px] text-slate-400 block">Toca los botones para agregar opciones o edita el texto directamente si tienes condiciones especiales.</span>
+        </div>
+
+        <!-- 3.6 ZONA DE COBERTURA -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">6</span>
+            <label class="text-xs font-black uppercase text-slate-800 tracking-wider">Zona de Cobertura y Entregas</label>
+          </div>
+
+          <!-- Chips de opciones predefinidas -->
+          <div class="flex flex-wrap gap-1.5" id="coverage-chips-container">
+            <button type="button" onclick="selectCoveragePreset('Toda la zona Epizentro (Natura, Los Robles y cotos aledaños)')" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition-colors cursor-pointer">
+              🟢 Toda la zona Epizentro
+            </button>
+            <button type="button" onclick="selectCoveragePreset('Solo dentro de mi coto / colonia')" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors cursor-pointer">
+              🟡 Solo dentro de mi coto
+            </button>
+            <button type="button" onclick="selectCoveragePreset('Zona Mariano Otero y cotos cercanos (hasta 3 km)')" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100 transition-colors cursor-pointer">
+              🔵 Zona Mariano Otero (hasta 3 km)
+            </button>
+            <button type="button" onclick="selectCoveragePreset('Toda la Zona Metropolitana de Guadalajara (ZMG)')" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-purple-200 bg-purple-50 text-purple-800 hover:bg-purple-100 transition-colors cursor-pointer">
+              🟣 Toda la ZMG
+            </button>
+          </div>
+
+          <!-- Input editable de cobertura -->
+          <input type="text" id="edit-coverage-zone" placeholder="Ej. Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <span class="text-[10px] text-slate-400 block">Especifica el alcance de tus entregas a domicilio, casetas autorizadas o radio de servicio.</span>
+        </div>
+
+        <!-- 3.7 CANALES DE CONTACTO Y PEDIDOS -->
+        <div class="pt-4 border-t border-slate-100 space-y-3">
+          <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider flex items-center gap-2">
+            <i data-lucide="phone-call" class="w-4 h-4 text-emerald-600"></i>
+            <span>Canales de Contacto Directo para Pedidos</span>
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp de Pedidos *</label>
+              <input type="tel" id="edit-wa" placeholder="3331234567" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono">
+              <span class="text-[10px] text-slate-400 mt-0.5 block">10 dígitos a donde los clientes enviarán mensajes directos de compra.</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Teléfono de Contacto (Llamadas)</label>
+              <input type="tel" id="edit-phone" placeholder="3331234567" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono">
+              <span class="text-[10px] text-slate-400 mt-0.5 block">Para llamadas convencionales en caso de no disponer de WhatsApp.</span>
+            </div>
+          </div>
+        </div>
+
       </section>
 
     </div>
@@ -286,6 +421,7 @@
       let currentToken = "";
       let currentBiz = null;
       let productsList = [];
+      let menuSections = [];
       let currentCover = "";
       let isSaving = false;
 
@@ -349,7 +485,7 @@
         updateCoverPreview(currentCover);
         renderCuratedCovers(currentBiz.curated_covers || {});
 
-        // Productos
+        // Productos Destacados con Foto
         const md = currentBiz.microsite_data || {};
         const feat = md.featured_section || {};
         productsList = (feat.products && Array.isArray(feat.products) && feat.products.length > 0)
@@ -357,16 +493,45 @@
           : (Array.isArray(md.featured_products) ? [...md.featured_products] : []);
         renderProducts();
 
-        // Contacto y Horarios
-        document.getElementById("edit-wa").value = currentBiz.whatsapp || "";
-        document.getElementById("edit-schedule").value = currentBiz.schedule || "Lunes a Sábado · 09:00 a 19:00 hrs";
-        document.getElementById("edit-address").value = currentBiz.coto_address || "";
-        document.getElementById("edit-description").value = currentBiz.description || "";
+        // Secciones de Menú Sin Foto
+        menuSections = (md.other_products_sections && Array.isArray(md.other_products_sections) && md.other_products_sections.length > 0)
+          ? JSON.parse(JSON.stringify(md.other_products_sections))
+          : [];
+        renderMenuSections();
+
+        // Operación, Horarios y Contacto (Sección 3 en Orden)
+        // 1. Modalidades de atención
         document.getElementById("edit-delivery").checked = !!currentBiz.delivery_available;
         if (document.getElementById("edit-delivery-badge")) document.getElementById("edit-delivery-badge").value = currentBiz.delivery_badge || "";
         document.getElementById("edit-coto-only").checked = !!currentBiz.coto_only_delivery;
         if (document.getElementById("edit-pickup")) document.getElementById("edit-pickup").checked = currentBiz.pickup_available !== false;
         if (document.getElementById("edit-pickup-badge")) document.getElementById("edit-pickup-badge").value = currentBiz.pickup_badge || "";
+
+        // 2. Horario Comercial
+        document.getElementById("edit-schedule").value = currentBiz.schedule || "Lunes a Domingo · 10:00 a 20:00 hrs";
+
+        // 3. Ubicación
+        document.getElementById("edit-address").value = currentBiz.coto_address || "";
+
+        // 4. Descripción Breve
+        document.getElementById("edit-description").value = currentBiz.description || "";
+
+        // 5. Métodos de Pago
+        if (document.getElementById("edit-payment-method")) {
+          document.getElementById("edit-payment-method").value = currentBiz.payment_method || md.payment_methods || "";
+          updatePaymentChipsHighlight();
+        }
+
+        // 6. Zona de Cobertura
+        if (document.getElementById("edit-coverage-zone")) {
+          document.getElementById("edit-coverage-zone").value = currentBiz.coverage_zone || md.coverage_zone || "";
+        }
+
+        // Canales Directos
+        document.getElementById("edit-wa").value = currentBiz.whatsapp || "";
+        if (document.getElementById("edit-phone")) {
+          document.getElementById("edit-phone").value = currentBiz.phone || "";
+        }
 
         const catSlug = (currentBiz.category_slug || "").toLowerCase();
         const catLabel = (currentBiz.category_label || "").toLowerCase();
@@ -638,6 +803,249 @@
         showToast("Producto eliminado", "info");
       };
 
+      // --- GESTIÓN DE SECCIONES DE MENÚ SIN FOTO (HASTA 4 SECCIONES) ---
+      function renderMenuSections() {
+        const container = document.getElementById("menu-sections-container");
+        const counter = document.getElementById("menu-sections-counter");
+        const addBtn = document.getElementById("btn-add-menu-section");
+        const emptyMsg = document.getElementById("empty-menu-sections-msg");
+
+        if (counter) counter.textContent = `${menuSections.length} / 4 secciones`;
+        if (addBtn) addBtn.style.display = menuSections.length >= 4 ? "none" : "inline-flex";
+
+        if (!container) return;
+        if (menuSections.length === 0) {
+          container.innerHTML = "";
+          if (emptyMsg) emptyMsg.classList.remove("hidden");
+          return;
+        }
+        if (emptyMsg) emptyMsg.classList.add("hidden");
+
+        container.innerHTML = menuSections.map((sec, secIdx) => `
+          <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-800 text-[10px] font-black uppercase font-mono">Sección ${secIdx + 1}</span>
+                <span class="text-xs font-black text-slate-900">${escapeHtml(sec.title || 'Nueva Sección')}</span>
+              </div>
+              <button type="button" onclick="removeMenuSection(${secIdx})" class="text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-2 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Eliminar Sección</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Título de la Sección *</label>
+                <input type="text" id="sec-title-${secIdx}" value="${escapeHtml(sec.title || '')}" oninput="updateMenuSectionMeta(${secIdx}, 'title', this.value)" placeholder="Ej. Presentaciones por Litro / Botanas / Servicios" class="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Subtítulo (Opcional)</label>
+                <input type="text" id="sec-subtitle-${secIdx}" value="${escapeHtml(sec.subtitle || '')}" oninput="updateMenuSectionMeta(${secIdx}, 'subtitle', this.value)" placeholder="Ej. Para familias y eventos / Bajo pedido" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Descripción de la Sección (Opcional)</label>
+              <input type="text" id="sec-desc-${secIdx}" value="${escapeHtml(sec.description || '')}" oninput="updateMenuSectionMeta(${secIdx}, 'description', this.value)" placeholder="Ej. Precios especiales por mayoreo o presentaciones para compartir..." class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none text-slate-600">
+            </div>
+
+            <!-- Lista de Renglones / Ítems -->
+            <div class="pt-2 border-t border-slate-200 space-y-2">
+              <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Renglones de Menú (${sec.items ? sec.items.length : 0})</span>
+              
+              ${(!sec.items || sec.items.length === 0) ? `
+                <p class="text-xs text-slate-400 italic bg-white p-3 rounded-xl border border-dashed border-slate-200 text-center">
+                  No has agregado renglones a esta sección. Utiliza el formulario inferior para añadir el primero.
+                </p>
+              ` : `
+                <div class="space-y-1.5">
+                  ${sec.items.map((item, itemIdx) => `
+                    <div class="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-xs gap-3">
+                      <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold text-slate-900">${escapeHtml(item.name)}</span>
+                          <span class="font-mono text-emerald-700 font-extrabold text-[11px]">${formatMoney(item.price)}</span>
+                        </div>
+                        ${item.description ? `<p class="text-[11px] text-slate-500 truncate mt-0.5">${escapeHtml(item.description)}</p>` : ''}
+                      </div>
+                      <button type="button" onclick="removeMenuItem(${secIdx}, ${itemIdx})" class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Eliminar renglón">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  `).join("")}
+                </div>
+              `}
+
+              <!-- Formulario para agregar nuevo renglón -->
+              <div class="p-3 rounded-xl bg-emerald-950/5 border border-emerald-500/20 grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+                <div class="sm:col-span-5">
+                  <input type="text" id="sec-${secIdx}-new-name" placeholder="Nombre (ej. 1 Litro Salsa Macha)" onkeydown="if(event.key==='Enter'){event.preventDefault();addMenuItem(${secIdx});}" class="w-full px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="sm:col-span-3">
+                  <input type="number" step="0.5" id="sec-${secIdx}-new-price" placeholder="Precio ($ MXN)" onkeydown="if(event.key==='Enter'){event.preventDefault();addMenuItem(${secIdx});}" class="w-full px-2.5 py-1.5 text-xs font-bold font-mono rounded-lg bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="sm:col-span-4">
+                  <input type="text" id="sec-${secIdx}-new-desc" placeholder="Desc. breve o ingredientes" onkeydown="if(event.key==='Enter'){event.preventDefault();addMenuItem(${secIdx});}" class="w-full px-2.5 py-1.5 text-xs rounded-lg bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="sm:col-span-12">
+                  <button type="button" onclick="addMenuItem(${secIdx})" class="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>Añadir Renglón a esta Sección</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      }
+
+      function syncMenuSectionsFromDOM() {
+        menuSections.forEach((sec, idx) => {
+          const titleIn = document.getElementById(`sec-title-${idx}`);
+          const subIn = document.getElementById(`sec-subtitle-${idx}`);
+          const descIn = document.getElementById(`sec-desc-${idx}`);
+          if (titleIn) sec.title = titleIn.value.trim();
+          if (subIn) sec.subtitle = subIn.value.trim();
+          if (descIn) sec.description = descIn.value.trim();
+
+          const nameIn = document.getElementById(`sec-${idx}-new-name`);
+          const priceIn = document.getElementById(`sec-${idx}-new-price`);
+          const descItemIn = document.getElementById(`sec-${idx}-new-desc`);
+          if (nameIn && nameIn.value.trim()) {
+            if (!sec.items) sec.items = [];
+            sec.items.push({
+              name: nameIn.value.trim(),
+              price: priceIn ? parseFloat(priceIn.value) || 0.0 : 0.0,
+              description: descItemIn ? descItemIn.value.trim() : ""
+            });
+            nameIn.value = "";
+            if (priceIn) priceIn.value = "";
+            if (descItemIn) descItemIn.value = "";
+          }
+        });
+      }
+
+      window.addNewMenuSection = function() {
+        if (menuSections.length >= 4) {
+          alert("Has alcanzado el límite máximo de 4 secciones de menú.");
+          return;
+        }
+        syncMenuSectionsFromDOM();
+        const defaultTemplates = [
+          { title: "Presentaciones por Litro", subtitle: "Para familias y reuniones", desc: "Precios especiales en presentaciones grandes." },
+          { title: "Complementos y Botanas", subtitle: "Acompañamientos frescos", desc: "El toque perfecto para compartir." },
+          { title: "Paquetes y Especiales", subtitle: "Opciones para compartir", desc: "Combinaciones especiales para tu mesa o reunión." },
+          { title: "Bebidas y Postres", subtitle: "El toque final", desc: "Bebidas refrescantes y repostería artesanal." }
+        ];
+        const tmpl = defaultTemplates[menuSections.length] || { title: "Otras Opciones", subtitle: "Complementos", desc: "" };
+        menuSections.push({
+          title: tmpl.title,
+          subtitle: tmpl.subtitle,
+          description: tmpl.desc,
+          items: []
+        });
+        renderMenuSections();
+        showToast("Sección de menú añadida", "info");
+      };
+
+      window.removeMenuSection = function(idx) {
+        if (!confirm("¿Eliminar esta sección de menú y sus renglones?")) return;
+        syncMenuSectionsFromDOM();
+        menuSections.splice(idx, 1);
+        renderMenuSections();
+        showToast("Sección de menú eliminada", "info");
+      };
+
+      window.updateMenuSectionMeta = function(secIdx, field, val) {
+        if (menuSections[secIdx]) {
+          menuSections[secIdx][field] = val;
+        }
+      };
+
+      window.addMenuItem = function(secIdx) {
+        const sec = menuSections[secIdx];
+        if (!sec) return;
+        const nameIn = document.getElementById(`sec-${secIdx}-new-name`);
+        const priceIn = document.getElementById(`sec-${secIdx}-new-price`);
+        const descIn = document.getElementById(`sec-${secIdx}-new-desc`);
+
+        const name = nameIn ? nameIn.value.trim() : "";
+        if (!name) {
+          alert("Por favor indica el nombre del ítem o producto.");
+          if (nameIn) nameIn.focus();
+          return;
+        }
+        const price = priceIn ? parseFloat(priceIn.value) || 0.0 : 0.0;
+        const desc = descIn ? descIn.value.trim() : "";
+
+        if (!sec.items) sec.items = [];
+        sec.items.push({ name, price, description: desc });
+
+        if (nameIn) nameIn.value = "";
+        if (priceIn) priceIn.value = "";
+        if (descIn) descIn.value = "";
+
+        renderMenuSections();
+        showToast("Renglón añadido al menú", "info");
+      };
+
+      window.removeMenuItem = function(secIdx, itemIdx) {
+        syncMenuSectionsFromDOM();
+        if (menuSections[secIdx] && menuSections[secIdx].items) {
+          menuSections[secIdx].items.splice(itemIdx, 1);
+          renderMenuSections();
+        }
+      };
+
+      // --- HELPERS PARA MÉTODOS DE PAGO Y ZONA DE COBERTURA ---
+      window.togglePaymentChip = function(methodText, btnEl) {
+        const input = document.getElementById("edit-payment-method");
+        if (!input) return;
+        let current = input.value.trim();
+        let methods = current ? current.split(",").map(m => m.trim()).filter(Boolean) : [];
+
+        const idx = methods.findIndex(m => m.toLowerCase() === methodText.toLowerCase() || m.toLowerCase().includes(methodText.toLowerCase().slice(0, 8)));
+        if (idx >= 0) {
+          methods.splice(idx, 1);
+        } else {
+          methods.push(methodText);
+        }
+        input.value = methods.join(", ");
+        updatePaymentChipsHighlight();
+      };
+
+      function updatePaymentChipsHighlight() {
+        const input = document.getElementById("edit-payment-method");
+        if (!input) return;
+        const val = (input.value || "").toLowerCase();
+        document.querySelectorAll(".payment-chip").forEach(btn => {
+          const text = btn.textContent.toLowerCase();
+          const isMatched = (
+            (text.includes("efectivo") && val.includes("efectivo")) ||
+            (text.includes("spei") && (val.includes("spei") || val.includes("transferencia"))) ||
+            (text.includes("tarjeta") && (val.includes("tarjeta") || val.includes("débito") || val.includes("crédito"))) ||
+            (text.includes("mercado") && (val.includes("mercado") || val.includes("qr"))) ||
+            (text.includes("terminal") && val.includes("terminal"))
+          );
+          if (isMatched) {
+            btn.className = "payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-emerald-500 bg-emerald-50 text-emerald-800 transition-colors cursor-pointer shadow-xs";
+          } else {
+            btn.className = "payment-chip px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer";
+          }
+        });
+      }
+
+      window.selectCoveragePreset = function(presetText) {
+        const input = document.getElementById("edit-coverage-zone");
+        if (input) {
+          input.value = presetText;
+          showToast("Zona de cobertura seleccionada", "info");
+        }
+      };
+
       // 4. Guardar todos los cambios
       window.saveAllChanges = async function() {
         if (isSaving) return;
@@ -647,6 +1055,8 @@
         const btnText = document.getElementById("btn-save-text");
         if (btn) btn.disabled = true;
         if (btnText) btnText.textContent = "Guardando...";
+
+        syncMenuSectionsFromDOM();
 
         const existingMd = (currentBiz && currentBiz.microsite_data) || {};
         const existingFeat = existingMd.featured_section || {};
@@ -665,23 +1075,41 @@
           featDesc = "";
         }
 
+        const scheduleVal = document.getElementById("edit-schedule").value.trim();
+        const waVal = document.getElementById("edit-wa").value.trim();
+        const phoneVal = document.getElementById("edit-phone") ? document.getElementById("edit-phone").value.trim() : "";
+        const addressVal = document.getElementById("edit-address").value.trim();
+        const descVal = document.getElementById("edit-description").value.trim();
+        const deliveryAvailable = document.getElementById("edit-delivery").checked;
+        const deliveryBadge = document.getElementById("edit-delivery-badge") ? document.getElementById("edit-delivery-badge").value.trim() || null : null;
+        const cotoOnly = document.getElementById("edit-coto-only").checked;
+        const pickupAvailable = document.getElementById("edit-pickup") ? document.getElementById("edit-pickup").checked : true;
+        const pickupBadge = document.getElementById("edit-pickup-badge") ? document.getElementById("edit-pickup-badge").value.trim() || null : null;
+        const paymentMethodVal = document.getElementById("edit-payment-method") ? document.getElementById("edit-payment-method").value.trim() || null : null;
+        const coverageZoneVal = document.getElementById("edit-coverage-zone") ? document.getElementById("edit-coverage-zone").value.trim() || null : null;
+
         const payload = {
           cover_photo: currentCover,
-          schedule: document.getElementById("edit-schedule").value.trim(),
-          whatsapp: document.getElementById("edit-wa").value.trim(),
-          coto_address: document.getElementById("edit-address").value.trim(),
-          description: document.getElementById("edit-description").value.trim(),
-          delivery_available: document.getElementById("edit-delivery").checked,
-          delivery_badge: document.getElementById("edit-delivery-badge") ? document.getElementById("edit-delivery-badge").value.trim() || null : null,
-          coto_only_delivery: document.getElementById("edit-coto-only").checked,
-          pickup_available: document.getElementById("edit-pickup") ? document.getElementById("edit-pickup").checked : true,
-          pickup_badge: document.getElementById("edit-pickup-badge") ? document.getElementById("edit-pickup-badge").value.trim() || null : null,
+          schedule: scheduleVal,
+          whatsapp: waVal,
+          phone: phoneVal,
+          coto_address: addressVal,
+          description: descVal,
+          delivery_available: deliveryAvailable,
+          delivery_badge: deliveryBadge,
+          coto_only_delivery: cotoOnly,
+          pickup_available: pickupAvailable,
+          pickup_badge: pickupBadge,
+          payment_method: paymentMethodVal,
+          coverage_zone: coverageZoneVal,
           photos: productsList.map(p => p.photo).filter(Boolean),
           microsite_data: {
             ...existingMd,
-            schedule: payload.schedule,
-            description: payload.description,
-            cover_photo: payload.cover_photo,
+            schedule: scheduleVal,
+            description: descVal,
+            cover_photo: currentCover,
+            payment_methods: paymentMethodVal,
+            coverage_zone: coverageZoneVal,
             featured_section: {
               ...existingFeat,
               title: featTitle,
@@ -689,7 +1117,8 @@
               description: featDesc,
               products: productsList
             },
-            featured_products: productsList
+            featured_products: productsList,
+            other_products_sections: menuSections
           }
         };
 
@@ -713,10 +1142,16 @@
             currentBiz.cover_photo = payload.cover_photo;
             currentBiz.schedule = payload.schedule;
             currentBiz.whatsapp = payload.whatsapp;
+            currentBiz.phone = payload.phone;
             currentBiz.coto_address = payload.coto_address;
             currentBiz.description = payload.description;
             currentBiz.delivery_available = payload.delivery_available;
+            currentBiz.delivery_badge = payload.delivery_badge;
             currentBiz.coto_only_delivery = payload.coto_only_delivery;
+            currentBiz.pickup_available = payload.pickup_available;
+            currentBiz.pickup_badge = payload.pickup_badge;
+            currentBiz.payment_method = payload.payment_method;
+            currentBiz.coverage_zone = payload.coverage_zone;
             currentBiz.microsite_data = payload.microsite_data;
           }
 

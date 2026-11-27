@@ -597,13 +597,23 @@
       }
 
       const secCobEl = document.getElementById("section-cobertura-text");
+      const customCob = reg.coverage_zone || (mdata && mdata.coverage_zone);
       if (secCobEl) {
-        if (reg.coto_only_delivery) {
+        if (customCob) {
+          secCobEl.textContent = customCob;
+        } else if (reg.coto_only_delivery) {
           secCobEl.textContent = `Entregas directas a domicilio únicamente dentro de ${reg.coto_address || "su coto"}. Vecinos de otros cotos o fraccionamientos pueden hacer pedido para recoger en caseta de acceso.`;
         } else if (isServiceCategory) {
           secCobEl.textContent = "Atención, asesoría y citas en Natura Bosque Residencial, Los Robles, El Fortín y cotos de la zona Mariano Otero.";
         }
       }
+
+      const secPayEl = document.getElementById("section-payment-text");
+      const customPay = reg.payment_method || (mdata && mdata.payment_methods);
+      if (secPayEl && customPay) {
+        secPayEl.textContent = customPay;
+      }
+
       const secModEl = document.getElementById("section-modalidad-text");
       if (secModEl) {
         if (reg.coto_only_delivery) {

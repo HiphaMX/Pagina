@@ -485,7 +485,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Zona de Cobertura & Entrega</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Zona de cobertura hasta 3 km de la zona del epicentro, confirmar directo con el negocio.</p>
+            <p id="section-cobertura-text" class="text-xs text-slate-500 mt-0.5">Zona de cobertura hasta 3 km de la zona del epicentro, confirmar directo con el negocio.</p>
           </div>
         </div>
       </div>
@@ -511,7 +511,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Métodos de Pago Aceptados</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Efectivo contra entrega, transferencia bancaria SPEI, tarjetas y Mercado Pago.</p>
+            <p id="section-payment-text" class="text-xs text-slate-500 mt-0.5">Efectivo contra entrega, transferencia bancaria SPEI, tarjetas y Mercado Pago.</p>
           </div>
         </div>
       </div>
@@ -817,6 +817,22 @@
               </a>
             </div>
           `).join("");
+        }
+      }
+
+      // 7. Actualizar Cobertura y Métodos de Pago si fueron modificados
+      const coverageVal = reg.coverage_zone || (mdata && mdata.coverage_zone);
+      if (coverageVal) {
+        const cobEl = document.getElementById("section-cobertura-text");
+        if (cobEl && cobEl.textContent.trim() !== coverageVal.trim()) {
+          cobEl.textContent = coverageVal;
+        }
+      }
+      const paymentVal = reg.payment_method || (mdata && mdata.payment_methods);
+      if (paymentVal) {
+        const payEl = document.getElementById("section-payment-text");
+        if (payEl && payEl.textContent.trim() !== paymentVal.trim()) {
+          payEl.textContent = paymentVal;
         }
       }
 
