@@ -868,11 +868,40 @@ Esta acción no se puede deshacer.`)) return;
     }
 
     // --- GESTIÓN DE MENÚ / COMPLEMENTOS ---
+    function syncAdminMenuSectionsFromDOM() {
+      adminMenuSections.forEach((sec, idx) => {
+        const tIn = document.getElementById(`admin-sec-${idx}-title-input`);
+        const sIn = document.getElementById(`admin-sec-${idx}-subtitle-input`);
+        const dIn = document.getElementById(`admin-sec-${idx}-desc-input`);
+        if (tIn) sec.title = tIn.value.trim();
+        if (sIn) sec.subtitle = sIn.value.trim();
+        if (dIn) sec.description = dIn.value.trim();
+
+        // Si el usuario dejó un ítem a medio escribir en los inputs de renglón, añadirlo automáticamente
+        const nInput = document.getElementById(`admin-sec-${idx}-new-item-name`) || document.getElementById(`admin-sec-${idx}-item-name`);
+        const pInput = document.getElementById(`admin-sec-${idx}-new-item-price`) || document.getElementById(`admin-sec-${idx}-item-price`);
+        const descIn = document.getElementById(`admin-sec-${idx}-new-item-desc`) || document.getElementById(`admin-sec-${idx}-item-desc`);
+        if (nInput && nInput.value.trim()) {
+          if (!sec.items) sec.items = [];
+          sec.items.push({
+            name: nInput.value.trim(),
+            price: pInput ? parseFloat(pInput.value) || 0.0 : 0.0,
+            description: descIn ? descIn.value.trim() : ""
+          });
+          nInput.value = "";
+          if (pInput) pInput.value = "";
+          if (descIn) descIn.value = "";
+        }
+      });
+    }
+
     function addAdminMenuSection() {
       if (adminMenuSections.length >= 4) {
         alert("Máximo 4 secciones de menú permitidas.");
         return;
       }
+      syncAdminMenuSectionsFromDOM();
+
       const defaultTitles = [
         { title: "Presentaciones por Litro", subtitle: "Para familias y eventos", desc: "Precios especiales en presentaciones grandes." },
         { title: "Botanas y Complementos", subtitle: "Acompañamientos frescos", desc: "El complemento perfecto para compartir." },
@@ -890,6 +919,7 @@ Esta acción no se puede deshacer.`)) return;
     }
 
     function removeAdminMenuSection(secIdx) {
+      syncAdminMenuSectionsFromDOM();
       adminMenuSections.splice(secIdx, 1);
       renderAdminMenuSections();
     }
@@ -903,9 +933,9 @@ Esta acción no se puede deshacer.`)) return;
     function addAdminMenuItem(secIdx) {
       const sec = adminMenuSections[secIdx];
       if (!sec) return;
-      const nameInput = document.getElementById(`admin-sec-${secIdx}-item-name`);
-      const priceInput = document.getElementById(`admin-sec-${secIdx}-item-price`);
-      const descInput = document.getElementById(`admin-sec-${secIdx}-item-desc`);
+      const nameInput = document.getElementById(`admin-sec-${secIdx}-new-item-name`) || document.getElementById(`admin-sec-${secIdx}-item-name`);
+      const priceInput = document.getElementById(`admin-sec-${secIdx}-new-item-price`) || document.getElementById(`admin-sec-${secIdx}-item-price`);
+      const descInput = document.getElementById(`admin-sec-${secIdx}-new-item-desc`) || document.getElementById(`admin-sec-${secIdx}-item-desc`);
 
       const name = nameInput ? nameInput.value.trim() : "";
       if (!name) {
@@ -916,6 +946,7 @@ Esta acción no se puede deshacer.`)) return;
       const price = priceInput ? parseFloat(priceInput.value) || 0.0 : 0.0;
       const desc = descInput ? descInput.value.trim() : "";
 
+      if (!sec.items) sec.items = [];
       sec.items.push({ name, price, description: desc });
 
       if (nameInput) nameInput.value = "";
@@ -926,6 +957,7 @@ Esta acción no se puede deshacer.`)) return;
     }
 
     function removeAdminMenuItem(secIdx, itemIdx) {
+      syncAdminMenuSectionsFromDOM();
       if (adminMenuSections[secIdx] && adminMenuSections[secIdx].items) {
         adminMenuSections[secIdx].items.splice(itemIdx, 1);
         renderAdminMenuSections();
@@ -962,29 +994,29 @@ Esta acción no se puede deshacer.`)) return;
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
               <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Título de Sección *</label>
-              <input type="text" value="${sec.title || ''}" oninput="updateAdminMenuSecMeta(${secIdx}, 'title', this.value)" placeholder="Ej. Presentaciones por Litro" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+              <input type="text" id="admin-sec-${secIdx}-title-input" value="${escapeHtml(sec.title || '')}" oninput="updateAdminMenuSecMeta(${secIdx}, 'title', this.value)" placeholder="Ej. Presentaciones por Litro" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
             </div>
             <div>
               <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Subtítulo</label>
-              <input type="text" value="${sec.subtitle || ''}" oninput="updateAdminMenuSecMeta(${secIdx}, 'subtitle', this.value)" placeholder="Ej. Para reuniones o familias" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+              <input type="text" id="admin-sec-${secIdx}-subtitle-input" value="${escapeHtml(sec.subtitle || '')}" oninput="updateAdminMenuSecMeta(${secIdx}, 'subtitle', this.value)" placeholder="Ej. Para reuniones o familias" class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
             </div>
           </div>
 
           <div>
             <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Descripción de la Sección</label>
-            <input type="text" value="${sec.description || ''}" oninput="updateAdminMenuSecMeta(${secIdx}, 'description', this.value)" placeholder="Ej. Presentaciones especiales en volumen..." class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
+            <input type="text" id="admin-sec-${secIdx}-desc-input" value="${escapeHtml(sec.description || '')}" oninput="updateAdminMenuSecMeta(${secIdx}, 'description', this.value)" placeholder="Ej. Presentaciones especiales en volumen..." class="w-full px-2.5 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none">
           </div>
 
           <div class="pt-2 border-t border-slate-800">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Renglones de Menú (${sec.items.length})</span>
-            ${sec.items.length === 0 ? `<p class="text-[10px] text-slate-500 italic mb-2">No has agregado renglones a esta sección.</p>` : `
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Renglones de Menú (${sec.items ? sec.items.length : 0})</span>
+            ${(!sec.items || sec.items.length === 0) ? `<p class="text-[10px] text-slate-500 italic mb-2">No has agregado renglones a esta sección.</p>` : `
               <div class="space-y-1 mb-2">
                 ${sec.items.map((item, itemIdx) => `
                   <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
                     <div class="min-w-0 pr-2">
-                      <span class="font-bold text-white">${item.name}</span>
+                      <span class="font-bold text-white">${escapeHtml(item.name)}</span>
                       <span class="font-mono text-emerald-400 font-bold ml-1.5">$${parseFloat(item.price || 0).toFixed(2)}</span>
-                      ${item.description ? `<p class="text-[10px] text-slate-400 truncate">${item.description}</p>` : ''}
+                      ${item.description ? `<p class="text-[10px] text-slate-400 truncate">${escapeHtml(item.description)}</p>` : ''}
                     </div>
                     <button type="button" onclick="removeAdminMenuItem(${secIdx}, ${itemIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5">✕</button>
                   </div>
@@ -993,10 +1025,10 @@ Esta acción no se puede deshacer.`)) return;
             `}
 
             <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center">
-              <input type="text" id="admin-sec-${secIdx}-new-item-name" placeholder="Nombre (ej. 1 Litro Salsa Macha)" class="sm:col-span-5 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
-              <input type="number" step="0.5" id="admin-sec-${secIdx}-new-item-price" placeholder="Precio ($)" class="sm:col-span-3 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none font-mono">
-              <input type="text" id="admin-sec-${secIdx}-new-item-desc" placeholder="Desc. breve" class="sm:col-span-4 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
-              <button type="button" onclick="addAdminMenuItem(${secIdx})" class="sm:col-span-12 py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1">
+              <input type="text" id="admin-sec-${secIdx}-new-item-name" placeholder="Nombre (ej. 1 Litro Salsa Macha)" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminMenuItem(${secIdx});}" class="sm:col-span-5 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
+              <input type="number" step="0.5" id="admin-sec-${secIdx}-new-item-price" placeholder="Precio ($)" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminMenuItem(${secIdx});}" class="sm:col-span-3 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none font-mono">
+              <input type="text" id="admin-sec-${secIdx}-new-item-desc" placeholder="Desc. breve" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminMenuItem(${secIdx});}" class="sm:col-span-4 px-2 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none">
+              <button type="button" onclick="addAdminMenuItem(${secIdx})" class="sm:col-span-12 py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer">
                 <span>+ Añadir Renglón al Menú</span>
               </button>
             </div>
@@ -1731,6 +1763,9 @@ Esta acción no se puede deshacer.`)) return;
       const featDesc = document.getElementById("edit-featured-desc") ? document.getElementById("edit-featured-desc").value.trim() : "";
       const heroWebUrl = document.getElementById("edit-microsite-website") ? document.getElementById("edit-microsite-website").value.trim() : "";
       const heroSchedule = (document.getElementById("edit-microsite-schedule") && document.getElementById("edit-microsite-schedule").value.trim()) || (document.getElementById("edit-schedule") ? document.getElementById("edit-schedule").value.trim() : "");
+
+      // Sincronizar secciones de menú y recoger renglones pendientes
+      syncAdminMenuSectionsFromDOM();
 
       const micrositeData = {
         cover_photo: adminCoverPhoto || null,

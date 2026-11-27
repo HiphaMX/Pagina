@@ -1739,8 +1739,8 @@ def seed_official_showcases(db: Session):
                 space_label="Punto de venta & A domicilio",
                 owner_name="Chile Chillón",
                 email="contacto@elchilechillon.mx",
-                phone="3921097809",
-                whatsapp="3921097809",
+                phone="3336762545",
+                whatsapp="3336762545",
                 delivery_available=True,
                 preferred_contact_methods="whatsapp,delivery,llamada",
                 schedule="Lunes a viernes · 10:00 a 17:00 hrs",
@@ -1786,11 +1786,11 @@ def seed_official_showcases(db: Session):
             if not chillon.coto_address:
                 chillon.coto_address = "Natura Bosque Residencial"
                 updated = True
-            if not chillon.phone:
-                chillon.phone = "3921097809"
+            if chillon.phone != "3336762545":
+                chillon.phone = "3336762545"
                 updated = True
-            if not chillon.whatsapp:
-                chillon.whatsapp = "3921097809"
+            if chillon.whatsapp != "3336762545":
+                chillon.whatsapp = "3336762545"
                 updated = True
             if not chillon.schedule:
                 chillon.schedule = "Lunes a viernes · 10:00 a 17:00 hrs"
@@ -2088,18 +2088,27 @@ def seed_official_showcases(db: Session):
                 whatsapp="3315848420",
                 delivery_available=True,
                 schedule="Lunes a Viernes 9:00 a 16:00 hrs",
-                website="valenciaservicios",
+                website="https://valenciaservicios.mx",
                 description="Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
                 status="active",
                 is_verified_badge=True,
-                payment_status="approved",
-                payment_amount=499.0
+                payment_status="basic_approved",
+                payment_amount=99.0
             )
             db.add(valencia)
             db.commit()
             db.refresh(valencia)
         else:
             updated = False
+            if valencia.payment_status != "basic_approved":
+                valencia.payment_status = "basic_approved"
+                updated = True
+            if valencia.payment_amount != 99.0:
+                valencia.payment_amount = 99.0
+                updated = True
+            if valencia.website != "https://valenciaservicios.mx":
+                valencia.website = "https://valenciaservicios.mx"
+                updated = True
             if not valencia.slug:
                 valencia.slug = "valenciaservicios"
                 updated = True
@@ -2899,6 +2908,10 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
         clean_target = f"/natura/{target_id}.html" if not target_id.endswith(".html") else f"/natura/{target_id}"
         return RedirectResponse(url=clean_target)
 
+    # Valencia Servicios es Plan Esencial ($99 MXN): Redirigir a su categoría en directorio
+    if target_id.lower() in ("valenciaservicios", "valencia-servicios", "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322"):
+        return RedirectResponse(url="/natura/categorias/servicios-hogar.html")
+
     # Aliases de showcase para compatibilidad con guiones y rutas amigables
     showcase_alias_map = {
         "chile-chillon": "reg-chile-chillon",
@@ -2909,9 +2922,7 @@ def render_escaparate_page(slug: Optional[str] = None, request: Request = None, 
         "jessica-mendoza": "18315325-717f-4072-86b0-cab5300e0d3f",
         "jessicamendoza": "18315325-717f-4072-86b0-cab5300e0d3f",
         "amdi": "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
-        "amdi-interior": "ac02b6c2-624e-407f-bcfc-7d736dbcbd83",
-        "valencia-servicios": "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
-        "valenciaservicios": "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322"
+        "amdi-interior": "ac02b6c2-624e-407f-bcfc-7d736dbcbd83"
     }
     lookup_id = showcase_alias_map.get(target_id.lower(), target_id)
 

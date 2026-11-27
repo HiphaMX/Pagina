@@ -148,7 +148,7 @@
       return isEpizentroHost ? "/natura/jessicamendozabienesraices" : `${prefix}negocio.html?slug=jessicamendozabienesraices`;
     }
     if (norm.includes("valencia") || b.id === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322") {
-      return isEpizentroHost ? "/natura/valenciaservicios" : `${prefix}negocio.html?slug=valenciaservicios`;
+      return getCategoryPageUrl("servicios-hogar", b.name);
     }
 
     if (b.slug) {

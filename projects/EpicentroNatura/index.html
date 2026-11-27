@@ -868,8 +868,8 @@
         coto: "Natura Bosque Residencial",
         address: "Natura Bosque Residencial",
         description: "Maximiza tu sazón, no solo creamos salsas picantes con recetas tradicionales, entregamos calidad, consistencia, profesionalismo y confianza en cada botella.",
-        phone: "3921097809",
-        whatsapp: "3921097809",
+        phone: "3336762545",
+        whatsapp: "3336762545",
         website: "https://elchilechillon.mx",
         schedule: "Lunes a viernes · 10:00 a 17:00 hrs",
         hours: "Lunes a viernes · 10:00 a 17:00 hrs",
@@ -1038,7 +1038,7 @@
       {
         id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
         name: "Valencia Servicios",
-        slug: "valenciaservicios",
+        slug: null,
         category_slug: "servicios-hogar",
         category_label: "Servicios hogar",
         subcategory_slug: "fontaneria-y-electricidad",
@@ -1060,7 +1060,7 @@
         description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
         phone: "3315848420",
         whatsapp: "3315848420",
-        website: "valenciaservicios",
+        website: "https://valenciaservicios.mx",
         schedule: "Lunes a Viernes 9:00 a 16:00 hrs",
         hours: "Lunes a Viernes 9:00 a 16:00 hrs",
         is_open_now: true,
@@ -1071,6 +1071,8 @@
         reviews: 12,
         has_photos: false,
         has_microsite: false,
+        payment_status: "basic_approved",
+        payment_amount: 99.0,
         photos: []
       }
     ];
@@ -1246,7 +1248,8 @@
       }
 
       // Prioridad 3: Si cuenta con sitio web externo oficial propio y no tiene catálogo dinámico cargado en Epizentro
-      if (rawWeb && (rawWeb.startsWith("http://") || rawWeb.startsWith("https://") || (rawWeb.includes(".") && !rawWeb.endsWith(".html"))) && !hasCatalogProducts) {
+      const isValenciaBiz = (b.id === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322") || normName.includes("valencia servicios") || normName.includes("valenciaservicios");
+      if (!isValenciaBiz && rawWeb && (rawWeb.startsWith("http://") || rawWeb.startsWith("https://") || (rawWeb.includes(".") && !rawWeb.endsWith(".html"))) && !hasCatalogProducts) {
         const extUrl = rawWeb.startsWith("http") ? rawWeb : "https://" + rawWeb;
         return `
           <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
@@ -1263,8 +1266,8 @@
       }
 
       // Prioridad 4: Escaparate individual dinámico en Epizentro ($499 anual / catálogo activo / membresía aprobada o cortesía)
-      const isExplicitBasic = (b.payment_status === "free_basic" || b.payment_status === "basic_approved") && !hasCatalogProducts && !b.slug;
-      const hasDedicatedMicrosite = !isExplicitBasic && (hasCatalogProducts || Boolean(b.slug) || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
+      const isExplicitBasic = isValenciaBiz || ((b.payment_status === "free_basic" || b.payment_status === "basic_approved" || b.has_microsite === false) && !hasCatalogProducts);
+      const hasDedicatedMicrosite = !isExplicitBasic && (hasCatalogProducts || (Boolean(b.slug) && !isValenciaBiz) || b.has_microsite === true || b.payment_status === "approved" || b.payment_status === "waived");
 
       if (hasDedicatedMicrosite) {
         const targetSlug = b.slug || b.id;
@@ -1828,7 +1831,7 @@
               const isAmdi = biz.id === "ac02b6c2-624e-407f-bcfc-7d736dbcbd83" || normName.includes("amdi");
               const isJessica = biz.id === "18315325-717f-4072-86b0-cab5300e0d3f" || normName.includes("jessica mendoza") || normName.includes("jessica");
               const isValencia = biz.id === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322" || normName.includes("valencia servicios") || normName.includes("valencia");
-              const isOfficialShowcase = isChillon || isBotica || isAmdi || isJessica || isValencia;
+              const isOfficialShowcase = isChillon || isBotica || isAmdi || isJessica;
 
               let mdata = null;
               if (biz.microsite_data) {
@@ -1839,8 +1842,8 @@
 
               // Determinar si cuenta con escaparate dedicado en Epizentro (por catálogo, slug, o membresía aprobada/cortesía)
               const hasCatalog = !!(mdata && ((Array.isArray(mdata.featured_products) && mdata.featured_products.length > 0) || (mdata.featured_section && Array.isArray(mdata.featured_section.products) && mdata.featured_section.products.length > 0)));
-              const isExplicitBasic = (biz.payment_status === "free_basic" || biz.payment_status === "basic_approved") && !hasCatalog && !biz.slug;
-              const hasInteractive = !isExplicitBasic && (isOfficialShowcase || hasCatalog || Boolean(biz.slug) || biz.has_microsite === true || biz.payment_status === "approved" || biz.payment_status === "waived");
+              const isExplicitBasic = isValencia || ((biz.payment_status === "free_basic" || biz.payment_status === "basic_approved" || biz.has_microsite === false) && !hasCatalog);
+              const hasInteractive = !isExplicitBasic && (isOfficialShowcase || hasCatalog || (Boolean(biz.slug) && !isValencia) || biz.has_microsite === true || biz.payment_status === "approved" || biz.payment_status === "waived");
 
               // Extraer fotos para la tarjeta
               let bizPhotos = [];

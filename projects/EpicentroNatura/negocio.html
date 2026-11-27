@@ -129,10 +129,6 @@
           <i data-lucide="share-2" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Compartir</span>
         </button>
-        <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Epicentro</span>
-        <span class="text-[10px] font-extrabold lowercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-          natura
-        </span>
       </div>
     </div>
   </aside>
@@ -157,14 +153,9 @@
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16 md:-mt-20 z-10 pb-6 sm:pb-8">
       <div class="bg-slate-950/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80 space-y-6">
         
-        <!-- Fila Superior: Avatar + Título -->
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-950/40">
-            <i id="hero-category-icon" data-lucide="store" class="w-7 h-7 sm:w-8 sm:h-8"></i>
-          </div>
-          <div>
-            <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title min-h-[1.2em]"></h1>
-          </div>
+        <!-- Fila Superior: Título -->
+        <div>
+          <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title min-h-[1.2em]"></h1>
         </div>
 
         <!-- Descripción -->
@@ -335,9 +326,6 @@
       <div class="flex items-center gap-3">
         <a href="index.html" class="flex items-center gap-2 group">
           <img src="Assets/Epizentro.svg" alt="Epizentro" class="h-6 w-auto object-contain">
-          <span class="text-[11px] font-extrabold lowercase tracking-wide px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-            natura
-          </span>
         </a>
         <span class="text-slate-600 hidden sm:inline">|</span>
         <span class="text-slate-400 text-xs hidden sm:inline">Página Escaparate Individual Oficial de Comercio Verificado · Epizentro Natura.</span>
@@ -424,35 +412,17 @@
         payment_status: "waived",
         is_verified_badge: true,
         status: "active"
-      },
-      "valenciaservicios": {
-        id: "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322",
-        business_name: "Valencia Servicios",
-        slug: "valenciaservicios",
-        category_slug: "servicios-hogar",
-        category_label: "Servicios hogar",
-        subcategory_slug: "fontaneria-y-electricidad",
-        subcategory_label: "Fontanería y Electricidad",
-        business_type: "servicio",
-        coto_address: "Natura Bosque Residencial",
-        phone: "3315848420",
-        whatsapp: "3315848420",
-        schedule: "Lunes a Viernes 9:00 a 16:00 hrs",
-        delivery_available: true,
-        coto_only_delivery: false,
-        website: "valenciaservicios",
-        description: "Servicios integrales para el hogar: instalaciones eléctricas, fontanería, mantenimiento preventivo y reparaciones en cotos de la zona.",
-        payment_status: "approved",
-        is_verified_badge: true,
-        status: "active"
       }
     };
     KNOWN_OFFICIAL_BUSINESSES["18315325-717f-4072-86b0-cab5300e0d3f"] = KNOWN_OFFICIAL_BUSINESSES["jessicamendozabienesraices"];
-    KNOWN_OFFICIAL_BUSINESSES["be9eb029-1bb2-4a50-a9fa-d3de2f9e9322"] = KNOWN_OFFICIAL_BUSINESSES["valenciaservicios"];
 
     function getPreloadedBusiness(q) {
       if (!q) return null;
       const cleanQ = q.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (cleanQ === "valenciaservicios" || q === "be9eb029-1bb2-4a50-a9fa-d3de2f9e9322") {
+        window.location.replace("categorias/servicios-hogar.html");
+        return null;
+      }
       if (KNOWN_OFFICIAL_BUSINESSES[cleanQ]) return KNOWN_OFFICIAL_BUSINESSES[cleanQ];
       if (KNOWN_OFFICIAL_BUSINESSES[q]) return KNOWN_OFFICIAL_BUSINESSES[q];
       try {
