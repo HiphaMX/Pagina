@@ -263,18 +263,95 @@
     <div class="p-4 sm:p-5 rounded-2xl bg-white border border-snow-400 shadow-xs space-y-3">
       <!-- Fila 1: Píldoras de Subcategorías (Chips) -->
       <div id="subcategories-filter-bar" class="w-full">
-        <!-- Renderizado dinámico vía JavaScript según la categoría activa -->
+        <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 w-full">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1 hidden sm:inline">Especialidad:</span>
+          <button onclick="setSubcategoryFilter('all')" class="subcat-pill is-active px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0 transition-all">
+            Todas (1)
+          </button>
+          <button onclick="setSubcategoryFilter('salsas-picantes')" class="subcat-pill px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold border shrink-0 transition-all">
+            Salsas Picantes (1)
+          </button>
+        </div>
       </div>
 
       <!-- Fila 2: Modalidad Operativa Contextual -->
       <div id="modality-filter-bar" class="w-full pt-2.5 border-t border-snow-300">
-        <!-- Renderizado dinámico vía JavaScript según la categoría activa -->
+        <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+          <button onclick="setTypeFilter('all')" class="type-pill is-active px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+            Ver todo
+          </button>
+          <button onclick="setTypeFilter('local-establecido')" class="type-pill px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+            Punto de venta fijo
+          </button>
+          <button onclick="setTypeFilter('sin-punto-venta')" class="type-pill px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+            Sin punto de venta
+          </button>
+          <div class="h-4 w-px bg-snow-400 shrink-0 mx-1"></div>
+          <button onclick="toggleDeliveryFilter()" class="modality-pill px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+            Servicio a domicilio
+          </button>
+          <button onclick="togglePickupFilter()" class="modality-pill px-3 py-1.5 rounded-lg text-xs font-bold border shrink-0">
+            Recoger en punto de venta
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- CUADRÍCULA DE FICHAS COMERCIALES DE LA CATEGORÍA -->
-    <div id="category-businesses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-      <!-- Renderizado dinámico vía JavaScript -->
+    <div id="category-businesses-grid" data-rendered-sig="reg-chile-chillon:Chile Chillón:Salsas picantes artesanales 100% naturales, elaboradas con receta tradicional y aceite vegetal comestible de primera calidad. Sin conservadores ni colorantes artificiales. Más de 10 años de trayectoria gastronómica maximizando el sazón de tus carnes, botanas, asados, mariscos y platillos diarios.:Lunes a Domingo · 10:00 a 20:00 hrs:Punto de venta & A domicilio:Servicio a domicilio:Recoger en coto:Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles):Lunes a Domingo · 10:00 a 20:00 hrs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+      <div class="p-6 rounded-3xl bg-white border border-snow-400 hover:border-brand-emerald shadow-rappi-card hover:shadow-rappi-hover transition-all flex flex-col justify-between group">
+        <div class="space-y-3">
+          <div class="flex items-start justify-between gap-2">
+            <div class="space-y-1">
+              <span class="text-[11px] font-extrabold uppercase tracking-wide text-brand-emerald">
+                Salsas Picantes
+              </span>
+              <h3 class="text-lg font-black text-slate-950 group-hover:text-brand-emerald transition-colors leading-tight">
+                Chile Chillón
+              </h3>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-snow-300 text-slate-700">
+              Punto de venta &amp; A domicilio
+            </span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">Servicio a domicilio</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">Recoger en coto</span>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed line-clamp-3">
+            Salsas picantes artesanales 100% naturales, elaboradas con receta tradicional y aceite vegetal comestible de primera calidad. Sin conservadores ni colorantes artificiales. Más de 10 años de trayectoria gastronómica maximizando el sazón de tus carnes, botanas, asados, mariscos y platillos diarios.
+          </p>
+
+          <div class="pt-2 space-y-1.5 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+              <span class="truncate">Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)</span>
+              <button onclick="showLocationModal('Chile Chillón', 'Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)', 'Cobertura en cotos de Natura Bosque Residencial')" class="text-brand-emerald hover:underline text-[11px] font-bold shrink-0 ml-auto">
+                Ver mapa
+              </button>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+              <span class="text-emerald-700 font-semibold">Lunes a Domingo · 10:00 a 20:00 hrs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="grid grid-cols-2 gap-2 pt-3 border-t border-snow-300 w-full">
+            <a href="/natura/chile-chillon" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 w-full group/web text-center">
+              <span>Ver más</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-emerald-400 group-hover/web:translate-x-0.5 transition-transform shrink-0"></i>
+            </a>
+            <a href="https://wa.me/3336762545?text=Hola%20Chile%20Chill%C3%B3n%2C%20vi%20su%20ficha%20en%20Epicentro%20Natura%20y%20me%20gustar%C3%ADa%20hacer%20un%20pedido%20%2F%20solicitar%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-orange-500/20 font-bold text-xs shadow-xs transition-all active:scale-95 w-full text-center">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- SECCIÓN: EXPLORAR CATEGORÍAS -->
@@ -1044,9 +1121,9 @@
     // BASE DE DATOS DE COMERCIOS CLASIFICADOS (DIRECTORIO OFICIAL)
     const ALL_BUSINESSES = [
       {
-        id: "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97",
+        id: "reg-chile-chillon",
         name: "Chile Chillón",
-        slug: "elchilechillon",
+        slug: "chile-chillon",
         category_slug: "comida-delivery",
         category_label: "Comida & Delivery",
         subcategory_slug: "salsas-picantes",
@@ -1065,12 +1142,12 @@
         pickup_badge: "Recoger en coto",
         coto: "Natura Bosque Residencial",
         address: "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
-        description: "Salsas picantes artesanales de autor elaboradas con chiles seleccionados y recetas tradicionales. Envíos directos a caseta de cotos.",
+        description: "Salsas picantes artesanales 100% naturales, elaboradas con receta tradicional y aceite vegetal comestible de primera calidad. Sin conservadores ni colorantes artificiales. Más de 10 años de trayectoria gastronómica maximizando el sazón de tus carnes, botanas, asados, mariscos y platillos diarios.",
         phone: "3336762545",
         whatsapp: "3336762545",
         website: "https://elchilechillon.mx",
-        payment_status: "approved",
-        payment_amount: 499.0,
+        payment_status: "waived",
+        payment_amount: 399.0,
         schedule: "Lunes a Domingo · 10:00 a 20:00 hrs",
         hours: "Lunes a Domingo · 10:00 a 20:00 hrs",
         is_open_now: true,
@@ -1081,6 +1158,7 @@
         reviews: 28,
         has_photos: true,
         has_microsite: true,
+        cover_photo: "https://images.unsplash.com/photo-custom-test-1234",
         photos: [
           "../Assets/chillon/Salsas/de_arbol.jpg",
           "../Assets/chillon/Salsas/habanero.jpg",
@@ -1582,6 +1660,8 @@
                 ALL_BUSINESSES[existingIdx] = {
                   ...existing,
                   ...bizObj,
+                  address: (existing.address && existing.address.includes(biz.coto_address)) ? existing.address : (bizObj.address || existing.address),
+                  coto: existing.coto || bizObj.coto,
                   space_label: biz.space_label || existing.space_label || bizObj.space_label,
                   delivery_badge: (biz.delivery_available === false) ? null : (biz.delivery_badge || existing.delivery_badge || bizObj.delivery_badge),
                   pickup_badge: (biz.pickup_available === false || isSinPuntoVenta) ? null : (biz.pickup_badge || existing.pickup_badge || bizObj.pickup_badge),
@@ -1966,6 +2046,13 @@
           </button>
         </div>
       ` : "";
+
+      const currentFilteredSig = `${isCrossCategoryFallback ? 'fb:' : ''}` + filtered.map(b => `${b.id}:${b.name}:${b.description || ""}:${b.schedule || ""}:${b.space_label || ""}:${b.delivery_badge || ""}:${b.pickup_badge || ""}:${b.address || ""}:${b.hours || ""}`).join("|");
+      if (grid.getAttribute("data-rendered-sig") === currentFilteredSig) {
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+        return;
+      }
+      grid.setAttribute("data-rendered-sig", currentFilteredSig);
 
       grid.innerHTML = fallbackNoticeHtml + filtered.map(b => {
         const theme = (typeof CATEGORY_THEMES !== "undefined" && CATEGORY_THEMES[b.category_slug || (typeof currentCategory !== "undefined" && currentCategory && currentCategory.slug)]) ? CATEGORY_THEMES[b.category_slug || (typeof currentCategory !== "undefined" && currentCategory && currentCategory.slug)] : (typeof CATEGORY_THEMES !== "undefined" ? CATEGORY_THEMES["comida-delivery"] : null);

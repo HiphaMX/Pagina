@@ -27,9 +27,9 @@
   // Comercios oficiales canónicos del directorio para disponibilidad inmediata en búsquedas
   const FALLBACK_CANONICAL_BUSINESSES = [
     {
-      id: "12c7bc70-34b8-4ef5-b884-d4f60ccf8d97",
+      id: "reg-chile-chillon",
       name: "Chile Chillón",
-      slug: "elchilechillon",
+      slug: "chile-chillon",
       category_slug: "comida-delivery",
       category_label: "Comida & Delivery",
       subcategory_slug: "salsas-picantes",
@@ -44,7 +44,7 @@
       badge_text: "Epicentro",
       coto: "Natura Bosque Residencial",
       address: "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
-      description: "Salsas picantes artesanales de autor elaboradas con chiles seleccionados y recetas tradicionales. Envíos directos a caseta de cotos.",
+      description: "Salsas picantes artesanales 100% naturales, elaboradas con receta tradicional y aceite vegetal comestible de primera calidad. Sin conservadores ni colorantes artificiales. Más de 10 años de trayectoria gastronómica maximizando el sazón de tus carnes, botanas, asados, mariscos y platillos diarios.",
       phone: "3336762545",
       whatsapp: "3336762545",
       website: "https://elchilechillon.mx",
