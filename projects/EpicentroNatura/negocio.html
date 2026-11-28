@@ -147,14 +147,15 @@
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 sm:-mt-16 md:-mt-20 z-10 pb-6 sm:pb-8">
       <div class="bg-slate-950/95 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80 space-y-6">
         
-        <!-- Fila Superior: Título y Badge Verificado -->
+        <!-- Fila Superior: Título y Badges -->
         <div class="space-y-2">
           <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight font-brand-title min-h-[1.2em]"></h1>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2" id="hero-badges-container">
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold tracking-wide">
               <i data-lucide="badge-check" class="w-3 h-3 text-emerald-400"></i>
               <span>Verificado</span>
             </span>
+            <div id="hero-modality-badges" class="flex flex-wrap items-center gap-1.5"></div>
           </div>
         </div>
 
@@ -454,6 +455,28 @@
       if (pageTitle) pageTitle.textContent = pageTitleText;
       const titleEl = document.getElementById("hero-title");
       if (titleEl) titleEl.textContent = bName;
+
+      // Insignias de modalidades de atención y venta
+      const heroModBadges = document.getElementById("hero-modality-badges");
+      if (heroModBadges) {
+        let bHtml = '';
+        const spaceVal = reg.space_label || (reg.business_type === "sin-punto-venta" ? "Sin punto de venta" : "Punto de venta & A domicilio");
+        if (spaceVal) {
+          bHtml += `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-white/10 text-slate-200 border border-white/15">${spaceVal}</span>`;
+        }
+        if (reg.coto_only_delivery) {
+          bHtml += `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30"><i data-lucide="home" class="w-3 h-3 text-amber-400"></i> Solo en su coto · Caseta</span>`;
+        } else if (reg.delivery_available && reg.delivery_badge) {
+          bHtml += `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">${reg.delivery_badge}</span>`;
+        }
+        if (reg.pickup_available !== false && reg.business_type !== 'sin-punto-venta' && reg.pickup_badge) {
+          bHtml += `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/15 text-blue-300 border border-blue-500/30">${reg.pickup_badge}</span>`;
+        }
+        heroModBadges.innerHTML = bHtml;
+        if (window.lucide && typeof lucide.createIcons === "function") {
+          lucide.createIcons({ root: heroModBadges });
+        }
+      }
 
       // 2. Parsear microsite_data
       let mdata = null;

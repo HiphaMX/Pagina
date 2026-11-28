@@ -420,8 +420,12 @@ def test_8_self_service_autoservicio():
     )
 
     has_ordered_section_3 = (
+        "edit-space-label" in html and
         "edit-delivery" in html and
         "edit-pickup" in html and
+        "modality-badges-preview" in html and
+        "setSpaceLabelPreset" in html and
+        "updateModalityPreview" in html and
         "edit-schedule" in html and
         "edit-address" in html and
         "edit-description" in html and
@@ -430,6 +434,7 @@ def test_8_self_service_autoservicio():
         "edit-wa" in html and
         "edit-phone" in html
     )
+    pos_space = html.find('id="edit-space-label"')
     pos_delivery = html.find('id="edit-delivery"')
     pos_schedule = html.find('id="edit-schedule"')
     pos_address = html.find('id="edit-address"')
@@ -439,12 +444,24 @@ def test_8_self_service_autoservicio():
     
     order_ok = (
         has_ordered_section_3 and
+        pos_space < pos_schedule and
         pos_delivery < pos_schedule < pos_address < pos_desc < pos_payment < pos_coverage
     )
     report_result(
-        "Sección 3 en editar.html ordenada estrictamente (Modalidades -> Horario -> Ubicación -> Descripción -> Pagos -> Cobertura)",
+        "Sección 3 en editar.html ordenada estrictamente (3 Modalidades -> Horario -> Ubicación -> Descripción -> Pagos -> Cobertura)",
         order_ok,
-        "Orden y controles de Sección 3 verificados 100%"
+        "Orden y 3 controles de modalidad con live preview verificados 100%"
+    )
+
+    # Validar soporte en negocio.html
+    negocio_path = os.path.join(EPIZENTRO_DIR, "negocio.html")
+    with open(negocio_path, "r", encoding="utf-8") as nf:
+        negocio_html = nf.read()
+    has_negocio_badges = "hero-modality-badges" in negocio_html
+    report_result(
+        "negocio.html implementa contenedor hero-modality-badges para sincronización en vivo",
+        has_negocio_badges,
+        "Contenedor de insignias dinámicas presente en hero"
     )
 
     try:
@@ -469,13 +486,16 @@ def test_8_self_service_autoservicio():
             get_data = res_get.json() if res_get.status_code == 200 else {}
             get_ok = (
                 res_get.status_code == 200 and
+                "space_label" in get_data and
+                "business_type" in get_data and
                 "delivery_badge" in get_data and
                 "pickup_available" in get_data and
+                "pickup_badge" in get_data and
                 "payment_method" in get_data and
                 "coverage_zone" in get_data
             )
             report_result(
-                "GET /api/epicentro/self-service/{token} retorna campos operativos completos",
+                "GET /api/epicentro/self-service/{token} retorna campos operativos completos (incluye 3 modalidades)",
                 get_ok,
                 f"Status: {res_get.status_code}"
             )
@@ -495,10 +515,12 @@ def test_8_self_service_autoservicio():
                 "schedule": "Lunes a Domingo · 10:00 a 20:00 hrs",
                 "payment_method": "Efectivo contra entrega, transferencia SPEI, tarjetas y Mercado Pago",
                 "coverage_zone": "Zona Mariano Otero (Envíos directos a caseta en cotos Natura y Los Robles)",
+                "space_label": "Punto de venta & A domicilio",
+                "business_type": "local-establecido",
                 "delivery_available": True,
                 "delivery_badge": "Servicio a domicilio en cotos",
                 "pickup_available": True,
-                "pickup_badge": "Recoger en local",
+                "pickup_badge": "Recoger en coto",
                 "microsite_data": {
                     "other_products_sections": test_menu_sections
                 }
@@ -506,7 +528,7 @@ def test_8_self_service_autoservicio():
             res_put = client.put(f"/api/epicentro/self-service/{token}", json=put_payload)
             put_ok = res_put.status_code == 200 and res_put.json().get("success") is True
             report_result(
-                "PUT /api/epicentro/self-service/{token} guarda cambios operativos y secciones de menú",
+                "PUT /api/epicentro/self-service/{token} guarda cambios operativos, 3 modalidades y secciones de menú",
                 put_ok,
                 f"Status: {res_put.status_code}"
             )
@@ -514,15 +536,19 @@ def test_8_self_service_autoservicio():
             db.refresh(reg)
             md_persisted = json.loads(reg.microsite_data) if isinstance(reg.microsite_data, str) else (reg.microsite_data or {})
             persist_ok = (
+                reg.space_label == put_payload["space_label"] and
+                reg.business_type == put_payload["business_type"] and
+                reg.delivery_badge == put_payload["delivery_badge"] and
+                reg.pickup_badge == put_payload["pickup_badge"] and
                 reg.payment_method == put_payload["payment_method"] and
                 reg.coverage_zone == put_payload["coverage_zone"] and
                 "other_products_sections" in md_persisted and
                 len(md_persisted["other_products_sections"]) >= 1
             )
             report_result(
-                "Persistencia SQLite de secciones de menú, métodos de pago y zona de cobertura",
+                "Persistencia SQLite de 3 modalidades (space_label, delivery, pickup), menú, pagos y cobertura",
                 persist_ok,
-                f"Menu sections: {len(md_persisted.get('other_products_sections', []))}"
+                f"Modality: {reg.space_label} | {reg.delivery_badge} | {reg.pickup_badge}"
             )
             
         finally:

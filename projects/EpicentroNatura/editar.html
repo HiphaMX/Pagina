@@ -238,36 +238,158 @@
           </p>
         </div>
 
-        <!-- 3.1 MODALIDADES DE ATENCIÓN Y RETIRO -->
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">1</span>
-            <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider">Modalidades de Atención y Retiro</h3>
+        <!-- 3.1 MODALIDADES DE VENTA, ENTREGA Y RETIRO -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black flex items-center justify-center font-mono">1</span>
+              <div>
+                <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider">Modalidades de Venta, Entrega y Retiro</h3>
+                <p class="text-[11px] text-slate-500">Manipula cómo vendes, si entregas a domicilio y dónde recogen pedidos tus clientes.</p>
+              </div>
+            </div>
           </div>
           
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <!-- Servicio a Domicilio -->
-            <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="edit-delivery" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                <span id="label-delivery-text" class="text-xs font-bold text-slate-900">Servicio / Entrega a domicilio</span>
-              </label>
-              <input type="text" id="edit-delivery-badge" placeholder="Etiqueta ej. Servicio a domicilio en cotos" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-              
-              <label class="flex items-center gap-2 cursor-pointer pt-1 border-t border-slate-100">
-                <input type="checkbox" id="edit-coto-only" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
-                <span class="text-[11px] font-semibold text-amber-950">Solo entregas dentro de mi coto</span>
-              </label>
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-3.5 pt-1">
+            <!-- 1. Punto de Venta / Tipo de Espacio -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3 flex flex-col justify-between shadow-2xs">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-black uppercase text-slate-900 flex items-center gap-1.5">
+                    <i data-lucide="store" class="w-4 h-4 text-slate-700"></i>
+                    <span>Punto de Venta / Espacio</span>
+                  </span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Insignia 1</span>
+                </div>
+
+                <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+                  <input type="checkbox" id="edit-physical-store" onchange="updateModalityPreview()" class="w-4 h-4 text-slate-800 rounded border-slate-300 focus:ring-slate-500">
+                  <span class="text-xs font-bold text-slate-800">Local establecido / Punto físico</span>
+                </label>
+
+                <!-- Chips predefinidos -->
+                <div class="flex flex-wrap gap-1 pt-1">
+                  <button type="button" onclick="setSpaceLabelPreset('Punto de venta & A domicilio', true)" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-colors">
+                    🏪 Venta & Domicilio
+                  </button>
+                  <button type="button" onclick="setSpaceLabelPreset('Punto de venta fijo', true)" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-colors">
+                    🏬 Local fijo
+                  </button>
+                  <button type="button" onclick="setSpaceLabelPreset('Atención en cotos & Previa cita', false)" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-colors">
+                    🤝 Previa cita
+                  </button>
+                  <button type="button" onclick="setSpaceLabelPreset('A domicilio en cotos', false)" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-colors">
+                    🏡 A domicilio
+                  </button>
+                  <button type="button" onclick="setSpaceLabelPreset('Sin punto de venta', false)" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-colors">
+                    📦 Sin local
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Texto de la Insignia:</label>
+                <input type="text" id="edit-space-label" oninput="updateModalityPreview()" placeholder="Ej. Punto de venta & A domicilio" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-slate-500 focus:outline-none">
+              </div>
             </div>
 
-            <!-- Punto de Venta Físico / Retiro -->
-            <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-2">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="edit-pickup" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
-                <span class="text-xs font-bold text-slate-900">Punto de venta físico / Retiro en local / Cita previa</span>
-              </label>
-              <input type="text" id="edit-pickup-badge" placeholder="Etiqueta ej. Recoger en local / Con cita" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-              <span class="text-[10px] text-slate-500 block leading-tight">Desmarca esta opción si trabajas únicamente a domicilio del cliente sin atención física en tu dirección.</span>
+            <!-- 2. Servicio a Domicilio -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3 flex flex-col justify-between shadow-2xs">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-black uppercase text-emerald-950 flex items-center gap-1.5">
+                    <i data-lucide="truck" class="w-4 h-4 text-emerald-600"></i>
+                    <span>Servicio a Domicilio</span>
+                  </span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Insignia 2</span>
+                </div>
+
+                <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+                  <input type="checkbox" id="edit-delivery" onchange="updateModalityPreview()" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                  <span id="label-delivery-text" class="text-xs font-bold text-slate-900">Envíos / Entrega a domicilio activo</span>
+                </label>
+
+                <!-- Chips predefinidos -->
+                <div class="flex flex-wrap gap-1 pt-1">
+                  <button type="button" onclick="setDeliveryBadgePreset('Servicio a domicilio')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-emerald-200 bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 transition-colors">
+                    🛵 A domicilio
+                  </button>
+                  <button type="button" onclick="setDeliveryBadgePreset('Servicio a domicilio en cotos')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-emerald-200 bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 transition-colors">
+                    🏡 En cotos
+                  </button>
+                  <button type="button" onclick="setDeliveryBadgePreset('Envíos a caseta')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-emerald-200 bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 transition-colors">
+                    📦 A caseta
+                  </button>
+                  <button type="button" onclick="setDeliveryBadgePreset('Cita en domicilio')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-emerald-200 bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 transition-colors">
+                    🤝 Cita domicilio
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Texto de la Insignia:</label>
+                  <input type="text" id="edit-delivery-badge" oninput="updateModalityPreview()" placeholder="Ej. Servicio a domicilio" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer pt-1 border-t border-slate-100">
+                  <input type="checkbox" id="edit-coto-only" onchange="updateModalityPreview()" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500">
+                  <span class="text-[11px] font-semibold text-amber-950">Solo entregas dentro de mi coto</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 3. Punto de Entrega / Recoger -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3 flex flex-col justify-between shadow-2xs">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-black uppercase text-blue-950 flex items-center gap-1.5">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-blue-600"></i>
+                    <span>Punto de Entrega / Retiro</span>
+                  </span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">Insignia 3</span>
+                </div>
+
+                <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+                  <input type="checkbox" id="edit-pickup" onchange="updateModalityPreview()" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                  <span class="text-xs font-bold text-slate-900">Punto de recolección / Pickup activo</span>
+                </label>
+
+                <!-- Chips predefinidos -->
+                <div class="flex flex-wrap gap-1 pt-1">
+                  <button type="button" onclick="setPickupBadgePreset('Recoger en coto')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-blue-200 bg-blue-50/80 text-blue-800 hover:bg-blue-100 transition-colors">
+                    📍 En coto
+                  </button>
+                  <button type="button" onclick="setPickupBadgePreset('Recoger en local')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-blue-200 bg-blue-50/80 text-blue-800 hover:bg-blue-100 transition-colors">
+                    🏪 En local
+                  </button>
+                  <button type="button" onclick="setPickupBadgePreset('Recoger en caseta')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-blue-200 bg-blue-50/80 text-blue-800 hover:bg-blue-100 transition-colors">
+                    🛡️ En caseta
+                  </button>
+                  <button type="button" onclick="setPickupBadgePreset('Entrega programada')" class="px-2 py-0.5 rounded-md text-[10.5px] font-semibold border border-blue-200 bg-blue-50/80 text-blue-800 hover:bg-blue-100 transition-colors">
+                    🕒 Programada
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Texto de la Insignia:</label>
+                <input type="text" id="edit-pickup-badge" oninput="updateModalityPreview()" placeholder="Ej. Recoger en coto" class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Vista Previa en Vivo de las Insignias -->
+          <div class="p-3 sm:p-4 rounded-xl bg-white border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div class="flex items-center gap-2">
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="text-xs font-black uppercase text-slate-800 tracking-wider">Vista Previa de Insignias:</span>
+              <span class="text-[11px] text-slate-400 hidden sm:inline">(Así se muestran en el directorio y escaparate)</span>
+            </div>
+            <div id="modality-badges-preview" class="flex flex-wrap items-center gap-1.5 min-h-[28px]">
+              <!-- Píldoras renderizadas en vivo -->
             </div>
           </div>
         </div>
@@ -536,12 +658,26 @@
         renderMenuSections();
 
         // Operación, Horarios y Contacto (Sección 3 en Orden)
-        // 1. Modalidades de atención
+        // 1. Modalidades de Venta, Entrega y Retiro (3 Píldoras)
+        const defaultSpace = (currentBiz.business_type === "sin-punto-venta" || currentBiz.business_type === "en-casa") ? "Sin punto de venta" : "Punto de venta & A domicilio";
+        const spaceVal = currentBiz.space_label || defaultSpace;
+        if (document.getElementById("edit-space-label")) document.getElementById("edit-space-label").value = spaceVal;
+        const isPhysical = currentBiz.business_type !== "sin-punto-venta" && currentBiz.business_type !== "en-casa";
+        if (document.getElementById("edit-physical-store")) document.getElementById("edit-physical-store").checked = isPhysical;
+
         document.getElementById("edit-delivery").checked = !!currentBiz.delivery_available;
-        if (document.getElementById("edit-delivery-badge")) document.getElementById("edit-delivery-badge").value = currentBiz.delivery_badge || "";
+        if (document.getElementById("edit-delivery-badge")) {
+          document.getElementById("edit-delivery-badge").value = currentBiz.delivery_badge || (currentBiz.delivery_available ? "Servicio a domicilio" : "");
+        }
         document.getElementById("edit-coto-only").checked = !!currentBiz.coto_only_delivery;
-        if (document.getElementById("edit-pickup")) document.getElementById("edit-pickup").checked = currentBiz.pickup_available !== false;
-        if (document.getElementById("edit-pickup-badge")) document.getElementById("edit-pickup-badge").value = currentBiz.pickup_badge || "";
+
+        if (document.getElementById("edit-pickup")) {
+          document.getElementById("edit-pickup").checked = currentBiz.pickup_available !== false;
+        }
+        if (document.getElementById("edit-pickup-badge")) {
+          document.getElementById("edit-pickup-badge").value = currentBiz.pickup_badge || (currentBiz.pickup_available !== false ? "Recoger en coto" : "");
+        }
+        updateModalityPreview();
 
         // 2. Horario Comercial
         document.getElementById("edit-schedule").value = currentBiz.schedule || "Lunes a Domingo · 10:00 a 20:00 hrs";
@@ -1267,6 +1403,60 @@
         });
       };
 
+      window.setSpaceLabelPreset = function(text, isPhysical) {
+        const inp = document.getElementById("edit-space-label");
+        const chk = document.getElementById("edit-physical-store");
+        if (inp) inp.value = text;
+        if (chk && isPhysical !== undefined) chk.checked = !!isPhysical;
+        updateModalityPreview();
+      };
+
+      window.setDeliveryBadgePreset = function(text) {
+        const inp = document.getElementById("edit-delivery-badge");
+        const chk = document.getElementById("edit-delivery");
+        if (inp) inp.value = text;
+        if (chk) chk.checked = true;
+        updateModalityPreview();
+      };
+
+      window.setPickupBadgePreset = function(text) {
+        const inp = document.getElementById("edit-pickup-badge");
+        const chk = document.getElementById("edit-pickup");
+        if (inp) inp.value = text;
+        if (chk) chk.checked = true;
+        updateModalityPreview();
+      };
+
+      window.updateModalityPreview = function() {
+        const preview = document.getElementById("modality-badges-preview");
+        if (!preview) return;
+
+        const spaceVal = (document.getElementById("edit-space-label") ? document.getElementById("edit-space-label").value.trim() : "") || "Punto de venta & A domicilio";
+        const hasDelivery = document.getElementById("edit-delivery") ? document.getElementById("edit-delivery").checked : false;
+        const deliveryVal = (document.getElementById("edit-delivery-badge") ? document.getElementById("edit-delivery-badge").value.trim() : "") || "Servicio a domicilio";
+        const isCotoOnly = document.getElementById("edit-coto-only") ? document.getElementById("edit-coto-only").checked : false;
+        const hasPickup = document.getElementById("edit-pickup") ? document.getElementById("edit-pickup").checked : false;
+        const pickupVal = (document.getElementById("edit-pickup-badge") ? document.getElementById("edit-pickup-badge").value.trim() : "") || "Recoger en coto";
+
+        let html = '';
+        if (spaceVal) {
+          html += `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-800 border border-slate-200/80 shadow-2xs">${escapeHtml(spaceVal)}</span>`;
+        }
+        if (isCotoOnly) {
+          html += `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200"><i data-lucide="home" class="w-3 h-3 text-amber-600"></i> Solo en su coto · Caseta</span>`;
+        } else if (hasDelivery && deliveryVal) {
+          html += `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs">${escapeHtml(deliveryVal)}</span>`;
+        }
+        if (hasPickup && pickupVal) {
+          html += `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 shadow-2xs">${escapeHtml(pickupVal)}</span>`;
+        }
+
+        preview.innerHTML = html;
+        if (window.lucide && typeof lucide.createIcons === "function") {
+          lucide.createIcons({ root: preview });
+        }
+      };
+
       window.selectCoveragePreset = function(presetText) {
         const input = document.getElementById("edit-coverage-zone");
         if (input) {
@@ -1310,6 +1500,9 @@
         const phoneVal = (currentBiz && currentBiz.phone) ? currentBiz.phone : (document.getElementById("edit-phone") ? document.getElementById("edit-phone").value.trim() : "");
         const addressVal = document.getElementById("edit-address").value.trim();
         const descVal = document.getElementById("edit-description").value.trim();
+        const spaceLabelVal = document.getElementById("edit-space-label") ? document.getElementById("edit-space-label").value.trim() || null : null;
+        const physicalStore = document.getElementById("edit-physical-store") ? document.getElementById("edit-physical-store").checked : true;
+        const businessTypeVal = physicalStore ? "local-establecido" : "sin-punto-venta";
         const deliveryAvailable = document.getElementById("edit-delivery").checked;
         const deliveryBadge = document.getElementById("edit-delivery-badge") ? document.getElementById("edit-delivery-badge").value.trim() || null : null;
         const cotoOnly = document.getElementById("edit-coto-only").checked;
@@ -1327,6 +1520,8 @@
           website: websiteVal,
           coto_address: addressVal,
           description: descVal,
+          space_label: spaceLabelVal,
+          business_type: businessTypeVal,
           delivery_available: deliveryAvailable,
           delivery_badge: deliveryBadge,
           coto_only_delivery: cotoOnly,
@@ -1381,6 +1576,8 @@
             currentBiz.phone = payload.phone;
             currentBiz.coto_address = payload.coto_address;
             currentBiz.description = payload.description;
+            currentBiz.space_label = payload.space_label;
+            currentBiz.business_type = payload.business_type;
             currentBiz.delivery_available = payload.delivery_available;
             currentBiz.delivery_badge = payload.delivery_badge;
             currentBiz.coto_only_delivery = payload.coto_only_delivery;
@@ -1389,6 +1586,7 @@
             currentBiz.payment_method = payload.payment_method;
             currentBiz.coverage_zone = payload.coverage_zone;
             currentBiz.microsite_data = payload.microsite_data;
+            updateModalityPreview();
           }
 
           let liveUrl = "";

@@ -273,6 +273,8 @@ class SelfServiceUpdateRequest(BaseModel):
     delivery_badge: Optional[str] = None
     pickup_available: Optional[bool] = None
     pickup_badge: Optional[str] = None
+    space_label: Optional[str] = None
+    business_type: Optional[str] = None
     payment_method: Optional[str] = None
     coverage_zone: Optional[str] = None
     website: Optional[str] = None
@@ -1428,6 +1430,7 @@ def get_self_service_business(token: str, db: Session = Depends(get_db)):
         "subcategory_label": reg.subcategory_label,
         "coto_address": reg.coto_address,
         "business_type": reg.business_type,
+        "space_label": reg.space_label,
         "owner_name": reg.owner_name,
         "phone": reg.phone,
         "whatsapp": reg.whatsapp,
@@ -1534,6 +1537,10 @@ def update_self_service_business(
         reg.pickup_available = payload.pickup_available
     if payload.pickup_badge is not None:
         reg.pickup_badge = payload.pickup_badge.strip() if payload.pickup_badge else None
+    if payload.space_label is not None:
+        reg.space_label = payload.space_label.strip() if payload.space_label else None
+    if payload.business_type is not None:
+        reg.business_type = payload.business_type.strip() if payload.business_type else None
     if payload.payment_method is not None:
         reg.payment_method = payload.payment_method.strip() if payload.payment_method else None
     if payload.coverage_zone is not None:
